@@ -1,0 +1,774 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taller de Programación — Colegio Paulo Freire</title>
+  <meta name="description" content="Portal de proyectos y juegos del Taller de Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css?v=29">
+  <link rel="stylesheet" href="css/games.css?v=29">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       PANTALLA DE PRESENTACIÓN (SPLASH SCREEN)
+  ══════════════════════════════════════════════ -->
+  <div id="splash-screen">
+    <div class="splash-content">
+      <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="splash-shield">
+      <div class="splash-name">Colegio Paulo Freire</div>
+      <div class="splash-sub">Taller de Robótica, Programación &amp; Cultura Maker</div>
+      <div class="splash-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TOPBAR & NAVEGACIÓN HORIZONTAL
+  ══════════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      
+      <!-- Brand / Logo -->
+      <a href="index.html" class="topbar-brand">
+        <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="topbar-shield-logo">
+        <div class="topbar-name">
+          <span class="topbar-school">Colegio Paulo Freire</span>
+          <span class="topbar-sub">Taller de Programación</span>
+        </div>
+      </a>
+
+      <!-- Menú Horizontal Principal -->
+      <nav class="topbar-nav" id="topbar-nav">
+        <a href="index.html" class="topbar-nav-link active">
+          <i class="fas fa-home"></i>
+          <span>Inicio</span>
+        </a>
+
+        <!-- AULAS CON DROPDOWN (HOVER + CLICK) -->
+        <div class="topbar-nav-dropdown" id="nav-dropdown-aulas">
+          <a href="#classrooms-grid" class="topbar-nav-link dropdown-trigger">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Aulas</span>
+            <i class="fas fa-chevron-down nav-chevron"></i>
+          </a>
+          
+          <div class="nav-dropdown-menu">
+            <div class="ndm-header">
+              <div class="ndm-title"><i class="fas fa-th-large"></i> Acceso rápido a las Aulas</div>
+              <div class="ndm-sub">Elegí tu grado para entrar</div>
+            </div>
+            
+            <div class="ndm-grid">
+              <a href="aula.html?grado=sala5" class="ndm-item" style="--grade-theme:#E65100;--grade-bg:#FFF3E0;">
+                <span class="ndm-icon">🌱</span>
+                <div class="ndm-info">
+                  <span class="ndm-name">Sala de 5 años</span>
+                  <span class="ndm-tag">Iniciación digital</span>
+                </div>
+              </a>
+
+              <a href="aula.html?grado=grado1" class="ndm-item" style="--grade-theme:#1565C0;--grade-bg:#E3F2FD;">
+                <span class="ndm-icon">📖</span>
+                <div class="ndm-info">
+                  <span class="ndm-name">1° Grado</span>
+                  <span class="ndm-tag">Bloques visuales</span>
+                </div>
+              </a>
+
+              <a href="aula.html?grado=grado2" class="ndm-item" style="--grade-theme:#6A1B9A;--grade-bg:#F3E5F5;">
+                <span class="ndm-icon">✏️</span>
+                <div class="ndm-info">
+                  <span class="ndm-name">2° Grado</span>
+                  <span class="ndm-tag">Historias interactivas</span>
+                </div>
+              </a>
+
+              <a href="aula.html?grado=grado3" class="ndm-item" style="--grade-theme:#00838F;--grade-bg:#E0F7FA;">
+                <span class="ndm-icon">🔢</span>
+                <div class="ndm-info">
+                  <span class="ndm-name">3° Grado</span>
+                  <span class="ndm-tag">Scratch 3.0 & Lógica</span>
+                </div>
+              </a>
+
+              <a href="aula.html?grado=grado4" class="ndm-item" style="--grade-theme:#EF6C00;--grade-bg:#FFF3E0;">
+                <span class="ndm-icon">💡</span>
+                <div class="ndm-info">
+                  <span class="ndm-name">4° Grado</span>
+                  <span class="ndm-tag">MakeCode Arcade</span>
+                </div>
+              </a>
+
+              <a href="aula.html?grado=grado5" class="ndm-item" style="--grade-theme:#2E7D32;--grade-bg:#E8F5E9;">
+                <span class="ndm-icon">⚙️</span>
+                <div class="ndm-info">
+                  <span class="ndm-name">5° Grado</span>
+                  <span class="ndm-tag">Algoritmos y retos</span>
+                </div>
+              </a>
+
+              <a href="aula.html?grado=grado6" class="ndm-item" style="--grade-theme:#C2185B;--grade-bg:#FCE4EC;">
+                <span class="ndm-icon">🚀</span>
+                <div class="ndm-info">
+                  <span class="ndm-name">6° Grado</span>
+                  <span class="ndm-tag">Web, Canvas & JS</span>
+                </div>
+              </a>
+            </div>
+
+            <a href="#classrooms-grid" class="ndm-footer">
+              <span>Ver todas las aulas en detalle</span>
+              <i class="fas fa-arrow-down"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- ACTIVIDAD FAMILIAR CON DROPDOWN (HOVER + CLICK) -->
+        <div class="topbar-nav-dropdown">
+          <a href="javascript:void(0)" class="topbar-nav-link dropdown-trigger nav-special">
+            <i class="fas fa-users"></i>
+            <span>Actividad familiar</span>
+            <i class="fas fa-chevron-down nav-chevron"></i>
+          </a>
+          
+          <div class="nav-dropdown-menu nav-dropdown-family">
+            <div class="ndm-header">
+              <div class="ndm-title"><i class="fas fa-heart"></i> Actividades para la Familia</div>
+              <div class="ndm-sub">Experiencias y retos interactivos</div>
+            </div>
+            
+            <div class="ndm-family-list">
+              <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
+                 target="_blank" rel="noopener noreferrer"
+                 class="ndm-family-card">
+                <div class="nfc-icon-wrap">
+                  <span class="nfc-icon">🗝️</span>
+                </div>
+                <div class="nfc-body">
+                  <div class="nfc-header-row">
+                    <span class="nfc-title">Escape Rooms Nostálgico</span>
+                    <span class="nfc-badge">Familiar</span>
+                  </div>
+                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades.</p>
+                  <div class="nfc-action">
+                    <span class="nfc-play-btn">
+                      <span>Entrar al Escape Room</span>
+                      <i class="fas fa-external-link-alt"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actividad de Casa -->
+        <a href="#actividad-de-casa" class="topbar-nav-link">
+          <i class="fas fa-house-user"></i>
+          <span>Actividad de casa</span>
+        </a>
+
+        <!-- Mi Carpeta Drive (Visible al iniciar sesión) -->
+        <a href="#student-drive-dashboard-container" class="nav-drive-link" style="display:none;" onclick="const d = document.getElementById('student-drive-dashboard-container'); if(d) d.scrollIntoView({behavior:'smooth'});">
+          <i class="fab fa-google-drive"></i>
+          <span>Mi Carpeta Drive</span>
+        </a>
+      </nav>
+
+      <!-- Right Side (Student Login + Year + Mobile Hamburger) -->
+      <div class="topbar-right">
+        <button id="student-login-btn" class="topbar-student-pill logged-out" onclick="if(window.openLoginModal) window.openLoginModal()">
+          <i class="fas fa-user-circle"></i>
+          <span>Ingreso Alumnos</span>
+        </button>
+        <span class="topbar-year"><i class="fas fa-calendar-alt"></i> 2026</span>
+        <button class="topbar-mobile-btn" id="mobile-menu-btn" aria-label="Abrir menú">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <div class="app-body">
+
+    <!-- ══════════════════════════════════════════════
+         CONTENIDO PRINCIPAL (SIN SIDEBAR VERTICAL)
+    ══════════════════════════════════════════════ -->
+    <main class="main-content">
+
+      <!-- ══════════════════════════════════════════
+           PANEL CENTRADO DE GOOGLE DRIVE (ALUMNO LOGUEADO)
+      ══════════════════════════════════════════ -->
+      <div id="student-drive-dashboard-container"></div>
+
+      <!-- ══════════════════════════════════════════
+           HERO CAROUSEL — Imagen de Fondo Completa
+      ══════════════════════════════════════════ -->
+      <div class="hero-carousel" id="hero-carousel">
+        <div class="hc-track" id="hc-track">
+
+          <!-- SLIDE 1: Laboratorio Maker & Robótica -->
+          <div class="hc-slide">
+            <div class="hc-bg">
+              <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80" alt="" class="hc-bg-img">
+              <div class="hc-bg-overlay" style="background: linear-gradient(135deg, rgba(27,94,32,0.82) 0%, rgba(21,101,192,0.78) 100%);"></div>
+            </div>
+            <div class="hc-content">
+              <div class="hc-pill">🛠️ Robótica & Cultura Maker</div>
+              <h2 class="hc-heading">¡Construimos con Cartón y micro:bit!</h2>
+              <p class="hc-sub">Unimos manualidades, circuitos y programación en bloques para que los proyectos cobren vida y movimiento en el mundo real.</p>
+              <div class="hc-actions">
+                <a href="#classrooms-grid" class="hc-cta">Explorar Aulas <i class="fas fa-arrow-down"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2: Escape Rooms Nostálgico -->
+          <div class="hc-slide">
+            <div class="hc-bg">
+              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80" alt="" class="hc-bg-img">
+              <div class="hc-bg-overlay" style="background: linear-gradient(135deg, rgba(26,35,126,0.85) 0%, rgba(57,73,171,0.78) 100%);"></div>
+            </div>
+            <div class="hc-content">
+              <div class="hc-pill">👨‍👩‍👧 Actividad para la Familia</div>
+              <h2 class="hc-heading">Escape Rooms Nostálgico</h2>
+              <p class="hc-sub">Una aventura interactiva para resolver enigmas, códigos secretos y acertijos en familia. ¡Desafío para todas las edades!</p>
+              <div class="hc-actions">
+                <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
+                   target="_blank" rel="noopener noreferrer" class="hc-cta">Entrar al Escape Room <i class="fas fa-external-link-alt"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3: Simulador MakeCode -->
+          <div class="hc-slide">
+            <div class="hc-bg">
+              <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80" alt="" class="hc-bg-img">
+              <div class="hc-bg-overlay" style="background: linear-gradient(135deg, rgba(74,20,140,0.85) 0%, rgba(0,131,143,0.78) 100%);"></div>
+            </div>
+            <div class="hc-content">
+              <div class="hc-pill">💻 Programá desde Casa</div>
+              <h2 class="hc-heading">Simulador micro:bit MakeCode</h2>
+              <p class="hc-sub">Probá tus programas, botones, sensores y matriz de LEDs en el simulador oficial gratuito de Microsoft directamente en tu navegador.</p>
+              <div class="hc-actions">
+                <a href="https://makecode.microbit.org/"
+                   target="_blank" rel="noopener noreferrer" class="hc-cta">Abrir Simulador Virtual <i class="fas fa-external-link-alt"></i></a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Controles -->
+        <button class="hc-arrow hc-arrow-left" id="hc-prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+        <button class="hc-arrow hc-arrow-right" id="hc-next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
+        <div class="hc-dots" id="hc-dots"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           SECCIÓN: LA FÓRMULA MAKER (3 PASOS)
+      ══════════════════════════════════════════ -->
+      <section class="maker-formula-section">
+        <div class="maker-formula-header">
+          <div class="maker-formula-badge"><i class="fas fa-magic"></i> De la Idea a la Realidad</div>
+          <h2 class="maker-formula-title">¿Cómo creamos en el Taller?</h2>
+          <p class="maker-formula-sub">Unimos manualidades, circuitos y código para dar vida a nuestras creaciones.</p>
+        </div>
+
+        <div class="maker-formula-grid">
+          <!-- Paso 1 -->
+          <div class="mf-card">
+            <div class="mf-step-num">01</div>
+            <div class="mf-icon-wrap mf-icon-carton">
+              <span>📦</span>
+            </div>
+            <h3 class="mf-card-title">Construcción en Cartón</h3>
+            <p class="mf-card-desc">Cortamos, ensamblamos y diseñamos estructuras, personajes y maquetas usando cartón y materiales reciclables.</p>
+            <span class="mf-tag"><i class="fas fa-cut"></i> Crafting & Reciclaje</span>
+          </div>
+
+          <!-- Paso 2 -->
+          <div class="mf-card">
+            <div class="mf-step-num">02</div>
+            <div class="mf-icon-wrap mf-icon-microbit">
+              <span>⚡</span>
+            </div>
+            <h3 class="mf-card-title">Placa BBC micro:bit</h3>
+            <p class="mf-card-desc">Conectamos la placa de robótica con sensores de luz, botones táctiles, luces LED, servomotores y cables cocodrilo.</p>
+            <span class="mf-tag"><i class="fas fa-microchip"></i> Circuitos & Sensores</span>
+          </div>
+
+          <!-- Paso 3 -->
+          <div class="mf-card">
+            <div class="mf-step-num">03</div>
+            <div class="mf-icon-wrap mf-icon-code">
+              <span>💻</span>
+            </div>
+            <h3 class="mf-card-title">Programación en Bloques</h3>
+            <p class="mf-card-desc">Escribimos la lógica en MakeCode y Scratch para que nuestros inventos interactúen y cobren vida en el mundo real.</p>
+            <span class="mf-tag"><i class="fas fa-laptop-code"></i> MakeCode & Scratch</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════
+           SECCIÓN: PROYECTOS DESTACADOS (CARRUSEL + RESUMEN)
+      ══════════════════════════════════════════ -->
+      <section class="featured-projects-section" id="featured-projects">
+        <div class="fp-header">
+          <span class="fp-badge"><i class="fas fa-award"></i> Proyectos Maker Destacados</span>
+          <h2 class="fp-title">Lo que creamos en el Taller</h2>
+          <p class="fp-sub">Hacé click en un proyecto o esperá que cambie automáticamente.</p>
+        </div>
+
+        <!-- Carrusel de tarjetas de proyecto -->
+        <div class="fp-carousel-wrap">
+          <div class="fp-carousel" id="fp-carousel">
+
+            <div class="fp-card active" data-fp="0">
+              <div class="fp-card-img">
+                <img src="img/scratchjr.png" alt="Scratch Jr">
+                <span class="fp-card-grade">Sala 5</span>
+              </div>
+              <div class="fp-card-name">🌱 Scratch Jr</div>
+            </div>
+
+            <div class="fp-card" data-fp="1">
+              <div class="fp-card-img">
+                <img src="img/minecraft.png" alt="Minecraft Code.org">
+                <span class="fp-card-grade">1° Grado</span>
+              </div>
+              <div class="fp-card-name">⛏️ Minecraft Code</div>
+            </div>
+
+            <div class="fp-card" data-fp="2">
+              <div class="fp-card-img">
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=400&h=400&q=80" alt="Cuento Interactivo">
+                <span class="fp-card-grade">2° Grado</span>
+              </div>
+              <div class="fp-card-name">📖 Cuento Interactivo</div>
+            </div>
+
+            <div class="fp-card" data-fp="3">
+              <div class="fp-card-img">
+                <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&h=400&q=80" alt="Guitarra Musical">
+                <span class="fp-card-grade">3° Grado</span>
+              </div>
+              <div class="fp-card-name">🎸 Guitarra Musical</div>
+            </div>
+
+            <div class="fp-card" data-fp="4">
+              <div class="fp-card-img">
+                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&h=400&q=80" alt="Semáforo Inteligente">
+                <span class="fp-card-grade">4° Grado</span>
+              </div>
+              <div class="fp-card-name">🚦 Semáforo Inteligente</div>
+            </div>
+
+            <div class="fp-card" data-fp="5">
+              <div class="fp-card-img">
+                <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=400&h=400&q=80" alt="Robot Explorador">
+                <span class="fp-card-grade">5° Grado</span>
+              </div>
+              <div class="fp-card-name">🤖 Robot Explorador</div>
+            </div>
+
+            <div class="fp-card" data-fp="6">
+              <div class="fp-card-img">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&h=400&q=80" alt="Alarma Casera">
+                <span class="fp-card-grade">6° Grado</span>
+              </div>
+              <div class="fp-card-name">🔔 Alarma Casera</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Resumen del proyecto activo -->
+        <div class="fp-summary" id="fp-summary">
+          <div class="fp-summary-inner">
+            <div class="fp-summary-left">
+              <span class="fp-summary-grade" id="fp-sum-grade">Sala de 5 años</span>
+              <h3 class="fp-summary-title" id="fp-sum-title">Texturas Mágicas: Cartón y Sensores Táctiles 🌱</h3>
+              <p class="fp-summary-desc" id="fp-sum-desc">
+                Los más chiquitos exploraron texturas de cartón, tela y papel de aluminio. Conectamos sensores táctiles a la micro:bit para que suenen distintos sonidos al tocar cada material.
+              </p>
+              <div class="fp-summary-chips" id="fp-sum-chips">
+                <span>📦 Cartón y Texturas</span>
+                <span>⚡ micro:bit</span>
+                <span>🔊 Sonidos táctiles</span>
+                <span>🎨 Exploración sensorial</span>
+              </div>
+            </div>
+            <div class="fp-summary-right">
+              <a href="aula.html?grado=sala5" class="fp-summary-btn" id="fp-sum-btn">
+                <span>Ver Proyecto</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+          <!-- Barra de progreso automático -->
+          <div class="fp-progress"><div class="fp-progress-bar" id="fp-progress-bar"></div></div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════
+           STORIES — Acceso rápido por grado
+      ══════════════════════════════════════════ -->
+      <div class="stories-section">
+        <div class="stories-label">Acceso rápido a las Aulas</div>
+        <div class="stories-row" id="stories-row">
+          <!-- Generado por JS -->
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           GRILLA DE AULAS
+      ══════════════════════════════════════════ -->
+      <div class="home-section-header">
+        <h2 class="home-section-title">Nuestras Aulas Maker & Programación</h2>
+        <span class="home-section-count" id="grades-count"></span>
+      </div>
+
+      <div class="classrooms-grid" id="classrooms-grid">
+        <!-- Generado por JS -->
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           SECCIÓN: RINCÓN MAKER PARA CASA & FAMILIAS
+      ══════════════════════════════════════════ -->
+      <section class="home-maker-corner" id="actividad-de-casa">
+        <div class="hmc-header">
+          <div class="hmc-badge"><i class="fas fa-home"></i> Rincón Maker en Casa</div>
+          <h2 class="hmc-title">Seguí creando y explorando en familia</h2>
+          <p class="hmc-sub">Herramientas virtuales y tips de reciclaje para continuar los proyectos desde el hogar.</p>
+        </div>
+
+        <div class="hmc-grid">
+          <!-- Tarjeta 1: Simulador -->
+          <div class="hmc-card hmc-card-sim">
+            <div class="hmc-icon-box">
+              <span>💻</span>
+            </div>
+            <div class="hmc-card-body">
+              <h3 class="hmc-card-title">Simulador micro:bit Online</h3>
+              <p class="hmc-card-desc">
+                ¿No tenés la placa física en casa? Con el simulador oficial gratuito de Microsoft MakeCode podés probar luces, botones, brújula y sonidos en la pantalla en tiempo real.
+              </p>
+              <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer" class="hmc-btn hmc-btn-sim">
+                <span>Abrir Editor MakeCode</span>
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Tarjeta 2: Materiales Reciclables -->
+          <div class="hmc-card hmc-card-craft">
+            <div class="hmc-icon-box">
+              <span>📦</span>
+            </div>
+            <div class="hmc-card-body">
+              <h3 class="hmc-card-title">Materiales que reciclamos</h3>
+              <p class="hmc-card-desc">
+                ¡En casa no tiramos nada! Guardamos cajas de cartón fino, tubos de cartón, tapitas plásticas, clips metálicos y papel de aluminio. ¡Todo se transforma en ciencia y tecnología!
+              </p>
+              <div class="hmc-materials-pills">
+                <span>📦 Cajas de cartón</span>
+                <span>🧻 Tubos de cartón</span>
+                <span>🔴 Tapitas plásticas</span>
+                <span>📎 Clips & Aluminio</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© 2026 Colegio Paulo Freire &bull; Taller de Programación &bull; Hecho con ❤️ y mucho código</p>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════
+       MODAL UNIVERSAL
+  ══════════════════════════════════════════════ -->
+  <div id="game-modal" class="game-modal" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <h3 id="modal-game-title" class="modal-title">Título del Proyecto</h3>
+          <span id="modal-platform-badge" class="modal-badge">Plataforma</span>
+        </div>
+        <div class="modal-actions">
+          <button id="modal-fullscreen-btn" class="icon-btn-modal" title="Pantalla completa">
+            <i class="fas fa-expand"></i>
+          </button>
+          <button id="modal-close-btn" class="modal-close-btn" title="Cerrar (Esc)">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="game-embed-container" class="game-embed-container"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-instructions-text">
+          <strong id="modal-author">Autor</strong>
+          <span id="modal-instructions">Instrucciones del juego...</span>
+        </div>
+        <a id="modal-external-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-external-link" style="display:none">
+          <i class="fas fa-external-link-alt"></i> Ver en plataforma
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js?v=29"></script>
+  <script src="js/students.js?v=29"></script>
+  <script src="js/gdrive_viewer.js?v=29"></script>
+  <script src="js/auth.js?v=29"></script>
+  <script src="js/audio.js?v=29"></script>
+  <script src="js/games/neon_runner.js"></script>
+  <script src="js/games/retro_snake.js"></script>
+  <script src="js/games/code_breaker.js"></script>
+  <script src="js/games/dev_quiz.js"></script>
+  <script src="js/games/tools.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- Hero Carousel & Mobile Menu -->
+  <script>
+  (function() {
+    // Mobile Nav Toggle
+    const mobBtn = document.getElementById('mobile-menu-btn');
+    const nav    = document.getElementById('topbar-nav');
+    if (mobBtn && nav) {
+      mobBtn.addEventListener('click', () => {
+        nav.classList.toggle('mobile-open');
+      });
+    }
+
+    // Hero Carousel
+    const track = document.getElementById('hc-track');
+    const dots  = document.getElementById('hc-dots');
+    if (!track) return;
+    const slides = track.querySelectorAll('.hc-slide');
+    const total  = slides.length;
+    let cur = 0, timer = null;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('span');
+      d.className = 'hc-dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => go(i);
+      dots.appendChild(d);
+    });
+
+    function go(n) {
+      cur = (n + total) % total;
+      track.style.transform = `translateX(-${cur * 100}%)`;
+      dots.querySelectorAll('.hc-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === cur)
+      );
+    }
+
+    function reset() { clearInterval(timer); timer = setInterval(() => go(cur + 1), 5000); }
+
+    const prevBtn = document.getElementById('hc-prev');
+    const nextBtn = document.getElementById('hc-next');
+    if (prevBtn) prevBtn.onclick = () => { go(cur - 1); reset(); };
+    if (nextBtn) nextBtn.onclick = () => { go(cur + 1); reset(); };
+
+    // Swipe táctil
+    let tx = 0;
+    track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend',   e => {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 40) { go(dx < 0 ? cur + 1 : cur - 1); reset(); }
+    }, { passive: true });
+
+    // Dropdown Controller: Exclusivo (solo 1 abierto a la vez)
+    const allDropdowns = document.querySelectorAll('.topbar-nav-dropdown');
+    allDropdowns.forEach(dropdown => {
+      const trigger = dropdown.querySelector('.dropdown-trigger');
+
+      dropdown.addEventListener('mouseenter', () => {
+        allDropdowns.forEach(d => {
+          if (d !== dropdown) d.classList.remove('is-open');
+        });
+      });
+
+      dropdown.addEventListener('mouseleave', () => {
+        dropdown.classList.remove('is-open');
+      });
+
+      if (trigger) {
+        trigger.addEventListener('click', (e) => {
+          const href = trigger.getAttribute('href');
+          if (href === 'javascript:void(0)' || href?.startsWith('#')) {
+            e.preventDefault();
+          }
+          const isOpen = dropdown.classList.contains('is-open');
+          allDropdowns.forEach(d => d.classList.remove('is-open'));
+          if (!isOpen) {
+            dropdown.classList.add('is-open');
+          }
+        });
+      }
+    });
+
+    // Cerrar desplegables al hacer click fuera o presionar Escape
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.topbar-nav-dropdown')) {
+        allDropdowns.forEach(d => d.classList.remove('is-open'));
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        allDropdowns.forEach(d => d.classList.remove('is-open'));
+      }
+    });
+
+    reset();
+
+    // ── FEATURED PROJECTS CAROUSEL ──
+    const fpData = [
+      {
+        grade: 'Sala de 5 años',
+        title: 'Texturas Mágicas: Cartón y Sensores Táctiles 🌱',
+        desc: 'Los más chiquitos exploraron texturas de cartón, tela y papel de aluminio. Conectamos sensores táctiles a la micro:bit para que suenen distintos sonidos al tocar cada material.',
+        chips: ['📦 Cartón y Texturas', '⚡ micro:bit', '🔊 Sonidos táctiles', '🎨 Exploración sensorial'],
+        link: 'aula.html?grado=sala5'
+      },
+      {
+        grade: '1° Grado',
+        title: 'Animales que se mueven en Scratch 🐾',
+        desc: 'Cada alumno eligió su animal favorito, lo dibujó en Scratch y lo programó para que camine, salte y haga sonidos con bloques visuales. ¡Primera experiencia de programación!',
+        chips: ['💻 Scratch', '🎨 Dibujo digital', '🔊 Sonidos', '🐱 Animación'],
+        link: 'aula.html?grado=grado1'
+      },
+      {
+        grade: '2° Grado',
+        title: 'Cuento Interactivo con personajes animados 📖',
+        desc: 'Creamos cuentos digitales donde los personajes reaccionan al hacer click. Los chicos escribieron el guión, diseñaron escenarios y programaron las interacciones en Scratch.',
+        chips: ['💻 Scratch', '📖 Narrativa digital', '🎭 Personajes', '🖱️ Eventos click'],
+        link: 'aula.html?grado=grado2'
+      },
+      {
+        grade: '3° Grado',
+        title: 'Guitarra Musical de Cartón con micro:bit 🎸',
+        desc: 'Los alumnos diseñaron el cuerpo de la guitarra en cartón corrugado y cinta conductora. Conectaron los contactos a la BBC micro:bit con cables cocodrilo y programaron notas musicales en MakeCode.',
+        chips: ['📦 Cartón reciclado', '⚡ BBC micro:bit v2', '🐊 Cables cocodrilo', '🎵 MakeCode Audio'],
+        link: 'aula.html?grado=grado3'
+      },
+      {
+        grade: '4° Grado',
+        title: 'Semáforo Inteligente con LEDs y micro:bit 🚦',
+        desc: 'Construimos un semáforo funcional con estructura de cartón, LEDs de colores y la placa micro:bit. Programamos la secuencia roja-amarilla-verde con temporizadores en MakeCode.',
+        chips: ['📦 Cartón y LEDs', '⚡ BBC micro:bit', '🔌 Cables cocodrilo', '💡 Secuencias'],
+        link: 'aula.html?grado=grado4'
+      },
+      {
+        grade: '5° Grado',
+        title: 'Robot Explorador de Cartón con sensores 🤖',
+        desc: 'Diseñamos un robot con cuerpo de cartón reciclado, ruedas de tapitas y un servomotor controlado por micro:bit. Los sensores de luz hacen que el robot reaccione al ambiente.',
+        chips: ['📦 Cartón reciclado', '⚡ Servomotor', '🔴 Tapitas plásticas', '💻 MakeCode'],
+        link: 'aula.html?grado=grado5'
+      },
+      {
+        grade: '6° Grado',
+        title: 'Alarma Casera con sensor de movimiento 🔔',
+        desc: 'Los alumnos armaron una alarma casera usando el acelerómetro de la micro:bit como detector de movimiento. Construyeron la carcasa en cartón y programaron alertas sonoras y visuales.',
+        chips: ['📦 Cartón corrugado', '⚡ Acelerómetro', '🔊 Alerta sonora', '💻 Bloques MakeCode'],
+        link: 'aula.html?grado=grado6'
+      }
+    ];
+
+    const fpCards    = document.querySelectorAll('.fp-card');
+    const fpSumGrade = document.getElementById('fp-sum-grade');
+    const fpSumTitle = document.getElementById('fp-sum-title');
+    const fpSumDesc  = document.getElementById('fp-sum-desc');
+    const fpSumChips = document.getElementById('fp-sum-chips');
+    const fpSumBtn   = document.getElementById('fp-sum-btn');
+    const fpBar      = document.getElementById('fp-progress-bar');
+    let fpCur = 0, fpTimer = null;
+
+    function fpGo(idx) {
+      fpCur = idx;
+      const p = fpData[idx];
+      // Update active card
+      fpCards.forEach(c => c.classList.toggle('active', +c.dataset.fp === idx));
+      // Update summary
+      if (fpSumGrade) fpSumGrade.textContent = p.grade;
+      if (fpSumTitle) fpSumTitle.textContent = p.title;
+      if (fpSumDesc)  fpSumDesc.textContent  = p.desc;
+      if (fpSumChips) fpSumChips.innerHTML = p.chips.map(c => `<span>${c}</span>`).join('');
+      if (fpSumBtn)   fpSumBtn.href = p.link;
+      // Restart progress bar
+      if (fpBar) {
+        fpBar.classList.remove('animating');
+        void fpBar.offsetWidth; // force reflow
+        fpBar.classList.add('animating');
+      }
+    }
+
+    function fpReset() {
+      clearInterval(fpTimer);
+      fpTimer = setInterval(() => fpGo((fpCur + 1) % fpData.length), 6000);
+    }
+
+    if (fpCards.length) {
+      fpCards.forEach(card => {
+        card.addEventListener('click', () => {
+          fpGo(+card.dataset.fp);
+          fpReset();
+        });
+      });
+      // Initial state
+      fpGo(0);
+      fpReset();
+    }
+
+    // Inicializar Panel Centrado de Google Drive
+    if (window.renderGDriveDashboard) {
+      window.renderGDriveDashboard('student-drive-dashboard-container');
+    }
+  })();
+  </script>
+
+  <!-- Splash Screen: se oculta automáticamente después de 2.5s -->
+  <script>
+    (function() {
+      var splash = document.getElementById('splash-screen');
+      if (!splash) return;
+      // Ocultar después de 2.5 segundos
+      setTimeout(function() {
+        splash.classList.add('splash-hidden');
+        // Remover del DOM al terminar la transición
+        splash.addEventListener('transitionend', function() {
+          splash.remove();
+        }, { once: true });
+      }, 2500);
+      // También se puede cerrar tocando/clickeando la pantalla
+      splash.addEventListener('click', function() {
+        splash.classList.add('splash-hidden');
+      });
+    })();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
