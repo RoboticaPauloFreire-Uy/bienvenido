@@ -197,6 +197,7 @@
     var gradeFolder  = getGradeFolderKey(student.gradeId);
     var showScratch  = hasScratchJr(student.gradeId);
     var currentFolder = FOLDER_CONTENTS[activeFolderKey] || FOLDER_CONTENTS.dibujos;
+    var driveTargetUrl = student.driveUrl || (student.driveFolderId ? 'https://drive.google.com/drive/folders/' + student.driveFolderId : '');
 
     // Si la pestaña activa es Scratch pero el grado no tiene acceso, cambiar a MakeCode
     if (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && !showScratch) {
@@ -424,6 +425,17 @@
               treeFolder('proyectos', '🚀 Proyectos (' + gradeFolder + ')', badgeProyectos, activeFolderKey, '#2563EB') +
               treeFolder('proyecto', '📁 Proyecto', badgeProyecto, activeFolderKey, '#7C3AED') +
             '</div>' +
+            (driveTargetUrl ?
+              '<div class="gts-qr-card">' +
+                '<div class="gts-qr-header">' +
+                  '<i class="fab fa-google-drive"></i>' +
+                  '<span>Abrir en el celular</span>' +
+                '</div>' +
+                '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gts-qr-link" title="Hacé click o escaneá para abrir en Google Drive">' +
+                  '<img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&margin=3&data=' + encodeURIComponent(driveTargetUrl) + '" alt="QR Google Drive" class="gts-qr-img" loading="lazy">' +
+                '</a>' +
+                '<span class="gts-qr-caption"><i class="fas fa-qrcode"></i> Escaneá con la cámara de tu celular</span>' +
+              '</div>' : '') +
             '<div class="gts-footer-info">' +
               '<i class="fas fa-info-circle"></i> En <strong>📁 Proyecto</strong> podés guardar proyectos Scratch Jr y MakeCode.' +
             '</div>' +
