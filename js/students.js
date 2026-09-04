@@ -3296,38 +3296,39 @@ function getStudentById(studentId) {
  *  - Nombre de usuario (ej: agustin.moreira)
  *  - ID único (ej: agustin-moreira)
  *  - Nombre completo (ej: Agustín Moreira)
- *  - Primer nombre (ej: agustin) si ingresa la contraseña de su grado
+ *  - Primer nombre (ej: agustin)
  */
-function authenticateStudent(usernameOrName, password) {
-  if (!usernameOrName || !password) return null;
+function findMatchingStudents(usernameOrName, password) {
+  if (!usernameOrName || !password) return [];
   const u = usernameOrName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   const p = password.trim();
 
   // 1. Coincidencia exacta por username o id
-  let student = STUDENTS_DATA.find(s => {
+  const exact = STUDENTS_DATA.filter(s => {
     const su = (s.username || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     const si = (s.id || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     return (su === u || si === u) && s.password === p;
   });
-  if (student) return student;
+  if (exact.length > 0) return exact;
 
-  // 2. Coincidencia por nombre completo
-  student = STUDENTS_DATA.find(s => {
+  // 2. Coincidencia por nombre completo (ej: "Agustín Moreira")
+  const byFullName = STUDENTS_DATA.filter(s => {
     const sn = (s.name || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     return sn === u && s.password === p;
   });
-  if (student) return student;
+  if (byFullName.length > 0) return byFullName;
 
-  // 3. Coincidencia por primer nombre
-  const matchingFirstName = STUDENTS_DATA.filter(s => {
+  // 3. Coincidencia por primer nombre (ej: "agustin" con clave del grado)
+  const byFirstName = STUDENTS_DATA.filter(s => {
     const firstName = (s.name || "").trim().split(/\s+/)[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     return firstName === u && s.password === p;
   });
-  if (matchingFirstName.length >= 1) {
-    return matchingFirstName[0];
-  }
+  return byFirstName;
+}
 
-  return null;
+function authenticateStudent(usernameOrName, password) {
+  const matches = findMatchingStudents(usernameOrName, password);
+  return matches.length > 0 ? matches[0] : null;
 }
 
 function addStudent(studentObj) {
@@ -3423,6 +3424,7 @@ if (typeof window !== 'undefined') {
   window.getStudentsByGrade       = getStudentsByGrade;
   window.getStudentById           = getStudentById;
   window.authenticateStudent      = authenticateStudent;
+  window.findMatchingStudents     = findMatchingStudents;
   window.addStudent               = addStudent;
   window.saveStudentToFirestore   = saveStudentToFirestore;
   window.seedInitialStudents      = seedInitialStudents;

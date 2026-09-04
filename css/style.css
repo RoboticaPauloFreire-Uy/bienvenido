@@ -3477,6 +3477,95 @@ button, input, select, textarea { font-family: inherit; }
 
 .slm-btn-logout:hover { background: #FFCDD2; }
 
+/* Selector interactivo para nombres repetidos */
+.slm-picker-container {
+  padding: 8px 0;
+}
+
+.slm-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.slm-picker-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.slm-picker-card:hover {
+  background: #F0FDF4;
+  border-color: #22C55E;
+  transform: translateX(4px);
+}
+
+.spc-avatar {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.spc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.spc-name {
+  font-size: 0.98rem;
+  color: #1E293B;
+  font-weight: 800;
+}
+
+.spc-grade {
+  font-size: 0.78rem;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.spc-arrow {
+  color: #94A3B8;
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+.slm-picker-card:hover .spc-arrow {
+  color: #22C55E;
+  transform: translateX(3px);
+}
+
+.slm-picker-back-btn {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.slm-picker-back-btn:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+}
+
 /* ─────────────────────────────────────────────────────────────
    GOOGLE DRIVE WIDGET & EXPLORADOR EN ÁRBOL
 ───────────────────────────────────────────────────────────── */

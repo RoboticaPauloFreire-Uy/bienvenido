@@ -178,25 +178,66 @@
           '</button>' +
         '</form>';
 
-      var form  = document.getElementById('classic-login-form');
-      var error = document.getElementById('clf-error-alert');
-
       form.onsubmit = function(e) {
         e.preventDefault();
         var u = document.getElementById('clf-user').value;
         var p = document.getElementById('clf-pass').value;
-        var s = window.authenticateStudent ? window.authenticateStudent(u, p) : null;
+        var matches = window.findMatchingStudents ? window.findMatchingStudents(u, p) : [];
+        if (matches.length === 0 && window.authenticateStudent) {
+          var single = window.authenticateStudent(u, p);
+          if (single) matches = [single];
+        }
 
-        if (s) {
+        if (matches.length === 1) {
           error.classList.add('hidden');
-          setActiveStudent(s.id);
+          setActiveStudent(matches[0].id);
           closeLoginModal();
           if (window.sounds) window.sounds.playSuccess();
+        } else if (matches.length > 1) {
+          error.classList.add('hidden');
+          showStudentPicker(matches);
         } else {
           error.classList.remove('hidden');
           if (window.sounds) window.sounds.playError();
         }
       };
+
+      function showStudentPicker(studentList) {
+        if (title) title.innerHTML = '<i class="fas fa-users"></i> ¿Cuál de ellos sos vos?';
+        body.innerHTML =
+          '<div class="slm-picker-container">' +
+            '<p class="clf-intro">Encontramos varios alumnos con ese nombre en tu grado. Hacé click en tu nombre:</p>' +
+            '<div class="slm-picker-list">' +
+              studentList.map(function(st) {
+                return '<button type="button" class="slm-picker-card" data-student-id="' + st.id + '">' +
+                  '<span class="spc-avatar">' + (st.avatar || '👦') + '</span>' +
+                  '<div class="spc-info">' +
+                    '<strong class="spc-name">' + st.name + '</strong>' +
+                    '<span class="spc-grade">' + st.gradeName + '</span>' +
+                  '</div>' +
+                  '<i class="fas fa-arrow-right spc-arrow"></i>' +
+                '</button>';
+              }).join('') +
+            '</div>' +
+            '<button type="button" class="slm-picker-back-btn" id="slm-picker-back">' +
+              '<i class="fas fa-arrow-left"></i> Volver a escribir' +
+            '</button>' +
+          '</div>';
+
+        body.querySelectorAll('.slm-picker-card').forEach(function(cardBtn) {
+          cardBtn.onclick = function() {
+            var stId = cardBtn.getAttribute('data-student-id');
+            setActiveStudent(stId);
+            closeLoginModal();
+            if (window.sounds) window.sounds.playSuccess();
+          };
+        });
+
+        var backBtn = document.getElementById('slm-picker-back');
+        if (backBtn) {
+          backBtn.onclick = renderModalContent;
+        }
+      }
     }
   }
 
