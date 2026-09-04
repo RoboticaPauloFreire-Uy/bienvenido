@@ -714,4 +714,30 @@ const MAKECODE_LIBRARY = {
 
 if (typeof window !== 'undefined') {
   window.MAKECODE_LIBRARY = MAKECODE_LIBRARY;
+
+  function initMakecodeFirestoreSync() {
+    if (!window.db) {
+      setTimeout(initMakecodeFirestoreSync, 400);
+      return;
+    }
+    try {
+      window.db.collection('makecode_library').onSnapshot((snapshot) => {
+        if (snapshot.empty) return;
+        snapshot.forEach((doc) => {
+          const gradeId = doc.id;
+          const data = doc.data();
+          if (Array.isArray(data.items)) {
+            MAKECODE_LIBRARY[gradeId] = data.items;
+          }
+        });
+        console.log("☁️ MakeCode sincronizado desde Firestore.");
+      }, () => {});
+    } catch(e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMakecodeFirestoreSync);
+  } else {
+    initMakecodeFirestoreSync();
+  }
 }
