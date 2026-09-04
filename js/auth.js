@@ -114,6 +114,10 @@
     }
     renderModalContent();
     modal.classList.add('active');
+    setTimeout(function() {
+      var inp = document.getElementById('clf-user');
+      if (inp) inp.focus();
+    }, 120);
   }
 
   function closeLoginModal() {
@@ -163,7 +167,7 @@
           '</div>' +
           '<div class="clf-field">' +
             '<label for="clf-user"><i class="fas fa-user"></i> Usuario:</label>' +
-            '<input type="text" id="clf-user" placeholder="Ej: agustin" required autocomplete="username" autofocus>' +
+            '<input type="text" id="clf-user" placeholder="Ej: agustin" required autocomplete="username">' +
           '</div>' +
           '<div class="clf-field">' +
             '<label for="clf-pass"><i class="fas fa-lock"></i> Contraseña:</label>' +
@@ -177,6 +181,9 @@
             '<i class="fas fa-sign-in-alt"></i>' +
           '</button>' +
         '</form>';
+
+      var form  = document.getElementById('classic-login-form');
+      var error = document.getElementById('clf-error-alert');
 
       form.onsubmit = function(e) {
         e.preventDefault();
