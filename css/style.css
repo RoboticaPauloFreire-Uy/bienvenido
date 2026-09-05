@@ -214,11 +214,24 @@ button, input, select, textarea { font-family: inherit; }
 
 .splash-sub {
   font-family: var(--font);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.85);
-  max-width: 320px;
+  color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+  max-width: 95vw;
   line-height: 1.4;
+}
+
+@media (max-width: 560px) {
+  .splash-sub {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .splash-sub {
+    font-size: 0.76rem;
+  }
 }
 
 .splash-dots {
