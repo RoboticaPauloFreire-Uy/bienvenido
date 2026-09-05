@@ -375,7 +375,9 @@
       if (isLoadingActividadesFiles) {
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Buscando actividades...';
       } else {
-        countText = totalActividades + ' actividad(es) disponible(s)';
+        countText = FOLDER_CONTENTS.actividades.items.length > 0
+          ? (FOLDER_CONTENTS.actividades.items.length + ' reto(s) de ' + student.gradeName + ' + Inventario')
+          : '1 actividad (Inventario de material)';
       }
     }
 
@@ -512,13 +514,10 @@
       var generalFiles = FOLDER_CONTENTS.actividades.generalItems || [];
       var activitiesDriveUrl = 'https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing';
 
-      // 1. Actividad de su grado (Relacionar)
-      var gradeSectionHtml = '';
-      if (isLoadingActividadesFiles && gradeFiles.length === 0) {
-        gradeSectionHtml = loadingHtml('Buscando actividades de ' + student.gradeName + '...', 'Consultando Google Drive', gradeInfo.themeColor);
-      } else if (gradeFiles.length > 0) {
-        // Mostrar archivos subidos en la carpeta del grado
-        gradeSectionHtml = '<div class="gdb-actividades-grid">' +
+      // 1. Actividad de su grado (Relacionar): Solo aparece si HAY archivos subidos para su grado
+      var gradeBlockHtml = '';
+      if (gradeFiles.length > 0) {
+        var gradeSectionHtml = '<div class="gdb-actividades-grid">' +
           gradeFiles.map(function(item){
             var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
             var dlUrl = item.downloadUrl || ('https://drive.google.com/uc?export=download&id=' + item.id);
@@ -543,23 +542,13 @@
             '</div>';
           }).join('') +
         '</div>';
-      } else {
-        // Ficha pedagógica de su grado con acceso a la carpeta de Drive
-        gradeSectionHtml =
-          '<div class="actividad-custom-card" style="border-left: 5px solid ' + gradeInfo.themeColor + ';">' +
-            '<div class="acc-header">' +
-              '<span class="acc-grade-tag" style="background:' + gradeInfo.themeColor + ';"><i class="fas fa-star"></i> Reto para tu Grado (' + student.gradeName + ')</span>' +
-              '<span class="acc-status"><i class="fas fa-puzzle-piece"></i> Reto de Relacionar</span>' +
+
+        gradeBlockHtml =
+          '<div class="gac-section-block">' +
+            '<div class="gac-block-header">' +
+              '<h4><span class="gac-icon">' + gradeInfo.icon + '</span> Reto de tu Grado (' + student.gradeName + ')</h4>' +
             '</div>' +
-            '<h3 class="acc-title">' + gradeInfo.title + '</h3>' +
-            '<p class="acc-desc">' + gradeInfo.desc + '</p>' +
-            '<div class="acc-actions">' +
-              '<a href="' + activitiesDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn-acc-primary" style="background:' + gradeInfo.themeColor + ';">' +
-                '<i class="fab fa-google-drive"></i> Abrir carpeta en Drive' +
-                '<i class="fas fa-external-link-alt" style="font-size:0.75rem;margin-left:6px;"></i>' +
-              '</a>' +
-              '<span class="acc-hint"><i class="fas fa-info-circle"></i> Las fichas de este reto se encuentran organizadas en la carpeta de tu grado.</span>' +
-            '</div>' +
+            gradeSectionHtml +
           '</div>';
       }
 
@@ -579,9 +568,9 @@
             '<span class="agtc-badge"><i class="fas fa-home"></i> Actividad General para Casa — Para Todas las Edades</span>' +
           '</div>' +
           '<div class="agtc-body">' +
-            '<div class="agtc-thumb-wrap" data-img-url="' + generalImgUrl + '" data-img-title="' + generalItem.title + '">' +
+            '<div class="agtc-thumb-wrap" data-img-url="' + generalImgUrl + '" data-img-title="' + generalItem.title + '" style="cursor:pointer;" title="Hacé click para ver la ficha en modal">' +
               '<img src="' + generalImgUrl + '" alt="Inventario del Taller" class="agtc-thumb" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
-              '<div class="agtc-zoom-hint"><i class="fas fa-search-plus"></i> Ver en pantalla completa</div>' +
+              '<div class="agtc-zoom-hint"><i class="fas fa-search-plus"></i> Ver en modal</div>' +
             '</div>' +
             '<div class="agtc-info">' +
               '<h4 class="agtc-title">' + generalItem.title + '</h4>' +
@@ -597,12 +586,7 @@
 
       mainDisplayHtml =
         '<div class="gdb-actividades-container">' +
-          '<div class="gac-section-block">' +
-            '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">' + gradeInfo.icon + '</span> Reto de tu Grado (' + student.gradeName + ')</h4>' +
-            '</div>' +
-            gradeSectionHtml +
-          '</div>' +
+          gradeBlockHtml +
           '<div class="gac-section-block">' +
             '<div class="gac-block-header">' +
               '<h4><span class="gac-icon">📦</span> Inventario de Material del Taller (General para todas las edades)</h4>' +
@@ -706,7 +690,7 @@
                 '<span>Contenido de: <strong>' +
                   (activeFolderKey === 'proyectos' ? 'Proyectos PDF (' + gradeFolder + ')' :
                    activeFolderKey === 'proyecto'  ? 'Proyecto' :
-                   activeFolderKey === 'actividades' ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : currentFolder.name) +
+                   activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : 'Actividad de casa (Inventario de material)') : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
