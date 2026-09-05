@@ -38,22 +38,25 @@
 
   // Estado
   const FOLDER_CONTENTS = {
-    dibujos:   { name: '🎨 Dibujos',           icon: 'fa-paint-brush',    items: [] },
-    proyectos: { name: '🚀 Proyectos del Grado', icon: 'fa-project-diagram', items: [] },
-    proyecto:  { name: '📁 Proyecto',            icon: 'fa-folder-open',    items: [] }
+    dibujos:     { name: '🎨 Dibujos',             icon: 'fa-paint-brush',    items: [] },
+    proyectos:   { name: '🚀 Proyectos del Grado', icon: 'fa-project-diagram', items: [] },
+    proyecto:    { name: '📁 Proyecto',            icon: 'fa-folder-open',    items: [] },
+    actividades: { name: '🧩 Actividades',         icon: 'fa-puzzle-piece',   items: [], generalItems: [] }
   };
 
-  let activeFolderKey        = 'dibujos';
-  let proyectoSubTab         = 'scratch';   // 'scratch' | 'makecode'
-  let hasFetchedDriveFiles   = false;
-  let hasFetchedProjectFiles = false;
-  let hasFetchedProyectoFiles= false;
-  let isLoadingDriveFiles    = false;
-  let isLoadingProjectFiles  = false;
-  let isLoadingProyectoFiles = false;
-  let isUploadingFile        = false;
-  let currentCarouselIndex   = 0;
-  let carouselAutoPlayTimer  = null;
+  let activeFolderKey            = 'dibujos';
+  let proyectoSubTab             = 'scratch';   // 'scratch' | 'makecode'
+  let hasFetchedDriveFiles       = false;
+  let hasFetchedProjectFiles     = false;
+  let hasFetchedProyectoFiles    = false;
+  let hasFetchedActividadesFiles = false;
+  let isLoadingDriveFiles        = false;
+  let isLoadingProjectFiles      = false;
+  let isLoadingProyectoFiles     = false;
+  let isLoadingActividadesFiles  = false;
+  let isUploadingFile            = false;
+  let currentCarouselIndex       = 0;
+  let carouselAutoPlayTimer      = null;
 
   function formatFileSize(bytes) {
     if (!bytes || bytes <= 0) return '—';
@@ -183,6 +186,142 @@
   }
 
   // ──────────────────────────────────────────────────
+  // GUÍAS PEDAGÓGICAS DE ACTIVIDAD POR GRADO (RELACIONAR)
+  // ──────────────────────────────────────────────────
+  var GRADE_ACTIVITIES_INFO = {
+    sala5: {
+      tag: '🌱 Sala de 5 años',
+      title: 'Actividad de Relacionar: Formas, Bloques & Robótica',
+      desc: 'Ficha para unir con flechas y asociar personajes de Scratch Jr, iconos de movimiento y piezas de robótica inicial. Estimula la motricidad fina y la orientación espacial en familia.',
+      icon: '🌱',
+      themeColor: '#E65100'
+    },
+    grado1: {
+      tag: '📖 1° Grado',
+      title: 'Actividad de Relacionar: Secuencias & Bloques Visuales',
+      desc: 'Reto didáctico para relacionar instrucciones paso a paso con los movimientos de los personajes. Ayuda a afianzar el pensamiento secuencial y la lateralidad.',
+      icon: '📖',
+      themeColor: '#1565C0'
+    },
+    grado2: {
+      tag: '✏️ 2° Grado',
+      title: 'Actividad de Relacionar: Personajes, Escenarios & Historias',
+      desc: 'Asociá las acciones de los personajes con los eventos de código y bucles narrativos. Conecta la animación digital con la comprensión lectora.',
+      icon: '✏️',
+      themeColor: '#6A1B9A'
+    },
+    grado3: {
+      tag: '🔢 3° Grado',
+      title: 'Actividad de Relacionar: Scratch 3.0, Operadores & Lógica',
+      desc: 'Relacioná bloques verdes de operadores matemáticos, sensores de colores y condiciones lógicas estructuradas.',
+      icon: '🔢',
+      themeColor: '#00838F'
+    },
+    grado4: {
+      tag: '🎮 4° Grado',
+      title: 'Actividad de Relacionar: MakeCode Arcade & Pixel Art',
+      desc: 'Asociá sprites, coordenadas de pantalla X/Y, controles del joystick y mecánicas de videojuegos retro.',
+      icon: '🎮',
+      themeColor: '#E64A19'
+    },
+    grado5: {
+      tag: '⚙️ 5° Grado',
+      title: 'Actividad de Relacionar: Circuitos, Pines & Sensores micro:bit',
+      desc: 'Conectá sensores analógicos, pines 0-1-2, LEDs y servomotores con su lectura lógica en código y computación física.',
+      icon: '⚙️',
+      themeColor: '#2E7D32'
+    },
+    grado6: {
+      tag: '🚀 6° Grado',
+      title: 'Actividad de Relacionar: Javascript, Variables & Robótica Conectada',
+      desc: 'Asociá estructuras condicionales, funciones y comunicación inalámbrica por radio. Prepara la transición al código textual.',
+      icon: '🚀',
+      themeColor: '#C2185B'
+    }
+  };
+
+  // ──────────────────────────────────────────────────
+  // FETCH: Actividades Familiares (Tu Grado + General)
+  // Carpeta Drive raíz: 1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK
+  // Subcarpetas: grado (5años, 1ero, etc.) y general
+  // ──────────────────────────────────────────────────
+  function fetchActividadesDriveFiles(student, containerId) {
+    var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
+    var fid  = window.ACTIVITIES_DRIVE_FOLDER_ID || '1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK';
+    if (!hook || isLoadingActividadesFiles) return;
+    isLoadingActividadesFiles = true;
+    renderGDriveDashboard(containerId);
+
+    var grade = getGradeFolderKey(student.gradeId);
+
+    var fetchGrade = fetch(hook + '?action=list&folderId=' + fid + '&subfolder=' + encodeURIComponent(grade))
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { files: [] }; });
+
+    var fetchGeneral = fetch(hook + '?action=list&folderId=' + fid + '&subfolder=general')
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { files: [] }; });
+
+    Promise.all([fetchGrade, fetchGeneral])
+      .then(function(results){
+        isLoadingActividadesFiles = false;
+        hasFetchedActividadesFiles = true;
+
+        var gradeData = results[0];
+        var generalData = results[1];
+
+        if (gradeData && Array.isArray(gradeData.files)) {
+          FOLDER_CONTENTS.actividades.items = gradeData.files.map(function(f){
+            return {
+              id: f.id,
+              name: f.name,
+              title: f.title || f.name.replace(/\.[^.]+$/, ''),
+              type: f.type || 'file',
+              size: f.size || '—',
+              date: f.date || '—',
+              url: f.url || (f.id ? 'https://drive.google.com/file/d/' + f.id + '/view' : ''),
+              downloadUrl: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : '')
+            };
+          });
+        }
+
+        if (generalData && Array.isArray(generalData.files) && generalData.files.length > 0) {
+          FOLDER_CONTENTS.actividades.generalItems = generalData.files.map(function(f){
+            return {
+              id: f.id,
+              name: f.name,
+              title: f.title || f.name.replace(/\.[^.]+$/, ''),
+              type: f.type || 'image',
+              size: f.size || '—',
+              date: f.date || '—',
+              url: f.url || (f.id ? 'https://lh3.googleusercontent.com/d/' + f.id : ''),
+              downloadUrl: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : '')
+            };
+          });
+        } else {
+          // Fallback garantizado para Inventario del taller
+          FOLDER_CONTENTS.actividades.generalItems = [{
+            id: '10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo',
+            name: 'Inventario del taller',
+            title: 'Inventario del Taller Maker',
+            type: 'image',
+            size: '1.6 MB',
+            date: 'Reciente',
+            url: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo',
+            downloadUrl: 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo'
+          }];
+        }
+
+        renderGDriveDashboard(containerId);
+      })
+      .catch(function(){
+        isLoadingActividadesFiles = false;
+        hasFetchedActividadesFiles = true;
+        renderGDriveDashboard(containerId);
+      });
+  }
+
+  // ──────────────────────────────────────────────────
   // RENDER PRINCIPAL
   // ──────────────────────────────────────────────────
   function renderGDriveDashboard(containerId) {
@@ -195,6 +334,7 @@
     if (!hasFetchedDriveFiles && !isLoadingDriveFiles) fetchRealDriveFiles(student, containerId);
     if (!hasFetchedProjectFiles && !isLoadingProjectFiles) fetchProjectsDriveFiles(student, containerId);
     if (!hasFetchedProyectoFiles && !isLoadingProyectoFiles) fetchProyectoFiles(student, containerId);
+    if (!hasFetchedActividadesFiles && !isLoadingActividadesFiles) fetchActividadesDriveFiles(student, containerId);
 
     var gradeFolder  = getGradeFolderKey(student.gradeId);
     var showScratch  = hasScratchJr(student.gradeId);
@@ -211,9 +351,11 @@
       return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode';
     });
 
-    var badgeDibujos   = isLoadingDriveFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.dibujos.items.length;
-    var badgeProyectos = isLoadingProjectFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.proyectos.items.length;
-    var badgeProyecto  = isLoadingProyectoFiles ? '<i class="fas fa-spinner fa-spin"></i>' : validProyectoFiles.length;
+    var badgeDibujos     = isLoadingDriveFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.dibujos.items.length;
+    var badgeProyectos   = isLoadingProjectFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.proyectos.items.length;
+    var badgeProyecto    = isLoadingProyectoFiles ? '<i class="fas fa-spinner fa-spin"></i>' : validProyectoFiles.length;
+    var totalActividades = FOLDER_CONTENTS.actividades.items.length + (FOLDER_CONTENTS.actividades.generalItems.length > 0 ? FOLDER_CONTENTS.actividades.generalItems.length : 1);
+    var badgeActividades = isLoadingActividadesFiles ? '<i class="fas fa-spinner fa-spin"></i>' : totalActividades;
 
     // ── Filtros por subtab ──
     var scratchItems   = validProyectoFiles.filter(function(f){ return isScratchFile(f.name) || f.type==='scratch'; }).slice(0, 10);
@@ -228,6 +370,12 @@
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Cargando...';
       } else {
         countText = (proyectoSubTab === 'scratch' ? scratchItems.length + ' proyecto(s) Scratch Jr' : makecodeItems.length + ' proyecto(s) MakeCode');
+      }
+    } else if (activeFolderKey === 'actividades') {
+      if (isLoadingActividadesFiles) {
+        countText = '<i class="fas fa-sync-alt fa-spin"></i> Buscando actividades...';
+      } else {
+        countText = totalActividades + ' actividad(es) disponible(s)';
       }
     }
 
@@ -357,6 +505,113 @@
 
       mainDisplayHtml = tabsHtml + tabContent;
 
+    // ═══ CARPETA: ACTIVIDADES (Tu Grado + General) ═══
+    } else if (activeFolderKey === 'actividades') {
+      var gradeInfo = GRADE_ACTIVITIES_INFO[student.gradeId] || GRADE_ACTIVITIES_INFO['sala5'];
+      var gradeFiles = FOLDER_CONTENTS.actividades.items || [];
+      var generalFiles = FOLDER_CONTENTS.actividades.generalItems || [];
+      var activitiesDriveUrl = 'https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing';
+
+      // 1. Actividad de su grado (Relacionar)
+      var gradeSectionHtml = '';
+      if (isLoadingActividadesFiles && gradeFiles.length === 0) {
+        gradeSectionHtml = loadingHtml('Buscando actividades de ' + student.gradeName + '...', 'Consultando Google Drive', gradeInfo.themeColor);
+      } else if (gradeFiles.length > 0) {
+        // Mostrar archivos subidos en la carpeta del grado
+        gradeSectionHtml = '<div class="gdb-actividades-grid">' +
+          gradeFiles.map(function(item){
+            var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
+            var dlUrl = item.downloadUrl || ('https://drive.google.com/uc?export=download&id=' + item.id);
+            var viewUrl = item.id ? ('https://drive.google.com/file/d/' + item.id + '/view') : dlUrl;
+            return '<div class="actividad-item-card">' +
+              '<div class="aic-header">' +
+                '<span class="aic-badge" style="background:' + gradeInfo.themeColor + ';color:#fff;"><i class="fas fa-star"></i> ' + student.gradeName + '</span>' +
+                '<span class="aic-type">' + (isPdf ? '📄 Ficha PDF' : '🖼️ Imagen') + '</span>' +
+              '</div>' +
+              '<div class="aic-body">' +
+                '<h4 class="aic-title">' + item.title + '</h4>' +
+                '<div class="aic-meta"><span><i class="far fa-clock"></i> ' + item.date + '</span><span><i class="fas fa-hdd"></i> ' + item.size + '</span></div>' +
+              '</div>' +
+              '<div class="aic-actions">' +
+                '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="aic-btn-view" style="background:' + gradeInfo.themeColor + ';">' +
+                  '<i class="fas fa-eye"></i> Ver actividad' +
+                '</a>' +
+                '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="aic-btn-dl">' +
+                  '<i class="fas fa-download"></i> Descargar' +
+                '</a>' +
+              '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>';
+      } else {
+        // Ficha pedagógica de su grado con acceso a la carpeta de Drive
+        gradeSectionHtml =
+          '<div class="actividad-custom-card" style="border-left: 5px solid ' + gradeInfo.themeColor + ';">' +
+            '<div class="acc-header">' +
+              '<span class="acc-grade-tag" style="background:' + gradeInfo.themeColor + ';"><i class="fas fa-star"></i> Reto para tu Grado (' + student.gradeName + ')</span>' +
+              '<span class="acc-status"><i class="fas fa-puzzle-piece"></i> Reto de Relacionar</span>' +
+            '</div>' +
+            '<h3 class="acc-title">' + gradeInfo.title + '</h3>' +
+            '<p class="acc-desc">' + gradeInfo.desc + '</p>' +
+            '<div class="acc-actions">' +
+              '<a href="' + activitiesDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn-acc-primary" style="background:' + gradeInfo.themeColor + ';">' +
+                '<i class="fab fa-google-drive"></i> Abrir carpeta en Drive' +
+                '<i class="fas fa-external-link-alt" style="font-size:0.75rem;margin-left:6px;"></i>' +
+              '</a>' +
+              '<span class="acc-hint"><i class="fas fa-info-circle"></i> Las fichas de este reto se encuentran organizadas en la carpeta de tu grado.</span>' +
+            '</div>' +
+          '</div>';
+      }
+
+      // 2. Actividad General (Inventario del taller)
+      var generalItem = (generalFiles && generalFiles[0]) || {
+        id: '10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo',
+        title: 'Inventario del Taller Maker',
+        url: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo'
+      };
+      var generalViewUrl = 'https://drive.google.com/file/d/' + generalItem.id + '/view?usp=sharing';
+      var generalDlUrl = 'https://drive.google.com/uc?export=download&id=' + generalItem.id;
+      var generalImgUrl = 'https://lh3.googleusercontent.com/d/' + generalItem.id;
+
+      var generalSectionHtml =
+        '<div class="actividad-general-tree-card">' +
+          '<div class="agtc-header">' +
+            '<span class="agtc-badge"><i class="fas fa-globe"></i> Actividad General — Para Todas las Familias y Grados</span>' +
+          '</div>' +
+          '<div class="agtc-body">' +
+            '<div class="agtc-thumb-wrap" data-img-url="' + generalImgUrl + '" data-img-title="' + generalItem.title + '">' +
+              '<img src="' + generalImgUrl + '" alt="Inventario del Taller" class="agtc-thumb" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
+              '<div class="agtc-zoom-hint"><i class="fas fa-search-plus"></i> Ver en pantalla completa</div>' +
+            '</div>' +
+            '<div class="agtc-info">' +
+              '<h4 class="agtc-title">' + generalItem.title + '</h4>' +
+              '<p class="agtc-desc">Reconocer, clasificar y contar las piezas, motores, sensores y herramientas del taller de robótica. ¡Una experiencia colaborativa para compartir en el hogar!</p>' +
+              '<div class="agtc-actions">' +
+                '<button type="button" class="agtc-btn-view" data-img-url="' + generalImgUrl + '" data-img-title="' + generalItem.title + '"><i class="fas fa-eye"></i> Ver Ficha</button>' +
+                '<a href="' + generalDlUrl + '" target="_blank" rel="noopener noreferrer" class="agtc-btn-dl"><i class="fas fa-download"></i> Descargar Imagen</a>' +
+                '<a href="' + activitiesDriveUrl + '" target="_blank" rel="noopener noreferrer" class="agtc-btn-drive"><i class="fab fa-google-drive"></i> Abrir en Drive</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      mainDisplayHtml =
+        '<div class="gdb-actividades-container">' +
+          '<div class="gac-section-block">' +
+            '<div class="gac-block-header">' +
+              '<h4><span class="gac-icon">' + gradeInfo.icon + '</span> Reto de tu Grado (' + student.gradeName + ')</h4>' +
+            '</div>' +
+            gradeSectionHtml +
+          '</div>' +
+          '<div class="gac-section-block">' +
+            '<div class="gac-block-header">' +
+              '<h4><span class="gac-icon">📦</span> Actividad General (Para todos los grados)</h4>' +
+            '</div>' +
+            generalSectionHtml +
+          '</div>' +
+        '</div>';
+
+      uploadZoneHtml = '';
 
     // ═══ CARPETA: DIBUJOS (Carrusel) ═══
     } else {
@@ -425,6 +680,7 @@
               treeFolder('dibujos', '🎨 Dibujos', badgeDibujos, activeFolderKey, '#16A34A') +
               treeFolder('proyectos', '🚀 Proyectos (' + gradeFolder + ')', badgeProyectos, activeFolderKey, '#2563EB') +
               treeFolder('proyecto', '📁 Proyecto', badgeProyecto, activeFolderKey, '#7C3AED') +
+              treeFolder('actividades', '🧩 Actividades', badgeActividades, activeFolderKey, '#EA580C') +
             '</div>' +
             (driveTargetUrl ?
               '<div class="gts-qr-card">' +
@@ -449,7 +705,8 @@
                 '<i class="fas ' + currentFolder.icon + '"></i>' +
                 '<span>Contenido de: <strong>' +
                   (activeFolderKey === 'proyectos' ? 'Proyectos PDF (' + gradeFolder + ')' :
-                   activeFolderKey === 'proyecto'  ? 'Proyecto' : currentFolder.name) +
+                   activeFolderKey === 'proyecto'  ? 'Proyecto' :
+                   activeFolderKey === 'actividades' ? 'Actividades (' + student.gradeName + ' + General)' : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
@@ -503,6 +760,18 @@
     container.querySelectorAll('.ppc-btn-view').forEach(function(btn){
       btn.onclick = function(e){ e.stopPropagation(); openPdfModal(btn.dataset.pdfUrl, btn.dataset.pdfTitle); };
     });
+
+    // ── Actividades (zoom imagen y lightbox) ──
+    if (activeFolderKey === 'actividades') {
+      container.querySelectorAll('.agtc-thumb-wrap, .agtc-btn-view').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          var imgUrl = btn.dataset.imgUrl || 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo';
+          var title  = btn.dataset.imgTitle || 'Inventario del Taller Maker';
+          openImageModal(imgUrl, title);
+        };
+      });
+    }
   }
 
   // ──────────────────────────────────────────────────
@@ -848,12 +1117,14 @@
 
   // Reset al cambiar de alumno
   window.addEventListener('student_session_changed', function(){
-    hasFetchedDriveFiles=hasFetchedProjectFiles=hasFetchedProyectoFiles=false;
-    isLoadingDriveFiles=isLoadingProjectFiles=isLoadingProyectoFiles=false;
+    hasFetchedDriveFiles=hasFetchedProjectFiles=hasFetchedProyectoFiles=hasFetchedActividadesFiles=false;
+    isLoadingDriveFiles=isLoadingProjectFiles=isLoadingProyectoFiles=isLoadingActividadesFiles=false;
     activeFolderKey='dibujos'; proyectoSubTab='scratch'; currentCarouselIndex=0;
     FOLDER_CONTENTS.dibujos.items=[];
     FOLDER_CONTENTS.proyectos.items=[];
     FOLDER_CONTENTS.proyecto.items=[];
+    FOLDER_CONTENTS.actividades.items=[];
+    FOLDER_CONTENTS.actividades.generalItems=[];
     renderGDriveDashboard('student-drive-dashboard-container');
     renderGDriveDashboard('gdrive-explorer-container');
   });
