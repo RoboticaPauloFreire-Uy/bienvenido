@@ -962,6 +962,10 @@ button, input, select, textarea { font-family: inherit; }
   padding: 8px 18px;
   border-radius: var(--radius-full);
   text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1.4;
   transition: all 0.2s ease;
 }
 
@@ -6217,6 +6221,86 @@ body.student-logged-in #student-drive-dashboard-container {
     max-width: 280px;
     margin: 0 auto;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MODAL LIGHTBOX VISOR DE FICHAS E IMÁGENES
+───────────────────────────────────────────────────────────── */
+#image-lightbox-modal .ilm-content {
+  max-width: 940px;
+  width: 95vw;
+  max-height: 94vh;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: zoomInLight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes zoomInLight {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#image-lightbox-modal .ilm-header {
+  background: linear-gradient(135deg, #15803D 0%, #166534 100%);
+  color: #ffffff;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+#image-lightbox-modal .ilm-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+#image-lightbox-modal .ilm-btn-action {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+#image-lightbox-modal .ilm-btn-action:hover {
+  background: #ffffff;
+  color: #15803D;
+  transform: translateY(-1px);
+}
+
+#image-lightbox-modal .ilm-body {
+  padding: 16px;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  flex: 1;
+  min-height: 200px;
+}
+
+#image-lightbox-modal #ilm-img {
+  max-width: 100%;
+  max-height: calc(94vh - 100px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 

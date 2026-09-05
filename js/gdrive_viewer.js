@@ -935,21 +935,66 @@
   }
 
   // ──────────────────────────────────────────────────
-  // LIGHTBOX IMAGEN
+  // LIGHTBOX IMAGEN / FICHA DIDÁCTICA
   // ──────────────────────────────────────────────────
-  function openImageModal(imgUrl, title) {
+  function openImageModal(imgUrl, title, downloadUrl) {
     if (window.sounds) window.sounds.playClick();
     var modal = document.getElementById('image-lightbox-modal');
     if (!modal) {
-      modal = document.createElement('div'); modal.id='image-lightbox-modal'; modal.className='student-login-modal';
-      modal.innerHTML = '<div class="slm-content" style="max-width:720px;"><div class="slm-header"><div class="slm-title" id="ilm-title">Visor de Dibujo</div><button class="slm-close" onclick="document.getElementById(\'image-lightbox-modal\').classList.remove(\'active\')">&times;</button></div><div class="slm-body" style="text-align:center;padding:16px;"><img id="ilm-img" src="" alt="Dibujo" style="max-width:100%;max-height:70vh;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);" referrerpolicy="no-referrer"></div></div>';
+      modal = document.createElement('div');
+      modal.id = 'image-lightbox-modal';
+      modal.className = 'student-login-modal';
+      modal.innerHTML =
+        '<div class="slm-content ilm-content">' +
+          '<div class="slm-header ilm-header">' +
+            '<div class="slm-title" id="ilm-title"><i class="fas fa-clipboard-list"></i> Visor de Ficha</div>' +
+            '<div class="ilm-header-actions">' +
+              '<a id="ilm-dl-btn" href="#" target="_blank" rel="noopener noreferrer" class="ilm-btn-action" title="Descargar"><i class="fas fa-download"></i> <span>Descargar</span></a>' +
+              '<button type="button" class="slm-close" id="ilm-close-btn" aria-label="Cerrar">&times;</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="slm-body ilm-body">' +
+            '<img id="ilm-img" src="" alt="Ficha" referrerpolicy="no-referrer">' +
+          '</div>' +
+        '</div>';
       document.body.appendChild(modal);
-      modal.onclick = function(e){ if (e.target===modal) modal.classList.remove('active'); };
+
+      modal.querySelector('#ilm-close-btn').onclick = function() {
+        modal.classList.remove('active');
+      };
+      modal.onclick = function(e) {
+        if (e.target === modal) modal.classList.remove('active');
+      };
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          modal.classList.remove('active');
+        }
+      });
     }
-    document.getElementById('ilm-title').textContent = title;
-    document.getElementById('ilm-img').src = imgUrl;
+
+    var titleEl = document.getElementById('ilm-title');
+    if (titleEl) {
+      titleEl.innerHTML = '<i class="fas fa-clipboard-list"></i> ' + (title || 'Visor de Ficha');
+    }
+
+    var imgEl = document.getElementById('ilm-img');
+    if (imgEl) {
+      imgEl.src = imgUrl;
+      imgEl.alt = title || 'Ficha';
+    }
+
+    var dlBtn = document.getElementById('ilm-dl-btn');
+    if (dlBtn) {
+      var dl = downloadUrl || (imgUrl.includes('10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo') ? 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo' : imgUrl);
+      dlBtn.href = dl;
+      dlBtn.style.display = 'inline-flex';
+    }
+
     modal.classList.add('active');
   }
+
+  // Exponer a window para uso universal en index.html y aula.html
+  window.openImageModal = openImageModal;
 
   // ──────────────────────────────────────────────────
   // DRAG & DROP / SUBIDA
