@@ -23,14 +23,16 @@
   }
 
   // Extensiones por tipo
+  var DIBUJO_EXTS   = ['.png', '.jpg', '.jpeg', '.bmp'];
   var SCRATCH_EXTS  = ['.sb3', '.sjr', '.pjson', '.sb'];
   var MAKECODE_EXTS = ['.hex', '.uf2', '.js', '.json', '.mkcd'];
 
   function extOf(name) {
-    var m = name.match(/(\.[^.]+)$/);
+    var m = (name || '').match(/(\.[^.]+)$/);
     return m ? m[1].toLowerCase() : '';
   }
 
+  function isDibujoFile(name) { return DIBUJO_EXTS.indexOf(extOf(name)) !== -1; }
   function isScratchFile(name) { return SCRATCH_EXTS.indexOf(extOf(name)) !== -1; }
   function isMakecodeFile(name) { return MAKECODE_EXTS.indexOf(extOf(name)) !== -1; }
 
@@ -375,18 +377,23 @@
     // Solo aparece la zona activa al arrastrar un archivo o con el botón
     // ──────────────────────────────────────────────────
     var canUpload = (activeFolderKey === 'dibujos') || (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch);
-    var uploadAccept = activeFolderKey === 'dibujos' ? 'image/*' : '.sb3,.sjr,.pjson,.sb';
+    var uploadAccept = activeFolderKey === 'dibujos' ? '.bmp,.png,.jpg,.jpeg,image/bmp,image/png,image/jpeg' : '.sb3,.sjr,.pjson,.sb';
     var uploadBtnText = activeFolderKey === 'dibujos' ? '<i class="fas fa-plus-circle"></i> Subir dibujo' : '<i class="fas fa-plus-circle"></i> Subir Scratch Jr';
     var uploadBtnClass = activeFolderKey === 'dibujos' ? 'gca-btn-upload' : 'gca-btn-upload scratch';
 
     if (canUpload) {
+      var dragTitle = activeFolderKey === 'dibujos' ? '¡Soltá tu dibujo aquí para guardarlo!' : '¡Soltá tu proyecto Scratch Jr aquí!';
+      var dragHint = activeFolderKey === 'dibujos'
+        ? 'Formatos de dibujo permitidos: <strong>.png, .jpg, .bmp</strong>'
+        : 'Formatos permitidos: <strong>.sb3, .sjr, .pjson, .sb</strong>';
+
       uploadZoneHtml =
         '<input type="file" id="gdz-file-input" class="gdz-input" accept="' + uploadAccept + '" style="display:none;">' +
         '<div class="gdb-drag-overlay" id="gdb-drag-overlay">' +
           '<div class="gdo-card">' +
             '<div class="gdo-icon"><i class="fas fa-cloud-upload-alt"></i></div>' +
-            '<h3>¡Soltá tu archivo aquí para cargarlo!</h3>' +
-            '<p>' + (activeFolderKey === 'dibujos' ? 'Se guardará en tu subcarpeta <strong>dibujo</strong>' : 'Se guardará en tu subcarpeta <strong>proyecto</strong>') + '</p>' +
+            '<h3>' + dragTitle + '</h3>' +
+            '<p>' + dragHint + '</p>' +
           '</div>' +
         '</div>' +
         '<div class="gdb-upload-status-toast hidden" id="gdb-upload-status-toast"></div>';
@@ -484,7 +491,7 @@
           openImageModal(slide.dataset.imgUrl, slide.dataset.imgTitle);
         };
       });
-      initDropzone(container, student, 'dibujo', 'image/*', containerId, false);
+      initDropzone(container, student, 'dibujo', '.bmp,.png,.jpg,.jpeg', containerId, false);
     }
 
     // ── Upload zona proyecto (solo Scratch Jr, MakeCode no tiene upload) ──
@@ -736,7 +743,46 @@
       }
     }, false);
 
+    function isValidFormat(file) {
+      if (!file || !file.name) return false;
+      var name = file.name.toLowerCase();
+      if (subfolder === 'dibujo') {
+        // Formatos permitidos para dibujo: bmp, png, jpg, jpeg
+        return /\.(bmp|png|jpe?g)$/i.test(name) || /^(image\/(png|jpeg|pjpeg|bmp|x-ms-bmp))$/i.test(file.type || '');
+      } else if (subfolder === 'proyecto') {
+        // Formatos permitidos para Scratch Jr: .sb3, .sjr, .pjson, .sb
+        return /\.(sb3|sjr|pjson|sb)$/i.test(name);
+      }
+      return true;
+    }
+
     function go(file) {
+      if (!file) return;
+
+      // Validación estricta de formato
+      if (!isValidFormat(file)) {
+        if (window.sounds) window.sounds.playError();
+        if (statusToast) {
+          statusToast.classList.remove('hidden');
+          var allowedText = (subfolder === 'dibujo')
+            ? 'dibujos (.bmp, .png, .jpg)'
+            : 'proyectos Scratch (.sb3, .sjr, .pjson, .sb)';
+          statusToast.innerHTML =
+            '<div class="gdz-auto-status" style="border-color:#EF4444;background:#FEF2F2;">' +
+              '<div class="gdz-auto-spinner" style="color:#EF4444;"><i class="fas fa-exclamation-triangle"></i></div>' +
+              '<div class="gdz-auto-text">' +
+                '<h5 style="color:#991B1B;">Formato no válido</h5>' +
+                '<span style="color:#B91C1C;">Solo podés subir ' + allowedText + '</span>' +
+              '</div>' +
+            '</div>';
+          setTimeout(function() {
+            statusToast.classList.add('hidden');
+          }, 3500);
+        }
+        if (fileInput) fileInput.value = '';
+        return;
+      }
+
       if (isUploadingFile) return;
       isUploadingFile = true;
       if (window.sounds) window.sounds.playSuccess();
