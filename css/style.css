@@ -5419,12 +5419,14 @@ body.student-logged-in #nav-dropdown-aulas {
   display: none !important;
 }
 
-/* Ocultar menú de navegación de Actividad Familiar cuando el alumno está logueado */
+/* Ocultar menú de navegación de Actividades de Casa cuando el alumno está logueado */
+body.student-logged-in #nav-dropdown-actividades-casa,
 body.student-logged-in #nav-dropdown-family {
   display: none !important;
 }
 
 /* Cuando el alumno está logueado, las actividades están integradas en el árbol del dashboard */
+body.student-logged-in #actividades-de-casa,
 body.student-logged-in #actividad-familiar,
 body.student-logged-in .family-activity-section {
   display: none !important;

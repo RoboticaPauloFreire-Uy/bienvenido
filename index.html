@@ -6,8 +6,8 @@
   <title>Taller de Programación — Colegio Paulo Freire</title>
   <meta name="description" content="Portal de proyectos y juegos del Taller de Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=41">
-  <link rel="stylesheet" href="css/games.css?v=41">
+  <link rel="stylesheet" href="css/style.css?v=42">
+  <link rel="stylesheet" href="css/games.css?v=42">
 </head>
 <body>
 
@@ -126,17 +126,17 @@
           </div>
         </div>
 
-        <!-- ACTIVIDAD FAMILIAR CON DROPDOWN (HOVER + CLICK) -->
-        <div class="topbar-nav-dropdown" id="nav-dropdown-family">
+        <!-- ACTIVIDADES DE CASA CON DROPDOWN (HOVER + CLICK) -->
+        <div class="topbar-nav-dropdown" id="nav-dropdown-actividades-casa">
           <a href="javascript:void(0)" class="topbar-nav-link dropdown-trigger nav-special">
-            <i class="fas fa-users"></i>
-            <span>Actividad familiar</span>
+            <i class="fas fa-house-user"></i>
+            <span>Actividades de casa</span>
             <i class="fas fa-chevron-down nav-chevron"></i>
           </a>
           
           <div class="nav-dropdown-menu nav-dropdown-family">
             <div class="ndm-header">
-              <div class="ndm-title"><i class="fas fa-heart"></i> Actividades para la Familia</div>
+              <div class="ndm-title"><i class="fas fa-home"></i> Actividades de Casa</div>
               <div class="ndm-sub">Inventario general del taller y escape rooms</div>
             </div>
             
@@ -173,7 +173,7 @@
                     <span class="nfc-title">Escape Rooms Nostálgico</span>
                     <span class="nfc-badge">Juego</span>
                   </div>
-                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Experiencia colaborativa para todas las edades.</p>
+                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en casa. Experiencia colaborativa para todas las edades.</p>
                   <div class="nfc-action">
                     <span class="nfc-play-btn">
                       <span>Entrar al Escape Room</span>
@@ -185,7 +185,7 @@
             </div>
 
             <div class="ndm-footer-group" style="display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;border-top:1.5px solid #E2E8F0;padding:12px 18px;">
-              <a href="#actividad-familiar" class="ndm-footer-link" style="font-size:0.82rem;font-weight:700;color:#1E293B;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+              <a href="#actividad-general-box" class="ndm-footer-link" style="font-size:0.82rem;font-weight:700;color:#1E293B;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
                 <i class="fas fa-arrow-down"></i>
                 <span>Ver en la página</span>
               </a>
@@ -197,12 +197,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Actividad de Casa -->
-        <a href="#actividad-de-casa" class="topbar-nav-link">
-          <i class="fas fa-house-user"></i>
-          <span>Actividad de casa</span>
-        </a>
 
         <!-- Mi Carpeta Drive (Visible al iniciar sesión) -->
         <a href="#student-drive-dashboard-container" class="nav-drive-link" style="display:none;" onclick="const d = document.getElementById('student-drive-dashboard-container'); if(d) d.scrollIntoView({behavior:'smooth'});">
@@ -472,15 +466,15 @@
       </div>
 
       <!-- ══════════════════════════════════════════
-           SECCIÓN: ACTIVIDADES FAMILIARES & RETOS MAKER
+           SECCIÓN: ACTIVIDADES DE CASA & RETOS MAKER
       ══════════════════════════════════════════ -->
-      <section class="family-activity-section" id="actividad-familiar">
+      <section class="family-activity-section" id="actividades-de-casa">
         
         <!-- Encabezado de la Sección -->
         <div class="fas-header">
-          <div class="fas-badge"><i class="fas fa-users"></i> Actividades para la Familia</div>
-          <h2 class="fas-title">Espacio de Creación y Desafíos en Familia</h2>
-          <p class="fas-sub">Actividades generales y retos de relacionar por grado para explorar, pensar y construir juntos en el hogar.</p>
+          <div class="fas-badge"><i class="fas fa-home"></i> Actividades de Casa</div>
+          <h2 class="fas-title">Actividades de Casa &amp; Retos Maker</h2>
+          <p class="fas-sub">Actividad general y retos didácticos para explorar, pensar y construir proyectos desde el hogar.</p>
           <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="fas-drive-btn">
             <i class="fab fa-google-drive"></i>
             <span>Abrir carpeta de actividades en Google Drive</span>
@@ -877,13 +871,13 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=41"></script>
+  <script src="js/firebase-config.js?v=42"></script>
 
-  <script src="js/data.js?v=41"></script>
-  <script src="js/students.js?v=41"></script>
-  <script src="js/gdrive_viewer.js?v=41"></script>
-  <script src="js/auth.js?v=41"></script>
-  <script src="js/audio.js?v=41"></script>
+  <script src="js/data.js?v=42"></script>
+  <script src="js/students.js?v=42"></script>
+  <script src="js/gdrive_viewer.js?v=42"></script>
+  <script src="js/auth.js?v=42"></script>
+  <script src="js/audio.js?v=42"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>
