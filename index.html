@@ -6,8 +6,8 @@
   <title>Taller de Programación — Colegio Paulo Freire</title>
   <meta name="description" content="Portal de proyectos y juegos del Taller de Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=39">
-  <link rel="stylesheet" href="css/games.css?v=39">
+  <link rel="stylesheet" href="css/style.css?v=40">
+  <link rel="stylesheet" href="css/games.css?v=40">
 </head>
 <body>
 
@@ -137,10 +137,51 @@
           <div class="nav-dropdown-menu nav-dropdown-family">
             <div class="ndm-header">
               <div class="ndm-title"><i class="fas fa-heart"></i> Actividades para la Familia</div>
-              <div class="ndm-sub">Experiencias y retos interactivos</div>
+              <div class="ndm-sub">Inventario, retos de relacionar y escape room</div>
             </div>
             
             <div class="ndm-family-list">
+              <!-- Item 1: Inventario del taller (General) -->
+              <a href="#actividad-general-box" class="ndm-family-card" onclick="if(window.scrollToActividadGeneral) window.scrollToActividadGeneral();">
+                <div class="nfc-icon-wrap" style="background:#DCFCE7;border-color:#86EFAC;">
+                  <span class="nfc-icon">📦</span>
+                </div>
+                <div class="nfc-body">
+                  <div class="nfc-header-row">
+                    <span class="nfc-title">Inventario del Taller Maker</span>
+                    <span class="nfc-badge" style="background:#16A34A;color:#fff;">General</span>
+                  </div>
+                  <p class="nfc-desc">Actividad general para todas las edades: reconocer, contar y clasificar herramientas y piezas del taller.</p>
+                  <div class="nfc-action">
+                    <span class="nfc-play-btn" style="background:#15803D;">
+                      <span>Ver Actividad</span>
+                      <i class="fas fa-arrow-down"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Item 2: Actividades de relacionar por grado -->
+              <a href="#actividades-relacionar-box" class="ndm-family-card" onclick="if(window.scrollToActividadesRelacionar) window.scrollToActividadesRelacionar();">
+                <div class="nfc-icon-wrap" style="background:#EFF6FF;border-color:#BFDBFE;">
+                  <span class="nfc-icon">🧩</span>
+                </div>
+                <div class="nfc-body">
+                  <div class="nfc-header-row">
+                    <span class="nfc-title">Actividades de Relacionar</span>
+                    <span class="nfc-badge" style="background:#2563EB;color:#fff;">Por Grado</span>
+                  </div>
+                  <p class="nfc-desc">Fichas didácticas de asociar conceptos, personajes y código organizadas de Sala de 5 a 6° Grado.</p>
+                  <div class="nfc-action">
+                    <span class="nfc-play-btn" style="background:#1D4ED8;">
+                      <span>Ver tu Grado</span>
+                      <i class="fas fa-arrow-down"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Item 3: Escape Rooms Nostálgico -->
               <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
                  target="_blank" rel="noopener noreferrer"
                  class="ndm-family-card">
@@ -150,9 +191,9 @@
                 <div class="nfc-body">
                   <div class="nfc-header-row">
                     <span class="nfc-title">Escape Rooms Nostálgico</span>
-                    <span class="nfc-badge">Familiar</span>
+                    <span class="nfc-badge">Juego</span>
                   </div>
-                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades.</p>
+                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Experiencia colaborativa para todas las edades.</p>
                   <div class="nfc-action">
                     <span class="nfc-play-btn">
                       <span>Entrar al Escape Room</span>
@@ -163,10 +204,17 @@
               </a>
             </div>
 
-            <a href="#actividad-familiar" class="ndm-footer">
-              <span>Ver actividades en familia en la página</span>
-              <i class="fas fa-arrow-down"></i>
-            </a>
+            <div class="ndm-footer-group" style="display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;border-top:1.5px solid #E2E8F0;padding:12px 18px;">
+              <a href="#actividad-familiar" class="ndm-footer-link" style="font-size:0.82rem;font-weight:700;color:#1E293B;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                <i class="fas fa-arrow-down"></i>
+                <span>Ver en la página</span>
+              </a>
+              <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="ndm-footer-link" style="font-size:0.82rem;font-weight:800;color:#2563EB;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                <i class="fab fa-google-drive"></i>
+                <span>Carpeta en Drive</span>
+                <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -444,14 +492,307 @@
       </div>
 
       <!-- ══════════════════════════════════════════
-           SECCIÓN: ACTIVIDAD FAMILIAR (ESCAPE ROOMS NOSTÁLGICO)
+           SECCIÓN: ACTIVIDADES FAMILIARES & RETOS MAKER
       ══════════════════════════════════════════ -->
       <section class="family-activity-section" id="actividad-familiar">
+        
+        <!-- Encabezado de la Sección -->
+        <div class="fas-header">
+          <div class="fas-badge"><i class="fas fa-users"></i> Actividades para la Familia</div>
+          <h2 class="fas-title">Espacio de Creación y Desafíos en Familia</h2>
+          <p class="fas-sub">Actividades generales y retos de relacionar por grado para explorar, pensar y construir juntos en el hogar.</p>
+          <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="fas-drive-btn">
+            <i class="fab fa-google-drive"></i>
+            <span>Abrir carpeta de actividades en Google Drive</span>
+            <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>
+          </a>
+        </div>
+
+        <!-- 1. ACTIVIDAD GENERAL (PARA TODOS LOS GRADOS) -->
+        <div class="actividad-general-card" id="actividad-general-box">
+          <div class="agc-banner-strip">
+            <span class="agc-tag"><i class="fas fa-globe"></i> Actividad General — Para Todas las Edades y Grados</span>
+          </div>
+          <div class="agc-body">
+            <div class="agc-preview-wrap" onclick="window.open('https://drive.google.com/file/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo/view?usp=sharing', '_blank')">
+              <img src="https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo" alt="Inventario del Taller Maker" class="agc-thumb" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'">
+              <div class="agc-zoom-hint">
+                <i class="fas fa-search-plus"></i>
+                <span>Ver en pantalla completa</span>
+              </div>
+            </div>
+            <div class="agc-info">
+              <div class="agc-header-row">
+                <div class="agc-icon-pill">📦🔍</div>
+                <div>
+                  <h3 class="agc-title">Inventario del Taller Maker</h3>
+                  <span class="agc-badge-all">Válido para Sala de 5 a 6° Grado</span>
+                </div>
+              </div>
+              <p class="agc-desc">
+                ¿Qué herramientas, sensores y componentes usamos en nuestro taller de robótica? Una actividad visual y didáctica para observar, clasificar, contar y relacionar los materiales de robótica, circuitos y manualidades que dan vida a nuestros proyectos.
+              </p>
+              <div class="agc-actions">
+                <a href="https://drive.google.com/file/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-agc-primary">
+                  <i class="fas fa-eye"></i>
+                  <span>Ver Ficha Completa</span>
+                  <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>
+                </a>
+                <a href="https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary">
+                  <i class="fas fa-download"></i>
+                  <span>Descargar Imagen</span>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary" style="color:#2563EB;">
+                  <i class="fab fa-google-drive"></i>
+                  <span>Carpeta General en Drive</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ACTIVIDADES DE RELACIONAR POR GRADO -->
+        <div class="actividades-relacionar-wrapper" id="actividades-relacionar-box">
+          <div class="arw-header">
+            <div class="arw-title-box">
+              <span class="arw-icon">🧩</span>
+              <div>
+                <h3 class="arw-title">Actividades de Relacionar por Grado</h3>
+                <p class="arw-sub">Desafíos de asociar conceptos, personajes, circuitos y código adaptados a cada edad.</p>
+              </div>
+            </div>
+            <div id="arw-student-indicator" class="arw-student-badge" style="display:none;">
+              <i class="fas fa-star"></i>
+              <span>Mostrando tu grado</span>
+            </div>
+          </div>
+
+          <!-- Selector de pestañas de grado -->
+          <div class="arw-tabs" id="arw-tabs">
+            <button class="arw-tab-btn active" data-grade="sala5" style="--grade-theme:#E65100;">
+              <span class="atb-icon">🌱</span>
+              <span class="atb-label">Sala de 5 años</span>
+            </button>
+            <button class="arw-tab-btn" data-grade="grado1" style="--grade-theme:#1565C0;">
+              <span class="atb-icon">📖</span>
+              <span class="atb-label">1° Grado</span>
+            </button>
+            <button class="arw-tab-btn" data-grade="grado2" style="--grade-theme:#6A1B9A;">
+              <span class="atb-icon">✏️</span>
+              <span class="atb-label">2° Grado</span>
+            </button>
+            <button class="arw-tab-btn" data-grade="grado3" style="--grade-theme:#00838F;">
+              <span class="atb-icon">🔢</span>
+              <span class="atb-label">3° Grado</span>
+            </button>
+            <button class="arw-tab-btn" data-grade="grado4" style="--grade-theme:#E64A19;">
+              <span class="atb-icon">🎮</span>
+              <span class="atb-label">4° Grado</span>
+            </button>
+            <button class="arw-tab-btn" data-grade="grado5" style="--grade-theme:#2E7D32;">
+              <span class="atb-icon">⚙️</span>
+              <span class="atb-label">5° Grado</span>
+            </button>
+            <button class="arw-tab-btn" data-grade="grado6" style="--grade-theme:#C2185B;">
+              <span class="atb-icon">🚀</span>
+              <span class="atb-label">6° Grado</span>
+            </button>
+          </div>
+
+          <!-- Paneles de Contenido por Grado -->
+          <div class="arw-panels" id="arw-panels">
+            
+            <!-- PANEL: Sala de 5 años -->
+            <div class="arw-panel active" id="panel-sala5">
+              <div class="arp-grid">
+                <div class="arp-info">
+                  <div class="arp-header-row">
+                    <span class="arp-grade-tag" style="background:#E65100;">🌱 Sala de 5 años</span>
+                    <h4 class="arp-title">Actividad de Relacionar: Formas, Bloques & Robótica</h4>
+                  </div>
+                  <p class="arp-desc">
+                    Ficha para unir con flechas y asociar personajes de Scratch Jr, iconos de movimiento y piezas de robótica inicial. Ideal para realizar en familia estimulando la motricidad fina y la orientación espacial.
+                  </p>
+                </div>
+                <div class="arp-actions">
+                  <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-arp-drive" style="background:#E65100;">
+                    <i class="fab fa-google-drive"></i>
+                    <span>Ver Ficha en Drive</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i>
+                  </a>
+                  <a href="aula.html?grado=sala5" class="btn-agc-secondary" style="text-align:center;justify-content:center;">
+                    <i class="fas fa-door-open"></i>
+                    <span>Ir al Aula de Sala 5</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PANEL: 1° Grado -->
+            <div class="arw-panel" id="panel-grado1">
+              <div class="arp-grid">
+                <div class="arp-info">
+                  <div class="arp-header-row">
+                    <span class="arp-grade-tag" style="background:#1565C0;">📖 1° Grado</span>
+                    <h4 class="arp-title">Actividad de Relacionar: Secuencias & Bloques Visuales</h4>
+                  </div>
+                  <p class="arp-desc">
+                    Reto didáctico para relacionar instrucciones paso a paso con los movimientos y recorridos de los personajes. Ayuda a afianzar el pensamiento secuencial y la lateralidad en la computadora.
+                  </p>
+                </div>
+                <div class="arp-actions">
+                  <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-arp-drive" style="background:#1565C0;">
+                    <i class="fab fa-google-drive"></i>
+                    <span>Ver Ficha en Drive</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i>
+                  </a>
+                  <a href="aula.html?grado=grado1" class="btn-agc-secondary" style="text-align:center;justify-content:center;">
+                    <i class="fas fa-door-open"></i>
+                    <span>Ir al Aula de 1°</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PANEL: 2° Grado -->
+            <div class="arw-panel" id="panel-grado2">
+              <div class="arp-grid">
+                <div class="arp-info">
+                  <div class="arp-header-row">
+                    <span class="arp-grade-tag" style="background:#6A1B9A;">✏️ 2° Grado</span>
+                    <h4 class="arp-title">Actividad de Relacionar: Personajes, Escenarios & Historias</h4>
+                  </div>
+                  <p class="arp-desc">
+                    Asociá las acciones de los personajes con los eventos de código y bucles narrativos. Una actividad entretenida para conectar la animación digital con la comprensión lectora.
+                  </p>
+                </div>
+                <div class="arp-actions">
+                  <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-arp-drive" style="background:#6A1B9A;">
+                    <i class="fab fa-google-drive"></i>
+                    <span>Ver Ficha en Drive</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i>
+                  </a>
+                  <a href="aula.html?grado=grado2" class="btn-agc-secondary" style="text-align:center;justify-content:center;">
+                    <i class="fas fa-door-open"></i>
+                    <span>Ir al Aula de 2°</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PANEL: 3° Grado -->
+            <div class="arw-panel" id="panel-grado3">
+              <div class="arp-grid">
+                <div class="arp-info">
+                  <div class="arp-header-row">
+                    <span class="arp-grade-tag" style="background:#00838F;">🔢 3° Grado</span>
+                    <h4 class="arp-title">Actividad de Relacionar: Scratch 3.0, Operadores & Lógica</h4>
+                  </div>
+                  <p class="arp-desc">
+                    Relacioná bloques verdes de operadores matemáticos, sensores de colores y condiciones lógicas. Desarrolla la resolución de problemas mediante algoritmos estructurados.
+                  </p>
+                </div>
+                <div class="arp-actions">
+                  <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-arp-drive" style="background:#00838F;">
+                    <i class="fab fa-google-drive"></i>
+                    <span>Ver Ficha en Drive</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i>
+                  </a>
+                  <a href="aula.html?grado=grado3" class="btn-agc-secondary" style="text-align:center;justify-content:center;">
+                    <i class="fas fa-door-open"></i>
+                    <span>Ir al Aula de 3°</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PANEL: 4° Grado -->
+            <div class="arw-panel" id="panel-grado4">
+              <div class="arp-grid">
+                <div class="arp-info">
+                  <div class="arp-header-row">
+                    <span class="arp-grade-tag" style="background:#E64A19;">🎮 4° Grado</span>
+                    <h4 class="arp-title">Actividad de Relacionar: MakeCode Arcade & Pixel Art</h4>
+                  </div>
+                  <p class="arp-desc">
+                    Asociá sprites, coordenadas de pantalla X/Y, controles del joystick y mecánicas de videojuegos retro. Explorá cómo los pixeles y las variables dan vida a juegos interactivos.
+                  </p>
+                </div>
+                <div class="arp-actions">
+                  <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-arp-drive" style="background:#E64A19;">
+                    <i class="fab fa-google-drive"></i>
+                    <span>Ver Ficha en Drive</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i>
+                  </a>
+                  <a href="aula.html?grado=grado4" class="btn-agc-secondary" style="text-align:center;justify-content:center;">
+                    <i class="fas fa-door-open"></i>
+                    <span>Ir al Aula de 4°</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PANEL: 5° Grado -->
+            <div class="arw-panel" id="panel-grado5">
+              <div class="arp-grid">
+                <div class="arp-info">
+                  <div class="arp-header-row">
+                    <span class="arp-grade-tag" style="background:#2E7D32;">⚙️ 5° Grado</span>
+                    <h4 class="arp-title">Actividad de Relacionar: Algoritmos & Circuitos micro:bit</h4>
+                  </div>
+                  <p class="arp-desc">
+                    Relacioná pines digitales, señales de sensores (luz, temperatura, acelerómetro) y diagramas de flujo. Aprendé cómo el hardware y el software se comunican en el mundo físico.
+                  </p>
+                </div>
+                <div class="arp-actions">
+                  <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-arp-drive" style="background:#2E7D32;">
+                    <i class="fab fa-google-drive"></i>
+                    <span>Ver Ficha en Drive</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i>
+                  </a>
+                  <a href="aula.html?grado=grado5" class="btn-agc-secondary" style="text-align:center;justify-content:center;">
+                    <i class="fas fa-door-open"></i>
+                    <span>Ir al Aula de 5°</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PANEL: 6° Grado -->
+            <div class="arw-panel" id="panel-grado6">
+              <div class="arp-grid">
+                <div class="arp-info">
+                  <div class="arp-header-row">
+                    <span class="arp-grade-tag" style="background:#C2185B;">🚀 6° Grado</span>
+                    <h4 class="arp-title">Actividad de Relacionar: Web, Canvas & Código JS</h4>
+                  </div>
+                  <p class="arp-desc">
+                    Conectá etiquetas HTML estructurales, selectores de estilo CSS, eventos de usuario y funciones de JavaScript para resolver el desafío de desarrollo web contemporáneo.
+                  </p>
+                </div>
+                <div class="arp-actions">
+                  <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-arp-drive" style="background:#C2185B;">
+                    <i class="fab fa-google-drive"></i>
+                    <span>Ver Ficha en Drive</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i>
+                  </a>
+                  <a href="aula.html?grado=grado6" class="btn-agc-secondary" style="text-align:center;justify-content:center;">
+                    <i class="fas fa-door-open"></i>
+                    <span>Ir al Aula de 6°</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 3. ESCAPE ROOMS NOSTÁLGICO (BANNER) -->
         <div class="family-activity-banner">
           <div class="fab-content">
-            <div class="fab-badge"><i class="fas fa-heart"></i> Actividad para la Familia</div>
+            <div class="fab-badge"><i class="fas fa-heart"></i> Experiencia Interactiva en Familia</div>
             <h2 class="fab-title">Escape Rooms Nostálgico</h2>
-            <p class="fab-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia interactiva y colaborativa para todas las edades con acertijos, desafíos y mucha creatividad.</p>
+            <p class="fab-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades con acertijos, desafíos y mucha creatividad.</p>
             <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
                target="_blank" rel="noopener noreferrer" class="fab-btn">
               <span>Entrar al Escape Room</span>
@@ -556,13 +897,13 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=39"></script>
+  <script src="js/firebase-config.js?v=40"></script>
 
-  <script src="js/data.js?v=39"></script>
-  <script src="js/students.js?v=39"></script>
-  <script src="js/gdrive_viewer.js?v=39"></script>
-  <script src="js/auth.js?v=39"></script>
-  <script src="js/audio.js?v=39"></script>
+  <script src="js/data.js?v=40"></script>
+  <script src="js/students.js?v=40"></script>
+  <script src="js/gdrive_viewer.js?v=40"></script>
+  <script src="js/auth.js?v=40"></script>
+  <script src="js/audio.js?v=40"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>
@@ -761,6 +1102,54 @@
       // Initial state
       fpGo(0);
       fpReset();
+    }
+
+    // ── ACTIVIDADES DE RELACIONAR & GENERAL CONTROLLER ──
+    window.selectActividadGrade = function(gradeId) {
+      const tabs = document.querySelectorAll('#arw-tabs .arw-tab-btn');
+      const panels = document.querySelectorAll('#arw-panels .arw-panel');
+      tabs.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.grade === gradeId);
+      });
+      panels.forEach(p => {
+        p.classList.toggle('active', p.id === 'panel-' + gradeId);
+      });
+      const badge = document.getElementById('arw-student-indicator');
+      if (badge && window.getActiveStudent) {
+        const st = window.getActiveStudent();
+        if (st && st.gradeId === gradeId) {
+          badge.style.display = 'inline-flex';
+          badge.innerHTML = '<i class="fas fa-star"></i> Mostrando tu grado (' + st.gradeName + ')';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    };
+
+    window.scrollToActividadGeneral = function() {
+      const el = document.getElementById('actividad-general-box');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    window.scrollToActividadesRelacionar = function() {
+      const el = document.getElementById('actividades-relacionar-box');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    const tabBtns = document.querySelectorAll('#arw-tabs .arw-tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.sounds) window.sounds.playClick();
+        window.selectActividadGrade(btn.dataset.grade);
+      });
+    });
+
+    // Si ya hay un alumno logueado al cargar
+    if (window.getActiveStudent) {
+      const st = window.getActiveStudent();
+      if (st && st.gradeId) {
+        window.selectActividadGrade(st.gradeId);
+      }
     }
 
     // Inicializar Panel Centrado de Google Drive

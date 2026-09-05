@@ -6,8 +6,8 @@
   <title>Aula — Colegio Paulo Freire</title>
   <meta name="description" content="Aula del Taller de Programación — Colegio Paulo Freire">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=39">
-  <link rel="stylesheet" href="css/games.css?v=39">
+  <link rel="stylesheet" href="css/style.css?v=40">
+  <link rel="stylesheet" href="css/games.css?v=40">
 </head>
 <body>
 
@@ -123,10 +123,51 @@
           <div class="nav-dropdown-menu nav-dropdown-family">
             <div class="ndm-header">
               <div class="ndm-title"><i class="fas fa-heart"></i> Actividades para la Familia</div>
-              <div class="ndm-sub">Experiencias y retos interactivos</div>
+              <div class="ndm-sub">Inventario, retos de relacionar y escape room</div>
             </div>
             
             <div class="ndm-family-list">
+              <!-- Item 1: Inventario del taller (General) -->
+              <a href="index.html#actividad-general-box" class="ndm-family-card">
+                <div class="nfc-icon-wrap" style="background:#DCFCE7;border-color:#86EFAC;">
+                  <span class="nfc-icon">📦</span>
+                </div>
+                <div class="nfc-body">
+                  <div class="nfc-header-row">
+                    <span class="nfc-title">Inventario del Taller Maker</span>
+                    <span class="nfc-badge" style="background:#16A34A;color:#fff;">General</span>
+                  </div>
+                  <p class="nfc-desc">Actividad general para todas las edades: reconocer, contar y clasificar herramientas y piezas del taller.</p>
+                  <div class="nfc-action">
+                    <span class="nfc-play-btn" style="background:#15803D;">
+                      <span>Ver Actividad</span>
+                      <i class="fas fa-arrow-right"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Item 2: Actividades de relacionar por grado -->
+              <a href="index.html#actividades-relacionar-box" class="ndm-family-card">
+                <div class="nfc-icon-wrap" style="background:#EFF6FF;border-color:#BFDBFE;">
+                  <span class="nfc-icon">🧩</span>
+                </div>
+                <div class="nfc-body">
+                  <div class="nfc-header-row">
+                    <span class="nfc-title">Actividades de Relacionar</span>
+                    <span class="nfc-badge" style="background:#2563EB;color:#fff;">Por Grado</span>
+                  </div>
+                  <p class="nfc-desc">Fichas didácticas de asociar conceptos, personajes y código organizadas de Sala de 5 a 6° Grado.</p>
+                  <div class="nfc-action">
+                    <span class="nfc-play-btn" style="background:#1D4ED8;">
+                      <span>Ver tu Grado</span>
+                      <i class="fas fa-arrow-right"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Item 3: Escape Rooms Nostálgico -->
               <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
                  target="_blank" rel="noopener noreferrer"
                  class="ndm-family-card">
@@ -136,9 +177,9 @@
                 <div class="nfc-body">
                   <div class="nfc-header-row">
                     <span class="nfc-title">Escape Rooms Nostálgico</span>
-                    <span class="nfc-badge">Familiar</span>
+                    <span class="nfc-badge">Juego</span>
                   </div>
-                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades.</p>
+                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Experiencia colaborativa para todas las edades.</p>
                   <div class="nfc-action">
                     <span class="nfc-play-btn">
                       <span>Entrar al Escape Room</span>
@@ -149,10 +190,17 @@
               </a>
             </div>
 
-            <a href="index.html#actividad-familiar" class="ndm-footer">
-              <span>Ver actividades en familia en la página</span>
-              <i class="fas fa-arrow-right"></i>
-            </a>
+            <div class="ndm-footer-group" style="display:flex;justify-content:space-between;align-items:center;background:#F8FAFC;border-top:1.5px solid #E2E8F0;padding:12px 18px;">
+              <a href="index.html#actividad-familiar" class="ndm-footer-link" style="font-size:0.82rem;font-weight:700;color:#1E293B;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                <i class="fas fa-arrow-right"></i>
+                <span>Ver en la página</span>
+              </a>
+              <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="ndm-footer-link" style="font-size:0.82rem;font-weight:800;color:#2563EB;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                <i class="fab fa-google-drive"></i>
+                <span>Carpeta en Drive</span>
+                <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -261,13 +309,13 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=39"></script>
+  <script src="js/firebase-config.js?v=40"></script>
 
-  <script src="js/data.js?v=39"></script>
-  <script src="js/students.js?v=39"></script>
-  <script src="js/gdrive_viewer.js?v=39"></script>
-  <script src="js/auth.js?v=39"></script>
-  <script src="js/audio.js?v=39"></script>
+  <script src="js/data.js?v=40"></script>
+  <script src="js/students.js?v=40"></script>
+  <script src="js/gdrive_viewer.js?v=40"></script>
+  <script src="js/auth.js?v=40"></script>
+  <script src="js/audio.js?v=40"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>

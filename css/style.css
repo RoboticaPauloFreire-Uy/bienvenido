@@ -724,6 +724,473 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 /* ─────────────────────────────────────────────────────────────
+   SECCIÓN: ACTIVIDADES FAMILIARES & RETOS MAKER
+───────────────────────────────────────────────────────────── */
+.family-activity-section {
+  margin-top: 32px;
+  margin-bottom: 36px;
+}
+
+.fas-header {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  border-radius: var(--radius-xl);
+  padding: 26px 30px;
+  color: #FFFFFF;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fas-header::after {
+  content: "👨‍👩‍👧";
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 5rem;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.fas-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  color: #4ADE80;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.fas-title {
+  font-size: 1.55rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.fas-sub {
+  font-size: 0.94rem;
+  color: #94A3B8;
+  max-width: 680px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.fas-drive-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #2563EB;
+  color: #FFFFFF;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s ease;
+}
+
+.fas-drive-btn:hover {
+  background: #1D4ED8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+/* 1. Tarjeta Actividad General */
+.actividad-general-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+  transition: all 0.25s ease;
+}
+
+.actividad-general-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #CBD5E1;
+}
+
+.agc-banner-strip {
+  background: linear-gradient(90deg, #15803D 0%, #16A34A 100%);
+  padding: 8px 24px;
+  color: #FFFFFF;
+}
+
+.agc-tag {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agc-body {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .agc-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.agc-preview-wrap {
+  position: relative;
+  width: 220px;
+  height: 160px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1.5px solid #E2E8F0;
+  background: #F8FAFC;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .agc-preview-wrap {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+.agc-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.agc-preview-wrap:hover .agc-thumb {
+  transform: scale(1.05);
+}
+
+.agc-zoom-hint {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.agc-preview-wrap:hover .agc-zoom-hint {
+  opacity: 1;
+}
+
+.agc-info {
+  flex: 1;
+}
+
+.agc-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.agc-icon-pill {
+  font-size: 1.8rem;
+  width: 48px;
+  height: 48px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agc-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 0 0 2px;
+}
+
+.agc-badge-all {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: #DCFCE7;
+  color: #15803D;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.agc-desc {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 10px 0 16px;
+}
+
+.agc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-agc-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #16A34A;
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-agc-primary:hover {
+  background: #15803D;
+  transform: translateY(-1px);
+}
+
+.btn-agc-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F1F5F9;
+  color: #1E293B;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  border: 1px solid #CBD5E1;
+  transition: all 0.2s ease;
+}
+
+.btn-agc-secondary:hover {
+  background: #E2E8F0;
+}
+
+/* 2. Actividades de Relacionar por Grado */
+.actividades-relacionar-wrapper {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.arw-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.arw-title-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.arw-icon {
+  font-size: 2rem;
+}
+
+.arw-title {
+  font-size: 1.22rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 0 0 2px;
+}
+
+.arw-sub {
+  font-size: 0.85rem;
+  color: #64748B;
+  margin: 0;
+}
+
+.arw-student-badge {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 1px solid #F59E0B;
+  color: #92400E;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Pestañas de Grados */
+.arw-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 18px;
+  scrollbar-width: thin;
+}
+
+.arw-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid #E2E8F0;
+  background: #F8FAFC;
+  color: #475569;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.arw-tab-btn:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #1E293B;
+}
+
+.arw-tab-btn.active {
+  background: var(--grade-theme, #2563EB);
+  color: #FFFFFF;
+  border-color: var(--grade-theme, #2563EB);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.arw-tab-btn .atb-badge-user {
+  background: #F59E0B;
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 800;
+  margin-left: 2px;
+}
+
+/* Paneles de Contenido */
+.arw-panel {
+  display: none;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  animation: fadeInPanel 0.25s ease forwards;
+}
+
+.arw-panel.active {
+  display: block;
+}
+
+@keyframes fadeInPanel {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.arp-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .arp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.arp-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.arp-grade-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 12px;
+  color: #FFFFFF;
+}
+
+.arp-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1E293B;
+  margin: 0;
+}
+
+.arp-desc {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.48;
+  margin: 8px 0 0;
+}
+
+.arp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 190px;
+}
+
+@media (max-width: 640px) {
+  .arp-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+}
+
+.btn-arp-drive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #2563EB;
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 9px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.btn-arp-drive:hover {
+  background: #1D4ED8;
+  transform: translateY(-1px);
+}
+
+/* ─────────────────────────────────────────────────────────────
    HERO CAROUSEL — Imagen de fondo fullcover
 ───────────────────────────────────────────────────────────── */
 .hero-carousel {

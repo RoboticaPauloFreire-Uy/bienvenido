@@ -68,6 +68,11 @@
         window.renderGDriveDashboard('student-drive-dashboard-container');
       }
 
+      // Sincronizar pestaña de grado en Actividades
+      if (typeof window.selectActividadGrade === 'function' && student.gradeId) {
+        window.selectActividadGrade(student.gradeId);
+      }
+
     } else {
       // === NO LOGUEADO ===
       document.body.classList.remove('student-logged-in');
@@ -89,6 +94,11 @@
       // Limpiar contenedor Drive
       var dc = document.getElementById('student-drive-dashboard-container');
       if (dc) dc.innerHTML = '';
+
+      // Resetear indicador de grado en Actividades
+      if (typeof window.selectActividadGrade === 'function') {
+        window.selectActividadGrade('sala5');
+      }
     }
   }
 
