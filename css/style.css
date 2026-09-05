@@ -5419,28 +5419,22 @@ body.student-logged-in #nav-dropdown-aulas {
   display: none !important;
 }
 
-/* Ocultar menú de navegación de Actividades de Casa cuando el alumno está logueado */
-body.student-logged-in #nav-dropdown-actividades-casa,
-body.student-logged-in #nav-dropdown-family {
-  display: none !important;
-}
-
-/* Cuando el alumno está logueado, las actividades están integradas en el árbol del dashboard */
-body.student-logged-in #actividades-de-casa,
-body.student-logged-in #actividad-familiar,
-body.student-logged-in .family-activity-section {
-  display: none !important;
-}
-
+/* Ocultar Actividad de casa del menú y de la página cuando el alumno está logueado (pasa al árbol del dashboard) */
+body.student-logged-in #nav-link-casa,
 body.student-logged-in #actividad-de-casa,
 body.student-logged-in .home-maker-corner {
-  display: block !important;
-  margin-top: 32px;
+  display: none !important;
 }
 
-/* En la página pública (sin login), solo se muestra la sección de actividad general */
-#actividades-relacionar-box {
-  display: none !important;
+/* Mantener Actividad Familiar (Escape Rooms Nostálgico) visible en el menú y en la página cuando el alumno está logueado */
+body.student-logged-in #nav-dropdown-family {
+  display: inline-block !important;
+}
+
+body.student-logged-in #actividad-familiar,
+body.student-logged-in .family-activity-section {
+  display: block !important;
+  margin-top: 32px;
 }
 
 body:not(.student-logged-in) #student-drive-dashboard-container {

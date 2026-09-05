@@ -605,7 +605,7 @@
           '</div>' +
           '<div class="gac-section-block">' +
             '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">📦</span> Actividad General para Casa (Para todos los grados)</h4>' +
+              '<h4><span class="gac-icon">📦</span> Inventario de Material del Taller (General para todas las edades)</h4>' +
             '</div>' +
             generalSectionHtml +
           '</div>' +
@@ -680,7 +680,7 @@
               treeFolder('dibujos', '🎨 Dibujos', badgeDibujos, activeFolderKey, '#16A34A') +
               treeFolder('proyectos', '🚀 Proyectos (' + gradeFolder + ')', badgeProyectos, activeFolderKey, '#2563EB') +
               treeFolder('proyecto', '📁 Proyecto', badgeProyecto, activeFolderKey, '#7C3AED') +
-              treeFolder('actividades', '🏠 Actividades de casa', badgeActividades, activeFolderKey, '#EA580C') +
+              treeFolder('actividades', '🏠 Actividad de casa', badgeActividades, activeFolderKey, '#EA580C') +
             '</div>' +
             (driveTargetUrl ?
               '<div class="gts-qr-card">' +
@@ -706,7 +706,7 @@
                 '<span>Contenido de: <strong>' +
                   (activeFolderKey === 'proyectos' ? 'Proyectos PDF (' + gradeFolder + ')' :
                    activeFolderKey === 'proyecto'  ? 'Proyecto' :
-                   activeFolderKey === 'actividades' ? 'Actividades de casa (' + student.gradeName + ' + General)' : currentFolder.name) +
+                   activeFolderKey === 'actividades' ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
