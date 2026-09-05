@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -6,8 +6,8 @@
   <title>Taller de Programación — Colegio Paulo Freire</title>
   <meta name="description" content="Portal de proyectos y juegos del Taller de Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=38">
-  <link rel="stylesheet" href="css/games.css?v=38">
+  <link rel="stylesheet" href="css/style.css?v=39">
+  <link rel="stylesheet" href="css/games.css?v=39">
 </head>
 <body>
 
@@ -127,7 +127,7 @@
         </div>
 
         <!-- ACTIVIDAD FAMILIAR CON DROPDOWN (HOVER + CLICK) -->
-        <div class="topbar-nav-dropdown">
+        <div class="topbar-nav-dropdown" id="nav-dropdown-family">
           <a href="javascript:void(0)" class="topbar-nav-link dropdown-trigger nav-special">
             <i class="fas fa-users"></i>
             <span>Actividad familiar</span>
@@ -162,6 +162,11 @@
                 </div>
               </a>
             </div>
+
+            <a href="#actividad-familiar" class="ndm-footer">
+              <span>Ver actividades en familia en la página</span>
+              <i class="fas fa-arrow-down"></i>
+            </a>
           </div>
         </div>
 
@@ -439,6 +444,24 @@
       </div>
 
       <!-- ══════════════════════════════════════════
+           SECCIÓN: ACTIVIDAD FAMILIAR (ESCAPE ROOMS NOSTÁLGICO)
+      ══════════════════════════════════════════ -->
+      <section class="family-activity-section" id="actividad-familiar">
+        <div class="family-activity-banner">
+          <div class="fab-content">
+            <div class="fab-badge"><i class="fas fa-heart"></i> Actividad para la Familia</div>
+            <h2 class="fab-title">Escape Rooms Nostálgico</h2>
+            <p class="fab-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia interactiva y colaborativa para todas las edades con acertijos, desafíos y mucha creatividad.</p>
+            <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
+               target="_blank" rel="noopener noreferrer" class="fab-btn">
+              <span>Entrar al Escape Room</span>
+              <i class="fas fa-external-link-alt"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════
            SECCIÓN: RINCÓN MAKER PARA CASA & FAMILIAS
       ══════════════════════════════════════════ -->
       <section class="home-maker-corner" id="actividad-de-casa">
@@ -533,13 +556,13 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=38"></script>
+  <script src="js/firebase-config.js?v=39"></script>
 
-  <script src="js/data.js?v=38"></script>
-  <script src="js/students.js?v=38"></script>
-  <script src="js/gdrive_viewer.js?v=38"></script>
-  <script src="js/auth.js?v=38"></script>
-  <script src="js/audio.js?v=38"></script>
+  <script src="js/data.js?v=39"></script>
+  <script src="js/students.js?v=39"></script>
+  <script src="js/gdrive_viewer.js?v=39"></script>
+  <script src="js/auth.js?v=39"></script>
+  <script src="js/audio.js?v=39"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>

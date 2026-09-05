@@ -4936,7 +4936,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 /* ─────────────────────────────────────────────────────────────
-   VISTA DEL ALUMNO LOGUEADO (FOCO 100% EN DRIVE DASHBOARD)
+   VISTA DEL ALUMNO LOGUEADO (FOCO EN DRIVE DASHBOARD Y ACTIVIDAD FAMILIAR)
 ───────────────────────────────────────────────────────────── */
 body.student-logged-in .hero-carousel,
 body.student-logged-in .maker-formula-section,
@@ -4944,15 +4944,26 @@ body.student-logged-in .featured-projects-section,
 body.student-logged-in .stories-section,
 body.student-logged-in .home-section-header,
 body.student-logged-in .classrooms-grid,
-body.student-logged-in .home-maker-corner,
 body.student-logged-in .community-chat-section,
-body.student-logged-in .home-activity-section,
 body.student-logged-in .aula-hero,
 body.student-logged-in .aula-content-section,
 body.student-logged-in .aula-resources-section,
-body.student-logged-in .topbar-nav-dropdown,
-body.student-logged-in .topbar-nav a[href="#actividad-de-casa"] {
+body.student-logged-in #nav-dropdown-aulas {
   display: none !important;
+}
+
+/* Mantener visible Actividad Familiar en el menú de navegación */
+body.student-logged-in #nav-dropdown-family {
+  display: inline-block !important;
+}
+
+/* Mantener visibles las secciones de Actividad Familiar y Rincón Maker en la página */
+body.student-logged-in #actividad-familiar,
+body.student-logged-in #actividad-de-casa,
+body.student-logged-in .family-activity-section,
+body.student-logged-in .home-maker-corner {
+  display: block !important;
+  margin-top: 32px;
 }
 
 body:not(.student-logged-in) #student-drive-dashboard-container {
