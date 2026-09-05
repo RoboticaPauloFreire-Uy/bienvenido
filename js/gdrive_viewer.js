@@ -409,7 +409,7 @@
           '<div class="gdb-header-left">' +
             '<span class="gdb-avatar">' + (student.avatar||'👦') + '</span>' +
             '<div>' +
-              '<h2 class="gdb-title">Carpeta de Google Drive — ' + student.name + '</h2>' +
+              '<h2 class="gdb-title">' + student.name + '</h2>' +
               '<span class="gdb-grade"><i class="fab fa-google-drive"></i> ' + student.gradeName + ' • Conectado</span>' +
             '</div>' +
           '</div>' +
