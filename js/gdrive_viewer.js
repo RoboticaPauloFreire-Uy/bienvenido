@@ -289,23 +289,7 @@
               '</div>';
             }).join('') + '</div>';
         }
-
-        // Zona de subida para Scratch Jr
-        if (showScratch) {
-          uploadZoneHtml =
-            '<div class="gdb-upload-zone" id="gdb-upload-zone">' +
-              '<div class="gdz-inner" id="gdz-inner">' +
-                '<div class="gdz-icon" style="color:#EA580C;"><i class="fas fa-cat"></i></div>' +
-                '<h4 class="gdz-title">¡Subí tu proyecto Scratch Jr!</h4>' +
-                '<p class="gdz-sub">Arrastrá tu archivo <strong>.sb3</strong>, <strong>.sjr</strong>, <strong>.pjson</strong> o <strong>.sb</strong> para guardarlo en Google Drive</p>' +
-                '<input type="file" id="gdz-file-input" class="gdz-input" accept=".sb3,.sjr,.pjson,.sb">' +
-                '<button class="gdz-browse-btn" style="background:#EA580C;" type="button" onclick="document.getElementById(\'gdz-file-input\').click()">' +
-                  '<i class="fas fa-cat"></i> Elegir archivo Scratch Jr' +
-                '</button>' +
-              '</div>' +
-              '<div class="gdz-preview-box hidden" id="gdz-preview-box"></div>' +
-            '</div>';
-        }
+        // MakeCode y Scratch Jr no tienen caja estática permanente
 
       // ── Pestaña MAKECODE — Biblioteca de código (solo lectura) ──
       } else {
@@ -384,20 +368,30 @@
       } else {
         mainDisplayHtml = buildCarousel(displayItems);
       }
+    }
 
+    // ──────────────────────────────────────────────────
+    // SUBIDA INTELIGENTE: Sin caja fija en pantalla
+    // Solo aparece la zona activa al arrastrar un archivo o con el botón
+    // ──────────────────────────────────────────────────
+    var canUpload = (activeFolderKey === 'dibujos') || (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch);
+    var uploadAccept = activeFolderKey === 'dibujos' ? 'image/*' : '.sb3,.sjr,.pjson,.sb';
+    var uploadBtnText = activeFolderKey === 'dibujos' ? '<i class="fas fa-plus-circle"></i> Subir dibujo' : '<i class="fas fa-plus-circle"></i> Subir Scratch Jr';
+    var uploadBtnClass = activeFolderKey === 'dibujos' ? 'gca-btn-upload' : 'gca-btn-upload scratch';
+
+    if (canUpload) {
       uploadZoneHtml =
-        '<div class="gdb-upload-zone" id="gdb-upload-zone">' +
-          '<div class="gdz-inner" id="gdz-inner">' +
-            '<div class="gdz-icon"><i class="fas fa-cloud-upload-alt"></i></div>' +
-            '<h4 class="gdz-title">¿Hiciste un nuevo dibujo? ¡Guardalo aquí!</h4>' +
-            '<p class="gdz-sub">Arrastrá tu imagen para guardarla en la subcarpeta <strong>dibujo</strong></p>' +
-            '<input type="file" id="gdz-file-input" class="gdz-input" accept="image/*">' +
-            '<button class="gdz-browse-btn" type="button" onclick="document.getElementById(\'gdz-file-input\').click()">' +
-              '<i class="fas fa-file-image"></i> Elegir Imagen / Dibujo' +
-            '</button>' +
+        '<input type="file" id="gdz-file-input" class="gdz-input" accept="' + uploadAccept + '" style="display:none;">' +
+        '<div class="gdb-drag-overlay" id="gdb-drag-overlay">' +
+          '<div class="gdo-card">' +
+            '<div class="gdo-icon"><i class="fas fa-cloud-upload-alt"></i></div>' +
+            '<h3>¡Soltá tu archivo aquí para cargarlo!</h3>' +
+            '<p>' + (activeFolderKey === 'dibujos' ? 'Se guardará en tu subcarpeta <strong>dibujo</strong>' : 'Se guardará en tu subcarpeta <strong>proyecto</strong>') + '</p>' +
           '</div>' +
-          '<div class="gdz-preview-box hidden" id="gdz-preview-box"></div>' +
-        '</div>';
+        '</div>' +
+        '<div class="gdb-upload-status-toast hidden" id="gdb-upload-status-toast"></div>';
+    } else {
+      uploadZoneHtml = '';
     }
 
     // ──────────────────────────────────────────────────
@@ -451,7 +445,10 @@
                    activeFolderKey === 'proyecto'  ? 'Proyecto' : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
-              '<span class="gca-fb-count">' + countText + '</span>' +
+              '<div class="gca-fb-right">' +
+                '<span class="gca-fb-count">' + countText + '</span>' +
+                (canUpload ? '<button type="button" class="' + uploadBtnClass + '" id="gca-btn-upload">' + uploadBtnText + '</button>' : '') +
+              '</div>' +
             '</div>' +
             mainDisplayHtml +
             uploadZoneHtml +
@@ -684,24 +681,78 @@
   // fileType:  'image' | 'scratch' | 'makecode'
   // ──────────────────────────────────────────────────
   function initDropzone(container, student, subfolder, accept, containerId, isProyecto, fileType) {
-    var dropzone   = container.querySelector('#gdb-upload-zone');
-    var fileInput  = container.querySelector('#gdz-file-input');
-    var previewBox = container.querySelector('#gdz-preview-box');
-    var innerBox   = container.querySelector('#gdz-inner');
-    if (!dropzone) return;
+    var contentArea = container.querySelector('.gdb-content-area');
+    var overlay     = container.querySelector('#gdb-drag-overlay');
+    var fileInput   = container.querySelector('#gdz-file-input');
+    var uploadBtn   = container.querySelector('#gca-btn-upload');
+    var statusToast = container.querySelector('#gdb-upload-status-toast');
+    if (!contentArea || !fileInput) return;
 
-    ['dragenter','dragover'].forEach(function(ev){ dropzone.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); dropzone.classList.add('drag-active'); }, false); });
-    ['dragleave','drop'].forEach(function(ev){ dropzone.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); dropzone.classList.remove('drag-active'); }, false); });
-    dropzone.addEventListener('drop', function(e){ if (e.dataTransfer.files.length>0) go(e.dataTransfer.files[0]); });
-    if (fileInput) fileInput.onchange = function(){ if (fileInput.files.length>0) go(fileInput.files[0]); };
+    if (uploadBtn) {
+      uploadBtn.onclick = function(e) {
+        e.stopPropagation();
+        fileInput.click();
+      };
+    }
+
+    fileInput.onchange = function() {
+      if (fileInput.files && fileInput.files.length > 0) {
+        go(fileInput.files[0]);
+      }
+    };
+
+    var dragCounter = 0;
+
+    contentArea.addEventListener('dragenter', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter++;
+      if (overlay) overlay.classList.add('drag-over');
+    }, false);
+
+    contentArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (overlay) overlay.classList.add('drag-over');
+    }, false);
+
+    contentArea.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter--;
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        if (overlay) overlay.classList.remove('drag-over');
+      }
+    }, false);
+
+    contentArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounter = 0;
+      if (overlay) overlay.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        go(e.dataTransfer.files[0]);
+      }
+    }, false);
 
     function go(file) {
       if (isUploadingFile) return;
       isUploadingFile = true;
       if (window.sounds) window.sounds.playSuccess();
       var sz = formatFileSize(file.size);
-      innerBox.classList.add('hidden'); previewBox.classList.remove('hidden');
-      previewBox.innerHTML = '<div class="gdz-auto-status"><div class="gdz-auto-spinner"><i class="fas fa-sync-alt fa-spin"></i></div><div class="gdz-auto-text"><h5>Guardando <strong>'+file.name+'</strong>...</h5><span>'+sz+' • Carpeta de '+student.name+'</span></div></div>';
+
+      if (statusToast) {
+        statusToast.classList.remove('hidden');
+        statusToast.innerHTML =
+          '<div class="gdz-auto-status">' +
+            '<div class="gdz-auto-spinner"><i class="fas fa-sync-alt fa-spin"></i></div>' +
+            '<div class="gdz-auto-text">' +
+              '<h5>Guardando <strong>' + file.name + '</strong>...</h5>' +
+              '<span>' + sz + ' • Subiendo a Google Drive</span>' +
+            '</div>' +
+          '</div>';
+      }
 
       var reader = new FileReader();
       reader.onload = function(ev){
@@ -733,8 +784,17 @@
           currentCarouselIndex = 0;
         }
 
-        previewBox.innerHTML = '<div class="gdz-auto-status" style="border-color:#16A34A;background:#F0FDF4;"><div class="gdz-auto-spinner" style="color:#16A34A;"><i class="fas fa-check-circle"></i></div><div class="gdz-auto-text"><h5>¡<strong>'+file.name+'</strong> guardado!</h5><span>'+sz+' • Subcarpeta '+subfolder+'</span></div></div>';
-        setTimeout(function(){ isUploadingFile=false; renderGDriveDashboard(containerId); }, 1200);
+        if (statusToast) {
+          statusToast.innerHTML =
+            '<div class="gdz-auto-status" style="border-color:#16A34A;background:#F0FDF4;">' +
+              '<div class="gdz-auto-spinner" style="color:#16A34A;"><i class="fas fa-check-circle"></i></div>' +
+              '<div class="gdz-auto-text">' +
+                '<h5>¡<strong>' + file.name + '</strong> guardado!</h5>' +
+                '<span>' + sz + ' • Guardado en Google Drive</span>' +
+              '</div>' +
+            '</div>';
+        }
+        setTimeout(function(){ isUploadingFile=false; renderGDriveDashboard(containerId); }, 1300);
       };
       reader.readAsDataURL(file);
     }

@@ -4172,12 +4172,16 @@ button, input, select, textarea { font-family: inherit; }
   flex-direction: column;
   gap: 20px;
   background: #ffffff;
+  position: relative;
+  min-height: 480px;
 }
 
 .gca-folder-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
   padding-bottom: 12px;
   border-bottom: 2px solid var(--border-light);
 }
@@ -4192,7 +4196,46 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .gca-fb-title i { color: #16A34A; }
+
+.gca-fb-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .gca-fb-count { font-size: .82rem; font-weight: 800; color: #64748B; background: #F1F5F9; padding: 4px 12px; border-radius: var(--radius-full); }
+
+/* Botón discreto en la barra superior */
+.gca-btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #16A34A;
+  color: #ffffff;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 7px 15px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.2);
+}
+
+.gca-btn-upload:hover {
+  background: #15803D;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.gca-btn-upload.scratch {
+  background: #EA580C;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.2);
+}
+
+.gca-btn-upload.scratch:hover {
+  background: #C2410C;
+}
 
 /* Grilla de Dibujos */
 .gca-drawings-grid {
@@ -4288,20 +4331,83 @@ button, input, select, textarea { font-family: inherit; }
   height: 100%;
 }
 
-/* Zona Drag & Drop en Panel Centrado */
-.gdb-upload-zone {
-  margin-top: 8px;
-  border: 2px dashed #3B82F6;
-  background: #EFF6FF;
+/* Overlay Drag & Drop Flotante (Solo aparece al aproximar/arrastrar un archivo) */
+.gdb-drag-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(239, 246, 255, 0.94);
+  backdrop-filter: blur(5px);
+  border: 3px dashed #2563EB;
   border-radius: var(--radius-xl);
-  padding: 24px;
-  text-align: center;
-  transition: all var(--transition);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform: scale(0.98);
 }
 
-.gdb-upload-zone.drag-active {
-  background: #DBEAFE;
-  border-color: #1D4ED8;
+.gdb-drag-overlay.drag-over {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
+}
+
+.gdo-card {
+  text-align: center;
+  padding: 34px 28px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 36px rgba(37, 99, 235, 0.2);
+  border: 1.5px solid #BFDBFE;
+  max-width: 400px;
+  animation: gdoPulse 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes gdoPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.02); }
+}
+
+.gdo-icon {
+  font-size: 3.5rem;
+  color: #2563EB;
+  margin-bottom: 12px;
+}
+
+.gdo-card h3 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #1E3A8A;
+  margin-bottom: 6px;
+}
+
+.gdo-card p {
+  font-size: 0.88rem;
+  color: #3B82F6;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Toast de estado de subida flotante */
+.gdb-upload-status-toast {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 60;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.gdb-upload-status-toast.hidden {
+  display: none;
 }
 
 @media (max-width: 860px) {
