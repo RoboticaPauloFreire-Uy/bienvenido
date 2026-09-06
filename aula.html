@@ -6,8 +6,8 @@
   <title>Aula — Colegio Paulo Freire</title>
   <meta name="description" content="Aula del Taller de Programación — Colegio Paulo Freire">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=47">
-  <link rel="stylesheet" href="css/games.css?v=47">
+  <link rel="stylesheet" href="css/style.css?v=48">
+  <link rel="stylesheet" href="css/games.css?v=48">
 </head>
 <body>
 
@@ -112,9 +112,55 @@
           </div>
         </div>
 
+        <!-- ACTIVIDAD FAMILIAR CON DROPDOWN (HOVER + CLICK) -->
+        <div class="topbar-nav-dropdown" id="nav-dropdown-family">
+          <a href="javascript:void(0)" class="topbar-nav-link dropdown-trigger nav-special">
+            <i class="fas fa-users"></i>
+            <span>Actividad familiar</span>
+            <i class="fas fa-chevron-down nav-chevron"></i>
+          </a>
+          
+          <div class="nav-dropdown-menu nav-dropdown-family">
+            <div class="ndm-header">
+              <div class="ndm-title"><i class="fas fa-heart"></i> Actividades para la Familia</div>
+              <div class="ndm-sub">Experiencias y retos interactivos</div>
+            </div>
+            
+            <div class="ndm-family-list">
+              <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
+                 target="_blank" rel="noopener noreferrer"
+                 class="ndm-family-card">
+                <div class="nfc-icon-wrap">
+                  <span class="nfc-icon">🗝️</span>
+                </div>
+                <div class="nfc-body">
+                  <div class="nfc-header-row">
+                    <span class="nfc-title">Escape Rooms Nostálgico</span>
+                    <span class="nfc-badge">Familiar</span>
+                  </div>
+                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades.</p>
+                  <div class="nfc-action">
+                    <span class="nfc-play-btn">
+                      <span>Entrar al Escape Room</span>
+                      <i class="fas fa-external-link-alt"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </div>
 
+            <a href="index.html#actividad-familiar" class="ndm-footer">
+              <span>Ver actividades en familia en la página</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
 
-
+        <!-- ACTIVIDAD DE CASA -->
+        <a href="index.html#actividad-de-casa" class="topbar-nav-link" id="nav-link-casa">
+          <i class="fas fa-house-user"></i>
+          <span>Actividad de casa</span>
+        </a>
 
         <!-- Mi Carpeta Drive (Visible al iniciar sesión) -->
         <a href="#section-drive" class="nav-drive-link" style="display:none;" onclick="if(window.switchSection) window.switchSection('drive')">
@@ -215,12 +261,12 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=47"></script>
-  <script src="js/data.js?v=47"></script>
-  <script src="js/students.js?v=47"></script>
-  <script src="js/gdrive_viewer.js?v=47"></script>
-  <script src="js/auth.js?v=47"></script>
-  <script src="js/audio.js?v=47"></script>
+  <script src="js/firebase-config.js?v=48"></script>
+  <script src="js/data.js?v=48"></script>
+  <script src="js/students.js?v=48"></script>
+  <script src="js/gdrive_viewer.js?v=48"></script>
+  <script src="js/auth.js?v=48"></script>
+  <script src="js/audio.js?v=48"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>
