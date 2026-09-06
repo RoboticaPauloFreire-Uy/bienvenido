@@ -5167,23 +5167,34 @@ button, input, select, textarea { font-family: inherit; }
 
 .mklib-card-header {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 16px 18px 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 18px 22px;
   background: linear-gradient(135deg, #F5F3FF, #EDE9FE);
-  border-bottom: 1px solid #DDD6FE;
+  border-bottom: 1.5px solid #DDD6FE;
+}
+
+.mklib-header-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 240px;
 }
 
 .mklib-icon-wrap {
   position: relative;
   flex-shrink: 0;
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   background: #7C3AED;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3);
 }
 
 .mklib-chip-icon {
@@ -5200,8 +5211,9 @@ button, input, select, textarea { font-family: inherit; }
   font-size: 0.62rem;
   font-weight: 900;
   border-radius: 999px;
-  padding: 1px 5px;
+  padding: 1px 6px;
   line-height: 1.4;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
 }
 
 .mklib-info {
@@ -5209,23 +5221,30 @@ button, input, select, textarea { font-family: inherit; }
   min-width: 0;
 }
 
+.mklib-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
 .mklib-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #3B0764;
-  margin: 0 0 3px;
+  margin: 0;
 }
 
 .mklib-desc {
-  font-size: 0.82rem;
-  color: #6B7280;
+  font-size: 0.85rem;
+  color: #4B5563;
   font-weight: 600;
   margin: 0;
   line-height: 1.4;
 }
 
 .mklib-badge {
-  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -5234,123 +5253,97 @@ button, input, select, textarea { font-family: inherit; }
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 3px 10px;
 }
 
-/* ── Vista Dividida: Simulador + Bloques ── */
-.mklib-split-view {
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 0;
-  border-top: 1px solid #DDD6FE;
-  background: #F9FAFB;
-  min-height: 440px;
-}
-
-@media (max-width: 900px) {
-  .mklib-split-view {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Panel Izquierdo: Simulador */
-.mklib-sim-pane {
-  background: #0F172A;
-  border-right: 2px solid #CBD5E1;
+.mklib-header-actions {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-@media (max-width: 900px) {
-  .mklib-sim-pane {
-    border-right: none;
-    border-bottom: 2px solid #CBD5E1;
-  }
+.mklib-btn-entrar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #7C3AED, #6D28D9);
+  color: #FFFFFF !important;
+  font-size: 0.92rem;
+  font-weight: 800;
+  padding: 10px 22px;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 3px 12px rgba(124, 58, 237, 0.28);
+  transition: all 0.2s ease;
 }
 
-/* Panel Derecho: Bloques */
-.mklib-code-pane {
+.mklib-btn-entrar:hover {
+  background: linear-gradient(135deg, #6D28D9, #5B21B6);
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.38);
+  color: #FFFFFF !important;
+}
+
+/* ── Pestañas internas de la tarjeta (Código MakeCode / Simulador) ── */
+.mklib-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: #F8FAFC;
+  border-bottom: 1.5px solid #E2E8F0;
+}
+
+.mklib-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 10px;
+  border: 1.5px solid #CBD5E1;
   background: #FFFFFF;
-  display: flex;
-  flex-direction: column;
+  color: #475569;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* Encabezados de cada panel */
-.mklib-pane-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid #E2E8F0;
-}
-
-.mklib-sim-pane .mklib-pane-header {
-  background: #1E293B;
-  border-bottom: 1px solid #334155;
-}
-
-.mklib-code-pane .mklib-pane-header {
+.mklib-tab-btn:hover {
+  border-color: #A78BFA;
+  color: #7C3AED;
   background: #F5F3FF;
-  border-bottom: 1px solid #DDD6FE;
 }
 
-.mph-title {
-  font-size: 0.85rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 7px;
+.mklib-tab-btn.active {
+  background: #7C3AED;
+  border-color: #6D28D9;
+  color: #FFFFFF;
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.25);
 }
 
-.mklib-sim-pane .mph-title {
-  color: #FDD835;
-}
-
-.mklib-code-pane .mph-title {
-  color: #5B21B6;
-}
-
-.mph-badge {
-  font-size: 0.68rem;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 999px;
-}
-
-.mklib-sim-pane .mph-badge {
-  background: #FBC02D;
-  color: #0F172A;
-}
-
-.mklib-code-pane .mph-badge {
-  background: #4ADE80;
-  color: #14532D;
-}
-
-/* Contenedores de iframe */
-.mklib-sim-frame-wrap {
-  flex: 1;
+/* ── Paneles de la tarjeta ── */
+.mklib-panes-body {
+  position: relative;
   width: 100%;
-  min-height: 420px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0B0F19;
-  overflow: hidden;
+  background: #FFFFFF;
+  min-height: 480px;
 }
 
-.mklib-sim-iframe {
+.mklib-tab-pane {
+  display: none;
   width: 100%;
-  height: 100%;
-  min-height: 420px;
-  border: none;
-  background: transparent;
 }
 
+.mklib-tab-pane.active {
+  display: block;
+}
+
+/* Panel Código */
 .mklib-code-frame-wrap {
-  flex: 1;
   width: 100%;
-  min-height: 420px;
+  min-height: 520px;
+  height: 560px;
   background: #FFFFFF;
   overflow: hidden;
 }
@@ -5358,52 +5351,71 @@ button, input, select, textarea { font-family: inherit; }
 .mklib-code-iframe {
   width: 100%;
   height: 100%;
-  min-height: 420px;
+  min-height: 520px;
   border: none;
   background: #FFFFFF;
 }
 
-.mklib-no-embed {
-  padding: 20px;
-  color: #B45309;
-  background: #FFFBEB;
-  font-size: 0.82rem;
-  font-weight: 700;
+/* Panel Simulador */
+.mklib-tab-pane.pane-simulador.active {
+  display: block;
+  background: #0F172A;
 }
 
-.mklib-card-footer {
+.mklib-sim-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 12px 18px;
-  background: #F5F3FF;
-  border-top: 1px solid #DDD6FE;
+  justify-content: center;
+  padding: 28px 16px;
+  min-height: 500px;
 }
 
-.mklib-btn-view {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #7C3AED;
-  color: #FFF;
-  border-radius: 8px;
-  padding: 7px 16px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.15s;
+.mklib-sim-frame-wrap {
+  width: 100%;
+  max-width: 450px;
+  height: 450px;
+  background: #0B0F19;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  border: 2px solid #334155;
 }
-.mklib-btn-view:hover { background: #6D28D9; transform: scale(1.04); }
 
-.mklib-readonly-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.75rem;
-  color: #6B7280;
+.mklib-sim-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+}
+
+.mklib-no-embed {
+  padding: 24px;
+  color: #B45309;
+  background: #FFFBEB;
+  font-size: 0.88rem;
   font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 650px) {
+  .mklib-card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mklib-header-actions {
+    width: 100%;
+  }
+  .mklib-btn-entrar {
+    width: 100%;
+    justify-content: center;
+  }
+  .mklib-tabs-bar {
+    overflow-x: auto;
+  }
+  .mklib-sim-frame-wrap {
+    max-width: 100%;
+    height: 380px;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────

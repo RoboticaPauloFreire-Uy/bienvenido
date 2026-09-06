@@ -464,43 +464,48 @@
               var mkInfo = extractMakecodeInfo(entry.shareUrl);
               return '<div class="mklib-card">' +
                 '<div class="mklib-card-header">' +
-                  '<div class="mklib-icon-wrap"><span class="mklib-num">' + (idx+1) + '</span><i class="fas fa-microchip mklib-chip-icon"></i></div>' +
-                  '<div class="mklib-info">' +
-                    '<h4 class="mklib-title">' + (entry.title || 'Código MakeCode #' + (idx+1)) + '</h4>' +
-                    (entry.description ? '<p class="mklib-desc">' + entry.description + '</p>' : '') +
+                  '<div class="mklib-header-main">' +
+                    '<div class="mklib-icon-wrap"><span class="mklib-num">' + (idx+1) + '</span><i class="fas fa-microchip mklib-chip-icon"></i></div>' +
+                    '<div class="mklib-info">' +
+                      '<div class="mklib-title-row">' +
+                        '<h4 class="mklib-title">' + (entry.title || 'Código MakeCode #' + (idx+1)) + '</h4>' +
+                        '<span class="mklib-badge"><i class="fas fa-lock"></i> Solo lectura</span>' +
+                      '</div>' +
+                      (entry.description ? '<p class="mklib-desc">' + entry.description + '</p>' : '') +
+                    '</div>' +
                   '</div>' +
-                  '<span class="mklib-badge"><i class="fas fa-lock"></i> Solo lectura</span>' +
+                  '<div class="mklib-header-actions">' +
+                    '<a class="mklib-btn-entrar" href="' + (entry.shareUrl || '#') + '" target="_blank" rel="noopener noreferrer">' +
+                      '<i class="fas fa-external-link-alt"></i> Entrar' +
+                    '</a>' +
+                  '</div>' +
                 '</div>' +
                 (mkInfo
-                  ? '<div class="mklib-split-view">' +
-                      '<!-- Panel Izquierdo: Simulador Interactivo Micro:bit -->' +
-                      '<div class="mklib-sim-pane">' +
-                        '<div class="mklib-pane-header">' +
-                          '<span class="mph-title"><i class="fas fa-gamepad"></i> Simulador Micro:bit</span>' +
-                          '<span class="mph-badge">🎮 Interactivo</span>' +
-                        '</div>' +
-                        '<div class="mklib-sim-frame-wrap">' +
-                          '<iframe src="' + mkInfo.simUrl + '" class="mklib-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
-                        '</div>' +
-                      '</div>' +
-                      '<!-- Panel Derecho: Bloques de Código de Solo Lectura -->' +
-                      '<div class="mklib-code-pane">' +
-                        '<div class="mklib-pane-header">' +
-                          '<span class="mph-title"><i class="fas fa-cubes"></i> Bloques de Código</span>' +
-                          '<span class="mph-badge">🧩 Solo lectura</span>' +
-                        '</div>' +
+                  ? '<!-- Pestañas internas de la tarjeta -->' +
+                    '<div class="mklib-tabs-bar">' +
+                      '<button type="button" class="mklib-tab-btn active" data-tab="codigo">' +
+                        '<i class="fas fa-puzzle-piece"></i> Código MakeCode' +
+                      '</button>' +
+                      '<button type="button" class="mklib-tab-btn" data-tab="simulador">' +
+                        '<i class="fas fa-gamepad"></i> Simulador' +
+                      '</button>' +
+                    '</div>' +
+                    '<!-- Paneles de la tarjeta -->' +
+                    '<div class="mklib-panes-body">' +
+                      '<div class="mklib-tab-pane pane-codigo active">' +
                         '<div class="mklib-code-frame-wrap">' +
                           '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mklib-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0" allowfullscreen loading="lazy"></iframe>' +
                         '</div>' +
                       '</div>' +
+                      '<div class="mklib-tab-pane pane-simulador">' +
+                        '<div class="mklib-sim-container">' +
+                          '<div class="mklib-sim-frame-wrap">' +
+                            '<iframe src="' + mkInfo.simUrl + '" class="mklib-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
                     '</div>'
                   : '<div class="mklib-no-embed"><i class="fas fa-exclamation-triangle"></i> Link no válido: ' + (entry.shareUrl || 'vacío') + '</div>') +
-                '<div class="mklib-card-footer">' +
-                  '<a class="mklib-btn-view" href="' + (entry.shareUrl||'#') + '" target="_blank" rel="noopener noreferrer">' +
-                    '<i class="fas fa-external-link-alt"></i> Abrir en MakeCode' +
-                  '</a>' +
-                  '<span class="mklib-readonly-label"><i class="fas fa-shield-alt"></i> Simulador interactivo + Bloques de código (sin edición)</span>' +
-                '</div>' +
               '</div>';
             }).join('') +
           '</div>';
@@ -791,6 +796,27 @@
     // ── Upload zona proyecto (solo Scratch Jr, MakeCode no tiene upload) ──
     if (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch) {
       initDropzone(container, student, 'proyecto', '.sb3,.sjr,.pjson,.sb', containerId, true, 'scratch');
+    }
+
+    // ── Pestañas internas de MakeCode (Código / Simulador) ──
+    if (activeFolderKey === 'proyecto' && proyectoSubTab === 'makecode') {
+      container.querySelectorAll('.mklib-tab-btn').forEach(function(btn) {
+        btn.onclick = function() {
+          if (window.sounds) window.sounds.playClick();
+          var card = btn.closest('.mklib-card');
+          if (!card) return;
+          var targetTab = btn.dataset.tab;
+          card.querySelectorAll('.mklib-tab-btn').forEach(function(b) {
+            b.classList.toggle('active', b === btn);
+          });
+          card.querySelectorAll('.mklib-tab-pane').forEach(function(pane) {
+            pane.classList.toggle('active', pane.classList.contains('pane-' + targetTab));
+          });
+          setTimeout(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 50);
+        };
+      });
     }
 
     // ── PDFs ──
