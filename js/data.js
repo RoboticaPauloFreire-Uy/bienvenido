@@ -736,6 +736,70 @@ const MAKECODE_LIBRARY = {
 if (typeof window !== 'undefined') {
   window.MAKECODE_LIBRARY = MAKECODE_LIBRARY;
 
+  // ── Sincronización y Subida de MakeCode a Firestore ──
+  async function seedMakecodeLibraryToFirestore(force) {
+    if (!window.db) return false;
+    try {
+      const batch = window.db.batch();
+      Object.keys(MAKECODE_LIBRARY).forEach(gradeId => {
+        const ref = window.db.collection('makecode_library').doc(gradeId);
+        batch.set(ref, {
+          gradeId: gradeId,
+          items: MAKECODE_LIBRARY[gradeId] || [],
+          updatedAt: new Date().toISOString()
+        }, { merge: !force });
+      });
+      await batch.commit();
+      console.log("✅ Biblioteca MakeCode de todos los grados guardada en Firestore.");
+      return true;
+    } catch (e) {
+      console.warn("Aviso al sembrar MakeCode en Firestore:", e);
+      return false;
+    }
+  }
+
+  // ── Sincronización y Subida de Proyectos a Firestore ──
+  async function seedGradeProjectsToFirestore(force) {
+    if (!window.db || !window.SCHOOL_DATA || !Array.isArray(window.SCHOOL_DATA.grades)) return false;
+    try {
+      const batch = window.db.batch();
+      window.SCHOOL_DATA.grades.forEach(grade => {
+        const ref = window.db.collection('grade_projects').doc(grade.id);
+        batch.set(ref, {
+          gradeId: grade.id,
+          gradeName: grade.name,
+          projects: grade.projects || [],
+          updatedAt: new Date().toISOString()
+        }, { merge: !force });
+      });
+      await batch.commit();
+      console.log("✅ Proyectos de grado (Sala 5 a 6°) guardados en Firestore.");
+      return true;
+    } catch (e) {
+      console.warn("Aviso al sembrar proyectos en Firestore:", e);
+      return false;
+    }
+  }
+
+  // ── Función Maestra: Sube TODO a Cloud Firestore ──
+  async function syncAllToFirestore(force) {
+    if (!window.db) {
+      console.warn("⚠️ Base de datos Firestore no inicializada aún.");
+      return false;
+    }
+    console.log("🔥 Sincronizando todo a Cloud Firestore (paulofreiredb)...");
+    const resMk   = await seedMakecodeLibraryToFirestore(force);
+    const resProj = await seedGradeProjectsToFirestore(force);
+    let resStud   = false;
+    if (window.seedInitialStudents) {
+      await window.seedInitialStudents();
+      resStud = true;
+    }
+    console.log("🎉 Sincronización completada en la nube: MakeCode (" + resMk + "), Proyectos (" + resProj + "), Alumnos (" + resStud + ")");
+    return true;
+  }
+
+  // Listener en tiempo real de MakeCode
   function initMakecodeFirestoreSync() {
     if (!window.db) {
       setTimeout(initMakecodeFirestoreSync, 400);
@@ -743,22 +807,84 @@ if (typeof window !== 'undefined') {
     }
     try {
       window.db.collection('makecode_library').onSnapshot((snapshot) => {
-        if (snapshot.empty) return;
+        if (snapshot.empty) {
+          console.log("🌱 Firestore vacío en makecode_library: subiendo a la nube...");
+          seedMakecodeLibraryToFirestore();
+          return;
+        }
+        let hasSala5 = false;
         snapshot.forEach((doc) => {
           const gradeId = doc.id;
+          if (gradeId === 'sala5') hasSala5 = true;
           const data = doc.data();
-          if (Array.isArray(data.items)) {
+          if (Array.isArray(data.items) && data.items.length > 0) {
             MAKECODE_LIBRARY[gradeId] = data.items;
           }
         });
+        // Si falta sala5 en la nube, guardarlo
+        if (!hasSala5) {
+          seedMakecodeLibraryToFirestore();
+        }
         console.log("☁️ MakeCode sincronizado desde Firestore.");
-      }, () => {});
+      }, (err) => {
+        console.warn("Aviso Firestore makecode_library:", err.message);
+      });
     } catch(e) {}
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMakecodeFirestoreSync);
-  } else {
+  // Listener en tiempo real de Proyectos del Grado
+  function initGradeProjectsFirestoreSync() {
+    if (!window.db) {
+      setTimeout(initGradeProjectsFirestoreSync, 400);
+      return;
+    }
+    try {
+      window.db.collection('grade_projects').onSnapshot((snapshot) => {
+        if (snapshot.empty) {
+          console.log("🌱 Firestore vacío en grade_projects: subiendo proyectos a la nube...");
+          seedGradeProjectsToFirestore();
+          return;
+        }
+        let hasSala5 = false;
+        snapshot.forEach((doc) => {
+          const gradeId = doc.id;
+          if (gradeId === 'sala5') hasSala5 = true;
+          const data = doc.data();
+          const targetProjects = data.projects || data.items;
+          if (Array.isArray(targetProjects) && targetProjects.length > 0) {
+            const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
+            if (gradeObj) {
+              gradeObj.projects = targetProjects;
+            }
+          }
+        });
+        if (!hasSala5) {
+          seedGradeProjectsToFirestore();
+        }
+        console.log("☁️ Proyectos de grado sincronizados desde Firestore.");
+
+        // Refrescar panel si el alumno está conectado
+        if (typeof window.renderGDriveDashboard === 'function' && document.getElementById('student-drive-dashboard-container')) {
+          window.renderGDriveDashboard('student-drive-dashboard-container');
+        }
+      }, (err) => {
+        console.warn("Aviso Firestore grade_projects:", err.message);
+      });
+    } catch(e) {}
+  }
+
+  window.seedMakecodeLibraryToFirestore = seedMakecodeLibraryToFirestore;
+  window.seedGradeProjectsToFirestore   = seedGradeProjectsToFirestore;
+  window.syncAllToFirestore             = syncAllToFirestore;
+
+  function initAllFirestoreDataSync() {
     initMakecodeFirestoreSync();
+    initGradeProjectsFirestoreSync();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllFirestoreDataSync);
+  } else {
+    initAllFirestoreDataSync();
   }
 }
