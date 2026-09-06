@@ -1106,16 +1106,21 @@
 
         '<div class="mkm-panes-body">' +
           '<div class="mkm-tab-pane pane-codigo active">' +
+            '<div class="mkm-code-toolbar">' +
+              '<span class="mkm-ct-label"><i class="fas fa-cubes"></i> Bloques de Código MakeCode</span>' +
+              '<div class="mkm-code-zoom-controls">' +
+                '<button type="button" class="mkm-zoom-btn" id="mkm-zoom-out" title="Reducir tamaño"><i class="fas fa-search-minus"></i></button>' +
+                '<span class="mkm-zoom-val" id="mkm-zoom-label">125%</span>' +
+                '<button type="button" class="mkm-zoom-btn" id="mkm-zoom-in" title="Aumentar tamaño"><i class="fas fa-search-plus"></i></button>' +
+                '<button type="button" class="mkm-zoom-btn" id="mkm-zoom-reset" title="Restablecer (125%)"><i class="fas fa-undo"></i></button>' +
+              '</div>' +
+            '</div>' +
             '<div class="mkm-code-frame-wrap">' +
-              '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0" allowfullscreen loading="lazy"></iframe>' +
+              '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="yes" frameborder="0" allowfullscreen loading="lazy"></iframe>' +
             '</div>' +
           '</div>' +
           '<div class="mkm-tab-pane pane-simulador">' +
-            '<div class="mkm-sim-container">' +
-              '<div class="mkm-sim-frame-wrap">' +
-                '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
-              '</div>' +
-            '</div>' +
+            '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -1137,6 +1142,48 @@
         }, 60);
       };
     });
+
+    // Controles de Zoom para los bloques de código
+    var currentZoom = 1.25;
+    var codeIframe = modal.querySelector('.mkm-code-iframe');
+    var zoomLabel  = modal.querySelector('#mkm-zoom-label');
+    var zoomIn     = modal.querySelector('#mkm-zoom-in');
+    var zoomOut    = modal.querySelector('#mkm-zoom-out');
+    var zoomReset  = modal.querySelector('#mkm-zoom-reset');
+
+    function applyZoom(z) {
+      currentZoom = Math.max(0.75, Math.min(2.5, Math.round(z * 100) / 100));
+      if (codeIframe) {
+        codeIframe.style.transform = 'scale(' + currentZoom + ')';
+        codeIframe.style.transformOrigin = 'top left';
+        codeIframe.style.width = (100 / currentZoom) + '%';
+        codeIframe.style.height = (100 / currentZoom) + '%';
+      }
+      if (zoomLabel) {
+        zoomLabel.textContent = Math.round(currentZoom * 100) + '%';
+      }
+    }
+
+    applyZoom(1.25);
+
+    if (zoomIn) {
+      zoomIn.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        applyZoom(currentZoom + 0.2);
+      };
+    }
+    if (zoomOut) {
+      zoomOut.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        applyZoom(currentZoom - 0.2);
+      };
+    }
+    if (zoomReset) {
+      zoomReset.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        applyZoom(1.25);
+      };
+    }
 
     modal.classList.add('active');
   }

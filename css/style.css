@@ -5342,9 +5342,10 @@ button, input, select, textarea { font-family: inherit; }
 
 .makecode-modal-content {
   background: #FFFFFF;
-  width: 100%;
-  max-width: 1080px;
-  max-height: 94vh;
+  width: 96vw;
+  max-width: 1200px;
+  height: 90vh;
+  max-height: 92vh;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -5362,12 +5363,13 @@ button, input, select, textarea { font-family: inherit; }
 .mkm-header {
   background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
   color: #FFFFFF;
-  padding: 16px 22px;
+  padding: 14px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .mkm-header-info {
@@ -5457,8 +5459,9 @@ button, input, select, textarea { font-family: inherit; }
 
 .mkm-desc-bar {
   background: #F5F3FF;
-  padding: 10px 22px;
+  padding: 8px 22px;
   border-bottom: 1px solid #DDD6FE;
+  flex-shrink: 0;
 }
 
 .mkm-desc-bar p {
@@ -5473,9 +5476,10 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 22px;
+  padding: 8px 22px;
   background: #F8FAFC;
   border-bottom: 1.5px solid #E2E8F0;
+  flex-shrink: 0;
 }
 
 .mkm-tab-btn {
@@ -5506,85 +5510,146 @@ button, input, select, textarea { font-family: inherit; }
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
 }
 
+/* Paneles del Modal */
 .mkm-panes-body {
-  flex: 1;
-  overflow: hidden;
+  flex: 1 1 auto;
   position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   background: #FFFFFF;
-  height: 64vh;
-  min-height: 480px;
 }
 
 .mkm-tab-pane {
   display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
 }
 
 .mkm-tab-pane.active {
-  display: block;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pestaña CÓDIGO MAKECODE */
+.mkm-tab-pane.pane-codigo.active {
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+}
+
+.mkm-code-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  flex-shrink: 0;
+}
+
+.mkm-ct-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #5B21B6;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mkm-code-zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mkm-zoom-btn {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mkm-zoom-btn:hover {
+  background: #EDE9FE;
+  border-color: #7C3AED;
+  color: #7C3AED;
+}
+
+.mkm-zoom-val {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #1E293B;
+  min-width: 50px;
+  text-align: center;
 }
 
 .mkm-code-frame-wrap {
+  flex: 1 1 auto;
+  position: relative;
   width: 100%;
   height: 100%;
+  min-height: 0;
+  overflow: auto;
   background: #FFFFFF;
-  overflow: hidden;
 }
 
 .mkm-code-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;
   background: #FFFFFF;
+  display: block;
+  transform-origin: top left;
+  transition: transform 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
 
+/* Pestaña SIMULADOR MICRO:BIT (Cubre todo el div) */
 .mkm-tab-pane.pane-simulador.active {
   display: block;
-  background: #0F172A;
-}
-
-.mkm-sim-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 20px;
-}
-
-.mkm-sim-frame-wrap {
-  width: 100%;
-  max-width: 440px;
-  height: 440px;
-  background: #0B0F19;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  border: 2px solid #334155;
+  background: #0F172A;
+  padding: 0;
+  margin: 0;
 }
 
 .mkm-sim-iframe {
   width: 100%;
   height: 100%;
   border: none;
-  background: transparent;
+  background: #0F172A;
+  display: block;
 }
 
 @media (max-width: 650px) {
+  .makecode-modal-content {
+    width: 98vw;
+    height: 94vh;
+  }
   .mkm-header {
     flex-direction: column;
     align-items: stretch;
   }
   .mkm-header-actions {
     justify-content: space-between;
-  }
-  .mkm-panes-body {
-    height: 70vh;
-  }
-  .mkm-sim-frame-wrap {
-    max-width: 100%;
-    height: 360px;
   }
 }
 
