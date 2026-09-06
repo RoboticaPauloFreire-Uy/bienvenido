@@ -5709,6 +5709,1237 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 /* ─────────────────────────────────────────────────────────────
+   RUTA DE AVENTURAS (MODO 3) — MAPA DE NIVELES Y MISIONES
+───────────────────────────────────────────────────────────── */
+.adventure-roadmap-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+/* Header / Banner de Progreso */
+.arm-header-banner {
+  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
+  border-radius: 20px;
+  padding: 22px 26px;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  box-shadow: 0 10px 25px -5px rgba(49, 46, 129, 0.35);
+  border: 2px solid rgba(165, 180, 252, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.arm-header-banner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.arm-hb-left {
+  flex: 1 1 300px;
+}
+
+.arm-hb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(253, 224, 71, 0.2);
+  color: #FDE047;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(253, 224, 71, 0.35);
+}
+
+.arm-hb-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0 0 6px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+
+.arm-hb-sub {
+  font-size: 0.88rem;
+  color: #C7D2FE;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.arm-hb-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.arm-progress-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-width: 240px;
+}
+
+.arm-pb-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #E0E7FF;
+}
+
+.arm-pb-bar {
+  width: 100%;
+  height: 9px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.arm-pb-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+
+.arm-pb-stars {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.76rem;
+  color: #FDE047;
+  font-weight: 700;
+}
+
+.arm-pb-xp {
+  background: rgba(253, 224, 71, 0.25);
+  padding: 1px 7px;
+  border-radius: 6px;
+  color: #FEF08A;
+}
+
+.arm-view-toggle {
+  display: inline-flex;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px;
+  border-radius: 10px;
+  gap: 4px;
+}
+
+.arm-vt-btn {
+  background: transparent;
+  border: none;
+  color: #C7D2FE;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.arm-vt-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.arm-vt-btn.active {
+  background: #4F46E5;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+}
+
+/* ── Sendero de Niveles (Trail Mode) ── */
+.arm-trail-path {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 20px 10px;
+}
+
+.arm-trail-path::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  bottom: 40px;
+  left: 50%;
+  width: 6px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    to bottom,
+    #6366F1,
+    #6366F1 12px,
+    transparent 12px,
+    transparent 22px
+  );
+  z-index: 1;
+}
+
+.arm-station {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  z-index: 2;
+}
+
+.arm-station.station-left {
+  flex-direction: row;
+}
+
+.arm-station.station-right {
+  flex-direction: row-reverse;
+}
+
+.arm-node-column {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+.arm-node-bubble {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%);
+  border: 4px solid #FFFFFF;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.arm-node-bubble:hover {
+  transform: scale(1.12);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.5);
+}
+
+.arm-node-bubble.completado {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.arm-node-bubble.activo {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  animation: armPulse 2s infinite ease-in-out;
+}
+
+@keyframes armPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6); }
+  50% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+}
+
+.arm-node-level {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.arm-node-num {
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.arm-node-icon {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+/* Tarjeta de la Misión en el sendero */
+.arm-mission-card {
+  width: calc(50% - 60px);
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  border: 1.5px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.arm-mission-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  border-color: #A5B4FC;
+}
+
+.arm-mission-card.activo {
+  border: 2px solid #F59E0B;
+  background: linear-gradient(180deg, #FFFDF5 0%, #FFFFFF 100%);
+}
+
+.arm-mc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.arm-mc-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.arm-mc-status {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.arm-mc-status.completado {
+  background: #DCFCE7;
+  color: #15803D;
+}
+
+.arm-mc-status.activo {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.arm-mc-status.desafio {
+  background: #F1F5F9;
+  color: #475569;
+}
+
+.arm-mc-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.arm-mc-desc {
+  font-size: 0.84rem;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.arm-mc-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.arm-btn-primary {
+  background: #4F46E5;
+  color: #FFFFFF;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+}
+
+.arm-btn-primary:hover {
+  background: #4338CA;
+  transform: scale(1.02);
+}
+
+.arm-btn-secondary {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.arm-btn-secondary:hover {
+  background: #E0E7FF;
+  border-color: #A5B4FC;
+}
+
+.arm-btn-ghost {
+  background: #F8FAFC;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.arm-btn-ghost:hover {
+  background: #F1F5F9;
+  color: #1E293B;
+}
+
+/* ── Vista Cuadrícula (Grid Mode) ── */
+.arm-grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.arm-grid-card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.arm-grid-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-color: #A5B4FC;
+}
+
+/* ── Responsive para el Sendero ── */
+@media (max-width: 768px) {
+  .arm-trail-path::before {
+    left: 36px;
+  }
+  .arm-station,
+  .arm-station.station-left,
+  .arm-station.station-right {
+    flex-direction: row;
+    padding-left: 76px;
+  }
+  .arm-node-column {
+    left: 36px;
+    transform: translateX(-50%);
+  }
+  .arm-mission-card {
+    width: 100%;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MODAL DE AVENTURA & MODO PRESENTACIÓN CON VISOR PDF
+───────────────────────────────────────────────────────────── */
+.adventure-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.adventure-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.adventure-modal-content {
+  background: #FFFFFF;
+  width: 96vw;
+  max-width: 1200px;
+  height: 90vh;
+  max-height: 92vh;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #4F46E5;
+  animation: apmScaleIn 0.25s ease forwards;
+}
+
+@keyframes apmScaleIn {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Soporte de Pantalla Completa nativo */
+:fullscreen .adventure-modal-content,
+:-webkit-full-screen .adventure-modal-content {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* Encabezado del Modal */
+.apm-header {
+  background: linear-gradient(135deg, #1E1B4B 0%, #4338CA 100%);
+  color: #FFFFFF;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.apm-header-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.apm-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: #FDE047;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+}
+
+.apm-title-wrap h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 3px;
+  line-height: 1.2;
+}
+
+.apm-subtitle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #C7D2FE;
+}
+
+.apm-lvl-badge {
+  background: #F59E0B;
+  color: #FFFFFF;
+  font-weight: 900;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.apm-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.apm-btn-fullscreen {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.apm-btn-fullscreen:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.03);
+}
+
+.apm-close-btn {
+  background: rgba(255, 255, 255, 0.18);
+  border: none;
+  color: #FFFFFF;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.apm-close-btn:hover {
+  background: rgba(239, 68, 68, 0.8);
+  transform: scale(1.08);
+}
+
+/* Barra de Pestañas */
+.apm-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: #F8FAFC;
+  border-bottom: 1.5px solid #E2E8F0;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.apm-tab-btn {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.apm-tab-btn:hover {
+  border-color: #818CF8;
+  color: #4F46E5;
+  background: #EEF2FF;
+}
+
+.apm-tab-btn.active {
+  background: #4F46E5;
+  border-color: #4338CA;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+/* Contenedor de Paneles */
+.apm-panes-container {
+  flex: 1 1 auto;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #F8FAFC;
+}
+
+.apm-tab-pane {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+}
+
+.apm-tab-pane.active {
+  display: flex;
+}
+
+/* ──────────────────────────────────────────────────
+   PESTAÑA: MODO PRESENTACIÓN (SLIDES INTERACTIVAS)
+────────────────────────────────────────────────── */
+.apm-presentation-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #FFFFFF;
+}
+
+/* Barra superior de diapositiva */
+.apm-slide-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  flex-shrink: 0;
+}
+
+.apm-stn-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #3730A3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apm-stn-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apm-stn-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #CBD5E1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.apm-stn-dot.active {
+  background: #4F46E5;
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.5);
+}
+
+.apm-stn-counter {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #64748B;
+  background: #FFFFFF;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid #E2E8F0;
+}
+
+/* Viewport y Diapositivas */
+.apm-slide-viewport {
+  flex: 1 1 auto;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px 30px;
+  background: #FFFFFF;
+}
+
+.apm-slide-page {
+  display: none;
+  animation: apmSlideFade 0.3s ease forwards;
+}
+
+.apm-slide-page.active {
+  display: block;
+}
+
+@keyframes apmSlideFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Layout Diapositiva 1: Portada & Reto */
+.apm-slide-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: center;
+  min-height: 100%;
+}
+
+.apm-sg-img-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.12);
+  border: 2px solid #E2E8F0;
+  background: #0F172A;
+  max-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apm-sg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.apm-reto-card {
+  background: #F5F3FF;
+  border-left: 5px solid #7C3AED;
+  padding: 16px 20px;
+  border-radius: 0 14px 14px 0;
+  margin: 14px 0;
+}
+
+.apm-reto-card h4 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #5B21B6;
+  margin: 0 0 6px;
+}
+
+.apm-reto-card p {
+  font-size: 0.9rem;
+  color: #4C1D95;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.apm-skills-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.apm-skill-pill {
+  background: #EEF2FF;
+  color: #4338CA;
+  border: 1px solid #C7D2FE;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Layout Diapositiva 2: Materiales */
+.apm-materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.apm-mat-card {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.apm-mat-card:hover {
+  background: #FFFFFF;
+  border-color: #6366F1;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.12);
+}
+
+.apm-mat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #EEF2FF;
+  color: #4F46E5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.apm-mat-info h5 {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 3px;
+}
+
+.apm-mat-info p {
+  font-size: 0.78rem;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Layout Diapositiva 3: Simulador / Taller en vivo */
+.apm-sim-slide-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 360px;
+  background: #0F172A;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.apm-sim-slide-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: #1E293B;
+  border-bottom: 1px solid #334155;
+  color: #F8FAFC;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.apm-sim-slide-iframe {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 360px;
+  border: none;
+  background: #0F172A;
+}
+
+/* Layout Diapositiva 4: Felicitaciones y Retos Extra */
+.apm-win-banner {
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+  border-radius: 18px;
+  border: 2px dashed #10B981;
+  margin-bottom: 22px;
+}
+
+.apm-win-trophy {
+  font-size: 3rem;
+  margin-bottom: 6px;
+  animation: apmBounce 1s infinite alternate ease-in-out;
+}
+
+@keyframes apmBounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-8px); }
+}
+
+.apm-win-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #065F46;
+  margin: 0 0 6px;
+}
+
+.apm-win-sub {
+  font-size: 0.9rem;
+  color: #047857;
+  margin: 0;
+}
+
+.apm-extra-challenges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.apm-ec-item {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.apm-ec-badge {
+  background: #FEF3C7;
+  color: #B45309;
+  font-weight: 900;
+  font-size: 0.85rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.apm-ec-item h6 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 3px;
+}
+
+.apm-ec-item p {
+  font-size: 0.78rem;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Barra de controles de navegación de la presentación */
+.apm-slide-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: #F8FAFC;
+  border-top: 1.5px solid #E2E8F0;
+  flex-shrink: 0;
+}
+
+.apm-ctrl-btn {
+  padding: 9px 20px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  border: none;
+}
+
+.apm-ctrl-prev {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+}
+
+.apm-ctrl-prev:hover:not(:disabled) {
+  background: #F1F5F9;
+  color: #1E293B;
+}
+
+.apm-ctrl-prev:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.apm-ctrl-next {
+  background: #4F46E5;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+}
+
+.apm-ctrl-next:hover {
+  background: #4338CA;
+  transform: scale(1.03);
+}
+
+.apm-ctrl-bar {
+  flex: 1 1 auto;
+  max-width: 220px;
+  height: 6px;
+  background: #E2E8F0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0 16px;
+}
+
+.apm-ctrl-bar-fill {
+  height: 100%;
+  background: #4F46E5;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* ──────────────────────────────────────────────────
+   PESTAÑA: VISOR Y FICHA PDF
+────────────────────────────────────────────────── */
+.apm-pdf-view {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #FFFFFF;
+}
+
+.apm-pdf-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 22px;
+  background: #F8FAFC;
+  border-bottom: 1.5px solid #E2E8F0;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.apm-pdf-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1E293B;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apm-pdf-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apm-pdf-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none !important;
+  transition: all 0.2s;
+  border: none;
+}
+
+.apm-pdf-btn-download {
+  background: #DC2626;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+}
+
+.apm-pdf-btn-download:hover {
+  background: #B91C1C;
+  transform: scale(1.02);
+}
+
+.apm-pdf-btn-print {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+}
+
+.apm-pdf-btn-print:hover {
+  background: #F1F5F9;
+  color: #1E293B;
+}
+
+.apm-pdf-frame-wrap {
+  flex: 1 1 auto;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: #525659;
+}
+
+.apm-pdf-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Ficha imprimible si no hay archivo PDF físico */
+.apm-printable-sheet {
+  background: #FFFFFF;
+  padding: 36px 44px;
+  max-width: 800px;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  border: 1px solid #E2E8F0;
+  font-family: inherit;
+  color: #1E293B;
+}
+
+.apm-ps-header {
+  border-bottom: 2px solid #4F46E5;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.apm-ps-logo {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #4F46E5;
+}
+
+.apm-ps-section-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #3730A3;
+  margin: 18px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .apm-printable-sheet, .apm-printable-sheet * {
+    visibility: visible;
+  }
+  .apm-printable-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    VISTA DEL ALUMNO LOGUEADO (FOCO EN DRIVE DASHBOARD Y ACTIVIDAD FAMILIAR)
 ───────────────────────────────────────────────────────────── */
 body.student-logged-in .hero-carousel,

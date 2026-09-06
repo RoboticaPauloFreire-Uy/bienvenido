@@ -95,6 +95,27 @@ const SCHOOL_DATA = {
           makecodeUrl: null,
           scratchId: null,
           materials: null
+        },
+        {
+          id: "s5-p2",
+          title: "El Robot de las Emociones 🤖",
+          author: "Taller Sala 5",
+          date: "Septiembre 2026",
+          coverImage: "img/scratchjr.png",
+          description: "Construimos un robot con cartón y botones táctiles. Al presionar cada botón, el robot muestra en su pantalla una cara feliz, sorprendida o baila con luces LED.",
+          tags: ["Robótica", "Emociones", "Sensores"],
+          gallery: [
+            "img/scratchjr.png",
+            "img/minecraft.png"
+          ],
+          pdfUrl: null,
+          makecodeUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
+          scratchId: null,
+          materials: [
+            { title: "Caja de cartón y tapitas", description: "Para armar el cuerpo y las antenas del robot" },
+            { title: "Placa BBC micro:bit", description: "La carita del robot con matriz de luces LED" },
+            { title: "Cables cocodrilo", description: "Para conectar los botones mágicos" }
+          ]
         }
       ]
     },
@@ -651,8 +672,8 @@ const MAKECODE_LIBRARY = {
   // Sala de 5 años
   sala5: [
     {
-      title: "Proyecto Micro:bit — Ejemplo",
-      description: "Código de bloques en MakeCode para Micro:bit (solo lectura)",
+      title: "Carita Feliz y Guiño 😃",
+      description: "Al pulsar el botón A la micro:bit sonríe, y con el botón B nos guiña un ojo. ¡Primeros pasos en programación!",
       shareUrl: "https://makecode.microbit.org/S18043-28109-69626-83440"
     }
   ],

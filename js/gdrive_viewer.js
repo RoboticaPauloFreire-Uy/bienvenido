@@ -58,6 +58,7 @@
   let isUploadingFile            = false;
   let currentCarouselIndex       = 0;
   let carouselAutoPlayTimer      = null;
+  let isRoadmapGridMode          = false;
 
   function formatFileSize(bytes) {
     if (!bytes || bytes <= 0) return '—';
@@ -323,6 +324,243 @@
   }
 
   // ──────────────────────────────────────────────────
+  // AGREGADOR DE MISIONES / RUTA DE AVENTURAS (MODO 3)
+  // Combina proyectos del currículo, MakeCode y guías de Drive
+  // ──────────────────────────────────────────────────
+  function getAdventureMissionsForStudent(student) {
+    if (!student) return [];
+    var gradeId = student.gradeId || 'sala5';
+    var gradeObj = null;
+    if (window.SCHOOL_DATA && Array.isArray(window.SCHOOL_DATA.grades)) {
+      gradeObj = window.SCHOOL_DATA.grades.find(function(g){ return g.id === gradeId; });
+    }
+
+    var missions = [];
+    var levelCount = 1;
+
+    // 1. Proyectos definidos en SCHOOL_DATA para el grado
+    if (gradeObj && Array.isArray(gradeObj.projects)) {
+      gradeObj.projects.forEach(function(p, idx) {
+        var isMakecode = !!p.makecodeUrl;
+        var isScratch  = !!p.scratchId || (p.tags && p.tags.indexOf('Scratch Jr') !== -1);
+        var type  = isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica');
+        var badge = isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker');
+        var icon  = isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket');
+
+        missions.push({
+          id: p.id || ('proj-' + idx),
+          level: levelCount++,
+          title: p.title,
+          subtitle: p.author ? ('Por ' + p.author) : (gradeObj.name),
+          description: p.description || 'Desafío y proyecto de programación del grado.',
+          type: type,
+          badge: badge,
+          icon: icon,
+          color: gradeObj.color || '#2563EB',
+          stars: 3,
+          status: levelCount === 2 ? 'completado' : (levelCount === 3 ? 'activo' : 'desafio'),
+          coverImage: p.coverImage || (p.gallery && p.gallery[0]) || 'img/scratchjr.png',
+          gallery: p.gallery || [],
+          pdfUrl: p.pdfUrl || null,
+          downloadPdfUrl: p.pdfUrl || null,
+          makecodeUrl: p.makecodeUrl || null,
+          scratchId: p.scratchId || null,
+          materials: p.materials || [
+            { title: 'Computadora o Tablet', description: 'Para programar y probar el proyecto' },
+            { title: 'Materiales del Taller', description: 'Papel, colores y tarjetas para bocetos' }
+          ],
+          gradeName: gradeObj.name
+        });
+      });
+    }
+
+    // 2. Proyectos de MAKECODE_LIBRARY para el grado
+    var mkLib = (window.MAKECODE_LIBRARY && window.MAKECODE_LIBRARY[gradeId]) || [];
+    mkLib.forEach(function(m, idx) {
+      if (!missions.some(function(it){ return it.title === m.title; })) {
+        missions.push({
+          id: 'mk-' + idx,
+          level: levelCount++,
+          title: m.title || ('Misión MakeCode #' + (idx + 1)),
+          subtitle: 'Simulador y Bloques Micro:bit',
+          description: m.description || 'Programá y simulá sensores, animaciones e inventos con Micro:bit.',
+          type: 'makecode',
+          badge: '💻 MakeCode Micro:bit',
+          icon: 'fa-microchip',
+          color: '#7C3AED',
+          stars: 3,
+          status: levelCount === 2 ? 'completado' : (levelCount === 3 ? 'activo' : 'desafio'),
+          coverImage: 'img/microbit.png',
+          gallery: [],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: m.shareUrl,
+          scratchId: null,
+          materials: [
+            { title: 'Placa BBC micro:bit v2', description: 'Microcontrolador con matriz LED 5x5 y sensores' },
+            { title: 'Cable Micro-USB', description: 'Para transferir el código y dar energía' },
+            { title: 'Portapilas o Batería', description: 'Para probar tu robot o invento en movimiento' }
+          ],
+          gradeName: student.gradeName
+        });
+      }
+    });
+
+    // 3. Guías PDF de Google Drive (FOLDER_CONTENTS.proyectos.items)
+    var drivePdfs = (FOLDER_CONTENTS.proyectos && FOLDER_CONTENTS.proyectos.items) || [];
+    drivePdfs.forEach(function(pdf, idx) {
+      missions.push({
+        id: 'pdf-' + (pdf.id || idx),
+        level: levelCount++,
+        title: pdf.title || pdf.name.replace(/\.pdf$/i, ''),
+        subtitle: 'Guía de Construcción y Ficha de Trabajo',
+        description: pdf.desc || 'Ficha práctica descargable con los pasos del proyecto para el aula.',
+        type: 'pdf',
+        badge: '📄 Ficha Didáctica PDF',
+        icon: 'fa-file-pdf',
+        color: '#DC2626',
+        stars: 3,
+        status: 'desafio',
+        coverImage: 'img/pdf_preview_placeholder.png',
+        gallery: [],
+        pdfUrl: pdf.url,
+        downloadPdfUrl: pdf.downloadUrl || pdf.url,
+        makecodeUrl: null,
+        scratchId: null,
+        materials: [
+          { title: 'Guía Impresa / Digital', description: 'Manual ilustrado paso a paso' },
+          { title: 'Herramientas del Taller', description: 'Tijeras, cinta y componentes' }
+        ],
+        gradeName: student.gradeName
+      });
+    });
+
+    return missions;
+  }
+
+  // ──────────────────────────────────────────────────
+  // RENDER HTML DE RUTA DE AVENTURAS (MODO 3)
+  // ──────────────────────────────────────────────────
+  function renderAdventureRoadmapHtml(student, missions, isGrid) {
+    if (!missions || missions.length === 0) {
+      return '<div class="gdb-empty-state"><div class="ges-icon">🗺️</div><h4>Sin misiones aún</h4><p>Pronto se publicarán los desafíos para ' + student.gradeName + '.</p></div>';
+    }
+
+    var completedCount = missions.filter(function(m){ return m.status === 'completado'; }).length;
+    if (completedCount === 0 && missions.length > 0) completedCount = 1;
+    var progressPercent = Math.min(100, Math.round((completedCount / missions.length) * 100));
+
+    var headerHtml =
+      '<div class="arm-header-banner">' +
+        '<div class="arm-hb-left">' +
+          '<div class="arm-hb-badge"><i class="fas fa-compass"></i> RUTA MAKER 2026</div>' +
+          '<h3 class="arm-hb-title">Camino de Aventuras — ' + student.gradeName + '</h3>' +
+          '<p class="arm-hb-sub">¡Superá cada estación, programá inventos y descubrí nuevos desafíos tecnológicos!</p>' +
+        '</div>' +
+        '<div class="arm-hb-right">' +
+          '<div class="arm-progress-box">' +
+            '<div class="arm-pb-top">' +
+              '<span><i class="fas fa-trophy"></i> Progreso del Taller</span>' +
+              '<strong>' + completedCount + ' / ' + missions.length + ' Misiones</strong>' +
+            '</div>' +
+            '<div class="arm-pb-bar">' +
+              '<div class="arm-pb-fill" style="width:' + progressPercent + '%;"></div>' +
+            '</div>' +
+            '<div class="arm-pb-stars">' +
+              '<span>⭐ Explorador Maker</span>' +
+              '<span class="arm-pb-xp">⚡ +' + (completedCount * 100) + ' XP</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="arm-view-toggle">' +
+            '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="Ver como Sendero de Niveles">' +
+              '<i class="fas fa-route"></i> Mapa' +
+            '</button>' +
+            '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Cuadrícula">' +
+              '<i class="fas fa-th-large"></i> Cuadrícula' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    var bodyHtml = '';
+
+    if (!isGrid) {
+      // ── Sendero de Niveles (Trail Mode) ──
+      bodyHtml = '<div class="arm-trail-path">' +
+        missions.map(function(m, idx) {
+          var sideClass = (idx % 2 === 0) ? 'station-left' : 'station-right';
+          var statusText = m.status === 'completado' ? '⭐ Completado' : (m.status === 'activo' ? '⚡ En Curso' : '🎯 Reto');
+
+          return '<div class="arm-station ' + sideClass + '" data-mission-idx="' + idx + '">' +
+            '<div class="arm-node-column">' +
+              '<div class="arm-node-bubble ' + m.status + '" title="Nivel ' + m.level + ': ' + m.title.replace(/"/g, '&quot;') + '">' +
+                '<span class="arm-node-level">NIVEL</span>' +
+                '<span class="arm-node-num">' + m.level + '</span>' +
+                '<div class="arm-node-icon"><i class="fas ' + m.icon + '"></i></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="arm-mission-card ' + m.status + '" data-mission-idx="' + idx + '">' +
+              '<div class="arm-mc-header">' +
+                '<span class="arm-mc-badge" style="background:' + m.color + '22;color:' + m.color + ';">' +
+                  m.badge +
+                '</span>' +
+                '<span class="arm-mc-status ' + m.status + '">' + statusText + '</span>' +
+              '</div>' +
+              '<div class="arm-mc-body">' +
+                '<h4 class="arm-mc-title">' + m.title + '</h4>' +
+                '<p class="arm-mc-desc">' + m.description + '</p>' +
+              '</div>' +
+              '<div class="arm-mc-footer">' +
+                '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
+                  '<i class="fas fa-play"></i> Iniciar Misión' +
+                '</button>' +
+                '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Abrir Modo Presentación">' +
+                  '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
+                '</button>' +
+                '<button type="button" class="arm-btn-ghost arm-btn-open-pdf" data-mission-idx="' + idx + '" title="Ver Guía PDF">' +
+                  '<i class="fas fa-file-pdf"></i> Guía PDF' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    } else {
+      // ── Cuadrícula (Grid Mode) ──
+      bodyHtml = '<div class="arm-grid-view">' +
+        missions.map(function(m, idx) {
+          var statusText = m.status === 'completado' ? '⭐ Completado' : (m.status === 'activo' ? '⚡ En Curso' : '🎯 Reto');
+          return '<div class="arm-grid-card ' + m.status + '" data-mission-idx="' + idx + '">' +
+            '<div class="arm-mc-header">' +
+              '<span class="arm-mc-badge" style="background:' + m.color + '22;color:' + m.color + ';">' +
+                '<span style="background:' + m.color + ';color:#FFF;padding:1px 6px;border-radius:4px;margin-right:4px;">L' + m.level + '</span> ' + m.badge +
+              '</span>' +
+              '<span class="arm-mc-status ' + m.status + '">' + statusText + '</span>' +
+            '</div>' +
+            '<div class="arm-mc-body">' +
+              '<h4 class="arm-mc-title">' + m.title + '</h4>' +
+              '<p class="arm-mc-desc">' + m.description + '</p>' +
+            '</div>' +
+            '<div class="arm-mc-footer">' +
+              '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
+                '<i class="fas fa-play"></i> Iniciar' +
+              '</button>' +
+              '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '">' +
+                '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
+              '</button>' +
+              '<button type="button" class="arm-btn-ghost arm-btn-open-pdf" data-mission-idx="' + idx + '">' +
+                '<i class="fas fa-file-pdf"></i> PDF' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    }
+
+    return '<div class="adventure-roadmap-wrapper">' + headerHtml + bodyHtml + '</div>';
+  }
+
+  // ──────────────────────────────────────────────────
   // RENDER PRINCIPAL
   // ──────────────────────────────────────────────────
   function renderGDriveDashboard(containerId) {
@@ -347,13 +585,16 @@
       proyectoSubTab = 'makecode';
     }
 
+    // Misiones de la Ruta de Aventuras (Modo 3)
+    var adventureMissions = getAdventureMissionsForStudent(student);
+
     // Badges y conteos
     var validProyectoFiles = (FOLDER_CONTENTS.proyecto.items || []).filter(function(f){
       return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode';
     });
 
     var badgeDibujos     = isLoadingDriveFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.dibujos.items.length;
-    var badgeProyectos   = isLoadingProjectFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.proyectos.items.length;
+    var badgeProyectos   = adventureMissions.length;
     var badgeProyecto    = isLoadingProyectoFiles ? '<i class="fas fa-spinner fa-spin"></i>' : validProyectoFiles.length;
     var totalActividades = FOLDER_CONTENTS.actividades.items.length + (FOLDER_CONTENTS.actividades.generalItems.length > 0 ? FOLDER_CONTENTS.actividades.generalItems.length : 1);
     var badgeActividades = isLoadingActividadesFiles ? '<i class="fas fa-spinner fa-spin"></i>' : totalActividades;
@@ -366,7 +607,7 @@
     // countText barra
     var countText = '';
     if (activeFolderKey === 'dibujos')   countText = isLoadingDriveFiles ? '<i class="fas fa-sync-alt fa-spin"></i> Conectando...' : FOLDER_CONTENTS.dibujos.items.length + ' dibujo(s)';
-    else if (activeFolderKey === 'proyectos') countText = isLoadingProjectFiles ? '<i class="fas fa-sync-alt fa-spin"></i> Buscando...' : FOLDER_CONTENTS.proyectos.items.length + ' proyecto(s) PDF';
+    else if (activeFolderKey === 'proyectos') countText = adventureMissions.length + ' misiones de aventura (' + student.gradeName + ')';
     else if (activeFolderKey === 'proyecto') {
       if (isLoadingProyectoFiles) {
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Cargando...';
@@ -392,18 +633,9 @@
     var uploadZoneHtml  = '';
     var displayItems; // solo para dibujos
 
-    // ═══ CARPETA: PROYECTOS PDF ═══
+    // ═══ CARPETA: RUTA DE AVENTURAS / PROYECTOS (MODO 3) ═══
     if (activeFolderKey === 'proyectos') {
-      if (isLoadingProjectFiles && FOLDER_CONTENTS.proyectos.items.length === 0) {
-        mainDisplayHtml = loadingHtml('Cargando proyectos de Google Drive...', 'Buscando guías PDF para <strong>' + gradeFolder + '</strong>', '#2563EB');
-      } else if (!isLoadingProjectFiles && FOLDER_CONTENTS.proyectos.items.length === 0) {
-        mainDisplayHtml = emptyHtml('📂', 'Sin proyectos en ' + gradeFolder, 'Los proyectos que suba el docente aparecerán aquí.');
-      } else {
-        mainDisplayHtml = '<div class="gdb-pdf-grid">' +
-          FOLDER_CONTENTS.proyectos.items.slice(0, 10).map(function(item){
-            return pdfCard(item, gradeFolder);
-          }).join('') + '</div>';
-      }
+      mainDisplayHtml = renderAdventureRoadmapHtml(student, adventureMissions, isRoadmapGridMode);
 
     // ═══ CARPETA: PROYECTO DEL ALUMNO (Scratch Jr + MakeCode) ═══
     } else if (activeFolderKey === 'proyecto') {
@@ -699,7 +931,7 @@
             '<div class="gts-title"><i class="fas fa-sitemap"></i> Carpetas de ' + student.name.split(' ')[0] + '</div>' +
             '<div class="gts-tree">' +
               treeFolder('dibujos', '🎨 Dibujos', badgeDibujos, activeFolderKey, '#16A34A') +
-              treeFolder('proyectos', '🚀 Proyectos (' + gradeFolder + ')', badgeProyectos, activeFolderKey, '#2563EB') +
+              treeFolder('proyectos', '🗺️ Ruta de Aventuras', badgeProyectos, activeFolderKey, '#2563EB') +
               treeFolder('proyecto', '📁 Proyecto', badgeProyecto, activeFolderKey, '#7C3AED') +
               treeFolder('actividades', '🏠 Actividad de casa', badgeActividades, activeFolderKey, '#EA580C') +
               treeFolder('familiar', '👨‍👩‍👧 Actividad familiar', badgeFamiliar, activeFolderKey, '#DB2777') +
@@ -726,7 +958,7 @@
               '<div class="gca-fb-title">' +
                 '<i class="fas ' + currentFolder.icon + '"></i>' +
                 '<span>Contenido de: <strong>' +
-                  (activeFolderKey === 'proyectos' ? 'Proyectos PDF (' + gradeFolder + ')' :
+                  (activeFolderKey === 'proyectos' ? 'Ruta de Aventuras (' + student.gradeName + ')' :
                    activeFolderKey === 'proyecto'  ? 'Proyecto' :
                    activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : 'Actividad de casa (Inventario de material)') :
                    activeFolderKey === 'familiar' ? 'Actividad familiar (Escape Rooms Nostálgico)' : currentFolder.name) +
@@ -779,7 +1011,60 @@
       initDropzone(container, student, 'proyecto', '.sb3,.sjr,.pjson,.sb', containerId, true, 'scratch');
     }
 
-    // ── Click en tarjeta MakeCode para abrir Modal con Código y Simulador ──
+    // ── Eventos de la Ruta de Aventuras (Modo 3) ──
+    if (activeFolderKey === 'proyectos') {
+      // Toggle de vista: Mapa vs Cuadrícula
+      container.querySelectorAll('.arm-vt-btn').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          if (window.sounds) window.sounds.playClick();
+          isRoadmapGridMode = (btn.dataset.armMode === 'grid');
+          renderGDriveDashboard(containerId);
+        };
+      });
+
+      // Clic en estación o tarjeta
+      container.querySelectorAll('.arm-station, .arm-mission-card, .arm-grid-card').forEach(function(card){
+        card.onclick = function(e){
+          if (e.target.closest('button') || e.target.closest('a')) return;
+          var idx = parseInt(card.dataset.missionIdx, 10);
+          var mission = adventureMissions[idx];
+          if (mission) openAdventureProjectModal(mission, 'presentacion');
+        };
+      });
+
+      // Botón Iniciar Misión
+      container.querySelectorAll('.arm-btn-open-modal').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          var idx = parseInt(btn.dataset.missionIdx, 10);
+          var mission = adventureMissions[idx];
+          if (mission) openAdventureProjectModal(mission, 'presentacion');
+        };
+      });
+
+      // Botón Modo Presentación
+      container.querySelectorAll('.arm-btn-open-presentation').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          var idx = parseInt(btn.dataset.missionIdx, 10);
+          var mission = adventureMissions[idx];
+          if (mission) openAdventureProjectModal(mission, 'presentacion');
+        };
+      });
+
+      // Botón Guía PDF
+      container.querySelectorAll('.arm-btn-open-pdf').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          var idx = parseInt(btn.dataset.missionIdx, 10);
+          var mission = adventureMissions[idx];
+          if (mission) openAdventureProjectModal(mission, 'pdf');
+        };
+      });
+    }
+
+    // ── Click en tarjeta MakeCode para abrir Modal de Aventura (Presentación, Simulador y PDF) ──
     if (activeFolderKey === 'proyecto' && proyectoSubTab === 'makecode') {
       var mkLibrary = (window.MAKECODE_LIBRARY && window.MAKECODE_LIBRARY[student.gradeId]) || [];
       container.querySelectorAll('.mklib-card-item').forEach(function(card) {
@@ -788,7 +1073,26 @@
           var idx = parseInt(card.dataset.entryIdx, 10);
           var entry = mkLibrary[idx];
           if (entry) {
-            openMakecodeModal(entry, idx);
+            var mission = {
+              id: 'mk-' + idx,
+              level: idx + 1,
+              title: entry.title || ('Código MakeCode #' + (idx + 1)),
+              subtitle: 'Simulador y Bloques Micro:bit',
+              description: entry.description || 'Proyecto interactivo de programación en MakeCode.',
+              type: 'makecode',
+              badge: '💻 MakeCode Micro:bit',
+              icon: 'fa-microchip',
+              color: '#7C3AED',
+              coverImage: 'img/microbit.png',
+              makecodeUrl: entry.shareUrl,
+              gradeName: student.gradeName,
+              materials: [
+                { title: 'Placa BBC micro:bit v2', description: 'Controlador con matriz LED 5x5 y sensores' },
+                { title: 'Cable Micro-USB', description: 'Para transferir el código y alimentar la placa' },
+                { title: 'Batería externa', description: 'Para probar tu proyecto en movimiento' }
+              ]
+            };
+            openAdventureProjectModal(mission, 'presentacion');
           }
         };
       });
@@ -1220,6 +1524,585 @@
   }
 
   window.openMakecodeModal = openMakecodeModal;
+
+  // ──────────────────────────────────────────────────
+  // MODAL DE PROYECTO / MISIÓN DE AVENTURA (MODO 3)
+  // Con Modo Presentación interactivo (Slideshow) y Guía PDF
+  // ──────────────────────────────────────────────────
+  function openAdventureProjectModal(mission, initialTab) {
+    if (window.sounds) window.sounds.playClick();
+    if (!mission) return;
+
+    var modal = document.getElementById('adventure-project-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'adventure-project-modal';
+      modal.className = 'adventure-modal-overlay';
+      document.body.appendChild(modal);
+    }
+
+    var activeTab = initialTab || 'presentacion';
+    var currentSlide = 0;
+    var totalSlides = 4;
+    var mkInfo = mission.makecodeUrl ? extractMakecodeInfo(mission.makecodeUrl) : null;
+    var hasSim = !!mkInfo || !!mission.scratchId;
+    var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
+
+    function closeAdventureModal() {
+      if (window.sounds) window.sounds.playClick();
+      modal.classList.remove('active');
+      document.removeEventListener('keydown', handleKeyDown);
+      modal.innerHTML = '';
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(function(){});
+      }
+    }
+
+    function toggleFullscreen() {
+      if (window.sounds) window.sounds.playClick();
+      var fsBtn = modal.querySelector('#apm-fs-btn');
+      if (!document.fullscreenElement) {
+        modal.requestFullscreen().then(function(){
+          if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i> Salir de Pantalla Completa';
+        }).catch(function(){});
+      } else {
+        document.exitFullscreen().then(function(){
+          if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-expand"></i> Pantalla Completa';
+        }).catch(function(){});
+      }
+    }
+
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        closeAdventureModal();
+      } else if (e.key === 'ArrowRight') {
+        if (activeTab === 'presentacion' && currentSlide < totalSlides - 1) {
+          goToSlide(currentSlide + 1);
+        }
+      } else if (e.key === 'ArrowLeft') {
+        if (activeTab === 'presentacion' && currentSlide > 0) {
+          goToSlide(currentSlide - 1);
+        }
+      }
+    }
+
+    // Materiales
+    var materialsList = (mission.materials && mission.materials.length > 0) ? mission.materials : [
+      { title: 'Placa BBC micro:bit v2', description: 'Tarjeta con pantalla LED y sensores' },
+      { title: 'Cable Micro-USB', description: 'Para programar y alimentar' },
+      { title: 'Piezas del Taller', description: 'Cables, pulsadores y cartón' }
+    ];
+
+    // QR Code URL para simulación o ficha
+    var targetShareLink = mission.makecodeUrl || (mission.pdfUrl || window.location.href);
+    var qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=2&data=' + encodeURIComponent(targetShareLink);
+
+    // HTML del Modal
+    modal.innerHTML =
+      '<div class="adventure-modal-content">' +
+        // Encabezado
+        '<div class="apm-header">' +
+          '<div class="apm-header-info">' +
+            '<div class="apm-icon-wrap"><i class="fas ' + mission.icon + '"></i></div>' +
+            '<div class="apm-title-wrap">' +
+              '<h3>NIVEL ' + mission.level + ' — ' + mission.title + '</h3>' +
+              '<div class="apm-subtitle-row">' +
+                '<span class="apm-lvl-badge">NIVEL ' + mission.level + '</span>' +
+                '<span>' + (mission.gradeName || 'Taller Maker') + ' • ' + mission.badge + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="apm-header-actions">' +
+            '<button type="button" class="apm-btn-fullscreen" id="apm-fs-btn">' +
+              '<i class="fas fa-expand"></i> Pantalla Completa' +
+            '</button>' +
+            '<button type="button" class="apm-close-btn" id="apm-close-btn" aria-label="Cerrar modal">&times;</button>' +
+          '</div>' +
+        '</div>' +
+
+        // Barra de pestañas
+        '<div class="apm-tabs-bar">' +
+          '<button type="button" class="apm-tab-btn ' + (activeTab === 'presentacion' ? 'active' : '') + '" data-tab="presentacion">' +
+            '<i class="fas fa-chalkboard-teacher"></i> Modo Presentación' +
+          '</button>' +
+          (hasSim ?
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'simulador' ? 'active' : '') + '" data-tab="simulador">' +
+              '<i class="fas fa-gamepad"></i> Simulador & Taller' +
+            '</button>' : '') +
+          '<button type="button" class="apm-tab-btn ' + (activeTab === 'pdf' ? 'active' : '') + '" data-tab="pdf">' +
+            '<i class="fas fa-file-pdf"></i> Guía PDF' +
+          '</button>' +
+        '</div>' +
+
+        // Paneles
+        '<div class="apm-panes-container">' +
+
+          // ── PANEL 1: MODO PRESENTACIÓN (SLIDESHOW) ──
+          '<div class="apm-tab-pane pane-presentacion ' + (activeTab === 'presentacion' ? 'active' : '') + '">' +
+            '<div class="apm-presentation-wrapper">' +
+              '<div class="apm-slide-top-nav">' +
+                '<div class="apm-stn-title" id="apm-stn-title">' +
+                  '<i class="fas fa-bullseye"></i> <span>Paso 1: El Reto & Objetivo</span>' +
+                '</div>' +
+                '<div class="apm-stn-dots">' +
+                  '<span class="apm-stn-dot active" data-slide="0" title="Paso 1: Reto"></span>' +
+                  '<span class="apm-stn-dot" data-slide="1" title="Paso 2: Materiales"></span>' +
+                  '<span class="apm-stn-dot" data-slide="2" title="Paso 3: Código y Simulador"></span>' +
+                  '<span class="apm-stn-dot" data-slide="3" title="Paso 4: Misión Cumplida"></span>' +
+                '</div>' +
+                '<span class="apm-stn-counter" id="apm-stn-counter">Paso 1 de 4</span>' +
+              '</div>' +
+
+              '<div class="apm-slide-viewport">' +
+
+                // SLIDE 0: Portada & Reto
+                '<div class="apm-slide-page active" data-slide-idx="0">' +
+                  '<div class="apm-slide-grid-2col">' +
+                    '<div class="apm-sg-img-wrap">' +
+                      '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
+                    '</div>' +
+                    '<div>' +
+                      '<div style="font-size:0.8rem;font-weight:800;color:#6366F1;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Desafío Maker • Nivel ' + mission.level + '</div>' +
+                      '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
+                      '<div class="apm-reto-card">' +
+                        '<h4><i class="fas fa-flag-checkered"></i> ¿Cuál es nuestra misión?</h4>' +
+                        '<p>' + mission.description + '</p>' +
+                      '</div>' +
+                      '<div class="apm-skills-pills">' +
+                        '<span class="apm-skill-pill"><i class="fas fa-lightbulb"></i> Creatividad Maker</span>' +
+                        '<span class="apm-skill-pill"><i class="fas fa-cubes"></i> Lógica en Bloques</span>' +
+                        '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>' +
+                      '</div>' +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;">' +
+                        'Ver Materiales y Preparación <i class="fas fa-arrow-right"></i>' +
+                      '</button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                // SLIDE 1: Materiales & Componentes
+                '<div class="apm-slide-page" data-slide-idx="1">' +
+                  '<div style="max-width:850px;margin:0 auto;">' +
+                    '<div style="text-align:center;margin-bottom:20px;">' +
+                      '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">🔌 Materiales y Herramientas del Taller</h3>' +
+                      '<p style="font-size:0.88rem;color:#64748B;margin:0;">Asegurate de tener todo listo antes de comenzar a programar o armar:</p>' +
+                    '</div>' +
+                    '<div class="apm-materials-grid">' +
+                      materialsList.map(function(m){
+                        return '<div class="apm-mat-card">' +
+                          '<div class="apm-mat-icon"><i class="fas fa-tools"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>' + m.title + '</h5>' +
+                            '<p>' + (m.description || 'Componente didáctico del taller') + '</p>' +
+                          '</div>' +
+                        '</div>';
+                      }).join('') +
+                    '</div>' +
+                    '<div class="apm-reto-card" style="margin-top:22px;background:#F0FDF4;border-color:#16A34A;">' +
+                      '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> Consejo del Profesor Maker</h4>' +
+                      '<p style="color:#166534;">Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!</p>' +
+                    '</div>' +
+                    '<div style="text-align:center;margin-top:20px;">' +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;">' +
+                        '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>' +
+                      '</button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                // SLIDE 2: Código y Simulador
+                '<div class="apm-slide-page" data-slide-idx="2">' +
+                  '<div style="height:100%;display:flex;flex-direction:column;gap:12px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                      '<div>' +
+                        '<h3 style="font-size:1.15rem;font-weight:900;color:#1E293B;margin:0 0 2px;">💻 Taller en Vivo: Código y Simulador</h3>' +
+                        '<p style="font-size:0.82rem;color:#64748B;margin:0;">Probá el programa en vivo, modificá valores o inspeccioná los bloques:</p>' +
+                      '</div>' +
+                      (mission.makecodeUrl ?
+                        '<a href="' + mission.makecodeUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary">' +
+                          '<i class="fas fa-external-link-alt"></i> Abrir en MakeCode' +
+                        '</a>' : '') +
+                    '</div>' +
+
+                    (mkInfo ?
+                      '<div class="apm-sim-slide-wrap">' +
+                        '<div class="apm-sim-slide-toolbar">' +
+                          '<span><i class="fas fa-microchip"></i> Micro:bit Interactivo</span>' +
+                          '<button type="button" class="arm-btn-secondary" id="apm-slide-sim-reload" style="padding:4px 10px;font-size:0.75rem;">' +
+                            '<i class="fas fa-redo"></i> Reiniciar' +
+                          '</button>' +
+                        '</div>' +
+                        '<iframe src="' + mkInfo.simUrl + '" class="apm-sim-slide-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+                      '</div>' :
+                      (mission.scratchId ?
+                        '<div class="apm-sim-slide-wrap">' +
+                          '<iframe src="https://scratch.mit.edu/projects/' + mission.scratchId + '/embed" class="apm-sim-slide-iframe" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen></iframe>' +
+                        '</div>' :
+                        '<div style="background:#F8FAFC;padding:30px;border-radius:16px;text-align:center;border:1.5px dashed #CBD5E1;">' +
+                          '<div style="font-size:3rem;margin-bottom:10px;">🧩</div>' +
+                          '<h4 style="font-size:1.1rem;font-weight:800;color:#1E293B;">Guía práctica de construcción</h4>' +
+                          '<p style="color:#64748B;max-width:500px;margin:0 auto 16px;">Este proyecto se realiza en el aula física o con fichas de trabajo descargables.</p>' +
+                          '<button type="button" class="arm-btn-primary" id="apm-slide2-goto-pdf"><i class="fas fa-file-pdf"></i> Ver Guía Didáctica PDF</button>' +
+                        '</div>'
+                      )
+                    ) +
+
+                    '<div style="text-align:right;margin-top:6px;">' +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal">' +
+                        '¡Ver Misión Cumplida y Retos Finales! <i class="fas fa-arrow-right"></i>' +
+                      '</button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                // SLIDE 3: ¡Misión Cumplida y Tu Creación!
+                '<div class="apm-slide-page" data-slide-idx="3">' +
+                  '<div style="max-width:850px;margin:0 auto;">' +
+                    '<div class="apm-win-banner">' +
+                      '<div class="apm-win-trophy">🏆</div>' +
+                      '<h3 class="apm-win-title">¡Misión Cumplida en el Nivel ' + mission.level + '!</h3>' +
+                      '<p class="apm-win-sub">Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!</p>' +
+                    '</div>' +
+
+                    '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
+                    '<div class="apm-extra-challenges">' +
+                      '<div class="apm-ec-item">' +
+                        '<div class="apm-ec-badge">1</div>' +
+                        '<div>' +
+                          '<h6>Personalizá la pantalla</h6>' +
+                          '<p>Cambiá el dibujo LED, el texto de bienvenida o la velocidad del personaje.</p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-ec-item">' +
+                        '<div class="apm-ec-badge">2</div>' +
+                        '<div>' +
+                          '<h6>Agregá sonido o sensores</h6>' +
+                          '<p>Programá un tono musical alegre cuando el sensor detecte luz o movimiento.</p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-ec-item">' +
+                        '<div class="apm-ec-badge">3</div>' +
+                        '<div>' +
+                          '<h6>Compartí tu creación</h6>' +
+                          '<p>Mostrá tu invento a tus compañeros y guardá tu proyecto en tu carpeta.</p>' +
+                        '</div>' +
+                      '</div>' +
+                    '</div>' +
+
+                    '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap;">' +
+                      '<button type="button" class="arm-btn-primary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;">' +
+                        '<i class="fas fa-file-pdf"></i> Ver / Descargar Guía PDF' +
+                      '</button>' +
+                      '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
+                        '<i class="fas fa-undo"></i> Repasar Presentación' +
+                      '</button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+              '</div>' + // Fin apm-slide-viewport
+
+              // Controles de diapositiva
+              '<div class="apm-slide-controls">' +
+                '<button type="button" class="apm-ctrl-btn apm-ctrl-prev" id="apm-ctrl-prev" disabled>' +
+                  '<i class="fas fa-chevron-left"></i> Anterior' +
+                '</button>' +
+                '<div class="apm-ctrl-bar">' +
+                  '<div class="apm-ctrl-bar-fill" id="apm-ctrl-bar-fill" style="width:25%;"></div>' +
+                '</div>' +
+                '<button type="button" class="apm-ctrl-btn apm-ctrl-next" id="apm-ctrl-next">' +
+                  'Siguiente <i class="fas fa-chevron-right"></i>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          // ── PANEL 2: SIMULADOR & TALLER ──
+          (hasSim ?
+            '<div class="apm-tab-pane pane-simulador ' + (activeTab === 'simulador' ? 'active' : '') + '">' +
+              (mkInfo ?
+                '<div style="height:100%;display:flex;flex-direction:column;">' +
+                  '<div class="mkm-desc-bar"><p><i class="fas fa-info-circle"></i> ' + (mission.description || 'Proyecto interactivo en MakeCode') + '</p></div>' +
+                  '<div class="mkm-tabs-bar" style="background:#F8FAFC;padding:6px 18px;">' +
+                    '<button type="button" class="mkm-tab-btn active" data-mk-tab="codigo"><i class="fas fa-puzzle-piece"></i> Código MakeCode</button>' +
+                    '<button type="button" class="mkm-tab-btn" data-mk-tab="simulador"><i class="fas fa-gamepad"></i> Simulador</button>' +
+                  '</div>' +
+                  '<div class="mkm-panes-body" style="flex:1 1 auto;position:relative;">' +
+                    '<div class="mkm-tab-pane pane-codigo active" style="position:absolute;inset:0;display:flex;flex-direction:column;">' +
+                      '<div class="mkm-code-toolbar">' +
+                        '<span class="mkm-ct-label"><i class="fas fa-cubes"></i> Bloques de Código</span>' +
+                        '<div class="mkm-code-zoom-controls">' +
+                          '<button type="button" class="mkm-zoom-btn" id="apm-zoom-out" title="Reducir"><i class="fas fa-search-minus"></i></button>' +
+                          '<span class="mkm-zoom-val" id="apm-zoom-label">125%</span>' +
+                          '<button type="button" class="mkm-zoom-btn" id="apm-zoom-in" title="Aumentar"><i class="fas fa-search-plus"></i></button>' +
+                          '<button type="button" class="mkm-zoom-btn" id="apm-zoom-reset" title="Restablecer (125%)"><i class="fas fa-undo"></i></button>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="mkm-code-frame-wrap" style="flex:1 1 auto;position:relative;overflow:auto;">' +
+                        '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" id="apm-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="yes" frameborder="0"></iframe>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div class="mkm-tab-pane pane-simulador" style="position:absolute;inset:0;display:none;flex-direction:column;background:#0F172A;">' +
+                      '<div class="mkm-sim-toolbar">' +
+                        '<span class="mkm-st-label"><i class="fas fa-gamepad"></i> Simulador Micro:bit</span>' +
+                        '<button type="button" class="mkm-sim-reload-btn" id="apm-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
+                      '</div>' +
+                      '<div class="mkm-sim-wrap" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;">' +
+                        '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" id="apm-sim-full-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' :
+                (mission.scratchId ?
+                  '<div style="height:100%;padding:16px;background:#0F172A;display:flex;align-items:center;justify-content:center;">' +
+                    '<iframe src="https://scratch.mit.edu/projects/' + mission.scratchId + '/embed" style="width:100%;height:100%;max-width:760px;border:none;border-radius:12px;" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen></iframe>' +
+                  '</div>' : ''
+                )
+              ) +
+            '</div>' : '') +
+
+          // ── PANEL 3: GUÍA PDF & FICHA DIDÁCTICA ──
+          '<div class="apm-tab-pane pane-pdf ' + (activeTab === 'pdf' ? 'active' : '') + '">' +
+            '<div class="apm-pdf-view">' +
+              '<div class="apm-pdf-toolbar">' +
+                '<div class="apm-pdf-title">' +
+                  '<i class="fas fa-file-pdf" style="color:#DC2626;font-size:1.1rem;"></i>' +
+                  '<span>Guía Didáctica — ' + mission.title + '</span>' +
+                '</div>' +
+                '<div class="apm-pdf-actions">' +
+                  (hasPdf ?
+                    '<a href="' + (mission.downloadPdfUrl || mission.pdfUrl) + '" target="_blank" rel="noopener noreferrer" class="apm-pdf-btn apm-pdf-btn-download">' +
+                      '<i class="fas fa-download"></i> Descargar PDF' +
+                    '</a>' : '') +
+                  '<button type="button" class="apm-pdf-btn apm-pdf-btn-print" id="apm-print-sheet-btn">' +
+                    '<i class="fas fa-print"></i> Imprimir Guía' +
+                  '</button>' +
+                  (mission.pdfUrl ?
+                    '<a href="' + mission.pdfUrl + '" target="_blank" rel="noopener noreferrer" class="apm-pdf-btn apm-pdf-btn-print">' +
+                      '<i class="fas fa-external-link-alt"></i> Abrir en Google Drive' +
+                    '</a>' : '') +
+                '</div>' +
+              '</div>' +
+
+              '<div style="flex:1 1 auto;overflow:auto;position:relative;">' +
+                (mission.pdfUrl ?
+                  '<iframe src="' + mission.pdfUrl + '#toolbar=0" class="apm-pdf-frame" style="width:100%;height:100%;border:none;"></iframe>' :
+                  '<div class="apm-printable-sheet" id="apm-printable-sheet">' +
+                    '<div class="apm-ps-header">' +
+                      '<div>' +
+                        '<div class="apm-ps-logo">🏫 Colegio Paulo Freire — Taller de Programación y Robótica</div>' +
+                        '<h2 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:6px 0 2px;">Nivel ' + mission.level + ' • ' + mission.title + '</h2>' +
+                        '<div style="font-size:0.85rem;color:#64748B;">Grado: <strong>' + (mission.gradeName || 'General') + '</strong> | Modalidad: Taller Maker</div>' +
+                      '</div>' +
+                      '<img src="' + qrCodeUrl + '" alt="QR Proyecto" style="width:72px;height:72px;border:1px solid #CBD5E1;border-radius:8px;padding:3px;">' +
+                    '</div>' +
+
+                    '<div class="apm-ps-section-title"><i class="fas fa-bullseye"></i> 1. Objetivo del Proyecto</div>' +
+                    '<p style="font-size:0.9rem;line-height:1.5;color:#334155;margin:0 0 14px;">' + mission.description + '</p>' +
+
+                    '<div class="apm-ps-section-title"><i class="fas fa-tools"></i> 2. Materiales y Recursos</div>' +
+                    '<ul style="font-size:0.88rem;color:#334155;margin:0 0 16px;padding-left:22px;line-height:1.5;">' +
+                      materialsList.map(function(m){ return '<li><strong>' + m.title + ':</strong> ' + (m.description||'') + '</li>'; }).join('') +
+                    '</ul>' +
+
+                    '<div class="apm-ps-section-title"><i class="fas fa-clipboard-check"></i> 3. Pasos de Realización</div>' +
+                    '<ol style="font-size:0.88rem;color:#334155;margin:0 0 18px;padding-left:22px;line-height:1.6;">' +
+                      '<li><strong>Diseño previo:</strong> Dibujar en papel el personaje o el sensor que vamos a programar.</li>' +
+                      '<li><strong>Programación:</strong> Abrir el editor de código en MakeCode o Scratch y colocar los bloques secuenciales.</li>' +
+                      '<li><strong>Simulación:</strong> Probar en el simulador digital que las acciones respondan correctamente al pulsar los botones.</li>' +
+                      '<li><strong>Transferencia:</strong> Conectar la placa micro:bit por USB o guardar el proyecto en el panel del alumno.</li>' +
+                    '</ol>' +
+
+                    '<div style="border-top:1.5px dashed #CBD5E1;padding-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:#64748B;">' +
+                      '<span>Escaneá el código QR con el celular para abrir el simulador en vivo.</span>' +
+                      '<span>Colegio Paulo Freire 2026</span>' +
+                    '</div>' +
+                  '</div>'
+                ) +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+        '</div>' + // Fin apm-panes-container
+      '</div>';
+
+    // ── Bindings ──
+    modal.querySelector('#apm-close-btn').onclick = closeAdventureModal;
+    modal.querySelector('#apm-fs-btn').onclick = toggleFullscreen;
+    modal.onclick = function(e){ if (e.target === modal) closeAdventureModal(); };
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Botones de pestañas principales
+    modal.querySelectorAll('.apm-tab-btn').forEach(function(btn){
+      btn.onclick = function(){
+        if (window.sounds) window.sounds.playClick();
+        activeTab = btn.dataset.tab;
+        modal.querySelectorAll('.apm-tab-btn').forEach(function(b){ b.classList.toggle('active', b === btn); });
+        modal.querySelectorAll('.apm-tab-pane').forEach(function(p){ p.classList.toggle('active', p.classList.contains('pane-' + activeTab)); });
+      };
+    });
+
+    // Slideshow: Lógica de navegación
+    var slideTitles = [
+      '🎯 Paso 1: El Reto & Objetivo',
+      '🔌 Paso 2: Materiales & Conceptos',
+      '💻 Paso 3: Código & Simulador en Vivo',
+      '🏆 Paso 4: ¡Misión Cumplida y Tu Creación!'
+    ];
+
+    function goToSlide(idx) {
+      if (window.sounds) window.sounds.playClick();
+      currentSlide = Math.max(0, Math.min(totalSlides - 1, idx));
+
+      // Actualizar vista de slides
+      modal.querySelectorAll('.apm-slide-page').forEach(function(p, i){
+        p.classList.toggle('active', i === currentSlide);
+      });
+
+      // Actualizar dots
+      modal.querySelectorAll('.apm-stn-dot').forEach(function(d, i){
+        d.classList.toggle('active', i === currentSlide);
+      });
+
+      // Actualizar título y contador
+      var titleEl = modal.querySelector('#apm-stn-title');
+      if (titleEl) titleEl.innerHTML = '<i class="fas fa-chevron-circle-right"></i> <span>' + slideTitles[currentSlide] + '</span>';
+
+      var counterEl = modal.querySelector('#apm-stn-counter');
+      if (counterEl) counterEl.textContent = 'Paso ' + (currentSlide + 1) + ' de ' + totalSlides;
+
+      // Actualizar barra de progreso
+      var barFill = modal.querySelector('#apm-ctrl-bar-fill');
+      if (barFill) barFill.style.width = (((currentSlide + 1) / totalSlides) * 100) + '%';
+
+      // Actualizar estado de botones prev/next
+      var prevBtn = modal.querySelector('#apm-ctrl-prev');
+      var nextBtn = modal.querySelector('#apm-ctrl-next');
+      if (prevBtn) prevBtn.disabled = (currentSlide === 0);
+      if (nextBtn) {
+        if (currentSlide === totalSlides - 1) {
+          nextBtn.innerHTML = '<i class="fas fa-trophy"></i> ¡Finalizar!';
+        } else {
+          nextBtn.innerHTML = 'Siguiente <i class="fas fa-chevron-right"></i>';
+        }
+      }
+    }
+
+    // Botones Anterior / Siguiente
+    var prevBtn = modal.querySelector('#apm-ctrl-prev');
+    var nextBtn = modal.querySelector('#apm-ctrl-next');
+    if (prevBtn) prevBtn.onclick = function(){ if (currentSlide > 0) goToSlide(currentSlide - 1); };
+    if (nextBtn) {
+      nextBtn.onclick = function(){
+        if (currentSlide < totalSlides - 1) {
+          goToSlide(currentSlide + 1);
+        } else {
+          if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+          else if (window.sounds) window.sounds.playClick();
+          var pdfTabBtn = modal.querySelector('.apm-tab-btn[data-tab="pdf"]');
+          if (pdfTabBtn) pdfTabBtn.click();
+        }
+      };
+    }
+
+    // Dots interactivos
+    modal.querySelectorAll('.apm-stn-dot').forEach(function(d){
+      d.onclick = function(){ goToSlide(parseInt(d.dataset.slide, 10)); };
+    });
+
+    // Botones internos para avanzar
+    modal.querySelectorAll('.apm-next-btn-internal').forEach(function(b){
+      b.onclick = function(){ goToSlide(currentSlide + 1); };
+    });
+
+    var restartBtn = modal.querySelector('#apm-restart-slides-btn');
+    if (restartBtn) restartBtn.onclick = function(){ goToSlide(0); };
+
+    var gotoPdfBtn = modal.querySelector('#apm-goto-pdf-btn');
+    if (gotoPdfBtn) {
+      gotoPdfBtn.onclick = function(){
+        var pdfTabBtn = modal.querySelector('.apm-tab-btn[data-tab="pdf"]');
+        if (pdfTabBtn) pdfTabBtn.click();
+      };
+    }
+
+    var slide2GotoPdf = modal.querySelector('#apm-slide2-goto-pdf');
+    if (slide2GotoPdf) {
+      slide2GotoPdf.onclick = function(){
+        var pdfTabBtn = modal.querySelector('.apm-tab-btn[data-tab="pdf"]');
+        if (pdfTabBtn) pdfTabBtn.click();
+      };
+    }
+
+    // Botón reiniciar simulador en Slide 2
+    var slideSimReload = modal.querySelector('#apm-slide-sim-reload');
+    if (slideSimReload && mkInfo) {
+      slideSimReload.onclick = function(){
+        if (window.sounds) window.sounds.playClick();
+        var simIf = modal.querySelector('.apm-sim-slide-iframe');
+        if (simIf) simIf.src = mkInfo.simUrl;
+      };
+    }
+
+    // Botón Imprimir Ficha
+    var printBtn = modal.querySelector('#apm-print-sheet-btn');
+    if (printBtn) {
+      printBtn.onclick = function(){
+        if (window.sounds) window.sounds.playClick();
+        window.print();
+      };
+    }
+
+    // Pestaña Simulador interna de MakeCode (Zoom y Código/Simulador)
+    if (mkInfo) {
+      modal.querySelectorAll('.mkm-tab-btn').forEach(function(b){
+        b.onclick = function(){
+          if (window.sounds) window.sounds.playClick();
+          var targetTab = b.dataset.mkTab;
+          modal.querySelectorAll('.mkm-tab-btn').forEach(function(x){ x.classList.toggle('active', x === b); });
+          modal.querySelectorAll('.pane-simulador .mkm-tab-pane').forEach(function(p){
+            p.classList.toggle('active', p.classList.contains('pane-' + targetTab));
+          });
+        };
+      });
+
+      var simFullReload = modal.querySelector('#apm-sim-reload-btn');
+      if (simFullReload) {
+        simFullReload.onclick = function(){
+          if (window.sounds) window.sounds.playClick();
+          var sf = modal.querySelector('#apm-sim-full-iframe');
+          if (sf) sf.src = mkInfo.simUrl;
+        };
+      }
+
+      // Zoom en código
+      var zoom = 1.25;
+      var cIf = modal.querySelector('#apm-code-iframe');
+      var zLbl = modal.querySelector('#apm-zoom-label');
+      function applyApmZoom(z) {
+        zoom = Math.max(0.75, Math.min(2.5, Math.round(z * 100) / 100));
+        if (cIf) {
+          cIf.style.transform = 'scale(' + zoom + ')';
+          cIf.style.transformOrigin = 'top left';
+          cIf.style.width = (100 / zoom) + '%';
+          cIf.style.height = (100 / zoom) + '%';
+        }
+        if (zLbl) zLbl.textContent = Math.round(zoom * 100) + '%';
+      }
+      applyApmZoom(1.25);
+
+      var zIn = modal.querySelector('#apm-zoom-in');
+      var zOut = modal.querySelector('#apm-zoom-out');
+      var zReset = modal.querySelector('#apm-zoom-reset');
+      if (zIn) zIn.onclick = function(){ if (window.sounds) window.sounds.playClick(); applyApmZoom(zoom + 0.2); };
+      if (zOut) zOut.onclick = function(){ if (window.sounds) window.sounds.playClick(); applyApmZoom(zoom - 0.2); };
+      if (zReset) zReset.onclick = function(){ if (window.sounds) window.sounds.playClick(); applyApmZoom(1.25); };
+    }
+
+    modal.classList.add('active');
+  }
+
+  window.openAdventureProjectModal = openAdventureProjectModal;
 
   // ──────────────────────────────────────────────────
   // DRAG & DROP / SUBIDA
