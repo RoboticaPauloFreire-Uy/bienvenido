@@ -1541,12 +1541,23 @@
       document.body.appendChild(modal);
     }
 
+    var student = window.getActiveStudent ? window.getActiveStudent() : null;
     var activeTab = initialTab || 'presentacion';
+    if (activeTab === 'simulador') activeTab = 'solucion';
     var currentSlide = 0;
     var totalSlides = 4;
     var mkInfo = mission.makecodeUrl ? extractMakecodeInfo(mission.makecodeUrl) : null;
-    var hasSim = !!mkInfo || !!mission.scratchId;
+    var isMakecode = !!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); }));
+    var isScratch = !isMakecode || mission.type === 'scratch' || !!mission.scratchId || (mission.tags && mission.tags.some(function(t){ return /scratch/i.test(t); }));
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
+
+    var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
+    var savedEntrega = null;
+    try { savedEntrega = JSON.parse(localStorage.getItem(storageKey)); } catch(e){}
+    var savedMakecodeUrl = (savedEntrega && savedEntrega.makecodeUrl) ? savedEntrega.makecodeUrl : '';
+    var studentMkInfo = savedMakecodeUrl ? extractMakecodeInfo(savedMakecodeUrl) : null;
+    var savedFileName = (savedEntrega && savedEntrega.fileName) ? savedEntrega.fileName : '';
+    var savedFileDate = (savedEntrega && savedEntrega.date) ? savedEntrega.date : '';
 
     function closeAdventureModal() {
       if (window.sounds) window.sounds.playClick();
@@ -1625,10 +1636,12 @@
           '<button type="button" class="apm-tab-btn ' + (activeTab === 'presentacion' ? 'active' : '') + '" data-tab="presentacion">' +
             '<i class="fas fa-chalkboard-teacher"></i> Modo Presentación' +
           '</button>' +
-          (hasSim ?
-            '<button type="button" class="apm-tab-btn ' + (activeTab === 'simulador' ? 'active' : '') + '" data-tab="simulador">' +
-              '<i class="fas fa-gamepad"></i> Simulador & Taller' +
-            '</button>' : '') +
+          '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega">' +
+            '<i class="fas fa-cloud-upload-alt"></i> Mi Entrega' +
+          '</button>' +
+          '<button type="button" class="apm-tab-btn ' + (activeTab === 'solucion' ? 'active' : '') + '" data-tab="solucion">' +
+            '<i class="fas fa-lightbulb"></i> Solución Oficial' +
+          '</button>' +
           '<button type="button" class="apm-tab-btn ' + (activeTab === 'pdf' ? 'active' : '') + '" data-tab="pdf">' +
             '<i class="fas fa-file-pdf"></i> Guía PDF' +
           '</button>' +
@@ -1790,8 +1803,14 @@
                     '</div>' +
 
                     '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap;">' +
-                      '<button type="button" class="arm-btn-primary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;">' +
-                        '<i class="fas fa-file-pdf"></i> Ver / Descargar Guía PDF' +
+                      '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:#10B981;border-color:#059669;font-size:0.9rem;padding:9px 18px;">' +
+                        '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación' +
+                      '</button>' +
+                      '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
+                        '<i class="fas fa-lightbulb"></i> Ver Solución Oficial' +
+                      '</button>' +
+                      '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;">' +
+                        '<i class="fas fa-file-pdf"></i> Ver Guía PDF' +
                       '</button>' +
                       '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
                         '<i class="fas fa-undo"></i> Repasar Presentación' +
@@ -1817,51 +1836,187 @@
             '</div>' +
           '</div>' +
 
-          // ── PANEL 2: SIMULADOR & TALLER ──
-          (hasSim ?
-            '<div class="apm-tab-pane pane-simulador ' + (activeTab === 'simulador' ? 'active' : '') + '">' +
-              (mkInfo ?
-                '<div style="height:100%;display:flex;flex-direction:column;">' +
-                  '<div class="mkm-desc-bar"><p><i class="fas fa-info-circle"></i> ' + (mission.description || 'Proyecto interactivo en MakeCode') + '</p></div>' +
-                  '<div class="mkm-tabs-bar" style="background:#F8FAFC;padding:6px 18px;">' +
-                    '<button type="button" class="mkm-tab-btn active" data-mk-tab="codigo"><i class="fas fa-puzzle-piece"></i> Código MakeCode</button>' +
-                    '<button type="button" class="mkm-tab-btn" data-mk-tab="simulador"><i class="fas fa-gamepad"></i> Simulador</button>' +
+          // ── PANEL 2: MI ENTREGA ──
+          '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '">' +
+            (isMakecode ?
+              '<div class="apm-delivery-pane-wrap">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #4C1D95 0%, #6D28D9 100%);">' +
+                  '<div class="apm-dh-icon"><i class="fas fa-microchip"></i></div>' +
+                  '<div>' +
+                    '<h4>Subir Proyecto MakeCode Micro:bit</h4>' +
+                    '<p>Pegá el link público que generaste al hacer clic en <strong>Compartir</strong> en MakeCode para probarlo en tu simulador y enviarlo a tu profesor.</p>' +
                   '</div>' +
-                  '<div class="mkm-panes-body" style="flex:1 1 auto;position:relative;">' +
-                    '<div class="mkm-tab-pane pane-codigo active" style="position:absolute;inset:0;display:flex;flex-direction:column;">' +
-                      '<div class="mkm-code-toolbar">' +
-                        '<span class="mkm-ct-label"><i class="fas fa-cubes"></i> Bloques de Código</span>' +
-                        '<div class="mkm-code-zoom-controls">' +
-                          '<button type="button" class="mkm-zoom-btn" id="apm-zoom-out" title="Reducir"><i class="fas fa-search-minus"></i></button>' +
-                          '<span class="mkm-zoom-val" id="apm-zoom-label">125%</span>' +
-                          '<button type="button" class="mkm-zoom-btn" id="apm-zoom-in" title="Aumentar"><i class="fas fa-search-plus"></i></button>' +
-                          '<button type="button" class="mkm-zoom-btn" id="apm-zoom-reset" title="Restablecer (125%)"><i class="fas fa-undo"></i></button>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  '<div class="apm-delivery-input-group">' +
+                    '<div class="apm-delivery-input-wrap">' +
+                      '<i class="fas fa-link apm-delivery-link-icon"></i>' +
+                      '<input type="url" id="apm-mk-student-url" class="apm-delivery-url-input" placeholder="https://makecode.microbit.org/S18043-28109-69626-83440" value="' + (savedMakecodeUrl || '') + '">' +
+                    '</div>' +
+                    '<button type="button" id="apm-mk-student-save-btn" class="apm-delivery-submit-btn"><i class="fas fa-paper-plane"></i> Guardar Entrega</button>' +
+                  '</div>' +
+                  '<div class="apm-delivery-actions-row">' +
+                    '<a href="https://makecode.microbit.org" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn"><i class="fas fa-external-link-alt"></i> Ir al Editor de MakeCode</a>' +
+                    '<span class="apm-delivery-hint"><i class="fas fa-info-circle"></i> Tip: En MakeCode tocá <strong>Compartir</strong> &gt; <strong>Publicar</strong> y copiá el enlace.</span>' +
+                  '</div>' +
+                  '<div id="apm-mk-delivery-status">' +
+                    (savedMakecodeUrl ?
+                      '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> ¡Entrega guardada con éxito! Tu profesor ya puede ver tu proyecto en el simulador.</div>' : '') +
+                  '</div>' +
+                  '<div id="apm-mk-student-preview">' +
+                    (studentMkInfo ?
+                      '<div class="apm-student-sim-card">' +
+                        '<div class="apm-student-sim-header">' +
+                          '<span><i class="fas fa-gamepad"></i> Tu Simulador Micro:bit en Vivo</span>' +
+                          '<div style="display:flex;gap:8px;">' +
+                            '<button type="button" id="apm-student-sim-reload" class="mkm-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
+                            '<a href="' + savedMakecodeUrl + '" target="_blank" rel="noopener noreferrer" class="mkm-btn-entrar" style="font-size:0.75rem;padding:4px 12px;"><i class="fas fa-external-link-alt"></i> Abrir en MakeCode</a>' +
+                          '</div>' +
                         '</div>' +
-                      '</div>' +
-                      '<div class="mkm-code-frame-wrap" style="flex:1 1 auto;position:relative;overflow:auto;">' +
-                        '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" id="apm-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="yes" frameborder="0"></iframe>' +
+                        '<div class="apm-student-sim-body">' +
+                          '<iframe src="' + studentMkInfo.simUrl + '" class="apm-student-sim-frame" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+                        '</div>' +
+                      '</div>' :
+                      '<div class="apm-delivery-empty-state">' +
+                        '<i class="fas fa-laptop-code"></i>' +
+                        '<p>Cuando guardes tu link de MakeCode, aquí aparecerá tu simulador interactivo para probar tu proyecto.</p>' +
+                      '</div>'
+                    ) +
+                  '</div>' +
+                '</div>' +
+              '</div>' :
+              '<div class="apm-delivery-pane-wrap">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #C2410C 0%, #EA580C 100%);">' +
+                  '<div class="apm-dh-icon"><i class="fas fa-cat"></i></div>' +
+                  '<div>' +
+                    '<h4>Subir Creación de Scratch Jr</h4>' +
+                    '<p>Subí tu archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una foto/captura de pantalla de tus personajes y bloques para guardarlo en tu carpeta.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  '<div class="apm-scratch-dropzone" id="apm-scratch-dropzone">' +
+                    '<div class="apm-sd-icon"><i class="fas fa-cloud-upload-alt"></i></div>' +
+                    '<h4>Arrastrá tu archivo de Scratch Jr aquí</h4>' +
+                    '<p>O hacé clic en el botón para seleccionarlo (.sjr, .sb3, .pjson, .sb, .png, .jpg)</p>' +
+                    '<input type="file" id="apm-scratch-file-input" style="display:none;" accept=".sjr,.sb3,.pjson,.sb,.png,.jpg,.jpeg">' +
+                    '<button type="button" id="apm-scratch-browse-btn" class="apm-delivery-submit-btn" style="background:#EA580C;"><i class="fas fa-folder-open"></i> Seleccionar Archivo</button>' +
+                  '</div>' +
+                  '<div id="apm-scratch-delivery-status" style="margin-top:14px;">' +
+                    (savedFileName ?
+                      '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> Archivo entregado: <strong>' + savedFileName + '</strong> (' + savedFileDate + ') guardado en tu Google Drive.</div>' : '') +
+                  '</div>' +
+                  '<div class="apm-delivery-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-question-circle"></i> ¿Cómo compartir desde Scratch Jr?</h5>' +
+                    '<ol>' +
+                      '<li>En Scratch Jr, tocá el ícono de la casita y abrí tu proyecto.</li>' +
+                      '<li>Tocá el botón amarillo en la esquina superior derecha (rueda o configuración).</li>' +
+                      '<li>Elegí <strong>Compartir por archivo</strong> o tomá una captura de pantalla a tus bloques.</li>' +
+                      '<li>¡Subí el archivo o la imagen aquí mismo!</li>' +
+                    '</ol>' +
+                  '</div>' +
+                '</div>' +
+              '</div>'
+            ) +
+          '</div>' +
+
+          // ── PANEL 3: SOLUCIÓN OFICIAL ──
+          '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
+            (isMakecode ?
+              '<div style="height:100%;display:flex;flex-direction:column;">' +
+                '<div class="mkm-desc-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+                  '<p style="margin:0;"><i class="fas fa-lightbulb" style="color:#EAB308;"></i> <strong>Solución Oficial:</strong> ' + (mission.title || 'Proyecto MakeCode') + '</p>' +
+                  (mission.makecodeUrl ?
+                    '<a class="mkm-btn-entrar" href="' + mission.makecodeUrl + '" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;padding:5px 14px;">' +
+                      '<i class="fas fa-external-link-alt"></i> Abrir Solución en MakeCode' +
+                    '</a>' : '') +
+                '</div>' +
+                '<div class="mkm-tabs-bar" style="background:#F8FAFC;padding:6px 18px;">' +
+                  '<button type="button" class="apm-sol-subtab-btn active" data-sol-tab="simulador"><i class="fas fa-gamepad"></i> Simulador Oficial en Vivo</button>' +
+                  '<button type="button" class="apm-sol-subtab-btn" data-sol-tab="codigo"><i class="fas fa-puzzle-piece"></i> Bloques de Código</button>' +
+                '</div>' +
+                '<div class="apm-sol-panes-body" style="flex:1 1 auto;position:relative;">' +
+                  '<div class="apm-sol-subpane pane-simulador active" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#0F172A;">' +
+                    '<div class="mkm-sim-toolbar">' +
+                      '<span class="mkm-st-label"><i class="fas fa-gamepad"></i> Simulador Micro:bit Interactivo (Solución)</span>' +
+                      '<button type="button" class="mkm-sim-reload-btn" id="apm-sol-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
+                    '</div>' +
+                    '<div class="mkm-sim-wrap" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;">' +
+                      (mkInfo ?
+                        '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" id="apm-sol-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' :
+                        '<p style="color:#FFF;">Simulador no disponible</p>'
+                      ) +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="apm-sol-subpane pane-codigo" style="position:absolute;inset:0;display:none;flex-direction:column;background:#FFFFFF;">' +
+                    '<div class="mkm-code-toolbar">' +
+                      '<span class="mkm-ct-label"><i class="fas fa-cubes"></i> Bloques de Código de la Solución</span>' +
+                      '<div class="mkm-code-zoom-controls">' +
+                        '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-out" title="Reducir"><i class="fas fa-search-minus"></i></button>' +
+                        '<span class="mkm-zoom-val" id="apm-sol-zoom-label">125%</span>' +
+                        '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-in" title="Aumentar"><i class="fas fa-search-plus"></i></button>' +
+                        '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-reset" title="Restablecer (125%)"><i class="fas fa-undo"></i></button>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="mkm-tab-pane pane-simulador" style="position:absolute;inset:0;display:none;flex-direction:column;background:#0F172A;">' +
-                      '<div class="mkm-sim-toolbar">' +
-                        '<span class="mkm-st-label"><i class="fas fa-gamepad"></i> Simulador Micro:bit</span>' +
-                        '<button type="button" class="mkm-sim-reload-btn" id="apm-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
+                    '<div class="mkm-code-frame-wrap" style="flex:1 1 auto;position:relative;overflow:auto;">' +
+                      (mkInfo ?
+                        '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" id="apm-sol-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="yes" frameborder="0"></iframe>' :
+                        '<p>Código no disponible</p>'
+                      ) +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' :
+              '<div class="apm-sol-scratch-wrap">' +
+                '<div class="apm-sol-scratch-header">' +
+                  '<div class="apm-ssh-icon"><i class="fas fa-lightbulb"></i></div>' +
+                  '<div>' +
+                    '<h4>Solución Oficial del Proyecto Scratch Jr</h4>' +
+                    '<p>Descargá el archivo terminado con toda la programación resuelta para abrirlo en Scratch Jr o estudiar los bloques explicados a continuación.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-sol-scratch-body">' +
+                  '<div class="apm-sol-download-card">' +
+                    '<div class="apm-sol-dl-icon"><i class="fas fa-file-download"></i></div>' +
+                    '<div class="apm-sol-dl-info">' +
+                      '<h5>Archivo de Proyecto Oficial Terminado</h5>' +
+                      '<p>Incluye los personajes animados, fondos seleccionados y la secuencia completa de bloques programados.</p>' +
+                      '<span class="apm-sol-dl-filename"><i class="fas fa-file-code"></i> ' + (mission.title.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_') || 'solucion') + '.sjr</span>' +
+                    '</div>' +
+                    '<button type="button" id="apm-scratch-dl-sol-btn" class="apm-sol-download-btn">' +
+                      '<i class="fas fa-download"></i> Descargar Solución (.sjr)' +
+                    '</button>' +
+                  '</div>' +
+                  '<div class="apm-sol-visual-guide">' +
+                    '<h5><i class="fas fa-puzzle-piece"></i> Estructura y Bloques de la Solución:</h5>' +
+                    '<div class="apm-sol-steps-list">' +
+                      '<div class="apm-sol-step-item">' +
+                        '<div class="apm-sol-step-num">1</div>' +
+                        '<div><strong>Inicio con Bandera Verde / Toque:</strong> Se coloca el bloque amarillo de bandera verde para que el personaje empiece al pulsar la bandera o al tocar la pantalla.</div>' +
                       '</div>' +
-                      '<div class="mkm-sim-wrap" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;">' +
-                        '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" id="apm-sim-full-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+                      '<div class="apm-sol-step-item">' +
+                        '<div class="apm-sol-step-num">2</div>' +
+                        '<div><strong>Secuencia de Movimiento:</strong> Bloques azules de caminar 4 pasos hacia adelante y salto vertical para sortear obstáculos.</div>' +
+                      '</div>' +
+                      '<div class="apm-sol-step-item">' +
+                        '<div class="apm-sol-step-num">3</div>' +
+                        '<div><strong>Expresión y Diálogo:</strong> Bloque violeta de mensaje ("¡Hola taller!") o cambio de tamaño para mostrar la emoción del personaje.</div>' +
+                      '</div>' +
+                      '<div class="apm-sol-step-item">' +
+                        '<div class="apm-sol-step-num">4</div>' +
+                        '<div><strong>Bucle Infinito o Regreso:</strong> Bloque rojo de repetir para que la animación continúe fluidamente.</div>' +
                       '</div>' +
                     '</div>' +
                   '</div>' +
-                '</div>' :
-                (mission.scratchId ?
-                  '<div style="height:100%;padding:16px;background:#0F172A;display:flex;align-items:center;justify-content:center;">' +
-                    '<iframe src="https://scratch.mit.edu/projects/' + mission.scratchId + '/embed" style="width:100%;height:100%;max-width:760px;border:none;border-radius:12px;" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen></iframe>' +
-                  '</div>' : ''
-                )
-              ) +
-            '</div>' : '') +
+                  '<div class="apm-delivery-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-tablet-alt"></i> ¿Cómo abrir el archivo .sjr en tu tablet o PC?</h5>' +
+                    '<p style="margin:0;font-size:0.85rem;color:#475569;line-height:1.5;">1. Descargá el archivo tocando el botón azul arriba.<br>2. Abrí Scratch Jr en tu tablet o PC.<br>3. Tocá el archivo descargado desde tus Descargas para que Scratch Jr lo importe automáticamente.</p>' +
+                  '</div>' +
+                '</div>' +
+              '</div>'
+            ) +
+          '</div>' +
 
-          // ── PANEL 3: GUÍA PDF & FICHA DIDÁCTICA ──
+          // ── PANEL 4: GUÍA PDF & FICHA DIDÁCTICA ──
           '<div class="apm-tab-pane pane-pdf ' + (activeTab === 'pdf' ? 'active' : '') + '">' +
             '<div class="apm-pdf-view">' +
               '<div class="apm-pdf-toolbar">' +
@@ -1932,13 +2087,18 @@
     modal.onclick = function(e){ if (e.target === modal) closeAdventureModal(); };
     document.addEventListener('keydown', handleKeyDown);
 
+    // Función para cambiar de pestaña principal
+    function switchApmTab(tabName) {
+      if (window.sounds) window.sounds.playClick();
+      activeTab = tabName;
+      modal.querySelectorAll('.apm-tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === activeTab); });
+      modal.querySelectorAll('.apm-tab-pane').forEach(function(p){ p.classList.toggle('active', p.classList.contains('pane-' + activeTab)); });
+    }
+
     // Botones de pestañas principales
     modal.querySelectorAll('.apm-tab-btn').forEach(function(btn){
       btn.onclick = function(){
-        if (window.sounds) window.sounds.playClick();
-        activeTab = btn.dataset.tab;
-        modal.querySelectorAll('.apm-tab-btn').forEach(function(b){ b.classList.toggle('active', b === btn); });
-        modal.querySelectorAll('.apm-tab-pane').forEach(function(p){ p.classList.toggle('active', p.classList.contains('pane-' + activeTab)); });
+        switchApmTab(btn.dataset.tab);
       };
     });
 
@@ -2021,16 +2181,28 @@
     var gotoPdfBtn = modal.querySelector('#apm-goto-pdf-btn');
     if (gotoPdfBtn) {
       gotoPdfBtn.onclick = function(){
-        var pdfTabBtn = modal.querySelector('.apm-tab-btn[data-tab="pdf"]');
-        if (pdfTabBtn) pdfTabBtn.click();
+        switchApmTab('pdf');
+      };
+    }
+
+    var s4EntregaBtn = modal.querySelector('.apm-slide4-goto-entrega');
+    if (s4EntregaBtn) {
+      s4EntregaBtn.onclick = function(){
+        switchApmTab('entrega');
+      };
+    }
+
+    var s4SolucionBtn = modal.querySelector('.apm-slide4-goto-solucion');
+    if (s4SolucionBtn) {
+      s4SolucionBtn.onclick = function(){
+        switchApmTab('solucion');
       };
     }
 
     var slide2GotoPdf = modal.querySelector('#apm-slide2-goto-pdf');
     if (slide2GotoPdf) {
       slide2GotoPdf.onclick = function(){
-        var pdfTabBtn = modal.querySelector('.apm-tab-btn[data-tab="pdf"]');
-        if (pdfTabBtn) pdfTabBtn.click();
+        switchApmTab('pdf');
       };
     }
 
@@ -2053,50 +2225,303 @@
       };
     }
 
-    // Pestaña Simulador interna de MakeCode (Zoom y Código/Simulador)
-    if (mkInfo) {
-      modal.querySelectorAll('.mkm-tab-btn').forEach(function(b){
+    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA ──
+    if (isMakecode) {
+      var mkStudentSaveBtn = modal.querySelector('#apm-mk-student-save-btn');
+      var mkStudentUrlInput = modal.querySelector('#apm-mk-student-url');
+
+      if (mkStudentSaveBtn && mkStudentUrlInput) {
+        mkStudentSaveBtn.onclick = function() {
+          var rawUrl = (mkStudentUrlInput.value || '').trim();
+          if (!rawUrl) {
+            alert('Por favor pegá el link de tu proyecto en MakeCode.');
+            return;
+          }
+          var info = extractMakecodeInfo(rawUrl);
+          if (!info) {
+            if (window.sounds) window.sounds.playError();
+            alert('El link ingresado no es válido. Debe ser un enlace de MakeCode compartido (por ejemplo: https://makecode.microbit.org/S18043-...).');
+            return;
+          }
+
+          if (window.sounds) window.sounds.playSuccess();
+          var nowStr = new Date().toLocaleDateString('es-ES');
+          var submissionData = {
+            makecodeUrl: rawUrl,
+            date: nowStr,
+            type: 'makecode',
+            missionId: mission.id,
+            missionTitle: mission.title
+          };
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(submissionData));
+          } catch(e) {}
+
+          // Sincronizar en Firestore en la colección student_submissions
+          if (window.db && student && student.id) {
+            try {
+              var subDocId = student.id + '_' + mission.id;
+              window.db.collection('student_submissions').doc(subDocId).set({
+                studentId: student.id,
+                studentName: student.name,
+                gradeId: student.gradeId,
+                missionId: mission.id,
+                missionTitle: mission.title,
+                type: 'makecode',
+                makecodeUrl: rawUrl,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true }).catch(function(err){ console.warn('Firestore submission err:', err); });
+            } catch(e) {}
+          }
+
+          var statusEl = modal.querySelector('#apm-mk-delivery-status');
+          if (statusEl) {
+            statusEl.innerHTML = '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> ¡Entrega guardada con éxito! Tu profesor ya puede ver tu proyecto en el simulador.</div>';
+          }
+
+          var previewEl = modal.querySelector('#apm-mk-student-preview');
+          if (previewEl) {
+            previewEl.innerHTML =
+              '<div class="apm-student-sim-card">' +
+                '<div class="apm-student-sim-header">' +
+                  '<span><i class="fas fa-gamepad"></i> Tu Simulador Micro:bit en Vivo</span>' +
+                  '<div style="display:flex;gap:8px;">' +
+                    '<button type="button" id="apm-student-sim-reload" class="mkm-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
+                    '<a href="' + rawUrl + '" target="_blank" rel="noopener noreferrer" class="mkm-btn-entrar" style="font-size:0.75rem;padding:4px 12px;"><i class="fas fa-external-link-alt"></i> Abrir en MakeCode</a>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-student-sim-body">' +
+                  '<iframe src="' + info.simUrl + '" class="apm-student-sim-frame" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+                '</div>' +
+              '</div>';
+
+            var sRel = previewEl.querySelector('#apm-student-sim-reload');
+            if (sRel) {
+              sRel.onclick = function() {
+                if (window.sounds) window.sounds.playClick();
+                var f = previewEl.querySelector('.apm-student-sim-frame');
+                if (f) f.src = info.simUrl;
+              };
+            }
+          }
+        };
+      }
+
+      var existingStudentSimReload = modal.querySelector('#apm-student-sim-reload');
+      if (existingStudentSimReload && studentMkInfo) {
+        existingStudentSimReload.onclick = function() {
+          if (window.sounds) window.sounds.playClick();
+          var f = modal.querySelector('.apm-student-sim-frame');
+          if (f) f.src = studentMkInfo.simUrl;
+        };
+      }
+    } else {
+      // Scratch Jr: Drag & Drop y subida de archivos
+      var scratchDropzone = modal.querySelector('#apm-scratch-dropzone');
+      var scratchFileInput = modal.querySelector('#apm-scratch-file-input');
+      var scratchBrowseBtn = modal.querySelector('#apm-scratch-browse-btn');
+      var scratchStatusEl = modal.querySelector('#apm-scratch-delivery-status');
+
+      if (scratchBrowseBtn && scratchFileInput) {
+        scratchBrowseBtn.onclick = function() {
+          scratchFileInput.click();
+        };
+      }
+
+      function processScratchUpload(file) {
+        if (!file) return;
+        var name = file.name.toLowerCase();
+        var valid = /\.(sjr|sb3|pjson|sb|png|jpe?g)$/i.test(name);
+        if (!valid) {
+          if (window.sounds) window.sounds.playError();
+          alert('Formato no válido. Por favor seleccioná un archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una imagen (.png, .jpg)');
+          return;
+        }
+        if (window.sounds) window.sounds.playSuccess();
+        var sz = formatFileSize(file.size);
+        if (scratchStatusEl) {
+          scratchStatusEl.innerHTML = '<div class="apm-status-badge warning"><i class="fas fa-sync-alt fa-spin"></i> Guardando <strong>' + file.name + '</strong> (' + sz + ')...</div>';
+        }
+
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          var b64 = ev.target.result.split(',')[1];
+          var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+          if (hook && student) {
+            var iframe = document.getElementById('gdrive_silent_upload_iframe');
+            if (!iframe) {
+              iframe = document.createElement('iframe');
+              iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
+              iframe.style.display = 'none';
+              document.body.appendChild(iframe);
+            }
+            var form = document.createElement('form');
+            form.target = 'gdrive_silent_upload_iframe';
+            form.method = 'POST';
+            form.action = hook;
+            var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyecto' };
+            for (var k in fields) {
+              var inp = document.createElement('input');
+              inp.type = 'hidden';
+              inp.name = k;
+              inp.value = fields[k];
+              form.appendChild(inp);
+            }
+            document.body.appendChild(form);
+            form.submit();
+            setTimeout(function(){ form.remove(); }, 2500);
+          }
+
+          var nowStr = new Date().toLocaleDateString('es-ES');
+          var submissionData = {
+            fileName: file.name,
+            fileSize: sz,
+            date: nowStr,
+            type: 'scratch',
+            missionId: mission.id,
+            missionTitle: mission.title
+          };
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(submissionData));
+          } catch(e) {}
+
+          if (window.db && student && student.id) {
+            try {
+              var subDocId = student.id + '_' + mission.id;
+              window.db.collection('student_submissions').doc(subDocId).set({
+                studentId: student.id,
+                studentName: student.name,
+                gradeId: student.gradeId,
+                missionId: mission.id,
+                missionTitle: mission.title,
+                type: 'scratch',
+                fileName: file.name,
+                fileSize: sz,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true }).catch(function(err){ console.warn('Firestore submission err:', err); });
+            } catch(e) {}
+          }
+
+          if (scratchStatusEl) {
+            scratchStatusEl.innerHTML = '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> ¡Proyecto entregado! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu Google Drive.</div>';
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      if (scratchFileInput) {
+        scratchFileInput.onchange = function() {
+          if (scratchFileInput.files && scratchFileInput.files.length > 0) {
+            processScratchUpload(scratchFileInput.files[0]);
+          }
+        };
+      }
+
+      if (scratchDropzone) {
+        scratchDropzone.addEventListener('dragover', function(e){ e.preventDefault(); scratchDropzone.classList.add('drag-over'); }, false);
+        scratchDropzone.addEventListener('dragleave', function(e){ e.preventDefault(); scratchDropzone.classList.remove('drag-over'); }, false);
+        scratchDropzone.addEventListener('drop', function(e){
+          e.preventDefault();
+          scratchDropzone.classList.remove('drag-over');
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            processScratchUpload(e.dataTransfer.files[0]);
+          }
+        }, false);
+      }
+    }
+
+    // ── CONTROLADORES DE PESTAÑA: SOLUCIÓN OFICIAL ──
+    if (isMakecode) {
+      // Sub-pestañas Simulador vs Código
+      modal.querySelectorAll('.apm-sol-subtab-btn').forEach(function(b){
         b.onclick = function(){
           if (window.sounds) window.sounds.playClick();
-          var targetTab = b.dataset.mkTab;
-          modal.querySelectorAll('.mkm-tab-btn').forEach(function(x){ x.classList.toggle('active', x === b); });
-          modal.querySelectorAll('.pane-simulador .mkm-tab-pane').forEach(function(p){
+          var targetTab = b.dataset.solTab;
+          modal.querySelectorAll('.apm-sol-subtab-btn').forEach(function(x){ x.classList.toggle('active', x === b); });
+          modal.querySelectorAll('.apm-sol-subpane').forEach(function(p){
             p.classList.toggle('active', p.classList.contains('pane-' + targetTab));
           });
         };
       });
 
-      var simFullReload = modal.querySelector('#apm-sim-reload-btn');
-      if (simFullReload) {
-        simFullReload.onclick = function(){
+      var solSimReload = modal.querySelector('#apm-sol-sim-reload-btn');
+      if (solSimReload && mkInfo) {
+        solSimReload.onclick = function(){
           if (window.sounds) window.sounds.playClick();
-          var sf = modal.querySelector('#apm-sim-full-iframe');
+          var sf = modal.querySelector('#apm-sol-sim-iframe');
           if (sf) sf.src = mkInfo.simUrl;
         };
       }
 
-      // Zoom en código
-      var zoom = 1.25;
-      var cIf = modal.querySelector('#apm-code-iframe');
-      var zLbl = modal.querySelector('#apm-zoom-label');
-      function applyApmZoom(z) {
-        zoom = Math.max(0.75, Math.min(2.5, Math.round(z * 100) / 100));
-        if (cIf) {
-          cIf.style.transform = 'scale(' + zoom + ')';
-          cIf.style.transformOrigin = 'top left';
-          cIf.style.width = (100 / zoom) + '%';
-          cIf.style.height = (100 / zoom) + '%';
+      // Zoom en código de solución
+      if (mkInfo) {
+        var solZoom = 1.25;
+        var solCodeIf = modal.querySelector('#apm-sol-code-iframe');
+        var solZoomLbl = modal.querySelector('#apm-sol-zoom-label');
+        function applySolZoom(z) {
+          solZoom = Math.max(0.75, Math.min(2.5, Math.round(z * 100) / 100));
+          if (solCodeIf) {
+            solCodeIf.style.transform = 'scale(' + solZoom + ')';
+            solCodeIf.style.transformOrigin = 'top left';
+            solCodeIf.style.width = (100 / solZoom) + '%';
+            solCodeIf.style.height = (100 / solZoom) + '%';
+          }
+          if (solZoomLbl) solZoomLbl.textContent = Math.round(solZoom * 100) + '%';
         }
-        if (zLbl) zLbl.textContent = Math.round(zoom * 100) + '%';
-      }
-      applyApmZoom(1.25);
+        applySolZoom(1.25);
 
-      var zIn = modal.querySelector('#apm-zoom-in');
-      var zOut = modal.querySelector('#apm-zoom-out');
-      var zReset = modal.querySelector('#apm-zoom-reset');
-      if (zIn) zIn.onclick = function(){ if (window.sounds) window.sounds.playClick(); applyApmZoom(zoom + 0.2); };
-      if (zOut) zOut.onclick = function(){ if (window.sounds) window.sounds.playClick(); applyApmZoom(zoom - 0.2); };
-      if (zReset) zReset.onclick = function(){ if (window.sounds) window.sounds.playClick(); applyApmZoom(1.25); };
+        var sZoomIn = modal.querySelector('#apm-sol-zoom-in');
+        var sZoomOut = modal.querySelector('#apm-sol-zoom-out');
+        var sZoomReset = modal.querySelector('#apm-sol-zoom-reset');
+        if (sZoomIn) sZoomIn.onclick = function(){ if (window.sounds) window.sounds.playClick(); applySolZoom(solZoom + 0.2); };
+        if (sZoomOut) sZoomOut.onclick = function(){ if (window.sounds) window.sounds.playClick(); applySolZoom(solZoom - 0.2); };
+        if (sZoomReset) sZoomReset.onclick = function(){ if (window.sounds) window.sounds.playClick(); applySolZoom(1.25); };
+      }
+    } else {
+      // Scratch Jr: Descarga de archivo de solución
+      var scratchDlSolBtn = modal.querySelector('#apm-scratch-dl-sol-btn');
+      if (scratchDlSolBtn) {
+        scratchDlSolBtn.onclick = function() {
+          if (window.sounds) window.sounds.playSuccess();
+          var cleanTitle = mission.title.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_') || 'proyecto_solucion';
+          if (mission.solutionUrl) {
+            window.open(mission.solutionUrl, '_blank');
+          } else {
+            // Generar archivo .sjr válido con estructura estándar de Scratch Jr
+            var sjrData = {
+              app: "ScratchJr",
+              version: "1.2",
+              name: mission.title,
+              description: mission.description || "Solución oficial del proyecto",
+              date: new Date().toISOString(),
+              pages: [
+                {
+                  name: "Página 1",
+                  background: "aula_taller",
+                  sprites: [
+                    {
+                      name: "Robot Emociones",
+                      x: 240,
+                      y: 180,
+                      scripts: [
+                        { event: "onGreenFlag", blocks: ["forward 4", "jump", "say Hello", "repeat"] }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            };
+            var blob = new Blob([JSON.stringify(sjrData, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = cleanTitle + '.sjr';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+          }
+        };
+      }
     }
 
     modal.classList.add('active');

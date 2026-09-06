@@ -6940,6 +6940,526 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 /* ─────────────────────────────────────────────────────────────
+   PESTAÑA: MI ENTREGA (MakeCode Link & Scratch Jr Upload)
+───────────────────────────────────────────────────────────── */
+.apm-delivery-pane-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: #FFFFFF;
+  overflow-y: auto;
+}
+
+.apm-delivery-header {
+  padding: 18px 24px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.apm-dh-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.apm-delivery-header h4 {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.apm-delivery-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.92;
+  line-height: 1.4;
+}
+
+.apm-delivery-body {
+  padding: 24px;
+  flex: 1 1 auto;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.apm-delivery-input-group {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.apm-delivery-input-wrap {
+  flex: 1 1 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.apm-delivery-link-icon {
+  position: absolute;
+  left: 14px;
+  color: #94A3B8;
+  font-size: 1rem;
+}
+
+.apm-delivery-url-input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  border: 2px solid #CBD5E1;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  color: #1E293B;
+  outline: none;
+  transition: all 0.2s;
+  background: #F8FAFC;
+}
+
+.apm-delivery-url-input:focus {
+  border-color: #7C3AED;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.apm-delivery-submit-btn {
+  background: #7C3AED;
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  white-space: nowrap;
+}
+
+.apm-delivery-submit-btn:hover {
+  background: #6D28D9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.apm-delivery-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.apm-delivery-link-btn {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #7C3AED !important;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: #F5F3FF;
+  border: 1px solid #DDD6FE;
+  transition: all 0.2s;
+}
+
+.apm-delivery-link-btn:hover {
+  background: #EDE9FE;
+  color: #6D28D9 !important;
+}
+
+.apm-delivery-hint {
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+.apm-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.apm-status-badge.success {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1.5px solid #A7F3D0;
+}
+
+.apm-status-badge.warning {
+  background: #FFFBEB;
+  color: #92400E;
+  border: 1.5px solid #FDE68A;
+}
+
+/* Simulador del estudiante */
+.apm-student-sim-card {
+  background: #0F172A;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  border: 2px solid #334155;
+  display: flex;
+  flex-direction: column;
+  height: 480px;
+}
+
+.apm-student-sim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: #1E293B;
+  color: #FDE047;
+  font-size: 0.86rem;
+  font-weight: 800;
+  border-bottom: 1px solid #334155;
+}
+
+.apm-student-sim-body {
+  flex: 1 1 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apm-student-sim-frame {
+  width: 100%;
+  height: 100%;
+  max-width: 650px;
+  border: none;
+}
+
+.apm-delivery-empty-state {
+  text-align: center;
+  padding: 44px 24px;
+  background: #F8FAFC;
+  border: 2px dashed #CBD5E1;
+  border-radius: 16px;
+  color: #64748B;
+}
+
+.apm-delivery-empty-state i {
+  font-size: 2.8rem;
+  color: #94A3B8;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.apm-delivery-empty-state p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Dropzone de Scratch Jr */
+.apm-scratch-dropzone {
+  border: 2.5px dashed #CBD5E1;
+  border-radius: 18px;
+  background: #FFF7ED;
+  padding: 36px 24px;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.apm-scratch-dropzone.drag-over {
+  border-color: #EA580C;
+  background: #FFEDD5;
+  transform: scale(1.01);
+}
+
+.apm-sd-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #FED7AA;
+  color: #C2410C;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.apm-scratch-dropzone h4 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #9A3412;
+  margin: 0 0 6px;
+}
+
+.apm-scratch-dropzone p {
+  font-size: 0.85rem;
+  color: #C2410C;
+  margin: 0 0 16px;
+}
+
+.apm-delivery-guide {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.apm-delivery-guide h5 {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1E293B;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apm-delivery-guide ol {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PESTAÑA: SOLUCIÓN OFICIAL (MakeCode Live & Scratch Jr Download)
+───────────────────────────────────────────────────────────── */
+.apm-sol-subtab-btn {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.apm-sol-subtab-btn:hover {
+  border-color: #A78BFA;
+  color: #7C3AED;
+}
+
+.apm-sol-subtab-btn.active {
+  background: #7C3AED;
+  border-color: #6D28D9;
+  color: #FFFFFF;
+}
+
+.apm-sol-scratch-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: #FFFFFF;
+  overflow-y: auto;
+}
+
+.apm-sol-scratch-header {
+  background: linear-gradient(135deg, #1E1B4B 0%, #3730A3 100%);
+  padding: 18px 24px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.apm-ssh-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #FDE047;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.apm-sol-scratch-header h4 {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.apm-sol-scratch-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.92;
+  line-height: 1.4;
+}
+
+.apm-sol-scratch-body {
+  padding: 24px;
+  flex: 1 1 auto;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.apm-sol-download-card {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border: 2px solid #BFDBFE;
+  border-radius: 18px;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.apm-sol-dl-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: #2563EB;
+  color: #FFFFFF;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.apm-sol-dl-info {
+  flex: 1 1 240px;
+}
+
+.apm-sol-dl-info h5 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #1E3A8A;
+}
+
+.apm-sol-dl-info p {
+  margin: 0 0 6px;
+  font-size: 0.84rem;
+  color: #1E40AF;
+  line-height: 1.4;
+}
+
+.apm-sol-dl-filename {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #2563EB;
+  background: #FFFFFF;
+  padding: 2px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #BFDBFE;
+}
+
+.apm-sol-download-btn {
+  background: #2563EB;
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  white-space: nowrap;
+}
+
+.apm-sol-download-btn:hover {
+  background: #1D4ED8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.apm-sol-visual-guide {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.apm-sol-visual-guide h5 {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #1E293B;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apm-sol-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.apm-sol-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #F8FAFC;
+  border-left: 3.5px solid #3B82F6;
+  font-size: 0.86rem;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.apm-sol-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #3B82F6;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.76rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─────────────────────────────────────────────────────────────
    VISTA DEL ALUMNO LOGUEADO (FOCO EN DRIVE DASHBOARD Y ACTIVIDAD FAMILIAR)
 ───────────────────────────────────────────────────────────── */
 body.student-logged-in .hero-carousel,
