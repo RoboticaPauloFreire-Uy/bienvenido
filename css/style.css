@@ -5423,22 +5423,14 @@ body.student-logged-in #nav-dropdown-aulas {
   display: none !important;
 }
 
-/* Ocultar Actividad de casa del menú y de la página cuando el alumno está logueado (pasa al árbol del dashboard) */
+/* Ocultar secciones públicas (Actividad de casa y Actividad familiar) cuando el alumno está logueado (pasan al árbol del dashboard) */
 body.student-logged-in #nav-link-casa,
 body.student-logged-in #actividad-de-casa,
-body.student-logged-in .home-maker-corner {
-  display: none !important;
-}
-
-/* Mantener Actividad Familiar (Escape Rooms Nostálgico) visible en el menú y en la página cuando el alumno está logueado */
-body.student-logged-in #nav-dropdown-family {
-  display: inline-block !important;
-}
-
+body.student-logged-in .home-maker-corner,
+body.student-logged-in #nav-dropdown-family,
 body.student-logged-in #actividad-familiar,
 body.student-logged-in .family-activity-section {
-  display: block !important;
-  margin-top: 32px;
+  display: none !important;
 }
 
 body:not(.student-logged-in) #student-drive-dashboard-container {
@@ -5824,6 +5816,21 @@ body.student-logged-in #student-drive-dashboard-container {
 
 .gts-folder[data-folder="actividades"].active .gts-badge {
   background: #EA580C;
+  color: #FFFFFF;
+}
+
+.gts-folder[data-folder="familiar"] i {
+  color: #DB2777;
+}
+
+.gts-folder[data-folder="familiar"].active {
+  background: #FDF2F8;
+  color: #BE185D;
+  border-color: #F472B6;
+}
+
+.gts-folder[data-folder="familiar"].active .gts-badge {
+  background: #DB2777;
   color: #FFFFFF;
 }
 
@@ -6268,6 +6275,10 @@ body.student-logged-in #student-drive-dashboard-container {
 
 .agc-thumb-container.craft-bg {
   background: linear-gradient(135deg, #7C2D12 0%, #EA580C 100%);
+}
+
+.agc-thumb-container.escape-bg {
+  background: linear-gradient(135deg, #831843 0%, #BE185D 100%);
 }
 
 .agc-icon-giant {

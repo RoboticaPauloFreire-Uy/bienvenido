@@ -41,7 +41,8 @@
     dibujos:     { name: '🎨 Dibujos',             icon: 'fa-paint-brush',    items: [] },
     proyectos:   { name: '🚀 Proyectos del Grado', icon: 'fa-project-diagram', items: [] },
     proyecto:    { name: '📁 Proyecto',            icon: 'fa-folder-open',    items: [] },
-    actividades: { name: '🏠 Actividades de casa', icon: 'fa-house-user',     items: [], generalItems: [] }
+    actividades: { name: '🏠 Actividades de casa', icon: 'fa-house-user',     items: [], generalItems: [] },
+    familiar:    { name: '👨‍👩‍👧 Actividad familiar',   icon: 'fa-heart',          items: [] }
   };
 
   let activeFolderKey            = 'dibujos';
@@ -356,6 +357,7 @@
     var badgeProyecto    = isLoadingProyectoFiles ? '<i class="fas fa-spinner fa-spin"></i>' : validProyectoFiles.length;
     var totalActividades = FOLDER_CONTENTS.actividades.items.length + (FOLDER_CONTENTS.actividades.generalItems.length > 0 ? FOLDER_CONTENTS.actividades.generalItems.length : 1);
     var badgeActividades = isLoadingActividadesFiles ? '<i class="fas fa-spinner fa-spin"></i>' : totalActividades;
+    var badgeFamiliar    = 1;
 
     // ── Filtros por subtab ──
     var scratchItems   = validProyectoFiles.filter(function(f){ return isScratchFile(f.name) || f.type==='scratch'; }).slice(0, 10);
@@ -379,6 +381,8 @@
           ? (FOLDER_CONTENTS.actividades.items.length + ' reto(s) de ' + student.gradeName + ' + Inventario')
           : '1 actividad (Inventario de material)';
       }
+    } else if (activeFolderKey === 'familiar') {
+      countText = '1 experiencia familiar (Escape Rooms Nostálgico)';
     }
 
     // ──────────────────────────────────────────────────
@@ -605,6 +609,45 @@
 
       uploadZoneHtml = '';
 
+    // ═══ CARPETA: ACTIVIDAD FAMILIAR (Escape Rooms Nostálgico) ═══
+    } else if (activeFolderKey === 'familiar') {
+      var escapeRoomUrl = 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html';
+
+      var escapeRoomCardHtml =
+        '<div class="actividad-grid-card">' +
+          '<div class="agc-thumb-container escape-bg" onclick="window.open(\'' + escapeRoomUrl + '\', \'_blank\');" title="Hacé click para entrar al Escape Room">' +
+            '<span class="agc-icon-giant">🗝️</span>' +
+            '<span class="agc-zoom-badge" style="background:#BE185D;"><i class="fas fa-external-link-alt"></i> Entrar al Juego</span>' +
+          '</div>' +
+          '<div class="agc-card-content">' +
+            '<div class="agc-card-badge-row">' +
+              '<span class="agc-card-badge" style="background:#FCE7F3;color:#BE185D;"><i class="fas fa-heart"></i> Familiar • Todas las edades</span>' +
+              '<span class="agc-card-tag">🗝️ Juego Interactivo</span>' +
+            '</div>' +
+            '<h3 class="agc-card-title">Escape Rooms Nostálgico</h3>' +
+            '<p class="agc-card-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades con acertijos, desafíos y mucha creatividad.</p>' +
+            '<div class="agc-card-actions">' +
+              '<a href="' + escapeRoomUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-primary" style="background:#DB2777;">' +
+                '<i class="fas fa-play"></i> <span>Entrar al Escape Room</span>' +
+              '</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      mainDisplayHtml =
+        '<div class="gdb-actividades-container">' +
+          '<div class="gac-section-block">' +
+            '<div class="gac-block-header">' +
+              '<h4><span class="gac-icon">👨‍👩‍👧</span> Actividades para Compartir en Familia</h4>' +
+            '</div>' +
+            '<div class="actividades-grid">' +
+              escapeRoomCardHtml +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      uploadZoneHtml = '';
+
     // ═══ CARPETA: DIBUJOS (Carrusel) ═══
     } else {
       displayItems = FOLDER_CONTENTS.dibujos.items.slice(0, 5);
@@ -673,6 +716,7 @@
               treeFolder('proyectos', '🚀 Proyectos (' + gradeFolder + ')', badgeProyectos, activeFolderKey, '#2563EB') +
               treeFolder('proyecto', '📁 Proyecto', badgeProyecto, activeFolderKey, '#7C3AED') +
               treeFolder('actividades', '🏠 Actividad de casa', badgeActividades, activeFolderKey, '#EA580C') +
+              treeFolder('familiar', '👨‍👩‍👧 Actividad familiar', badgeFamiliar, activeFolderKey, '#DB2777') +
             '</div>' +
             (driveTargetUrl ?
               '<div class="gts-qr-card">' +
@@ -698,7 +742,8 @@
                 '<span>Contenido de: <strong>' +
                   (activeFolderKey === 'proyectos' ? 'Proyectos PDF (' + gradeFolder + ')' :
                    activeFolderKey === 'proyecto'  ? 'Proyecto' :
-                   activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : 'Actividad de casa (Inventario de material)') : currentFolder.name) +
+                   activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : 'Actividad de casa (Inventario de material)') :
+                   activeFolderKey === 'familiar' ? 'Actividad familiar (Escape Rooms Nostálgico)' : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
