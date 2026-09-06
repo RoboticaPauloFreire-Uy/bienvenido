@@ -855,7 +855,7 @@
       base: base,
       shareId: shareId,
       codeEmbedUrl: base + '/---codeembed#pub:' + shareId,
-      simUrl: base + '/---run?id=' + shareId + '&nofooter=1'
+      simUrl: base + '/---run?id=' + shareId + '&nofooter=1&fullscreen=1'
     };
   }
 
@@ -1120,7 +1120,15 @@
             '</div>' +
           '</div>' +
           '<div class="mkm-tab-pane pane-simulador">' +
-            '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+            '<div class="mkm-sim-toolbar">' +
+              '<span class="mkm-st-label"><i class="fas fa-gamepad"></i> Simulador Micro:bit Interactivo</span>' +
+              '<button type="button" class="mkm-sim-reload-btn" id="mkm-sim-reload" title="Reiniciar simulador">' +
+                '<i class="fas fa-redo"></i> Reiniciar' +
+              '</button>' +
+            '</div>' +
+            '<div class="mkm-sim-wrap">' +
+              '<iframe data-src="' + mkInfo.simUrl + '" src="about:blank" class="mkm-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+            '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -1137,11 +1145,34 @@
         modal.querySelectorAll('.mkm-tab-pane').forEach(function(p) {
           p.classList.toggle('active', p.classList.contains('pane-' + targetTab));
         });
+
+        // Cargar simulador solo cuando se activa su pestaña
+        if (targetTab === 'simulador') {
+          var simIframe = modal.querySelector('.mkm-sim-iframe');
+          if (simIframe) {
+            var targetSrc = simIframe.dataset.src || mkInfo.simUrl;
+            if (!simIframe.src || simIframe.src.indexOf('about:blank') !== -1) {
+              simIframe.src = targetSrc;
+            }
+          }
+        }
+
         setTimeout(function() {
           window.dispatchEvent(new Event('resize'));
         }, 60);
       };
     });
+
+    var simReload = modal.querySelector('#mkm-sim-reload');
+    if (simReload) {
+      simReload.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        var simIframe = modal.querySelector('.mkm-sim-iframe');
+        if (simIframe) {
+          simIframe.src = simIframe.dataset.src || mkInfo.simUrl;
+        }
+      };
+    }
 
     // Controles de Zoom para los bloques de código
     var currentZoom = 1.25;
