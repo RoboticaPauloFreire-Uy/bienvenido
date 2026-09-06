@@ -6224,6 +6224,158 @@ body.student-logged-in #student-drive-dashboard-container {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   GRILLA MODERNA DE ACTIVIDADES (GRID CARDS)
+───────────────────────────────────────────────────────────── */
+.actividades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 22px;
+  width: 100%;
+}
+
+.actividad-grid-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.actividad-grid-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  border-color: #CBD5E1;
+}
+
+.agc-thumb-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: #0F172A;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.agc-thumb-container.sim-bg {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%);
+}
+
+.agc-thumb-container.craft-bg {
+  background: linear-gradient(135deg, #7C2D12 0%, #EA580C 100%);
+}
+
+.agc-icon-giant {
+  font-size: 4rem;
+  transition: transform 0.3s ease;
+  user-select: none;
+}
+
+.agc-thumb-container:hover .agc-icon-giant {
+  transform: scale(1.1);
+}
+
+.agc-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+  background: #0F172A;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.agc-thumb-container:hover .agc-thumb-img {
+  transform: scale(1.04);
+}
+
+.agc-zoom-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.agc-thumb-container:hover .agc-zoom-badge {
+  background: #16A34A;
+  transform: scale(1.05);
+}
+
+.agc-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.agc-card-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.agc-card-badge {
+  font-size: 0.74rem;
+  font-weight: 800;
+  background: #DCFCE7;
+  color: #15803D;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.agc-card-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748B;
+}
+
+.agc-card-title {
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 4px 0 8px 0;
+  line-height: 1.35;
+}
+
+.agc-card-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #475569;
+  margin: 0 0 16px 0;
+  flex: 1;
+}
+
+.agc-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #F1F5F9;
+}
+
+/* ─────────────────────────────────────────────────────────────
    MODAL LIGHTBOX VISOR DE FICHAS E IMÁGENES
 ───────────────────────────────────────────────────────────── */
 #image-lightbox-modal .ilm-content {

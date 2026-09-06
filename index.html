@@ -6,8 +6,8 @@
   <title>Taller de Programación — Colegio Paulo Freire</title>
   <meta name="description" content="Portal de proyectos y juegos del Taller de Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=45">
-  <link rel="stylesheet" href="css/games.css?v=42">
+  <link rel="stylesheet" href="css/style.css?v=46">
+  <link rel="stylesheet" href="css/games.css?v=46">
 </head>
 <body>
 
@@ -170,11 +170,7 @@
           </div>
         </div>
 
-        <!-- ACTIVIDAD DE CASA (Página pública; al loguearse pasa al árbol del dashboard) -->
-        <a href="#actividad-de-casa" class="topbar-nav-link" id="nav-link-casa">
-          <i class="fas fa-house-user"></i>
-          <span>Actividad de casa</span>
-        </a>
+
 
         <!-- Mi Carpeta Drive (Visible al iniciar sesión) -->
         <a href="#student-drive-dashboard-container" class="nav-drive-link" style="display:none;" onclick="const d = document.getElementById('student-drive-dashboard-container'); if(d) d.scrollIntoView({behavior:'smooth'});">
@@ -471,81 +467,78 @@
           <p class="hmc-sub">Herramientas virtuales, inventario de piezas y tips para continuar creando proyectos desde el hogar.</p>
         </div>
 
-        <!-- 1. ACTIVIDAD GENERAL: INVENTARIO DE MATERIAL DEL TALLER MAKER -->
-        <div class="actividad-general-card" id="actividad-general-box">
-          <div class="agc-banner-strip">
-            <span class="agc-tag"><i class="fas fa-boxes"></i> Inventario de Material — Para Todas las Edades y Grados</span>
-          </div>
-          <div class="agc-body">
-            <div class="agc-preview-wrap" onclick="if(window.openImageModal) window.openImageModal('https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', 'Inventario de Material del Taller Maker', 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo');" style="cursor:pointer;" title="Hacé click para ver la ficha en pantalla completa">
-              <img src="https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo" alt="Inventario de Material del Taller Maker" class="agc-thumb" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'">
-              <div class="agc-zoom-hint">
-                <i class="fas fa-search-plus"></i>
-                <span>Ver en modal</span>
-              </div>
+        <!-- Grilla de Actividades de Casa -->
+        <div class="actividades-grid" id="actividades-grid-casa">
+          <!-- Tarjeta 1: Actividad General - Inventario de Material -->
+          <div class="actividad-grid-card">
+            <div class="agc-thumb-container" onclick="if(window.openImageModal) window.openImageModal('https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', 'Inventario de Material del Taller Maker', 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo');" title="Hacé click para ver la ficha en pantalla completa">
+              <img src="https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo" alt="Inventario de Material del Taller Maker" class="agc-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'">
+              <span class="agc-zoom-badge"><i class="fas fa-search-plus"></i> Ver Ficha</span>
             </div>
-            <div class="agc-info">
-              <div class="agc-header-row">
-                <div class="agc-icon-pill">📦🔍</div>
-                <div>
-                  <h3 class="agc-title">Inventario de Material del Taller Maker</h3>
-                  <span class="agc-badge-all">Válido para Sala de 5 a 6° Grado</span>
-                </div>
+            <div class="agc-card-content">
+              <div class="agc-card-badge-row">
+                <span class="agc-card-badge"><i class="fas fa-boxes"></i> General • Sala de 5 a 6° Grado</span>
               </div>
-              <p class="agc-desc">
-                ¿Qué herramientas, sensores y componentes usamos en nuestro taller de robótica? Una actividad visual y didáctica para observar, clasificar, contar y relacionar los materiales de robótica, circuitos y manualidades que dan vida a nuestros proyectos.
+              <h3 class="agc-card-title">Inventario de Material del Taller Maker</h3>
+              <p class="agc-card-desc">
+                ¿Qué herramientas, sensores y componentes usamos en nuestro taller? Actividad visual para observar, clasificar, contar y relacionar los materiales de robótica y circuitos.
               </p>
-              <div class="agc-actions">
+              <div class="agc-card-actions">
                 <button type="button" class="btn-agc-primary" onclick="if(window.openImageModal) window.openImageModal('https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', 'Inventario de Material del Taller Maker', 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo');">
                   <i class="fas fa-eye"></i>
-                  <span>Ver Ficha Completa</span>
+                  <span>Ver Ficha</span>
                 </button>
                 <a href="https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary">
                   <i class="fas fa-download"></i>
-                  <span>Descargar Imagen</span>
+                  <span>Descargar</span>
                 </a>
                 <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary" style="color:#2563EB;">
                   <i class="fab fa-google-drive"></i>
-                  <span>Carpeta en Drive</span>
                 </a>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="hmc-grid" style="margin-top: 24px;">
-          <!-- Tarjeta 1: Simulador -->
-          <div class="hmc-card hmc-card-sim">
-            <div class="hmc-icon-box">
-              <span>💻</span>
+          <!-- Tarjeta 2: Simulador micro:bit -->
+          <div class="actividad-grid-card">
+            <div class="agc-thumb-container sim-bg">
+              <span class="agc-icon-giant">💻</span>
             </div>
-            <div class="hmc-card-body">
-              <h3 class="hmc-card-title">Simulador micro:bit Online</h3>
-              <p class="hmc-card-desc">
+            <div class="agc-card-content">
+              <div class="agc-card-badge-row">
+                <span class="agc-card-badge" style="background:#EBF5FF;color:#1D4ED8;"><i class="fas fa-laptop-code"></i> Herramienta Virtual</span>
+              </div>
+              <h3 class="agc-card-title">Simulador micro:bit Online</h3>
+              <p class="agc-card-desc">
                 ¿No tenés la placa física en casa? Con el simulador oficial gratuito de Microsoft MakeCode podés probar luces, botones, brújula y sonidos en la pantalla en tiempo real.
               </p>
-              <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer" class="hmc-btn hmc-btn-sim">
-                <span>Abrir Editor MakeCode</span>
-                <i class="fas fa-external-link-alt"></i>
-              </a>
+              <div class="agc-card-actions">
+                <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer" class="btn-agc-primary" style="background:#1D4ED8;">
+                  <i class="fas fa-external-link-alt"></i>
+                  <span>Abrir Editor MakeCode</span>
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- Tarjeta 2: Materiales Reciclables -->
-          <div class="hmc-card hmc-card-craft">
-            <div class="hmc-icon-box">
-              <span>📦</span>
+          <!-- Tarjeta 3: Materiales Reciclables -->
+          <div class="actividad-grid-card">
+            <div class="agc-thumb-container craft-bg">
+              <span class="agc-icon-giant">📦</span>
             </div>
-            <div class="hmc-card-body">
-              <h3 class="hmc-card-title">Materiales que reciclamos</h3>
-              <p class="hmc-card-desc">
-                ¡En casa no tiramos nada! Guardamos cajas de cartón fino, tubos de cartón, tapitas plásticas, clips metálicos y papel de aluminio. ¡Todo se transforma en ciencia y tecnología!
+            <div class="agc-card-content">
+              <div class="agc-card-badge-row">
+                <span class="agc-card-badge" style="background:#FFF7ED;color:#C2410C;"><i class="fas fa-recycle"></i> Maker en Casa</span>
+              </div>
+              <h3 class="agc-card-title">Materiales que reciclamos</h3>
+              <p class="agc-card-desc">
+                ¡En casa no tiramos nada! Guardamos cajas de cartón fino, tubos, tapitas plásticas, clips metálicos y papel de aluminio. ¡Todo se transforma en ciencia y tecnología!
               </p>
-              <div class="hmc-materials-pills">
-                <span>📦 Cajas de cartón</span>
-                <span>🧻 Tubos de cartón</span>
-                <span>🔴 Tapitas plásticas</span>
-                <span>📎 Clips & Aluminio</span>
+              <div class="hmc-materials-pills" style="margin-top:auto;padding-top:12px;">
+                <span>📦 Cajas</span>
+                <span>🧻 Tubos</span>
+                <span>🔴 Tapitas</span>
+                <span>📎 Clips</span>
               </div>
             </div>
           </div>
@@ -598,13 +591,12 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=45"></script>
-
-  <script src="js/data.js?v=45"></script>
-  <script src="js/students.js?v=45"></script>
-  <script src="js/gdrive_viewer.js?v=45"></script>
-  <script src="js/auth.js?v=45"></script>
-  <script src="js/audio.js?v=45"></script>
+  <script src="js/firebase-config.js?v=46"></script>
+  <script src="js/data.js?v=46"></script>
+  <script src="js/students.js?v=46"></script>
+  <script src="js/gdrive_viewer.js?v=46"></script>
+  <script src="js/auth.js?v=46"></script>
+  <script src="js/audio.js?v=46"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>
@@ -806,7 +798,7 @@
     }
 
     window.scrollToActividadGeneral = function() {
-      const el = document.getElementById('actividad-general-box');
+      const el = document.getElementById('actividad-de-casa') || document.getElementById('actividades-grid-casa');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 

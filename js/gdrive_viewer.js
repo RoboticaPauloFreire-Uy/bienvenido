@@ -515,41 +515,44 @@
       var activitiesDriveUrl = 'https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing';
 
       // 1. Actividad de su grado (Relacionar): Solo aparece si HAY archivos subidos para su grado
-      var gradeBlockHtml = '';
+      var gradeCardsHtml = '';
       if (gradeFiles.length > 0) {
-        var gradeSectionHtml = '<div class="gdb-actividades-grid">' +
-          gradeFiles.map(function(item){
-            var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
-            var dlUrl = item.downloadUrl || ('https://drive.google.com/uc?export=download&id=' + item.id);
-            var viewUrl = item.id ? ('https://drive.google.com/file/d/' + item.id + '/view') : dlUrl;
-            return '<div class="actividad-item-card">' +
-              '<div class="aic-header">' +
-                '<span class="aic-badge" style="background:' + gradeInfo.themeColor + ';color:#fff;"><i class="fas fa-star"></i> ' + student.gradeName + '</span>' +
-                '<span class="aic-type">' + (isPdf ? '📄 Ficha PDF' : '🖼️ Imagen') + '</span>' +
-              '</div>' +
-              '<div class="aic-body">' +
-                '<h4 class="aic-title">' + item.title + '</h4>' +
-                '<div class="aic-meta"><span><i class="far fa-clock"></i> ' + item.date + '</span><span><i class="fas fa-hdd"></i> ' + item.size + '</span></div>' +
-              '</div>' +
-              '<div class="aic-actions">' +
-                '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="aic-btn-view" style="background:' + gradeInfo.themeColor + ';">' +
-                  '<i class="fas fa-eye"></i> Ver actividad' +
-                '</a>' +
-                '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="aic-btn-dl">' +
-                  '<i class="fas fa-download"></i> Descargar' +
-                '</a>' +
-              '</div>' +
-            '</div>';
-          }).join('') +
-        '</div>';
+        gradeCardsHtml = gradeFiles.map(function(item){
+          var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
+          var dlUrl = item.downloadUrl || ('https://drive.google.com/uc?export=download&id=' + item.id);
+          var viewUrl = item.id ? ('https://drive.google.com/file/d/' + item.id + '/view') : dlUrl;
+          var imgThumb = (item.type === 'image' || !isPdf)
+            ? ('https://lh3.googleusercontent.com/d/' + item.id)
+            : 'img/pdf_preview_placeholder.png';
 
-        gradeBlockHtml =
-          '<div class="gac-section-block">' +
-            '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">' + gradeInfo.icon + '</span> Reto de tu Grado (' + student.gradeName + ')</h4>' +
+          var isImg = (item.type === 'image' || !isPdf);
+          var clickAction = isImg
+            ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + item.title.replace(/'/g, "\\'") + '\', \'' + dlUrl + '\');'
+            : 'window.open(\'' + viewUrl + '\', \'_blank\');';
+
+          return '<div class="actividad-grid-card">' +
+            '<div class="agc-thumb-container" onclick="' + clickAction + '" title="Hacé click para ver">' +
+              (isImg
+                ? '<img src="' + imgThumb + '" alt="' + item.title + '" class="agc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">' +
+                  '<span class="agc-zoom-badge"><i class="fas fa-search-plus"></i> Ver Ficha</span>'
+                : '<span class="agc-icon-giant">📄</span><span class="agc-zoom-badge"><i class="fas fa-eye"></i> Abrir PDF</span>') +
             '</div>' +
-            gradeSectionHtml +
+            '<div class="agc-card-content">' +
+              '<div class="agc-card-badge-row">' +
+                '<span class="agc-card-badge" style="background:' + (gradeInfo.themeColor || '#EA580C') + ';color:#ffffff;"><i class="fas fa-star"></i> ' + student.gradeName + '</span>' +
+                '<span class="agc-card-tag">' + (isPdf ? '📄 PDF' : '🖼️ Imagen') + '</span>' +
+              '</div>' +
+              '<h3 class="agc-card-title">' + item.title + '</h3>' +
+              '<p class="agc-card-desc">Reto y actividad de relación de conceptos creada para tu grado (' + student.gradeName + ').</p>' +
+              '<div class="agc-card-actions">' +
+                (isImg
+                  ? '<button type="button" class="btn-agc-primary" style="background:' + (gradeInfo.themeColor || '#EA580C') + ';" onclick="' + clickAction + '"><i class="fas fa-eye"></i> <span>Ver Ficha</span></button>'
+                  : '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-primary" style="background:' + (gradeInfo.themeColor || '#EA580C') + ';"><i class="fas fa-eye"></i> <span>Abrir PDF</span></a>') +
+                '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary"><i class="fas fa-download"></i> <span>Descargar</span></a>' +
+              '</div>' +
+            '</div>' +
           '</div>';
+        }).join('');
       }
 
       // 2. Actividad General (Inventario del taller)
@@ -558,40 +561,45 @@
         title: 'Inventario del Taller Maker',
         url: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo'
       };
-      var generalViewUrl = 'https://drive.google.com/file/d/' + generalItem.id + '/view?usp=sharing';
       var generalDlUrl = 'https://drive.google.com/uc?export=download&id=' + generalItem.id;
       var generalImgUrl = 'https://lh3.googleusercontent.com/d/' + generalItem.id;
 
-      var generalSectionHtml =
-        '<div class="actividad-general-tree-card">' +
-          '<div class="agtc-header">' +
-            '<span class="agtc-badge"><i class="fas fa-home"></i> Actividad General para Casa — Para Todas las Edades</span>' +
+      var generalCardHtml =
+        '<div class="actividad-grid-card">' +
+          '<div class="agc-thumb-container" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');" title="Hacé click para ver la ficha completa">' +
+            '<img src="' + generalImgUrl + '" alt="' + generalItem.title + '" class="agc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
+            '<span class="agc-zoom-badge"><i class="fas fa-search-plus"></i> Ver Ficha</span>' +
           '</div>' +
-          '<div class="agtc-body">' +
-            '<div class="agtc-thumb-wrap" data-img-url="' + generalImgUrl + '" data-img-title="' + generalItem.title + '" style="cursor:pointer;" title="Hacé click para ver la ficha en modal">' +
-              '<img src="' + generalImgUrl + '" alt="Inventario del Taller" class="agtc-thumb" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
-              '<div class="agtc-zoom-hint"><i class="fas fa-search-plus"></i> Ver en modal</div>' +
+          '<div class="agc-card-content">' +
+            '<div class="agc-card-badge-row">' +
+              '<span class="agc-card-badge"><i class="fas fa-boxes"></i> General • Todas las edades</span>' +
             '</div>' +
-            '<div class="agtc-info">' +
-              '<h4 class="agtc-title">' + generalItem.title + '</h4>' +
-              '<p class="agtc-desc">Reconocer, clasificar y contar las piezas, motores, sensores y herramientas del taller de robótica. ¡Una experiencia colaborativa para compartir en el hogar!</p>' +
-              '<div class="agtc-actions">' +
-                '<button type="button" class="agtc-btn-view" data-img-url="' + generalImgUrl + '" data-img-title="' + generalItem.title + '"><i class="fas fa-eye"></i> Ver Ficha</button>' +
-                '<a href="' + generalDlUrl + '" target="_blank" rel="noopener noreferrer" class="agtc-btn-dl"><i class="fas fa-download"></i> Descargar Imagen</a>' +
-                '<a href="' + activitiesDriveUrl + '" target="_blank" rel="noopener noreferrer" class="agtc-btn-drive"><i class="fab fa-google-drive"></i> Abrir en Drive</a>' +
-              '</div>' +
+            '<h3 class="agc-card-title">' + generalItem.title + '</h3>' +
+            '<p class="agc-card-desc">Observar, clasificar, contar y relacionar las piezas, sensores, motores y herramientas del taller de robótica desde casa.</p>' +
+            '<div class="agc-card-actions">' +
+              '<button type="button" class="btn-agc-primary" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');">' +
+                '<i class="fas fa-eye"></i> <span>Ver Ficha</span>' +
+              '</button>' +
+              '<a href="' + generalDlUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary">' +
+                '<i class="fas fa-download"></i> <span>Descargar</span>' +
+              '</a>' +
+              '<a href="' + activitiesDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary" style="color:#2563EB;">' +
+                '<i class="fab fa-google-drive"></i>' +
+              '</a>' +
             '</div>' +
           '</div>' +
         '</div>';
 
       mainDisplayHtml =
         '<div class="gdb-actividades-container">' +
-          gradeBlockHtml +
           '<div class="gac-section-block">' +
             '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">📦</span> Inventario de Material del Taller (General para todas las edades)</h4>' +
+              '<h4><span class="gac-icon">🏠</span> Actividades para Resolver en Casa</h4>' +
             '</div>' +
-            generalSectionHtml +
+            '<div class="actividades-grid">' +
+              gradeCardsHtml +
+              generalCardHtml +
+            '</div>' +
           '</div>' +
         '</div>';
 
