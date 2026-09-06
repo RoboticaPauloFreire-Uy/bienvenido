@@ -459,53 +459,34 @@
             'Los códigos se configuran en el archivo <code>js/data.js</code> → sección <code>MAKECODE_LIBRARY</code>.</p>' +
           '</div>';
         } else {
-          tabContent = '<div class="mklib-grid">' +
+          tabContent = '<div class="mklib-cards-grid">' +
             mkLibrary.map(function(entry, idx) {
-              var mkInfo = extractMakecodeInfo(entry.shareUrl);
-              return '<div class="mklib-card">' +
-                '<div class="mklib-card-header">' +
-                  '<div class="mklib-header-main">' +
-                    '<div class="mklib-icon-wrap"><span class="mklib-num">' + (idx+1) + '</span><i class="fas fa-microchip mklib-chip-icon"></i></div>' +
-                    '<div class="mklib-info">' +
-                      '<div class="mklib-title-row">' +
-                        '<h4 class="mklib-title">' + (entry.title || 'Código MakeCode #' + (idx+1)) + '</h4>' +
-                        '<span class="mklib-badge"><i class="fas fa-lock"></i> Solo lectura</span>' +
-                      '</div>' +
-                      (entry.description ? '<p class="mklib-desc">' + entry.description + '</p>' : '') +
-                    '</div>' +
+              return '<div class="mklib-card-item" data-entry-idx="' + idx + '">' +
+                '<div class="mklib-ci-header">' +
+                  '<div class="mklib-icon-wrap">' +
+                    '<span class="mklib-num">' + (idx + 1) + '</span>' +
+                    '<i class="fas fa-microchip mklib-chip-icon"></i>' +
                   '</div>' +
-                  '<div class="mklib-header-actions">' +
-                    '<a class="mklib-btn-entrar" href="' + (entry.shareUrl || '#') + '" target="_blank" rel="noopener noreferrer">' +
-                      '<i class="fas fa-external-link-alt"></i> Entrar' +
-                    '</a>' +
+                  '<div class="mklib-ci-badges">' +
+                    '<span class="mklib-badge"><i class="fas fa-shield-alt"></i> Solo lectura</span>' +
                   '</div>' +
                 '</div>' +
-                (mkInfo
-                  ? '<!-- Pestañas internas de la tarjeta -->' +
-                    '<div class="mklib-tabs-bar">' +
-                      '<button type="button" class="mklib-tab-btn active" data-tab="codigo">' +
-                        '<i class="fas fa-puzzle-piece"></i> Código MakeCode' +
-                      '</button>' +
-                      '<button type="button" class="mklib-tab-btn" data-tab="simulador">' +
-                        '<i class="fas fa-gamepad"></i> Simulador' +
-                      '</button>' +
-                    '</div>' +
-                    '<!-- Paneles de la tarjeta -->' +
-                    '<div class="mklib-panes-body">' +
-                      '<div class="mklib-tab-pane pane-codigo active">' +
-                        '<div class="mklib-code-frame-wrap">' +
-                          '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mklib-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0" allowfullscreen loading="lazy"></iframe>' +
-                        '</div>' +
-                      '</div>' +
-                      '<div class="mklib-tab-pane pane-simulador">' +
-                        '<div class="mklib-sim-container">' +
-                          '<div class="mklib-sim-frame-wrap">' +
-                            '<iframe src="' + mkInfo.simUrl + '" class="mklib-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
-                          '</div>' +
-                        '</div>' +
-                      '</div>' +
-                    '</div>'
-                  : '<div class="mklib-no-embed"><i class="fas fa-exclamation-triangle"></i> Link no válido: ' + (entry.shareUrl || 'vacío') + '</div>') +
+                '<div class="mklib-ci-body">' +
+                  '<h4 class="mklib-ci-title">' + (entry.title || ('Código MakeCode #' + (idx + 1))) + '</h4>' +
+                  '<p class="mklib-ci-desc">' + (entry.description || 'Proyecto interactivo de programación en MakeCode para Micro:bit.') + '</p>' +
+                  '<div class="mklib-ci-pills">' +
+                    '<span class="mklib-pill"><i class="fas fa-puzzle-piece"></i> Código</span>' +
+                    '<span class="mklib-pill"><i class="fas fa-gamepad"></i> Simulador</span>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="mklib-ci-footer">' +
+                  '<button type="button" class="mklib-btn-modal-trigger">' +
+                    '<i class="fas fa-expand-alt"></i> Ver Proyecto' +
+                  '</button>' +
+                  '<a class="mklib-btn-entrar-link" href="' + (entry.shareUrl || '#') + '" target="_blank" rel="noopener noreferrer">' +
+                    '<i class="fas fa-external-link-alt"></i> Entrar' +
+                  '</a>' +
+                '</div>' +
               '</div>';
             }).join('') +
           '</div>';
@@ -798,23 +779,17 @@
       initDropzone(container, student, 'proyecto', '.sb3,.sjr,.pjson,.sb', containerId, true, 'scratch');
     }
 
-    // ── Pestañas internas de MakeCode (Código / Simulador) ──
+    // ── Click en tarjeta MakeCode para abrir Modal con Código y Simulador ──
     if (activeFolderKey === 'proyecto' && proyectoSubTab === 'makecode') {
-      container.querySelectorAll('.mklib-tab-btn').forEach(function(btn) {
-        btn.onclick = function() {
-          if (window.sounds) window.sounds.playClick();
-          var card = btn.closest('.mklib-card');
-          if (!card) return;
-          var targetTab = btn.dataset.tab;
-          card.querySelectorAll('.mklib-tab-btn').forEach(function(b) {
-            b.classList.toggle('active', b === btn);
-          });
-          card.querySelectorAll('.mklib-tab-pane').forEach(function(pane) {
-            pane.classList.toggle('active', pane.classList.contains('pane-' + targetTab));
-          });
-          setTimeout(function() {
-            window.dispatchEvent(new Event('resize'));
-          }, 50);
+      var mkLibrary = (window.MAKECODE_LIBRARY && window.MAKECODE_LIBRARY[student.gradeId]) || [];
+      container.querySelectorAll('.mklib-card-item').forEach(function(card) {
+        card.onclick = function(e) {
+          if (e.target.closest('.mklib-btn-entrar-link')) return; // Permite abrir en MakeCode sin abrir modal
+          var idx = parseInt(card.dataset.entryIdx, 10);
+          var entry = mkLibrary[idx];
+          if (entry) {
+            openMakecodeModal(entry, idx);
+          }
         };
       });
     }
@@ -1058,6 +1033,115 @@
 
   // Exponer a window para uso universal en index.html y aula.html
   window.openImageModal = openImageModal;
+
+  // ──────────────────────────────────────────────────
+  // MODAL DE MAKECODE (CÓDIGO EN BLOQUES + SIMULADOR)
+  // ──────────────────────────────────────────────────
+  function openMakecodeModal(entry, idx) {
+    if (window.sounds) window.sounds.playClick();
+    if (!entry) return;
+    var mkInfo = extractMakecodeInfo(entry.shareUrl);
+    if (!mkInfo) {
+      alert('Link de MakeCode no válido: ' + (entry.shareUrl || 'vacío'));
+      return;
+    }
+
+    var modal = document.getElementById('makecode-viewer-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'makecode-viewer-modal';
+      modal.className = 'makecode-modal-overlay';
+      document.body.appendChild(modal);
+
+      modal.onclick = function(e) {
+        if (e.target === modal) {
+          closeMakecodeModal();
+        }
+      };
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeMakecodeModal();
+        }
+      });
+    }
+
+    function closeMakecodeModal() {
+      if (window.sounds) window.sounds.playClick();
+      modal.classList.remove('active');
+      modal.innerHTML = ''; // Detiene ejecución y audio
+    }
+
+    var numText = (typeof idx === 'number') ? ('#' + (idx + 1) + ' — ') : '';
+
+    modal.innerHTML =
+      '<div class="makecode-modal-content">' +
+        '<div class="mkm-header">' +
+          '<div class="mkm-header-info">' +
+            '<div class="mkm-icon"><i class="fas fa-microchip"></i></div>' +
+            '<div>' +
+              '<h3 class="mkm-title">' + numText + (entry.title || 'Proyecto MakeCode') + '</h3>' +
+              '<span class="mkm-badge"><i class="fas fa-shield-alt"></i> Solo lectura</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="mkm-header-actions">' +
+            '<a class="mkm-btn-entrar" href="' + (entry.shareUrl || '#') + '" target="_blank" rel="noopener noreferrer">' +
+              '<i class="fas fa-external-link-alt"></i> Entrar a MakeCode' +
+            '</a>' +
+            '<button type="button" class="mkm-close-btn" aria-label="Cerrar modal">&times;</button>' +
+          '</div>' +
+        '</div>' +
+
+        (entry.description
+          ? '<div class="mkm-desc-bar"><p><i class="fas fa-info-circle"></i> ' + entry.description + '</p></div>'
+          : '') +
+
+        '<div class="mkm-tabs-bar">' +
+          '<button type="button" class="mkm-tab-btn active" data-tab="codigo">' +
+            '<i class="fas fa-puzzle-piece"></i> Código MakeCode' +
+          '</button>' +
+          '<button type="button" class="mkm-tab-btn" data-tab="simulador">' +
+            '<i class="fas fa-gamepad"></i> Simulador' +
+          '</button>' +
+        '</div>' +
+
+        '<div class="mkm-panes-body">' +
+          '<div class="mkm-tab-pane pane-codigo active">' +
+            '<div class="mkm-code-frame-wrap">' +
+              '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0" allowfullscreen loading="lazy"></iframe>' +
+            '</div>' +
+          '</div>' +
+          '<div class="mkm-tab-pane pane-simulador">' +
+            '<div class="mkm-sim-container">' +
+              '<div class="mkm-sim-frame-wrap">' +
+                '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    modal.querySelector('.mkm-close-btn').onclick = closeMakecodeModal;
+
+    modal.querySelectorAll('.mkm-tab-btn').forEach(function(btn) {
+      btn.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        var targetTab = btn.dataset.tab;
+        modal.querySelectorAll('.mkm-tab-btn').forEach(function(b) {
+          b.classList.toggle('active', b === btn);
+        });
+        modal.querySelectorAll('.mkm-tab-pane').forEach(function(p) {
+          p.classList.toggle('active', p.classList.contains('pane-' + targetTab));
+        });
+        setTimeout(function() {
+          window.dispatchEvent(new Event('resize'));
+        }, 60);
+      };
+    });
+
+    modal.classList.add('active');
+  }
+
+  window.openMakecodeModal = openMakecodeModal;
 
   // ──────────────────────────────────────────────────
   // DRAG & DROP / SUBIDA
