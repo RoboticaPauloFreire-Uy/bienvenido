@@ -324,6 +324,76 @@
   }
 
   // ──────────────────────────────────────────────────
+  // GESTIÓN DE MISIONES COMPLETADAS Y PROGRESO DEL TALLER
+  // ──────────────────────────────────────────────────
+  function isMissionCompleted(student, missionId) {
+    if (!missionId) return false;
+    var sId = (student && student.id) ? student.id : 'anon';
+    var subKey = 'entrega_' + sId + '_' + missionId;
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(subKey)); } catch(e){}
+    if (saved && (saved.completed || saved.makecodeUrl || saved.fileName)) return true;
+
+    var compListKey = 'completed_missions_' + sId;
+    var compList = [];
+    try { compList = JSON.parse(localStorage.getItem(compListKey)) || []; } catch(e){}
+    if (compList.indexOf(missionId) !== -1) return true;
+
+    if (student && student.completedMissions && Array.isArray(student.completedMissions) && student.completedMissions.indexOf(missionId) !== -1) {
+      return true;
+    }
+    return false;
+  }
+
+  function markMissionCompleted(student, missionId, deliveryData) {
+    if (!missionId) return;
+    var sId = (student && student.id) ? student.id : 'anon';
+    var subKey = 'entrega_' + sId + '_' + missionId;
+    var existing = null;
+    try { existing = JSON.parse(localStorage.getItem(subKey)); } catch(e){}
+    var payload = Object.assign({}, existing || {}, deliveryData || {}, {
+      completed: true,
+      completedAt: new Date().toISOString()
+    });
+    try {
+      localStorage.setItem(subKey, JSON.stringify(payload));
+    } catch(e){}
+
+    var compListKey = 'completed_missions_' + sId;
+    var compList = [];
+    try { compList = JSON.parse(localStorage.getItem(compListKey)) || []; } catch(e){}
+    if (compList.indexOf(missionId) === -1) {
+      compList.push(missionId);
+      try { localStorage.setItem(compListKey, JSON.stringify(compList)); } catch(e){}
+    }
+
+    // Sincronizar en Firestore
+    if (window.db && student && student.id) {
+      try {
+        var subDocId = student.id + '_' + missionId;
+        window.db.collection('student_submissions').doc(subDocId).set(Object.assign({
+          studentId: student.id,
+          studentName: student.name || '',
+          gradeId: student.gradeId || '',
+          missionId: missionId,
+          completed: true,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, deliveryData || {}), { merge: true }).catch(function(err){ console.warn('Firestore err:', err); });
+
+        // Actualizar array completedMissions en el documento del estudiante si existe
+        window.db.collection('students').doc(student.id).set({
+          completedMissions: firebase.firestore.FieldValue.arrayUnion(missionId)
+        }, { merge: true }).catch(function(){});
+      } catch(e){}
+    }
+  }
+
+  function refreshDashboard() {
+    renderGDriveDashboard('student-drive-dashboard-container');
+    renderGDriveDashboard('gdrive-explorer-container');
+  }
+
+  // ──────────────────────────────────────────────────
   // AGREGADOR DE MISIONES / RUTA DE AVENTURAS (MODO 3)
   // Combina proyectos del currículo, MakeCode y guías de Drive
   // ──────────────────────────────────────────────────
@@ -358,7 +428,7 @@
           icon: icon,
           color: gradeObj.color || '#2563EB',
           stars: 3,
-          status: levelCount === 2 ? 'completado' : (levelCount === 3 ? 'activo' : 'desafio'),
+          status: 'desafio',
           coverImage: p.coverImage || (p.gallery && p.gallery[0]) || 'img/scratchjr.png',
           gallery: p.gallery || [],
           pdfUrl: p.pdfUrl || null,
@@ -389,7 +459,7 @@
           icon: 'fa-microchip',
           color: '#7C3AED',
           stars: 3,
-          status: levelCount === 2 ? 'completado' : (levelCount === 3 ? 'activo' : 'desafio'),
+          status: 'desafio',
           coverImage: 'img/microbit.png',
           gallery: [],
           pdfUrl: null,
@@ -435,6 +505,19 @@
       });
     });
 
+    // ── Determinar estado dinámico de cada misión según entregas del alumno ──
+    var firstPendingFound = false;
+    missions.forEach(function(m) {
+      if (isMissionCompleted(student, m.id)) {
+        m.status = 'completado';
+      } else if (!firstPendingFound) {
+        m.status = 'activo';
+        firstPendingFound = true;
+      } else {
+        m.status = 'desafio';
+      }
+    });
+
     return missions;
   }
 
@@ -446,9 +529,9 @@
       return '<div class="gdb-empty-state"><div class="ges-icon">🗺️</div><h4>Sin misiones aún</h4><p>Pronto se publicarán los desafíos para ' + student.gradeName + '.</p></div>';
     }
 
+    // Progreso del Taller: cuenta exactamente las misiones completadas
     var completedCount = missions.filter(function(m){ return m.status === 'completado'; }).length;
-    if (completedCount === 0 && missions.length > 0) completedCount = 1;
-    var progressPercent = Math.min(100, Math.round((completedCount / missions.length) * 100));
+    var progressPercent = missions.length > 0 ? Math.min(100, Math.round((completedCount / missions.length) * 100)) : 0;
 
     var headerHtml =
       '<div class="arm-header-banner">' +
@@ -1558,6 +1641,7 @@
     var studentMkInfo = savedMakecodeUrl ? extractMakecodeInfo(savedMakecodeUrl) : null;
     var savedFileName = (savedEntrega && savedEntrega.fileName) ? savedEntrega.fileName : '';
     var savedFileDate = (savedEntrega && savedEntrega.date) ? savedEntrega.date : '';
+    var isAlreadyCompleted = isMissionCompleted(student, mission.id) || mission.status === 'completado';
 
     function closeAdventureModal() {
       if (window.sounds) window.sounds.playClick();
@@ -1619,6 +1703,7 @@
               '<h3>NIVEL ' + mission.level + ' — ' + mission.title + '</h3>' +
               '<div class="apm-subtitle-row">' +
                 '<span class="apm-lvl-badge">NIVEL ' + mission.level + '</span>' +
+                '<span id="apm-header-status-badge">' + (isAlreadyCompleted ? '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>' : '') + '</span>' +
                 '<span>' + (mission.gradeName || 'Taller Maker') + ' • ' + mission.badge + '</span>' +
               '</div>' +
             '</div>' +
@@ -1861,7 +1946,7 @@
                   '</div>' +
                   '<div id="apm-mk-delivery-status">' +
                     (savedMakecodeUrl ?
-                      '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> ¡Entrega guardada con éxito! Tu profesor ya puede ver tu proyecto en el simulador.</div>' : '') +
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Tu entrega está guardada. Podés actualizar el link en cualquier momento si querés mejorar tu proyecto.</span></div></div>' : '') +
                   '</div>' +
                   '<div id="apm-mk-student-preview">' +
                     (studentMkInfo ?
@@ -1903,7 +1988,7 @@
                   '</div>' +
                   '<div id="apm-scratch-delivery-status" style="margin-top:14px;">' +
                     (savedFileName ?
-                      '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> Archivo entregado: <strong>' + savedFileName + '</strong> (' + savedFileDate + ') guardado en tu Google Drive.</div>' : '') +
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Archivo entregado: <strong>' + savedFileName + '</strong> (' + savedFileDate + ') guardado en tu Google Drive.</span></div></div>' : '') +
                   '</div>' +
                   '<div class="apm-delivery-guide" style="margin-top:16px;">' +
                     '<h5><i class="fas fa-question-circle"></i> ¿Cómo compartir desde Scratch Jr?</h5>' +
@@ -2253,31 +2338,31 @@
             missionId: mission.id,
             missionTitle: mission.title
           };
-          try {
-            localStorage.setItem(storageKey, JSON.stringify(submissionData));
-          } catch(e) {}
 
-          // Sincronizar en Firestore en la colección student_submissions
-          if (window.db && student && student.id) {
-            try {
-              var subDocId = student.id + '_' + mission.id;
-              window.db.collection('student_submissions').doc(subDocId).set({
-                studentId: student.id,
-                studentName: student.name,
-                gradeId: student.gradeId,
-                missionId: mission.id,
-                missionTitle: mission.title,
-                type: 'makecode',
-                makecodeUrl: rawUrl,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-              }, { merge: true }).catch(function(err){ console.warn('Firestore submission err:', err); });
-            } catch(e) {}
+          // Guardar y marcar como completada la misión
+          markMissionCompleted(student, mission.id, submissionData);
+          mission.status = 'completado';
+
+          // Actualizar insignia en el encabezado del modal a ⭐ COMPLETADO
+          var headerBadge = modal.querySelector('#apm-header-status-badge');
+          if (headerBadge) {
+            headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
           }
 
           var statusEl = modal.querySelector('#apm-mk-delivery-status');
           if (statusEl) {
-            statusEl.innerHTML = '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> ¡Entrega guardada con éxito! Tu profesor ya puede ver tu proyecto en el simulador.</div>';
+            statusEl.innerHTML =
+              '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+                '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+                '<div>' +
+                  '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                  '<span style="font-size:0.84rem;color:#047857;">¡Entrega guardada con éxito! Tu profesor ya puede ver tu proyecto en el simulador y sumaste +100 XP al Progreso del Taller.</span>' +
+                '</div>' +
+              '</div>';
           }
+
+          // Refrescar panel de fondo para actualizar el progreso y tarjetas inmediatamente
+          refreshDashboard();
 
           var previewEl = modal.querySelector('#apm-mk-student-preview');
           if (previewEl) {
@@ -2381,30 +2466,29 @@
             missionId: mission.id,
             missionTitle: mission.title
           };
-          try {
-            localStorage.setItem(storageKey, JSON.stringify(submissionData));
-          } catch(e) {}
+          // Guardar y marcar como completada la misión
+          markMissionCompleted(student, mission.id, submissionData);
+          mission.status = 'completado';
 
-          if (window.db && student && student.id) {
-            try {
-              var subDocId = student.id + '_' + mission.id;
-              window.db.collection('student_submissions').doc(subDocId).set({
-                studentId: student.id,
-                studentName: student.name,
-                gradeId: student.gradeId,
-                missionId: mission.id,
-                missionTitle: mission.title,
-                type: 'scratch',
-                fileName: file.name,
-                fileSize: sz,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-              }, { merge: true }).catch(function(err){ console.warn('Firestore submission err:', err); });
-            } catch(e) {}
+          // Actualizar insignia en el encabezado del modal a ⭐ COMPLETADO
+          var headerBadge = modal.querySelector('#apm-header-status-badge');
+          if (headerBadge) {
+            headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
           }
 
           if (scratchStatusEl) {
-            scratchStatusEl.innerHTML = '<div class="apm-status-badge success"><i class="fas fa-check-circle"></i> ¡Proyecto entregado! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu Google Drive.</div>';
+            scratchStatusEl.innerHTML =
+              '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+                '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+                '<div>' +
+                  '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                  '<span style="font-size:0.84rem;color:#047857;">¡Proyecto entregado! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu Google Drive. ¡Sumaste +100 XP al Progreso del Taller!</span>' +
+                '</div>' +
+              '</div>';
           }
+
+          // Refrescar panel de fondo para actualizar el progreso y tarjetas inmediatamente
+          refreshDashboard();
         };
         reader.readAsDataURL(file);
       }

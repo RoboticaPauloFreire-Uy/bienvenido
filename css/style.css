@@ -6008,6 +6008,11 @@ button, input, select, textarea { font-family: inherit; }
   background: linear-gradient(180deg, #FFFDF5 0%, #FFFFFF 100%);
 }
 
+.arm-mission-card.completado {
+  border: 2px solid #10B981;
+  background: linear-gradient(180deg, #F0FDF4 0%, #FFFFFF 100%);
+}
+
 .arm-mc-header {
   display: flex;
   align-items: center;
@@ -6160,6 +6165,16 @@ button, input, select, textarea { font-family: inherit; }
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   border-color: #A5B4FC;
+}
+
+.arm-grid-card.activo {
+  border: 2px solid #F59E0B;
+  background: linear-gradient(180deg, #FFFDF5 0%, #FFFFFF 100%);
+}
+
+.arm-grid-card.completado {
+  border: 2px solid #10B981;
+  background: linear-gradient(180deg, #F0FDF4 0%, #FFFFFF 100%);
 }
 
 /* ── Responsive para el Sendero ── */
