@@ -7477,6 +7477,297 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 /* ─────────────────────────────────────────────────────────────
+   PROYECTOS DE ELECTRÓNICA SIN PROGRAMACIÓN (APM)
+───────────────────────────────────────────────────────────── */
+.apm-instructions-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.apm-step-card {
+  background: #FFFFFF;
+  border: 1.5px solid #FCD34D;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.apm-step-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.14);
+  border-color: #F59E0B;
+}
+
+.apm-step-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #FFFFFF;
+  font-weight: 900;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(217, 119, 6, 0.35);
+}
+
+.apm-step-body h5 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 4px;
+}
+
+.apm-step-body p {
+  font-size: 0.82rem;
+  color: #475569;
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+
+.apm-step-tip {
+  font-size: 0.76rem;
+  color: #B45309;
+  background: #FFFBEB;
+  border-left: 3px solid #F59E0B;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Solución Oficial: Esquema y Conexiones de Circuito */
+.apm-sol-electro-wrap {
+  padding: 20px;
+  max-width: 950px;
+  margin: 0 auto;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.apm-sol-electro-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #B45309 0%, #D97706 100%);
+  color: #FFFFFF;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.apm-seh-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.apm-sol-electro-header h4 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  margin: 0 0 2px;
+}
+
+.apm-sol-electro-header p {
+  font-size: 0.82rem;
+  margin: 0;
+  opacity: 0.92;
+}
+
+.apm-circuit-schematic-card {
+  background: #0F172A;
+  color: #F8FAFC;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+}
+
+.apm-csc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 10px;
+}
+
+.apm-csc-badge {
+  background: #F59E0B;
+  color: #1E1B4B;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.apm-circuit-visual-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 10px;
+  background: #1E293B;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.apm-cv-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 14px;
+  background: #0F172A;
+  border: 1.5px solid #475569;
+  border-radius: 12px;
+  min-width: 110px;
+}
+
+.apm-cv-node.batt { border-color: #F59E0B; }
+.apm-cv-node.switch { border-color: #8B5CF6; }
+.apm-cv-node.led { border-color: #10B981; }
+
+.apm-cv-node .cv-icon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.apm-cv-node.batt .cv-icon { color: #F59E0B; }
+.apm-cv-node.switch .cv-icon { color: #A78BFA; }
+.apm-cv-node.led .cv-icon { color: #34D399; }
+
+.apm-cv-node .cv-label {
+  font-size: 0.72rem;
+  color: #94A3B8;
+  line-height: 1.25;
+}
+
+.apm-cv-node .cv-label strong {
+  color: #F8FAFC;
+}
+
+.apm-cv-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.apm-cv-line.pos { color: #EF4444; }
+.apm-cv-line.neg { color: #3B82F6; }
+.apm-cv-line.pos2 { color: #EF4444; font-size: 1.1rem; }
+
+.apm-pinout-table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  margin-top: 10px;
+}
+
+.apm-pinout-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.apm-pinout-table th {
+  background: #F8FAFC;
+  color: #334155;
+  font-weight: 800;
+  padding: 10px 14px;
+  border-bottom: 2px solid #E2E8F0;
+}
+
+.apm-pinout-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #E2E8F0;
+  color: #475569;
+}
+
+.apm-pinout-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tag-pos {
+  background: #FEE2E2;
+  color: #DC2626;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.tag-neg {
+  background: #DBEAFE;
+  color: #2563EB;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.apm-troubleshoot-box {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.apm-troubleshoot-box h5 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 12px;
+}
+
+.apm-tb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.apm-tb-item {
+  background: #FFFFFF;
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid #CBD5E1;
+}
+
+.apm-tb-item h6 {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #B45309;
+  margin: 0 0 4px;
+}
+
+.apm-tb-item p {
+  font-size: 0.74rem;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* ─────────────────────────────────────────────────────────────
    VISTA DEL ALUMNO LOGUEADO (FOCO EN DRIVE DASHBOARD Y ACTIVIDAD FAMILIAR)
 ───────────────────────────────────────────────────────────── */
 body.student-logged-in .hero-carousel,

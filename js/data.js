@@ -116,6 +116,67 @@ const SCHOOL_DATA = {
             { title: "Placa BBC micro:bit", description: "La carita del robot con matriz de luces LED" },
             { title: "Cables cocodrilo", description: "Para conectar los botones mágicos" }
           ]
+        },
+        {
+          id: "s5-p3",
+          title: "La Tarjeta Monstruo Luminosa ⚡",
+          author: "Taller Sala 5",
+          date: "Octubre 2026",
+          type: "electronica",
+          coverImage: "img/microbit.png",
+          description: "¡Electrónica sin programación! Construimos una tarjeta pop-up de un monstruo simpático. Al apretar su nariz con un clip casero, sus ojos con luces LED se iluminan mágicamente sin necesidad de pantallas ni computadoras.",
+          tags: ["Electrónica", "Sin programación", "Circuitos de Papel", "LED"],
+          gallery: [
+            "img/microbit.png"
+          ],
+          pdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "2 Diodos LED (5mm) de color", description: "Ojos luminosos del monstruo (patita larga = + ánodo, patita corta = - cátodo)" },
+            { title: "1 Pila de botón CR2032 (3V)", description: "Fuente de energía segura que alimenta el circuito" },
+            { title: "Cinta de cobre conductora", description: "Pistas adhesivas por donde viaja la electricidad desde la pila" },
+            { title: "1 Clip metálico para papel", description: "Interruptor pulsador casero para encender y apagar" },
+            { title: "Cartulina de colores y tijeras", description: "Cuerpo y diseño del monstruo" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Dibujar el monstruo y trazar el circuito",
+              desc: "En una cartulina doblada al medio, dibujamos la cara del monstruo. En el interior, marcamos con lápiz dónde irán los ojos (LEDs), la nariz (interruptor) y la pila en la esquina.",
+              tip: "Trazá dos líneas separadas: una roja (+) y una azul (-)."
+            },
+            {
+              step: 2,
+              title: "Pegar la cinta de cobre conductora",
+              desc: "Pegamos la cinta de cobre siguiendo las dos líneas dibujadas. En las curvas, doblamos la cinta en ángulo de 90° sin cortarla para que la corriente fluya sin interrupción.",
+              tip: "Aplastá bien la cinta con la uña para asegurar buen contacto."
+            },
+            {
+              step: 3,
+              title: "Fijar los LEDs en los ojos",
+              desc: "Abrimos las patitas de los LEDs hacia los lados. Pegamos las patitas largas (+) a la pista positiva y las cortas (-) a la pista negativa con cinta de cobre.",
+              tip: "¡Ambos LEDs deben tener la pata larga en la misma pista!"
+            },
+            {
+              step: 4,
+              title: "Colocar la pila de botón CR2032",
+              desc: "Apoyamos la pila con su cara negativa (-) sobre la pista de abajo. La pista superior quedará lista para tocar la cara positiva (+) de la pila.",
+              tip: "La cara lisa con letras de la pila es el polo positivo (+)."
+            },
+            {
+              step: 5,
+              title: "Armar el interruptor con el clip",
+              desc: "Colocamos un clip en la esquina doblada de la cartulina (la nariz). Al doblar la solapa y apretar con el dedo, el clip une las dos partes y enciende los ojos.",
+              tip: "Cuando soltás, el circuito se abre y las luces se apagan solas."
+            },
+            {
+              step: 6,
+              title: "¡Prueba final y decoración!",
+              desc: "Apretamos la nariz: ¡los ojos del monstruo brillan al instante! Decoramos con brillantina, colmillos de papel y colores.",
+              tip: "Si un LED no prende, despegá sus patitas y dalas vuelta."
+            }
+          ]
         }
       ]
     },
@@ -200,6 +261,67 @@ const SCHOOL_DATA = {
               description: "Guía impresa que usamos en el aula para trazar recorridos en papel antes de pasar a la computadora."
             }
           ]
+        },
+        {
+          id: "g1-p2",
+          title: "El Bicho Robot Saltador (Vibro-Bot) 🐞",
+          author: "Taller 1° Grado",
+          date: "Septiembre 2026",
+          type: "electronica",
+          coverImage: "img/microbit.png",
+          description: "¡Robótica manual sin pantallas ni programación! Construimos un simpático insecto mecánico usando un pequeño motor vibrador y un cepillo. Al cerrar el circuito con un clip, ¡el bicho sale corriendo y vibrando por la mesa!",
+          tags: ["Electrónica", "Sin programación", "Robótica", "Motores"],
+          gallery: [
+            "img/microbit.png"
+          ],
+          pdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "1 Mini motor vibrador 3V", description: "Genera vibraciones rápidas que impulsan al robot" },
+            { title: "1 Pila de botón CR2032 o 2 pilas AAA", description: "Energía segura para activar el motor" },
+            { title: "1 Cabezal de cepillo de dientes viejo", description: "Las cerdas actúan como patas que transmiten el movimiento" },
+            { title: "Cinta doble faz y gomitas elásticas", description: "Para sujetar el motor y la pila sobre el cepillo" },
+            { title: "Limpiapipas y ojitos móviles", description: "Antenas y decoración del bicho robot" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Preparar el cabezal del cepillo",
+              desc: "Cortamos el mango de un cepillo viejo dejando solo el cabezal con cerdas. Nos aseguramos de que quede plano y firme sobre la mesa.",
+              tip: "Las cerdas inclinadas hacia atrás harán que avance más rápido."
+            },
+            {
+              step: 2,
+              title: "Fijar la cinta doble faz",
+              desc: "Pegamos un trozo de cinta bifaz o silicona fría sobre el lomo del cepillo de dientes.",
+              tip: "Debe quedar bien adherido para soportar la vibración."
+            },
+            {
+              step: 3,
+              title: "Instalar el mini motor vibrador",
+              desc: "Colocamos el motor en la parte delantera con la masa excéntrica girando libremente sin tocar el plástico.",
+              tip: "Si el eje roza con el plástico, el motor no podrá girar."
+            },
+            {
+              step: 4,
+              title: "Conectar los cables a la pila",
+              desc: "Pegamos el cable azul/negro del motor con cinta conductora a la cara rugosa (-) de la pila.",
+              tip: "Dejamos el cable rojo suelto para usarlo de interruptor."
+            },
+            {
+              step: 5,
+              title: "Fijar la pila y crear el interruptor",
+              desc: "Pegamos la pila sobre el lomo del cepillo. Con un clip metálico o cinta, conectamos el cable rojo (+) a la cara lisa (+) para encenderlo.",
+              tip: "Al despegar el cable o abrir el clip, el robot se apaga."
+            },
+            {
+              step: 6,
+              title: "¡Decoración y carrera de robots!",
+              desc: "Pegamos ojitos locos y dos limpiapipas como antenas. ¡Apoyamos el bicho en la mesa y lo vemos bailar y vibrar a toda velocidad!",
+              tip: "Probá cambiar el peso en la punta para que cambie de dirección."
+            }
+          ]
         }
       ]
     },
@@ -268,6 +390,65 @@ const SCHOOL_DATA = {
           makecodeUrl: null,
           scratchId: "60917032",
           materials: null
+        },
+        {
+          id: "g2-p2",
+          title: "Linterna Casera de Explorador 🔦",
+          author: "Taller 2° Grado",
+          date: "Octubre 2026",
+          type: "electronica",
+          coverImage: "img/microbit.png",
+          description: "¡Circuito eléctrico portátil sin programación! Reciclamos un tubo de cartón para armar una linterna real con interruptor deslizante de broche mariposa y reflector de papel aluminio.",
+          tags: ["Electrónica", "Sin programación", "Maker", "Interruptores"],
+          gallery: ["img/microbit.png"],
+          pdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "1 LED blanco de 10mm o alta luminosidad", description: "Foco principal de la linterna (patita larga = + ánodo)" },
+            { title: "2 Pilas AA con portapilas (3V)", description: "Alimentación de larga duración segura para el taller" },
+            { title: "1 Tubo de cartón de rollo de cocina", description: "Cuerpo cilíndrico de la linterna" },
+            { title: "2 Broches mariposa metálicos y un clip", description: "Mecanismo del interruptor deslizante casero" },
+            { title: "Papel de aluminio", description: "Reflector cónico para concentrar el haz de luz" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Construir el reflector de aluminio",
+              desc: "Forramos el interior de un cono de cartulina con papel aluminio para concentrar la luz del LED hacia adelante.",
+              tip: "La parte brillante del aluminio refleja más luz."
+            },
+            {
+              step: 2,
+              title: "Instalar el LED en el centro",
+              desc: "Perforamos el fondo del cono e insertamos el LED, dejando las dos patitas metálicas largas hacia atrás.",
+              tip: "Identificá la patita larga (+) antes de insertarlo."
+            },
+            {
+              step: 3,
+              title: "Armar el interruptor con broches",
+              desc: "En el costado del tubo, colocamos dos broches mariposa separados por 1 cm. Enganchamos un clip en uno de ellos que pueda rotar para tocar el otro.",
+              tip: "Cuando el clip toca ambos broches, se cierra el circuito."
+            },
+            {
+              step: 4,
+              title: "Conectar los cables del circuito",
+              desc: "Conectamos el cable positivo (+) del portapilas al primer broche, del segundo broche a la patita larga (+) del LED, y el cable negativo (-) directo a la pata corta (-) del LED.",
+              tip: "Aislá las uniones con cinta adhesiva para evitar cortos."
+            },
+            {
+              step: 5,
+              title: "Montar todo dentro del tubo",
+              desc: "Insertamos las pilas y cables dentro del tubo de cartón y fijamos el reflector en la punta con cinta.",
+              tip: "Asegurate de que las pilas no se muevan por dentro."
+            },
+            {
+              step: 6,
+              title: "¡Prueba en la oscuridad!",
+              desc: "Deslizá el clip para tocar el broche: ¡tu linterna casera ilumina toda la habitación! Ideal para leer o explorar.",
+              tip: "Podés colocar papel celofán de color adelante para tener luz roja o verde."
+            }
+          ]
         }
       ]
     },
@@ -369,6 +550,65 @@ const SCHOOL_DATA = {
           makecodeUrl: null,
           scratchId: "10128407",
           materials: null
+        },
+        {
+          id: "g3-p3",
+          title: "Esculturas con Plastilina Conductora (Squishy Circuits) ⚡",
+          author: "Taller 3° Grado",
+          date: "Septiembre 2026",
+          type: "electronica",
+          coverImage: "img/microbit.png",
+          description: "¡Electrónica creativa sin pantallas ni programación! Modelamos figuras y criaturas usando plastilina casera de sal (conductora) y plastilina común (aislante). La masa hace de cable para encender ojos LED y hacer sonar zumbadores sin tocar un solo cable.",
+          tags: ["Electrónica", "Sin programación", "Masa Conductora", "Creatividad"],
+          gallery: ["img/microbit.png"],
+          pdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Plastilina conductora de sal (casera)", description: "Permite el paso de la corriente eléctrica a través de la masa" },
+            { title: "Plastilina aislante (de modelar o con azúcar)", description: "Impide que los dos polos se toquen y hagan cortocircuito" },
+            { title: "Portapilas 4xAA (6V) o pila 9V con broche", description: "Fuente de alimentación para el circuito" },
+            { title: "LEDs gigantes de colores (10mm)", description: "Se clavan directo en la masa para iluminar la escultura" },
+            { title: "Buzzer piezoeléctrico (opcional)", description: "Emite sonido al conectar a la masa conductora" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Preparar las dos masas",
+              desc: "Amasamos dos rollos de masa conductora (sal) y un rollo de masa aislante (azúcar o plastilina común).",
+              tip: "La masa conductora lleva sal y agua; la aislante no lleva sal."
+            },
+            {
+              step: 2,
+              title: "Crear la barrera aislante",
+              desc: "Colocamos una capa de masa aislante entre los dos bloques de masa conductora para que no se toquen.",
+              tip: "Si las dos masas conductoras se tocan, el LED no prenderá (cortocircuito)."
+            },
+            {
+              step: 3,
+              title: "Conectar los cables de la batería",
+              desc: "Clavamos el cable rojo (+) en el bloque de masa izquierdo y el cable negro (-) en el bloque derecho.",
+              tip: "Ahora cada bloque de masa tiene una polaridad diferente."
+            },
+            {
+              step: 4,
+              title: "Clavar el LED haciendo de puente",
+              desc: "Abrimos las patitas del LED e insertamos la pata larga (+) en el bloque izquierdo y la corta (-) en el derecho.",
+              tip: "El LED hace de puente físico cruzando la barrera aislante."
+            },
+            {
+              step: 5,
+              title: "¡Encendido de la escultura!",
+              desc: "¡El LED se enciende inmediatamente a través de la masa! Podés agregar más LEDs y darle forma de dragón, nave espacial o criatura fantástica.",
+              tip: "Podés clavar hasta 4 o 5 LEDs en paralelo a lo largo de las masas."
+            },
+            {
+              step: 6,
+              title: "Agregar sonido con el zumbador",
+              desc: "Clavá un buzzer piezoeléctrico con su cable rojo en el polo positivo y negro en el negativo para que tu escultura también emita sonido.",
+              tip: "Sentí cómo la masa vibra ligeramente al sonar."
+            }
+          ]
         }
       ]
     },

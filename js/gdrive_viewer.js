@@ -433,32 +433,42 @@
       gradeObj.projects.forEach(function(p, idx) {
         var isMakecode = !!p.makecodeUrl;
         var isScratch  = !!p.scratchId || (p.tags && p.tags.indexOf('Scratch Jr') !== -1);
-        var type  = isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica');
-        var badge = isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker');
-        var icon  = isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket');
+        var isElectronica = p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); }));
+        var type  = isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica'));
+        var badge = isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker'));
+        var icon  = isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket'));
+        var color = isElectronica ? '#D97706' : (gradeObj.color || '#2563EB');
 
         missions.push({
           id: p.id || ('proj-' + idx),
           level: levelCount++,
           title: p.title,
           subtitle: p.author ? ('Por ' + p.author) : (gradeObj.name),
-          description: p.description || 'Desafío y proyecto de programación del grado.',
+          description: p.description || (isElectronica ? 'Construí un circuito funcional con materiales del taller sin necesidad de programar.' : 'Desafío y proyecto de programación del grado.'),
           type: type,
           badge: badge,
           icon: icon,
-          color: gradeObj.color || '#2563EB',
+          color: color,
           stars: 3,
           status: 'desafio',
-          coverImage: p.coverImage || (p.gallery && p.gallery[0]) || 'img/scratchjr.png',
+          coverImage: p.coverImage || (p.gallery && p.gallery[0]) || (isElectronica ? 'img/microbit.png' : 'img/scratchjr.png'),
           gallery: p.gallery || [],
           pdfUrl: p.pdfUrl || null,
           downloadPdfUrl: p.pdfUrl || null,
           makecodeUrl: p.makecodeUrl || null,
           scratchId: p.scratchId || null,
-          materials: p.materials || [
+          materials: p.materials || (isElectronica ? [
+            { title: 'Diodo LED 5mm', description: 'Emite luz (patita larga = + ánodo, patita corta = - cátodo)' },
+            { title: 'Pila de botón CR2032 (3V)', description: 'Fuente de energía para alimentar el circuito de forma segura' },
+            { title: 'Cinta de cobre conductora o cables', description: 'Pistas o caminos por donde viaja la electricidad' },
+            { title: 'Clip metálico para papel', description: 'Funciona como interruptor casero de encendido y apagado' },
+            { title: 'Cartulina o cartón y cinta adhesiva', description: 'Base para montar el circuito' }
+          ] : [
             { title: 'Computadora o Tablet', description: 'Para programar y probar el proyecto' },
             { title: 'Materiales del Taller', description: 'Papel, colores y tarjetas para bocetos' }
-          ],
+          ]),
+          instructions: p.instructions || p.steps || null,
+          schematic: p.schematic || null,
           gradeName: gradeObj.name
         });
       });
@@ -538,7 +548,7 @@
 
     // Proyectos válidos subidos por el alumno en su carpeta de proyectos (Drive o local)
     var validProyectoFiles = (FOLDER_CONTENTS.proyecto && FOLDER_CONTENTS.proyecto.items || []).filter(function(f){
-      return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode';
+      return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode' || f.type==='circuito' || f.type==='electronica' || /\.(bmp|png|jpe?g|webp|mp4|mov)$/i.test(f.name);
     });
 
     // Si el alumno tiene más archivos de proyectos subidos que misiones con entrega individual,
@@ -735,7 +745,7 @@
 
     // Badges y conteos
     var validProyectoFiles = (FOLDER_CONTENTS.proyecto.items || []).filter(function(f){
-      return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode';
+      return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode' || f.type==='circuito' || f.type==='electronica' || /\.(bmp|png|jpe?g|webp|mp4|mov)$/i.test(f.name);
     });
 
     var badgeDibujos     = isLoadingDriveFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.dibujos.items.length;
@@ -746,7 +756,7 @@
     var badgeFamiliar    = 1;
 
     // ── Filtros por subtab ──
-    var scratchItems   = validProyectoFiles.filter(function(f){ return isScratchFile(f.name) || f.type==='scratch'; }).slice(0, 10);
+    var scratchItems   = validProyectoFiles.filter(function(f){ return isScratchFile(f.name) || f.type==='scratch' || f.type==='circuito' || f.type==='electronica' || /\.(bmp|png|jpe?g|webp|mp4|mov)$/i.test(f.name); }).slice(0, 10);
     var makecodeItems  = validProyectoFiles.filter(function(f){ return isMakecodeFile(f.name) || f.type==='makecode'; }).slice(0, 10);
 
     // countText barra
@@ -1692,8 +1702,9 @@
     var currentSlide = 0;
     var totalSlides = 4;
     var mkInfo = mission.makecodeUrl ? extractMakecodeInfo(mission.makecodeUrl) : null;
-    var isMakecode = !!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); }));
-    var isScratch = !isMakecode || mission.type === 'scratch' || !!mission.scratchId || (mission.tags && mission.tags.some(function(t){ return /scratch/i.test(t); }));
+    var isElectronica = mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); }));
+    var isMakecode = !isElectronica && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isScratch = !isElectronica && !isMakecode;
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -1744,10 +1755,58 @@
     }
 
     // Materiales
-    var materialsList = (mission.materials && mission.materials.length > 0) ? mission.materials : [
-      { title: 'Placa BBC micro:bit v2', description: 'Tarjeta con pantalla LED y sensores' },
-      { title: 'Cable Micro-USB', description: 'Para programar y alimentar' },
-      { title: 'Piezas del Taller', description: 'Cables, pulsadores y cartón' }
+    var materialsList = (mission.materials && mission.materials.length > 0) ? mission.materials : (
+      isElectronica ? [
+        { title: 'Diodo LED 5mm', description: 'Emite luz (patita larga = + ánodo, patita corta = - cátodo)' },
+        { title: 'Pila de botón CR2032 (3V)', description: 'Fuente de energía para alimentar el circuito de forma segura' },
+        { title: 'Cinta de cobre conductora o cables', description: 'Pistas o caminos por donde viaja la electricidad' },
+        { title: 'Clip metálico para papel', description: 'Funciona como interruptor casero de encendido y apagado' },
+        { title: 'Cartulina o cartón y tijeras', description: 'Base para montar el circuito' }
+      ] : [
+        { title: 'Placa BBC micro:bit v2', description: 'Tarjeta con pantalla LED y sensores' },
+        { title: 'Cable Micro-USB', description: 'Para programar y alimentar' },
+        { title: 'Piezas del Taller', description: 'Cables, pulsadores y cartón' }
+      ]
+    );
+
+    // Instrucciones de armado para proyectos de electrónica sin programación
+    var instructionsList = (mission.instructions && mission.instructions.length > 0) ? mission.instructions : [
+      {
+        step: 1,
+        title: 'Conocer la polaridad del LED y de la pila',
+        desc: 'El diodo LED tiene 2 patitas metálicas: la pata <strong>más larga es positiva (+ ánodo)</strong> y la pata <strong>más corta es negativa (- cátodo)</strong>. En la pila plana CR2032, la cara lisa con letras es el polo positivo (+) y la cara rugosa es el polo negativo (-).',
+        tip: '¡Regla de oro: El positivo del LED siempre se conecta al positivo de la pila!'
+      },
+      {
+        step: 2,
+        title: 'Trazar el circuito en la base de trabajo',
+        desc: 'Sobre la cartulina o soporte de cartón, dibujá con lápiz o marcadores dos líneas que salgan de la pila hacia el LED: una línea roja para el polo positivo (+) y una línea azul para el polo negativo (-).',
+        tip: 'Las pistas positiva y negativa nunca deben tocarse entre sí directamente para evitar un cortocircuito.'
+      },
+      {
+        step: 3,
+        title: 'Colocar la cinta de cobre conductora',
+        desc: 'Pegá la cinta de cobre autoadhesiva sobre las líneas dibujadas. Para doblar en las esquinas, doblá la cinta hacia afuera y luego hacia abajo sin cortarla, para que la electricidad fluya sin cortes.',
+        tip: 'Aplastá bien la cinta con la uña para asegurar una conducción eléctrica perfecta.'
+      },
+      {
+        step: 4,
+        title: 'Fijar el LED en sus pistas',
+        desc: 'Abrí las patitas del LED hacia los costados en ángulo de 90°. Pegá la patita larga sobre la pista positiva (+) y la patita corta sobre la pista negativa (-) usando trocitos de cinta de cobre.',
+        tip: 'Presioná firmemente para que el metal del LED haga contacto íntimo con la cinta.'
+      },
+      {
+        step: 5,
+        title: 'Colocar la pila y armar el interruptor casero',
+        desc: 'Apoyá la pila con su cara negativa (-) sobre la pista inferior. En la parte superior, colocá un clip metálico o doblá una esquina de la cartulina (solapa) que funcione como botón pulsador.',
+        tip: 'Cuando soltás el clip, el circuito se abre y se apaga. Al apretarlo, se cierra.'
+      },
+      {
+        step: 6,
+        title: '¡Prueba y encendido!',
+        desc: 'Apretá el clip o la solapa sobre el polo positivo (+) de la pila: ¡el circuito se cierra y el LED se enciende inmediatamente con brillo total!',
+        tip: '¿No encendió? ¡No te preocupes! Invertí el sentido de las patitas del LED y revisá el contacto.'
+      }
     ];
 
     // QR Code URL para simulación o ficha
@@ -1807,7 +1866,7 @@
                 '<div class="apm-stn-dots">' +
                   '<span class="apm-stn-dot active" data-slide="0" title="Paso 1: Reto"></span>' +
                   '<span class="apm-stn-dot" data-slide="1" title="Paso 2: Materiales"></span>' +
-                  '<span class="apm-stn-dot" data-slide="2" title="Paso 3: Código y Simulador"></span>' +
+                  '<span class="apm-stn-dot" data-slide="2" title="' + (isElectronica ? 'Paso 3: Instrucciones de Armado' : 'Paso 3: Código y Simulador') + '"></span>' +
                   '<span class="apm-stn-dot" data-slide="3" title="Paso 4: Misión Cumplida"></span>' +
                 '</div>' +
                 '<span class="apm-stn-counter" id="apm-stn-counter">Paso 1 de 4</span>' +
@@ -1822,19 +1881,24 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:#6366F1;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Desafío Maker • Nivel ' + mission.level + '</div>' +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isElectronica ? '#D97706' : '#6366F1') + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' + (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level) + '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
                       '<div class="apm-reto-card">' +
                         '<h4><i class="fas fa-flag-checkered"></i> ¿Cuál es nuestra misión?</h4>' +
                         '<p>' + mission.description + '</p>' +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
-                        '<span class="apm-skill-pill"><i class="fas fa-lightbulb"></i> Creatividad Maker</span>' +
-                        '<span class="apm-skill-pill"><i class="fas fa-cubes"></i> Lógica en Bloques</span>' +
-                        '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>' +
+                        (isElectronica ?
+                          '<span class="apm-skill-pill"><i class="fas fa-bolt"></i> Circuito Físico</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-battery-full"></i> Polaridad y Energía</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-tools"></i> Sin Programación</span>' :
+                          '<span class="apm-skill-pill"><i class="fas fa-lightbulb"></i> Creatividad Maker</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-cubes"></i> Lógica en Bloques</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
+                        ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;">' +
-                        'Ver Materiales y Preparación <i class="fas fa-arrow-right"></i>' +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isElectronica ? 'background:#D97706;border-color:#B45309;' : '') + '">' +
+                        'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -1844,13 +1908,25 @@
                 '<div class="apm-slide-page" data-slide-idx="1">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div style="text-align:center;margin-bottom:20px;">' +
-                      '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">🔌 Materiales y Herramientas del Taller</h3>' +
-                      '<p style="font-size:0.88rem;color:#64748B;margin:0;">Asegurate de tener todo listo antes de comenzar a programar o armar:</p>' +
+                      '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
+                        (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller') +
+                      '</h3>' +
+                      '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
+                        (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:') +
+                      '</p>' +
                     '</div>' +
                     '<div class="apm-materials-grid">' +
                       materialsList.map(function(m){
+                        var mIcon = isElectronica ? (
+                          /led|luz/i.test(m.title) ? 'fa-lightbulb' :
+                          /pila|bater/i.test(m.title) ? 'fa-battery-full' :
+                          /cobre|cable/i.test(m.title) ? 'fa-tape' :
+                          /clip|broche|interrup/i.test(m.title) ? 'fa-toggle-on' :
+                          /motor/i.test(m.title) ? 'fa-cogs' :
+                          /cart|tijer|papel/i.test(m.title) ? 'fa-cut' : 'fa-tools'
+                        ) : 'fa-tools';
                         return '<div class="apm-mat-card">' +
-                          '<div class="apm-mat-icon"><i class="fas fa-tools"></i></div>' +
+                          '<div class="apm-mat-icon"><i class="fas ' + mIcon + '"></i></div>' +
                           '<div class="apm-mat-info">' +
                             '<h5>' + m.title + '</h5>' +
                             '<p>' + (m.description || 'Componente didáctico del taller') + '</p>' +
@@ -1859,60 +1935,92 @@
                       }).join('') +
                     '</div>' +
                     '<div class="apm-reto-card" style="margin-top:22px;background:#F0FDF4;border-color:#16A34A;">' +
-                      '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> Consejo del Profesor Maker</h4>' +
-                      '<p style="color:#166534;">Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!</p>' +
+                      '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> ' + (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker') + '</h4>' +
+                      '<p style="color:#166534;">' +
+                        (isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
+                      '</p>' +
                     '</div>' +
                     '<div style="text-align:center;margin-top:20px;">' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;">' +
-                        '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>' +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isElectronica ? 'background:#D97706;border-color:#B45309;' : '') + '">' +
+                        (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>') +
                       '</button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
 
-                // SLIDE 2: Código y Simulador
+                // SLIDE 2: Instrucciones de Armado (Electrónica) O Código y Simulador (MakeCode/Scratch)
                 '<div class="apm-slide-page" data-slide-idx="2">' +
-                  '<div style="height:100%;display:flex;flex-direction:column;gap:12px;">' +
-                    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
-                      '<div>' +
-                        '<h3 style="font-size:1.15rem;font-weight:900;color:#1E293B;margin:0 0 2px;">💻 Taller en Vivo: Código y Simulador</h3>' +
-                        '<p style="font-size:0.82rem;color:#64748B;margin:0;">Probá el programa en vivo, modificá valores o inspeccioná los bloques:</p>' +
-                      '</div>' +
-                      (mission.makecodeUrl ?
-                        '<a href="' + mission.makecodeUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary">' +
-                          '<i class="fas fa-external-link-alt"></i> Abrir en MakeCode' +
-                        '</a>' : '') +
-                    '</div>' +
-
-                    (mkInfo ?
-                      '<div class="apm-sim-slide-wrap">' +
-                        '<div class="apm-sim-slide-toolbar">' +
-                          '<span><i class="fas fa-microchip"></i> Micro:bit Interactivo</span>' +
-                          '<button type="button" class="arm-btn-secondary" id="apm-slide-sim-reload" style="padding:4px 10px;font-size:0.75rem;">' +
-                            '<i class="fas fa-redo"></i> Reiniciar' +
-                          '</button>' +
+                  (isElectronica ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:6px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-tools" style="color:#D97706;"></i> Paso a Paso: Armado del Circuito (Sin Programación)</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Seguí cada paso en orden para ensamblar los componentes y hacer funcionar tu invento:</p>' +
                         '</div>' +
-                        '<iframe src="' + mkInfo.simUrl + '" class="apm-sim-slide-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
-                      '</div>' :
-                      (mission.scratchId ?
-                        '<div class="apm-sim-slide-wrap">' +
-                          '<iframe src="https://scratch.mit.edu/projects/' + mission.scratchId + '/embed" class="apm-sim-slide-iframe" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen></iframe>' +
-                        '</div>' :
-                        '<div style="background:#F8FAFC;padding:30px;border-radius:16px;text-align:center;border:1.5px dashed #CBD5E1;">' +
-                          '<div style="font-size:3rem;margin-bottom:10px;">🧩</div>' +
-                          '<h4 style="font-size:1.1rem;font-weight:800;color:#1E293B;">Guía práctica de construcción</h4>' +
-                          '<p style="color:#64748B;max-width:500px;margin:0 auto 16px;">Este proyecto se realiza en el aula física o con fichas de trabajo descargables.</p>' +
-                          '<button type="button" class="arm-btn-primary" id="apm-slide2-goto-pdf"><i class="fas fa-file-pdf"></i> Ver Guía Didáctica PDF</button>' +
-                        '</div>'
-                      )
-                    ) +
+                        '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.8rem;padding:6px 12px;">' +
+                          '<i class="fas fa-print"></i> Guía Imprimible' +
+                        '</button>' +
+                      '</div>' +
+                      '<div class="apm-instructions-steps-grid">' +
+                        instructionsList.map(function(st){
+                          return '<div class="apm-step-card">' +
+                            '<div class="apm-step-badge">' + st.step + '</div>' +
+                            '<div class="apm-step-body">' +
+                              '<h5>' + st.title + '</h5>' +
+                              '<p>' + st.desc + '</p>' +
+                              (st.tip ? '<div class="apm-step-tip"><i class="fas fa-info-circle"></i> ' + st.tip + '</div>' : '') +
+                            '</div>' +
+                          '</div>';
+                        }).join('') +
+                      '</div>' +
+                      '<div style="text-align:right;margin-top:10px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#D97706;border-color:#B45309;">' +
+                          '¡Ver Retos Finales y Entrega! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:12px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.15rem;font-weight:900;color:#1E293B;margin:0 0 2px;">💻 Taller en Vivo: Código y Simulador</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Probá el programa en vivo, modificá valores o inspeccioná los bloques:</p>' +
+                        '</div>' +
+                        (mission.makecodeUrl ?
+                          '<a href="' + mission.makecodeUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary">' +
+                            '<i class="fas fa-external-link-alt"></i> Abrir en MakeCode' +
+                          '</a>' : '') +
+                      '</div>' +
 
-                    '<div style="text-align:right;margin-top:6px;">' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal">' +
-                        '¡Ver Misión Cumplida y Retos Finales! <i class="fas fa-arrow-right"></i>' +
-                      '</button>' +
-                    '</div>' +
-                  '</div>' +
+                      (mkInfo ?
+                        '<div class="apm-sim-slide-wrap">' +
+                          '<div class="apm-sim-slide-toolbar">' +
+                            '<span><i class="fas fa-microchip"></i> Micro:bit Interactivo</span>' +
+                            '<button type="button" class="arm-btn-secondary" id="apm-slide-sim-reload" style="padding:4px 10px;font-size:0.75rem;">' +
+                              '<i class="fas fa-redo"></i> Reiniciar' +
+                            '</button>' +
+                          '</div>' +
+                          '<iframe src="' + mkInfo.simUrl + '" class="apm-sim-slide-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+                        '</div>' :
+                        (mission.scratchId ?
+                          '<div class="apm-sim-slide-wrap">' +
+                            '<iframe src="https://scratch.mit.edu/projects/' + mission.scratchId + '/embed" class="apm-sim-slide-iframe" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen></iframe>' +
+                          '</div>' :
+                          '<div style="background:#F8FAFC;padding:30px;border-radius:16px;text-align:center;border:1.5px dashed #CBD5E1;">' +
+                            '<div style="font-size:3rem;margin-bottom:10px;">🧩</div>' +
+                            '<h4 style="font-size:1.1rem;font-weight:800;color:#1E293B;">Guía práctica de construcción</h4>' +
+                            '<p style="color:#64748B;max-width:500px;margin:0 auto 16px;">Este proyecto se realiza en el aula física o con fichas de trabajo descargables.</p>' +
+                            '<button type="button" class="arm-btn-primary" id="apm-slide2-goto-pdf"><i class="fas fa-file-pdf"></i> Ver Guía Didáctica PDF</button>' +
+                          '</div>'
+                        )
+                      ) +
+
+                      '<div style="text-align:right;margin-top:6px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal">' +
+                          '¡Ver Misión Cumplida y Retos Finales! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>'
+                  ) +
                 '</div>' +
 
                 // SLIDE 3: ¡Misión Cumplida y Tu Creación!
@@ -1929,32 +2037,32 @@
                       '<div class="apm-ec-item">' +
                         '<div class="apm-ec-badge">1</div>' +
                         '<div>' +
-                          '<h6>Personalizá la pantalla</h6>' +
-                          '<p>Cambiá el dibujo LED, el texto de bienvenida o la velocidad del personaje.</p>' +
+                          '<h6>' + (isElectronica ? 'Agregá un segundo LED' : 'Personalizá la pantalla') + '</h6>' +
+                          '<p>' + (isElectronica ? 'Conectá otro LED en paralelo para que brillen juntos al apretar el interruptor.' : 'Cambiá el dibujo LED, el texto de bienvenida o la velocidad del personaje.') + '</p>' +
                         '</div>' +
                       '</div>' +
                       '<div class="apm-ec-item">' +
                         '<div class="apm-ec-badge">2</div>' +
                         '<div>' +
-                          '<h6>Agregá sonido o sensores</h6>' +
-                          '<p>Programá un tono musical alegre cuando el sensor detecte luz o movimiento.</p>' +
+                          '<h6>' + (isElectronica ? 'Probá interruptores alternativos' : 'Agregá sonido o sensores') + '</h6>' +
+                          '<p>' + (isElectronica ? 'Creá un interruptor con papel aluminio, un broche de ropa de madera o trazos con lápiz de grafito.' : 'Programá un tono musical alegre cuando el sensor detecte luz o movimiento.') + '</p>' +
                         '</div>' +
                       '</div>' +
                       '<div class="apm-ec-item">' +
                         '<div class="apm-ec-badge">3</div>' +
                         '<div>' +
                           '<h6>Compartí tu creación</h6>' +
-                          '<p>Mostrá tu invento a tus compañeros y guardá tu proyecto en tu carpeta.</p>' +
+                          '<p>Mostrá tu invento a tus compañeros y guardá una foto o video en tu carpeta de Google Drive.</p>' +
                         '</div>' +
                       '</div>' +
                     '</div>' +
 
                     '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap;">' +
-                      '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:#10B981;border-color:#059669;font-size:0.9rem;padding:9px 18px;">' +
-                        '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación' +
+                      '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isElectronica ? '#D97706' : '#10B981') + ';border-color:' + (isElectronica ? '#B45309' : '#059669') + ';font-size:0.9rem;padding:9px 18px;">' +
+                        (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación') +
                       '</button>' +
                       '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                        '<i class="fas fa-lightbulb"></i> Ver Solución Oficial' +
+                        (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial') +
                       '</button>' +
                       '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;">' +
                         '<i class="fas fa-file-pdf"></i> Ver Guía PDF' +
@@ -1988,18 +2096,53 @@
             '<div class="apm-delivery-pane-wrap">' +
               '<div class="apm-deliv-format-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#F8FAFC;border-radius:12px;margin-bottom:14px;border:1.5px solid #E2E8F0;flex-wrap:wrap;">' +
                 '<span style="font-size:0.84rem;font-weight:800;color:#334155;"><i class="fas fa-sliders-h" style="color:#6366F1;"></i> Formato de Entrega:</span>' +
-                '<div style="display:flex;gap:8px;">' +
+                '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
+                    '<i class="fas fa-bolt"></i> Foto / Video Circuito' +
+                  '</button>' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isScratch ? 'active' : '') + '" id="apm-switch-to-scratch" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isScratch ? 'background:#EA580C;color:#FFF;box-shadow:0 2px 6px rgba(234,88,12,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
+                    '<i class="fas fa-cat"></i> Archivo Scratch Jr' +
+                  '</button>' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isMakecode ? 'active' : '') + '" id="apm-switch-to-mk" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isMakecode ? 'background:#7C3AED;color:#FFF;box-shadow:0 2px 6px rgba(124,58,237,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-microchip"></i> Link MakeCode' +
-                  '</button>' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (!isMakecode ? 'active' : '') + '" id="apm-switch-to-scratch" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (!isMakecode ? 'background:#EA580C;color:#FFF;box-shadow:0 2px 6px rgba(234,88,12,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
-                    '<i class="fas fa-cat"></i> Archivo Scratch Jr / Foto' +
                   '</button>' +
                 '</div>' +
               '</div>' +
 
+              // SUB-PANEL ELECTRÓNICA / CIRCUITO FÍSICO (FOTO O VIDEO)
+              '<div id="apm-electro-delivery-section" style="' + (isElectronica ? 'display:block;' : 'display:none;') + '">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #B45309 0%, #D97706 100%);">' +
+                  '<div class="apm-dh-icon"><i class="fas fa-bolt"></i></div>' +
+                  '<div>' +
+                    '<h4>Subir Foto o Video del Circuito Armado</h4>' +
+                    '<p>¡Proyecto práctico manual! Tomá una foto o video donde se vea tu circuito funcionando con el LED encendido para guardarlo en tu carpeta de Proyectos de Google Drive.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  '<div class="apm-scratch-dropzone" id="apm-electro-dropzone" style="border-color:#F59E0B;background:#FFFBEB;">' +
+                    '<div class="apm-sd-icon" style="color:#D97706;"><i class="fas fa-camera"></i></div>' +
+                    '<h4>Arrastrá tu foto o video del circuito aquí</h4>' +
+                    '<p>O hacé clic en el botón para seleccionarlo (.jpg, .png, .jpeg, .mp4, .mov, .webp)</p>' +
+                    '<input type="file" id="apm-electro-file-input" style="display:none;" accept="image/*,video/*,.png,.jpg,.jpeg,.mp4,.mov,.webp">' +
+                    '<button type="button" id="apm-electro-browse-btn" class="apm-delivery-submit-btn" style="background:#D97706;"><i class="fas fa-camera"></i> Seleccionar Foto / Video</button>' +
+                  '</div>' +
+                  '<div id="apm-electro-delivery-status" style="margin-top:14px;">' +
+                    (savedFileName ?
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Circuito entregado: <strong>' + savedFileName + '</strong> (' + savedFileDate + ') guardado en tu Google Drive.</span></div></div>' : '') +
+                  '</div>' +
+                  '<div class="apm-delivery-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-lightbulb"></i> Consejos para tu entrega de circuito:</h5>' +
+                    '<ol>' +
+                      '<li>Asegurate de que haya buena iluminación y se vea el LED encendido o el movimiento del invento.</li>' +
+                      '<li>Podés subir una foto de la tarjeta pop-up, de la maqueta o de tu circuito terminado.</li>' +
+                      '<li>¡También podés subir un dibujo o boceto de las conexiones si lo hiciste primero en papel!</li>' +
+                    '</ol>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
               // SUB-PANEL MAKECODE
-              '<div id="apm-mk-delivery-section" style="' + (isMakecode ? 'display:block;' : 'display:none;') + '">' +
+              '<div id="apm-mk-delivery-section" style="' + (!isElectronica && isMakecode ? 'display:block;' : 'display:none;') + '">' +
                 '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #4C1D95 0%, #6D28D9 100%);">' +
                   '<div class="apm-dh-icon"><i class="fas fa-microchip"></i></div>' +
                   '<div>' +
@@ -2047,18 +2190,18 @@
               '</div>' +
 
               // SUB-PANEL SCRATCH JR / FOTO
-              '<div id="apm-scratch-delivery-section" style="' + (!isMakecode ? 'display:block;' : 'display:none;') + '">' +
+              '<div id="apm-scratch-delivery-section" style="' + (!isElectronica && !isMakecode ? 'display:block;' : 'display:none;') + '">' +
                 '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #C2410C 0%, #EA580C 100%);">' +
                   '<div class="apm-dh-icon"><i class="fas fa-cat"></i></div>' +
                   '<div>' +
-                    '<h4>Subir Creación de Scratch Jr o Imagen</h4>' +
-                    '<p>Subí tu archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una foto/captura de pantalla de tus personajes y bloques para guardarlo en tu carpeta.</p>' +
+                    '<h4>Subir Creación de Scratch Jr</h4>' +
+                    '<p>Subí tu archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una captura de pantalla de tus personajes y bloques para guardarlo en tu carpeta.</p>' +
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body">' +
                   '<div class="apm-scratch-dropzone" id="apm-scratch-dropzone">' +
                     '<div class="apm-sd-icon"><i class="fas fa-cloud-upload-alt"></i></div>' +
-                    '<h4>Arrastrá tu archivo de Scratch Jr o imagen aquí</h4>' +
+                    '<h4>Arrastrá tu archivo de Scratch Jr aquí</h4>' +
                     '<p>O hacé clic en el botón para seleccionarlo (.sjr, .sb3, .pjson, .sb, .png, .jpg)</p>' +
                     '<input type="file" id="apm-scratch-file-input" style="display:none;" accept=".sjr,.sb3,.pjson,.sb,.png,.jpg,.jpeg">' +
                     '<button type="button" id="apm-scratch-browse-btn" class="apm-delivery-submit-btn" style="background:#EA580C;"><i class="fas fa-folder-open"></i> Seleccionar Archivo</button>' +
@@ -2083,98 +2226,222 @@
 
           // ── PANEL 3: SOLUCIÓN OFICIAL ──
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
-            (isMakecode ?
-              '<div style="height:100%;display:flex;flex-direction:column;">' +
-                '<div class="mkm-desc-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
-                  '<p style="margin:0;"><i class="fas fa-lightbulb" style="color:#EAB308;"></i> <strong>Solución Oficial:</strong> ' + (mission.title || 'Proyecto MakeCode') + '</p>' +
-                  (mission.makecodeUrl ?
-                    '<a class="mkm-btn-entrar" href="' + mission.makecodeUrl + '" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;padding:5px 14px;">' +
-                      '<i class="fas fa-external-link-alt"></i> Abrir Solución en MakeCode' +
-                    '</a>' : '') +
-                '</div>' +
-                '<div class="mkm-tabs-bar" style="background:#F8FAFC;padding:6px 18px;">' +
-                  '<button type="button" class="apm-sol-subtab-btn active" data-sol-tab="simulador"><i class="fas fa-gamepad"></i> Simulador Oficial en Vivo</button>' +
-                  '<button type="button" class="apm-sol-subtab-btn" data-sol-tab="codigo"><i class="fas fa-puzzle-piece"></i> Bloques de Código</button>' +
-                '</div>' +
-                '<div class="apm-sol-panes-body" style="flex:1 1 auto;position:relative;">' +
-                  '<div class="apm-sol-subpane pane-simulador active" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#0F172A;">' +
-                    '<div class="mkm-sim-toolbar">' +
-                      '<span class="mkm-st-label"><i class="fas fa-gamepad"></i> Simulador Micro:bit Interactivo (Solución)</span>' +
-                      '<button type="button" class="mkm-sim-reload-btn" id="apm-sol-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
-                    '</div>' +
-                    '<div class="mkm-sim-wrap" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;">' +
-                      (mkInfo ?
-                        '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" id="apm-sol-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' :
-                        '<p style="color:#FFF;">Simulador no disponible</p>'
-                      ) +
-                    '</div>' +
+            (isElectronica ?
+              '<div class="apm-sol-electro-wrap">' +
+                '<div class="apm-sol-electro-header">' +
+                  '<div class="apm-seh-icon"><i class="fas fa-bolt"></i></div>' +
+                  '<div>' +
+                    '<h4>Solución Oficial: Esquema y Conexiones del Circuito</h4>' +
+                    '<p>Esquema de circuito cerrado, polaridad de componentes y comprobación de conexiones sin programación.</p>' +
                   '</div>' +
-                  '<div class="apm-sol-subpane pane-codigo" style="position:absolute;inset:0;display:none;flex-direction:column;background:#FFFFFF;">' +
-                    '<div class="mkm-code-toolbar">' +
-                      '<span class="mkm-ct-label"><i class="fas fa-cubes"></i> Bloques de Código de la Solución</span>' +
-                      '<div class="mkm-code-zoom-controls">' +
-                        '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-out" title="Reducir"><i class="fas fa-search-minus"></i></button>' +
-                        '<span class="mkm-zoom-val" id="apm-sol-zoom-label">125%</span>' +
-                        '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-in" title="Aumentar"><i class="fas fa-search-plus"></i></button>' +
-                        '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-reset" title="Restablecer (125%)"><i class="fas fa-undo"></i></button>' +
+                '</div>' +
+                '<div class="apm-sol-electro-body">' +
+
+                  // Diagrama Esquemático del Circuito
+                  '<div class="apm-circuit-schematic-card">' +
+                    '<div class="apm-csc-header">' +
+                      '<span><i class="fas fa-project-diagram"></i> Diagrama Esquemático del Circuito</span>' +
+                      '<span class="apm-csc-badge">Circuito Cerrado 3V</span>' +
+                    '</div>' +
+                    '<div class="apm-circuit-visual-diagram">' +
+                      '<div class="apm-cv-node batt">' +
+                        '<div class="cv-icon"><i class="fas fa-battery-full"></i></div>' +
+                        '<div class="cv-label">Pila Botón CR2032<br><strong>Polo (+) / (-) 3V</strong></div>' +
+                      '</div>' +
+                      '<div class="apm-cv-line pos">' +
+                        '<span class="cv-wire-label">+ Pista Positiva (Cinta Cobre)</span>' +
+                        '<i class="fas fa-arrow-right"></i>' +
+                      '</div>' +
+                      '<div class="apm-cv-node switch">' +
+                        '<div class="cv-icon"><i class="fas fa-toggle-on"></i></div>' +
+                        '<div class="cv-label">Interruptor Casero<br><strong>Clip / Broche</strong></div>' +
+                      '</div>' +
+                      '<div class="apm-cv-line pos2">' +
+                        '<i class="fas fa-arrow-right"></i>' +
+                      '</div>' +
+                      '<div class="apm-cv-node led">' +
+                        '<div class="cv-icon"><i class="fas fa-lightbulb"></i></div>' +
+                        '<div class="cv-label">Diodo LED 5mm<br><strong>Ánodo (+) | Cátodo (-)</strong></div>' +
+                      '</div>' +
+                      '<div class="apm-cv-line neg">' +
+                        '<span class="cv-wire-label">- Pista Negativa (Retorno)</span>' +
+                        '<i class="fas fa-arrow-left"></i>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="mkm-code-frame-wrap" style="flex:1 1 auto;position:relative;overflow:auto;">' +
-                      (mkInfo ?
-                        '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" id="apm-sol-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="yes" frameborder="0"></iframe>' :
-                        '<p>Código no disponible</p>'
-                      ) +
+                  '</div>' +
+
+                  // Tabla de Polaridad y Conexión
+                  '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-table"></i> Guía de Polaridad y Conexiones Físicas:</h5>' +
+                    '<div class="apm-pinout-table-wrap">' +
+                      '<table class="apm-pinout-table">' +
+                        '<thead>' +
+                          '<tr>' +
+                            '<th>Componente</th>' +
+                            '<th>Terminal / Patita</th>' +
+                            '<th>Hacia dónde se conecta</th>' +
+                            '<th>Función</th>' +
+                          '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                          '<tr>' +
+                            '<td><strong>💡 Diodo LED</strong></td>' +
+                            '<td><span class="tag-pos">Pata Larga (+ Ánodo)</span></td>' +
+                            '<td>Pista Positiva (a través del interruptor)</td>' +
+                            '<td>Emite luz al circular corriente</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>💡 Diodo LED</strong></td>' +
+                            '<td><span class="tag-neg">Pata Corta (- Cátodo)</span></td>' +
+                            '<td>Pista Negativa de retorno</td>' +
+                            '<td>Cierra el circuito hacia la pila</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>🔋 Pila CR2032 (3V)</strong></td>' +
+                            '<td><span class="tag-pos">Cara Lisa con Letras (+)</span></td>' +
+                            '<td>Pista Positiva</td>' +
+                            '<td>Alimentación del circuito</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>🔋 Pila CR2032 (3V)</strong></td>' +
+                            '<td><span class="tag-neg">Cara Rugosa (-)</span></td>' +
+                            '<td>Pista Negativa</td>' +
+                            '<td>Masa / Retorno común</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>📎 Clip / Broche</strong></td>' +
+                            '<td>Metálico conductor</td>' +
+                            '<td>En serie sobre la pista (+)</td>' +
+                            '<td>Interruptor de encendido manual</td>' +
+                          '</tr>' +
+                        '</tbody>' +
+                      '</table>' +
                     '</div>' +
+                  '</div>' +
+
+                  // Guía de Solución de Fallas
+                  '<div class="apm-troubleshoot-box" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-stethoscope"></i> ¿Qué hacer si el circuito no enciende? (Resolución de Problemas)</h5>' +
+                    '<div class="apm-tb-grid">' +
+                      '<div class="apm-tb-item">' +
+                        '<h6>1. ¿Patita del LED invertida?</h6>' +
+                        '<p>Es la causa más común. Despegá el LED, gíralo 180° e intercambiá las patitas para probar si prende.</p>' +
+                      '</div>' +
+                      '<div class="apm-tb-item">' +
+                        '<h6>2. ¿Falso contacto en la cinta?</h6>' +
+                        '<p>Apretá firmemente con la yema del dedo o la uña sobre las esquinas de la cinta y las patas del LED.</p>' +
+                      '</div>' +
+                      '<div class="apm-tb-item">' +
+                        '<h6>3. ¿Cortocircuito?</h6>' +
+                        '<p>Revisá que la pista positiva y la pista negativa no se toquen en ningún punto sin pasar por el LED.</p>' +
+                      '</div>' +
+                      '<div class="apm-tb-item">' +
+                        '<h6>4. ¿Carga de la pila?</h6>' +
+                        '<p>Probá el LED tocando directamente las patitas contra las dos caras de la pila para confirmar que tenga carga.</p>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+
+                  '<div style="text-align:center;margin-top:20px;">' +
+                    '<button type="button" class="arm-btn-primary apm-goto-pdf-btn" style="background:#D97706;border-color:#B45309;padding:9px 20px;">' +
+                      '<i class="fas fa-file-pdf"></i> Descargar Ficha Técnica Imprimible del Circuito' +
+                    '</button>' +
                   '</div>' +
                 '</div>' +
               '</div>' :
-              '<div class="apm-sol-scratch-wrap">' +
-                '<div class="apm-sol-scratch-header">' +
-                  '<div class="apm-ssh-icon"><i class="fas fa-lightbulb"></i></div>' +
-                  '<div>' +
-                    '<h4>Solución Oficial del Proyecto Scratch Jr</h4>' +
-                    '<p>Descargá el archivo terminado con toda la programación resuelta para abrirlo en Scratch Jr o estudiar los bloques explicados a continuación.</p>' +
+              (isMakecode ?
+                '<div style="height:100%;display:flex;flex-direction:column;">' +
+                  '<div class="mkm-desc-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+                    '<p style="margin:0;"><i class="fas fa-lightbulb" style="color:#EAB308;"></i> <strong>Solución Oficial:</strong> ' + (mission.title || 'Proyecto MakeCode') + '</p>' +
+                    (mission.makecodeUrl ?
+                      '<a class="mkm-btn-entrar" href="' + mission.makecodeUrl + '" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;padding:5px 14px;">' +
+                        '<i class="fas fa-external-link-alt"></i> Abrir Solución en MakeCode' +
+                      '</a>' : '') +
                   '</div>' +
-                '</div>' +
-                '<div class="apm-sol-scratch-body">' +
-                  '<div class="apm-sol-download-card">' +
-                    '<div class="apm-sol-dl-icon"><i class="fas fa-file-download"></i></div>' +
-                    '<div class="apm-sol-dl-info">' +
-                      '<h5>Archivo de Proyecto Oficial Terminado</h5>' +
-                      '<p>Incluye los personajes animados, fondos seleccionados y la secuencia completa de bloques programados.</p>' +
-                      '<span class="apm-sol-dl-filename"><i class="fas fa-file-code"></i> ' + (mission.title.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_') || 'solucion') + '.sjr</span>' +
-                    '</div>' +
-                    '<button type="button" id="apm-scratch-dl-sol-btn" class="apm-sol-download-btn">' +
-                      '<i class="fas fa-download"></i> Descargar Solución (.sjr)' +
-                    '</button>' +
+                  '<div class="mkm-tabs-bar" style="background:#F8FAFC;padding:6px 18px;">' +
+                    '<button type="button" class="apm-sol-subtab-btn active" data-sol-tab="simulador"><i class="fas fa-gamepad"></i> Simulador Oficial en Vivo</button>' +
+                    '<button type="button" class="apm-sol-subtab-btn" data-sol-tab="codigo"><i class="fas fa-puzzle-piece"></i> Bloques de Código</button>' +
                   '</div>' +
-                  '<div class="apm-sol-visual-guide">' +
-                    '<h5><i class="fas fa-puzzle-piece"></i> Estructura y Bloques de la Solución:</h5>' +
-                    '<div class="apm-sol-steps-list">' +
-                      '<div class="apm-sol-step-item">' +
-                        '<div class="apm-sol-step-num">1</div>' +
-                        '<div><strong>Inicio con Bandera Verde / Toque:</strong> Se coloca el bloque amarillo de bandera verde para que el personaje empiece al pulsar la bandera o al tocar la pantalla.</div>' +
+                  '<div class="apm-sol-panes-body" style="flex:1 1 auto;position:relative;">' +
+                    '<div class="apm-sol-subpane pane-simulador active" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#0F172A;">' +
+                      '<div class="mkm-sim-toolbar">' +
+                        '<span class="mkm-st-label"><i class="fas fa-gamepad"></i> Simulador Micro:bit Interactivo (Solución)</span>' +
+                        '<button type="button" class="mkm-sim-reload-btn" id="apm-sol-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
                       '</div>' +
-                      '<div class="apm-sol-step-item">' +
-                        '<div class="apm-sol-step-num">2</div>' +
-                        '<div><strong>Secuencia de Movimiento:</strong> Bloques azules de caminar 4 pasos hacia adelante y salto vertical para sortear obstáculos.</div>' +
-                      '</div>' +
-                      '<div class="apm-sol-step-item">' +
-                        '<div class="apm-sol-step-num">3</div>' +
-                        '<div><strong>Expresión y Diálogo:</strong> Bloque violeta de mensaje ("¡Hola taller!") o cambio de tamaño para mostrar la emoción del personaje.</div>' +
-                      '</div>' +
-                      '<div class="apm-sol-step-item">' +
-                        '<div class="apm-sol-step-num">4</div>' +
-                        '<div><strong>Bucle Infinito o Regreso:</strong> Bloque rojo de repetir para que la animación continúe fluidamente.</div>' +
+                      '<div class="mkm-sim-wrap" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;">' +
+                        (mkInfo ?
+                          '<iframe src="' + mkInfo.simUrl + '" class="mkm-sim-iframe" id="apm-sol-sim-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' :
+                          '<p style="color:#FFF;">Simulador no disponible</p>'
+                        ) +
                       '</div>' +
                     '</div>' +
+                    '<div class="apm-sol-subpane pane-codigo" style="position:absolute;inset:0;display:none;flex-direction:column;background:#FFFFFF;">' +
+                      '<div class="mkm-code-toolbar">' +
+                        '<span class="mkm-ct-label"><i class="fas fa-cubes"></i> Bloques de Código de la Solución</span>' +
+                        '<div class="mkm-code-zoom-controls">' +
+                          '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-out" title="Reducir"><i class="fas fa-search-minus"></i></button>' +
+                          '<span class="mkm-zoom-val" id="apm-sol-zoom-label">125%</span>' +
+                          '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-in" title="Aumentar"><i class="fas fa-search-plus"></i></button>' +
+                          '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-reset" title="Restablecer (125%)"><i class="fas fa-undo"></i></button>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="mkm-code-frame-wrap" style="flex:1 1 auto;position:relative;overflow:auto;">' +
+                        (mkInfo ?
+                          '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" id="apm-sol-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="yes" frameborder="0"></iframe>' :
+                          '<p>Código no disponible</p>'
+                        ) +
+                      '</div>' +
+                    '</div>' +
                   '</div>' +
-                  '<div class="apm-delivery-guide" style="margin-top:16px;">' +
-                    '<h5><i class="fas fa-tablet-alt"></i> ¿Cómo abrir el archivo .sjr en tu tablet o PC?</h5>' +
-                    '<p style="margin:0;font-size:0.85rem;color:#475569;line-height:1.5;">1. Descargá el archivo tocando el botón azul arriba.<br>2. Abrí Scratch Jr en tu tablet o PC.<br>3. Tocá el archivo descargado desde tus Descargas para que Scratch Jr lo importe automáticamente.</p>' +
+                '</div>' :
+                '<div class="apm-sol-scratch-wrap">' +
+                  '<div class="apm-sol-scratch-header">' +
+                    '<div class="apm-ssh-icon"><i class="fas fa-lightbulb"></i></div>' +
+                    '<div>' +
+                      '<h4>Solución Oficial del Proyecto Scratch Jr</h4>' +
+                      '<p>Descargá el archivo terminado con toda la programación resuelta para abrirlo en Scratch Jr o estudiar los bloques explicados a continuación.</p>' +
+                    '</div>' +
                   '</div>' +
-                '</div>' +
-              '</div>'
+                  '<div class="apm-sol-scratch-body">' +
+                    '<div class="apm-sol-download-card">' +
+                      '<div class="apm-sol-dl-icon"><i class="fas fa-file-download"></i></div>' +
+                      '<div class="apm-sol-dl-info">' +
+                        '<h5>Archivo de Proyecto Oficial Terminado</h5>' +
+                        '<p>Incluye los personajes animados, fondos seleccionados y la secuencia completa de bloques programados.</p>' +
+                        '<span class="apm-sol-dl-filename"><i class="fas fa-file-code"></i> ' + (mission.title.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_') || 'solucion') + '.sjr</span>' +
+                      '</div>' +
+                      '<button type="button" id="apm-scratch-dl-sol-btn" class="apm-sol-download-btn">' +
+                        '<i class="fas fa-download"></i> Descargar Solución (.sjr)' +
+                      '</button>' +
+                    '</div>' +
+                    '<div class="apm-sol-visual-guide">' +
+                      '<h5><i class="fas fa-puzzle-piece"></i> Estructura y Bloques de la Solución:</h5>' +
+                      '<div class="apm-sol-steps-list">' +
+                        '<div class="apm-sol-step-item">' +
+                          '<div class="apm-sol-step-num">1</div>' +
+                          '<div><strong>Inicio con Bandera Verde / Toque:</strong> Se coloca el bloque amarillo de bandera verde para que el personaje empiece al pulsar la bandera o al tocar la pantalla.</div>' +
+                        '</div>' +
+                        '<div class="apm-sol-step-item">' +
+                          '<div class="apm-sol-step-num">2</div>' +
+                          '<div><strong>Secuencia de Movimiento:</strong> Bloques azules de caminar 4 pasos hacia adelante y salto vertical para sortear obstáculos.</div>' +
+                        '</div>' +
+                        '<div class="apm-sol-step-item">' +
+                          '<div class="apm-sol-step-num">3</div>' +
+                          '<div><strong>Expresión y Diálogo:</strong> Bloque violeta de mensaje ("¡Hola taller!") o cambio de tamaño para mostrar la emoción del personaje.</div>' +
+                        '</div>' +
+                        '<div class="apm-sol-step-item">' +
+                          '<div class="apm-sol-step-num">4</div>' +
+                          '<div><strong>Bucle Infinito o Regreso:</strong> Bloque rojo de repetir para que la animación continúe fluidamente.</div>' +
+                        '</div>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div class="apm-delivery-guide" style="margin-top:16px;">' +
+                      '<h5><i class="fas fa-tablet-alt"></i> ¿Cómo abrir el archivo .sjr en tu tablet o PC?</h5>' +
+                      '<p style="margin:0;font-size:0.85rem;color:#475569;line-height:1.5;">1. Descargá el archivo tocando el botón azul arriba.<br>2. Abrí Scratch Jr en tu tablet o PC.<br>3. Tocá el archivo descargado desde tus Descargas para que Scratch Jr lo importe automáticamente.</p>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>'
+              )
             ) +
           '</div>' +
 
@@ -2209,7 +2476,7 @@
                       '<div>' +
                         '<div class="apm-ps-logo">🏫 Colegio Paulo Freire — Taller de Programación y Robótica</div>' +
                         '<h2 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:6px 0 2px;">Nivel ' + mission.level + ' • ' + mission.title + '</h2>' +
-                        '<div style="font-size:0.85rem;color:#64748B;">Grado: <strong>' + (mission.gradeName || 'General') + '</strong> | Modalidad: Taller Maker</div>' +
+                        '<div style="font-size:0.85rem;color:#64748B;">Grado: <strong>' + (mission.gradeName || 'General') + '</strong> | Modalidad: ' + (isElectronica ? 'Electrónica y Circuitos Físicos (Sin Programación)' : 'Taller Maker y Programación') + '</div>' +
                       '</div>' +
                       '<img src="' + qrCodeUrl + '" alt="QR Proyecto" style="width:72px;height:72px;border:1px solid #CBD5E1;border-radius:8px;padding:3px;">' +
                     '</div>' +
@@ -2222,16 +2489,19 @@
                       materialsList.map(function(m){ return '<li><strong>' + m.title + ':</strong> ' + (m.description||'') + '</li>'; }).join('') +
                     '</ul>' +
 
-                    '<div class="apm-ps-section-title"><i class="fas fa-clipboard-check"></i> 3. Pasos de Realización</div>' +
+                    '<div class="apm-ps-section-title"><i class="fas fa-clipboard-check"></i> 3. ' + (isElectronica ? 'Pasos de Armado y Conexión' : 'Pasos de Realización') + '</div>' +
                     '<ol style="font-size:0.88rem;color:#334155;margin:0 0 18px;padding-left:22px;line-height:1.6;">' +
-                      '<li><strong>Diseño previo:</strong> Dibujar en papel el personaje o el sensor que vamos a programar.</li>' +
-                      '<li><strong>Programación:</strong> Abrir el editor de código en MakeCode o Scratch y colocar los bloques secuenciales.</li>' +
-                      '<li><strong>Simulación:</strong> Probar en el simulador digital que las acciones respondan correctamente al pulsar los botones.</li>' +
-                      '<li><strong>Transferencia:</strong> Conectar la placa micro:bit por USB o guardar el proyecto en el panel del alumno.</li>' +
+                      (isElectronica && instructionsList && instructionsList.length > 0 ?
+                        instructionsList.map(function(st){ return '<li><strong>' + st.title + ':</strong> ' + st.desc + (st.tip ? ' <em>(' + st.tip + ')</em>' : '') + '</li>'; }).join('') :
+                        '<li><strong>Diseño previo:</strong> Dibujar en papel el personaje o el sensor que vamos a programar.</li>' +
+                        '<li><strong>Programación:</strong> Abrir el editor de código en MakeCode o Scratch y colocar los bloques secuenciales.</li>' +
+                        '<li><strong>Simulación:</strong> Probar en el simulador digital que las acciones respondan correctamente al pulsar los botones.</li>' +
+                        '<li><strong>Transferencia:</strong> Conectar la placa micro:bit por USB o guardar el proyecto en el panel del alumno.</li>'
+                      ) +
                     '</ol>' +
 
                     '<div style="border-top:1.5px dashed #CBD5E1;padding-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:#64748B;">' +
-                      '<span>Escaneá el código QR con el celular para abrir el simulador en vivo.</span>' +
+                      '<span>' + (isElectronica ? 'Escaneá el código QR para ver la ficha técnica y fotos en la plataforma.' : 'Escaneá el código QR con el celular para abrir el simulador en vivo.') + '</span>' +
                       '<span>Colegio Paulo Freire 2026</span>' +
                     '</div>' +
                   '</div>'
@@ -2340,12 +2610,11 @@
     var restartBtn = modal.querySelector('#apm-restart-slides-btn');
     if (restartBtn) restartBtn.onclick = function(){ goToSlide(0); };
 
-    var gotoPdfBtn = modal.querySelector('#apm-goto-pdf-btn');
-    if (gotoPdfBtn) {
-      gotoPdfBtn.onclick = function(){
+    modal.querySelectorAll('.apm-goto-pdf-btn, #apm-goto-pdf-btn').forEach(function(btn){
+      btn.onclick = function(){
         switchApmTab('pdf');
       };
-    }
+    });
 
     var s4EntregaBtn = modal.querySelector('.apm-slide4-goto-entrega');
     if (s4EntregaBtn) {
@@ -2387,29 +2656,42 @@
       };
     }
 
-    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (DUAL: MAKECODE & SCRATCH/FOTO) ──
-    var switchToMk = modal.querySelector('#apm-switch-to-mk');
+    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (ELECTRÓNICA, SCRATCH, MAKECODE) ──
+    var switchToElectro = modal.querySelector('#apm-switch-to-electro');
     var switchToScratch = modal.querySelector('#apm-switch-to-scratch');
-    var secMk = modal.querySelector('#apm-mk-delivery-section');
+    var switchToMk = modal.querySelector('#apm-switch-to-mk');
+    var secElectro = modal.querySelector('#apm-electro-delivery-section');
     var secScratch = modal.querySelector('#apm-scratch-delivery-section');
+    var secMk = modal.querySelector('#apm-mk-delivery-section');
 
     function setDeliveryMode(mode) {
-      if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
+      if (secElectro) secElectro.style.display = (mode === 'electro' ? 'block' : 'none');
       if (secScratch) secScratch.style.display = (mode === 'scratch' ? 'block' : 'none');
-      if (switchToMk) {
-        switchToMk.style.background = (mode === 'mk' ? '#7C3AED' : '#E2E8F0');
-        switchToMk.style.color = (mode === 'mk' ? '#FFF' : '#475569');
-        switchToMk.style.boxShadow = (mode === 'mk' ? '0 2px 6px rgba(124,58,237,0.3)' : 'none');
+      if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
+
+      if (switchToElectro) {
+        switchToElectro.style.background = (mode === 'electro' ? '#D97706' : '#E2E8F0');
+        switchToElectro.style.color = (mode === 'electro' ? '#FFF' : '#475569');
+        switchToElectro.style.boxShadow = (mode === 'electro' ? '0 2px 6px rgba(217,119,6,0.3)' : 'none');
       }
       if (switchToScratch) {
         switchToScratch.style.background = (mode === 'scratch' ? '#EA580C' : '#E2E8F0');
         switchToScratch.style.color = (mode === 'scratch' ? '#FFF' : '#475569');
         switchToScratch.style.boxShadow = (mode === 'scratch' ? '0 2px 6px rgba(234,88,12,0.3)' : 'none');
       }
+      if (switchToMk) {
+        switchToMk.style.background = (mode === 'mk' ? '#7C3AED' : '#E2E8F0');
+        switchToMk.style.color = (mode === 'mk' ? '#FFF' : '#475569');
+        switchToMk.style.boxShadow = (mode === 'mk' ? '0 2px 6px rgba(124,58,237,0.3)' : 'none');
+      }
     }
 
-    if (switchToMk) switchToMk.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('mk'); };
+    if (switchToElectro) switchToElectro.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('electro'); };
     if (switchToScratch) switchToScratch.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('scratch'); };
+    if (switchToMk) switchToMk.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('mk'); };
+
+    // Establecer modo de entrega inicial
+    setDeliveryMode(isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'));
 
     // --- Subida / Guardado MakeCode ---
     var mkStudentSaveBtn = modal.querySelector('#apm-mk-student-save-btn');
@@ -2676,6 +2958,150 @@
       }, false);
     }
 
+    // --- Subida / Drag & Drop Circuito Electrónico (Foto o Video) ---
+    var electroDropzone = modal.querySelector('#apm-electro-dropzone');
+    var electroFileInput = modal.querySelector('#apm-electro-file-input');
+    var electroBrowseBtn = modal.querySelector('#apm-electro-browse-btn');
+    var electroStatusEl = modal.querySelector('#apm-electro-delivery-status');
+
+    if (electroBrowseBtn && electroFileInput) {
+      electroBrowseBtn.onclick = function() {
+        electroFileInput.click();
+      };
+    }
+
+    function processElectroUpload(file) {
+      if (!file) return;
+      var name = file.name.toLowerCase();
+      var valid = /\.(jpe?g|png|webp|gif|bmp|mp4|mov|webm|avi|m4v|pdf)$/i.test(name) || /^(image|video)\//i.test(file.type || '');
+      if (!valid) {
+        if (window.sounds) window.sounds.playError();
+        alert('Formato no válido. Por favor seleccioná una foto o video de tu circuito (.jpg, .png, .mp4, .mov, etc.)');
+        return;
+      }
+      if (window.sounds) window.sounds.playSuccess();
+      var sz = formatFileSize(file.size);
+      if (electroStatusEl) {
+        electroStatusEl.innerHTML = '<div class="apm-status-badge warning"><i class="fas fa-sync-alt fa-spin"></i> Subiendo foto/video <strong>' + file.name + '</strong> (' + sz + ')...</div>';
+      }
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var b64 = ev.target.result.split(',')[1];
+        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        if (hook && student) {
+          var iframe = document.getElementById('gdrive_silent_upload_iframe');
+          if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+          }
+          var form = document.createElement('form');
+          form.target = 'gdrive_silent_upload_iframe';
+          form.method = 'POST';
+          form.action = hook;
+          var fields = { filename: file.name, mimeType: file.type || 'image/jpeg', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyectos' };
+          for (var k in fields) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = k;
+            inp.value = fields[k];
+            form.appendChild(inp);
+          }
+          document.body.appendChild(form);
+          form.submit();
+          setTimeout(function(){ form.remove(); }, 2500);
+        }
+
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          fileName: file.name,
+          fileSize: sz,
+          date: nowStr,
+          type: 'circuito',
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+
+        // Registrar en FOLDER_CONTENTS.proyecto.items
+        if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name === file.name; })) {
+          FOLDER_CONTENTS.proyecto.items.unshift({
+            name: file.name,
+            title: '⚡ ' + file.name.replace(/\.[^.]+$/, ''),
+            size: sz,
+            date: nowStr,
+            type: 'circuito',
+            url: ev.target.result,
+            isLocalPending: true
+          });
+        }
+
+        // Si esta misión ya estaba completada con OTRO archivo, completar la siguiente misión disponible
+        var targetMissionId = mission.id;
+        var nextMissionTarget = null;
+        if (isAlreadyCompleted && savedFileName && savedFileName !== file.name) {
+          var allMissions = getAdventureMissionsForStudent(student);
+          nextMissionTarget = allMissions.find(function(m){ return m.id !== mission.id && !isMissionCompleted(student, m.id); });
+          if (nextMissionTarget) {
+            targetMissionId = nextMissionTarget.id;
+            submissionData.missionId = targetMissionId;
+            submissionData.missionTitle = nextMissionTarget.title;
+          }
+        }
+
+        // Guardar y marcar como completada
+        markMissionCompleted(student, targetMissionId, submissionData);
+        mission.status = 'completado';
+        if (nextMissionTarget) nextMissionTarget.status = 'completado';
+
+        // Actualizar insignia en el encabezado del modal a ⭐ COMPLETADO
+        var headerBadge = modal.querySelector('#apm-header-status-badge');
+        if (headerBadge) {
+          headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        if (electroStatusEl) {
+          var congratsText = nextMissionTarget
+            ? '¡Excelente! Como ya habías entregado esta misión, tu foto/video <strong>' + file.name + '</strong> completó <strong>' + nextMissionTarget.title + '</strong> (Nivel ' + nextMissionTarget.level + ') ⭐ (+100 XP extras sumados).'
+            : '¡Circuito entregado con éxito! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu carpeta de Proyectos. ¡Sumaste +100 XP al Progreso del Taller!';
+
+          electroStatusEl.innerHTML =
+            '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+              '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+              '<div>' +
+                '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                '<span style="font-size:0.84rem;color:#047857;">' + congratsText + '</span>' +
+              '</div>' +
+            '</div>';
+        }
+
+        // Refrescar panel de fondo para actualizar el progreso y tarjetas inmediatamente
+        refreshDashboard();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    if (electroFileInput) {
+      electroFileInput.onchange = function() {
+        if (electroFileInput.files && electroFileInput.files.length > 0) {
+          processElectroUpload(electroFileInput.files[0]);
+        }
+      };
+    }
+
+    if (electroDropzone) {
+      electroDropzone.addEventListener('dragover', function(e){ e.preventDefault(); electroDropzone.classList.add('drag-over'); }, false);
+      electroDropzone.addEventListener('dragleave', function(e){ e.preventDefault(); electroDropzone.classList.remove('drag-over'); }, false);
+      electroDropzone.addEventListener('drop', function(e){
+        e.preventDefault();
+        electroDropzone.classList.remove('drag-over');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          processElectroUpload(e.dataTransfer.files[0]);
+        }
+      }, false);
+    }
+
     // ── CONTROLADORES DE PESTAÑA: SOLUCIÓN OFICIAL ──
     if (isMakecode) {
       // Sub-pestañas Simulador vs Código
@@ -2843,8 +3269,8 @@
         // Formatos permitidos para dibujo: bmp, png, jpg, jpeg
         return /\.(bmp|png|jpe?g)$/i.test(name) || /^(image\/(png|jpeg|pjpeg|bmp|x-ms-bmp))$/i.test(file.type || '');
       } else if (subfolder === 'proyectos' || subfolder === 'proyecto') {
-        // Formatos permitidos para Scratch Jr: .sb3, .sjr, .pjson, .sb
-        return /\.(sb3|sjr|pjson|sb)$/i.test(name);
+        // Formatos permitidos para Scratch Jr y Electrónica / Circuitos
+        return /\.(sb3|sjr|pjson|sb|png|jpe?g|webp|gif|mp4|mov)$/i.test(name);
       }
       return true;
     }
@@ -2859,7 +3285,7 @@
           statusToast.classList.remove('hidden');
           var allowedText = (subfolder === 'dibujo')
             ? 'dibujos (.bmp, .png, .jpg)'
-            : 'proyectos Scratch (.sb3, .sjr, .pjson, .sb)';
+            : 'proyectos Scratch (.sjr, .sb3) o fotos/videos de circuitos (.jpg, .png, .mp4)';
           statusToast.innerHTML =
             '<div class="gdz-auto-status" style="border-color:#EF4444;background:#FEF2F2;">' +
               '<div class="gdz-auto-spinner" style="color:#EF4444;"><i class="fas fa-exclamation-triangle"></i></div>' +
@@ -2897,20 +3323,22 @@
       reader.onload = function(ev){
         var b64 = ev.target.result.split(',')[1];
         var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        var targetSubfolder = (subfolder === 'proyecto' || subfolder === 'proyectos') ? 'proyectos' : subfolder;
         if (hook) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe){ iframe=document.createElement('iframe'); iframe.name=iframe.id='gdrive_silent_upload_iframe'; iframe.style.display='none'; document.body.appendChild(iframe); }
           var form = document.createElement('form'); form.target='gdrive_silent_upload_iframe'; form.method='POST'; form.action=hook;
-          var fields = { filename:file.name, mimeType:file.type||'application/octet-stream', base64:b64, folderId:student.driveFolderId||'', subfolder:subfolder };
+          var fields = { filename:file.name, mimeType:file.type||'application/octet-stream', base64:b64, folderId:student.driveFolderId||'', subfolder:targetSubfolder };
           for (var k in fields){ var i=document.createElement('input'); i.type='hidden'; i.name=k; i.value=fields[k]; form.appendChild(i); }
           document.body.appendChild(form); form.submit(); setTimeout(function(){ form.remove(); }, 2500);
         }
 
         var nowStr = new Date().toLocaleDateString('es-ES');
-        var type   = fileType || (isProyecto ? 'scratch' : 'image');
-        var icon   = type==='scratch' ? '🐱' : type==='makecode' ? '💻' : '✨';
+        var isCirc = isProyecto && /\.(jpe?g|png|webp|gif|mp4|mov)$/i.test(file.name);
+        var type   = isCirc ? 'circuito' : (fileType || (isProyecto ? 'scratch' : 'image'));
+        var icon   = type==='scratch' ? '🐱' : type==='makecode' ? '💻' : type==='circuito' ? '⚡' : '✨';
         var newItem = { name:file.name, title:icon+' '+file.name.replace(/\.[^.]+$/,''), size:sz, date:nowStr,
-          url:ev.target.result, downloadUrl:'', isLocalPending:true };
+          url:ev.target.result, downloadUrl:'', isLocalPending:true, type:type };
 
         if (isProyecto) {
           if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name===file.name; })) {
@@ -2924,7 +3352,7 @@
               fileName: file.name,
               fileSize: sz,
               date: nowStr,
-              type: 'scratch',
+              type: type,
               missionId: nextMission.id,
               missionTitle: nextMission.title
             });
