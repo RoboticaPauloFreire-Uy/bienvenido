@@ -1961,6 +1961,14 @@
                           '<i class="fas fa-print"></i> Guía Imprimible' +
                         '</button>' +
                       '</div>' +
+                      (mission.gallery && mission.gallery.length > 1 ?
+                        '<div style="display:flex;gap:12px;align-items:center;background:#FEF3C7;border:1.5px dashed #D97706;border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
+                          '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="width:68px;height:68px;object-fit:contain;background:#FFF;border-radius:8px;border:1px solid #FCD34D;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar plano">' +
+                          '<div style="flex:1;">' +
+                            '<h5 style="margin:0 0 2px;font-size:0.86rem;color:#92400E;font-weight:800;"><i class="fas fa-drafting-compass"></i> Plano de Conexiones del Sombrero</h5>' +
+                            '<p style="margin:0;font-size:0.79rem;color:#78350F;line-height:1.4;">Mirá cómo van las pistas de cobre desde el trébol hasta la pila y la solapa. <a href="' + (mission.pdfUrl || mission.gallery[1]) + '" target="_blank" style="color:#B45309;font-weight:700;text-decoration:underline;">Ver plantilla completa en PDF</a></p>' +
+                          '</div>' +
+                        '</div>' : '') +
                       '<div class="apm-instructions-steps-grid">' +
                         instructionsList.map(function(st){
                           return '<div class="apm-step-card">' +
@@ -2237,6 +2245,19 @@
                 '</div>' +
                 '<div class="apm-sol-electro-body">' +
 
+                  // Plano real de la plantilla (si existe en la galería)
+                  (mission.gallery && mission.gallery.length > 1 ?
+                    '<div class="apm-circuit-schematic-card" style="margin-bottom:16px;background:#FFFBEB;border-color:#F59E0B;">' +
+                      '<div class="apm-csc-header">' +
+                        '<span><i class="fas fa-drafting-compass"></i> Plano Real de Conexiones en el Sombrero</span>' +
+                        '<a href="' + (mission.pdfUrl || mission.gallery[1]) + '" target="_blank" class="apm-csc-badge" style="background:#D97706;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
+                      '</div>' +
+                      '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+                        '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
+                        '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Lado posterior del sombrero: pistas de cobre, pila CR2032 y solapa con interruptor de vincha.</div>' +
+                      '</div>' +
+                    '</div>' : '') +
+
                   // Diagrama Esquemático del Circuito
                   '<div class="apm-circuit-schematic-card">' +
                     '<div class="apm-csc-header">' +
@@ -2463,14 +2484,18 @@
                   '</button>' +
                   (mission.pdfUrl ?
                     '<a href="' + mission.pdfUrl + '" target="_blank" rel="noopener noreferrer" class="apm-pdf-btn apm-pdf-btn-print">' +
-                      '<i class="fas fa-external-link-alt"></i> Abrir en Google Drive' +
+                      '<i class="fas fa-external-link-alt"></i> ' + (mission.pdfUrl.indexOf('drive.google') !== -1 ? 'Abrir en Google Drive' : 'Abrir en Pantalla Completa') +
                     '</a>' : '') +
                 '</div>' +
               '</div>' +
 
               '<div style="flex:1 1 auto;overflow:auto;position:relative;">' +
                 (mission.pdfUrl ?
-                  '<iframe src="' + mission.pdfUrl + '#toolbar=0" class="apm-pdf-frame" style="width:100%;height:100%;border:none;"></iframe>' :
+                  '<object data="' + mission.pdfUrl + '#toolbar=0" type="application/pdf" class="apm-pdf-frame" style="width:100%;height:100%;min-height:500px;border:none;">' +
+                    '<iframe src="' + mission.pdfUrl + '#toolbar=0" class="apm-pdf-frame" style="width:100%;height:100%;border:none;">' +
+                      '<p style="padding:20px;text-align:center;color:#475569;">Tu navegador no soporta vista previa de PDF. <a href="' + mission.pdfUrl + '" target="_blank" class="arm-btn-primary" style="display:inline-block;margin-top:10px;"><i class="fas fa-download"></i> Descargar Guía PDF</a></p>' +
+                    '</iframe>' +
+                  '</object>' :
                   '<div class="apm-printable-sheet" id="apm-printable-sheet">' +
                     '<div class="apm-ps-header">' +
                       '<div>' +

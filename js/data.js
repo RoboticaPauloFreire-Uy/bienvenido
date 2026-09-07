@@ -76,105 +76,71 @@ const SCHOOL_DATA = {
         }
       ],
 
-      /* ---- PROYECTOS ---- */
+      /* ---- PROYECTOS REALES (5 AÑOS) ---- */
       projects: [
         {
           id: "s5-p1",
-          title: "Nuestros Personajes Animados 🎨",
-          author: "Estudiantes Sala 5",
-          date: "Agosto 2026",
-          coverImage: "img/scratchjr.png",
-          description: "Cada nene de la Sala de 5 años creó y animó su propio personaje en Scratch Jr. Eligieron colores, movimientos y sonidos en su primera experiencia de programación conjunta.",
-          tags: ["Scratch Jr", "Animación", "Primera vez"],
-          gallery: [
-            "img/scratchjr.png",
-            "img/minecraft.png",
-            "img/frozen.png"
-          ],
-          pdfUrl: null,
-          makecodeUrl: null,
-          scratchId: null,
-          materials: null
-        },
-        {
-          id: "s5-p2",
-          title: "El Robot de las Emociones 🤖",
-          author: "Taller Sala 5",
-          date: "Septiembre 2026",
-          coverImage: "img/scratchjr.png",
-          description: "Construimos un robot con cartón y botones táctiles. Al presionar cada botón, el robot muestra en su pantalla una cara feliz, sorprendida o baila con luces LED.",
-          tags: ["Robótica", "Emociones", "Sensores"],
-          gallery: [
-            "img/scratchjr.png",
-            "img/minecraft.png"
-          ],
-          pdfUrl: null,
-          makecodeUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
-          scratchId: null,
-          materials: [
-            { title: "Caja de cartón y tapitas", description: "Para armar el cuerpo y las antenas del robot" },
-            { title: "Placa BBC micro:bit", description: "La carita del robot con matriz de luces LED" },
-            { title: "Cables cocodrilo", description: "Para conectar los botones mágicos" }
-          ]
-        },
-        {
-          id: "s5-p3",
-          title: "La Tarjeta Monstruo Luminosa ⚡",
-          author: "Taller Sala 5",
-          date: "Octubre 2026",
+          title: "El Sombrero Luminoso de San Patricio 🍀🎩",
+          author: "Taller Maker Sala 5",
+          date: "Marzo 2026",
           type: "electronica",
-          coverImage: "img/microbit.png",
-          description: "¡Electrónica sin programación! Construimos una tarjeta pop-up de un monstruo simpático. Al apretar su nariz con un clip casero, sus ojos con luces LED se iluminan mágicamente sin necesidad de pantallas ni computadoras.",
-          tags: ["Electrónica", "Sin programación", "Circuitos de Papel", "LED"],
+          coverImage: "img/proyectos/sombrero_san_patricio_color.png",
+          description: "¡Primer proyecto oficial de la Sala de 5 años! Construimos un auténtico sombrero de San Patricio con vincha que se ilumina mágicamente al calzártelo en la cabeza. Usamos cinta de cobre conductora, un diodo LED verde en el trébol, una pila de botón CR2032 y un interruptor de contacto que se activa con la presión de la cabeza.",
+          tags: ["San Patricio", "Electrónica", "Circuito de Papel", "LED", "Sin programación", "Maker"],
           gallery: [
-            "img/microbit.png"
+            "img/proyectos/sombrero_san_patricio_color.png",
+            "img/proyectos/sombrero_san_patricio_circuito.png",
+            "img/proyectos/sombrero_san_patricio_colorear.png",
+            "img/proyectos/sombrero_san_patricio_tiras.png"
           ],
-          pdfUrl: null,
+          pdfUrl: "pdf/sombrero_san_patricio_5anos.pdf",
+          downloadPdfUrl: "pdf/sombrero_san_patricio_5anos.pdf",
           makecodeUrl: null,
           scratchId: null,
           materials: [
-            { title: "2 Diodos LED (5mm) de color", description: "Ojos luminosos del monstruo (patita larga = + ánodo, patita corta = - cátodo)" },
-            { title: "1 Pila de botón CR2032 (3V)", description: "Fuente de energía segura que alimenta el circuito" },
-            { title: "Cinta de cobre conductora", description: "Pistas adhesivas por donde viaja la electricidad desde la pila" },
-            { title: "1 Clip metálico para papel", description: "Interruptor pulsador casero para encender y apagar" },
-            { title: "Cartulina de colores y tijeras", description: "Cuerpo y diseño del monstruo" }
+            { title: "Cinta de cobre conductora", description: "Pistas metálicas autoadhesivas que llevan la electricidad desde la pila hasta el trébol.", icon: "fa-tape" },
+            { title: "1 Diodo LED verde (5mm)", description: "Luz mágica en el centro del trébol (patita larga = + ánodo, patita corta = - cátodo).", icon: "fa-lightbulb" },
+            { title: "1 Pila botón CR2032 (3V)", description: "Fuente de energía segura que alimenta el circuito al tocar los polos.", icon: "fa-battery-full" },
+            { title: "Plantilla del Sombrero de San Patricio", description: "Cartulina con el sombrero ilustrado a color o para colorear y tiras de vincha.", icon: "fa-hat-wizard" },
+            { title: "Solapa de vincha (Interruptor casero)", description: "Tira con cinta de cobre que cierra el circuito automáticamente al ponérselo en la cabeza.", icon: "fa-toggle-on" },
+            { title: "Tijera escolar y pegamento / cinta", description: "Para recortar el contorno del sombrero y fijar la vincha a medida.", icon: "fa-cut" }
           ],
           instructions: [
             {
               step: 1,
-              title: "Dibujar el monstruo y trazar el circuito",
-              desc: "En una cartulina doblada al medio, dibujamos la cara del monstruo. En el interior, marcamos con lápiz dónde irán los ojos (LEDs), la nariz (interruptor) y la pila en la esquina.",
-              tip: "Trazá dos líneas separadas: una roja (+) y una azul (-)."
+              title: "Recortar y preparar el Sombrero",
+              desc: "Recortá por la línea de puntos el contorno del sombrero de San Patricio y las dos tiras de la vincha (podés usar la versión a color o colorear la versión en blanco y negro). Hacé dos pequeños agujeritos en el centro del trébol donde están marcados el (+) y el (-).",
+              tip: "Usá la punta de un lápiz sobre un pedacito de cartón para hacer los dos agujeritos sin romper el papel."
             },
             {
               step: 2,
-              title: "Pegar la cinta de cobre conductora",
-              desc: "Pegamos la cinta de cobre siguiendo las dos líneas dibujadas. En las curvas, doblamos la cinta en ángulo de 90° sin cortarla para que la corriente fluya sin interrupción.",
-              tip: "Aplastá bien la cinta con la uña para asegurar buen contacto."
+              title: "Instalar el LED verde en el Trébol",
+              desc: "Desde el frente del sombrero, pasá las dos patitas metálicas del LED por los agujeros del trébol. Al dar vuelta el sombrero (reverso): doblá la pata larga hacia la izquierda (+) y la pata corta hacia la derecha (-) dejándolas bien apoyadas contra el papel.",
+              tip: "¡Regla de oro: La pata más larga siempre es el polo positivo (+) y la más corta es el polo negativo (-)!"
             },
             {
               step: 3,
-              title: "Fijar los LEDs en los ojos",
-              desc: "Abrimos las patitas de los LEDs hacia los lados. Pegamos las patitas largas (+) a la pista positiva y las cortas (-) a la pista negativa con cinta de cobre.",
-              tip: "¡Ambos LEDs deben tener la pata larga en la misma pista!"
+              title: "Pegar las pistas de Cinta de Cobre",
+              desc: "Pegá una tira de cinta de cobre desde la pata (+) del LED hasta el círculo donde irá la pila. Pegá otra tira continua de cinta de cobre desde la pata (-) del LED bajando en línea recta hacia la solapa inferior de la vincha.",
+              tip: "La cinta de cobre debe pisar con fuerza el metal de las patitas del LED para que conduzca bien la electricidad."
             },
             {
               step: 4,
-              title: "Colocar la pila de botón CR2032",
-              desc: "Apoyamos la pila con su cara negativa (-) sobre la pista de abajo. La pista superior quedará lista para tocar la cara positiva (+) de la pila.",
-              tip: "La cara lisa con letras de la pila es el polo positivo (+)."
+              title: "Colocar la Pila Botón CR2032 (3V)",
+              desc: "Hacé un pequeño lazo o rollito con un trozo de cinta de cobre (con el pegamento hacia afuera) para fijar la cara negativa (-) de la pila sobre la pista de abajo. La cara lisa con letras y el signo (+) queda mirando hacia arriba.",
+              tip: "El rollito de cinta asegura el contacto eléctrico con la base de la pila sin necesidad de soldador."
             },
             {
               step: 5,
-              title: "Armar el interruptor con el clip",
-              desc: "Colocamos un clip en la esquina doblada de la cartulina (la nariz). Al doblar la solapa y apretar con el dedo, el clip une las dos partes y enciende los ojos.",
-              tip: "Cuando soltás, el circuito se abre y las luces se apagan solas."
+              title: "Armar el Interruptor en la Solapa de la Vincha",
+              desc: "Envolvé con cinta de cobre la solapa de goma eva o cartulina en la base del sombrero. Esta solapa funcionará como interruptor: al doblar la vincha alrededor de tu cabeza, las dos cintas de cobre se tocan y cierran el circuito.",
+              tip: "¡Al calzarte el sombrero, la presión de tu cabeza hace contacto y enciende la luz verde automáticamente!"
             },
             {
               step: 6,
-              title: "¡Prueba final y decoración!",
-              desc: "Apretamos la nariz: ¡los ojos del monstruo brillan al instante! Decoramos con brillantina, colmillos de papel y colores.",
-              tip: "Si un LED no prende, despegá sus patitas y dalas vuelta."
+              title: "¡Ajustar la vincha y lucir tu invento!",
+              desc: "Uní las tiras de la vincha según el contorno de tu cabeza con cinta o abrochadora con ayuda del profe. ¡Ponételo en la cabeza y mirá cómo brilla el trébol de la suerte!",
+              tip: "¿No prende? Apretá bien con la uña sobre las patitas del LED y la cinta de cobre para eliminar falsos contactos."
             }
           ]
         }
