@@ -40,6 +40,9 @@
     var btn = document.getElementById('student-login-btn');
     var aulasEl = document.getElementById('nav-dropdown-aulas');
     var driveLinks = document.querySelectorAll('.nav-drive-link');
+    var storiesSec = document.querySelector('.stories-section');
+    var classroomsHdr = document.querySelector('.home-section-header');
+    var classroomsGrid = document.getElementById('classrooms-grid');
 
     if (student) {
       // === LOGUEADO ===
@@ -47,6 +50,9 @@
 
       // Ocultar Aulas
       if (aulasEl) aulasEl.style.display = 'none';
+      if (storiesSec) storiesSec.style.display = 'none';
+      if (classroomsHdr) classroomsHdr.style.display = 'none';
+      if (classroomsGrid) classroomsGrid.style.display = 'none';
 
       // Mostrar Mi Carpeta Drive
       driveLinks.forEach(function(el) { el.style.display = 'inline-flex'; });
@@ -78,8 +84,11 @@
       // === NO LOGUEADO ===
       document.body.classList.remove('student-logged-in');
 
-      // Mostrar Aulas
-      if (aulasEl) aulasEl.style.display = '';
+      // Ocultar toda relación con Aulas cuando no está logueado
+      if (aulasEl) aulasEl.style.display = 'none';
+      if (storiesSec) storiesSec.style.display = 'none';
+      if (classroomsHdr) classroomsHdr.style.display = 'none';
+      if (classroomsGrid) classroomsGrid.style.display = 'none';
 
       // Ocultar Mi Carpeta Drive
       driveLinks.forEach(function(el) { el.style.display = 'none'; });
@@ -264,6 +273,11 @@
     updateUI();
     var btn = document.getElementById('student-login-btn');
     if (btn) btn.onclick = openLoginModal;
+
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('login') === 'required' || params.get('login') === '1') {
+      setTimeout(openLoginModal, 350);
+    }
   }
 
   // Ejecutar cuando el DOM esté listo

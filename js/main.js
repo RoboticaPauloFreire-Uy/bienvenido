@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================
  * MAIN.JS - Pagina Home (index.html)
  * Colegio Paulo Freire - Taller de Programacion
@@ -25,6 +25,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const countEl = document.getElementById('grades-count');
   if (countEl) countEl.textContent = gradeCount + ' aulas';
 
+  // Ocultar sección de Aulas si el alumno no está logueado
+  const isLogged = window.getActiveStudent ? !!window.getActiveStudent() : false;
+  const storiesSec = document.querySelector('.stories-section');
+  const classroomsHdr = document.querySelector('.home-section-header');
+  const grid = document.getElementById('classrooms-grid');
+
+  if (!isLogged) {
+    if (storiesSec) storiesSec.style.display = 'none';
+    if (classroomsHdr) classroomsHdr.style.display = 'none';
+    if (grid) grid.style.display = 'none';
+  } else {
+    // Si estuviera logueado, auth.js y el dashboard se encargan de la vista del alumno
+    if (storiesSec) storiesSec.style.display = 'none';
+    if (classroomsHdr) classroomsHdr.style.display = 'none';
+    if (grid) grid.style.display = 'none';
+  }
+
   // Menu horizontal de acceso rapido
   const storiesRow = document.getElementById('stories-row');
   if (storiesRow) {
@@ -39,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Tarjetas de Aula
-  const grid = document.getElementById('classrooms-grid');
   if (!grid) return;
   grid.innerHTML = '';
 

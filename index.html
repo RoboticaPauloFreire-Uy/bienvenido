@@ -6,8 +6,8 @@
   <title>Taller de Programación — Colegio Paulo Freire</title>
   <meta name="description" content="Portal de proyectos y juegos del Taller de Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=62">
-  <link rel="stylesheet" href="css/games.css?v=62">
+  <link rel="stylesheet" href="css/style.css?v=63">
+  <link rel="stylesheet" href="css/games.css?v=63">
 </head>
 <body>
 
@@ -227,7 +227,7 @@
               <h2 class="hc-heading">¡Construimos con Cartón y micro:bit!</h2>
               <p class="hc-sub">Unimos manualidades, circuitos y programación en bloques para que los proyectos cobren vida y movimiento en el mundo real.</p>
               <div class="hc-actions">
-                <a href="#classrooms-grid" class="hc-cta">Explorar Aulas <i class="fas fa-arrow-down"></i></a>
+                <button type="button" class="hc-cta" onclick="if(window.openLoginModal) window.openLoginModal();"><i class="fas fa-user-circle"></i> Ingreso Alumnos <i class="fas fa-arrow-right"></i></button>
               </div>
             </div>
           </div>
@@ -410,7 +410,7 @@
               </div>
             </div>
             <div class="fp-summary-right">
-              <a href="aula.html?grado=sala5" class="fp-summary-btn" id="fp-sum-btn">
+              <a href="javascript:void(0)" class="fp-summary-btn" id="fp-sum-btn" onclick="var s = window.getActiveStudent ? window.getActiveStudent() : null; if(!s){ if(window.openLoginModal) window.openLoginModal(); } else { window.location.href='index.html'; }">
                 <span>Ver Proyecto</span>
                 <i class="fas fa-arrow-right"></i>
               </a>
@@ -595,19 +595,19 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=62"></script>
-  <script src="js/data.js?v=62"></script>
-  <script src="js/students.js?v=62"></script>
-  <script src="js/gdrive_viewer.js?v=62"></script>
-  <script src="js/auth.js?v=62"></script>
-  <script src="js/audio.js?v=62"></script>
+  <script src="js/firebase-config.js?v=63"></script>
+  <script src="js/data.js?v=63"></script>
+  <script src="js/students.js?v=63"></script>
+  <script src="js/gdrive_viewer.js?v=63"></script>
+  <script src="js/auth.js?v=63"></script>
+  <script src="js/audio.js?v=63"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>
   <script src="js/games/dev_quiz.js"></script>
   <script src="js/games/tools.js"></script>
   <script src="js/modal.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=63"></script>
 
   <!-- Hero Carousel & Mobile Menu -->
   <script>
@@ -774,9 +774,18 @@
       if (fpSumGrade) fpSumGrade.textContent = p.grade;
       if (fpSumTitle) fpSumTitle.textContent = p.title;
       if (fpSumDesc)  fpSumDesc.textContent  = p.desc;
-      if (fpSumChips) fpSumChips.innerHTML = p.chips.map(c => `<span>${c}</span>`).join('');
-      if (fpSumBtn)   fpSumBtn.href = p.link;
-      // Restart progress bar
+      if (fpSumBtn) {
+        fpSumBtn.href = 'javascript:void(0)';
+        fpSumBtn.onclick = function(e) {
+          e.preventDefault();
+          var student = window.getActiveStudent ? window.getActiveStudent() : null;
+          if (!student) {
+            if (window.openLoginModal) window.openLoginModal();
+          } else {
+            window.location.href = p.link;
+          }
+        };
+      }
       if (fpBar) {
         fpBar.classList.remove('animating');
         void fpBar.offsetWidth; // force reflow

@@ -7794,6 +7794,14 @@ body.student-logged-in .family-activity-section {
   display: none !important;
 }
 
+/* Ocultar toda relación con Aulas cuando NO está logueado */
+body:not(.student-logged-in) .stories-section,
+body:not(.student-logged-in) .home-section-header,
+body:not(.student-logged-in) .classrooms-grid,
+body:not(.student-logged-in) #nav-dropdown-aulas {
+  display: none !important;
+}
+
 body:not(.student-logged-in) #student-drive-dashboard-container {
   display: none !important;
 }
