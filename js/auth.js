@@ -66,6 +66,7 @@
       // Renderizar panel Drive
       if (window.renderGDriveDashboard) {
         window.renderGDriveDashboard('student-drive-dashboard-container');
+        window.renderGDriveDashboard('gdrive-explorer-container');
       }
 
       // Sincronizar pestaña de grado en Actividades

@@ -38,14 +38,15 @@
 
   // Estado
   const FOLDER_CONTENTS = {
+    proyectos:   { name: '🗺️ Ruta de Aventuras', icon: 'fa-compass',        items: [] },
+    juegos:      { name: '🎮 Juegos del Grado',  icon: 'fa-gamepad',        items: [] },
     dibujos:     { name: '🎨 Dibujos',             icon: 'fa-paint-brush',    items: [] },
-    proyectos:   { name: '🚀 Proyectos del Grado', icon: 'fa-project-diagram', items: [] },
     proyecto:    { name: '📁 Proyectos',           icon: 'fa-folder-open',    items: [] },
     actividades: { name: '🏠 Actividades de casa', icon: 'fa-house-user',     items: [], generalItems: [] },
     familiar:    { name: '👨‍👩‍👧 Actividad familiar',   icon: 'fa-heart',          items: [] }
   };
 
-  let activeFolderKey            = 'dibujos';
+  let activeFolderKey            = 'proyectos';
   let proyectoSubTab             = 'scratch';   // 'scratch' | 'makecode'
   let hasFetchedDriveFiles       = false;
   let hasFetchedProjectFiles     = false;
@@ -433,18 +434,23 @@
       gradeObj.projects.forEach(function(p, idx) {
         var isMakecode = !!p.makecodeUrl;
         var isScratch  = !!p.scratchId || (p.tags && p.tags.indexOf('Scratch Jr') !== -1);
-        var isElectronica = p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); }));
-        var type  = isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica'));
-        var badge = isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker'));
-        var icon  = isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket'));
-        var color = isElectronica ? '#D97706' : (gradeObj.color || '#2563EB');
+        var isCodeorg  = p.type === 'codeorg' || p.platform === 'codeorg' || !!p.gameUrl || (p.externalUrl && p.externalUrl.includes('code.org'));
+        var isElectronica = !isCodeorg && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+        var type  = isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica')));
+        var badge = isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker')));
+        var icon  = isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket')));
+        var color = isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : (gradeObj.color || '#2563EB'));
 
         missions.push({
           id: p.id || ('proj-' + idx),
-          level: levelCount++,
+          level: p.level || levelCount++,
           title: p.title,
           subtitle: p.author ? ('Por ' + p.author) : (gradeObj.name),
           description: p.description || (isElectronica ? 'Construí un circuito funcional con materiales del taller sin necesidad de programar.' : 'Desafío y proyecto de programación del grado.'),
+          objective: p.objective || null,
+          benefits: p.benefits || null,
+          gameUrl: p.gameUrl || p.externalUrl || null,
+          externalUrl: p.externalUrl || p.gameUrl || null,
           type: type,
           badge: badge,
           icon: icon,
@@ -637,6 +643,43 @@
         '</div>' +
       '</div>';
 
+    var sala5SpecialBannerHtml = '';
+    if (student.gradeId === 'sala5') {
+      sala5SpecialBannerHtml =
+        '<div class="arm-sala5-spotlight-card">' +
+          '<div class="arm-s5-badge-top">' +
+            '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" class="arm-s5-crest">' +
+            '<span>Colegio Paulo Freire · Taller de robótica y programación</span>' +
+          '</div>' +
+          '<div class="arm-s5-content-row">' +
+            '<div class="arm-s5-hat-preview" id="arm-s5-hat-interactive" role="button" tabindex="0" title="¡Hacé click para encender la luz verde del trébol!">' +
+              '<img src="img/proyectos/sombrero_san_patricio_solo_sombrero.png" alt="Sombrero de San Patricio" class="arm-s5-hat-img">' +
+              '<div class="arm-s5-led-glow" id="arm-s5-led-glow"><i class="fas fa-lightbulb"></i></div>' +
+              '<span class="arm-s5-interactive-hint"><i class="fas fa-hand-pointer"></i> ¡Tocá para encender!</span>' +
+            '</div>' +
+            '<div class="arm-s5-info">' +
+              '<div class="arm-s5-tag"><i class="fas fa-sparkles"></i> PROYECTO OFICIAL SALA DE 5 AÑOS</div>' +
+              '<h3 class="arm-s5-title">El Sombrero Luminoso de San Patricio 🍀🎩</h3>' +
+              '<p class="arm-s5-desc">¡Nuestro primer invento maker! Aprendemos cómo viaja la electricidad con <strong>cinta de cobre conductora</strong>, un <strong>diodo LED verde</strong> en el trébol y una <strong>pila botón CR2032</strong> con interruptor en la vincha.</p>' +
+              '<div class="arm-s5-materials-pills">' +
+                '<span><i class="fas fa-tape"></i> Cinta de cobre</span>' +
+                '<span><i class="fas fa-lightbulb"></i> LED verde</span>' +
+                '<span><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
+                '<span><i class="fas fa-toggle-on"></i> Interruptor Vincha</span>' +
+              '</div>' +
+              '<div class="arm-s5-actions">' +
+                '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" data-mission-idx="0">' +
+                  '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                '</button>' +
+                '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" data-mission-idx="0">' +
+                  '<i class="fas fa-file-pdf"></i> <span>Guía y Plantilla PDF</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
     var bodyHtml = '';
 
     if (!isGrid) {
@@ -661,14 +704,21 @@
                 '</span>' +
                 '<span class="arm-mc-status ' + m.status + '">' + statusText + '</span>' +
               '</div>' +
+              (m.coverImage ?
+                '<div class="arm-mc-cover-wrap">' +
+                  '<img src="' + m.coverImage + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="arm-mc-cover-img" loading="lazy">' +
+                '</div>' : '') +
               '<div class="arm-mc-body">' +
                 '<h4 class="arm-mc-title">' + m.title + '</h4>' +
                 '<p class="arm-mc-desc">' + m.description + '</p>' +
+                (m.objective ? '<div class="arm-mc-objective"><i class="fas fa-bullseye"></i> <strong>Objetivo:</strong> ' + m.objective + '</div>' : '') +
+                (m.benefits ? '<div class="arm-mc-benefits"><i class="fas fa-brain"></i> <strong>Beneficios:</strong> ' + m.benefits + '</div>' : '') +
               '</div>' +
               '<div class="arm-mc-footer">' +
                 '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                   '<i class="fas fa-play"></i> Iniciar Misión' +
                 '</button>' +
+                (m.gameUrl ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
                 '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Abrir Modo Presentación">' +
                   '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
                 '</button>' +
@@ -692,14 +742,21 @@
               '</span>' +
               '<span class="arm-mc-status ' + m.status + '">' + statusText + '</span>' +
             '</div>' +
+            (m.coverImage ?
+              '<div class="arm-mc-cover-wrap">' +
+                '<img src="' + m.coverImage + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="arm-mc-cover-img" loading="lazy">' +
+              '</div>' : '') +
             '<div class="arm-mc-body">' +
               '<h4 class="arm-mc-title">' + m.title + '</h4>' +
               '<p class="arm-mc-desc">' + m.description + '</p>' +
+              (m.objective ? '<div class="arm-mc-objective"><i class="fas fa-bullseye"></i> <strong>Objetivo:</strong> ' + m.objective + '</div>' : '') +
+              (m.benefits ? '<div class="arm-mc-benefits"><i class="fas fa-brain"></i> <strong>Beneficios:</strong> ' + m.benefits + '</div>' : '') +
             '</div>' +
             '<div class="arm-mc-footer">' +
               '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-play"></i> Iniciar' +
               '</button>' +
+              (m.gameUrl ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
               '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
               '</button>' +
@@ -712,7 +769,7 @@
       '</div>';
     }
 
-    return '<div class="adventure-roadmap-wrapper">' + headerHtml + bodyHtml + '</div>';
+    return '<div class="adventure-roadmap-wrapper">' + headerHtml + sala5SpecialBannerHtml + bodyHtml + '</div>';
   }
 
   // ──────────────────────────────────────────────────
@@ -743,6 +800,16 @@
     // Misiones de la Ruta de Aventuras (Modo 3)
     var adventureMissions = getAdventureMissionsForStudent(student);
 
+    // Juegos del Grado (por niveles y beneficios de razonamiento)
+    var gradeObj = null;
+    if (window.SCHOOL_DATA && Array.isArray(window.SCHOOL_DATA.grades)) {
+      gradeObj = window.SCHOOL_DATA.grades.find(function(g){ return g.id === student.gradeId; });
+    } else if (window.COURSE_DATA && Array.isArray(window.COURSE_DATA.grades)) {
+      gradeObj = window.COURSE_DATA.grades.find(function(g){ return g.id === student.gradeId; });
+    }
+    var gradeGames = (gradeObj && Array.isArray(gradeObj.games)) ? gradeObj.games : [];
+    var badgeJuegos = gradeGames.length;
+
     // Badges y conteos
     var validProyectoFiles = (FOLDER_CONTENTS.proyecto.items || []).filter(function(f){
       return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode' || f.type==='circuito' || f.type==='electronica' || /\.(bmp|png|jpe?g|webp|mp4|mov)$/i.test(f.name);
@@ -763,6 +830,7 @@
     var countText = '';
     if (activeFolderKey === 'dibujos')   countText = isLoadingDriveFiles ? '<i class="fas fa-sync-alt fa-spin"></i> Conectando...' : FOLDER_CONTENTS.dibujos.items.length + ' dibujo(s)';
     else if (activeFolderKey === 'proyectos') countText = adventureMissions.length + ' misiones de aventura (' + student.gradeName + ')';
+    else if (activeFolderKey === 'juegos') countText = gradeGames.length + ' juego(s) de programación y lógica (' + student.gradeName + ')';
     else if (activeFolderKey === 'proyecto') {
       if (isLoadingProyectoFiles) {
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Cargando...';
@@ -1021,6 +1089,11 @@
 
       uploadZoneHtml = '';
 
+    // ═══ CARPETA: JUEGOS DEL GRADO (POR NIVELES) ═══
+    } else if (activeFolderKey === 'juegos') {
+      mainDisplayHtml = renderGradeGamesHtml(student, gradeGames, adventureMissions);
+      uploadZoneHtml = '';
+
     // ═══ CARPETA: DIBUJOS (Carrusel) ═══
     } else {
       displayItems = FOLDER_CONTENTS.dibujos.items.slice(0, 5);
@@ -1077,6 +1150,14 @@
               '<span class="gdb-grade"><i class="fab fa-google-drive"></i> ' + student.gradeName + ' • Conectado</span>' +
             '</div>' +
           '</div>' +
+          '<div class="gdb-header-quick-pills">' +
+            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='proyectos'?'active':'') + '" data-folder="proyectos"><i class="fas fa-compass"></i> 🗺️ Ruta de Aventuras <span class="gdb-qp-badge">' + badgeProyectos + '</span></button>' +
+            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='juegos'?'active':'') + '" data-folder="juegos"><i class="fas fa-gamepad"></i> 🎮 Juegos <span class="gdb-qp-badge">' + badgeJuegos + '</span></button>' +
+            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='dibujos'?'active':'') + '" data-folder="dibujos"><i class="fas fa-paint-brush"></i> 🎨 Dibujos <span class="gdb-qp-badge">' + badgeDibujos + '</span></button>' +
+            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='proyecto'?'active':'') + '" data-folder="proyecto"><i class="fas fa-folder-open"></i> 📁 Proyectos <span class="gdb-qp-badge">' + badgeProyecto + '</span></button>' +
+            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='actividades'?'active':'') + '" data-folder="actividades"><i class="fas fa-house-user"></i> 🏠 Actividades</button>' +
+            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='familiar'?'active':'') + '" data-folder="familiar"><i class="fas fa-heart"></i> 👨‍👩‍👧 Familiar</button>' +
+          '</div>' +
         '</div>' +
 
         '<div class="gdb-main-layout">' +
@@ -1087,6 +1168,7 @@
             '<div class="gts-tree">' +
               treeFolder('dibujos', '🎨 Dibujos', badgeDibujos, activeFolderKey, '#16A34A') +
               treeFolder('proyectos', '🗺️ Ruta de Aventuras', badgeProyectos, activeFolderKey, '#2563EB') +
+              treeFolder('juegos', '🎮 Juegos del Grado', badgeJuegos, activeFolderKey, '#E11D48') +
               treeFolder('proyecto', '📁 Proyectos', badgeProyecto, activeFolderKey, '#7C3AED') +
               treeFolder('actividades', '🏠 Actividad de casa', badgeActividades, activeFolderKey, '#EA580C') +
               treeFolder('familiar', '👨‍👩‍👧 Actividad familiar', badgeFamiliar, activeFolderKey, '#DB2777') +
@@ -1114,6 +1196,7 @@
                 '<i class="fas ' + currentFolder.icon + '"></i>' +
                 '<span>Contenido de: <strong>' +
                   (activeFolderKey === 'proyectos' ? 'Ruta de Aventuras (' + student.gradeName + ')' :
+                   activeFolderKey === 'juegos' ? 'Juegos de Programación (' + student.gradeName + ')' :
                    activeFolderKey === 'proyecto'  ? 'Proyectos' :
                    activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : 'Actividad de casa (Inventario de material)') :
                    activeFolderKey === 'familiar' ? 'Actividad familiar (Escape Rooms Nostálgico)' : currentFolder.name) +
@@ -1129,6 +1212,16 @@
           '</main>' +
         '</div>' +
       '</section>';
+
+    // ── Eventos de navegación rápida en cabecera (pills) ──
+    container.querySelectorAll('.gdb-qpill').forEach(function(btn){
+      btn.onclick = function(){
+        if (window.sounds) window.sounds.playClick();
+        activeFolderKey = btn.dataset.folder;
+        currentCarouselIndex = 0;
+        renderGDriveDashboard(containerId);
+      };
+    });
 
     // ── Eventos del árbol ──
     container.querySelectorAll('.gts-folder').forEach(function(el){
@@ -1217,6 +1310,24 @@
           if (mission) openAdventureProjectModal(mission, 'pdf');
         };
       });
+
+      // Sombrero interactivo de San Patricio (enciende y apaga la luz verde con sonido)
+      var interactiveHat = container.querySelector('#arm-s5-hat-interactive');
+      if (interactiveHat) {
+        interactiveHat.onclick = function(e){
+          e.stopPropagation();
+          var glow = container.querySelector('#arm-s5-led-glow');
+          if (glow) {
+            glow.classList.toggle('active');
+            if (glow.classList.contains('active')) {
+              if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+              else if (window.sounds) window.sounds.playClick();
+            } else {
+              if (window.sounds) window.sounds.playClick();
+            }
+          }
+        };
+      }
     }
 
     // ── Click en tarjeta MakeCode para abrir Modal de Aventura (Presentación, Simulador y PDF) ──
@@ -1269,6 +1380,170 @@
         };
       });
     }
+
+    // ── Juegos del Grado (botón para saltar a la misión en Ruta Maker) ──
+    if (activeFolderKey === 'juegos') {
+      container.querySelectorAll('.ggc-btn-mission').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          if (window.sounds) window.sounds.playClick();
+          var lvl = parseInt(btn.dataset.level, 10);
+          activeFolderKey = 'proyectos';
+          renderGDriveDashboard(containerId);
+          setTimeout(function(){
+            var advM = getAdventureMissionsForStudent(student);
+            var targetM = advM.find(function(m){ return m.level === lvl; }) || advM[lvl - 1];
+            if (targetM) openAdventureProjectModal(targetM, 'presentacion');
+          }, 150);
+        };
+      });
+    }
+  }
+
+  // ──────────────────────────────────────────────────
+  // RENDER HTML DE JUEGOS DEL GRADO (POR NIVELES)
+  // ──────────────────────────────────────────────────
+  function renderGradeGamesHtml(student, gradeGames, adventureMissions) {
+    if (!gradeGames || gradeGames.length === 0) {
+      return '<div class="gdb-empty-state"><div class="ges-icon">🎮</div><h4>Sin juegos asignados</h4><p>Pronto se agregarán juegos de programación para ' + student.gradeName + '.</p></div>';
+    }
+
+    var cardsHtml = gradeGames.map(function(game, idx) {
+      var levelNum = game.level || (idx + 1);
+      var thumb = game.thumbnail || 'img/angrybirds.png';
+      var platText = (game.platform === 'codeorg') ? 'Code.org' : (game.platform === 'codejr' ? 'Scratch Jr' : 'Taller Maker');
+      var isCodeorg = (game.platform === 'codeorg') || (game.externalUrl && game.externalUrl.includes('code.org'));
+      var themeColor = isCodeorg ? '#E11D48' : '#2563EB';
+
+      // Verificar si hay misión de aventura vinculada
+      var linkedMission = (adventureMissions || []).find(function(m){
+        return m.level === levelNum || (isCodeorg && m.type === 'codeorg');
+      });
+
+      return '<div class="grade-game-card" data-game-level="' + levelNum + '">' +
+        '<div class="ggc-thumb-wrap" onclick="window.open(\'' + game.externalUrl + '\', \'_blank\')" title="Hacé clic para jugar a ' + game.title + '">' +
+          '<img src="' + thumb + '" alt="' + game.title + '" class="ggc-thumb-img" onerror="this.src=\'img/angrybirds.png\'">' +
+          '<div class="ggc-play-overlay">' +
+            '<div class="ggc-play-bubble"><i class="fas fa-play"></i></div>' +
+            '<span>¡Jugar Ahora!</span>' +
+          '</div>' +
+          '<div class="ggc-lvl-badge" style="background:' + themeColor + ';">NIVEL ' + levelNum + '</div>' +
+          '<div class="ggc-platform-badge">' + platText + '</div>' +
+        '</div>' +
+        '<div class="ggc-body">' +
+          '<div class="ggc-top-row">' +
+            '<h3 class="ggc-title">' + game.title + '</h3>' +
+            (linkedMission && linkedMission.status === 'completado' ? '<span class="ggc-status-done"><i class="fas fa-check-circle"></i> ⭐ Completado</span>' : '') +
+          '</div>' +
+          '<p class="ggc-desc">' + game.description + '</p>' +
+          (game.benefits ?
+            '<div class="ggc-benefits-box">' +
+              '<div class="ggc-bb-header"><i class="fas fa-brain"></i> <strong>Razonamiento Pedagógico:</strong></div>' +
+              '<p class="ggc-bb-text">' + game.benefits + '</p>' +
+            '</div>' : '') +
+          (game.tags && game.tags.length > 0 ?
+            '<div class="ggc-tags-row">' +
+              game.tags.map(function(t){ return '<span class="ggc-tag">#' + t + '</span>'; }).join('') +
+            '</div>' : '') +
+          '<div class="ggc-actions">' +
+            '<a href="' + game.externalUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play" style="background:' + themeColor + ';">' +
+              '<i class="fas fa-gamepad"></i> <span>Jugar en ' + platText + '</span>' +
+            '</a>' +
+            (linkedMission ?
+              '<button type="button" class="ggc-btn-mission" data-level="' + levelNum + '" title="Ver estación en la Ruta de Aventuras">' +
+                '<i class="fas fa-map-marked-alt"></i> <span>Ver en Ruta Maker</span>' +
+              '</button>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="gdb-actividades-container">' +
+      '<div class="gac-section-block">' +
+        '<div class="gac-block-header" style="border-bottom:2px solid #F1F5F9;padding-bottom:14px;margin-bottom:18px;">' +
+          '<div>' +
+            '<h4 style="font-size:1.3rem;font-weight:900;color:#1E293B;margin:0 0 4px;"><span class="gac-icon">🎮</span> Juegos del Grado por Niveles — ' + student.gradeName + '</h4>' +
+            '<p style="font-size:0.88rem;color:#64748B;margin:0;">Juegos interactivos organizados por niveles pedagógicos para aprender a programar, ejercitar lateralidad y desarrollar el razonamiento computacional.</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="grade-games-grid">' +
+          cardsHtml +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ──────────────────────────────────────────────────
+  // RENDER SOLUCIÓN OFICIAL PARA CODE.ORG / ANGRY BIRDS
+  // ──────────────────────────────────────────────────
+  function renderCodeorgSolutionHtml(mission) {
+    var gameUrl = (mission && mission.gameUrl) || 'https://studio.code.org/es/hoc/1';
+    return '<div class="apm-sol-codeorg-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #9F1239 0%, #E11D48 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-puzzle-piece"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: Algoritmos y Bloques de Angry Birds (Code.org)</h4>' +
+          '<p>Secuencias paso a paso de los primeros niveles en <strong>' + gameUrl + '</strong> con explicación de razonamiento.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body" style="padding:18px;">' +
+        '<div style="margin-bottom:16px;background:#FFF1F2;border:1.5px solid #FDA4AF;border-radius:12px;padding:14px;">' +
+          '<h5 style="margin:0 0 6px;color:#9F1239;font-size:0.95rem;"><i class="fas fa-lightbulb"></i> Clave de Razonamiento Computacional:</h5>' +
+          '<p style="margin:0;font-size:0.86rem;color:#4C0519;line-height:1.5;">' +
+            'En cada nivel, el niño debe anticipar mentalmente el camino antes de encastrar los bloques. Si el pájaro mira hacia el este, ¿hacia dónde debe girar para bajar? ¡Eso es razonamiento algorítmico y lateralidad espacial!' +
+          '</p>' +
+        '</div>' +
+        '<div class="codeorg-levels-solutions-grid">' +
+          '<div class="col-sol-card">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl">Nivel 1</span> <strong>Línea Recta Simple</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Dos pasos hacia adelante para atrapar al cerdo sin girar.</div>' +
+          '</div>' +
+          '<div class="col-sol-card">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl">Nivel 2</span> <strong>Camino de 3 Pasos</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Contar casilleros exactos: 3 bloques avanzar debajo de ejecutar.</div>' +
+          '</div>' +
+          '<div class="col-sol-card">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl">Nivel 3</span> <strong>Giro a la Derecha</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block turn-right"><i class="fas fa-redo"></i> girar a la derecha ↷</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+            '</div>' +
+            '<div class="col-sc-note">El giro orienta al pájaro hacia abajo sin cambiar de casilla.</div>' +
+          '</div>' +
+          '<div class="col-sol-card">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl">Nivel 4</span> <strong>Laberinto con Giros Múltiples</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block turn-left"><i class="fas fa-undo"></i> girar a la izquierda ↶</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block turn-right"><i class="fas fa-redo"></i> girar a la derecha ↷</div>' +
+              '<div class="co-block move-forward"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Combinación de giros y avance para esquivar obstáculos de dinamita (TNT).</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="text-align:center;margin-top:20px;">' +
+          '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;padding:10px 22px;">' +
+            '<i class="fas fa-external-link-alt"></i> Practicar estos Niveles en Code.org' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
   }
 
   // ──────────────────────────────────────────────────
@@ -1702,9 +1977,10 @@
     var currentSlide = 0;
     var totalSlides = 4;
     var mkInfo = mission.makecodeUrl ? extractMakecodeInfo(mission.makecodeUrl) : null;
-    var isElectronica = mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); }));
-    var isMakecode = !isElectronica && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-    var isScratch = !isElectronica && !isMakecode;
+    var isCodeorg = mission.type === 'codeorg' || !!mission.gameUrl || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); }));
+    var isElectronica = !isCodeorg && (mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isMakecode = !isCodeorg && !isElectronica && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isScratch = !isCodeorg && !isElectronica && !isMakecode;
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -1881,14 +2157,21 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isElectronica ? '#D97706' : '#6366F1') + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' + (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level) + '</div>' +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : '#6366F1')) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isCodeorg ? '🎮 Programación con Bloques • Code.org' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)) +
+                      '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card">' +
-                        '<h4><i class="fas fa-flag-checkered"></i> ¿Cuál es nuestra misión?</h4>' +
-                        '<p>' + mission.description + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isCodeorg ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : '') + '">' +
+                        '<h4 style="' + (isCodeorg ? 'color:#9F1239;' : '') + '"><i class="fas ' + (isCodeorg ? 'fa-bullseye' : 'fa-flag-checkered') + '"></i> ' + (isCodeorg ? 'Objetivo Pedagógico:' : '¿Cuál es nuestra misión?') + '</h4>' +
+                        '<p style="' + (isCodeorg ? 'color:#4C0519;' : '') + '">' + (mission.objective || mission.description) + '</p>' +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
-                        (isElectronica ?
+                        (isCodeorg ?
+                          '<span class="apm-skill-pill"><i class="fas fa-puzzle-piece"></i> Primeros Pasos en Programación</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-brain"></i> Razonamiento Lógico</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-compass"></i> Lateralidad & Orientación</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-bug"></i> Descomposición y Depuración</span>' :
+                         isElectronica ?
                           '<span class="apm-skill-pill"><i class="fas fa-bolt"></i> Circuito Físico</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-battery-full"></i> Polaridad y Energía</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-tools"></i> Sin Programación</span>' :
@@ -1897,60 +2180,171 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isElectronica ? 'background:#D97706;border-color:#B45309;' : '') + '">' +
-                        'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isCodeorg ? 'background:#E11D48;border-color:#BE123C;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')) + '">' +
+                        (isCodeorg ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>') +
                       '</button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
 
-                // SLIDE 1: Materiales & Componentes
+                // SLIDE 1: Materiales & Beneficios
                 '<div class="apm-slide-page" data-slide-idx="1">' +
-                  '<div style="max-width:850px;margin:0 auto;">' +
-                    '<div style="text-align:center;margin-bottom:20px;">' +
-                      '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                        (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller') +
-                      '</h3>' +
-                      '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                        (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:') +
-                      '</p>' +
-                    '</div>' +
-                    '<div class="apm-materials-grid">' +
-                      materialsList.map(function(m){
-                        var mIcon = isElectronica ? (
-                          /led|luz/i.test(m.title) ? 'fa-lightbulb' :
-                          /pila|bater/i.test(m.title) ? 'fa-battery-full' :
-                          /cobre|cable/i.test(m.title) ? 'fa-tape' :
-                          /clip|broche|interrup/i.test(m.title) ? 'fa-toggle-on' :
-                          /motor/i.test(m.title) ? 'fa-cogs' :
-                          /cart|tijer|papel/i.test(m.title) ? 'fa-cut' : 'fa-tools'
-                        ) : 'fa-tools';
-                        return '<div class="apm-mat-card">' +
-                          '<div class="apm-mat-icon"><i class="fas ' + mIcon + '"></i></div>' +
+                  (isCodeorg ?
+                    '<div style="max-width:850px;margin:0 auto;">' +
+                      '<div style="text-align:center;margin-bottom:20px;">' +
+                        '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
+                          '🧠 ¿Por qué Angry Birds? Beneficios del Razonamiento en Programación' +
+                        '</h3>' +
+                        '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
+                          'A través del juego en <strong><a href="https://studio.code.org/es/hoc/1" target="_blank" style="color:#E11D48;text-decoration:underline;">https://studio.code.org/es/hoc/1</a></strong>, los niños desarrollan capacidades fundamentales de lógica:' +
+                        '</p>' +
+                      '</div>' +
+                      '<div class="apm-materials-grid">' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #E11D48;">' +
+                          '<div class="apm-mat-icon" style="color:#E11D48;"><i class="fas fa-sort-numeric-down"></i></div>' +
                           '<div class="apm-mat-info">' +
-                            '<h5>' + m.title + '</h5>' +
-                            '<p>' + (m.description || 'Componente didáctico del taller') + '</p>' +
+                            '<h5>1. Secuenciación de Algoritmos</h5>' +
+                            '<p>Las computadoras ejecutan instrucciones en estricto orden cronológico: avanzar, girar y avanzar. Comprender la secuencia paso a paso es la base de todo software.</p>' +
                           '</div>' +
-                        '</div>';
-                      }).join('') +
-                    '</div>' +
-                    '<div class="apm-reto-card" style="margin-top:22px;background:#F0FDF4;border-color:#16A34A;">' +
-                      '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> ' + (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker') + '</h4>' +
-                      '<p style="color:#166534;">' +
-                        (isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
-                      '</p>' +
-                    '</div>' +
-                    '<div style="text-align:center;margin-top:20px;">' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isElectronica ? 'background:#D97706;border-color:#B45309;' : '') + '">' +
-                        (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>') +
-                      '</button>' +
-                    '</div>' +
-                  '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #2563EB;">' +
+                          '<div class="apm-mat-icon" style="color:#2563EB;"><i class="fas fa-compass"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>2. Orientación Espacial y Lateralidad</h5>' +
+                            '<p>Aprender a ponerse en la perspectiva del pájaro rojo: discernir hacia dónde es "girar a la derecha" o "a la izquierda" en el plano bidimensional.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #16A34A;">' +
+                          '<div class="apm-mat-icon" style="color:#16A34A;"><i class="fas fa-cubes"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>3. Descomposición de Problemas</h5>' +
+                            '<p>Dividir el trayecto largo hasta el cerdito en pequeños pasos manejables y seguros para no chocar con las paredes de madera.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #D97706;">' +
+                          '<div class="apm-mat-icon" style="color:#D97706;"><i class="fas fa-sync-alt"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>4. Prueba, Error y Depuración</h5>' +
+                            '<p>Desarrollar perseverancia sin frustración: si el pájaro choca con dinamita TNT, se examina qué bloque sobró o faltó, se corrige y se vuelve a probar.</p>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-reto-card" style="margin-top:20px;background:#FFF1F2;border-color:#FDA4AF;">' +
+                        '<h4 style="color:#9F1239;"><i class="fas fa-external-link-alt"></i> Actividad Oficial de Code.org (Hora del Código)</h4>' +
+                        '<p style="color:#4C0519;margin:0 0 10px;">Plataforma mundial de iniciación a la ciencia de la computación adaptada para niñas y niños de educación inicial y primaria.</p>' +
+                        '<a href="https://studio.code.org/es/hoc/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;display:inline-flex;align-items:center;gap:8px;padding:8px 18px;font-size:0.86rem;color:#FFF;text-decoration:none;">' +
+                          '<i class="fas fa-play"></i> Abrir studio.code.org/es/hoc/1 en el navegador' +
+                        '</a>' +
+                      '</div>' +
+                      '<div style="text-align:center;margin-top:20px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;background:#E11D48;border-color:#BE123C;">' +
+                          '¡Ir al Desafío Interactivo de Angry Birds! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                    '<div style="max-width:850px;margin:0 auto;">' +
+                      '<div style="text-align:center;margin-bottom:20px;">' +
+                        '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
+                          (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller') +
+                        '</h3>' +
+                        '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
+                          (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:') +
+                        '</p>' +
+                      '</div>' +
+                      '<div class="apm-materials-grid">' +
+                        materialsList.map(function(m){
+                          var mIcon = isElectronica ? (
+                            /led|luz/i.test(m.title) ? 'fa-lightbulb' :
+                            /pila|bater/i.test(m.title) ? 'fa-battery-full' :
+                            /cobre|cable/i.test(m.title) ? 'fa-tape' :
+                            /clip|broche|interrup/i.test(m.title) ? 'fa-toggle-on' :
+                            /motor/i.test(m.title) ? 'fa-cogs' :
+                            /cart|tijer|papel/i.test(m.title) ? 'fa-cut' : 'fa-tools'
+                          ) : 'fa-tools';
+                          return '<div class="apm-mat-card">' +
+                            '<div class="apm-mat-icon"><i class="fas ' + mIcon + '"></i></div>' +
+                            '<div class="apm-mat-info">' +
+                              '<h5>' + m.title + '</h5>' +
+                              '<p>' + (m.description || 'Componente didáctico del taller') + '</p>' +
+                            '</div>' +
+                          '</div>';
+                        }).join('') +
+                      '</div>' +
+                      '<div class="apm-reto-card" style="margin-top:22px;background:#F0FDF4;border-color:#16A34A;">' +
+                        '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> ' + (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker') + '</h4>' +
+                        '<p style="color:#166534;">' +
+                          (isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
+                        '</p>' +
+                      '</div>' +
+                      '<div style="text-align:center;margin-top:20px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isElectronica ? 'background:#D97706;border-color:#B45309;' : '') + '">' +
+                          (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>') +
+                        '</button>' +
+                      '</div>' +
+                    '</div>'
+                  ) +
                 '</div>' +
 
-                // SLIDE 2: Instrucciones de Armado (Electrónica) O Código y Simulador (MakeCode/Scratch)
+                // SLIDE 2: Instrucciones de Armado (Electrónica) O Desafío Angry Birds (Code.org) O Código y Simulador (MakeCode/Scratch)
                 '<div class="apm-slide-page" data-slide-idx="2">' +
-                  (isElectronica ?
+                  (isCodeorg ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-gamepad" style="color:#E11D48;"></i> Nivel 2: ¡A Jugar y Programar con Angry Birds!</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Plataforma interactiva: <strong>https://studio.code.org/es/hoc/1</strong></p>' +
+                        '</div>' +
+                        '<a href="https://studio.code.org/es/hoc/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;font-size:0.84rem;padding:7px 16px;">' +
+                          '<i class="fas fa-external-link-alt"></i> Abrir en Pantalla Completa' +
+                        '</a>' +
+                      '</div>' +
+                      '<div class="codeorg-challenge-hero-card">' +
+                        '<div class="chc-left">' +
+                          '<img src="img/angrybirds.png" alt="Angry Birds Code.org" class="chc-img" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80\'">' +
+                        '</div>' +
+                        '<div class="chc-right">' +
+                          '<span class="chc-tag"><i class="fas fa-flag-checkered"></i> Misión Nivel 2</span>' +
+                          '<h4>Ayudá al pájaro a atrapar al cerdito</h4>' +
+                          '<p>Arrastrá los bloques de movimiento desde el panel de herramientas hacia el bloque <code>al ejecutar</code>. ¿Cuántos pasos hacia adelante necesita dar?</p>' +
+                          '<div class="chc-blocks-preview">' +
+                            '<span class="cbp-block run"><i class="fas fa-play"></i> al ejecutar</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move"><i class="fas fa-arrow-up"></i> avanzar</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move"><i class="fas fa-arrow-up"></i> avanzar</span>' +
+                          '</div>' +
+                          '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">' +
+                            '<a href="https://studio.code.org/es/hoc/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;font-size:0.92rem;padding:9px 20px;">' +
+                              '<i class="fas fa-play"></i> ¡Jugar Ahora en Code.org! (studio.code.org/es/hoc/1)' +
+                            '</a>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-tb-grid" style="margin-top:8px;">' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #E11D48;">' +
+                          '<h6>Paso 1: Contar los casilleros</h6>' +
+                          '<p>Mirá el laberinto y contá cuántas casillas separan al pájaro del cerdito.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #2563EB;">' +
+                          '<h6>Paso 2: Encastrar los bloques</h6>' +
+                          '<p>Arrastrá los bloques <strong>avanzar</strong> y encastralos debajo de <em>al ejecutar</em>.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #16A34A;">' +
+                          '<h6>Paso 3: Ejecutar el programa</h6>' +
+                          '<p>Tocá el botón naranja <strong>"Ejecutar"</strong> para ver al pájaro en acción.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #D97706;">' +
+                          '<h6>Paso 4: Corregir si choca</h6>' +
+                          '<p>Si chocás con dinamita TNT, tocá "Reiniciar", cambiá la orden y probá de nuevo.</p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div style="text-align:right;margin-top:8px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#E11D48;border-color:#BE123C;">' +
+                          '¡Ver Misión Cumplida y Registrar Entrega! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isElectronica ?
                     '<div style="height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:6px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
@@ -2035,46 +2429,52 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">🏆</div>' +
-                      '<h3 class="apm-win-title">¡Misión Cumplida en el Nivel ' + mission.level + '!</h3>' +
-                      '<p class="apm-win-sub">Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!</p>' +
+                      '<div class="apm-win-trophy">' + (isCodeorg ? '🐦' : '🏆') + '</div>' +
+                      '<h3 class="apm-win-title">' + (isCodeorg ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!') + '</h3>' +
+                      '<p class="apm-win-sub">' + (isCodeorg ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!') + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
                     '<div class="apm-extra-challenges">' +
-                      '<div class="apm-ec-item">' +
-                        '<div class="apm-ec-badge">1</div>' +
-                        '<div>' +
-                          '<h6>' + (isElectronica ? 'Agregá un segundo LED' : 'Personalizá la pantalla') + '</h6>' +
-                          '<p>' + (isElectronica ? 'Conectá otro LED en paralelo para que brillen juntos al apretar el interruptor.' : 'Cambiá el dibujo LED, el texto de bienvenida o la velocidad del personaje.') + '</p>' +
+                      (isCodeorg ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge">1</div><div><h6>Superar los niveles con giros</h6><p>Llegar al nivel 3 y 4 de Code.org practicando giros a la derecha e izquierda sin perder la orientación.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge">2</div><div><h6>Usar el menor número de bloques</h6><p>Encontrar la ruta más directa sin bloques sobrantes pensando el algoritmo antes de ejecutar.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge">3</div><div><h6>Enseñarle a un compañero</h6><p>Explicarle a un amigo cómo anticipar los pasos del pájaro antes de encastrar los bloques.</p></div></div>' :
+                        '<div class="apm-ec-item">' +
+                          '<div class="apm-ec-badge">1</div>' +
+                          '<div>' +
+                            '<h6>' + (isElectronica ? 'Agregá un segundo LED' : 'Personalizá la pantalla') + '</h6>' +
+                            '<p>' + (isElectronica ? 'Conectá otro LED en paralelo para que brillen juntos al apretar el interruptor.' : 'Cambiá el dibujo LED, el texto de bienvenida o la velocidad del personaje.') + '</p>' +
+                          '</div>' +
                         '</div>' +
-                      '</div>' +
-                      '<div class="apm-ec-item">' +
-                        '<div class="apm-ec-badge">2</div>' +
-                        '<div>' +
-                          '<h6>' + (isElectronica ? 'Probá interruptores alternativos' : 'Agregá sonido o sensores') + '</h6>' +
-                          '<p>' + (isElectronica ? 'Creá un interruptor con papel aluminio, un broche de ropa de madera o trazos con lápiz de grafito.' : 'Programá un tono musical alegre cuando el sensor detecte luz o movimiento.') + '</p>' +
+                        '<div class="apm-ec-item">' +
+                          '<div class="apm-ec-badge">2</div>' +
+                          '<div>' +
+                            '<h6>' + (isElectronica ? 'Probá interruptores alternativos' : 'Agregá sonido o sensores') + '</h6>' +
+                            '<p>' + (isElectronica ? 'Creá un interruptor con papel aluminio, un broche de ropa de madera o trazos con lápiz de grafito.' : 'Programá un tono musical alegre cuando el sensor detecte luz o movimiento.') + '</p>' +
+                          '</div>' +
                         '</div>' +
-                      '</div>' +
-                      '<div class="apm-ec-item">' +
-                        '<div class="apm-ec-badge">3</div>' +
-                        '<div>' +
-                          '<h6>Compartí tu creación</h6>' +
-                          '<p>Mostrá tu invento a tus compañeros y guardá una foto o video en tu carpeta de Google Drive.</p>' +
-                        '</div>' +
-                      '</div>' +
+                        '<div class="apm-ec-item">' +
+                          '<div class="apm-ec-badge">3</div>' +
+                          '<div>' +
+                            '<h6>Compartí tu creación</h6>' +
+                            '<p>Mostrá tu invento a tus compañeros y guardá una foto o video en tu carpeta de Google Drive.</p>' +
+                          '</div>' +
+                        '</div>'
+                      ) +
                     '</div>' +
 
                     '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap;">' +
-                      '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isElectronica ? '#D97706' : '#10B981') + ';border-color:' + (isElectronica ? '#B45309' : '#059669') + ';font-size:0.9rem;padding:9px 18px;">' +
-                        (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación') +
+                      '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : '#10B981')) + ';border-color:' + (isCodeorg ? '#BE123C' : (isElectronica ? '#B45309' : '#059669')) + ';font-size:0.9rem;padding:9px 18px;">' +
+                        (isCodeorg ? '<i class="fas fa-trophy"></i> Registrar Mi Misión (+100 XP)' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')) +
                       '</button>' +
                       '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                        (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial') +
+                        (isCodeorg ? '<i class="fas fa-lightbulb"></i> Ver Solución Oficial' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')) +
                       '</button>' +
-                      '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;">' +
-                        '<i class="fas fa-file-pdf"></i> Ver Guía PDF' +
-                      '</button>' +
+                      (isCodeorg ?
+                        '<a href="https://studio.code.org/es/hoc/1" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="font-size:0.9rem;padding:9px 18px;color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar en Code.org</a>' :
+                        '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía PDF</button>'
+                      ) +
                       '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
                         '<i class="fas fa-undo"></i> Repasar Presentación' +
                       '</button>' +
@@ -2105,6 +2505,9 @@
               '<div class="apm-deliv-format-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#F8FAFC;border-radius:12px;margin-bottom:14px;border:1.5px solid #E2E8F0;flex-wrap:wrap;">' +
                 '<span style="font-size:0.84rem;font-weight:800;color:#334155;"><i class="fas fa-sliders-h" style="color:#6366F1;"></i> Formato de Entrega:</span>' +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isCodeorg ? 'active' : '') + '" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isCodeorg ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
+                    '<i class="fas fa-gamepad"></i> Desafío Code.org' +
+                  '</button>' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-bolt"></i> Foto / Video Circuito' +
                   '</button>' +
@@ -2114,6 +2517,46 @@
                   '<button type="button" class="apm-deliv-switch-btn ' + (isMakecode ? 'active' : '') + '" id="apm-switch-to-mk" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isMakecode ? 'background:#7C3AED;color:#FFF;box-shadow:0 2px 6px rgba(124,58,237,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-microchip"></i> Link MakeCode' +
                   '</button>' +
+                '</div>' +
+              '</div>' +
+
+              // SUB-PANEL CODE.ORG / ANGRY BIRDS
+              '<div id="apm-codeorg-delivery-section" style="' + (isCodeorg ? 'display:block;' : 'display:none;') + '">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #BE123C 0%, #E11D48 100%);">' +
+                  '<div class="apm-dh-icon"><i class="fas fa-gamepad"></i></div>' +
+                  '<div>' +
+                    '<h4>Registrar Misión de Angry Birds (Code.org)</h4>' +
+                    '<p>¡Iniciación a la programación! Si superaste los retos en <strong>https://studio.code.org/es/hoc/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  '<div style="background:#FFF1F2;border:2px dashed #FDA4AF;border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;">' +
+                    '<div style="font-size:3.2rem;margin-bottom:8px;">🐦🎯</div>' +
+                    '<h3 style="font-size:1.3rem;font-weight:900;color:#9F1239;margin:0 0 8px;">¿Guiaste al Pájaro hasta el Cerdito Verde?</h3>' +
+                    '<p style="font-size:0.92rem;color:#4C0519;max-width:550px;margin:0 auto 18px;line-height:1.5;">' +
+                      'Hacé clic en el botón de abajo para registrar tu logro en el sistema, completar la estación del mapa y sumar puntos al progreso de tu taller.' +
+                    '</p>' +
+                    '<button type="button" id="apm-btn-complete-codeorg" class="apm-delivery-submit-btn" style="background:#E11D48;font-size:1.05rem;padding:12px 28px;box-shadow:0 4px 12px rgba(225,29,72,0.35);cursor:pointer;">' +
+                      '<i class="fas fa-trophy"></i> ¡Completé el Nivel en Code.org! (+100 XP)' +
+                    '</button>' +
+                    '<div style="margin-top:14px;">' +
+                      '<a href="https://studio.code.org/es/hoc/1" target="_blank" rel="noopener noreferrer" style="font-size:0.86rem;color:#E11D48;font-weight:700;text-decoration:underline;">' +
+                        '<i class="fas fa-external-link-alt"></i> Ir a jugar en https://studio.code.org/es/hoc/1' +
+                      '</a>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div id="apm-codeorg-delivery-status">' +
+                    (isAlreadyCompleted ?
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">¡Desafío de Angry Birds en Code.org registrado con éxito! Tu avance está sumado.</span></div></div>' : '') +
+                  '</div>' +
+                  '<div class="apm-delivery-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-brain"></i> Objetivos Pedagógicos y Beneficios Cumplidos:</h5>' +
+                    '<ol>' +
+                      '<li><strong>Secuenciación de Algoritmos:</strong> Comprender que los bloques deben ordenarse paso a paso para que el programa funcione.</li>' +
+                      '<li><strong>Lateralidad y Orientación:</strong> Diferenciar entre avanzar, girar a la derecha o izquierda en el espacio.</li>' +
+                      '<li><strong>Descomposición & Depuración:</strong> Analizar el error cuando el pájaro choca y corregir el código sin frustración.</li>' +
+                    '</ol>' +
+                  '</div>' +
                 '</div>' +
               '</div>' +
 
@@ -2234,7 +2677,9 @@
 
           // ── PANEL 3: SOLUCIÓN OFICIAL ──
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
-            (isElectronica ?
+            (isCodeorg ?
+              renderCodeorgSolutionHtml(mission) :
+             isElectronica ?
               '<div class="apm-sol-electro-wrap">' +
                 '<div class="apm-sol-electro-header">' +
                   '<div class="apm-seh-icon"><i class="fas fa-bolt"></i></div>' +
@@ -2681,19 +3126,27 @@
       };
     }
 
-    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (ELECTRÓNICA, SCRATCH, MAKECODE) ──
+    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (CODE.ORG, ELECTRÓNICA, SCRATCH, MAKECODE) ──
+    var switchToCodeorg = modal.querySelector('#apm-switch-to-codeorg');
     var switchToElectro = modal.querySelector('#apm-switch-to-electro');
     var switchToScratch = modal.querySelector('#apm-switch-to-scratch');
     var switchToMk = modal.querySelector('#apm-switch-to-mk');
+    var secCodeorg = modal.querySelector('#apm-codeorg-delivery-section');
     var secElectro = modal.querySelector('#apm-electro-delivery-section');
     var secScratch = modal.querySelector('#apm-scratch-delivery-section');
     var secMk = modal.querySelector('#apm-mk-delivery-section');
 
     function setDeliveryMode(mode) {
+      if (secCodeorg) secCodeorg.style.display = (mode === 'codeorg' ? 'block' : 'none');
       if (secElectro) secElectro.style.display = (mode === 'electro' ? 'block' : 'none');
       if (secScratch) secScratch.style.display = (mode === 'scratch' ? 'block' : 'none');
       if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
 
+      if (switchToCodeorg) {
+        switchToCodeorg.style.background = (mode === 'codeorg' ? '#E11D48' : '#E2E8F0');
+        switchToCodeorg.style.color = (mode === 'codeorg' ? '#FFF' : '#475569');
+        switchToCodeorg.style.boxShadow = (mode === 'codeorg' ? '0 2px 6px rgba(225,29,72,0.3)' : 'none');
+      }
       if (switchToElectro) {
         switchToElectro.style.background = (mode === 'electro' ? '#D97706' : '#E2E8F0');
         switchToElectro.style.color = (mode === 'electro' ? '#FFF' : '#475569');
@@ -2711,12 +3164,48 @@
       }
     }
 
+    if (switchToCodeorg) switchToCodeorg.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('codeorg'); };
     if (switchToElectro) switchToElectro.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('electro'); };
     if (switchToScratch) switchToScratch.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('scratch'); };
     if (switchToMk) switchToMk.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('mk'); };
 
     // Establecer modo de entrega inicial
-    setDeliveryMode(isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'));
+    setDeliveryMode(isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch')));
+
+    // --- Subida / Completar Misión Code.org (Angry Birds) con 1-Click ---
+    var btnCompleteCodeorg = modal.querySelector('#apm-btn-complete-codeorg');
+    if (btnCompleteCodeorg) {
+      btnCompleteCodeorg.onclick = function() {
+        if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+        else if (window.sounds) window.sounds.playClick();
+
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          type: 'codeorg',
+          gameUrl: mission.gameUrl || 'https://studio.code.org/es/hoc/1',
+          date: nowStr,
+          completed: true,
+          missionId: mission.id,
+          missionTitle: mission.title,
+          fileName: 'Angry Birds Code.org (Completado)'
+        };
+
+        markMissionCompleted(student, mission.id, submissionData);
+
+        var stContainer = modal.querySelector('#apm-codeorg-delivery-status');
+        if (stContainer) {
+          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Misión Completada con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Se registró tu entrega de Angry Birds (' + nowStr + '). ¡Puntos y avance sumados!</span></div></div>';
+        }
+        var topBadge = modal.querySelector('#apm-header-status-badge');
+        if (topBadge) {
+          topBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+
+        alert('🎉 ¡Felicitaciones! Completaste la misión de Angry Birds (Nivel 2).\nSumaste +100 XP al taller de robótica.');
+      };
+    }
 
     // --- Subida / Guardado MakeCode ---
     var mkStudentSaveBtn = modal.querySelector('#apm-mk-student-save-btn');
@@ -3409,7 +3898,7 @@
   window.addEventListener('student_session_changed', function(){
     hasFetchedDriveFiles=hasFetchedProjectFiles=hasFetchedProyectoFiles=hasFetchedActividadesFiles=false;
     isLoadingDriveFiles=isLoadingProjectFiles=isLoadingProyectoFiles=isLoadingActividadesFiles=false;
-    activeFolderKey='dibujos'; proyectoSubTab='scratch'; currentCarouselIndex=0;
+    activeFolderKey='proyectos'; proyectoSubTab='scratch'; currentCarouselIndex=0;
     FOLDER_CONTENTS.dibujos.items=[];
     FOLDER_CONTENTS.proyectos.items=[];
     FOLDER_CONTENTS.proyecto.items=[];
@@ -3421,5 +3910,7 @@
 
   window.renderGDriveDashboard = renderGDriveDashboard;
   window.renderGDriveExplorer  = renderGDriveDashboard;
+  window.openAdventureProjectModal = openAdventureProjectModal;
+  window.getAdventureMissionsForStudent = getAdventureMissionsForStudent;
 })();
 

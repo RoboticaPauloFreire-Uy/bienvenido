@@ -36,6 +36,7 @@ const SCHOOL_DATA = {
       games: [
         {
           id: "s5-g1",
+          level: 1,
           title: "Scratch Jr 🎨",
           platform: "codejr",
           externalUrl: "https://codejr.org",
@@ -45,17 +46,19 @@ const SCHOOL_DATA = {
           tags: ["Scratch Jr", "Bloques", "Iniciación"]
         },
         {
-          id: "s5-g2",
-          title: "Minecraft: Hora del Código ⛏️",
+          id: "s5-g4",
+          level: 2,
+          title: "Angry Birds: Primeros Pasos 🐦",
           platform: "codeorg",
-          externalUrl: "https://code.org/es-ES/hour-of-code/minecraft",
-          thumbnail: "img/minecraft.png",
-          description: "Guiá a los personajes del universo Minecraft resolviendo desafíos con pensamiento computacional.",
-          benefits: "Desarrolla el razonamiento lógico, la orientación espacial en 3D y el pensamiento estructurado.",
-          tags: ["Code.org", "Minecraft", "Lógica"]
+          externalUrl: "https://studio.code.org/es/hoc/1",
+          thumbnail: "img/angrybirds.png",
+          description: "¡Nivel 2 de la Ruta de Aventuras! Guiá al pájaro por el laberinto para aprender a programar y dar los primeros pasos de razonamiento computacional.",
+          benefits: "Aprender a programar y los primeros pasos del razonamiento en programación: secuenciación de algoritmos paso a paso, lateralidad (izquierda/derecha), descomposición de problemas y prueba y error.",
+          tags: ["Code.org", "Angry Birds", "Algoritmos", "Hora del Código"]
         },
         {
           id: "s5-g3",
+          level: 3,
           title: "Ana y Elsa (Frozen) ❄️",
           platform: "codeorg",
           externalUrl: "https://studio.code.org/es/courses/frozen/units/1/lessons/1/levels/1",
@@ -65,14 +68,15 @@ const SCHOOL_DATA = {
           tags: ["Code.org", "Frozen", "Geometría"]
         },
         {
-          id: "s5-g4",
-          title: "Angry Birds 🐦",
+          id: "s5-g2",
+          level: 4,
+          title: "Minecraft: Hora del Código ⛏️",
           platform: "codeorg",
-          externalUrl: "https://studio.code.org/es/hoc/1",
-          thumbnail: "img/angrybirds.png",
-          description: "Ayudá a los Angry Birds a recorrer el laberinto programando sus giros y avances paso a paso.",
-          benefits: "Refuerza la secuenciación de algoritmos, la lateralidad y el método de prueba y error.",
-          tags: ["Code.org", "Angry Birds", "Algoritmos"]
+          externalUrl: "https://code.org/es-ES/hour-of-code/minecraft",
+          thumbnail: "img/minecraft.png",
+          description: "Guiá a los personajes del universo Minecraft resolviendo desafíos con pensamiento computacional.",
+          benefits: "Desarrolla el razonamiento lógico, la orientación espacial en 3D y el pensamiento estructurado.",
+          tags: ["Code.org", "Minecraft", "Lógica"]
         }
       ],
 
@@ -80,11 +84,12 @@ const SCHOOL_DATA = {
       projects: [
         {
           id: "s5-p1",
+          level: 1,
           title: "El Sombrero Luminoso de San Patricio 🍀🎩",
           author: "Taller Maker Sala 5",
           date: "Marzo 2026",
           type: "electronica",
-          coverImage: "img/proyectos/sombrero_san_patricio_color.png",
+          coverImage: "img/proyectos/sombrero_san_patricio_solo_sombrero.png",
           description: "¡Primer proyecto oficial de la Sala de 5 años! Construimos un auténtico sombrero de San Patricio con vincha que se ilumina mágicamente al calzártelo en la cabeza. Usamos cinta de cobre conductora, un diodo LED verde en el trébol, una pila de botón CR2032 y un interruptor de contacto que se activa con la presión de la cabeza.",
           tags: ["San Patricio", "Electrónica", "Circuito de Papel", "LED", "Sin programación", "Maker"],
           gallery: [
@@ -141,6 +146,60 @@ const SCHOOL_DATA = {
               title: "¡Ajustar la vincha y lucir tu invento!",
               desc: "Uní las tiras de la vincha según el contorno de tu cabeza con cinta o abrochadora con ayuda del profe. ¡Ponételo en la cabeza y mirá cómo brilla el trébol de la suerte!",
               tip: "¿No prende? Apretá bien con la uña sobre las patitas del LED y la cinta de cobre para eliminar falsos contactos."
+            }
+          ]
+        },
+        {
+          id: "s5-p2",
+          level: 2,
+          title: "Angry Birds: Primeros Pasos de Programación 🐦🎯",
+          author: "Taller de Programación Sala 5",
+          date: "Abril 2026",
+          type: "codeorg",
+          platform: "codeorg",
+          coverImage: "img/angrybirds.png",
+          gameUrl: "https://studio.code.org/es/hoc/1",
+          externalUrl: "https://studio.code.org/es/hoc/1",
+          description: "¡Nivel 2 de nuestra Ruta de Aventuras! Aprendemos a programar y damos los primeros pasos del razonamiento computacional guiando a los Angry Birds a través del laberinto hasta atrapar al cerdito travieso con bloques de flechas en secuencia.",
+          objective: "Aprender a programar y dar los primeros pasos de razonamiento en programación guiando al pájaro a través del laberinto hasta el cerdito.",
+          benefits: "Desarrolla el pensamiento computacional, la estructuración de algoritmos paso a paso, la lateralidad y orientación espacial (adelante, izquierda, derecha), la descomposición de problemas y el método de prueba y depuración de errores (debugging) de forma divertida.",
+          tags: ["Angry Birds", "Code.org", "Lógica", "Algoritmos", "Hora del Código", "Nivel 2"],
+          gallery: [
+            "img/angrybirds.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Plataforma Code.org (Hora del Código)", description: "Desafío interactivo online con laberintos progresivos (https://studio.code.org/es/hoc/1).", icon: "fa-gamepad" },
+            { title: "Bloques de Dirección de Flechas", description: "Comandos secuenciales: avanzar, girar a la izquierda y girar a la derecha.", icon: "fa-arrows-alt" },
+            { title: "Computadora o Tablet", description: "Para arrastrar y encastrar los bloques como piezas de rompecabezas.", icon: "fa-laptop" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Observar el laberinto y al cerdito",
+              desc: "Mirá bien la pantalla: ubicá dónde está el pájaro rojo y hacia dónde debe caminar para llegar hasta el cerdito travieso.",
+              tip: "¿Está en línea recta o tiene que doblar? ¡Contá cuántos casilleros debe avanzar!"
+            },
+            {
+              step: 2,
+              title: "Arrastrar el bloque 'Avanzar'",
+              desc: "Tomá con el dedo o el mouse el bloque anaranjado 'avanzar' y encastralo debajo del bloque amarillo 'cuando se ejecuta'. Cada bloque hace que el pájaro dé un paso.",
+              tip: "Escucharás un 'clic' mágico cuando las dos piezas encastren perfectamente."
+            },
+            {
+              step: 3,
+              title: "Girar cuando haya una curva",
+              desc: "Si el camino dobla, colocá un bloque de 'girar a la derecha' o 'girar a la izquierda'. ¡Fijate hacia dónde mira el pico del pájaro!",
+              tip: "Usá tus manos frente a la pantalla para sentir si debe doblar hacia la izquierda o la derecha."
+            },
+            {
+              step: 4,
+              title: "Tocar el botón naranja 'Ejecutar'",
+              desc: "Tocá 'Ejecutar' para ver cómo el pájaro cobra vida y camina paso a paso siguiendo tu programa.",
+              tip: "Si no llega o choca contra una caja, tocá 'Reiniciar', cambiá los bloques y probalo de nuevo. ¡Así piensan los programadores!"
             }
           ]
         }
@@ -875,14 +934,8 @@ if (typeof window !== 'undefined') {
    - makecode.com         → Genérico
 ══════════════════════════════════════════════════════════════ */
 const MAKECODE_LIBRARY = {
-  // Sala de 5 años
-  sala5: [
-    {
-      title: "Carita Feliz y Guiño 😃",
-      description: "Al pulsar el botón A la micro:bit sonríe, y con el botón B nos guiña un ojo. ¡Primeros pasos en programación!",
-      shareUrl: "https://makecode.microbit.org/S18043-28109-69626-83440"
-    }
-  ],
+  // Sala de 5 años (Electrónica y Circuitos en Papel sin MakeCode)
+  sala5: [],
 
   // 1° Grado
   grado1: [
@@ -1060,12 +1113,19 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              gradeObj.projects = targetProjects;
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio o Angry Birds, actualizar Firestore con los datos locales reales
+              const isStaleSala5 = gradeId === 'sala5' && (!targetProjects.some(p => (p.title || '').includes('San Patricio')) || !targetProjects.some(p => (p.title || '').includes('Angry Birds')));
+              if (isStaleSala5) {
+                console.log("🔄 Re-sembrando proyectos reales de sala5 (San Patricio + Angry Birds) en Firestore...");
+                seedGradeProjectsToFirestore(true);
+              } else {
+                gradeObj.projects = targetProjects;
+              }
             }
           }
         });
         if (!hasSala5) {
-          seedGradeProjectsToFirestore();
+          seedGradeProjectsToFirestore(true);
         }
         console.log("☁️ Proyectos de grado sincronizados desde Firestore.");
 

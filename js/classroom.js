@@ -224,6 +224,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar listeners del modal de proyectos
   initProjectModalListeners();
+
+  // Sombrero interactivo de San Patricio en Sala de 5 (enciende y apaga la luz verde con sonido)
+  const hatCard = document.getElementById('s5-interactive-hat-card');
+  if (hatCard) {
+    hatCard.addEventListener('click', () => {
+      const led = document.getElementById('s5-live-led');
+      if (led) {
+        led.classList.toggle('active');
+        if (led.classList.contains('active')) {
+          if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+          else if (window.sounds) window.sounds.playClick();
+        } else {
+          if (window.sounds) window.sounds.playClick();
+        }
+      }
+    });
+  }
 });
 
 /* =============================================================
@@ -266,7 +283,77 @@ function renderProjectsSectionHtml(grade) {
     return renderComingSoonHtml(grade, 'proyectos');
   }
 
-  return grade.projects.map(proj => renderProjectPostHtml(proj, grade)).join('');
+  let extraHeroHtml = '';
+  if (grade.id === 'sala5') {
+    extraHeroHtml = `
+      <section class="sala5-hero-showcase">
+        <div class="s5-showcase-header">
+          <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
+          <div class="s5-header-titles">
+            <span class="s5-dept-tag"><i class="fas fa-robot"></i> Taller de robótica y programación</span>
+            <h2 class="s5-main-title">🍀 El Sombrero Luminoso de San Patricio 🎩</h2>
+            <p class="s5-subtitle">Proyecto oficial para Exploradores de 5 años · ¡Descubrí los secretos de la electricidad!</p>
+          </div>
+        </div>
+
+        <div class="s5-interactive-stage">
+          <div class="s5-stage-left">
+            <div class="s5-hat-box" id="s5-interactive-hat-card" role="button" tabindex="0" title="¡Tocá para encender el LED verde!">
+              <img src="img/proyectos/sombrero_san_patricio_solo_sombrero.png" alt="Sombrero de San Patricio" class="s5-hat-render">
+              <div class="s5-led-bulb" id="s5-live-led"><i class="fas fa-lightbulb"></i></div>
+              <div class="s5-tap-badge"><i class="fas fa-hand-pointer"></i> ¡Tocá para encender!</div>
+            </div>
+          </div>
+
+          <div class="s5-stage-right">
+            <div class="s5-intro-bubble">
+              <div class="s5-bubble-badge"><i class="fas fa-sparkles"></i> ¿Cómo funciona este invento?</div>
+              <p>
+                Unimos el arte y la ciencia: al doblar la vincha y ponértela en la cabeza,
+                las pistas de <strong>cinta de cobre</strong> hacen contacto con la <strong>pila botón CR2032</strong>
+                y ¡el <strong>diodo LED verde</strong> brilla en tu trébol como por arte de magia!
+              </p>
+            </div>
+
+            <!-- Materiales clave visuales -->
+            <div class="s5-materials-grid">
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FEF3C7;color:#D97706;"><i class="fas fa-tape"></i></div>
+                <div class="s5-mat-text"><strong>Cinta de Cobre</strong><span>Pistas conductoras</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#DCFCE7;color:#16A34A;"><i class="fas fa-lightbulb"></i></div>
+                <div class="s5-mat-text"><strong>LED Verde 5mm</strong><span>Luz en el trébol</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#EFF6FF;color:#2563EB;"><i class="fas fa-battery-full"></i></div>
+                <div class="s5-mat-text"><strong>Pila CR2032 (3V)</strong><span>Energía segura</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FDF2F8;color:#DB2777;"><i class="fas fa-toggle-on"></i></div>
+                <div class="s5-mat-text"><strong>Vincha Interruptor</strong><span>Se activa con la cabeza</span></div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="s5-actions-row">
+              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="s5-p1">
+                <i class="fas fa-folder-open"></i> Ver Pasos y Materiales
+              </button>
+              <a href="pdf/sombrero_san_patricio_5anos.pdf" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf">
+                <i class="fas fa-file-pdf"></i> Plantilla PDF
+              </a>
+              <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
+                <i class="fas fa-compass"></i> Ruta de Aventuras
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  return extraHeroHtml + grade.projects.map(proj => renderProjectPostHtml(proj, grade)).join('');
 }
 
 function renderProjectPostHtml(proj, grade) {
@@ -362,6 +449,9 @@ function openProjectModal(proj, grade) {
 
   // Determinar pestañas disponibles
   const tabs = [];
+  if (proj.instructions && proj.instructions.length > 0) {
+    tabs.push({ id: 'instructions', icon: '🛠️', label: `Pasos de Armado (${proj.instructions.length})` });
+  }
   if (proj.gallery && proj.gallery.length > 0) {
     tabs.push({ id: 'gallery', icon: '📸', label: `Fotos (${proj.gallery.length})` });
   }
@@ -396,6 +486,35 @@ function openProjectModal(proj, grade) {
 
   // Generar contenido de cada panel
   let panelsHtml = '';
+
+  // 0. Pasos de Armado (Instrucciones)
+  if (proj.instructions && proj.instructions.length > 0) {
+    panelsHtml += `
+      <div class="pm-panel" id="pm-panel-instructions" style="${activeTabId === 'instructions' ? '' : 'display:none;'}">
+        <div class="pm-instructions-wrapper">
+          <div class="pm-inst-intro">
+            <i class="fas fa-hammer" style="color:#D97706;font-size:1.4rem;"></i>
+            <div>
+              <strong>Guía de armado paso a paso:</strong>
+              <p style="margin:2px 0 0;font-size:0.85rem;color:var(--text-muted);">Seguí cada uno de los pasos para armar tu proyecto con éxito.</p>
+            </div>
+          </div>
+          <div class="pm-steps-list">
+            ${proj.instructions.map(st => `
+              <div class="pm-step-card">
+                <div class="pm-step-badge">Paso ${st.step}</div>
+                <div class="pm-step-content">
+                  <h4 class="pm-step-title">${st.title}</h4>
+                  <p class="pm-step-desc">${st.desc}</p>
+                  ${st.tip ? `<div class="pm-step-tip"><i class="fas fa-lightbulb"></i> <span><strong>Tip secreto:</strong> ${st.tip}</span></div>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
 
   // 1. Galería
   if (proj.gallery && proj.gallery.length > 0) {
