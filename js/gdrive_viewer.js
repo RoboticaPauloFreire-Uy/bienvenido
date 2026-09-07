@@ -1972,15 +1972,20 @@
     }
 
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
+    var isCodeorg = mission.type === 'codeorg' || !!mission.gameUrl || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); }));
+    var isGame = mission.type === 'game' || mission.type === 'codeorg' || !!mission.gameUrl || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game|code\.org|angry ?birds/i.test(t); }));
     var activeTab = initialTab || 'presentacion';
-    if (activeTab === 'simulador') activeTab = 'solucion';
+    if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
+      activeTab = 'presentacion';
+    } else if (activeTab === 'simulador') {
+      activeTab = 'solucion';
+    }
     var currentSlide = 0;
     var totalSlides = 4;
     var mkInfo = mission.makecodeUrl ? extractMakecodeInfo(mission.makecodeUrl) : null;
-    var isCodeorg = mission.type === 'codeorg' || !!mission.gameUrl || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); }));
-    var isElectronica = !isCodeorg && (mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-    var isMakecode = !isCodeorg && !isElectronica && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-    var isScratch = !isCodeorg && !isElectronica && !isMakecode;
+    var isElectronica = !isGame && (mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isMakecode = !isGame && !isElectronica && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isScratch = !isGame && !isElectronica && !isMakecode;
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -2118,12 +2123,14 @@
           '<button type="button" class="apm-tab-btn ' + (activeTab === 'presentacion' ? 'active' : '') + '" data-tab="presentacion">' +
             '<i class="fas fa-chalkboard-teacher"></i> Modo Presentación' +
           '</button>' +
-          '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega">' +
-            '<i class="fas fa-cloud-upload-alt"></i> Mi Entrega' +
-          '</button>' +
-          '<button type="button" class="apm-tab-btn ' + (activeTab === 'solucion' ? 'active' : '') + '" data-tab="solucion">' +
-            '<i class="fas fa-lightbulb"></i> Solución Oficial' +
-          '</button>' +
+          (!isGame ?
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega">' +
+              '<i class="fas fa-cloud-upload-alt"></i> Mi Entrega' +
+            '</button>' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'solucion' ? 'active' : '') + '" data-tab="solucion">' +
+              '<i class="fas fa-lightbulb"></i> Solución Oficial' +
+            '</button>' : ''
+          ) +
           '<button type="button" class="apm-tab-btn ' + (activeTab === 'pdf' ? 'active' : '') + '" data-tab="pdf">' +
             '<i class="fas fa-file-pdf"></i> Guía PDF' +
           '</button>' +
@@ -2340,7 +2347,7 @@
                       '</div>' +
                       '<div style="text-align:right;margin-top:8px;">' +
                         '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#E11D48;border-color:#BE123C;">' +
-                          '¡Ver Misión Cumplida y Registrar Entrega! <i class="fas fa-arrow-right"></i>' +
+                          '¡Ver Misión Cumplida y Consejos! <i class="fas fa-arrow-right"></i>' +
                         '</button>' +
                       '</div>' +
                     '</div>' :
@@ -2465,19 +2472,26 @@
                     '</div>' +
 
                     '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap;">' +
-                      '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : '#10B981')) + ';border-color:' + (isCodeorg ? '#BE123C' : (isElectronica ? '#B45309' : '#059669')) + ';font-size:0.9rem;padding:9px 18px;">' +
-                        (isCodeorg ? '<i class="fas fa-trophy"></i> Registrar Mi Misión (+100 XP)' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')) +
-                      '</button>' +
-                      '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                        (isCodeorg ? '<i class="fas fa-lightbulb"></i> Ver Solución Oficial' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')) +
-                      '</button>' +
-                      (isCodeorg ?
-                        '<a href="https://studio.code.org/es/hoc/1" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="font-size:0.9rem;padding:9px 18px;color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar en Code.org</a>' :
-                        '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía PDF</button>'
+                      (isGame ?
+                        '<a href="' + (mission.gameUrl || 'https://studio.code.org/es/hoc/1') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;font-size:0.92rem;padding:9px 20px;">' +
+                          '<i class="fas fa-gamepad"></i> ¡Jugar Ahora en Code.org!' +
+                        '</a>' +
+                        '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía Didáctica</button>' +
+                        '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
+                          '<i class="fas fa-undo"></i> Repasar Presentación' +
+                        '</button>'
+                      :
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isElectronica ? '#D97706' : '#10B981') + ';border-color:' + (isElectronica ? '#B45309' : '#059669') + ';font-size:0.9rem;padding:9px 18px;">' +
+                          (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación') +
+                        '</button>' +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
+                          (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial') +
+                        '</button>' +
+                        '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía PDF</button>' +
+                        '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
+                          '<i class="fas fa-undo"></i> Repasar Presentación' +
+                        '</button>'
                       ) +
-                      '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
-                        '<i class="fas fa-undo"></i> Repasar Presentación' +
-                      '</button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -2499,6 +2513,7 @@
             '</div>' +
           '</div>' +
 
+          (!isGame ?
           // ── PANEL 2: MI ENTREGA ──
           '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '">' +
             '<div class="apm-delivery-pane-wrap">' +
@@ -2909,7 +2924,7 @@
                 '</div>'
               )
             ) +
-          '</div>' +
+          '</div>' : '') +
 
           // ── PANEL 4: GUÍA PDF & FICHA DIDÁCTICA ──
           '<div class="apm-tab-pane pane-pdf ' + (activeTab === 'pdf' ? 'active' : '') + '">' +
