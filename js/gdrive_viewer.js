@@ -506,15 +506,57 @@
     });
 
     // ── Determinar estado dinámico de cada misión según entregas del alumno ──
-    var firstPendingFound = false;
+    var explicitlyCompletedIds = {};
+    var explicitlyCompletedCount = 0;
     missions.forEach(function(m) {
       if (isMissionCompleted(student, m.id)) {
         m.status = 'completado';
-      } else if (!firstPendingFound) {
-        m.status = 'activo';
-        firstPendingFound = true;
-      } else {
-        m.status = 'desafio';
+        explicitlyCompletedIds[m.id] = true;
+        explicitlyCompletedCount++;
+      }
+    });
+
+    // Proyectos válidos subidos por el alumno en su carpeta de proyectos (Drive o local)
+    var validProyectoFiles = (FOLDER_CONTENTS.proyecto && FOLDER_CONTENTS.proyecto.items || []).filter(function(f){
+      return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode';
+    });
+
+    // Si el alumno tiene más archivos de proyectos subidos que misiones con entrega individual,
+    // completar automáticamente las siguientes misiones pendientes
+    var totalProjectsCount = Math.max(explicitlyCompletedCount, validProyectoFiles.length);
+    var targetCompletedTotal = Math.min(missions.length, totalProjectsCount);
+
+    if (explicitlyCompletedCount < targetCompletedTotal) {
+      var needed = targetCompletedTotal - explicitlyCompletedCount;
+      var assigned = 0;
+      missions.forEach(function(m) {
+        if (!explicitlyCompletedIds[m.id] && assigned < needed) {
+          m.status = 'completado';
+          explicitlyCompletedIds[m.id] = true;
+          assigned++;
+          var pf = validProyectoFiles[explicitlyCompletedCount + assigned - 1] || validProyectoFiles[assigned - 1];
+          markMissionCompleted(student, m.id, {
+            fileName: pf ? pf.name : 'proyecto_entregado.sjr',
+            fileSize: pf ? pf.size : '1 MB',
+            date: (pf && pf.date) || new Date().toLocaleDateString('es-ES'),
+            type: pf ? pf.type : 'scratch',
+            missionId: m.id,
+            missionTitle: m.title
+          });
+        }
+      });
+    }
+
+    // Determinar la primera misión pendiente como 'activo' y el resto como 'desafio'
+    var firstPendingFound = false;
+    missions.forEach(function(m) {
+      if (m.status !== 'completado') {
+        if (!firstPendingFound) {
+          m.status = 'activo';
+          firstPendingFound = true;
+        } else {
+          m.status = 'desafio';
+        }
       }
     });
 
@@ -1923,8 +1965,21 @@
 
           // ── PANEL 2: MI ENTREGA ──
           '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '">' +
-            (isMakecode ?
-              '<div class="apm-delivery-pane-wrap">' +
+            '<div class="apm-delivery-pane-wrap">' +
+              '<div class="apm-deliv-format-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#F8FAFC;border-radius:12px;margin-bottom:14px;border:1.5px solid #E2E8F0;flex-wrap:wrap;">' +
+                '<span style="font-size:0.84rem;font-weight:800;color:#334155;"><i class="fas fa-sliders-h" style="color:#6366F1;"></i> Formato de Entrega:</span>' +
+                '<div style="display:flex;gap:8px;">' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isMakecode ? 'active' : '') + '" id="apm-switch-to-mk" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isMakecode ? 'background:#7C3AED;color:#FFF;box-shadow:0 2px 6px rgba(124,58,237,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
+                    '<i class="fas fa-microchip"></i> Link MakeCode' +
+                  '</button>' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (!isMakecode ? 'active' : '') + '" id="apm-switch-to-scratch" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (!isMakecode ? 'background:#EA580C;color:#FFF;box-shadow:0 2px 6px rgba(234,88,12,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
+                    '<i class="fas fa-cat"></i> Archivo Scratch Jr / Foto' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+
+              // SUB-PANEL MAKECODE
+              '<div id="apm-mk-delivery-section" style="' + (isMakecode ? 'display:block;' : 'display:none;') + '">' +
                 '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #4C1D95 0%, #6D28D9 100%);">' +
                   '<div class="apm-dh-icon"><i class="fas fa-microchip"></i></div>' +
                   '<div>' +
@@ -1969,19 +2024,21 @@
                     ) +
                   '</div>' +
                 '</div>' +
-              '</div>' :
-              '<div class="apm-delivery-pane-wrap">' +
+              '</div>' +
+
+              // SUB-PANEL SCRATCH JR / FOTO
+              '<div id="apm-scratch-delivery-section" style="' + (!isMakecode ? 'display:block;' : 'display:none;') + '">' +
                 '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #C2410C 0%, #EA580C 100%);">' +
                   '<div class="apm-dh-icon"><i class="fas fa-cat"></i></div>' +
                   '<div>' +
-                    '<h4>Subir Creación de Scratch Jr</h4>' +
+                    '<h4>Subir Creación de Scratch Jr o Imagen</h4>' +
                     '<p>Subí tu archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una foto/captura de pantalla de tus personajes y bloques para guardarlo en tu carpeta.</p>' +
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body">' +
                   '<div class="apm-scratch-dropzone" id="apm-scratch-dropzone">' +
                     '<div class="apm-sd-icon"><i class="fas fa-cloud-upload-alt"></i></div>' +
-                    '<h4>Arrastrá tu archivo de Scratch Jr aquí</h4>' +
+                    '<h4>Arrastrá tu archivo de Scratch Jr o imagen aquí</h4>' +
                     '<p>O hacé clic en el botón para seleccionarlo (.sjr, .sb3, .pjson, .sb, .png, .jpg)</p>' +
                     '<input type="file" id="apm-scratch-file-input" style="display:none;" accept=".sjr,.sb3,.pjson,.sb,.png,.jpg,.jpeg">' +
                     '<button type="button" id="apm-scratch-browse-btn" class="apm-delivery-submit-btn" style="background:#EA580C;"><i class="fas fa-folder-open"></i> Seleccionar Archivo</button>' +
@@ -2000,8 +2057,8 @@
                     '</ol>' +
                   '</div>' +
                 '</div>' +
-              '</div>'
-            ) +
+              '</div>' +
+            '</div>' +
           '</div>' +
 
           // ── PANEL 3: SOLUCIÓN OFICIAL ──
@@ -2310,208 +2367,293 @@
       };
     }
 
-    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA ──
-    if (isMakecode) {
-      var mkStudentSaveBtn = modal.querySelector('#apm-mk-student-save-btn');
-      var mkStudentUrlInput = modal.querySelector('#apm-mk-student-url');
+    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (DUAL: MAKECODE & SCRATCH/FOTO) ──
+    var switchToMk = modal.querySelector('#apm-switch-to-mk');
+    var switchToScratch = modal.querySelector('#apm-switch-to-scratch');
+    var secMk = modal.querySelector('#apm-mk-delivery-section');
+    var secScratch = modal.querySelector('#apm-scratch-delivery-section');
 
-      if (mkStudentSaveBtn && mkStudentUrlInput) {
-        mkStudentSaveBtn.onclick = function() {
-          var rawUrl = (mkStudentUrlInput.value || '').trim();
-          if (!rawUrl) {
-            alert('Por favor pegá el link de tu proyecto en MakeCode.');
-            return;
-          }
-          var info = extractMakecodeInfo(rawUrl);
-          if (!info) {
-            if (window.sounds) window.sounds.playError();
-            alert('El link ingresado no es válido. Debe ser un enlace de MakeCode compartido (por ejemplo: https://makecode.microbit.org/S18043-...).');
-            return;
-          }
-
-          if (window.sounds) window.sounds.playSuccess();
-          var nowStr = new Date().toLocaleDateString('es-ES');
-          var submissionData = {
-            makecodeUrl: rawUrl,
-            date: nowStr,
-            type: 'makecode',
-            missionId: mission.id,
-            missionTitle: mission.title
-          };
-
-          // Guardar y marcar como completada la misión
-          markMissionCompleted(student, mission.id, submissionData);
-          mission.status = 'completado';
-
-          // Actualizar insignia en el encabezado del modal a ⭐ COMPLETADO
-          var headerBadge = modal.querySelector('#apm-header-status-badge');
-          if (headerBadge) {
-            headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
-          }
-
-          var statusEl = modal.querySelector('#apm-mk-delivery-status');
-          if (statusEl) {
-            statusEl.innerHTML =
-              '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
-                '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
-                '<div>' +
-                  '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
-                  '<span style="font-size:0.84rem;color:#047857;">¡Entrega guardada con éxito! Tu profesor ya puede ver tu proyecto en el simulador y sumaste +100 XP al Progreso del Taller.</span>' +
-                '</div>' +
-              '</div>';
-          }
-
-          // Refrescar panel de fondo para actualizar el progreso y tarjetas inmediatamente
-          refreshDashboard();
-
-          var previewEl = modal.querySelector('#apm-mk-student-preview');
-          if (previewEl) {
-            previewEl.innerHTML =
-              '<div class="apm-student-sim-card">' +
-                '<div class="apm-student-sim-header">' +
-                  '<span><i class="fas fa-gamepad"></i> Tu Simulador Micro:bit en Vivo</span>' +
-                  '<div style="display:flex;gap:8px;">' +
-                    '<button type="button" id="apm-student-sim-reload" class="mkm-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
-                    '<a href="' + rawUrl + '" target="_blank" rel="noopener noreferrer" class="mkm-btn-entrar" style="font-size:0.75rem;padding:4px 12px;"><i class="fas fa-external-link-alt"></i> Abrir en MakeCode</a>' +
-                  '</div>' +
-                '</div>' +
-                '<div class="apm-student-sim-body">' +
-                  '<iframe src="' + info.simUrl + '" class="apm-student-sim-frame" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
-                '</div>' +
-              '</div>';
-
-            var sRel = previewEl.querySelector('#apm-student-sim-reload');
-            if (sRel) {
-              sRel.onclick = function() {
-                if (window.sounds) window.sounds.playClick();
-                var f = previewEl.querySelector('.apm-student-sim-frame');
-                if (f) f.src = info.simUrl;
-              };
-            }
-          }
-        };
+    function setDeliveryMode(mode) {
+      if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
+      if (secScratch) secScratch.style.display = (mode === 'scratch' ? 'block' : 'none');
+      if (switchToMk) {
+        switchToMk.style.background = (mode === 'mk' ? '#7C3AED' : '#E2E8F0');
+        switchToMk.style.color = (mode === 'mk' ? '#FFF' : '#475569');
+        switchToMk.style.boxShadow = (mode === 'mk' ? '0 2px 6px rgba(124,58,237,0.3)' : 'none');
       }
-
-      var existingStudentSimReload = modal.querySelector('#apm-student-sim-reload');
-      if (existingStudentSimReload && studentMkInfo) {
-        existingStudentSimReload.onclick = function() {
-          if (window.sounds) window.sounds.playClick();
-          var f = modal.querySelector('.apm-student-sim-frame');
-          if (f) f.src = studentMkInfo.simUrl;
-        };
+      if (switchToScratch) {
+        switchToScratch.style.background = (mode === 'scratch' ? '#EA580C' : '#E2E8F0');
+        switchToScratch.style.color = (mode === 'scratch' ? '#FFF' : '#475569');
+        switchToScratch.style.boxShadow = (mode === 'scratch' ? '0 2px 6px rgba(234,88,12,0.3)' : 'none');
       }
-    } else {
-      // Scratch Jr: Drag & Drop y subida de archivos
-      var scratchDropzone = modal.querySelector('#apm-scratch-dropzone');
-      var scratchFileInput = modal.querySelector('#apm-scratch-file-input');
-      var scratchBrowseBtn = modal.querySelector('#apm-scratch-browse-btn');
-      var scratchStatusEl = modal.querySelector('#apm-scratch-delivery-status');
+    }
 
-      if (scratchBrowseBtn && scratchFileInput) {
-        scratchBrowseBtn.onclick = function() {
-          scratchFileInput.click();
-        };
-      }
+    if (switchToMk) switchToMk.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('mk'); };
+    if (switchToScratch) switchToScratch.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('scratch'); };
 
-      function processScratchUpload(file) {
-        if (!file) return;
-        var name = file.name.toLowerCase();
-        var valid = /\.(sjr|sb3|pjson|sb|png|jpe?g)$/i.test(name);
-        if (!valid) {
-          if (window.sounds) window.sounds.playError();
-          alert('Formato no válido. Por favor seleccioná un archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una imagen (.png, .jpg)');
+    // --- Subida / Guardado MakeCode ---
+    var mkStudentSaveBtn = modal.querySelector('#apm-mk-student-save-btn');
+    var mkStudentUrlInput = modal.querySelector('#apm-mk-student-url');
+
+    if (mkStudentSaveBtn && mkStudentUrlInput) {
+      mkStudentSaveBtn.onclick = function() {
+        var rawUrl = (mkStudentUrlInput.value || '').trim();
+        if (!rawUrl) {
+          alert('Por favor pegá el link de tu proyecto en MakeCode.');
           return;
         }
-        if (window.sounds) window.sounds.playSuccess();
-        var sz = formatFileSize(file.size);
-        if (scratchStatusEl) {
-          scratchStatusEl.innerHTML = '<div class="apm-status-badge warning"><i class="fas fa-sync-alt fa-spin"></i> Guardando <strong>' + file.name + '</strong> (' + sz + ')...</div>';
+        var info = extractMakecodeInfo(rawUrl);
+        if (!info) {
+          if (window.sounds) window.sounds.playError();
+          alert('El link ingresado no es válido. Debe ser un enlace de MakeCode compartido (por ejemplo: https://makecode.microbit.org/S18043-...).');
+          return;
         }
 
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-          var b64 = ev.target.result.split(',')[1];
-          var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
-          if (hook && student) {
-            var iframe = document.getElementById('gdrive_silent_upload_iframe');
-            if (!iframe) {
-              iframe = document.createElement('iframe');
-              iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
-              iframe.style.display = 'none';
-              document.body.appendChild(iframe);
-            }
-            var form = document.createElement('form');
-            form.target = 'gdrive_silent_upload_iframe';
-            form.method = 'POST';
-            form.action = hook;
-            var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyecto' };
-            for (var k in fields) {
-              var inp = document.createElement('input');
-              inp.type = 'hidden';
-              inp.name = k;
-              inp.value = fields[k];
-              form.appendChild(inp);
-            }
-            document.body.appendChild(form);
-            form.submit();
-            setTimeout(function(){ form.remove(); }, 2500);
-          }
+        if (window.sounds) window.sounds.playSuccess();
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          makecodeUrl: rawUrl,
+          date: nowStr,
+          type: 'makecode',
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
 
-          var nowStr = new Date().toLocaleDateString('es-ES');
-          var submissionData = {
-            fileName: file.name,
-            fileSize: sz,
+        // Registrar en FOLDER_CONTENTS.proyecto.items si aún no está
+        if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.url === rawUrl || it.shareUrl === rawUrl; })) {
+          FOLDER_CONTENTS.proyecto.items.unshift({
+            name: mission.title,
+            title: '💻 ' + mission.title,
+            size: 'MakeCode',
+            date: nowStr,
+            type: 'makecode',
+            url: rawUrl,
+            shareUrl: rawUrl,
+            isLocalPending: true
+          });
+        }
+
+        // Si esta misión ya estaba completada con OTRO link, avanzar a la siguiente misión pendiente
+        var targetMissionId = mission.id;
+        var nextMissionTarget = null;
+        if (isAlreadyCompleted && savedMakecodeUrl && savedMakecodeUrl !== rawUrl) {
+          var allMissions = getAdventureMissionsForStudent(student);
+          nextMissionTarget = allMissions.find(function(m){ return m.id !== mission.id && !isMissionCompleted(student, m.id); });
+          if (nextMissionTarget) {
+            targetMissionId = nextMissionTarget.id;
+            submissionData.missionId = targetMissionId;
+            submissionData.missionTitle = nextMissionTarget.title;
+          }
+        }
+
+        // Guardar y marcar como completada
+        markMissionCompleted(student, targetMissionId, submissionData);
+        mission.status = 'completado';
+        if (nextMissionTarget) nextMissionTarget.status = 'completado';
+
+        // Actualizar insignia en el encabezado del modal a ⭐ COMPLETADO
+        var headerBadge = modal.querySelector('#apm-header-status-badge');
+        if (headerBadge) {
+          headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        var statusEl = modal.querySelector('#apm-mk-delivery-status');
+        if (statusEl) {
+          var congratsText = nextMissionTarget
+            ? '¡Excelente! Como ya habías entregado esta misión, tu nuevo enlace completó <strong>' + nextMissionTarget.title + '</strong> (Nivel ' + nextMissionTarget.level + ') ⭐ (+100 XP extras sumados).'
+            : '¡Entrega guardada con éxito! Tu profesor ya puede ver tu proyecto en el simulador y sumaste +100 XP al Progreso del Taller.';
+
+          statusEl.innerHTML =
+            '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+              '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+              '<div>' +
+                '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                '<span style="font-size:0.84rem;color:#047857;">' + congratsText + '</span>' +
+              '</div>' +
+            '</div>';
+        }
+
+        // Refrescar panel de fondo para actualizar el progreso y tarjetas inmediatamente
+        refreshDashboard();
+
+        var previewEl = modal.querySelector('#apm-mk-student-preview');
+        if (previewEl) {
+          previewEl.innerHTML =
+            '<div class="apm-student-sim-card">' +
+              '<div class="apm-student-sim-header">' +
+                '<span><i class="fas fa-gamepad"></i> Tu Simulador Micro:bit en Vivo</span>' +
+                '<div style="display:flex;gap:8px;">' +
+                  '<button type="button" id="apm-student-sim-reload" class="mkm-sim-reload-btn"><i class="fas fa-redo"></i> Reiniciar</button>' +
+                  '<a href="' + rawUrl + '" target="_blank" rel="noopener noreferrer" class="mkm-btn-entrar" style="font-size:0.75rem;padding:4px 12px;"><i class="fas fa-external-link-alt"></i> Abrir en MakeCode</a>' +
+                '</div>' +
+              '</div>' +
+              '<div class="apm-student-sim-body">' +
+                '<iframe src="' + info.simUrl + '" class="apm-student-sim-frame" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="no" frameborder="0"></iframe>' +
+              '</div>' +
+            '</div>';
+
+          var sRel = previewEl.querySelector('#apm-student-sim-reload');
+          if (sRel) {
+            sRel.onclick = function() {
+              if (window.sounds) window.sounds.playClick();
+              var f = previewEl.querySelector('.apm-student-sim-frame');
+              if (f) f.src = info.simUrl;
+            };
+          }
+        }
+      };
+    }
+
+    var existingStudentSimReload = modal.querySelector('#apm-student-sim-reload');
+    if (existingStudentSimReload && studentMkInfo) {
+      existingStudentSimReload.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        var f = modal.querySelector('.apm-student-sim-frame');
+        if (f) f.src = studentMkInfo.simUrl;
+      };
+    }
+
+    // --- Subida / Drag & Drop Scratch Jr o Foto ---
+    var scratchDropzone = modal.querySelector('#apm-scratch-dropzone');
+    var scratchFileInput = modal.querySelector('#apm-scratch-file-input');
+    var scratchBrowseBtn = modal.querySelector('#apm-scratch-browse-btn');
+    var scratchStatusEl = modal.querySelector('#apm-scratch-delivery-status');
+
+    if (scratchBrowseBtn && scratchFileInput) {
+      scratchBrowseBtn.onclick = function() {
+        scratchFileInput.click();
+      };
+    }
+
+    function processScratchUpload(file) {
+      if (!file) return;
+      var name = file.name.toLowerCase();
+      var valid = /\.(sjr|sb3|pjson|sb|png|jpe?g)$/i.test(name);
+      if (!valid) {
+        if (window.sounds) window.sounds.playError();
+        alert('Formato no válido. Por favor seleccioná un archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una imagen (.png, .jpg)');
+        return;
+      }
+      if (window.sounds) window.sounds.playSuccess();
+      var sz = formatFileSize(file.size);
+      if (scratchStatusEl) {
+        scratchStatusEl.innerHTML = '<div class="apm-status-badge warning"><i class="fas fa-sync-alt fa-spin"></i> Guardando <strong>' + file.name + '</strong> (' + sz + ')...</div>';
+      }
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var b64 = ev.target.result.split(',')[1];
+        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        if (hook && student) {
+          var iframe = document.getElementById('gdrive_silent_upload_iframe');
+          if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+          }
+          var form = document.createElement('form');
+          form.target = 'gdrive_silent_upload_iframe';
+          form.method = 'POST';
+          form.action = hook;
+          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyecto' };
+          for (var k in fields) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = k;
+            inp.value = fields[k];
+            form.appendChild(inp);
+          }
+          document.body.appendChild(form);
+          form.submit();
+          setTimeout(function(){ form.remove(); }, 2500);
+        }
+
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          fileName: file.name,
+          fileSize: sz,
+          date: nowStr,
+          type: 'scratch',
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+
+        // Registrar en FOLDER_CONTENTS.proyecto.items
+        if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name === file.name; })) {
+          FOLDER_CONTENTS.proyecto.items.unshift({
+            name: file.name,
+            title: '🐱 ' + file.name.replace(/\.[^.]+$/, ''),
+            size: sz,
             date: nowStr,
             type: 'scratch',
-            missionId: mission.id,
-            missionTitle: mission.title
-          };
-          // Guardar y marcar como completada la misión
-          markMissionCompleted(student, mission.id, submissionData);
-          mission.status = 'completado';
+            isLocalPending: true
+          });
+        }
 
-          // Actualizar insignia en el encabezado del modal a ⭐ COMPLETADO
-          var headerBadge = modal.querySelector('#apm-header-status-badge');
-          if (headerBadge) {
-            headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        // Si esta misión ya estaba completada con OTRO archivo, completar la siguiente misión disponible
+        var targetMissionId = mission.id;
+        var nextMissionTarget = null;
+        if (isAlreadyCompleted && savedFileName && savedFileName !== file.name) {
+          var allMissions = getAdventureMissionsForStudent(student);
+          nextMissionTarget = allMissions.find(function(m){ return m.id !== mission.id && !isMissionCompleted(student, m.id); });
+          if (nextMissionTarget) {
+            targetMissionId = nextMissionTarget.id;
+            submissionData.missionId = targetMissionId;
+            submissionData.missionTitle = nextMissionTarget.title;
           }
+        }
 
-          if (scratchStatusEl) {
-            scratchStatusEl.innerHTML =
-              '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
-                '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
-                '<div>' +
-                  '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
-                  '<span style="font-size:0.84rem;color:#047857;">¡Proyecto entregado! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu Google Drive. ¡Sumaste +100 XP al Progreso del Taller!</span>' +
-                '</div>' +
-              '</div>';
-          }
+        // Guardar y marcar como completada
+        markMissionCompleted(student, targetMissionId, submissionData);
+        mission.status = 'completado';
+        if (nextMissionTarget) nextMissionTarget.status = 'completado';
 
-          // Refrescar panel de fondo para actualizar el progreso y tarjetas inmediatamente
-          refreshDashboard();
-        };
-        reader.readAsDataURL(file);
-      }
+        // Actualizar insignia en el encabezado del modal a ⭐ COMPLETADO
+        var headerBadge = modal.querySelector('#apm-header-status-badge');
+        if (headerBadge) {
+          headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
 
-      if (scratchFileInput) {
-        scratchFileInput.onchange = function() {
-          if (scratchFileInput.files && scratchFileInput.files.length > 0) {
-            processScratchUpload(scratchFileInput.files[0]);
-          }
-        };
-      }
+        if (scratchStatusEl) {
+          var congratsText = nextMissionTarget
+            ? '¡Excelente! Como ya habías entregado esta misión, tu nuevo archivo <strong>' + file.name + '</strong> completó <strong>' + nextMissionTarget.title + '</strong> (Nivel ' + nextMissionTarget.level + ') ⭐ (+100 XP extras sumados).'
+            : '¡Proyecto entregado! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu Google Drive. ¡Sumaste +100 XP al Progreso del Taller!';
 
-      if (scratchDropzone) {
-        scratchDropzone.addEventListener('dragover', function(e){ e.preventDefault(); scratchDropzone.classList.add('drag-over'); }, false);
-        scratchDropzone.addEventListener('dragleave', function(e){ e.preventDefault(); scratchDropzone.classList.remove('drag-over'); }, false);
-        scratchDropzone.addEventListener('drop', function(e){
-          e.preventDefault();
-          scratchDropzone.classList.remove('drag-over');
-          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            processScratchUpload(e.dataTransfer.files[0]);
-          }
-        }, false);
-      }
+          scratchStatusEl.innerHTML =
+            '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+              '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+              '<div>' +
+                '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                '<span style="font-size:0.84rem;color:#047857;">' + congratsText + '</span>' +
+              '</div>' +
+            '</div>';
+        }
+
+        // Refrescar panel de fondo para actualizar el progreso y tarjetas inmediatamente
+        refreshDashboard();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    if (scratchFileInput) {
+      scratchFileInput.onchange = function() {
+        if (scratchFileInput.files && scratchFileInput.files.length > 0) {
+          processScratchUpload(scratchFileInput.files[0]);
+        }
+      };
+    }
+
+    if (scratchDropzone) {
+      scratchDropzone.addEventListener('dragover', function(e){ e.preventDefault(); scratchDropzone.classList.add('drag-over'); }, false);
+      scratchDropzone.addEventListener('dragleave', function(e){ e.preventDefault(); scratchDropzone.classList.remove('drag-over'); }, false);
+      scratchDropzone.addEventListener('drop', function(e){
+        e.preventDefault();
+        scratchDropzone.classList.remove('drag-over');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          processScratchUpload(e.dataTransfer.files[0]);
+        }
+      }, false);
     }
 
     // ── CONTROLADORES DE PESTAÑA: SOLUCIÓN OFICIAL ──
@@ -2753,6 +2895,19 @@
         if (isProyecto) {
           if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name===file.name; })) {
             FOLDER_CONTENTS.proyecto.items.unshift(newItem);
+          }
+          // Marcar la siguiente misión pendiente en la Ruta de Aventuras como completada
+          var advMissions = getAdventureMissionsForStudent(student);
+          var nextMission = advMissions.find(function(m){ return !isMissionCompleted(student, m.id); });
+          if (nextMission) {
+            markMissionCompleted(student, nextMission.id, {
+              fileName: file.name,
+              fileSize: sz,
+              date: nowStr,
+              type: 'scratch',
+              missionId: nextMission.id,
+              missionTitle: nextMission.title
+            });
           }
         } else {
           if (!FOLDER_CONTENTS.dibujos.items.some(function(it){ return it.name===file.name; })) {

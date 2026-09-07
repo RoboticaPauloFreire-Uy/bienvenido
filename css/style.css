@@ -5801,6 +5801,8 @@ button, input, select, textarea { font-family: inherit; }
 .arm-pb-top {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   font-size: 0.82rem;
   font-weight: 700;
   margin-bottom: 6px;
