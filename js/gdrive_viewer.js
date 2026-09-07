@@ -40,7 +40,7 @@
   const FOLDER_CONTENTS = {
     dibujos:     { name: '🎨 Dibujos',             icon: 'fa-paint-brush',    items: [] },
     proyectos:   { name: '🚀 Proyectos del Grado', icon: 'fa-project-diagram', items: [] },
-    proyecto:    { name: '📁 Proyecto',            icon: 'fa-folder-open',    items: [] },
+    proyecto:    { name: '📁 Proyectos',           icon: 'fa-folder-open',    items: [] },
     actividades: { name: '🏠 Actividades de casa', icon: 'fa-house-user',     items: [], generalItems: [] },
     familiar:    { name: '👨‍👩‍👧 Actividad familiar',   icon: 'fa-heart',          items: [] }
   };
@@ -97,6 +97,26 @@
           var drawingFilesOnly = data.files.filter(function(f){
             return !isScratchFile(f.name) && !isMakecodeFile(f.name) && f.type !== 'pdf';
           });
+
+          // Rescate automático: Si existen proyectos Scratch o MakeCode en la carpeta Dibujo (de subidas previas),
+          // integrarlos en Proyectos para que se contabilicen y no se pierdan
+          var scratchInDibujo = data.files.filter(function(f){
+            return isScratchFile(f.name) || isMakecodeFile(f.name);
+          });
+          scratchInDibujo.forEach(function(f){
+            if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name === f.name; })) {
+              FOLDER_CONTENTS.proyecto.items.push({
+                id: f.id,
+                name: f.name,
+                title: (isScratchFile(f.name) ? '🐱 ' : '💻 ') + f.name.replace(/\.[^.]+$/,''),
+                type: isScratchFile(f.name) ? 'scratch' : 'makecode',
+                size: f.size || '—',
+                date: f.date || '—',
+                url: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : ''),
+                downloadUrl: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : '')
+              });
+            }
+          });
           var remote = drawingFilesOnly.map(function(f){
             return { id:f.id, name:f.name, title:f.title||f.name.replace(/\.[^.]+$/,''),
               type:'image', size:f.size||'—', date:f.date||'—',
@@ -147,7 +167,7 @@
   }
 
   // ──────────────────────────────────────────────────
-  // FETCH: Proyecto del alumno (subfolder=proyecto)
+  // FETCH: Proyecto del alumno (subfolder=proyectos)
   // Trae y filtra ÚNICAMENTE archivos válidos de proyecto (Scratch Jr o MakeCode)
   // ──────────────────────────────────────────────────
   function fetchProyectoFiles(student, containerId) {
@@ -155,7 +175,7 @@
     if (!hook || isLoadingProyectoFiles) return;
     isLoadingProyectoFiles = true;
     renderGDriveDashboard(containerId);
-    fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=proyecto')
+    fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=proyectos')
       .then(function(r){ return r.json(); })
       .then(function(data){
         isLoadingProyectoFiles = false; hasFetchedProyectoFiles = true;
@@ -1057,7 +1077,7 @@
             '<div class="gts-tree">' +
               treeFolder('dibujos', '🎨 Dibujos', badgeDibujos, activeFolderKey, '#16A34A') +
               treeFolder('proyectos', '🗺️ Ruta de Aventuras', badgeProyectos, activeFolderKey, '#2563EB') +
-              treeFolder('proyecto', '📁 Proyecto', badgeProyecto, activeFolderKey, '#7C3AED') +
+              treeFolder('proyecto', '📁 Proyectos', badgeProyecto, activeFolderKey, '#7C3AED') +
               treeFolder('actividades', '🏠 Actividad de casa', badgeActividades, activeFolderKey, '#EA580C') +
               treeFolder('familiar', '👨‍👩‍👧 Actividad familiar', badgeFamiliar, activeFolderKey, '#DB2777') +
             '</div>' +
@@ -1073,7 +1093,7 @@
                 '<span class="gts-qr-caption"><i class="fas fa-qrcode"></i> Escaneá con la cámara de tu celular</span>' +
               '</div>' : '') +
             '<div class="gts-footer-info">' +
-              '<i class="fas fa-info-circle"></i> En <strong>📁 Proyecto</strong> podés guardar proyectos Scratch Jr y MakeCode.' +
+              '<i class="fas fa-info-circle"></i> En <strong>📁 Proyectos</strong> podés guardar proyectos Scratch Jr y MakeCode.' +
             '</div>' +
           '</aside>' +
 
@@ -1084,7 +1104,7 @@
                 '<i class="fas ' + currentFolder.icon + '"></i>' +
                 '<span>Contenido de: <strong>' +
                   (activeFolderKey === 'proyectos' ? 'Ruta de Aventuras (' + student.gradeName + ')' :
-                   activeFolderKey === 'proyecto'  ? 'Proyecto' :
+                   activeFolderKey === 'proyecto'  ? 'Proyectos' :
                    activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : 'Actividad de casa (Inventario de material)') :
                    activeFolderKey === 'familiar' ? 'Actividad familiar (Escape Rooms Nostálgico)' : currentFolder.name) +
                 '</strong></span>' +
@@ -1133,7 +1153,7 @@
 
     // ── Upload zona proyecto (solo Scratch Jr, MakeCode no tiene upload) ──
     if (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch) {
-      initDropzone(container, student, 'proyecto', '.sb3,.sjr,.pjson,.sb', containerId, true, 'scratch');
+      initDropzone(container, student, 'proyectos', '.sb3,.sjr,.pjson,.sb', containerId, true, 'scratch');
     }
 
     // ── Eventos de la Ruta de Aventuras (Modo 3) ──
@@ -2556,7 +2576,7 @@
           form.target = 'gdrive_silent_upload_iframe';
           form.method = 'POST';
           form.action = hook;
-          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyecto' };
+          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyectos' };
           for (var k in fields) {
             var inp = document.createElement('input');
             inp.type = 'hidden';
@@ -2822,7 +2842,7 @@
       if (subfolder === 'dibujo') {
         // Formatos permitidos para dibujo: bmp, png, jpg, jpeg
         return /\.(bmp|png|jpe?g)$/i.test(name) || /^(image\/(png|jpeg|pjpeg|bmp|x-ms-bmp))$/i.test(file.type || '');
-      } else if (subfolder === 'proyecto') {
+      } else if (subfolder === 'proyectos' || subfolder === 'proyecto') {
         // Formatos permitidos para Scratch Jr: .sb3, .sjr, .pjson, .sb
         return /\.(sb3|sjr|pjson|sb)$/i.test(name);
       }
