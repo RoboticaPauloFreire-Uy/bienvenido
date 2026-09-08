@@ -9479,129 +9479,143 @@ body.student-logged-in #student-drive-dashboard-container {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   OBJETIVOS Y BENEFICIOS EN TARJETAS DE RUTA DE AVENTURAS
+   OBJETIVOS Y BENEFICIOS EN TARJETAS (ACORDEÓN EN EL MISMO LUGAR)
    ───────────────────────────────────────────────────────────── */
-.arm-mc-objective {
-  margin: 6px 0 4px;
-  font-size: 0.82rem;
-  background: #FFF1F2;
-  border: 1px solid #FECDD3;
-  border-left: 3.5px solid #E11D48;
-  color: #9F1239;
-  padding: 6px 9px;
-  border-radius: 6px;
-  line-height: 1.4;
-  position: relative;
+.arm-concept-accordion {
+  margin: 6px 0;
+  border-radius: 9px;
+  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-.arm-mc-benefits {
-  margin: 4px 0 6px;
-  font-size: 0.8rem;
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
-  border-left: 3.5px solid #16A34A;
-  color: #166534;
-  padding: 6px 9px;
-  border-radius: 6px;
-  line-height: 1.4;
-  position: relative;
-}
-
-.arm-clickable-concept {
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, border-color 0.16s ease;
-}
-
-.arm-clickable-concept:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.arm-clickable-concept:active {
-  transform: scale(0.98);
-}
-
-.arm-mc-objective.arm-clickable-concept:hover {
-  background: #FFE4E6;
-  border-color: #FDA4AF;
-  border-left-color: #BE123C;
-}
-
-.arm-mc-benefits.arm-clickable-concept:hover {
-  background: #DCFCE7;
-  border-color: #86EFAC;
-  border-left-color: #15803D;
-}
-
-.arm-mc-box-top {
+.arm-concept-toggle-btn {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 3px;
+  padding: 6px 11px;
+  border-radius: 9px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.14s ease, box-shadow 0.14s ease;
+  user-select: none;
+  outline: none;
 }
 
-.arm-mc-box-label {
+.arm-concept-toggle-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.arm-concept-toggle-btn:active {
+  transform: scale(0.99);
+}
+
+.arm-ct-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arm-ct-right {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  font-size: 0.72rem;
   font-weight: 700;
-  font-size: 0.82rem;
 }
 
-.arm-mc-expand-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 1.5px 7px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: all 0.15s ease;
-  white-space: nowrap;
+.arm-ct-icon {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 0.72rem;
 }
 
-.arm-mc-objective .arm-mc-expand-pill {
-  color: #E11D48;
+/* Objetivo (Rojo / Carmesí) */
+.arm-concept-objective .arm-concept-toggle-btn {
+  background: #FFF1F2;
+  border-color: #FECDD3;
+  color: #BE123C;
 }
 
-.arm-mc-benefits .arm-mc-expand-pill {
-  color: #16A34A;
+.arm-concept-objective .arm-concept-toggle-btn:hover {
+  background: #FFE4E6;
+  border-color: #FDA4AF;
 }
 
-.arm-clickable-concept:hover .arm-mc-expand-pill {
-  background: #FFFFFF;
-  transform: scale(1.05);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+.arm-concept-objective.is-open .arm-concept-toggle-btn {
+  background: #FFE4E6;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #FDA4AF;
 }
 
-.arm-mc-box-text {
-  margin: 0;
-  line-height: 1.38;
+/* Beneficios (Verde Esmeralda) */
+.arm-concept-benefits .arm-concept-toggle-btn {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+  color: #15803D;
 }
 
-/* En la tarjeta de Juegos */
-.ggc-benefits-box.arm-clickable-concept {
-  cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-}
-
-.ggc-benefits-box.arm-clickable-concept:hover {
-  transform: translateY(-2px);
+.arm-concept-benefits .arm-concept-toggle-btn:hover {
   background: #DCFCE7;
   border-color: #86EFAC;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.12);
 }
 
-.ggc-bb-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+.arm-concept-benefits.is-open .arm-concept-toggle-btn {
+  background: #DCFCE7;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #86EFAC;
+}
+
+/* Rotación del icono al abrir */
+.arm-concept-accordion.is-open .arm-ct-icon {
+  transform: rotate(180deg);
+}
+
+/* Drawer / Contenedor colapsable que se abre en el mismo lugar */
+.arm-concept-drawer {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+  background: #FFFFFF;
+}
+
+.arm-concept-accordion.is-open .arm-concept-drawer {
+  max-height: 400px;
+  opacity: 1;
+}
+
+.arm-concept-content {
+  padding: 8px 12px 10px;
+  font-size: 0.82rem;
+  line-height: 1.48;
+}
+
+.arm-concept-objective .arm-concept-content {
+  background: #FFF5F6;
+  border: 1.5px solid #FDA4AF;
+  border-top: none;
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+  color: #881337;
+}
+
+.arm-concept-benefits .arm-concept-content {
+  background: #F4FBF6;
+  border: 1.5px solid #86EFAC;
+  border-top: none;
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+  color: #14532D;
+}
+
+.arm-concept-content p {
+  margin: 0;
 }
 
 /* ─────────────────────────────────────────────────────────────
