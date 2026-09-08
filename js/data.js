@@ -91,6 +91,8 @@ const SCHOOL_DATA = {
           type: "electronica",
           coverImage: "img/proyectos/sombrero_san_patricio_solo_sombrero.png",
           description: "¡Primer proyecto oficial de la Sala de 5 años! Construimos un auténtico sombrero de San Patricio con vincha que se ilumina mágicamente al calzártelo en la cabeza. Usamos cinta de cobre conductora, un diodo LED verde en el trébol, una pila de botón CR2032 y un interruptor de contacto que se activa con la presión de la cabeza.",
+          objective: "Construir un circuito eléctrico básico y seguro con cinta de cobre conductora, pila botón CR2032 y luz LED verde en el trébol del sombrero de San Patricio, logrando que se encienda con la presión de la cabeza.",
+          benefits: "Desarrolla la motricidad fina, comprensión de circuito cerrado y polaridad (+ / -), noción de causa-efecto en electricidad sin riesgo y confianza creativa maker.",
           tags: ["San Patricio", "Electrónica", "Circuito de Papel", "LED", "Sin programación", "Maker"],
           gallery: [
             "img/proyectos/sombrero_san_patricio_color.png",
@@ -1113,10 +1115,14 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio o Angry Birds, actualizar Firestore con los datos locales reales
-              const isStaleSala5 = gradeId === 'sala5' && (!targetProjects.some(p => (p.title || '').includes('San Patricio')) || !targetProjects.some(p => (p.title || '').includes('Angry Birds')));
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds o les falta objective, actualizar Firestore
+              const isStaleSala5 = gradeId === 'sala5' && (
+                !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
+                !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
+                !targetProjects.some(p => (p.id === 's5-p1' && p.objective))
+              );
               if (isStaleSala5) {
-                console.log("🔄 Re-sembrando proyectos reales de sala5 (San Patricio + Angry Birds) en Firestore...");
+                console.log("🔄 Re-sembrando proyectos reales de sala5 con objetivos y beneficios en Firestore...");
                 seedGradeProjectsToFirestore(true);
               } else {
                 gradeObj.projects = targetProjects;

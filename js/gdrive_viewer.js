@@ -447,8 +447,8 @@
           title: p.title,
           subtitle: p.author ? ('Por ' + p.author) : (gradeObj.name),
           description: p.description || (isElectronica ? 'Construí un circuito funcional con materiales del taller sin necesidad de programar.' : 'Desafío y proyecto de programación del grado.'),
-          objective: p.objective || null,
-          benefits: p.benefits || null,
+          objective: p.objective || (isElectronica ? 'Construir un circuito eléctrico seguro con cinta de cobre conductora, pila botón CR2032 y luz LED verde en el trébol del sombrero de San Patricio, logrando que se encienda con la presión de la cabeza.' : (isCodeorg ? 'Aprender a programar y dar los primeros pasos de razonamiento en programación guiando al pájaro a través del laberinto hasta el cerdito.' : null)),
+          benefits: p.benefits || (isElectronica ? 'Desarrolla la motricidad fina, comprensión de circuito cerrado y polaridad (+ / -), causa-efecto en electricidad y confianza creativa maker.' : (isCodeorg ? 'Desarrolla el pensamiento computacional, la estructuración de algoritmos paso a paso, la lateralidad y orientación espacial y la depuración de errores.' : null)),
           gameUrl: p.gameUrl || p.externalUrl || null,
           externalUrl: p.externalUrl || p.gameUrl || null,
           type: type,
@@ -711,8 +711,8 @@
               '<div class="arm-mc-body">' +
                 '<h4 class="arm-mc-title">' + m.title + '</h4>' +
                 '<p class="arm-mc-desc">' + m.description + '</p>' +
-                (m.objective ? '<div class="arm-mc-objective"><i class="fas fa-bullseye"></i> <strong>Objetivo:</strong> ' + m.objective + '</div>' : '') +
-                (m.benefits ? '<div class="arm-mc-benefits"><i class="fas fa-brain"></i> <strong>Beneficios:</strong> ' + m.benefits + '</div>' : '') +
+                (m.objective ? '<div class="arm-mc-objective arm-clickable-concept" data-concept-type="objective" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar el objetivo pedagógico"><div class="arm-mc-box-top"><span class="arm-mc-box-label"><i class="fas fa-bullseye"></i> <strong>Objetivo</strong></span><span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span></div><p class="arm-mc-box-text">' + m.objective + '</p></div>' : '') +
+                (m.benefits ? '<div class="arm-mc-benefits arm-clickable-concept" data-concept-type="benefits" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar los beneficios de razonamiento"><div class="arm-mc-box-top"><span class="arm-mc-box-label"><i class="fas fa-brain"></i> <strong>Beneficios</strong></span><span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span></div><p class="arm-mc-box-text">' + m.benefits + '</p></div>' : '') +
               '</div>' +
               '<div class="arm-mc-footer">' +
                 '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
@@ -749,8 +749,8 @@
             '<div class="arm-mc-body">' +
               '<h4 class="arm-mc-title">' + m.title + '</h4>' +
               '<p class="arm-mc-desc">' + m.description + '</p>' +
-              (m.objective ? '<div class="arm-mc-objective"><i class="fas fa-bullseye"></i> <strong>Objetivo:</strong> ' + m.objective + '</div>' : '') +
-              (m.benefits ? '<div class="arm-mc-benefits"><i class="fas fa-brain"></i> <strong>Beneficios:</strong> ' + m.benefits + '</div>' : '') +
+              (m.objective ? '<div class="arm-mc-objective arm-clickable-concept" data-concept-type="objective" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar el objetivo pedagógico"><div class="arm-mc-box-top"><span class="arm-mc-box-label"><i class="fas fa-bullseye"></i> <strong>Objetivo</strong></span><span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span></div><p class="arm-mc-box-text">' + m.objective + '</p></div>' : '') +
+              (m.benefits ? '<div class="arm-mc-benefits arm-clickable-concept" data-concept-type="benefits" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar los beneficios de razonamiento"><div class="arm-mc-box-top"><span class="arm-mc-box-label"><i class="fas fa-brain"></i> <strong>Beneficios</strong></span><span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span></div><p class="arm-mc-box-text">' + m.benefits + '</p></div>' : '') +
             '</div>' +
             '<div class="arm-mc-footer">' +
               '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
@@ -1271,13 +1271,43 @@
         };
       });
 
-      // Clic en estación o tarjeta
+      // Clic en estación o tarjeta (excluyendo botones, links y cajas interactivas de objetivo/beneficios)
       container.querySelectorAll('.arm-station, .arm-mission-card, .arm-grid-card').forEach(function(card){
         card.onclick = function(e){
-          if (e.target.closest('button') || e.target.closest('a')) return;
+          if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.arm-clickable-concept') || e.target.closest('.arm-mc-objective') || e.target.closest('.arm-mc-benefits')) return;
           var idx = parseInt(card.dataset.missionIdx, 10);
           var mission = adventureMissions[idx];
           if (mission) openAdventureProjectModal(mission, 'presentacion');
+        };
+      });
+
+      // Clic para ampliar Objetivo o Beneficios Pedagógicos
+      container.querySelectorAll('.arm-clickable-concept').forEach(function(box){
+        box.onclick = function(e){
+          e.stopPropagation();
+          e.preventDefault();
+          var cType = box.dataset.conceptType || 'objective';
+          var missionIdx = box.dataset.missionIdx;
+          var gameLevel = box.dataset.gameLevel;
+          var dataObj = null;
+          if (missionIdx !== undefined && adventureMissions && adventureMissions[parseInt(missionIdx, 10)]) {
+            dataObj = adventureMissions[parseInt(missionIdx, 10)];
+          } else if (gameLevel !== undefined) {
+            var lvl = parseInt(gameLevel, 10);
+            if (gradeGames) dataObj = gradeGames.find(function(g){ return g.level === lvl; });
+            if (!dataObj && adventureMissions) {
+              dataObj = adventureMissions.find(function(m){ return m.level === lvl; });
+            }
+          }
+          if (dataObj) {
+            openPedagogicalConceptModal(cType, dataObj);
+          }
+        };
+        box.onkeydown = function(e){
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            box.click();
+          }
         };
       });
 
@@ -1381,7 +1411,7 @@
       });
     }
 
-    // ── Juegos del Grado (botón para saltar a la misión en Ruta Maker) ──
+    // ── Juegos del Grado (botón para saltar a la misión en Ruta Maker y clic para ampliar razonamiento) ──
     if (activeFolderKey === 'juegos') {
       container.querySelectorAll('.ggc-btn-mission').forEach(function(btn){
         btn.onclick = function(e){
@@ -1395,6 +1425,28 @@
             var targetM = advM.find(function(m){ return m.level === lvl; }) || advM[lvl - 1];
             if (targetM) openAdventureProjectModal(targetM, 'presentacion');
           }, 150);
+        };
+      });
+
+      // Clic para ampliar razonamiento pedagógico en juegos
+      container.querySelectorAll('.ggc-benefits-box.arm-clickable-concept').forEach(function(box){
+        box.onclick = function(e){
+          e.stopPropagation();
+          e.preventDefault();
+          var lvl = parseInt(box.dataset.gameLevel, 10);
+          var dataObj = gradeGames.find(function(g){ return g.level === lvl; });
+          if (!dataObj && adventureMissions) {
+            dataObj = adventureMissions.find(function(m){ return m.level === lvl; });
+          }
+          if (dataObj) {
+            openPedagogicalConceptModal('benefits', dataObj);
+          }
+        };
+        box.onkeydown = function(e){
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            box.click();
+          }
         };
       });
     }
@@ -1437,8 +1489,8 @@
           '</div>' +
           '<p class="ggc-desc">' + game.description + '</p>' +
           (game.benefits ?
-            '<div class="ggc-benefits-box">' +
-              '<div class="ggc-bb-header"><i class="fas fa-brain"></i> <strong>Razonamiento Pedagógico:</strong></div>' +
+            '<div class="ggc-benefits-box arm-clickable-concept" data-concept-type="benefits" data-game-level="' + levelNum + '" role="button" tabindex="0" title="Tocar para ampliar el razonamiento pedagógico">' +
+              '<div class="ggc-bb-header"><span><i class="fas fa-brain"></i> <strong>Razonamiento Pedagógico:</strong></span><span class="arm-mc-expand-pill" style="color:#16A34A;"><i class="fas fa-expand-alt"></i> Ampliar</span></div>' +
               '<p class="ggc-bb-text">' + game.benefits + '</p>' +
             '</div>' : '') +
           (game.tags && game.tags.length > 0 ?
@@ -1954,6 +2006,188 @@
   }
 
   window.openMakecodeModal = openMakecodeModal;
+
+  // ──────────────────────────────────────────────────
+  // MODAL DE AMPLIACIÓN PEDAGÓGICA (OBJETIVO Y BENEFICIOS)
+  // ──────────────────────────────────────────────────
+  function openPedagogicalConceptModal(conceptType, data) {
+    if (window.sounds && window.sounds.playPop) window.sounds.playPop();
+    else if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    if (!data) return;
+
+    var modal = document.getElementById('pedagogical-concept-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'pedagogical-concept-modal';
+      modal.className = 'pedagogical-concept-overlay';
+      document.body.appendChild(modal);
+    }
+
+    var isObjective = (conceptType === 'objective');
+    var isCodeorg = data.type === 'codeorg' || !!data.gameUrl || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); }));
+    var isElectronica = data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); }));
+
+    var title = data.title || 'Misión Educativa';
+    var levelText = data.level ? ('Nivel ' + data.level) : 'Taller Maker';
+    var mainText = isObjective ? (data.objective || data.description) : (data.benefits || data.description);
+    var gameUrl = data.gameUrl || data.externalUrl || null;
+    var student = window.getActiveStudent ? window.getActiveStudent() : null;
+    var gradeName = (student && student.gradeName) || (data.gradeName || 'Sala de 5 años');
+
+    var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
+    var categoryTheme = isObjective ? 'objective' : 'benefits';
+    var platText = (data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego';
+
+    // Pilares didácticos según el tipo de proyecto y concepto
+    var pillars = [];
+    var tipBoxText = '';
+
+    if (isObjective) {
+      if (isCodeorg) {
+        pillars = [
+          { icon: 'fa-bullseye', color: '#E11D48', title: 'Meta de la Misión', desc: 'Llevar al pájaro rojo hasta el cerdito encastrando las instrucciones correctas en orden.' },
+          { icon: 'fa-compass', color: '#2563EB', title: 'Orientación Espacial', desc: 'Contar casilleros y reconocer giros a izquierda o derecha desde los ojos del personaje.' },
+          { icon: 'fa-puzzle-piece', color: '#D97706', title: 'Secuencia de Bloques', desc: 'Entender que el programa ejecuta las instrucciones de arriba hacia abajo sin saltear.' },
+          { icon: 'fa-trophy', color: '#16A34A', title: 'Autonomía y Éxito', desc: 'Lograr superar laberintos progresivos con motivación, alegría y concentración.' }
+        ];
+        tipBoxText = '<strong>💡 Consejo Pedagógico:</strong> Pedile a tu peque que señale con su dedito el camino en la pantalla antes de arrastrar los bloques. ¡Imaginar el recorrido primero es el inicio del razonamiento!';
+      } else if (isElectronica) {
+        pillars = [
+          { icon: 'fa-bolt', color: '#D97706', title: 'Circuito Eléctrico', desc: 'Comprender que la electricidad necesita un camino continuo de cobre para viajar.' },
+          { icon: 'fa-battery-full', color: '#16A34A', title: 'Polaridad Segura', desc: 'Identificar el polo positivo (+) y negativo (-) en la pila de botón CR2032 y el LED.' },
+          { icon: 'fa-hat-wizard', color: '#2563EB', title: 'Creación Wearable', desc: 'Transformar papel, cinta y luz en un sombrero real que se luce en la cabeza.' },
+          { icon: 'fa-toggle-on', color: '#E11D48', title: 'Interruptor Casero', desc: 'Aprender cómo al apoyar la vincha en la cabeza se cierra el contacto y brilla la luz.' }
+        ];
+        tipBoxText = '<strong>💡 Consejo Maker:</strong> Permitan que los niños toquen las patitas del LED sobre la pila para ver cómo prende la luz antes de pegarlo. ¡El asombro despierta la curiosidad científica!';
+      } else {
+        pillars = [
+          { icon: 'fa-bullseye', color: '#E11D48', title: 'Reto Claro', desc: 'Comprender cuál es el desafío central y qué invento vamos a construir.' },
+          { icon: 'fa-route', color: '#2563EB', title: 'Pasos Sencillos', desc: 'Avanzar paso a paso con instrucciones visuales adaptadas a su edad.' },
+          { icon: 'fa-lightbulb', color: '#D97706', title: 'Resolución Creativa', desc: 'Descubrir cómo la tecnología nos ayuda a resolver problemas reales.' },
+          { icon: 'fa-smile-beam', color: '#16A34A', title: 'Aprender Creando', desc: 'Construir proyectos tangibles o interactivos que dan orgullo compartir.' }
+        ];
+        tipBoxText = '<strong>💡 Clave Educativa:</strong> Cada proyecto está diseñado para desarrollar habilidades del siglo XXI a través del juego y la exploración guiada.';
+      }
+    } else {
+      // Beneficios
+      if (isCodeorg) {
+        pillars = [
+          { icon: 'fa-layer-group', color: '#16A34A', title: 'Secuenciación de Algoritmos', desc: 'Aprender que para lograr una meta es necesario dar instrucciones precisas y ordenadas.' },
+          { icon: 'fa-arrows-alt', color: '#2563EB', title: 'Lateralidad y Orientación', desc: 'Ejercitar la lateralidad cruzada (izquierda / derecha / avanzar) fortaleciendo la psicomotricidad.' },
+          { icon: 'fa-cubes', color: '#7C3AED', title: 'Descomposición de Problemas', desc: 'Dividir un reto que parece difícil en pasos cortos, sencillos y alcanzables.' },
+          { icon: 'fa-wrench', color: '#E11D48', title: 'Depuración y Resiliencia', desc: 'Aprender que equivocarse es normal: probar, detectar el error y corregirlo sin frustración.' }
+        ];
+        tipBoxText = '<strong>🧠 Razonamiento en Acción:</strong> Guiar a los Angry Birds en Code.org activa áreas cerebrales vinculadas a la planificación anticipatoria, el cálculo espacial y la lógica matemática.';
+      } else if (isElectronica) {
+        pillars = [
+          { icon: 'fa-hands', color: '#D97706', title: 'Motricidad Fina', desc: 'Coordinación óculo-manual de alta precisión al manipular cinta de cobre adhesiva y componentes.' },
+          { icon: 'fa-lightbulb', color: '#16A34A', title: 'Causa y Efecto Inmediato', desc: 'Comprender físicamente cómo la energía se transforma en luz visible al cerrar el circuito.' },
+          { icon: 'fa-palette', color: '#7C3AED', title: 'Cultura Maker', desc: 'Pasar de ser espectadores a inventores: crear tecnología útil y divertida con sus propias manos.' },
+          { icon: 'fa-gem', color: '#2563EB', title: 'Seguridad y Confianza', desc: 'Experimentar con pilas seguras de bajo voltaje (3V), perdiendo el miedo a la electrónica.' }
+        ];
+        tipBoxText = '<strong>🌱 Aprendizaje Vivencial:</strong> La electrónica de papel combina arte, ciencias y tecnología en una actividad sensorial inolvidable para niños de 5 años.';
+      } else {
+        pillars = [
+          { icon: 'fa-brain', color: '#16A34A', title: 'Pensamiento Computacional', desc: 'Estructurar el pensamiento de forma lógica para encontrar soluciones ordenadas.' },
+          { icon: 'fa-palette', color: '#E11D48', title: 'Creatividad Aplicada', desc: 'Conectar la imaginación con herramientas digitales y mecánicas reales.' },
+          { icon: 'fa-sync-alt', color: '#2563EB', title: 'Tolerancia a la Frustración', desc: 'Desarrollar paciencia y perseverancia disfrutando del proceso de construcción.' },
+          { icon: 'fa-star', color: '#D97706', title: 'Confianza Digital', desc: 'Sentirse capaces de controlar las máquinas y programar en lugar de solo jugar pasivamente.' }
+        ];
+        tipBoxText = '<strong>⭐ Formación Integral:</strong> El Taller de Programación fomenta la curiosidad, el trabajo en equipo y el pensamiento reflexivo desde nivel inicial.';
+      }
+    }
+
+    var pillarsHtml = pillars.map(function(p){
+      return '<div class="pcm-pillar-item">' +
+        '<div class="pcm-pi-icon" style="background:' + p.color + '18;color:' + p.color + ';border-color:' + p.color + '33;">' +
+          '<i class="fas ' + p.icon + '"></i>' +
+        '</div>' +
+        '<div class="pcm-pi-content">' +
+          '<h5 class="pcm-pi-title">' + p.title + '</h5>' +
+          '<p class="pcm-pi-desc">' + p.desc + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    modal.innerHTML =
+      '<div class="pcm-backdrop"></div>' +
+      '<div class="pcm-card ' + categoryTheme + '" role="dialog" aria-modal="true">' +
+        '<div class="pcm-header">' +
+          '<div class="pcm-header-top">' +
+            '<div class="pcm-category-pill ' + categoryTheme + '">' +
+              categoryLabel +
+            '</div>' +
+            '<div class="pcm-header-meta">' +
+              '<span class="pcm-level-pill">' + levelText + '</span>' +
+              '<span class="pcm-grade-pill"><i class="fas fa-graduation-cap"></i> ' + gradeName + '</span>' +
+            '</div>' +
+            '<button type="button" class="pcm-close-btn" id="pcm-btn-close-x" title="Cerrar ventana"><i class="fas fa-times"></i></button>' +
+          '</div>' +
+          '<h3 class="pcm-title">' + title + '</h3>' +
+        '</div>' +
+        '<div class="pcm-body">' +
+          '<div class="pcm-quote-box ' + categoryTheme + '">' +
+            '<div class="pcm-qb-label">' +
+              (isObjective ? '<i class="fas fa-bullseye"></i> <span>¿Cuál es el Objetivo Pedagógico?</span>' : '<i class="fas fa-brain"></i> <span>¿Cuáles son los Beneficios de Razonamiento?</span>') +
+            '</div>' +
+            '<p class="pcm-qb-text">' + mainText + '</p>' +
+          '</div>' +
+          '<div class="pcm-pillars-section">' +
+            '<h4 class="pcm-pillars-title"><i class="fas fa-cubes"></i> Pilares Didácticos y Competencias:</h4>' +
+            '<div class="pcm-pillars-grid">' + pillarsHtml + '</div>' +
+          '</div>' +
+          '<div class="pcm-tip-box">' + tipBoxText + '</div>' +
+        '</div>' +
+        '<div class="pcm-footer">' +
+          (gameUrl ?
+            '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="pcm-btn pcm-btn-game">' +
+              '<i class="fas fa-gamepad"></i> <span>Jugar en ' + platText + '</span>' +
+            '</a>' : '') +
+          (data.id ?
+            '<button type="button" class="pcm-btn pcm-btn-launch" id="pcm-btn-launch-mission">' +
+              '<i class="fas fa-rocket"></i> <span>Abrir Misión</span>' +
+            '</button>' : '') +
+          '<button type="button" class="pcm-btn pcm-btn-close" id="pcm-btn-close-action">' +
+            '<i class="fas fa-check"></i> <span>¡Entendido!</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+
+    modal.classList.add('active');
+
+    function closeModal() {
+      if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+      modal.classList.remove('active');
+      document.removeEventListener('keydown', handleKey);
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Escape') closeModal();
+    }
+
+    document.addEventListener('keydown', handleKey);
+
+    var closeX = modal.querySelector('#pcm-btn-close-x');
+    if (closeX) closeX.onclick = closeModal;
+
+    var closeAction = modal.querySelector('#pcm-btn-close-action');
+    if (closeAction) closeAction.onclick = closeModal;
+
+    var backdrop = modal.querySelector('.pcm-backdrop');
+    if (backdrop) backdrop.onclick = closeModal;
+
+    var launchBtn = modal.querySelector('#pcm-btn-launch-mission');
+    if (launchBtn) {
+      launchBtn.onclick = function(){
+        closeModal();
+        if (window.openAdventureProjectModal) {
+          window.openAdventureProjectModal(data, 'presentacion');
+        }
+      };
+    }
+  }
+
+  window.openPedagogicalConceptModal = openPedagogicalConceptModal;
 
   // ──────────────────────────────────────────────────
   // MODAL DE PROYECTO / MISIÓN DE AVENTURA (MODO 3)
