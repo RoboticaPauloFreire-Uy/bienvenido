@@ -436,10 +436,10 @@
         var isScratch  = !!p.scratchId || (p.tags && p.tags.indexOf('Scratch Jr') !== -1);
         var isCodeorg  = p.type === 'codeorg' || p.platform === 'codeorg' || !!p.gameUrl || (p.externalUrl && p.externalUrl.includes('code.org'));
         var isElectronica = !isCodeorg && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-        var type  = isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica')));
-        var badge = isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker')));
-        var icon  = isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket')));
-        var color = isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : (gradeObj.color || '#2563EB'));
+        var type  = p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica'))));
+        var badge = p.badge || (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker'))));
+        var icon  = p.icon || (isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket'))));
+        var color = p.color || (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : (gradeObj.color || '#2563EB')));
 
         missions.push({
           id: p.id || ('proj-' + idx),
@@ -2623,8 +2623,8 @@
                         '<div style="display:flex;gap:12px;align-items:center;background:#FEF3C7;border:1.5px dashed #D97706;border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
                           '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="width:68px;height:68px;object-fit:contain;background:#FFF;border-radius:8px;border:1px solid #FCD34D;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar plano">' +
                           '<div style="flex:1;">' +
-                            '<h5 style="margin:0 0 2px;font-size:0.86rem;color:#92400E;font-weight:800;"><i class="fas fa-drafting-compass"></i> Plano de Conexiones del Sombrero</h5>' +
-                            '<p style="margin:0;font-size:0.79rem;color:#78350F;line-height:1.4;">Mirá cómo van las pistas de cobre desde el trébol hasta la pila y la solapa. <a href="' + (mission.pdfUrl || mission.gallery[1]) + '" target="_blank" style="color:#B45309;font-weight:700;text-decoration:underline;">Ver plantilla completa en PDF</a></p>' +
+                            '<h5 style="margin:0 0 2px;font-size:0.86rem;color:#92400E;font-weight:800;"><i class="fas fa-drafting-compass"></i> ' + (mission.title.includes('Varita') ? 'Esquema de Conexiones de la Varita Mágica' : 'Plano de Conexiones: ' + mission.title) + '</h5>' +
+                            '<p style="margin:0;font-size:0.79rem;color:#78350F;line-height:1.4;">' + (mission.title.includes('Varita') ? 'Mirá cómo van las pistas de cinta conductora desde el LED en la punta hasta la pila y el pulsador táctil en el mango.' : 'Mirá cómo van las pistas de cobre desde el trébol hasta la pila y la solapa.') + (mission.pdfUrl ? ' <a href="' + mission.pdfUrl + '" target="_blank" style="color:#B45309;font-weight:700;text-decoration:underline;">Ver plantilla completa en PDF</a>' : ' <span style="color:#B45309;font-weight:700;">¡Tocá el diagrama para ampliarlo!</span>') + '</p>' +
                           '</div>' +
                         '</div>' : '') +
                       '<div class="apm-instructions-steps-grid">' +
@@ -2964,14 +2964,14 @@
 
                   // Plano real de la plantilla (si existe en la galería)
                   (mission.gallery && mission.gallery.length > 1 ?
-                    '<div class="apm-circuit-schematic-card" style="margin-bottom:16px;background:#FFFBEB;border-color:#F59E0B;">' +
-                      '<div class="apm-csc-header">' +
-                        '<span><i class="fas fa-drafting-compass"></i> Plano Real de Conexiones en el Sombrero</span>' +
+                    '<div class="apm-circuit-schematic-card" style="margin-bottom:16px;background:#FFFBEB;border:1.5px solid #FCD34D;color:#78350F;">' +
+                      '<div class="apm-csc-header" style="border-bottom-color:#FDE68A;">' +
+                        '<span style="color:#92400E;font-weight:900;"><i class="fas fa-drafting-compass"></i> ' + (mission.title.includes('Varita') ? 'Esquema de Conexiones de la Varita Mágica' : 'Plano Real de Conexiones del Circuito') + '</span>' +
                         '<a href="' + (mission.pdfUrl || mission.gallery[1]) + '" target="_blank" class="apm-csc-badge" style="background:#D97706;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
                       '</div>' +
                       '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
                         '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
-                        '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Lado posterior del sombrero: pistas de cobre, pila CR2032 y solapa con interruptor de vincha.</div>' +
+                        '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">' + (mission.title.includes('Varita') ? 'Montaje en el palito: pistas de cinta conductora hacia el LED superior, pila de botón CR2032 y pulsador táctil en el mango.' : 'Lado posterior del sombrero: pistas de cobre, pila CR2032 y solapa con interruptor de vincha.') + '</div>' +
                       '</div>' +
                     '</div>' : '') +
 

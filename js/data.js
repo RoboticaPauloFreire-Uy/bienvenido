@@ -204,6 +204,76 @@ const SCHOOL_DATA = {
               tip: "Si no llega o choca contra una caja, tocá 'Reiniciar', cambiá los bloques y probalo de nuevo. ¡Así piensan los programadores!"
             }
           ]
+        },
+        {
+          id: "s5-p3",
+          level: 3,
+          title: "La Varita Mágica Luminosa 🪄✨",
+          author: "Taller Maker Sala 5",
+          date: "Mayo 2026",
+          type: "electronica",
+          badge: "🪄 Circuito & Varita Mágica",
+          icon: "fa-magic",
+          color: "#8B5CF6",
+          coverImage: "img/proyectos/varita_magica_cover.png",
+          description: "¡Nivel 3 de nuestra Ruta de Aventuras! Construimos una varita mágica brillante utilizando un palito tipo algodón de azúcar, cinta conductora, un diodo LED y una pila botón. Al presionar el interruptor táctil con tus dedos, ¡la punta de la varita se ilumina con destellos mágicos!",
+          objective: "Construir una varita mágica luminosa montando un circuito eléctrico sobre un palito tipo algodón de azúcar con cinta conductora, pila botón y luz LED, aprendiendo a cerrar el circuito con un interruptor táctil manual.",
+          benefits: "Fortalece la coordinación motriz fina y destreza manual, afianza la comprensión de circuito cerrado y polaridad (+ y -), estimula el juego simbólico e imaginación, y enseña cómo la ciencia y la creatividad transforman materiales cotidianos en objetos mágicos.",
+          tags: ["Varita Mágica", "Electrónica", "Circuito", "LED", "Sin programación", "Maker", "Nivel 3"],
+          gallery: [
+            "img/proyectos/varita_magica_cover.png",
+            "img/proyectos/varita_magica_circuito.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Palito tipo algodón de azúcar", description: "Cuerpo cilíndrico o cónico liviano donde montamos la estructura de la varita mágica.", icon: "fa-magic" },
+            { title: "1 Diodo LED (5mm de alto brillo)", description: "Luz brillante en la punta de la varita (pata larga = + ánodo, pata corta = - cátodo).", icon: "fa-lightbulb" },
+            { title: "Cinta conductora / Cinta de cobre", description: "Pistas metálicas que recorren el palito llevando la energía de la pila al LED.", icon: "fa-tape" },
+            { title: "1 Pila botón CR2032 (3V)", description: "Fuente de energía segura que se aloja en el mango o base de la varita.", icon: "fa-battery-full" },
+            { title: "Interruptor táctil casero", description: "Pulsador en el mango armado con cinta para que encienda la luz al apretar con los dedos.", icon: "fa-hand-pointer" },
+            { title: "Cinta decorativa o aisladora", description: "Para sujetar el circuito firmemente al palito y decorar tu varita mágica.", icon: "fa-ribbon" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Preparar el palito de algodón de azúcar",
+              desc: "Tomá el palito de algodón de azúcar. Ubicá cuál será el extremo superior (donde brillará el LED) y cuál será el mango inferior (donde irá la pila botón y el pulsador).",
+              tip: "El palito es liviano y fácil de manipular para manos pequeñas."
+            },
+            {
+              step: 2,
+              title: "Colocar el LED en la punta de la varita",
+              desc: "Apoyá el bulbo del LED en la punta superior del palito. Abrí las dos patitas metálicas abrazando los laterales del palito: la pata larga (+) por un lado y la pata corta (-) por el lado opuesto.",
+              tip: "¡Regla de oro: La pata más larga siempre es el polo positivo (+) y la más corta es el polo negativo (-)!"
+            },
+            {
+              step: 3,
+              title: "Pegar las pistas de cinta conductora",
+              desc: "Pegá una tira continua de cinta desde la patita larga (+) bajando en línea recta a lo largo del palito hasta el mango. Del lado opuesto, pegá otra tira de cinta desde la patita corta (-) bajando hacia la base.",
+              tip: "Las dos cintas deben correr separadas por lados opuestos del palito para que no se toquen entre sí."
+            },
+            {
+              step: 4,
+              title: "Fijar la Pila Botón CR2032 en el mango",
+              desc: "En el mango del palito, pegá la cara negativa (-) de la pila sobre la pista que viene de la patita corta del LED, asegurándola con un pedacito de cinta.",
+              tip: "La cara lisa con el signo (+) y letras queda mirando hacia arriba lista para hacer contacto."
+            },
+            {
+              step: 5,
+              title: "Armar el Pulsador Mágico en el mango",
+              desc: "Dejá el extremo de la pista positiva (+) como una solapita flexible justo por encima de la cara (+) de la pila sin que la toque en reposo. Al sostener la varita y apretar con el dedo pulgar, la cinta toca la pila y cierra el circuito.",
+              tip: "¡Al apretar con tu dedo se enciende la luz, y al soltarlo se apaga como por arte de magia!"
+            },
+            {
+              step: 6,
+              title: "¡Decorar y lanzar tus primeros hechizos!",
+              desc: "Decorá el cuerpo del palito con cinta de colores o dibujos sin tapar el pulsador ni el LED. ¡Apagá un poco la luz y mirá cómo brilla tu varita!",
+              tip: "¿No prende? Apretá bien con la uña sobre las patitas del LED y la cinta para asegurar buen contacto eléctrico."
+            }
+          ]
         }
       ]
     },
@@ -1115,10 +1185,11 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds o les falta objective, actualizar Firestore
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica o les falta objective, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
+                !targetProjects.some(p => (p.title || '').includes('Varita') || (p.title || '').includes('varita')) ||
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective))
               );
               if (isStaleSala5) {
