@@ -60,6 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
       footerHints: [
         { icon: 'fas fa-keyboard', text: 'Escribí cualquier texto para convertirlo a binario' }
       ]
+    },
+    paintCancha: {
+      name:         'Cancha de Fútbol en Paint — Sala de 5 años',
+      GameClass:    () => window.PaintCanchaStudio,
+      footerHints: [
+        { icon: 'fas fa-shapes',        text: 'Elegí Rectángulo, Círculo o Línea y arrastrá' },
+        { icon: 'fas fa-mouse-pointer', text: 'Tocá la Pelota para colocarla en la cancha' },
+        { icon: 'fas fa-download',      text: 'Guardar PNG para subir a tu Google Drive' }
+      ]
     }
   };
 

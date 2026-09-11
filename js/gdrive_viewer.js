@@ -2239,10 +2239,10 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var mkInfo = mission.makecodeUrl ? extractMakecodeInfo(mission.makecodeUrl) : null;
-    var isElectronica = !isGame && (mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-    var isMakecode = !isGame && !isElectronica && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-    var isScratch = !isGame && !isElectronica && !isMakecode;
+    var isPaint = !isGame && (mission.type === 'paint' || (mission.tags && mission.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })));
+    var isElectronica = !isGame && !isPaint && (mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isMakecode = !isGame && !isElectronica && !isPaint && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint;
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -2421,13 +2421,13 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : '#6366F1')) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
-                        (isCodeorg ? '🎮 Programación con Bloques • Code.org' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)) +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isCodeorg ? '#E11D48' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1'))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isCodeorg ? '🎮 Programación con Bloques • Code.org' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level))) +
                       '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card" style="' + (isCodeorg ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : '') + '">' +
-                        '<h4 style="' + (isCodeorg ? 'color:#9F1239;' : '') + '"><i class="fas ' + (isCodeorg ? 'fa-bullseye' : 'fa-flag-checkered') + '"></i> ' + (isCodeorg ? 'Objetivo Pedagógico:' : '¿Cuál es nuestra misión?') + '</h4>' +
-                        '<p style="' + (isCodeorg ? 'color:#4C0519;' : '') + '">' + (mission.objective || mission.description) + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isCodeorg ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : '')) + '">' +
+                        '<h4 style="' + (isCodeorg ? 'color:#9F1239;' : (isPaint ? 'color:#15803D;' : '')) + '"><i class="fas ' + (isCodeorg ? 'fa-bullseye' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered')) + '"></i> ' + (isCodeorg ? 'Objetivo Pedagógico:' : '¿Cuál es nuestra misión?') + '</h4>' +
+                        '<p style="' + (isCodeorg ? 'color:#4C0519;' : (isPaint ? 'color:#14532D;' : '')) + '">' + (mission.objective || mission.description) + '</p>' +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
                         (isCodeorg ?
@@ -2435,6 +2435,11 @@
                           '<span class="apm-skill-pill"><i class="fas fa-brain"></i> Razonamiento Lógico</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-compass"></i> Lateralidad & Orientación</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-bug"></i> Descomposición y Depuración</span>' :
+                         isPaint ?
+                          '<span class="apm-skill-pill"><i class="fas fa-palette"></i> Dibujo en Paint</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-shapes"></i> Figuras Geométricas</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-mouse-pointer"></i> Precisión con Mouse</span>' +
+                          '<span class="apm-skill-pill"><i class="fas fa-futbol"></i> Cancha de Fútbol</span>' :
                          isElectronica ?
                           '<span class="apm-skill-pill"><i class="fas fa-bolt"></i> Circuito Físico</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-battery-full"></i> Polaridad y Energía</span>' +
@@ -2444,8 +2449,8 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isCodeorg ? 'background:#E11D48;border-color:#BE123C;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')) + '">' +
-                        (isCodeorg ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>') +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isCodeorg ? 'background:#E11D48;border-color:#BE123C;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')) + '">' +
+                        (isCodeorg ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>')) +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -2509,15 +2514,22 @@
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                          (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller') +
+                          (isPaint ? '🎨 Herramientas y Figuras de Paint' : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')) +
                         '</h3>' +
                         '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                          (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:') +
+                          (isPaint ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:' : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')) +
                         '</p>' +
                       '</div>' +
                       '<div class="apm-materials-grid">' +
                         materialsList.map(function(m){
-                          var mIcon = isElectronica ? (
+                          var mIcon = isPaint ? (
+                            /rect[aá]ngulo|figura|geometr/i.test(m.title) ? 'fa-vector-square' :
+                            /c[ií]rculo|centro/i.test(m.title) ? 'fa-circle' :
+                            /l[ií]nea|recta/i.test(m.title) ? 'fa-slash' :
+                            /bote|balde|relleno|color|pintura/i.test(m.title) ? 'fa-fill-drip' :
+                            /mouse|puntero|rat[oó]n/i.test(m.title) ? 'fa-mouse-pointer' :
+                            /paint|lienzo|dibujo/i.test(m.title) ? 'fa-palette' : 'fa-shapes'
+                          ) : isElectronica ? (
                             /led|luz/i.test(m.title) ? 'fa-lightbulb' :
                             /pila|bater/i.test(m.title) ? 'fa-battery-full' :
                             /cobre|cable/i.test(m.title) ? 'fa-tape' :
@@ -2535,14 +2547,15 @@
                         }).join('') +
                       '</div>' +
                       '<div class="apm-reto-card" style="margin-top:22px;background:#F0FDF4;border-color:#16A34A;">' +
-                        '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> ' + (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker') + '</h4>' +
+                        '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> ' + (isPaint ? 'Consejo del Artista Digital' : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')) + '</h4>' +
                         '<p style="color:#166534;">' +
-                          (isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
+                          (isPaint ? '¡El secreto de los círculos perfectos! Mantené presionada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás el mouse con la herramienta Elipse para que salga un círculo redondo perfecto en la mitad de la cancha. ¡Y si te equivocás, apretá <strong>Ctrl + Z</strong> para deshacer sin borrar todo!' :
+                           isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
                         '</p>' +
                       '</div>' +
                       '<div style="text-align:center;margin-top:20px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isElectronica ? 'background:#D97706;border-color:#B45309;' : '') + '">' +
-                          (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>') +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')) + '">' +
+                          (isPaint ? '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>' : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')) +
                         '</button>' +
                       '</div>' +
                     '</div>'
@@ -2605,6 +2618,45 @@
                       '<div style="text-align:right;margin-top:8px;">' +
                         '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#E11D48;border-color:#BE123C;">' +
                           '¡Ver Misión Cumplida y Consejos! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isPaint ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:6px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-paint-brush" style="color:#16A34A;"></i> Paso a Paso: Cancha de Fútbol con Figuras Geométricas</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Seguí cada paso para dibujar tu cancha profesional usando figuras en Paint:</p>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:6px;align-items:center;">' +
+                          '<a href="juego.html?game=paintCancha" target="_blank" class="arm-btn-primary" style="font-size:0.8rem;padding:6px 12px;background:#16A34A;border-color:#15803D;text-decoration:none;"><i class="fas fa-palette"></i> Abrir Paint Web</a>' +
+                          '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.8rem;padding:6px 12px;">' +
+                            '<i class="fas fa-print"></i> Guía Imprimible' +
+                          '</button>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div style="display:flex;gap:12px;align-items:center;background:#F0FDF4;border:1.5px dashed #16A34A;border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
+                        '<img src="img/proyectos/cancha_futbol_paint_guia.png" alt="Guía de Figuras en Paint" style="width:78px;height:68px;object-fit:cover;background:#FFF;border-radius:8px;border:1px solid #86EFAC;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar guía">' +
+                        '<div style="flex:1;">' +
+                          '<h5 style="margin:0 0 2px;font-size:0.86rem;color:#166534;font-weight:800;"><i class="fas fa-shapes"></i> Guía Visual: Figuras Geométricas de la Cancha</h5>' +
+                          '<p style="margin:0;font-size:0.79rem;color:#14532D;line-height:1.4;">Rectángulo verde (césped), rectángulo blanco (límites), línea recta (medio campo), círculo central y arcos con rectángulos pequeños. <span style="font-weight:700;color:#15803D;">¡Tocá la imagen para ampliar el modelo!</span></p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-instructions-steps-grid">' +
+                        instructionsList.map(function(st){
+                          return '<div class="apm-step-card">' +
+                            '<div class="apm-step-badge" style="background:#16A34A;">' + st.step + '</div>' +
+                            '<div class="apm-step-body">' +
+                              '<h5>' + st.title + '</h5>' +
+                              '<p>' + st.desc + '</p>' +
+                              (st.tip ? '<div class="apm-step-tip" style="background:#F0FDF4;border-left-color:#16A34A;color:#14532D;"><i class="fas fa-info-circle" style="color:#16A34A;"></i> ' + st.tip + '</div>' : '') +
+                            '</div>' +
+                          '</div>';
+                        }).join('') +
+                      '</div>' +
+                      '<div style="text-align:right;margin-top:10px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#16A34A;border-color:#15803D;">' +
+                          '¡Ver Retos Finales y Entrega! <i class="fas fa-arrow-right"></i>' +
                         '</button>' +
                       '</div>' +
                     '</div>' :
@@ -2693,9 +2745,9 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isCodeorg ? '🐦' : '🏆') + '</div>' +
-                      '<h3 class="apm-win-title">' + (isCodeorg ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!') + '</h3>' +
-                      '<p class="apm-win-sub">' + (isCodeorg ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!') + '</p>' +
+                      '<div class="apm-win-trophy">' + (isPaint ? '⚽' : (isCodeorg ? '🐦' : '🏆')) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isCodeorg ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isCodeorg ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
@@ -2704,6 +2756,10 @@
                         '<div class="apm-ec-item"><div class="apm-ec-badge">1</div><div><h6>Superar los niveles con giros</h6><p>Llegar al nivel 3 y 4 de Code.org practicando giros a la derecha e izquierda sin perder la orientación.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge">2</div><div><h6>Usar el menor número de bloques</h6><p>Encontrar la ruta más directa sin bloques sobrantes pensando el algoritmo antes de ejecutar.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge">3</div><div><h6>Enseñarle a un compañero</h6><p>Explicarle a un amigo cómo anticipar los pasos del pájaro antes de encastrar los bloques.</p></div></div>' :
+                       isPaint ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">1</div><div><h6>Dibujar a los jugadores y la pelota</h6><p>Usá círculos pequeños con colores de camisetas diferentes para armar dos equipos y agregá una pelota en el centro.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">2</div><div><h6>Agregar tribunas y banderas de córner</h6><p>Dibujá gradas alrededor de la cancha con rectángulos y poné banderines en los tiros de esquina.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">3</div><div><h6>Escribir el marcador del partido</h6><p>Usá la herramienta de Texto "A" para escribir los nombres de los equipos y un resultado emocionante (ej: Freire FC 3 - 2 Tigres).</p></div></div>' :
                         '<div class="apm-ec-item">' +
                           '<div class="apm-ec-badge">1</div>' +
                           '<div>' +
@@ -2738,11 +2794,11 @@
                           '<i class="fas fa-undo"></i> Repasar Presentación' +
                         '</button>'
                       :
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isElectronica ? '#D97706' : '#10B981') + ';border-color:' + (isElectronica ? '#B45309' : '#059669') + ';font-size:0.9rem;padding:9px 18px;">' +
-                          (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación') +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981')) + ';border-color:' + (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669')) + ';font-size:0.9rem;padding:9px 18px;">' +
+                          (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')) +
                         '</button>' +
                         '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                          (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial') +
+                          (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')) +
                         '</button>' +
                         '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía PDF</button>' +
                         '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
@@ -2779,6 +2835,9 @@
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isCodeorg ? 'active' : '') + '" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isCodeorg ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-gamepad"></i> Desafío Code.org' +
+                  '</button>' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isPaint ? 'active' : '') + '" id="apm-switch-to-paint" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isPaint ? 'background:#16A34A;color:#FFF;box-shadow:0 2px 6px rgba(22,163,74,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
+                    '<i class="fas fa-palette"></i> Dibujo Paint' +
                   '</button>' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-bolt"></i> Foto / Video Circuito' +
@@ -2827,6 +2886,39 @@
                       '<li><strong>Secuenciación de Algoritmos:</strong> Comprender que los bloques deben ordenarse paso a paso para que el programa funcione.</li>' +
                       '<li><strong>Lateralidad y Orientación:</strong> Diferenciar entre avanzar, girar a la derecha o izquierda en el espacio.</li>' +
                       '<li><strong>Descomposición & Depuración:</strong> Analizar el error cuando el pájaro choca y corregir el código sin frustración.</li>' +
+                    '</ol>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              // SUB-PANEL PAINT / DIBUJO DIGITAL
+              '<div id="apm-paint-delivery-section" style="' + (isPaint ? 'display:block;' : 'display:none;') + '">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #15803D 0%, #16A34A 100%);">' +
+                  '<div class="apm-dh-icon"><i class="fas fa-palette"></i></div>' +
+                  '<div>' +
+                    '<h4>Subir Dibujo o Captura de Paint (.png, .jpg, .bmp)</h4>' +
+                    '<p>¡Tu primer diseño digital! Guardá tu dibujo en Paint (Archivo &gt; Guardar) y arrastralo aquí para sumarlo a tu carpeta de Google Drive y ganar <strong>+100 XP</strong>.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  '<div class="apm-scratch-dropzone" id="apm-paint-dropzone" style="border-color:#86EFAC;background:#F0FDF4;">' +
+                    '<div class="apm-sd-icon" style="color:#16A34A;"><i class="fas fa-palette"></i></div>' +
+                    '<h4>Arrastrá tu dibujo de Paint aquí</h4>' +
+                    '<p>O hacé clic en el botón para seleccionarlo (.png, .jpg, .jpeg, .bmp, .webp)</p>' +
+                    '<input type="file" id="apm-paint-file-input" style="display:none;" accept="image/*,.png,.jpg,.jpeg,.bmp,.webp">' +
+                    '<button type="button" id="apm-paint-browse-btn" class="apm-delivery-submit-btn" style="background:#16A34A;"><i class="fas fa-folder-open"></i> Seleccionar Dibujo de Paint</button>' +
+                  '</div>' +
+                  '<div id="apm-paint-delivery-status" style="margin-top:14px;">' +
+                    (savedFileName ?
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Dibujo entregado: <strong>' + savedFileName + '</strong> (' + savedFileDate + ') guardado en tu Google Drive.</span></div></div>' : '') +
+                  '</div>' +
+                  '<div class="apm-delivery-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-lightbulb"></i> ¿Cómo guardar y subir tu dibujo desde Paint?</h5>' +
+                    '<ol>' +
+                      '<li>En Paint, andá arriba a la izquierda a <strong>Archivo</strong> (o el icono azul de guardar).</li>' +
+                      '<li>Elegí <strong>Guardar como</strong> y seleccioná <em>Imagen PNG</em> o <em>Imagen JPEG</em>.</li>' +
+                      '<li>Guardalo en el Escritorio o Documentos con tu nombre (ej: <code>cancha_futbol.png</code>).</li>' +
+                      '<li>¡Arrastrá ese archivo dentro del recuadro verde o tocalo con el botón "Seleccionar Dibujo de Paint"!</li>' +
                     '</ol>' +
                   '</div>' +
                 '</div>' +

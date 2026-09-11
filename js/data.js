@@ -68,8 +68,20 @@ const SCHOOL_DATA = {
           tags: ["Code.org", "Frozen", "Geometría"]
         },
         {
-          id: "s5-g2",
+          id: "s5-g5",
           level: 4,
+          title: "Cancha de Fútbol en Paint: Figuras Geométricas ⚽🎨",
+          platform: "native",
+          engine: "paintCancha",
+          externalUrl: "juego.html?game=paintCancha",
+          thumbnail: "img/proyectos/cancha_futbol_paint_cover.png",
+          description: "¡Nivel 4 de Sala de 5 años! Aprendé a usar Paint combinando figuras geométricas básicas (rectángulo, círculo y líneas) para dibujar y pintar tu cancha de fútbol completa.",
+          benefits: "Desarrolla el reconocimiento de figuras geométricas, motricidad fina y coordinación con mouse o pantalla táctil, nociones de proporción y simetría espacial, y creatividad digital.",
+          tags: ["Paint", "Arte Digital", "Figuras Geométricas", "Fútbol", "Nivel 4"]
+        },
+        {
+          id: "s5-g2",
+          level: 5,
           title: "Minecraft: Hora del Código ⛏️",
           platform: "codeorg",
           externalUrl: "https://code.org/es-ES/hour-of-code/minecraft",
@@ -272,6 +284,78 @@ const SCHOOL_DATA = {
               title: "¡Decorar y lanzar tus primeros hechizos!",
               desc: "Decorá el cuerpo del palito con cinta de colores o dibujos sin tapar el pulsador ni el LED. ¡Apagá un poco la luz y mirá cómo brilla tu varita!",
               tip: "¿No prende? Apretá bien con la uña sobre las patitas del LED y la cinta para asegurar buen contacto eléctrico."
+            }
+          ]
+        },
+        {
+          id: "s5-p4",
+          level: 4,
+          title: "Cancha de Fútbol en Paint: Figuras Geométricas ⚽🎨",
+          author: "Taller Digital Sala 5",
+          date: "Junio 2026",
+          type: "paint",
+          badge: "🎨 Arte Digital & Figuras",
+          icon: "fa-palette",
+          color: "#16A34A",
+          coverImage: "img/proyectos/cancha_futbol_paint_cover.png",
+          description: "¡Nivel 4 de nuestra Ruta de Aventuras! Aprendemos a usar Paint combinando figuras geométricas básicas (rectángulos, círculos y líneas) para dibujar y pintar una cancha de fútbol completa con sus arcos, áreas y césped verde.",
+          objective: "Aprender a utilizar las herramientas básicas de Paint seleccionando figuras geométricas (rectángulo, círculo, línea recta y bote de pintura) para construir y colorear una cancha de fútbol completa.",
+          benefits: "Desarrolla la motricidad fina y precisión con el mouse o pantalla táctil, el reconocimiento de figuras geométricas en el entorno cotidiano, nociones de proporción y simetría espacial, y la creatividad digital sin miedo a equivocarse.",
+          tags: ["Paint", "Arte Digital", "Figuras Geométricas", "Fútbol", "Creatividad", "Nivel 4"],
+          gallery: [
+            "img/proyectos/cancha_futbol_paint_cover.png",
+            "img/proyectos/cancha_futbol_paint_guia.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          gameUrl: "juego.html?game=paintCancha",
+          externalUrl: "juego.html?game=paintCancha",
+          materials: [
+            { title: "Programa Paint / App de Dibujo", description: "Lienzo digital para crear arte combinando figuras geométricas.", icon: "fa-paint-brush" },
+            { title: "Herramienta Rectángulo", description: "Para el perímetro de la cancha y las áreas grande y chica de los arcos.", icon: "fa-vector-square" },
+            { title: "Herramienta Círculo (Elipse)", description: "Para el círculo del medio campo y los puntos de penal.", icon: "fa-circle" },
+            { title: "Herramienta Línea Recta", description: "Para trazar la línea divisoria del medio campo.", icon: "fa-slash" },
+            { title: "Bote de Pintura (Relleno)", description: "Para pintar el césped de verde brillante y el interior de las líneas.", icon: "fa-fill-drip" },
+            { title: "Mouse o Pantalla Táctil", description: "Para hacer clic, arrastrar y soltar las figuras con precisión.", icon: "fa-mouse-pointer" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Abrir Paint y preparar el césped verde",
+              desc: "Abrí Paint en la computadora. Seleccioná el Bote de Pintura (Relleno), elegí el color verde en la paleta y hacé clic en la hoja en blanco para convertirla en un hermoso pasto de fútbol.",
+              tip: "Si querés pasto a rayas, podés alternar dos tonos de verde usando la herramienta Rectángulo."
+            },
+            {
+              step: 2,
+              title: "Trazar el rectángulo exterior de la cancha",
+              desc: "Seleccioná la herramienta Rectángulo, elegí el color blanco y un grosor de línea medio. Hacé clic cerca de una esquina y arrastrá hasta la esquina opuesta para crear los límites de la cancha.",
+              tip: "¡No te preocupes si no queda perfecto a la primera! Podés usar Ctrl + Z para deshacer y volver a intentar."
+            },
+            {
+              step: 3,
+              title: "Dividir la cancha con la Línea Central",
+              desc: "Seleccioná la herramienta Línea con color blanco. Buscá la mitad exacta arriba y arrastrá en línea recta hacia abajo hasta tocar el borde inferior.",
+              tip: "Mantené presionada la tecla Shift mientras arrastrás para que la línea salga perfectamente vertical."
+            },
+            {
+              step: 4,
+              title: "Dibujar el Círculo del medio campo",
+              desc: "Seleccioná la herramienta Círculo (Elipse) con color blanco. Ubicate en el centro de la cancha, hacé clic y arrastrá para formar el redondel central.",
+              tip: "Mantené presionada la tecla Shift para que el círculo sea redondo perfecto y no un óvalo."
+            },
+            {
+              step: 5,
+              title: "Construir las Áreas y Arcos con Rectángulos",
+              desc: "Volvé a elegir la herramienta Rectángulo. Dibujá un rectángulo mediano pegado al borde izquierdo para el área grande, y repetí lo mismo en el lado derecho para el otro equipo.",
+              tip: "Dentro de cada área grande podés agregar otro rectángulo más chiquito para el área chica del arquero."
+            },
+            {
+              step: 6,
+              title: "¡Puntos de penal, pelota y guardar tu obra!",
+              desc: "Usá el Pincel o el Círculo relleno blanco para marcar el punto de saque central y los puntos de penal. ¡Dibujá una pelota o las redes de los arcos y guardá tu dibujo como imagen (.png)!",
+              tip: "Andá a 'Archivo' > 'Guardar como' > 'Imagen PNG' y escribí tu nombre para mostrar tu creación."
             }
           ]
         }
@@ -1185,11 +1269,12 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica o les falta objective, actualizar Firestore
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol o les falta objective, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
                 !targetProjects.some(p => (p.title || '').includes('Varita') || (p.title || '').includes('varita')) ||
+                !targetProjects.some(p => (p.title || '').includes('Cancha') || (p.title || '').includes('cancha') || (p.title || '').includes('Paint')) ||
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective))
               );
               if (isStaleSala5) {

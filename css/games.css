@@ -648,3 +648,163 @@
 @media (max-width: 540px) {
   .translator-grid { grid-template-columns: 1fr; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   PAINT CANCHA DE FÚTBOL — TALLER DIGITAL SALA 5
+───────────────────────────────────────────────────────────── */
+.paint-cancha-ui {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  gap: 12px;
+}
+
+.pc-toolbar {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 10px 14px;
+  backdrop-filter: blur(8px);
+}
+
+.pc-tools-group, .pc-colors-group, .pc-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pc-group-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #FBC02D;
+  margin-right: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pc-btn-tool {
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.pc-btn-tool:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+}
+
+.pc-btn-tool.active {
+  background: #16A34A;
+  border-color: #86EFAC;
+  box-shadow: 0 0 10px rgba(22, 163, 74, 0.6);
+  color: #fff;
+}
+
+.pc-color-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.pc-color-btn:hover {
+  transform: scale(1.15);
+}
+
+.pc-color-btn.active {
+  border-color: #FBC02D;
+  box-shadow: 0 0 8px rgba(251, 192, 45, 0.8);
+  transform: scale(1.18);
+}
+
+.pc-btn-action {
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Nunito', sans-serif;
+  transition: background 0.15s;
+}
+
+.pc-btn-action:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.pc-btn-export {
+  background: #15803D !important;
+  border-color: #86EFAC !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(21, 128, 61, 0.4);
+}
+
+.pc-btn-export:hover {
+  background: #16A34A !important;
+}
+
+.pc-canvas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+#paint-cancha-canvas {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  aspect-ratio: 800 / 520;
+  border-radius: 12px;
+  border: 3px solid #86EFAC;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  cursor: crosshair;
+  touch-action: none;
+  background: #15803D;
+}
+
+.pc-canvas-hint {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.pc-canvas-hint strong {
+  color: #FBC02D;
+}
+
