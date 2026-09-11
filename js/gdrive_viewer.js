@@ -2628,12 +2628,9 @@
                           '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-paint-brush" style="color:#16A34A;"></i> Paso a Paso: Cancha de Fútbol con Figuras Geométricas</h3>' +
                           '<p style="font-size:0.82rem;color:#64748B;margin:0;">Seguí cada paso para dibujar tu cancha profesional usando figuras en Paint:</p>' +
                         '</div>' +
-                        '<div style="display:flex;gap:6px;align-items:center;">' +
-                          '<a href="juego.html?game=paintCancha" target="_blank" class="arm-btn-primary" style="font-size:0.8rem;padding:6px 12px;background:#16A34A;border-color:#15803D;text-decoration:none;"><i class="fas fa-palette"></i> Abrir Paint Web</a>' +
-                          '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.8rem;padding:6px 12px;">' +
-                            '<i class="fas fa-print"></i> Guía Imprimible' +
-                          '</button>' +
-                        '</div>' +
+                        '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.8rem;padding:6px 12px;">' +
+                          '<i class="fas fa-print"></i> Guía Imprimible' +
+                        '</button>' +
                       '</div>' +
                       '<div style="display:flex;gap:12px;align-items:center;background:#F0FDF4;border:1.5px dashed #16A34A;border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
                         '<img src="img/proyectos/cancha_futbol_paint_guia.png" alt="Guía de Figuras en Paint" style="width:78px;height:68px;object-fit:cover;background:#FFF;border-radius:8px;border:1px solid #86EFAC;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar guía">' +
@@ -3976,6 +3973,133 @@
         electroDropzone.classList.remove('drag-over');
         if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
           processElectroUpload(e.dataTransfer.files[0]);
+        }
+      }, false);
+    }
+
+    // --- Subida / Drag & Drop Dibujo de Paint (.png, .jpg, .bmp) ---
+    var paintDropzone = modal.querySelector('#apm-paint-dropzone');
+    var paintFileInput = modal.querySelector('#apm-paint-file-input');
+    var paintBrowseBtn = modal.querySelector('#apm-paint-browse-btn');
+    var paintStatusEl = modal.querySelector('#apm-paint-delivery-status');
+
+    if (paintBrowseBtn && paintFileInput) {
+      paintBrowseBtn.onclick = function() {
+        paintFileInput.click();
+      };
+    }
+
+    function processPaintUpload(file) {
+      if (!file) return;
+      var name = file.name.toLowerCase();
+      var valid = /\.(jpe?g|png|webp|bmp)$/i.test(name) || /^image\//i.test(file.type || '');
+      if (!valid) {
+        if (window.sounds) window.sounds.playError();
+        alert('Formato no válido. Por favor seleccioná un archivo de imagen o dibujo de Paint (.png, .jpg, .bmp)');
+        return;
+      }
+      if (window.sounds) window.sounds.playSuccess();
+      var sz = formatFileSize(file.size);
+      if (paintStatusEl) {
+        paintStatusEl.innerHTML = '<div class="apm-status-badge warning"><i class="fas fa-sync-alt fa-spin"></i> Subiendo dibujo <strong>' + file.name + '</strong> (' + sz + ')...</div>';
+      }
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var b64 = ev.target.result.split(',')[1];
+        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        if (hook && student) {
+          var iframe = document.getElementById('gdrive_silent_upload_iframe');
+          if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+          }
+          var form = document.createElement('form');
+          form.target = 'gdrive_silent_upload_iframe';
+          form.method = 'POST';
+          form.action = hook;
+          var fields = { filename: file.name, mimeType: file.type || 'image/png', base64: b64, folderId: student.driveFolderId || '', subfolder: 'dibujos' };
+          for (var k in fields) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = k;
+            input.value = fields[k];
+            form.appendChild(input);
+          }
+          document.body.appendChild(form);
+          form.submit();
+          setTimeout(function(){ form.remove(); }, 3000);
+        }
+
+        var nowStr = new Date().toLocaleDateString('es-UY', { day:'numeric', month:'short' });
+        var submissionData = {
+          studentId: student ? student.id : 'anon',
+          studentName: student ? student.name : 'Alumno',
+          fileName: file.name,
+          fileSize: sz,
+          date: nowStr,
+          timestamp: new Date().toISOString(),
+          type: 'paint',
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+
+        // Registrar en FOLDER_CONTENTS.dibujos.items
+        if (!FOLDER_CONTENTS.dibujos.items.some(function(it){ return it.name === file.name; })) {
+          FOLDER_CONTENTS.dibujos.items.unshift({
+            name: file.name,
+            title: '🎨 ' + file.name.replace(/\.[^.]+$/, ''),
+            size: sz,
+            date: nowStr,
+            type: 'image',
+            url: ev.target.result,
+            isLocalPending: true
+          });
+        }
+
+        var targetMissionId = mission.id;
+        markMissionCompleted(student, targetMissionId, submissionData);
+        mission.status = 'completado';
+
+        var headerBadge = modal.querySelector('#apm-header-status-badge');
+        if (headerBadge) {
+          headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        if (paintStatusEl) {
+          paintStatusEl.innerHTML =
+            '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+              '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+              '<div>' +
+                '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                '<span style="font-size:0.84rem;color:#047857;">¡Dibujo entregado con éxito! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu carpeta de Google Drive. ¡Sumaste +100 XP al Progreso del Taller!</span>' +
+              '</div>' +
+            '</div>';
+        }
+
+        refreshDashboard();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    if (paintFileInput) {
+      paintFileInput.onchange = function() {
+        if (paintFileInput.files && paintFileInput.files.length > 0) {
+          processPaintUpload(paintFileInput.files[0]);
+        }
+      };
+    }
+
+    if (paintDropzone) {
+      paintDropzone.addEventListener('dragover', function(e){ e.preventDefault(); paintDropzone.classList.add('drag-over'); }, false);
+      paintDropzone.addEventListener('dragleave', function(e){ e.preventDefault(); paintDropzone.classList.remove('drag-over'); }, false);
+      paintDropzone.addEventListener('drop', function(e){
+        e.preventDefault();
+        paintDropzone.classList.remove('drag-over');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          processPaintUpload(e.dataTransfer.files[0]);
         }
       }, false);
     }

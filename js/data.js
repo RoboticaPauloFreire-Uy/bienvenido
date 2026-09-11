@@ -68,20 +68,8 @@ const SCHOOL_DATA = {
           tags: ["Code.org", "Frozen", "Geometría"]
         },
         {
-          id: "s5-g5",
-          level: 4,
-          title: "Cancha de Fútbol en Paint: Figuras Geométricas ⚽🎨",
-          platform: "native",
-          engine: "paintCancha",
-          externalUrl: "juego.html?game=paintCancha",
-          thumbnail: "img/proyectos/cancha_futbol_paint_cover.png",
-          description: "¡Nivel 4 de Sala de 5 años! Aprendé a usar Paint combinando figuras geométricas básicas (rectángulo, círculo y líneas) para dibujar y pintar tu cancha de fútbol completa.",
-          benefits: "Desarrolla el reconocimiento de figuras geométricas, motricidad fina y coordinación con mouse o pantalla táctil, nociones de proporción y simetría espacial, y creatividad digital.",
-          tags: ["Paint", "Arte Digital", "Figuras Geométricas", "Fútbol", "Nivel 4"]
-        },
-        {
           id: "s5-g2",
-          level: 5,
+          level: 4,
           title: "Minecraft: Hora del Código ⛏️",
           platform: "codeorg",
           externalUrl: "https://code.org/es-ES/hour-of-code/minecraft",
@@ -298,7 +286,7 @@ const SCHOOL_DATA = {
           icon: "fa-palette",
           color: "#16A34A",
           coverImage: "img/proyectos/cancha_futbol_paint_cover.png",
-          description: "¡Nivel 4 de nuestra Ruta de Aventuras! Aprendemos a usar Paint combinando figuras geométricas básicas (rectángulos, círculos y líneas) para dibujar y pintar una cancha de fútbol completa con sus arcos, áreas y césped verde.",
+          description: "En la clase del taller usamos el programa Paint en la computadora para crear nuestra propia cancha de fútbol combinando figuras geométricas básicas (rectángulos, círculos y líneas). ¡Aquí tenés la explicación paso a paso y el espacio para subir tu dibujo terminado a tu carpeta de Google Drive!",
           objective: "Aprender a utilizar las herramientas básicas de Paint seleccionando figuras geométricas (rectángulo, círculo, línea recta y bote de pintura) para construir y colorear una cancha de fútbol completa.",
           benefits: "Desarrolla la motricidad fina y precisión con el mouse o pantalla táctil, el reconocimiento de figuras geométricas en el entorno cotidiano, nociones de proporción y simetría espacial, y la creatividad digital sin miedo a equivocarse.",
           tags: ["Paint", "Arte Digital", "Figuras Geométricas", "Fútbol", "Creatividad", "Nivel 4"],
@@ -310,8 +298,8 @@ const SCHOOL_DATA = {
           downloadPdfUrl: null,
           makecodeUrl: null,
           scratchId: null,
-          gameUrl: "juego.html?game=paintCancha",
-          externalUrl: "juego.html?game=paintCancha",
+          gameUrl: null,
+          externalUrl: null,
           materials: [
             { title: "Programa Paint / App de Dibujo", description: "Lienzo digital para crear arte combinando figuras geométricas.", icon: "fa-paint-brush" },
             { title: "Herramienta Rectángulo", description: "Para el perímetro de la cancha y las áreas grande y chica de los arcos.", icon: "fa-vector-square" },
