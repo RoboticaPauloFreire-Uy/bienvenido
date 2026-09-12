@@ -77,6 +77,17 @@ const SCHOOL_DATA = {
           description: "¡Nivel 8 de la Ruta de Aventuras! ⚠️ Aclaración: no es el juego tradicional de Minecraft de juego libre, sino una adaptación pedagógica oficial de Code.org para aprender a programar dando órdenes en bloques a Steve y Alex.",
           benefits: "Canaliza el entusiasmo por Minecraft hacia el aprendizaje del pensamiento computacional: secuenciación lógica, orientación en cuadrícula 3D isométrica, descomposición de acciones y bucles de repetición.",
           tags: ["Code.org", "Minecraft", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 8"]
+        },
+        {
+          id: "s5-g5",
+          level: 10,
+          title: "Escenarios CodeJr - Segunda Parte: Perspectiva y Profundidad 🐱🔍",
+          platform: "codejr",
+          externalUrl: "https://codejr.org",
+          thumbnail: "img/scratchjr.png",
+          description: "¡Nivel 10 de la Ruta de Aventuras! Aprendemos a cambiar la perspectiva visual y escala de los personajes en Scratch Jr: usamos los bloques violetas de apariencia (achicar para alejar en el horizonte y agrandar para acercar) combinados con movimientos en el sendero.",
+          benefits: "Desarrolla la noción espacial de profundidad tridimensional en un plano 2D, la comprensión de variables visuales y escalas (lejos = pequeño, cerca = grande), y la coordinación de secuencias de apariencia y movimiento en Scratch Jr.",
+          tags: ["Scratch Jr", "CodeJr", "Escenarios", "Perspectiva", "Profundidad", "Apariencia", "Bloques Violetas", "Nivel 10"]
         }
       ],
 
@@ -676,6 +687,80 @@ const SCHOOL_DATA = {
               title: "¡Tocar la Bandera Verde y disfrutar!",
               desc: "Tocá la bandera verde arriba a la derecha. Mirá cómo cada personaje recorre el escenario con su propio ritmo programado. ¡Subí tu proyecto o foto para sumar +100 XP!",
               tip: "Podés descargar el archivo velocidad.sjr desde el botón de la misión para ver el ejemplo completo."
+            }
+          ]
+        },
+        {
+          id: "s5-p10",
+          level: 10,
+          title: "Escenarios CodeJr - Segunda Parte (5 años): Cambiar la Perspectiva de las Figuras 🐱🔍",
+          author: "Taller de Programación Sala 5",
+          date: "Septiembre 2026",
+          type: "scratch",
+          platform: "codejr",
+          badge: "🐱 Scratch Jr • Escenarios & Perspectiva",
+          icon: "fa-search-plus",
+          color: "#7C3AED",
+          coverImage: "img/scratchjr.png",
+          projectFileUrl: "proyectos/perpestiva.sjr",
+          downloadUrl: "proyectos/perpestiva.sjr",
+          externalUrl: "https://codejr.org",
+          description: "¡Nivel 10 de nuestra Ruta de Aventuras! En esta segunda parte aprendemos a cambiar la perspectiva visual y el tamaño de las figuras en Scratch Jr. Descubrimos cómo crear la ilusión óptica de profundidad 3D en un escenario 2D: enviamos al personaje Teen3 al fondo del camino haciéndolo pequeño con el bloque violeta de achicar (5 veces), y a medida que desciende por el sendero hacia nosotros, lo agrandamos progresivamente para simular que camina hacia el frente. Descargá el proyecto de ejemplo perpestiva.sjr para abrirlo en Scratch Jr.",
+          objective: "Comprender y programar la perspectiva visual y profundidad en Scratch Jr utilizando los bloques violetas de apariencia (achicar para alejar, agrandar para acercar y restaurar tamaño estándar) combinados con movimientos en el escenario para simular que un personaje avanza hacia el observador.",
+          benefits: "Desarrolla la percepción espacial tridimensional, la diferenciación conceptual de escala y distancia (lejos/pequeño vs. cerca/grande), la estructuración de algoritmos con cambio de apariencia secuencial, la abstracción visual y la creatividad en animación digital.",
+          tags: ["Scratch Jr", "CodeJr", "Perspectiva", "Profundidad", "Escenarios", "Apariencia", "Bloques Violetas", "Nivel 10"],
+          gallery: [
+            "img/scratchjr.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Aplicación Scratch Jr", description: "Entorno visual de programación en tablets o PC (https://codejr.org).", icon: "fa-cat" },
+            { title: "Archivo de Ejemplo 'perpestiva.sjr'", description: "Proyecto oficial con Teen3 caminando en perspectiva por el sendero del bosque.", icon: "fa-file-code" },
+            { title: "Bloque Amarillo 'Bandera Verde'", description: "Comando de inicio para disparar la animación de perspectiva.", icon: "fa-flag" },
+            { title: "Bloque Azul 'Ir al Inicio' (Home)", description: "Devuelve al personaje a su posición inicial en la parte superior del camino.", icon: "fa-home" },
+            { title: "Bloque Violeta 'Restaurar Tamaño'", description: "Reinicia la escala del personaje a su tamaño normal estándar (100%).", icon: "fa-sync-alt" },
+            { title: "Bloques Violetas 'Achicar' y 'Agrandar'", description: "Permiten simular distancia (achicar 5) y acercamiento hacia la pantalla (agrandar 2).", icon: "fa-expand-arrows-alt" },
+            { title: "Bloques Azules 'Bajar' (Movimiento)", description: "Hacen descender al personaje por el camino hacia el primer plano.", icon: "fa-arrow-down" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Abrir Scratch Jr y Elegir un Fondo con Camino",
+              desc: "Abrí Scratch Jr y tocá el botón del paisaje arriba. Elegí un escenario que tenga profundidad, como un camino, bosque o sendero (por ejemplo el fondo del bosque).",
+              tip: "Los fondos con un sendero que va desde el horizonte hacia el frente son ideales para practicar perspectiva."
+            },
+            {
+              step: 2,
+              title: "Seleccionar el Personaje y Ubicarlo al Fondo",
+              desc: "Seleccioná al personaje (por ejemplo Teen3 o el gato) y arrastralo con el dedo o mouse a la parte superior del camino, donde empieza el sendero.",
+              tip: "Ese punto será el inicio de su viaje hacia adelante."
+            },
+            {
+              step: 3,
+              title: "Poner Bandera Verde, Volver a Casa y Restaurar Tamaño",
+              desc: "Iniciá tu programa con el bloque amarillo de 'Bandera Verde'. Luego encastrá el bloque azul de 'Volver al Inicio' (casa) y el bloque violeta de 'Restaurar Tamaño' (personita con círculo).",
+              tip: "Esto asegura que cada vez que toques la bandera verde, el personaje arranque en el lugar exacto y con tamaño normal."
+            },
+            {
+              step: 4,
+              title: "Achicar al Personaje para Mandarlo Lejos (Perspectiva)",
+              desc: "Encastrá el bloque violeta de 'Achicar' (personita con flechas hacia adentro) y escribí el número 5.",
+              tip: "¡Magia visual! El personaje se vuelve chiquito como si estuviera a kilómetros de distancia en el horizonte."
+            },
+            {
+              step: 5,
+              title: "Programar la Secuencia de Acercamiento (Bajar y Agrandar)",
+              desc: "Encastrá: flecha azul de 'Bajar' (2 pasos) ➔ bloque violeta de 'Agrandar' (2 veces) ➔ 'Bajar' (2 pasos) ➔ 'Agrandar' (2 veces) ➔ 'Bajar' (4 pasos).",
+              tip: "A medida que baja por el camino, se agranda simultáneamente. ¡Parece una película en 3D!"
+            },
+            {
+              step: 6,
+              title: "¡Tocar la Bandera Verde y Probar!",
+              desc: "Tocá la bandera verde arriba a la derecha. Mirá cómo tu personaje aparece a lo lejos y camina hacia vos haciéndose cada vez más grande. ¡Subí tu proyecto o foto para sumar +100 XP!",
+              tip: "Podés descargar el archivo perpestiva.sjr desde el botón de la misión para ver el ejemplo completo funcionando."
             }
           ]
         }
@@ -1600,6 +1685,7 @@ if (typeof window !== 'undefined') {
                 !targetProjects.some(p => (p.title || '').includes('Bandera') || (p.title || '').includes('bandera') || p.id === 's5-p7') ||
                 !targetProjects.some(p => (p.title || '').includes('Minecraft') || (p.title || '').includes('minecraft') || p.id === 's5-p8') ||
                 !targetProjects.some(p => (p.title || '').includes('CodeJr') || (p.title || '').includes('Velocidad') || (p.title || '').includes('velocidad') || p.id === 's5-p9') ||
+                !targetProjects.some(p => (p.title || '').includes('Perspectiva') || (p.title || '').includes('perpestiva') || (p.title || '').includes('perspectiva') || p.id === 's5-p10') ||
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective)) ||
                 targetProjects.some(p => ((p.id === 's5-p4' || p.id === 's5-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );

@@ -434,7 +434,7 @@
       gradeObj.projects.forEach(function(p, idx) {
         var isPaint    = p.type === 'paint' || (p.tags && p.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|bandera/i.test(p.title || ''));
         var isMakecode = !isPaint && !!p.makecodeUrl;
-        var isScratch  = !isPaint && (!!p.scratchId || p.type === 'scratch' || p.platform === 'codejr' || (p.tags && p.tags.some(function(t){ return /scratch ?jr|codejr|velocidad/i.test(t); })));
+        var isScratch  = !isPaint && (!!p.scratchId || p.type === 'scratch' || p.platform === 'codejr' || (p.tags && p.tags.some(function(t){ return /scratch ?jr|codejr|velocidad|perspectiva|perpestiva/i.test(t); })));
         var isCodeorg  = !isPaint && (p.type === 'codeorg' || p.platform === 'codeorg' || (p.externalUrl && p.externalUrl.includes('code.org')) || (p.tags && p.tags.some(function(t){ return /code\.org|angry ?birds|frozen|minecraft/i.test(t); })));
         var isElectronica = !isPaint && !isCodeorg && !isScratch && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
         var type  = isPaint ? 'paint' : (p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica')))));
@@ -525,6 +525,8 @@
         if ((mTitle.includes(pName) || pName.includes(mTitle) ||
             (pName.includes('codejr') && mTitle.includes('codejr')) ||
             (pName.includes('velocidad') && mTitle.includes('velocidad')) ||
+            (pName.includes('perspectiva') && mTitle.includes('perspectiva')) ||
+            (pName.includes('perpestiva') && mTitle.includes('perpestiva')) ||
             (pName.includes('patricio') && mTitle.includes('patricio')) ||
             (pName.includes('frozen') && mTitle.includes('frozen')) ||
             (pName.includes('minecraft') && mTitle.includes('minecraft')) ||
@@ -2306,6 +2308,130 @@
     '</div>';
   }
 
+  function renderScratchJrPerspectivaSolutionHtml(mission) {
+    var sampleFileUrl = (mission && (mission.projectFileUrl || mission.downloadUrl)) || 'proyectos/perpestiva.sjr';
+    return '<div class="apm-sol-electro-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #6B21A8 0%, #9333EA 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-search-plus"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: Escenarios y Manejo de Perspectiva en Scratch Jr 🐱🔍</h4>' +
+          '<p>Creación de profundidad 3D en un escenario 2D utilizando los bloques violetas de apariencia (achicar, agrandar y restaurar tamaño) combinados con movimientos en el sendero.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body" style="padding:18px;">' +
+        '<div style="margin-bottom:18px;background:#FAF5FF;border:2px solid #D8B4FE;border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">' +
+          '<div style="display:flex;align-items:center;gap:14px;">' +
+            '<div style="width:48px;height:48px;border-radius:12px;background:#7C3AED;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">' +
+              '<i class="fas fa-file-code"></i>' +
+            '</div>' +
+            '<div>' +
+              '<h5 style="margin:0 0 4px;color:#581C87;font-size:1.02rem;font-weight:900;">Archivo Oficial del Proyecto: perpestiva.sjr</h5>' +
+              '<p style="margin:0;font-size:0.86rem;color:#6B21A8;">Ejemplo interactivo listo para abrir o importar en Scratch Jr con Teen3 caminando por el bosque hacia el frente en perspectiva.</p>' +
+            '</div>' +
+          '</div>' +
+          '<a href="' + sampleFileUrl + '" download="perpestiva.sjr" class="arm-btn-primary" style="background:#7C3AED;border-color:#6D28D9;padding:10px 20px;font-size:0.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">' +
+            '<i class="fas fa-download"></i> Descargar perpestiva.sjr' +
+          '</a>' +
+        '</div>' +
+
+        '<div style="margin-bottom:16px;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:14px;">' +
+          '<h5 style="margin:0 0 6px;color:#1E293B;font-size:0.95rem;"><i class="fas fa-eye"></i> ¿Cómo Funciona la Perspectiva y Profundidad en Scratch Jr?</h5>' +
+          '<p style="margin:0;font-size:0.86rem;color:#475569;line-height:1.5;">' +
+            'En el mundo real, los objetos y personas que están lejos se ven pequeños, y al acercarse a nuestros ojos se hacen más grandes. En Scratch Jr logramos esta misma <strong>ilusión óptica de profundidad 3D</strong> utilizando los <strong>bloques violetas de apariencia</strong>: encastramos el bloque de <em>Achicar</em> para enviar al personaje al fondo del sendero, y luego combinamos bloques de <em>Bajar</em> con bloques de <em>Agrandar</em> para que parezca caminar hacia la pantalla.' +
+          '</p>' +
+        '</div>' +
+
+        '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-expand-arrows-alt"></i> Los 3 Bloques Violetas de Apariencia en Scratch Jr:</h5>' +
+          '<div class="apm-pinout-table-wrap">' +
+            '<table class="apm-pinout-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th>Bloque Violeta</th>' +
+                  '<th>Símbolo en Scratch Jr</th>' +
+                  '<th>Acción y Efecto Visual</th>' +
+                  '<th>Uso en la Perspectiva</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                '<tr>' +
+                  '<td><strong>1. Restaurar Tamaño (Reset)</strong></td>' +
+                  '<td>🔄 Personita en círculo estándar</td>' +
+                  '<td>Devuelve al personaje a su escala original (100%).</td>' +
+                  '<td>Se coloca al inicio para reiniciar el tamaño antes de cada animación.</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>2. Achicar (Shrink)</strong></td>' +
+                  '<td>➖ Personita con flechas hacia adentro</td>' +
+                  '<td>Reduce el tamaño del personaje según el número indicado.</td>' +
+                  '<td>Con número 5, el personaje parece estar al fondo del horizonte lejano.</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>3. Agrandar (Grow)</strong></td>' +
+                  '<td>➕ Personita con flechas hacia afuera</td>' +
+                  '<td>Aumenta el tamaño del personaje haciéndolo crecer.</td>' +
+                  '<td>Se coloca junto con pasos hacia abajo para simular que camina hacia nosotros.</td>' +
+                '</tr>' +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="margin-top:20px;">' +
+          '<h5 style="margin:0 0 12px;color:#1E293B;font-size:0.95rem;"><i class="fas fa-code"></i> Cadena de Bloques Exacta del Proyecto (perpestiva.sjr):</h5>' +
+          '<div class="codeorg-levels-solutions-grid">' +
+            '<div class="col-sol-card" style="border-left:3.5px solid #7C3AED;">' +
+              '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#7C3AED;">Personaje Teen3</span> <strong>Algoritmo de Caminata en Perspectiva</strong></div>' +
+              '<div class="col-sc-blocks" style="gap:6px;flex-wrap:wrap;">' +
+                '<div class="co-block" style="background:#FBBF24;border-color:#D97706;color:#78350F;"><i class="fas fa-flag"></i> Bandera Verde</div>' +
+                '<div class="co-block" style="background:#2563EB;border-color:#1D4ED8;color:#FFF;"><i class="fas fa-home"></i> Ir a Casa (Inicio)</div>' +
+                '<div class="co-block" style="background:#7C3AED;border-color:#6D28D9;color:#FFF;"><i class="fas fa-sync-alt"></i> Restaurar Tamaño</div>' +
+                '<div class="co-block" style="background:#7C3AED;border-color:#6D28D9;color:#FFF;"><i class="fas fa-compress-alt"></i> Achicar (5)</div>' +
+                '<div class="co-block" style="background:#2563EB;border-color:#1D4ED8;color:#FFF;"><i class="fas fa-arrow-down"></i> Bajar (2)</div>' +
+                '<div class="co-block" style="background:#7C3AED;border-color:#6D28D9;color:#FFF;"><i class="fas fa-expand-alt"></i> Agrandar (2)</div>' +
+                '<div class="co-block" style="background:#2563EB;border-color:#1D4ED8;color:#FFF;"><i class="fas fa-arrow-down"></i> Bajar (2)</div>' +
+                '<div class="co-block" style="background:#7C3AED;border-color:#6D28D9;color:#FFF;"><i class="fas fa-expand-alt"></i> Agrandar (2)</div>' +
+                '<div class="co-block" style="background:#2563EB;border-color:#1D4ED8;color:#FFF;"><i class="fas fa-arrow-down"></i> Bajar (4)</div>' +
+              '</div>' +
+              '<div class="col-sc-note">Inicia en la parte superior del camino como un punto diminuto y desciende por el sendero creciendo hasta llegar al primer plano.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="margin-top:20px;">' +
+          '<h5 style="margin:0 0 10px;color:#1E293B;font-size:0.95rem;"><i class="fas fa-lightbulb"></i> Consejos Clave para el Docente y el Alumno en Sala de 5:</h5>' +
+          '<div class="apm-tb-grid">' +
+            '<div class="apm-tb-item" style="border-left-color:#7C3AED;">' +
+              '<h6>1. Siempre colocar Restaurar Tamaño primero</h6>' +
+              '<p>Al pulsar la bandera repetidas veces, el personaje debe volver a su tamaño 100% antes de achicarse para que no quede microscópico.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#2563EB;">' +
+              '<h6>2. Coordinar el movimiento con la escala</h6>' +
+              '<p>Cada vez que el personaje avanza casilleros hacia abajo (hacia adelante), encastramos un bloque de Agrandar.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#10B981;">' +
+              '<h6>3. Elegir escenarios con caminos diagonales o verticales</h6>' +
+              '<p>Los fondos de bosques, montañas, parques o veredas refuerzan visualmente la línea de horizonte y la perspectiva.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#EA580C;">' +
+              '<h6>4. Efecto contrario: Alejarse hacia el fondo</h6>' +
+              '<p>Invertir el algoritmo: empezar grande al frente, subir casilleros hacia arriba y achicar para simular que se va lejos.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
+          '<a href="' + sampleFileUrl + '" download="perpestiva.sjr" class="arm-btn-primary" style="background:#7C3AED;border-color:#6D28D9;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.92rem;">' +
+            '<i class="fas fa-download"></i> Descargar Proyecto de Ejemplo (.sjr)' +
+          '</a>' +
+          '<a href="https://codejr.org" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="padding:10px 20px;display:inline-flex;align-items:center;gap:8px;font-size:0.92rem;text-decoration:none;">' +
+            '<i class="fas fa-external-link-alt"></i> Abrir Scratch Jr (codejr.org)' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   // ──────────────────────────────────────────────────
   // EXTRAE información de MakeCode y genera URLs de Simulador + Bloques
   // Soporta: microbit.org, arcade.makecode.com, makecode.com genérico
@@ -2740,8 +2866,9 @@
     var isCodeorg = !isPaint && (isFrozen || isMinecraft || data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
     var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
     var isDiaMadre = !isPaint && ((data.tags && data.tags.some(function(t){ return /madre|coraz[oó]n|ilumina/i.test(t); })) || (/madre|coraz[oó]n|ilumina/i.test(data.title || '')));
-    var isScratchJrVelocidad = !isPaint && !isCodeorg && (data.id === 's5-p9' || data.id === 's5-g1' || (data.tags && data.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(data.title || '')));
-    var isElectronica = !isPaint && !isCodeorg && !isScratchJrVelocidad && (isDiaMadre || data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
+    var isScratchJrPerspectiva = !isPaint && !isCodeorg && (data.id === 's5-p10' || data.id === 's5-g5' || (data.tags && data.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(data.title || '')));
+    var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && (data.id === 's5-p9' || data.id === 's5-g1' || (data.tags && data.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(data.title || '')));
+    var isElectronica = !isPaint && !isCodeorg && !isScratchJrVelocidad && !isScratchJrPerspectiva && (isDiaMadre || data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
 
     var title = data.title || 'Misión Educativa';
     var levelText = data.level ? ('Nivel ' + data.level) : 'Taller Maker';
@@ -2752,7 +2879,7 @@
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'))))));
+    var platText = isScratchJrPerspectiva ? 'Scratch Jr (Perspectiva)' : (isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego')))))));
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
@@ -2815,6 +2942,14 @@
           { icon: 'fa-toggle-on', color: '#E11D48', title: 'Interruptor Casero', desc: 'Aprender cómo al apoyar la vincha en la cabeza se cierra el contacto y brilla la luz.' }
         ];
         tipBoxText = '<strong>💡 Consejo Maker:</strong> Permitan que los niños toquen las patitas del LED sobre la pila para ver cómo prende la luz antes de pegarlo. ¡El asombro despierta la curiosidad científica!';
+      } else if (isScratchJrPerspectiva) {
+        pillars = [
+          { icon: 'fa-eye', color: '#7C3AED', title: 'Perspectiva Visual y Profundidad (3D en 2D)', desc: 'Comprender que en el mundo real lo lejano se ve pequeño y lo cercano grande, recreando esa ilusión 3D en la pantalla.' },
+          { icon: 'fa-compress-alt', color: '#9333EA', title: 'Bloque Violeta: Achicar (5 veces)', desc: 'Enviar al personaje al horizonte lejano haciéndolo diminuto en el punto de fuga superior del camino.' },
+          { icon: 'fa-expand-alt', color: '#6B21A8', title: 'Bloque Violeta: Agrandar (2 veces)', desc: 'Aumentar la escala progresivamente a medida que el personaje avanza y desciende casilleros por el sendero.' },
+          { icon: 'fa-sync-alt', color: '#2563EB', title: 'Restaurar Tamaño y Ejemplo .sjr', desc: 'Aprender la importancia de restaurar el tamaño original al inicio e inspeccionar el archivo oficial perpestiva.sjr.' }
+        ];
+        tipBoxText = '<strong>🐱 Perspectiva y Profundidad en Scratch Jr:</strong> En este Nivel 10 los exploradores descubren cómo dar volumen y profundidad a sus historias combinando los bloques violetas de apariencia con el movimiento del personaje.';
       } else if (isScratchJrVelocidad) {
         pillars = [
           { icon: 'fa-cat', color: '#EA580C', title: 'Ambiente y Entorno Scratch Jr', desc: 'Explorar la interfaz visual: biblioteca de personajes (+), botón de paisajes para cambiar escenarios y paleta de bloques encastrables.' },
@@ -2890,6 +3025,14 @@
           { icon: 'fa-gem', color: '#2563EB', title: 'Seguridad y Confianza', desc: 'Experimentar con pilas seguras de bajo voltaje (3V), perdiendo el miedo a la electrónica.' }
         ];
         tipBoxText = '<strong>🌱 Aprendizaje Vivencial:</strong> La electrónica de papel combina arte, ciencias y tecnología en una actividad sensorial inolvidable para niños de 5 años.';
+      } else if (isScratchJrPerspectiva) {
+        pillars = [
+          { icon: 'fa-cube', color: '#7C3AED', title: 'Percepción Tridimensional en 2D', desc: 'Desarrolla la abstracción de distancia y escala: comprender que el tamaño de una figura comunica profundidad espacial en la pantalla.' },
+          { icon: 'fa-layer-group', color: '#2563EB', title: 'Secuenciación Multidimensional', desc: 'Coordinar dos órdenes simultáneas en el algoritmo: avanzar casilleros en el eje vertical y alterar el tamaño de la figura.' },
+          { icon: 'fa-undo', color: '#10B981', title: 'Gestión de Estados y Reseteo', desc: 'Comprender que al modificar el tamaño de un personaje es crucial programar una instrucción de restauración al reiniciar.' },
+          { icon: 'fa-film', color: '#EA580C', title: 'Narrativa Visual y Cinematografía', desc: 'Aprender técnicas reales de animación utilizadas en cine y videojuegos para simular entradas y salidas de escena.' }
+        ];
+        tipBoxText = '<strong>🔍 Consejo para Familias:</strong> Descarguen el archivo <code>perpestiva.sjr</code> para ver cómo Teen3 camina por el bosque hacia el frente, y motiven a los chicos a probar qué pasa si cambian el número de veces que se agranda o achica.';
       } else if (isScratchJrVelocidad) {
         pillars = [
           { icon: 'fa-brain', color: '#EA580C', title: 'Pensamiento Computacional y Parámetros', desc: 'Comprender que las instrucciones de código pueden modificarse cualitativamente cambiando su velocidad o ritmo.' },
@@ -3030,7 +3173,8 @@
     var isCodeorg = !isPaint && (isFrozen || isMinecraft || mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
     var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
     var isDiaMadre = !isPaint && ((mission.tags && mission.tags.some(function(t){ return /madre|coraz[oó]n|ilumina/i.test(t); })) || (/madre|coraz[oó]n|ilumina/i.test(mission.title || '')));
-    var isScratchJrVelocidad = !isPaint && !isCodeorg && (mission.id === 's5-p9' || mission.id === 's5-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
+    var isScratchJrPerspectiva = !isPaint && !isCodeorg && (mission.id === 's5-p10' || mission.id === 's5-g5' || (mission.tags && mission.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(mission.title || '')));
+    var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && (mission.id === 's5-p9' || mission.id === 's5-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
     var isGame = !isPaint && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
@@ -3221,17 +3365,22 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
-                        (isScratchJrVelocidad ? '🐱 Scratch Jr • Escenarios & Velocidades' : (isDiaMadre ? '💖 Tarjeta Pop-Up 3D • Papertronics & Circuito' : (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)))))))) +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1'))))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isScratchJrPerspectiva ? '🐱 Scratch Jr • Escenarios & Perspectiva' : (isScratchJrVelocidad ? '🐱 Scratch Jr • Escenarios & Velocidades' : (isDiaMadre ? '💖 Tarjeta Pop-Up 3D • Papertronics & Circuito' : (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level))))))))) +
                       '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card" style="' + (isScratchJrVelocidad ? 'border-left:4px solid #EA580C;background:#FFF7ED;' : (isDiaMadre ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : ''))))))) + '">' +
-                        '<h4 style="' + (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : ''))))))) + '"><i class="fas ' + (isScratchJrVelocidad ? 'fa-tachometer-alt' : (isDiaMadre ? 'fa-heart' : (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered'))))))) + '"></i> ' + (isScratchJrVelocidad ? 'Objetivo: Entorno Scratch Jr y Control de Velocidades' : (isDiaMadre ? 'Reto Maker: Corazón 3D y Luz en el Escudo' : (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?')))))) + '</h4>' +
-                        '<p style="' + (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : ''))))))) + '">' + (mission.objective || mission.description) + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isScratchJrPerspectiva ? 'border-left:4px solid #7C3AED;background:#FAF5FF;' : (isScratchJrVelocidad ? 'border-left:4px solid #EA580C;background:#FFF7ED;' : (isDiaMadre ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : '')))))))) + '">' +
+                        '<h4 style="' + (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : '')))))))) + '"><i class="fas ' + (isScratchJrPerspectiva ? 'fa-search-plus' : (isScratchJrVelocidad ? 'fa-tachometer-alt' : (isDiaMadre ? 'fa-heart' : (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered')))))))) + '"></i> ' + (isScratchJrPerspectiva ? 'Objetivo: Perspectiva 3D y Bloques Violetas' : (isScratchJrVelocidad ? 'Objetivo: Entorno Scratch Jr y Control de Velocidades' : (isDiaMadre ? 'Reto Maker: Corazón 3D y Luz en el Escudo' : (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?'))))))) + '</h4>' +
+                        '<p style="' + (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : '')))))))) + '">' + (mission.objective || mission.description) + '</p>' +
                         (isMinecraft ? '<div style="margin-top:10px;padding:8px 12px;background:#FEF3C7;border-left:3px solid #D97706;border-radius:6px;font-size:0.8rem;color:#92400E;line-height:1.4;"><strong><i class="fas fa-exclamation-triangle"></i> ¡Aclaración Importante!</strong> No es el Minecraft comercial tradicional de juego libre: es una adaptación pedagógica oficial de Code.org para aprender a programar con bloques.</div>' : '') +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
-                        (isScratchJrVelocidad ?
+                        (isScratchJrPerspectiva ?
+                          '<span class="apm-skill-pill" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-search-plus"></i> Perspectiva 3D en 2D</span>' +
+                          '<span class="apm-skill-pill" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-arrows-alt-v"></i> Profundidad en el Sendero</span>' +
+                          '<span class="apm-skill-pill" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-expand-arrows-alt"></i> Bloques Violetas</span>' +
+                          '<span class="apm-skill-pill" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-cat"></i> Personajes Scratch Jr</span>' :
+                         isScratchJrVelocidad ?
                           '<span class="apm-skill-pill" style="background:#FFEDD5;color:#C2410C;"><i class="fas fa-cat"></i> Ambiente Scratch Jr</span>' +
                           '<span class="apm-skill-pill" style="background:#FFEDD5;color:#C2410C;"><i class="fas fa-tachometer-alt"></i> Control de Velocidades</span>' +
                           '<span class="apm-skill-pill" style="background:#FFEDD5;color:#C2410C;"><i class="fas fa-image"></i> Escenarios y Fondos</span>' +
@@ -3275,8 +3424,8 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))))) + '">' +
-                        (isScratchJrVelocidad ? 'Ver Herramientas y Bloques <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' : (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>'))))))) +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))))))) + '">' +
+                        (isScratchJrPerspectiva ? 'Ver Materiales y Bloques Violetas <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? 'Ver Herramientas y Bloques <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' : (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>')))))))) +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -3446,15 +3595,24 @@
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                          (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')))) +
+                          (isScratchJrPerspectiva ? '🐱 Materiales y Bloques de Perspectiva (Scratch Jr)' : (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller'))))) +
                         '</h3>' +
                         '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                          (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')))) +
+                          (isScratchJrPerspectiva ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo perpestiva.sjr de ejemplo:' : (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:'))))) +
                         '</p>' +
                       '</div>' +
                       '<div class="apm-materials-grid">' +
                         materialsList.map(function(m){
-                          var mIcon = isScratchJrVelocidad ? (
+                          var mIcon = isScratchJrPerspectiva ? (
+                            /perspectiva|apariencia|achicar|agrandar/i.test(m.title) ? 'fa-expand-arrows-alt' :
+                            /inicio|home/i.test(m.title) ? 'fa-home' :
+                            /restaurar|reset/i.test(m.title) ? 'fa-sync-alt' :
+                            /bandera/i.test(m.title) ? 'fa-flag' :
+                            /archivo|ejemplo|\.sjr/i.test(m.title) ? 'fa-file-code' :
+                            /sendero|camino|escenario|fondo/i.test(m.title) ? 'fa-image' :
+                            /desplazamiento|abajo|pasos/i.test(m.title) ? 'fa-arrow-down' :
+                            /scratch|app/i.test(m.title) ? 'fa-cat' : 'fa-puzzle-piece'
+                          ) : isScratchJrVelocidad ? (
                             /scratch|app|lienzo/i.test(m.title) ? 'fa-cat' :
                             /archivo|ejemplo|\.sjr/i.test(m.title) ? 'fa-file-code' :
                             /bandera/i.test(m.title) ? 'fa-flag' :
@@ -3494,18 +3652,19 @@
                           '</div>';
                         }).join('') +
                       '</div>' +
-                      '<div class="apm-reto-card" style="margin-top:22px;' + (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : '')))) + '">' +
-                        '<h4 style="' + (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : ''))))) + '"><i class="fas fa-lightbulb"></i> ' + (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')))) + '</h4>' +
-                        '<p style="' + (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : '')))) + '">' +
-                          (isScratchJrVelocidad ? '¡El secreto de la carrera a diferentes velocidades! Encastrá la <strong>Bandera Verde</strong> de inicio, luego el <strong>bloque naranja de Velocidad</strong> (tocalo para elegir 1 caracol, 2 caminante o 3 corredor) y por último la <strong>flecha azul de movimiento</strong>. ¡Al pulsar la bandera verde, todos los personajes arrancan juntos pero el más veloz llega primero!' :
+                      '<div class="apm-reto-card" style="margin-top:22px;' + (isScratchJrPerspectiva ? 'background:#FAF5FF;border-color:#D8B4FE;' : (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : ''))))) + '">' +
+                        '<h4 style="' + (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : '')))))) + '"><i class="fas fa-lightbulb"></i> ' + (isScratchJrPerspectiva ? 'Consejo del Programador: Bloques Violetas de Perspectiva' : (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker'))))) + '</h4>' +
+                        '<p style="' + (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : ''))))) + '">' +
+                          (isScratchJrPerspectiva ? '¡El secreto de la perspectiva 3D! Al tocar la <strong>Bandera Verde</strong>, colocá primero <strong>Inicio 🏠</strong> y <strong>Restaurar Tamaño 🔄</strong>. Luego <strong>Achicar 5 ➖</strong> para que Teen3 empiece chiquito en el horizonte del camino. A medida que agregás <strong>Bajar ⬇️</strong>, encastrá <strong>Agrandar 2 ➕</strong> para que crezca simulando que camina hacia el frente. ¡Probalo en perpestiva.sjr!' :
+                           isScratchJrVelocidad ? '¡El secreto de la carrera a diferentes velocidades! Encastrá la <strong>Bandera Verde</strong> de inicio, luego el <strong>bloque naranja de Velocidad</strong> (tocalo para elegir 1 caracol, 2 caminante o 3 corredor) y por último la <strong>flecha azul de movimiento</strong>. ¡Al pulsar la bandera verde, todos los personajes arrancan juntos pero el más veloz llega primero!' :
                            isDiaMadre ? '¡El secreto del Pop-Up y la Luz! Cortá con tijera <strong>únicamente por las líneas continuas</strong> de los escalones del corazón pixelado (nunca cortes las líneas de puntos, esas son para doblar hacia adelante). Pegá tu foto en el centro exacto. Y asegurate de que la cinta de cobre detrás del <strong>escudo del Colegio Paulo Freire</strong> baje en solapa para tocar la pista de la pila al presionar con el dedo.' :
                            isPaint ? (isPaintBanderas ? '¡El secreto de las franjas parejas y los soles! Usá <strong>Rectángulo</strong> para el marco de la bandera, <strong>Líneas</strong> rectas con la tecla <strong>Shift</strong> para dividir las franjas iguales y <strong>Elipse con Shift</strong> para el sol amarillo. ¡Con <strong>Ctrl + Z</strong> corregís cualquier trazo sin borrar todo!' : '¡El secreto de los círculos perfectos! Mantené presionada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás el mouse con la herramienta Elipse para que salga un círculo redondo perfecto en la mitad de la cancha. ¡And si te equivocás, apretá <strong>Ctrl + Z</strong> para deshacer sin borrar todo!') :
                            isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
                         '</p>' +
                       '</div>' +
                       '<div style="text-align:center;margin-top:20px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))) + '">' +
-                          (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')))) +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))) + '">' +
+                          (isScratchJrPerspectiva ? '¡Ver Pasos de Programación y Ejemplo perpestiva.sjr! <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>'))))) +
                         '</button>' +
                       '</div>' +
                     '</div>'
@@ -3514,7 +3673,73 @@
 
                 // SLIDE 2: Instrucciones de Armado (Electrónica) O Desafío Angry Birds (Code.org) O Código y Simulador (MakeCode/Scratch)
                 '<div class="apm-slide-page" data-slide-idx="2">' +
-                  (isScratchJrVelocidad ?
+                  (isScratchJrPerspectiva ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-search-plus" style="color:#7C3AED;"></i> Nivel 10: Escenarios y Manejo de Perspectiva en Scratch Jr</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Ejemplo interactivo: <strong>proyectos/perpestiva.sjr</strong> | Plataforma: <strong>https://codejr.org</strong></p>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+                          '<a href="' + (mission.projectFileUrl || 'proyectos/perpestiva.sjr') + '" download="perpestiva.sjr" class="arm-btn-primary" style="background:#7C3AED;border-color:#6D28D9;font-size:0.84rem;padding:7px 16px;text-decoration:none;">' +
+                            '<i class="fas fa-download"></i> Descargar perpestiva.sjr' +
+                          '</a>' +
+                          '<a href="https://codejr.org" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="font-size:0.84rem;padding:7px 14px;text-decoration:none;">' +
+                            '<i class="fas fa-external-link-alt"></i> Abrir Scratch Jr' +
+                          '</a>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="codeorg-challenge-hero-card" style="border-left:4px solid #7C3AED;">' +
+                        '<div class="chc-left">' +
+                          '<img src="img/scratchjr.png" alt="Scratch Jr Perspectiva" class="chc-img" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80\'">' +
+                        '</div>' +
+                        '<div class="chc-right">' +
+                          '<span class="chc-tag" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-cat"></i> Misión Nivel 10 • Scratch Jr</span>' +
+                          '<h4>Crea profundidad 3D cambiando la escala de los personajes</h4>' +
+                          '<p>En Scratch Jr, podemos simular que un personaje camina desde el fondo hacia nosotros combinando la <strong>Bandera Verde</strong>, el bloque <strong>Restaurar Tamaño</strong>, <strong>Achicar</strong> y secuencias de <strong>Bajar + Agrandar</strong>.</p>' +
+                          '<div class="chc-blocks-preview" style="gap:4px;flex-wrap:wrap;">' +
+                            '<span class="cbp-block run" style="background:#FBBF24;border-color:#D97706;color:#78350F;"><i class="fas fa-flag"></i> bandera</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#2563EB;border-color:#1D4ED8;color:#FFF;"><i class="fas fa-home"></i> inicio</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#7C3AED;border-color:#6D28D9;color:#FFF;"><i class="fas fa-sync-alt"></i> restaurar</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#7C3AED;border-color:#6D28D9;color:#FFF;"><i class="fas fa-compress-alt"></i> achicar (5)</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#2563EB;border-color:#1D4ED8;color:#FFF;"><i class="fas fa-arrow-down"></i> bajar + crecer</span>' +
+                          '</div>' +
+                          '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">' +
+                            '<a href="' + (mission.projectFileUrl || 'proyectos/perpestiva.sjr') + '" download="perpestiva.sjr" class="arm-btn-primary" style="background:#7C3AED;border-color:#6D28D9;font-size:0.92rem;padding:9px 20px;text-decoration:none;">' +
+                              '<i class="fas fa-download"></i> Descargar Archivo Ejemplo: perpestiva.sjr' +
+                            '</a>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-tb-grid" style="margin-top:8px;">' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #7C3AED;">' +
+                          '<h6>Paso 1: Escenario con Sendero o Bosque</h6>' +
+                          '<p>Elegí un fondo donde haya un camino o perspectiva (por ejemplo el sendero en el bosque).</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #2563EB;">' +
+                          '<h6>Paso 2: Colocar el Personaje en el Horizonte</h6>' +
+                          '<p>Ubicá al personaje arriba al inicio del camino y programá <code>Ir a Casa</code> para fijar su posición.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #9333EA;">' +
+                          '<h6>Paso 3: Achicar al Fondo</h6>' +
+                          '<p>Encastrá <code>Restaurar Tamaño</code> y luego el bloque violeta de <code>Achicar (5)</code> para que se vea lejano.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #10B981;">' +
+                          '<h6>Paso 4: Bajar y Crecer hacia Adelante</h6>' +
+                          '<p>Combiná <code>Bajar (2)</code> con <code>Agrandar (2)</code> repetidamente para que crezca al acercarse.</p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div style="text-align:right;margin-top:8px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#7C3AED;border-color:#6D28D9;">' +
+                          '¡Ver Misión Cumplida y Consejos! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isScratchJrVelocidad ?
                     '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
@@ -3872,14 +4097,18 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆'))))))) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))))))) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))))))) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆')))))))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')))))))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')))))))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
                     '<div class="apm-extra-challenges">' +
-                      (isScratchJrVelocidad ?
+                      (isScratchJrPerspectiva ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#7C3AED;">1</div><div><h6>Alejarse hacia el Horizonte</h6><p>Invertí el algoritmo: empezá grande al frente y programá pasos hacia arriba con bloques de achicar para que parezca que se aleja.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#7C3AED;">2</div><div><h6>Dos Personajes Cruzándose</h6><p>Programá un personaje que camine hacia adelante agrandándose y otro que camine hacia el fondo achicándose al mismo tiempo.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#7C3AED;">3</div><div><h6>Diálogo en Primer Plano</h6><p>Al llegar al final del camino en tamaño grande, agregá el bloque violeta de diálogo para que diga "¡Hola, llegué!".</p></div></div>' :
+                       isScratchJrVelocidad ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#EA580C;">1</div><div><h6>Carrera de 3 Personajes</h6><p>Colocá una tortuga en velocidad 1 (lenta), un gato en velocidad 2 (media) y un auto en velocidad 3 (rápida).</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#EA580C;">2</div><div><h6>Cambio de Escenario al Ganar</h6><p>Agregá una segunda página con un podio de trofeos y usá el bloque rojo de transición para pasar de pantalla.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#EA580C;">3</div><div><h6>Grabar Sonido de Largada</h6><p>Usá el bloque verde de micrófono para grabar tu voz diciendo "Preparados, listos, ¡YA!" al iniciar.</p></div></div>' :
@@ -3941,13 +4170,15 @@
                           '<i class="fas fa-undo"></i> Repasar Presentación' +
                         '</button>'
                       :
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981'))))) + ';border-color:' + (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669'))))) + ';font-size:0.9rem;padding:9px 18px;">' +
-                          (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')))) +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981')))))) + ';border-color:' + (isScratchJrPerspectiva ? '#6D28D9' : (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669')))))) + ';font-size:0.9rem;padding:9px 18px;">' +
+                          (isScratchJrPerspectiva ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación'))))) +
                         '</button>' +
                         '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                          (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')))) +
+                          (isScratchJrPerspectiva ? '<i class="fas fa-search-plus"></i> Ver Esquema de Perspectiva' : (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial'))))) +
                         '</button>' +
-                        (isScratchJrVelocidad ?
+                        (isScratchJrPerspectiva ?
+                          '<a href="' + (mission.projectFileUrl || 'proyectos/perpestiva.sjr') + '" download="perpestiva.sjr" class="arm-btn-secondary" style="font-size:0.9rem;padding:9px 18px;text-decoration:none;"><i class="fas fa-download"></i> Descargar perpestiva.sjr</a>' :
+                         isScratchJrVelocidad ?
                           '<a href="' + (mission.projectFileUrl || 'proyectos/velocidad.sjr') + '" download="velocidad.sjr" class="arm-btn-secondary" style="font-size:0.9rem;padding:9px 18px;text-decoration:none;"><i class="fas fa-download"></i> Descargar velocidad.sjr</a>' : '') +
                         '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía PDF</button>' +
                         '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
@@ -4169,25 +4400,30 @@
 
               // SUB-PANEL SCRATCH JR / FOTO
               '<div id="apm-scratch-delivery-section" style="' + (!isElectronica && !isMakecode ? 'display:block;' : 'display:none;') + '">' +
-                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #C2410C 0%, #EA580C 100%);">' +
-                  '<div class="apm-dh-icon"><i class="fas fa-cat"></i></div>' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, ' + (isScratchJrPerspectiva ? '#6B21A8 0%, #9333EA' : '#C2410C 0%, #EA580C') + ' 100%);">' +
+                  '<div class="apm-dh-icon"><i class="fas ' + (isScratchJrPerspectiva ? 'fa-search-plus' : 'fa-cat') + '"></i></div>' +
                   '<div>' +
                     '<h4>Subir Creación de Scratch Jr</h4>' +
                     '<p>Subí tu archivo de Scratch Jr (.sjr, .sb3, .pjson, .sb) o una captura de pantalla de tus personajes y bloques para guardarlo en tu carpeta.</p>' +
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body">' +
-                  (isScratchJrVelocidad ?
+                  (isScratchJrPerspectiva ?
+                    '<div style="margin-bottom:14px;background:#FAF5FF;border:1.5px solid #D8B4FE;border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">' +
+                      '<div><strong style="color:#581C87;"><i class="fas fa-file-code"></i> ¿Querés guiarte con el ejemplo oficial?</strong><div style="font-size:0.84rem;color:#6B21A8;">Descargá <strong>perpestiva.sjr</strong> para probar la animación en Scratch Jr antes de entregar tu proyecto.</div></div>' +
+                      '<a href="' + (mission.projectFileUrl || 'proyectos/perpestiva.sjr') + '" download="perpestiva.sjr" class="arm-btn-primary" style="background:#7C3AED;border-color:#6D28D9;padding:8px 16px;font-size:0.86rem;text-decoration:none;"><i class="fas fa-download"></i> Descargar perpestiva.sjr</a>' +
+                    '</div>' :
+                   isScratchJrVelocidad ?
                     '<div style="margin-bottom:14px;background:#FFF7ED;border:1.5px solid #FDBA74;border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">' +
                       '<div><strong style="color:#9A3412;"><i class="fas fa-file-code"></i> ¿Querés guiarte con el ejemplo oficial?</strong><div style="font-size:0.84rem;color:#7C2D12;">Descargá <strong>velocidad.sjr</strong> para probarlo en Scratch Jr antes de entregar tu proyecto.</div></div>' +
                       '<a href="' + (mission.projectFileUrl || 'proyectos/velocidad.sjr') + '" download="velocidad.sjr" class="arm-btn-primary" style="background:#EA580C;border-color:#C2410C;padding:8px 16px;font-size:0.86rem;text-decoration:none;"><i class="fas fa-download"></i> Descargar velocidad.sjr</a>' +
                     '</div>' : '') +
                   '<div class="apm-scratch-dropzone" id="apm-scratch-dropzone">' +
-                    '<div class="apm-sd-icon" style="color:#EA580C;"><i class="fas fa-cloud-upload-alt"></i></div>' +
+                    '<div class="apm-sd-icon" style="color:' + (isScratchJrPerspectiva ? '#7C3AED' : '#EA580C') + ';"><i class="fas fa-cloud-upload-alt"></i></div>' +
                     '<h4>Arrastrá tu archivo de Scratch Jr aquí</h4>' +
                     '<p>O hacé clic en el botón para seleccionarlo (.sjr, .sb3, .pjson, .sb, .png, .jpg)</p>' +
                     '<input type="file" id="apm-scratch-file-input" style="display:none;" accept=".sjr,.sb3,.pjson,.sb,.png,.jpg,.jpeg">' +
-                    '<button type="button" id="apm-scratch-browse-btn" class="apm-delivery-submit-btn" style="background:#EA580C;"><i class="fas fa-folder-open"></i> Seleccionar Archivo</button>' +
+                    '<button type="button" id="apm-scratch-browse-btn" class="apm-delivery-submit-btn" style="background:' + (isScratchJrPerspectiva ? '#7C3AED' : '#EA580C') + ';"><i class="fas fa-folder-open"></i> Seleccionar Archivo</button>' +
                   '</div>' +
                   '<div id="apm-scratch-delivery-status" style="margin-top:14px;">' +
                     (savedFileName ?
@@ -4209,7 +4445,9 @@
 
           // ── PANEL 3: SOLUCIÓN OFICIAL ──
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
-            (isScratchJrVelocidad ?
+            (isScratchJrPerspectiva ?
+              renderScratchJrPerspectivaSolutionHtml(mission) :
+             isScratchJrVelocidad ?
               renderScratchJrVelocidadSolutionHtml(mission) :
              isCodeorg ?
               renderCodeorgSolutionHtml(mission) :
