@@ -646,37 +646,158 @@
 
     var sala5SpecialBannerHtml = '';
     if (student.gradeId === 'sala5') {
+      var idxSombrero = adventureMissions.findIndex(function(m){
+        return (m.id === 's5-p1') || (/sombrero|patricio/i.test(m.title || ''));
+      });
+      if (idxSombrero === -1) idxSombrero = 0;
+
+      var idxVarita = adventureMissions.findIndex(function(m){
+        return (m.id === 's5-p3') || (/varita/i.test(m.title || ''));
+      });
+      if (idxVarita === -1) idxVarita = 2;
+
+      var idxMadre = adventureMissions.findIndex(function(m){
+        return (m.id === 's5-p5') || (/madre|coraz[oó]n|pop-up/i.test(m.title || ''));
+      });
+      if (idxMadre === -1) idxMadre = 4;
+
+      var activeSpotlight = window.sala5SpotlightCurrentSlide || 0;
+      if (activeSpotlight < 0 || activeSpotlight > 2) activeSpotlight = 0;
+      var spotlightTheme = (activeSpotlight === 1) ? 'theme-varita' : (activeSpotlight === 2 ? 'theme-madre' : 'theme-sombrero');
+
       sala5SpecialBannerHtml =
-        '<div class="arm-sala5-spotlight-card">' +
-          '<div class="arm-s5-badge-top">' +
-            '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" class="arm-s5-crest">' +
-            '<span>Colegio Paulo Freire · Taller de robótica y programación</span>' +
+        '<div class="arm-sala5-spotlight-card ' + spotlightTheme + '" id="arm-sala5-spotlight-carousel">' +
+          // Barra superior del carrusel con escudo y pestañas
+          '<div class="arm-s5-carousel-topbar">' +
+            '<div class="arm-s5-badge-top">' +
+              '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" class="arm-s5-crest">' +
+              '<span>Colegio Paulo Freire · Taller de robótica y programación</span>' +
+            '</div>' +
+            '<div class="arm-s5-carousel-nav">' +
+              '<button type="button" class="arm-s5-cnav-btn arm-s5-prev-btn" title="Proyecto Anterior" aria-label="Anterior">' +
+                '<i class="fas fa-chevron-left"></i>' +
+              '</button>' +
+              '<div class="arm-s5-carousel-tabs">' +
+                '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0">' +
+                  '<span>🍀 Sombrero</span>' +
+                '</button>' +
+                '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1">' +
+                  '<span>🪄 Varita Mágica</span>' +
+                '</button>' +
+                '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2">' +
+                  '<span>💖 Tarjeta Pop-Up 3D</span>' +
+                '</button>' +
+              '</div>' +
+              '<button type="button" class="arm-s5-cnav-btn arm-s5-next-btn" title="Proyecto Siguiente" aria-label="Siguiente">' +
+                '<i class="fas fa-chevron-right"></i>' +
+              '</button>' +
+            '</div>' +
           '</div>' +
-          '<div class="arm-s5-content-row">' +
-            '<div class="arm-s5-hat-preview" id="arm-s5-hat-interactive" role="button" tabindex="0" title="¡Hacé click para encender la luz verde del trébol!">' +
-              '<img src="img/proyectos/sombrero_san_patricio_solo_sombrero.png" alt="Sombrero de San Patricio" class="arm-s5-hat-img">' +
-              '<div class="arm-s5-led-glow" id="arm-s5-led-glow"><i class="fas fa-lightbulb"></i></div>' +
-              '<span class="arm-s5-interactive-hint"><i class="fas fa-hand-pointer"></i> ¡Tocá para encender!</span>' +
-            '</div>' +
-            '<div class="arm-s5-info">' +
-              '<div class="arm-s5-tag"><i class="fas fa-sparkles"></i> PROYECTO OFICIAL SALA DE 5 AÑOS</div>' +
-              '<h3 class="arm-s5-title">El Sombrero Luminoso de San Patricio 🍀🎩</h3>' +
-              '<p class="arm-s5-desc">¡Nuestro primer invento maker! Aprendemos cómo viaja la electricidad con <strong>cinta de cobre conductora</strong>, un <strong>diodo LED verde</strong> en el trébol y una <strong>pila botón CR2032</strong> con interruptor en la vincha.</p>' +
-              '<div class="arm-s5-materials-pills">' +
-                '<span><i class="fas fa-tape"></i> Cinta de cobre</span>' +
-                '<span><i class="fas fa-lightbulb"></i> LED verde</span>' +
-                '<span><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
-                '<span><i class="fas fa-toggle-on"></i> Interruptor Vincha</span>' +
+
+          // Contenedor de diapositivas
+          '<div class="arm-s5-slides-container">' +
+            // SLIDE 0: Sombrero de San Patricio
+            '<div class="arm-s5-slide ' + (activeSpotlight === 0 ? 'active' : '') + '" data-slide-idx="0" style="' + (activeSpotlight === 0 ? 'display:block;' : 'display:none;') + '">' +
+              '<span class="arm-s5-watermark">🍀</span>' +
+              '<div class="arm-s5-content-row">' +
+                '<div class="arm-s5-preview arm-s5-hat-preview" id="arm-s5-hat-interactive" role="button" tabindex="0" title="¡Hacé click para encender la luz verde del trébol!">' +
+                  '<img src="img/proyectos/sombrero_san_patricio_solo_sombrero.png" alt="Sombrero de San Patricio" class="arm-s5-preview-img">' +
+                  '<div class="arm-s5-led-glow glow-sombrero" id="arm-s5-led-glow-sombrero"><i class="fas fa-lightbulb"></i></div>' +
+                  '<span class="arm-s5-interactive-hint"><i class="fas fa-hand-pointer"></i> ¡Tocá para encender!</span>' +
+                '</div>' +
+                '<div class="arm-s5-info">' +
+                  '<div class="arm-s5-tag"><i class="fas fa-sparkles"></i> PROYECTO OFICIAL SALA DE 5 AÑOS • NIVEL 1</div>' +
+                  '<h3 class="arm-s5-title">El Sombrero Luminoso de San Patricio 🍀🎩</h3>' +
+                  '<p class="arm-s5-desc">¡Nuestro primer invento maker! Aprendemos cómo viaja la electricidad con <strong>cinta de cobre conductora</strong>, un <strong>diodo LED verde</strong> en el trébol y una <strong>pila botón CR2032</strong> con interruptor en la vincha.</p>' +
+                  '<div class="arm-s5-materials-pills">' +
+                    '<span><i class="fas fa-tape"></i> Cinta de cobre</span>' +
+                    '<span><i class="fas fa-lightbulb"></i> LED verde</span>' +
+                    '<span><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
+                    '<span><i class="fas fa-toggle-on"></i> Interruptor Vincha</span>' +
+                  '</div>' +
+                  '<div class="arm-s5-actions">' +
+                    '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" data-mission-idx="' + idxSombrero + '">' +
+                      '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                    '</button>' +
+                    '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" data-mission-idx="' + idxSombrero + '">' +
+                      '<i class="fas fa-file-pdf"></i> <span>Guía y Plantilla PDF</span>' +
+                    '</button>' +
+                  '</div>' +
+                '</div>' +
               '</div>' +
-              '<div class="arm-s5-actions">' +
-                '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" data-mission-idx="0">' +
-                  '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
-                '</button>' +
-                '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" data-mission-idx="0">' +
-                  '<i class="fas fa-file-pdf"></i> <span>Guía y Plantilla PDF</span>' +
-                '</button>' +
+            '</div>' +
+
+            // SLIDE 1: La Varita Mágica Luminosa
+            '<div class="arm-s5-slide ' + (activeSpotlight === 1 ? 'active' : '') + '" data-slide-idx="1" style="' + (activeSpotlight === 1 ? 'display:block;' : 'display:none;') + '">' +
+              '<span class="arm-s5-watermark">🪄</span>' +
+              '<div class="arm-s5-content-row">' +
+                '<div class="arm-s5-preview arm-s5-wand-preview" id="arm-s5-wand-interactive" role="button" tabindex="0" title="¡Hacé click para encender la luz de la varita!">' +
+                  '<img src="img/proyectos/varita_magica_cover.png" alt="Varita Mágica Luminosa" class="arm-s5-preview-img">' +
+                  '<div class="arm-s5-led-glow glow-varita" id="arm-s5-led-glow-varita"><i class="fas fa-magic"></i></div>' +
+                  '<span class="arm-s5-interactive-hint" style="background:rgba(124, 58, 237, 0.9);"><i class="fas fa-wand-magic-sparkles"></i> ¡Tocá para hacer magia!</span>' +
+                '</div>' +
+                '<div class="arm-s5-info">' +
+                  '<div class="arm-s5-tag" style="color:#7C3AED;"><i class="fas fa-magic"></i> PROYECTO OFICIAL SALA DE 5 AÑOS • NIVEL 3</div>' +
+                  '<h3 class="arm-s5-title" style="color:#581C87;">La Varita Mágica Luminosa 🪄✨</h3>' +
+                  '<p class="arm-s5-desc">¡Construimos una varita mágica brillante! Montamos un circuito sobre un <strong>palito de algodón de azúcar</strong> con <strong>cinta de cobre</strong>, un <strong>diodo LED</strong> en la punta y una <strong>pila botón</strong>. Al presionar el interruptor táctil en el mango, ¡la varita se ilumina con destellos mágicos!</p>' +
+                  '<div class="arm-s5-materials-pills">' +
+                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-magic"></i> Palito de algodón</span>' +
+                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-lightbulb"></i> LED alto brillo</span>' +
+                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-tape"></i> Cinta de cobre</span>' +
+                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
+                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-hand-pointer"></i> Pulsador en mango</span>' +
+                  '</div>' +
+                  '<div class="arm-s5-actions">' +
+                    '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);box-shadow:0 4px 14px rgba(124,58,237,0.35);" data-mission-idx="' + idxVarita + '">' +
+                      '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                    '</button>' +
+                    '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" style="color:#7C3AED;border-color:#DDD6FE;" data-mission-idx="' + idxVarita + '">' +
+                      '<i class="fas fa-microchip"></i> <span>Guía y Esquema del Circuito</span>' +
+                    '</button>' +
+                  '</div>' +
+                '</div>' +
               '</div>' +
             '</div>' +
+
+            // SLIDE 2: Tarjeta Pop-Up 3D (Día de la Madre)
+            '<div class="arm-s5-slide ' + (activeSpotlight === 2 ? 'active' : '') + '" data-slide-idx="2" style="' + (activeSpotlight === 2 ? 'display:block;' : 'display:none;') + '">' +
+              '<span class="arm-s5-watermark">💖</span>' +
+              '<div class="arm-s5-content-row">' +
+                '<div class="arm-s5-preview arm-s5-card-preview" id="arm-s5-card-interactive" role="button" tabindex="0" title="¡Hacé click en el escudo para iluminar el corazón!">' +
+                  '<img src="img/proyectos/dia_madre_tarjeta_3d_cover.png" alt="Tarjeta Pop-Up 3D Día de la Madre" class="arm-s5-preview-img">' +
+                  '<div class="arm-s5-led-glow glow-madre" id="arm-s5-led-glow-madre"><i class="fas fa-heart"></i></div>' +
+                  '<span class="arm-s5-interactive-hint" style="background:rgba(225, 29, 72, 0.9);"><i class="fas fa-shield-alt"></i> ¡Tocá el escudo!</span>' +
+                '</div>' +
+                '<div class="arm-s5-info">' +
+                  '<div class="arm-s5-tag" style="color:#BE123C;"><i class="fas fa-heart"></i> PROYECTO OFICIAL SALA DE 5 AÑOS • NIVEL 5</div>' +
+                  '<h3 class="arm-s5-title" style="color:#881337;">Tarjeta Pop-Up 3D: Corazón Luminoso para Mamá 💖✨</h3>' +
+                  '<p class="arm-s5-desc">¡Regalo especial en Papertronics! Al abrir la tarjeta se despliega un <strong>corazón pixel 3D en relieve</strong> con la foto del peque en el centro. Al presionar el <strong>escudo del Colegio Paulo Freire</strong>, ¡se activa un circuito con luz LED que baña los bordes del corazón con un resplandor mágico!</p>' +
+                  '<div class="arm-s5-materials-pills">' +
+                    '<span style="border-color:#FDA4AF;color:#9F1239;"><i class="fas fa-heart"></i> Corazón 3D Pop-Up</span>' +
+                    '<span style="border-color:#FDA4AF;color:#9F1239;"><i class="fas fa-portrait"></i> Foto del Niño/a</span>' +
+                    '<span style="border-color:#FDA4AF;color:#9F1239;"><i class="fas fa-shield-alt"></i> Pulsador Escudo Freire</span>' +
+                    '<span style="border-color:#FDA4AF;color:#9F1239;"><i class="fas fa-lightbulb"></i> LED Alto Brillo</span>' +
+                    '<span style="border-color:#FDA4AF;color:#9F1239;"><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
+                    '<span style="border-color:#FDA4AF;color:#9F1239;"><i class="fas fa-tape"></i> Cinta de Cobre</span>' +
+                  '</div>' +
+                  '<div class="arm-s5-actions">' +
+                    '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #BE123C 0%, #E11D48 100%);box-shadow:0 4px 14px rgba(225,29,72,0.35);" data-mission-idx="' + idxMadre + '">' +
+                      '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                    '</button>' +
+                    '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" style="color:#BE123C;border-color:#FECDD3;" data-mission-idx="' + idxMadre + '">' +
+                      '<i class="fas fa-file-pdf"></i> <span>Guía y Plantilla PDF</span>' +
+                    '</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          // Indicador de puntos (dots)
+          '<div class="arm-s5-carousel-dots">' +
+            '<span class="arm-s5-dot ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" title="El Sombrero Luminoso"></span>' +
+            '<span class="arm-s5-dot ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" title="La Varita Mágica"></span>' +
+            '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="Tarjeta Pop-Up 3D"></span>' +
           '</div>' +
         '</div>';
     }
@@ -1508,22 +1629,144 @@
         };
       });
 
-      // Sombrero interactivo de San Patricio (enciende y apaga la luz verde con sonido)
-      var interactiveHat = container.querySelector('#arm-s5-hat-interactive');
-      if (interactiveHat) {
-        interactiveHat.onclick = function(e){
-          e.stopPropagation();
-          var glow = container.querySelector('#arm-s5-led-glow');
-          if (glow) {
-            glow.classList.toggle('active');
-            if (glow.classList.contains('active')) {
-              if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
-              else if (window.sounds) window.sounds.playClick();
+      // Carrusel Spotlight para Sala de 5 (Sombrero, Varita Mágica y Tarjeta Pop-Up 3D)
+      var spotlightCarousel = container.querySelector('#arm-sala5-spotlight-carousel');
+      if (spotlightCarousel) {
+        function setSpotlightSlide(newIdx) {
+          if (newIdx < 0) newIdx = 2;
+          if (newIdx > 2) newIdx = 0;
+          window.sala5SpotlightCurrentSlide = newIdx;
+
+          // Theme del card
+          spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre');
+          spotlightCarousel.classList.add(newIdx === 1 ? 'theme-varita' : (newIdx === 2 ? 'theme-madre' : 'theme-sombrero'));
+
+          // Slides
+          spotlightCarousel.querySelectorAll('.arm-s5-slide').forEach(function(sl){
+            var sIdx = parseInt(sl.dataset.slideIdx, 10);
+            if (sIdx === newIdx) {
+              sl.classList.add('active');
+              sl.style.display = 'block';
             } else {
-              if (window.sounds) window.sounds.playClick();
+              sl.classList.remove('active');
+              sl.style.display = 'none';
+            }
+          });
+
+          // Pestañas (tabs)
+          spotlightCarousel.querySelectorAll('.arm-s5-tab-pill').forEach(function(p){
+            var pIdx = parseInt(p.dataset.spotlightIdx, 10);
+            if (pIdx === newIdx) p.classList.add('active');
+            else p.classList.remove('active');
+          });
+
+          // Puntos (dots)
+          spotlightCarousel.querySelectorAll('.arm-s5-dot').forEach(function(d){
+            var dIdx = parseInt(d.dataset.spotlightIdx, 10);
+            if (dIdx === newIdx) d.classList.add('active');
+            else d.classList.remove('active');
+          });
+        }
+
+        var prevBtn = spotlightCarousel.querySelector('.arm-s5-prev-btn');
+        if (prevBtn) {
+          prevBtn.onclick = function(e){
+            e.stopPropagation();
+            if (window.sounds) window.sounds.playClick();
+            setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) - 1);
+          };
+        }
+
+        var nextBtn = spotlightCarousel.querySelector('.arm-s5-next-btn');
+        if (nextBtn) {
+          nextBtn.onclick = function(e){
+            e.stopPropagation();
+            if (window.sounds) window.sounds.playClick();
+            setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) + 1);
+          };
+        }
+
+        spotlightCarousel.querySelectorAll('.arm-s5-tab-pill, .arm-s5-dot').forEach(function(el){
+          el.onclick = function(e){
+            e.stopPropagation();
+            if (window.sounds) window.sounds.playClick();
+            var targetIdx = parseInt(el.dataset.spotlightIdx, 10);
+            if (!isNaN(targetIdx)) setSpotlightSlide(targetIdx);
+          };
+        });
+
+        // Soporte para gestos táctiles (swipe en tablets y celulares)
+        var touchStartX = 0;
+        var touchEndX = 0;
+        spotlightCarousel.addEventListener('touchstart', function(e){
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        spotlightCarousel.addEventListener('touchend', function(e){
+          touchEndX = e.changedTouches[0].screenX;
+          var diff = touchStartX - touchEndX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0) {
+              setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) + 1);
+            } else {
+              setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) - 1);
             }
           }
-        };
+        }, { passive: true });
+
+        // Previews interactivos con luces LED de cada invento
+        // 1. Sombrero de San Patricio (luz verde)
+        var hatInteractive = spotlightCarousel.querySelector('#arm-s5-hat-interactive');
+        if (hatInteractive) {
+          hatInteractive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-s5-led-glow-sombrero');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (glow.classList.contains('active')) {
+                if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+                else if (window.sounds) window.sounds.playClick();
+              } else {
+                if (window.sounds) window.sounds.playClick();
+              }
+            }
+          };
+        }
+
+        // 2. Varita Mágica Luminosa (luz violeta / destello)
+        var wandInteractive = spotlightCarousel.querySelector('#arm-s5-wand-interactive');
+        if (wandInteractive) {
+          wandInteractive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-s5-led-glow-varita');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (glow.classList.contains('active')) {
+                if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+                else if (window.sounds) window.sounds.playClick();
+              } else {
+                if (window.sounds) window.sounds.playClick();
+              }
+            }
+          };
+        }
+
+        // 3. Tarjeta Pop-Up 3D Día de la Madre (luz rosa / corazón)
+        var cardInteractive = spotlightCarousel.querySelector('#arm-s5-card-interactive');
+        if (cardInteractive) {
+          cardInteractive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-s5-led-glow-madre');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (glow.classList.contains('active')) {
+                if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+                else if (window.sounds) window.sounds.playClick();
+              } else {
+                if (window.sounds) window.sounds.playClick();
+              }
+            }
+          };
+        }
       }
     }
 

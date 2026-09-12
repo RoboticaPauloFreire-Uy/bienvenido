@@ -9027,25 +9027,57 @@ body.student-logged-in #student-drive-dashboard-container {
 }
 
 /* ── Card Spotlight en Ruta de Aventuras (Modo 3) ── */
+/* ── Card Spotlight Carousel en Ruta de Aventuras (Sala de 5 años) ── */
 .arm-sala5-spotlight-card {
   margin-bottom: 24px;
   background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 40%, #FEF9C3 100%);
   border: 2.5px solid #22C55E;
   border-radius: 20px;
-  padding: 24px;
+  padding: 22px 24px;
   box-shadow: 0 10px 30px rgba(22, 163, 74, 0.15);
   position: relative;
   overflow: hidden;
+  transition: all 0.35s ease;
 }
 
-.arm-sala5-spotlight-card::before {
-  content: "🍀";
+.arm-sala5-spotlight-card.theme-sombrero {
+  background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 40%, #FEF9C3 100%);
+  border-color: #22C55E;
+  box-shadow: 0 10px 30px rgba(22, 163, 74, 0.15);
+}
+
+.arm-sala5-spotlight-card.theme-varita {
+  background: linear-gradient(145deg, #FAF5FF 0%, #F3E8FF 40%, #EDE9FE 100%);
+  border-color: #8B5CF6;
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.16);
+}
+
+.arm-sala5-spotlight-card.theme-madre {
+  background: linear-gradient(145deg, #FFF1F2 0%, #FFE4E6 40%, #FEE2E2 100%);
+  border-color: #E11D48;
+  box-shadow: 0 10px 30px rgba(225, 29, 72, 0.16);
+}
+
+.arm-s5-watermark {
   position: absolute;
-  right: -20px;
-  top: -20px;
+  right: -15px;
+  top: -15px;
   font-size: 130px;
   opacity: 0.08;
   pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.arm-s5-carousel-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 4;
 }
 
 .arm-s5-badge-top {
@@ -9060,12 +9092,108 @@ body.student-logged-in #student-drive-dashboard-container {
   color: #166534;
   border: 1.5px solid #BBF7D0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  margin-bottom: 16px;
 }
 
 .arm-s5-crest {
   height: 22px;
   width: auto;
+}
+
+.arm-s5-carousel-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  padding: 4px 8px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.arm-s5-cnav-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #FFFFFF;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+}
+
+.arm-s5-cnav-btn:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+  transform: scale(1.08);
+}
+
+.arm-s5-carousel-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.arm-s5-tab-pill {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arm-s5-tab-pill:hover {
+  color: #0F172A;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.arm-s5-tab-pill.active[data-spotlight-idx="0"] {
+  background: #16A34A;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+}
+
+.arm-s5-tab-pill.active[data-spotlight-idx="1"] {
+  background: #7C3AED;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+}
+
+.arm-s5-tab-pill.active[data-spotlight-idx="2"] {
+  background: #E11D48;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.35);
+}
+
+.arm-s5-slides-container {
+  position: relative;
+  z-index: 3;
+}
+
+.arm-s5-slide {
+  display: none;
+  animation: armS5Fade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.arm-s5-slide.active {
+  display: block;
+}
+
+@keyframes armS5Fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .arm-s5-content-row {
@@ -9075,34 +9203,57 @@ body.student-logged-in #student-drive-dashboard-container {
   flex-wrap: wrap;
 }
 
-.arm-s5-hat-preview {
+.arm-s5-preview {
   position: relative;
   width: 170px;
   height: 170px;
   background: #FFFFFF;
-  border: 3px dashed #16A34A;
   border-radius: 18px;
-  padding: 12px;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.25s ease;
   flex-shrink: 0;
-  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.12);
   user-select: none;
 }
 
+.arm-s5-hat-preview {
+  border: 3px dashed #16A34A;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.12);
+}
 .arm-s5-hat-preview:hover {
   transform: scale(1.04) rotate(-1deg);
   border-color: #15803D;
   box-shadow: 0 10px 25px rgba(22, 163, 74, 0.25);
 }
 
-.arm-s5-hat-img {
+.arm-s5-wand-preview {
+  border: 3px dashed #8B5CF6;
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.12);
+}
+.arm-s5-wand-preview:hover {
+  transform: scale(1.04) rotate(1deg);
+  border-color: #7C3AED;
+  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.25);
+}
+
+.arm-s5-card-preview {
+  border: 3px dashed #E11D48;
+  box-shadow: 0 6px 18px rgba(225, 29, 72, 0.12);
+}
+.arm-s5-card-preview:hover {
+  transform: scale(1.04) rotate(-1deg);
+  border-color: #BE123C;
+  box-shadow: 0 10px 25px rgba(225, 29, 72, 0.25);
+}
+
+.arm-s5-preview-img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: 10px;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
 }
 
@@ -9124,11 +9275,37 @@ body.student-logged-in #student-drive-dashboard-container {
   transition: all 0.3s ease;
 }
 
-.arm-s5-led-glow.active {
+.arm-s5-led-glow.glow-sombrero.active {
   background: #22C55E;
   color: #FFFFFF;
   box-shadow: 0 0 15px #22C55E, 0 0 35px #4ADE80, 0 0 60px #16A34A;
   animation: ledGlowPulse 1.4s infinite ease-in-out;
+}
+
+.arm-s5-led-glow.glow-varita.active {
+  background: #8B5CF6;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px #8B5CF6, 0 0 35px #A78BFA, 0 0 60px #7C3AED;
+  animation: ledGlowPulseVarita 1.4s infinite ease-in-out;
+}
+
+.arm-s5-led-glow.glow-madre.active {
+  background: #E11D48;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px #E11D48, 0 0 35px #FB7185, 0 0 60px #BE123C;
+  animation: ledGlowPulseMadre 1.4s infinite ease-in-out;
+}
+
+@keyframes ledGlowPulseVarita {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #8B5CF6, 0 0 28px #8B5CF6, 0 0 45px #6D28D9; }
+  50% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 18px #A78BFA, 0 0 42px #8B5CF6, 0 0 70px #7C3AED; }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #8B5CF6, 0 0 28px #8B5CF6, 0 0 45px #6D28D9; }
+}
+
+@keyframes ledGlowPulseMadre {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #E11D48, 0 0 28px #E11D48, 0 0 45px #BE123C; }
+  50% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 18px #FB7185, 0 0 42px #E11D48, 0 0 70px #9F1239; }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #E11D48, 0 0 28px #E11D48, 0 0 45px #BE123C; }
 }
 
 .arm-s5-interactive-hint {
@@ -9239,6 +9416,44 @@ body.student-logged-in #student-drive-dashboard-container {
 .arm-s5-btn-pdf:hover {
   background: #FEF2F2;
   transform: translateY(-2px);
+}
+
+.arm-s5-carousel-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  position: relative;
+  z-index: 4;
+}
+
+.arm-s5-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.arm-s5-dot:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.arm-s5-dot.active[data-spotlight-idx="0"] {
+  width: 26px;
+  background: #16A34A;
+}
+
+.arm-s5-dot.active[data-spotlight-idx="1"] {
+  width: 26px;
+  background: #7C3AED;
+}
+
+.arm-s5-dot.active[data-spotlight-idx="2"] {
+  width: 26px;
+  background: #E11D48;
 }
 
 /* ── Imagen de Portada en Tarjetas del Camino de Aventuras ── */
