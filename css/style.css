@@ -6015,6 +6015,137 @@ button, input, select, textarea { font-family: inherit; }
   background: linear-gradient(180deg, #F0FDF4 0%, #FFFFFF 100%);
 }
 
+/* ── Estación Llegada a la Meta (Llegadameta) ── */
+.arm-node-bubble.arm-node-finish {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+  border: 4px solid #FEF08A;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: armFinishPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes armFinishPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 32px rgba(245, 158, 11, 0.95), 0 0 12px #FEF08A;
+  }
+}
+
+.arm-finish-card {
+  background: linear-gradient(145deg, #FFFBEB 0%, #FEF3C7 35%, #FFFFFF 100%) !important;
+  border: 2.5px solid #F59E0B !important;
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.25) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.arm-finish-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1E293B 0px,
+    #1E293B 12px,
+    #FFFFFF 12px,
+    #FFFFFF 24px
+  );
+  z-index: 2;
+}
+
+.arm-finish-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #1E293B;
+  color: #F8FAFC;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.arm-finish-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #92400E;
+  margin: 6px 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arm-finish-desc {
+  font-size: 0.88rem;
+  color: #78350F;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.arm-finish-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.arm-finish-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #FDE68A;
+  font-size: 0.82rem;
+  color: #78350F;
+}
+
+.arm-finish-celebrate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arm-finish-celebrate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.5);
+}
+
+@keyframes armMetaFall {
+  0% {
+    top: -20px;
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    top: 105vh;
+    transform: translateX(calc(100px - 200px * 0.5)) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+
 .arm-mc-header {
   display: flex;
   align-items: center;

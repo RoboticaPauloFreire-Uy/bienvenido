@@ -515,33 +515,29 @@
       }
     });
 
-    // 3. Guías PDF de Google Drive (FOLDER_CONTENTS.proyectos.items)
+    // 3. Vincular Guías PDF de Google Drive (FOLDER_CONTENTS.proyectos.items) a los proyectos existentes
+    // (NO creamos misiones extra/duplicadas en la ruta de aventuras)
     var drivePdfs = (FOLDER_CONTENTS.proyectos && FOLDER_CONTENTS.proyectos.items) || [];
-    drivePdfs.forEach(function(pdf, idx) {
-      missions.push({
-        id: 'pdf-' + (pdf.id || idx),
-        level: levelCount++,
-        title: pdf.title || pdf.name.replace(/\.pdf$/i, ''),
-        subtitle: 'Guía de Construcción y Ficha de Trabajo',
-        description: pdf.desc || 'Ficha práctica descargable con los pasos del proyecto para el aula.',
-        type: 'pdf',
-        badge: '📄 Ficha Didáctica PDF',
-        icon: 'fa-file-pdf',
-        color: '#DC2626',
-        stars: 3,
-        status: 'desafio',
-        coverImage: 'img/pdf_preview_placeholder.png',
-        gallery: [],
-        pdfUrl: pdf.url,
-        downloadPdfUrl: pdf.downloadUrl || pdf.url,
-        makecodeUrl: null,
-        scratchId: null,
-        materials: [
-          { title: 'Guía Impresa / Digital', description: 'Manual ilustrado paso a paso' },
-          { title: 'Herramientas del Taller', description: 'Tijeras, cinta y componentes' }
-        ],
-        gradeName: student.gradeName
+    drivePdfs.forEach(function(pdf) {
+      var pName = (pdf.name || pdf.title || '').toLowerCase();
+      missions.forEach(function(m) {
+        var mTitle = (m.title || '').toLowerCase();
+        if ((mTitle.includes(pName) || pName.includes(mTitle) ||
+            (pName.includes('codejr') && mTitle.includes('codejr')) ||
+            (pName.includes('velocidad') && mTitle.includes('velocidad')) ||
+            (pName.includes('patricio') && mTitle.includes('patricio')) ||
+            (pName.includes('frozen') && mTitle.includes('frozen')) ||
+            (pName.includes('minecraft') && mTitle.includes('minecraft')) ||
+            (pName.includes('angry') && mTitle.includes('angry'))) && !m.pdfUrl) {
+          m.pdfUrl = pdf.url;
+          m.downloadPdfUrl = pdf.downloadUrl || pdf.url;
+        }
       });
+    });
+
+    // Asegurar que no queden misiones de tipo 'pdf' sueltas o duplicadas
+    missions = missions.filter(function(m) {
+      return m && m.type !== 'pdf' && !(m.id && m.id.toString().startsWith('pdf-'));
     });
 
     // ── Determinar estado dinámico de cada misión según entregas del alumno ──
@@ -685,6 +681,94 @@
 
     var bodyHtml = '';
 
+    // ── Estación Llegada a la Meta (Fin del Camino Maker) ──
+    var finishSideClass = (missions.length % 2 === 0) ? 'station-left' : 'station-right';
+    var isAllCompleted = missions.length > 0 && completedCount === missions.length;
+    var finishStatusText = isAllCompleted ? '🏆 ¡Meta Cumplida!' : (completedCount > 0 ? '🚀 ¡Rumbo a la Meta!' : '🏁 Estación Final');
+
+    var finishHtml =
+      '<div class="arm-station arm-finish-station ' + finishSideClass + '" id="arm-llegada-meta">' +
+        '<div class="arm-node-column">' +
+          '<div class="arm-node-bubble arm-node-finish" role="button" tabindex="0" onclick="window.celebrateMetaArrival && window.celebrateMetaArrival();" title="¡Tocar para celebrar la Llegada a la Meta! 🏁🎉">' +
+            '<span class="arm-node-level">META</span>' +
+            '<span class="arm-node-num">🏁</span>' +
+            '<div class="arm-node-icon"><i class="fas fa-trophy"></i></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="arm-mission-card arm-finish-card">' +
+          '<div class="arm-mc-header">' +
+            '<span class="arm-finish-badge">' +
+              '<i class="fas fa-flag-checkered"></i> LLEGADA A LA META' +
+            '</span>' +
+            '<span class="arm-mc-status ' + (isAllCompleted ? 'completado' : 'activo') + '">' +
+              finishStatusText +
+            '</span>' +
+          '</div>' +
+          '<div class="arm-finish-body">' +
+            '<div class="arm-finish-content">' +
+              '<h4 class="arm-finish-title">' +
+                '<span>🏆 ¡Llegada a la Meta del Taller Maker!</span>' +
+              '</h4>' +
+              '<p class="arm-finish-desc">' +
+                '¡Felicitaciones por recorrer y superar los desafíos de <strong>' + student.gradeName + '</strong>! Experimentaste con circuitos de electrónica, creaste dibujos y figuras en Paint, y programaste algoritmos y velocidades en Scratch Jr. ¡Sos un gran creador tecnológico!' +
+              '</p>' +
+              '<div class="arm-finish-stats-row">' +
+                '<div class="arm-finish-stat-pill">' +
+                  '<i class="fas fa-check-circle" style="color:#10B981;"></i>' +
+                  '<span><strong>' + completedCount + ' de ' + missions.length + '</strong> misiones superadas</span>' +
+                '</div>' +
+                '<div class="arm-finish-stat-pill">' +
+                  '<i class="fas fa-star" style="color:#F59E0B;"></i>' +
+                  '<span><strong>+' + (completedCount * 100) + ' XP</strong> acumulados</span>' +
+                '</div>' +
+                '<div class="arm-finish-stat-pill">' +
+                  '<i class="fas fa-award" style="color:#4F46E5;"></i>' +
+                  '<span><strong>Ciclo Maker 2026</strong></span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="arm-mc-footer" style="margin-top:10px;">' +
+            '<button type="button" class="arm-finish-celebrate-btn" onclick="window.celebrateMetaArrival && window.celebrateMetaArrival();">' +
+              '<i class="fas fa-flag-checkered"></i> ¡Festejar Llegada a la Meta! 🎉' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    var gridFinishHtml =
+      '<div class="arm-grid-card arm-finish-card">' +
+        '<div class="arm-mc-header">' +
+          '<span class="arm-finish-badge">' +
+            '<i class="fas fa-flag-checkered"></i> LLEGADA A LA META' +
+          '</span>' +
+          '<span class="arm-mc-status ' + (isAllCompleted ? 'completado' : 'activo') + '">' +
+            finishStatusText +
+          '</span>' +
+        '</div>' +
+        '<div class="arm-finish-body" style="padding:10px 0;">' +
+          '<h4 class="arm-finish-title">🏆 ¡Llegada a la Meta!</h4>' +
+          '<p class="arm-finish-desc">' +
+            '¡Completaste el camino de proyectos de <strong>' + student.gradeName + '</strong>! Felicitaciones por tu creatividad, pensamiento computacional y entusiasmo.' +
+          '</p>' +
+          '<div class="arm-finish-stats-row">' +
+            '<div class="arm-finish-stat-pill">' +
+              '<i class="fas fa-trophy" style="color:#F59E0B;"></i>' +
+              '<span><strong>' + completedCount + ' / ' + missions.length + '</strong> misiones</span>' +
+            '</div>' +
+            '<div class="arm-finish-stat-pill">' +
+              '<i class="fas fa-star" style="color:#F59E0B;"></i>' +
+              '<span><strong>+' + (completedCount * 100) + ' XP</strong></span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="arm-mc-footer">' +
+          '<button type="button" class="arm-finish-celebrate-btn" onclick="window.celebrateMetaArrival && window.celebrateMetaArrival();">' +
+            '<i class="fas fa-flag-checkered"></i> ¡Festejar Llegada a la Meta! 🎉' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+
     if (!isGrid) {
       // ── Sendero de Niveles (Trail Mode) ──
       bodyHtml = '<div class="arm-trail-path">' +
@@ -764,6 +848,7 @@
             '</div>' +
           '</div>';
         }).join('') +
+        finishHtml +
       '</div>';
     } else {
       // ── Cuadrícula (Grid Mode) ──
@@ -833,6 +918,7 @@
             '</div>' +
           '</div>';
         }).join('') +
+        gridFinishHtml +
       '</div>';
     }
 
@@ -5585,6 +5671,46 @@
     renderGDriveDashboard('gdrive-explorer-container');
   });
 
+  function celebrateMetaArrival() {
+    if (window.soundEngine && typeof window.soundEngine.playSuccess === 'function') {
+      window.soundEngine.playSuccess();
+    }
+
+    var existing = document.getElementById('arm-meta-confetti-container');
+    if (existing) existing.remove();
+
+    var container = document.createElement('div');
+    container.id = 'arm-meta-confetti-container';
+    container.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999999;overflow:hidden;';
+    document.body.appendChild(container);
+
+    var colors = ['#EF4444', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#FCD34D'];
+    for (var i = 0; i < 75; i++) {
+      var p = document.createElement('div');
+      var color = colors[Math.floor(Math.random() * colors.length)];
+      var left = Math.random() * 100;
+      var width = Math.random() * 9 + 6;
+      var height = Math.random() * 12 + 8;
+      var duration = Math.random() * 2.2 + 2;
+      var delay = Math.random() * 0.7;
+      var rot = Math.random() * 360;
+
+      p.style.cssText = 'position:absolute;top:-20px;left:' + left + 'vw;' +
+        'width:' + width + 'px;height:' + height + 'px;background:' + color + ';' +
+        'opacity:0.95;border-radius:3px;transform:rotate(' + rot + 'deg);' +
+        'animation:armMetaFall ' + duration + 's cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;' +
+        'animation-delay:' + delay + 's;';
+      container.appendChild(p);
+    }
+
+    setTimeout(function() {
+      if (container && container.parentNode) {
+        container.remove();
+      }
+    }, 4500);
+  }
+
+  window.celebrateMetaArrival = celebrateMetaArrival;
   window.renderGDriveDashboard = renderGDriveDashboard;
   window.renderGDriveExplorer  = renderGDriveDashboard;
   window.openAdventureProjectModal = openAdventureProjectModal;
