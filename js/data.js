@@ -36,14 +36,14 @@ const SCHOOL_DATA = {
       games: [
         {
           id: "s5-g1",
-          level: 1,
-          title: "Scratch Jr 🎨",
+          level: 9,
+          title: "Escenarios CodeJr - Primera Parte: Ambiente y Velocidades 🐱⚡",
           platform: "codejr",
           externalUrl: "https://codejr.org",
           thumbnail: "img/scratchjr.png",
-          description: "Iniciación a la programación con bloques visuales de símbolos para crear historias y animaciones.",
-          benefits: "Fomenta la creatividad, la expresión artística y la secuencia lógica de instrucciones en edad temprana.",
-          tags: ["Scratch Jr", "Bloques", "Iniciación"]
+          description: "¡Nivel 9 de la Ruta de Aventuras! Aprendemos a explorar el ambiente de Scratch Jr: creación de escenarios con fondos ilustrados, personajes y cómo programar diferentes velocidades (lenta, media y rápida) con el bloque naranja de velocidad.",
+          benefits: "Fomenta la creatividad en historias digitales, el reconocimiento del ambiente y escenarios de Scratch Jr, el control de la velocidad y el movimiento algorítmico, y la experimentación causa-efecto comparando velocidades en carreras de personajes.",
+          tags: ["Scratch Jr", "CodeJr", "Escenarios", "Velocidad", "Bloques", "Nivel 9"]
         },
         {
           id: "s5-g4",
@@ -604,6 +604,78 @@ const SCHOOL_DATA = {
               title: "Tocar 'Ejecutar' y celebrar la misión",
               desc: "Hacé clic en el botón naranja 'Ejecutar'. Mirá cómo tu personaje cobra vida y sigue fielmente cada orden que programaste. ¡Al terminar podés marcar tu entrega para sumar +100 XP!",
               tip: "Si tu personaje choca con agua o lava, ¡tocá 'Reiniciar' y corregí el camino! Así programan los ingenieros."
+            }
+          ]
+        },
+        {
+          id: "s5-p9",
+          level: 9,
+          title: "Escenarios CodeJr - Primera Parte (5 años): Ambiente y Velocidades en Scratch Jr 🐱⚡",
+          author: "Taller de Programación Sala 5",
+          date: "Septiembre 2026",
+          type: "scratch",
+          platform: "codejr",
+          badge: "🐱 Scratch Jr • Escenarios & Velocidad",
+          icon: "fa-tachometer-alt",
+          color: "#EA580C",
+          coverImage: "img/scratchjr.png",
+          projectFileUrl: "proyectos/velocidad.sjr",
+          downloadUrl: "proyectos/velocidad.sjr",
+          externalUrl: "https://codejr.org",
+          description: "¡Nivel 9 de nuestra Ruta de Aventuras! En este nivel aprendimos a navegar y explorar el ambiente de trabajo de Scratch Jr: creación de escenarios con fondos ilustrados, agregado de personajes y, fundamentalmente, cómo manejar y programar diferentes velocidades (lenta, media y rápida) utilizando los bloques de movimiento y el bloque naranja de velocidad. Descargá el proyecto de ejemplo velocidad.sjr para abrirlo en Scratch Jr.",
+          objective: "Reconocer y explorar el entorno de Scratch Jr (lienzo, personajes, escenarios de fondo y paleta de bloques) y aprender a programar secuencias de movimiento configurando diferentes velocidades con el bloque naranja de velocidad (lenta, media y rápida).",
+          benefits: "Desarrolla la orientación espacial digital, la estructuración de secuencias algorítmicas tempranas, la diferenciación conceptual de velocidades (ritmo, aceleración, tiempo), el pensamiento computacional intuitivo y la capacidad de expresar narrativas visuales.",
+          tags: ["Scratch Jr", "CodeJr", "Velocidad", "Escenarios", "Ambiente", "Algoritmos", "Nivel 9"],
+          gallery: [
+            "img/scratchjr.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Aplicación Scratch Jr", description: "Entorno visual de programación en tablets o PC (https://codejr.org).", icon: "fa-cat" },
+            { title: "Archivo de Ejemplo 'velocidad.sjr'", description: "Proyecto listo para cargar con la programación de velocidades.", icon: "fa-file-code" },
+            { title: "Bloque Amarillo 'Bandera Verde'", description: "Comando de inicio para poner en marcha a los personajes simultáneamente.", icon: "fa-flag" },
+            { title: "Bloque Naranja de 'Velocidad'", description: "Permite elegir entre 3 ritmos: Lento (caminar), Medio (trotar) o Rápido (correr).", icon: "fa-tachometer-alt" },
+            { title: "Bloques Azules de 'Movimiento'", description: "Comandos de flechas para avanzar casilleros hacia adelante en el escenario.", icon: "fa-arrows-alt-h" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Explorar el Ambiente de Scratch Jr",
+              desc: "Abrí Scratch Jr tocando la casita. Observá el escenario central, la columna izquierda donde se agregan personajes y la columna derecha con los escenarios/fondos.",
+              tip: "Tocá el botón del paisaje arriba para elegir un fondo divertido (parque, luna, cancha o bosque)."
+            },
+            {
+              step: 2,
+              title: "Elegir personajes para una carrera",
+              desc: "Tocá el botón '+' a la izquierda para sumar otro personaje al escenario. Por ejemplo, al gato Scratch Jr y a un amigo para que compitan a diferentes velocidades.",
+              tip: "Arrastrá los personajes con el dedo o mouse al borde izquierdo del escenario listos para la largada."
+            },
+            {
+              step: 3,
+              title: "Conectar la Bandera Verde de inicio",
+              desc: "Andá a la categoría amarilla (Disparadores) y arrastrá el bloque de la 'Bandera Verde' al área de programación.",
+              tip: "Al tocar la bandera verde grande de arriba, ¡todos los personajes arrancarán al mismo tiempo!"
+            },
+            {
+              step: 4,
+              title: "Programar la Velocidad con el Bloque Naranja",
+              desc: "Andá a la categoría naranja (Control) y arrastrá el bloque de 'Velocidad'. Tocalo para elegir una de las 3 velocidades: 1 (Lento), 2 (Medio) o 3 (Rápido).",
+              tip: "El ícono del caracol/hombre caminando es lento; la persona trotando es velocidad media; y la persona corriendo o auto es súper rápido."
+            },
+            {
+              step: 5,
+              title: "Agregar bloques de movimiento hacia adelante",
+              desc: "Andá a la categoría azul (Movimiento) y encastrá una flecha hacia la derecha con el número de pasos deseado (por ejemplo, 10 pasos).",
+              tip: "Poné a un personaje en velocidad 1 y al otro en velocidad 3 para ver claramente la diferencia de velocidad en la carrera."
+            },
+            {
+              step: 6,
+              title: "¡Tocar la Bandera Verde y disfrutar!",
+              desc: "Tocá la bandera verde arriba a la derecha. Mirá cómo cada personaje recorre el escenario con su propio ritmo programado. ¡Subí tu proyecto o foto para sumar +100 XP!",
+              tip: "Podés descargar el archivo velocidad.sjr desde el botón de la misión para ver el ejemplo completo."
             }
           ]
         }
@@ -1517,7 +1589,7 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Día de la Madre, Ana y Elsa, Banderas, Minecraft, les falta objective, o Paint tiene gameUrl residual, actualizar Firestore
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Día de la Madre, Ana y Elsa, Banderas, Minecraft, CodeJr/Velocidades, les falta objective, o Paint tiene gameUrl residual, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
@@ -1527,6 +1599,7 @@ if (typeof window !== 'undefined') {
                 !targetProjects.some(p => (p.title || '').includes('Elsa') || (p.title || '').includes('Frozen') || (p.title || '').includes('Ana') || p.id === 's5-p6') ||
                 !targetProjects.some(p => (p.title || '').includes('Bandera') || (p.title || '').includes('bandera') || p.id === 's5-p7') ||
                 !targetProjects.some(p => (p.title || '').includes('Minecraft') || (p.title || '').includes('minecraft') || p.id === 's5-p8') ||
+                !targetProjects.some(p => (p.title || '').includes('CodeJr') || (p.title || '').includes('Velocidad') || (p.title || '').includes('velocidad') || p.id === 's5-p9') ||
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective)) ||
                 targetProjects.some(p => ((p.id === 's5-p4' || p.id === 's5-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
