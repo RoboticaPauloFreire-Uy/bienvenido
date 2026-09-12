@@ -713,20 +713,38 @@
                 '<h4 class="arm-mc-title">' + m.title + '</h4>' +
                 '<p class="arm-mc-desc">' + m.description + '</p>' +
                 (m.objective ?
-                  '<div class="arm-mc-objective arm-clickable-concept" data-concept-type="objective" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar el objetivo pedagógico">' +
-                    '<div class="arm-mc-box-top">' +
-                      '<span class="arm-mc-box-label"><i class="fas fa-bullseye"></i> <strong>Objetivo</strong></span>' +
-                      '<span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span>' +
+                  '<div class="arm-concept-accordion arm-concept-objective" data-concept-type="objective">' +
+                    '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar el objetivo">' +
+                      '<span class="arm-ct-left"><i class="fas fa-bullseye"></i> <strong>Objetivo</strong></span>' +
+                      '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
+                    '</button>' +
+                    '<div class="arm-concept-drawer">' +
+                      '<div class="arm-concept-content">' +
+                        '<p>' + m.objective + '</p>' +
+                        '<div class="arm-concept-actions">' +
+                          '<button type="button" class="arm-concept-modal-btn" data-concept-type="objective" data-mission-idx="' + idx + '" title="Ampliar explicación pedagógica completa">' +
+                            '<i class="fas fa-expand-alt"></i> Ampliar' +
+                          '</button>' +
+                        '</div>' +
+                      '</div>' +
                     '</div>' +
-                    '<p class="arm-mc-box-text">' + m.objective + '</p>' +
                   '</div>' : '') +
                 (m.benefits ?
-                  '<div class="arm-mc-benefits arm-clickable-concept" data-concept-type="benefits" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar los beneficios de razonamiento">' +
-                    '<div class="arm-mc-box-top">' +
-                      '<span class="arm-mc-box-label"><i class="fas fa-brain"></i> <strong>Beneficios</strong></span>' +
-                      '<span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span>' +
+                  '<div class="arm-concept-accordion arm-concept-benefits" data-concept-type="benefits">' +
+                    '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar los beneficios">' +
+                      '<span class="arm-ct-left"><i class="fas fa-brain"></i> <strong>Beneficios</strong></span>' +
+                      '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
+                    '</button>' +
+                    '<div class="arm-concept-drawer">' +
+                      '<div class="arm-concept-content">' +
+                        '<p>' + m.benefits + '</p>' +
+                        '<div class="arm-concept-actions">' +
+                          '<button type="button" class="arm-concept-modal-btn" data-concept-type="benefits" data-mission-idx="' + idx + '" title="Ampliar beneficios de razonamiento completos">' +
+                            '<i class="fas fa-expand-alt"></i> Ampliar' +
+                          '</button>' +
+                        '</div>' +
+                      '</div>' +
                     '</div>' +
-                    '<p class="arm-mc-box-text">' + m.benefits + '</p>' +
                   '</div>' : '') +
               '</div>' +
               '<div class="arm-mc-footer">' +
@@ -765,20 +783,38 @@
               '<h4 class="arm-mc-title">' + m.title + '</h4>' +
               '<p class="arm-mc-desc">' + m.description + '</p>' +
               (m.objective ?
-                '<div class="arm-mc-objective arm-clickable-concept" data-concept-type="objective" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar el objetivo pedagógico">' +
-                  '<div class="arm-mc-box-top">' +
-                    '<span class="arm-mc-box-label"><i class="fas fa-bullseye"></i> <strong>Objetivo</strong></span>' +
-                    '<span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span>' +
+                '<div class="arm-concept-accordion arm-concept-objective" data-concept-type="objective">' +
+                  '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar el objetivo">' +
+                    '<span class="arm-ct-left"><i class="fas fa-bullseye"></i> <strong>Objetivo</strong></span>' +
+                    '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
+                  '</button>' +
+                  '<div class="arm-concept-drawer">' +
+                    '<div class="arm-concept-content">' +
+                      '<p>' + m.objective + '</p>' +
+                      '<div class="arm-concept-actions">' +
+                        '<button type="button" class="arm-concept-modal-btn" data-concept-type="objective" data-mission-idx="' + idx + '" title="Ampliar explicación pedagógica completa">' +
+                          '<i class="fas fa-expand-alt"></i> Ampliar' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' +
                   '</div>' +
-                  '<p class="arm-mc-box-text">' + m.objective + '</p>' +
                 '</div>' : '') +
               (m.benefits ?
-                '<div class="arm-mc-benefits arm-clickable-concept" data-concept-type="benefits" data-mission-idx="' + idx + '" role="button" tabindex="0" title="Tocar para ampliar los beneficios de razonamiento">' +
-                  '<div class="arm-mc-box-top">' +
-                    '<span class="arm-mc-box-label"><i class="fas fa-brain"></i> <strong>Beneficios</strong></span>' +
-                    '<span class="arm-mc-expand-pill"><i class="fas fa-expand-alt"></i> Ampliar</span>' +
+                '<div class="arm-concept-accordion arm-concept-benefits" data-concept-type="benefits">' +
+                  '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar los beneficios">' +
+                    '<span class="arm-ct-left"><i class="fas fa-brain"></i> <strong>Beneficios</strong></span>' +
+                    '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
+                  '</button>' +
+                  '<div class="arm-concept-drawer">' +
+                    '<div class="arm-concept-content">' +
+                      '<p>' + m.benefits + '</p>' +
+                      '<div class="arm-concept-actions">' +
+                        '<button type="button" class="arm-concept-modal-btn" data-concept-type="benefits" data-mission-idx="' + idx + '" title="Ampliar beneficios de razonamiento completos">' +
+                          '<i class="fas fa-expand-alt"></i> Ampliar' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' +
                   '</div>' +
-                  '<p class="arm-mc-box-text">' + m.benefits + '</p>' +
                 '</div>' : '') +
             '</div>' +
             '<div class="arm-mc-footer">' +
@@ -1303,22 +1339,39 @@
       // Clic en estación o tarjeta (excluyendo botones, links y acordeones de objetivo/beneficios)
       container.querySelectorAll('.arm-station, .arm-mission-card, .arm-grid-card').forEach(function(card){
         card.onclick = function(e){
-          if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.arm-clickable-concept') || e.target.closest('.arm-mc-objective') || e.target.closest('.arm-mc-benefits')) return;
+          if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.arm-concept-accordion')) return;
           var idx = parseInt(card.dataset.missionIdx, 10);
           var mission = adventureMissions[idx];
           if (mission) openAdventureProjectModal(mission, 'presentacion');
         };
       });
 
-      // Clic para ampliar Objetivo o Beneficios Pedagógicos
-      container.querySelectorAll('.arm-clickable-concept').forEach(function(box){
-        box.onclick = function(e){
+      // Clic para achicar o agrandar Objetivo o Beneficios (Acordeón colapsable)
+      container.querySelectorAll('.arm-concept-toggle-btn').forEach(function(btn){
+        btn.onclick = function(e){
           e.stopPropagation();
           e.preventDefault();
           if (window.sounds && window.sounds.playClick) window.sounds.playClick();
-          var cType = box.dataset.conceptType || 'objective';
-          var missionIdx = box.dataset.missionIdx;
-          var gameLevel = box.dataset.gameLevel;
+          var accordion = btn.closest('.arm-concept-accordion');
+          if (!accordion) return;
+          var isOpen = accordion.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          var statusSpan = btn.querySelector('.arm-ct-status');
+          if (statusSpan) {
+            statusSpan.textContent = isOpen ? 'Achicar' : 'Agrandar';
+          }
+        };
+      });
+
+      // Clic para Ampliar en Detalle (Abre Modal Pedagógico completo)
+      container.querySelectorAll('.arm-concept-modal-btn').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          e.preventDefault();
+          if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+          var cType = btn.dataset.conceptType || 'objective';
+          var missionIdx = btn.dataset.missionIdx;
+          var gameLevel = btn.dataset.gameLevel;
           var dataObj = null;
           if (missionIdx !== undefined && adventureMissions && adventureMissions[parseInt(missionIdx, 10)]) {
             dataObj = adventureMissions[parseInt(missionIdx, 10)];
@@ -1331,12 +1384,6 @@
           }
           if (dataObj) {
             openPedagogicalConceptModal(cType, dataObj);
-          }
-        };
-        box.onkeydown = function(e){
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            box.click();
           }
         };
       });
@@ -1458,25 +1505,36 @@
         };
       });
 
-      // Clic para ampliar razonamiento pedagógico en juegos
-      container.querySelectorAll('.ggc-benefits-box.arm-clickable-concept').forEach(function(box){
-        box.onclick = function(e){
+      // Clic para achicar o agrandar razonamiento pedagógico en juegos
+      container.querySelectorAll('.arm-concept-toggle-btn').forEach(function(btn){
+        btn.onclick = function(e){
           e.stopPropagation();
           e.preventDefault();
           if (window.sounds && window.sounds.playClick) window.sounds.playClick();
-          var lvl = parseInt(box.dataset.gameLevel, 10);
+          var accordion = btn.closest('.arm-concept-accordion');
+          if (!accordion) return;
+          var isOpen = accordion.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          var statusSpan = btn.querySelector('.arm-ct-status');
+          if (statusSpan) {
+            statusSpan.textContent = isOpen ? 'Achicar' : 'Agrandar';
+          }
+        };
+      });
+
+      // Clic para Ampliar en Detalle en juegos (Abre Modal Pedagógico)
+      container.querySelectorAll('.arm-concept-modal-btn').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          e.preventDefault();
+          if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+          var lvl = parseInt(btn.dataset.gameLevel, 10);
           var dataObj = gradeGames.find(function(g){ return g.level === lvl; });
           if (!dataObj && adventureMissions) {
             dataObj = adventureMissions.find(function(m){ return m.level === lvl; });
           }
           if (dataObj) {
             openPedagogicalConceptModal('benefits', dataObj);
-          }
-        };
-        box.onkeydown = function(e){
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            box.click();
           }
         };
       });
@@ -1520,9 +1578,21 @@
           '</div>' +
           '<p class="ggc-desc">' + game.description + '</p>' +
           (game.benefits ?
-            '<div class="ggc-benefits-box arm-clickable-concept" data-concept-type="benefits" data-game-level="' + levelNum + '" role="button" tabindex="0" title="Tocar para ampliar el razonamiento pedagógico">' +
-              '<div class="ggc-bb-header"><span><i class="fas fa-brain"></i> <strong>Razonamiento Pedagógico:</strong></span><span class="arm-mc-expand-pill" style="color:#16A34A;"><i class="fas fa-expand-alt"></i> Ampliar</span></div>' +
-              '<p class="ggc-bb-text">' + game.benefits + '</p>' +
+            '<div class="arm-concept-accordion arm-concept-benefits ggc-concept-accordion" data-concept="benefits">' +
+              '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar el razonamiento pedagógico">' +
+                '<span class="arm-ct-left"><i class="fas fa-brain"></i> <strong>Razonamiento Pedagógico</strong></span>' +
+                '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
+              '</button>' +
+              '<div class="arm-concept-drawer">' +
+                '<div class="arm-concept-content">' +
+                  '<p class="ggc-bb-text">' + game.benefits + '</p>' +
+                  '<div class="arm-concept-actions">' +
+                    '<button type="button" class="arm-concept-modal-btn" data-concept-type="benefits" data-game-level="' + levelNum + '" title="Ampliar razonamiento pedagógico completo">' +
+                      '<i class="fas fa-expand-alt"></i> Ampliar' +
+                    '</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
             '</div>' : '') +
           (game.tags && game.tags.length > 0 ?
             '<div class="ggc-tags-row">' +
