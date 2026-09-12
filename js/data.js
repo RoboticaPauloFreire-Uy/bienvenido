@@ -1257,18 +1257,26 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol o les falta objective, actualizar Firestore
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, les falta objective, o Cancha tiene gameUrl residual, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
                 !targetProjects.some(p => (p.title || '').includes('Varita') || (p.title || '').includes('varita')) ||
                 !targetProjects.some(p => (p.title || '').includes('Cancha') || (p.title || '').includes('cancha') || (p.title || '').includes('Paint')) ||
-                !targetProjects.some(p => (p.id === 's5-p1' && p.objective))
+                !targetProjects.some(p => (p.id === 's5-p1' && p.objective)) ||
+                targetProjects.some(p => ((p.id === 's5-p4') || /cancha|paint/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
               if (isStaleSala5) {
                 console.log("🔄 Re-sembrando proyectos reales de sala5 con objetivos y beneficios en Firestore...");
                 seedGradeProjectsToFirestore(true);
               } else {
+                targetProjects.forEach(function(p) {
+                  if (p.id === 's5-p4' || /cancha|paint/i.test(p.title || '') || p.type === 'paint') {
+                    p.gameUrl = null;
+                    p.externalUrl = null;
+                    p.type = 'paint';
+                  }
+                });
                 gradeObj.projects = targetProjects;
               }
             }

@@ -432,25 +432,26 @@
     // 1. Proyectos definidos en SCHOOL_DATA para el grado
     if (gradeObj && Array.isArray(gradeObj.projects)) {
       gradeObj.projects.forEach(function(p, idx) {
-        var isMakecode = !!p.makecodeUrl;
-        var isScratch  = !!p.scratchId || (p.tags && p.tags.indexOf('Scratch Jr') !== -1);
-        var isCodeorg  = p.type === 'codeorg' || p.platform === 'codeorg' || !!p.gameUrl || (p.externalUrl && p.externalUrl.includes('code.org'));
-        var isElectronica = !isCodeorg && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-        var type  = p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica'))));
-        var badge = p.badge || (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker'))));
-        var icon  = p.icon || (isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket'))));
-        var color = p.color || (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : (gradeObj.color || '#2563EB')));
+        var isPaint    = p.type === 'paint' || (p.tags && p.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })) || (/cancha/i.test(p.title || ''));
+        var isMakecode = !isPaint && !!p.makecodeUrl;
+        var isScratch  = !isPaint && (!!p.scratchId || (p.tags && p.tags.indexOf('Scratch Jr') !== -1));
+        var isCodeorg  = !isPaint && (p.type === 'codeorg' || p.platform === 'codeorg' || (p.externalUrl && p.externalUrl.includes('code.org')) || (p.tags && p.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); })));
+        var isElectronica = !isPaint && !isCodeorg && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+        var type  = isPaint ? 'paint' : (p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica')))));
+        var badge = isPaint ? (p.badge || '🎨 Arte Digital & Figuras') : (p.badge || (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker')))));
+        var icon  = isPaint ? (p.icon || 'fa-palette') : (p.icon || (isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket')))));
+        var color = isPaint ? (p.color || '#16A34A') : (p.color || (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : (gradeObj.color || '#2563EB'))));
 
         missions.push({
           id: p.id || ('proj-' + idx),
           level: p.level || levelCount++,
           title: p.title,
           subtitle: p.author ? ('Por ' + p.author) : (gradeObj.name),
-          description: p.description || (isElectronica ? 'Construí un circuito funcional con materiales del taller sin necesidad de programar.' : 'Desafío y proyecto de programación del grado.'),
-          objective: p.objective || (isElectronica ? 'Construir un circuito eléctrico seguro con cinta de cobre conductora, pila botón CR2032 y luz LED verde en el trébol del sombrero de San Patricio, logrando que se encienda con la presión de la cabeza.' : (isCodeorg ? 'Aprender a programar y dar los primeros pasos de razonamiento en programación guiando al pájaro a través del laberinto hasta el cerdito.' : null)),
-          benefits: p.benefits || (isElectronica ? 'Desarrolla la motricidad fina, comprensión de circuito cerrado y polaridad (+ / -), causa-efecto en electricidad y confianza creativa maker.' : (isCodeorg ? 'Desarrolla el pensamiento computacional, la estructuración de algoritmos paso a paso, la lateralidad y orientación espacial y la depuración de errores.' : null)),
-          gameUrl: p.gameUrl || p.externalUrl || null,
-          externalUrl: p.externalUrl || p.gameUrl || null,
+          description: p.description || (isPaint ? 'Actividad de dibujo digital con figuras geométricas en Paint.' : (isElectronica ? 'Construí un circuito funcional con materiales del taller sin necesidad de programar.' : 'Desafío y proyecto de programación del grado.')),
+          objective: p.objective || (isPaint ? 'Aprender a utilizar las figuras geométricas y el bote de pintura en Paint para dibujar una cancha de fútbol completa.' : (isElectronica ? 'Construir un circuito eléctrico seguro con cinta de cobre conductora, pila botón CR2032 y luz LED verde en el trébol del sombrero de San Patricio, logrando que se encienda con la presión de la cabeza.' : (isCodeorg ? 'Aprender a programar y dar los primeros pasos de razonamiento en programación guiando al pájaro a través del laberinto hasta el cerdito.' : null))),
+          benefits: p.benefits || (isPaint ? 'Desarrolla la motricidad fina digital con el mouse, el reconocimiento de formas geométricas y la creatividad gráfica sin frustración.' : (isElectronica ? 'Desarrolla la motricidad fina, comprensión de circuito cerrado y polaridad (+ / -), causa-efecto en electricidad y confianza creativa maker.' : (isCodeorg ? 'Desarrolla el pensamiento computacional, la estructuración de algoritmos paso a paso, la lateralidad y orientación espacial y la depuración de errores.' : null))),
+          gameUrl: isPaint ? null : (p.gameUrl || p.externalUrl || null),
+          externalUrl: isPaint ? null : (p.externalUrl || p.gameUrl || null),
           type: type,
           badge: badge,
           icon: icon,
@@ -736,7 +737,7 @@
                 '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                   '<i class="fas fa-play"></i> Iniciar Misión' +
                 '</button>' +
-                (m.gameUrl ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
+                (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
                 '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Abrir Modo Presentación">' +
                   '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
                 '</button>' +
@@ -792,7 +793,7 @@
               '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-play"></i> Iniciar' +
               '</button>' +
-              (m.gameUrl ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
+              (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
               '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
               '</button>' +
@@ -2047,26 +2048,35 @@
     }
 
     var isObjective = (conceptType === 'objective');
-    var isCodeorg = data.type === 'codeorg' || !!data.gameUrl || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); }));
-    var isElectronica = data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); }));
+    var isPaint = data.type === 'paint' || (data.tags && data.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })) || (/cancha|paint/i.test(data.title || ''));
+    var isCodeorg = !isPaint && (data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); })));
+    var isElectronica = !isPaint && !isCodeorg && (data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
 
     var title = data.title || 'Misión Educativa';
     var levelText = data.level ? ('Nivel ' + data.level) : 'Taller Maker';
     var mainText = isObjective ? (data.objective || data.description) : (data.benefits || data.description);
-    var gameUrl = data.gameUrl || data.externalUrl || null;
+    var gameUrl = isPaint ? null : (data.gameUrl || data.externalUrl || null);
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
     var gradeName = (student && student.gradeName) || (data.gradeName || 'Sala de 5 años');
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = (data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego';
+    var platText = isPaint ? 'Paint' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego');
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
     var tipBoxText = '';
 
     if (isObjective) {
-      if (isCodeorg) {
+      if (isPaint) {
+        pillars = [
+          { icon: 'fa-shapes', color: '#16A34A', title: 'Figuras Geométricas', desc: 'Identificar y trazar rectángulos, círculos y líneas para delimitar el campo de juego.' },
+          { icon: 'fa-paint-brush', color: '#2563EB', title: 'Manejo de Herramientas Paint', desc: 'Aprender a seleccionar figuras, bote de pintura para relleno de césped y paleta de colores.' },
+          { icon: 'fa-mouse-pointer', color: '#D97706', title: 'Coordinación con el Mouse', desc: 'Ejercitar el clic sostenido y arrastre con el ratón para dimensionar y posicionar las figuras.' },
+          { icon: 'fa-trophy', color: '#7C3AED', title: 'Proyecto Completo', desc: 'Completar una cancha de fútbol con arco, áreas, círculo central y pelota terminada.' }
+        ];
+        tipBoxText = '<strong>💡 Consejo Educativo:</strong> Preguntale a tu peque qué figuras geométricas tiene una cancha de fútbol real antes de dibujarla en la computadora.';
+      } else if (isCodeorg) {
         pillars = [
           { icon: 'fa-bullseye', color: '#E11D48', title: 'Meta de la Misión', desc: 'Llevar al pájaro rojo hasta el cerdito encastrando las instrucciones correctas en orden.' },
           { icon: 'fa-compass', color: '#2563EB', title: 'Orientación Espacial', desc: 'Contar casilleros y reconocer giros a izquierda o derecha desde los ojos del personaje.' },
@@ -2093,7 +2103,15 @@
       }
     } else {
       // Beneficios
-      if (isCodeorg) {
+      if (isPaint) {
+        pillars = [
+          { icon: 'fa-mouse-pointer', color: '#16A34A', title: 'Motricidad Fina Digital', desc: 'Precisión y control muscular en la mano al manipular el mouse o touchpad para trazar formas.' },
+          { icon: 'fa-vector-square', color: '#2563EB', title: 'Geometría y Proporción', desc: 'Reconocer simetría bilateral (dos mitades de cancha), tamaños relativos y límites espaciales.' },
+          { icon: 'fa-laptop', color: '#7C3AED', title: 'Alfabetización Digital', desc: 'Familiarizarse con el entorno operativo: abrir Paint, seleccionar herramientas y guardar archivos.' },
+          { icon: 'fa-palette', color: '#E11D48', title: 'Creatividad sin Miedo al Error', desc: 'Aprender a usar la goma o Ctrl+Z para corregir trazos con confianza y autonomía artística.' }
+        ];
+        tipBoxText = '<strong>🎨 Arte Digital en Acción:</strong> El dibujo de la cancha en Paint une la pasión deportiva con el aprendizaje de geometría temprana y destreza informática.';
+      } else if (isCodeorg) {
         pillars = [
           { icon: 'fa-layer-group', color: '#16A34A', title: 'Secuenciación de Algoritmos', desc: 'Aprender que para lograr una meta es necesario dar instrucciones precisas y ordenadas.' },
           { icon: 'fa-arrows-alt', color: '#2563EB', title: 'Lateralidad y Orientación', desc: 'Ejercitar la lateralidad cruzada (izquierda / derecha / avanzar) fortaleciendo la psicomotricidad.' },
@@ -2229,8 +2247,13 @@
     }
 
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
-    var isCodeorg = mission.type === 'codeorg' || !!mission.gameUrl || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); }));
-    var isGame = mission.type === 'game' || mission.type === 'codeorg' || !!mission.gameUrl || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game|code\.org|angry ?birds/i.test(t); }));
+    var isPaint = mission.type === 'paint' || (mission.tags && mission.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })) || (/cancha|paint/i.test(mission.title || ''));
+    if (isPaint) {
+      mission.gameUrl = null;
+      mission.externalUrl = null;
+    }
+    var isCodeorg = !isPaint && (mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); })));
+    var isGame = !isPaint && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
       activeTab = 'presentacion';
@@ -2239,7 +2262,6 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var isPaint = !isGame && (mission.type === 'paint' || (mission.tags && mission.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })));
     var isElectronica = !isGame && !isPaint && (mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
     var isMakecode = !isGame && !isElectronica && !isPaint && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
     var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint;
@@ -3040,6 +3062,96 @@
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
             (isCodeorg ?
               renderCodeorgSolutionHtml(mission) :
+             isPaint ?
+              '<div class="apm-sol-electro-wrap">' +
+                '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #15803D 0%, #16A34A 100%);">' +
+                  '<div class="apm-seh-icon"><i class="fas fa-shapes"></i></div>' +
+                  '<div>' +
+                    '<h4>Solución Oficial: Cancha de Fútbol con Figuras Geométricas en Paint</h4>' +
+                    '<p>Guía de figuras paso a paso: rectángulo grande (césped y perímetro), línea central, círculo central y arcos con rectángulos chicos.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-sol-electro-body">' +
+                  '<div class="apm-circuit-schematic-card" style="margin-bottom:16px;background:#F0FDF4;border:1.5px solid #86EFAC;">' +
+                    '<div class="apm-csc-header" style="border-bottom-color:#BBF7D0;">' +
+                      '<span style="color:#166534;font-weight:900;"><i class="fas fa-image"></i> Modelo Visual de la Cancha en Paint</span>' +
+                      '<a href="img/proyectos/cancha_futbol_paint_guia.png" target="_blank" class="apm-csc-badge" style="background:#16A34A;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
+                    '</div>' +
+                    '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+                      '<img src="img/proyectos/cancha_futbol_paint_guia.png" alt="Guía Cancha de Fútbol Paint" style="max-height:240px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
+                      '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Estructura completa de la cancha: césped verde, perímetro blanco, medio campo con círculo central, arcos y pelota.</div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-shapes"></i> Figuras Geométricas Utilizadas:</h5>' +
+                    '<div class="apm-pinout-table-wrap">' +
+                      '<table class="apm-pinout-table">' +
+                        '<thead>' +
+                          '<tr>' +
+                            '<th>Figura</th>' +
+                            '<th>Herramienta Paint</th>' +
+                            '<th>Sector de la Cancha</th>' +
+                            '<th>Color / Detalle</th>' +
+                          '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                          '<tr>' +
+                            '<td><strong>🟩 Rectángulo Grande</strong></td>' +
+                            '<td>Herramienta Rectángulo</td>' +
+                            '<td>Campo de juego principal</td>' +
+                            '<td>Línea blanca con relleno verde</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>📏 Línea Recta</strong></td>' +
+                            '<td>Herramienta Línea</td>' +
+                            '<td>Línea del medio campo</td>' +
+                            '<td>Blanco (divide la cancha en dos)</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>⚪ Círculo (Elipse + Shift)</strong></td>' +
+                            '<td>Herramienta Elipse</td>' +
+                            '<td>Círculo central y pelota</td>' +
+                            '<td>Blanco / Pelota clásica</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>🥅 Rectángulos Chicos</strong></td>' +
+                            '<td>Herramienta Rectángulo</td>' +
+                            '<td>Áreas grande, chica y arcos</td>' +
+                            '<td>Blanco en ambos extremos</td>' +
+                          '</tr>' +
+                          '<tr>' +
+                            '<td><strong>🪣 Bote de Pintura</strong></td>' +
+                            '<td>Relleno con Color</td>' +
+                            '<td>Césped y tribunas</td>' +
+                            '<td>Verde brillante para el pasto</td>' +
+                          '</tr>' +
+                        '</tbody>' +
+                      '</table>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="apm-troubleshoot-box" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-magic"></i> Consejos y Trucos para Dibujar en Paint</h5>' +
+                    '<div class="apm-tb-grid">' +
+                      '<div class="apm-tb-item" style="border-left-color:#16A34A;">' +
+                        '<h6>1. Círculos redondos perfectos</h6>' +
+                        '<p>Mantené apretada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás la herramienta Elipse.</p>' +
+                      '</div>' +
+                      '<div class="apm-tb-item" style="border-left-color:#2563EB;">' +
+                        '<h6>2. Si se pinta toda la pantalla</h6>' +
+                        '<p>¡Cuidado con los huecos! Si una línea no cierra bien, el balde se escapa. Apretá <strong>Ctrl + Z</strong> para deshacer.</p>' +
+                      '</div>' +
+                      '<div class="apm-tb-item" style="border-left-color:#D97706;">' +
+                        '<h6>3. Líneas bien derechitas</h6>' +
+                        '<p>Al igual que los círculos, mantener <strong>Shift</strong> al trazar líneas hace que salgan 100% horizontales o verticales.</p>' +
+                      '</div>' +
+                      '<div class="apm-tb-item" style="border-left-color:#7C3AED;">' +
+                        '<h6>4. Guardar como PNG</h6>' +
+                        '<p>Al terminar, andá a <em>Archivo &gt; Guardar como &gt; Imagen PNG</em> para subirla aquí y sumar tus +100 XP.</p>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' :
              isElectronica ?
               '<div class="apm-sol-electro-wrap">' +
                 '<div class="apm-sol-electro-header">' +
@@ -3487,18 +3599,21 @@
       };
     }
 
-    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (CODE.ORG, ELECTRÓNICA, SCRATCH, MAKECODE) ──
+    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (CODE.ORG, PAINT, ELECTRÓNICA, SCRATCH, MAKECODE) ──
     var switchToCodeorg = modal.querySelector('#apm-switch-to-codeorg');
+    var switchToPaint = modal.querySelector('#apm-switch-to-paint');
     var switchToElectro = modal.querySelector('#apm-switch-to-electro');
     var switchToScratch = modal.querySelector('#apm-switch-to-scratch');
     var switchToMk = modal.querySelector('#apm-switch-to-mk');
     var secCodeorg = modal.querySelector('#apm-codeorg-delivery-section');
+    var secPaint = modal.querySelector('#apm-paint-delivery-section');
     var secElectro = modal.querySelector('#apm-electro-delivery-section');
     var secScratch = modal.querySelector('#apm-scratch-delivery-section');
     var secMk = modal.querySelector('#apm-mk-delivery-section');
 
     function setDeliveryMode(mode) {
       if (secCodeorg) secCodeorg.style.display = (mode === 'codeorg' ? 'block' : 'none');
+      if (secPaint) secPaint.style.display = (mode === 'paint' ? 'block' : 'none');
       if (secElectro) secElectro.style.display = (mode === 'electro' ? 'block' : 'none');
       if (secScratch) secScratch.style.display = (mode === 'scratch' ? 'block' : 'none');
       if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
@@ -3507,6 +3622,11 @@
         switchToCodeorg.style.background = (mode === 'codeorg' ? '#E11D48' : '#E2E8F0');
         switchToCodeorg.style.color = (mode === 'codeorg' ? '#FFF' : '#475569');
         switchToCodeorg.style.boxShadow = (mode === 'codeorg' ? '0 2px 6px rgba(225,29,72,0.3)' : 'none');
+      }
+      if (switchToPaint) {
+        switchToPaint.style.background = (mode === 'paint' ? '#16A34A' : '#E2E8F0');
+        switchToPaint.style.color = (mode === 'paint' ? '#FFF' : '#475569');
+        switchToPaint.style.boxShadow = (mode === 'paint' ? '0 2px 6px rgba(22,163,74,0.3)' : 'none');
       }
       if (switchToElectro) {
         switchToElectro.style.background = (mode === 'electro' ? '#D97706' : '#E2E8F0');
@@ -3526,12 +3646,13 @@
     }
 
     if (switchToCodeorg) switchToCodeorg.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('codeorg'); };
+    if (switchToPaint) switchToPaint.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('paint'); };
     if (switchToElectro) switchToElectro.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('electro'); };
     if (switchToScratch) switchToScratch.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('scratch'); };
     if (switchToMk) switchToMk.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('mk'); };
 
     // Establecer modo de entrega inicial
-    setDeliveryMode(isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch')));
+    setDeliveryMode(isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'))));
 
     // --- Subida / Completar Misión Code.org (Angry Birds) con 1-Click ---
     var btnCompleteCodeorg = modal.querySelector('#apm-btn-complete-codeorg');
