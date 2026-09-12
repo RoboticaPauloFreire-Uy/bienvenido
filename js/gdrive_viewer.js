@@ -646,6 +646,7 @@
 
     var sala5SpecialBannerHtml = '';
     if (student.gradeId === 'sala5') {
+      var adventureMissions = missions || [];
       var idxSombrero = adventureMissions.findIndex(function(m){
         return (m.id === 's5-p1') || (/sombrero|patricio/i.test(m.title || ''));
       });
