@@ -58,14 +58,14 @@ const SCHOOL_DATA = {
         },
         {
           id: "s5-g3",
-          level: 3,
-          title: "Ana y Elsa (Frozen) ❄️",
+          level: 5,
+          title: "Ana y Elsa (Frozen): Geometría en el Hielo ❄️⛸️",
           platform: "codeorg",
-          externalUrl: "https://studio.code.org/es/courses/frozen/units/1/lessons/1/levels/1",
+          externalUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
           thumbnail: "img/frozen.png",
-          description: "Acompañá a Ana y Elsa a patinar mientras crean hermosos patrones geométricos y copos de nieve con código.",
-          benefits: "Introduce nociones de geometría, ángulos y bucles visuales de manera atractiva.",
-          tags: ["Code.org", "Frozen", "Geometría"]
+          description: "¡Nivel 5 de la Ruta de Aventuras! Conectamos lo aprendido en Paint con la programación: guiamos a Elsa y Ana a patinar para trazar figuras geométricas, ángulos y copos de nieve con código.",
+          benefits: "Conecta el dibujo geométrico manual de Paint con el pensamiento algorítmico, comprensión de ángulos rectos (90°), nociones de bucles (repetición) y orientación espacial sobre el hielo.",
+          tags: ["Code.org", "Frozen", "Geometría", "Ángulos", "Nivel 5"]
         },
         {
           id: "s5-g2",
@@ -344,6 +344,64 @@ const SCHOOL_DATA = {
               title: "¡Puntos de penal, pelota y guardar tu obra!",
               desc: "Usá el Pincel o el Círculo relleno blanco para marcar el punto de saque central y los puntos de penal. ¡Dibujá una pelota o las redes de los arcos y guardá tu dibujo como imagen (.png)!",
               tip: "Andá a 'Archivo' > 'Guardar como' > 'Imagen PNG' y escribí tu nombre para mostrar tu creación."
+            }
+          ]
+        },
+        {
+          id: "s5-p5",
+          level: 5,
+          title: "Ana y Elsa: Arte Geométrico sobre el Hielo ❄️⛸️",
+          author: "Taller Maker Sala 5",
+          date: "Julio 2026",
+          type: "codeorg",
+          platform: "codeorg",
+          badge: "❄️ Geometría & Programación",
+          icon: "fa-snowflake",
+          color: "#0284C7",
+          coverImage: "img/frozen.png",
+          gameUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
+          externalUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
+          description: "¡Nivel 5 de nuestra Ruta de Aventuras! En el nivel anterior usamos Paint para dibujar figuras geométricas a mano alzada. Ahora con Ana y Elsa damos el gran salto a la programación: le damos órdenes a las patinadoras con bloques de código para trazar líneas rectas, esquinas en ángulo recto (90°), cuadrados y copos de nieve sobre el hielo.",
+          objective: "Aprender a programar figuras geométricas en el hielo con Elsa y Ana, conectando los trazos manuales de Paint con algoritmos de código: bloques de avanzar píxeles, giros en ángulo recto de 90° y bucles de repetición.",
+          benefits: "Crea un puente directo entre el arte de Paint y la geometría computacional: enseña la descomposición de figuras en trazos y giros, introduce el concepto de ángulo recto (90°), estimula la abstracción con bucles (repetir 4 veces) y fortalece la orientación espacial bidimensional.",
+          tags: ["Frozen", "Ana y Elsa", "Code.org", "Geometría", "Ángulos", "Algoritmos", "Nivel 5"],
+          gallery: [
+            "img/frozen.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Plataforma Code.org (Frozen: Arte en el Hielo)", description: "Desafío interactivo online con las pistas de patinaje de Elsa y Ana (https://studio.code.org/s/frozen/lessons/1/levels/1).", icon: "fa-snowflake" },
+            { title: "Bloque 'Avanzar píxeles'", description: "Comando para patinar en línea recta dejando una estela mágica sobre el hielo.", icon: "fa-arrows-alt-v" },
+            { title: "Bloque 'Girar 90 grados'", description: "Giro en ángulo recto: la clave para formar las esquinas de cuadrados y rectángulos.", icon: "fa-redo" },
+            { title: "Bloque 'Repetir' (Bucles)", description: "Herramienta mágica para dibujar figuras geométricas completas sin escribir código repetido.", icon: "fa-sync-alt" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "De Paint al Código: Observar el hielo",
+              desc: "En Paint dibujabas la cancha arrastrando el mouse. Acá Elsa patina cuando le das órdenes precisas. Mirá el hielo: ubicá hacia dónde mira Elsa y qué línea debe trazar.",
+              tip: "¿Cuántos píxeles tiene que avanzar? ¡Arrastrá el bloque 'Avanzar 100 píxeles' debajo de 'Al ejecutar'!"
+            },
+            {
+              step: 2,
+              title: "Hacer una esquina perfecta (Giro de 90°)",
+              desc: "Para doblar como en las esquinas de los arcos y la cancha de Paint, encastrá un bloque 'Girar a la derecha 90 grados'. Así Elsa cambia de dirección sin moverse de lugar.",
+              tip: "El ángulo de 90° es una esquina perfecta, como el borde de una hoja de papel o la esquina de una mesa."
+            },
+            {
+              step: 3,
+              title: "Construir un Cuadrado sobre el hielo",
+              desc: "Repetí el patrón: avanzar 100 píxeles y girar 90 grados. Al hacerlo 4 veces seguidas, ¡Elsa patina cerrando un cuadrado brillante!",
+              tip: "¡El secreto de los programadores! En vez de poner 8 bloques, podés usar el bloque 'Repetir 4 veces' para que la computadora lo haga sola."
+            },
+            {
+              step: 4,
+              title: "Tocar 'Ejecutar' y crear copos de nieve",
+              desc: "Tocá el botón naranja 'Ejecutar' para ver a Elsa deslizarse patinando con música y magia. Al completar los niveles, ¡desbloquearás a Ana y hermosos copos de nieve!",
+              tip: "Si Elsa patina para otro lado, ¡no pasa nada! Tocá 'Reiniciar', cambiá el giro de derecha a izquierda y probá otra vez."
             }
           ]
         }
@@ -1257,12 +1315,13 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, les falta objective, o Cancha tiene gameUrl residual, actualizar Firestore
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Ana y Elsa, les falta objective, o Cancha tiene gameUrl residual, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
                 !targetProjects.some(p => (p.title || '').includes('Varita') || (p.title || '').includes('varita')) ||
                 !targetProjects.some(p => (p.title || '').includes('Cancha') || (p.title || '').includes('cancha') || (p.title || '').includes('Paint')) ||
+                !targetProjects.some(p => (p.title || '').includes('Elsa') || (p.title || '').includes('Frozen') || (p.title || '').includes('Ana')) ||
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective)) ||
                 targetProjects.some(p => ((p.id === 's5-p4') || /cancha|paint/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );

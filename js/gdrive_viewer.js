@@ -1550,9 +1550,83 @@
   }
 
   // ──────────────────────────────────────────────────
-  // RENDER SOLUCIÓN OFICIAL PARA CODE.ORG / ANGRY BIRDS
+  // RENDER SOLUCIÓN OFICIAL PARA CODE.ORG (FROZEN / ANGRY BIRDS)
   // ──────────────────────────────────────────────────
+  function renderFrozenSolutionHtml(mission) {
+    var gameUrl = (mission && mission.gameUrl) || 'https://studio.code.org/s/frozen/lessons/1/levels/1';
+    return '<div class="apm-sol-codeorg-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #0369A1 0%, #0284C7 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-snowflake"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: Geometría y Algoritmos con Ana y Elsa (Code.org)</h4>' +
+          '<p>Secuencias paso a paso de patinaje geométrico en <strong>' + gameUrl + '</strong>: de Paint al código con ángulos y bucles.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body" style="padding:18px;">' +
+        '<div style="margin-bottom:16px;background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:12px;padding:14px;">' +
+          '<h5 style="margin:0 0 6px;color:#0369A1;font-size:0.95rem;"><i class="fas fa-shapes"></i> Puente Cognitivo: De Paint a la Programación Geométrica</h5>' +
+          '<p style="margin:0;font-size:0.86rem;color:#0C4A6E;line-height:1.5;">' +
+            'En el Nivel 4 trazamos la cancha en Paint usando el mouse a mano alzada. Aquí le enseñamos a la computadora la receta matemática de las figuras: un cuadrado no es solo una forma, ¡es avanzar 100 píxeles y girar 90 grados repetido 4 veces en el hielo!' +
+          '</p>' +
+        '</div>' +
+        '<div class="codeorg-levels-solutions-grid">' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #0284C7;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#0284C7;">Nivel 1</span> <strong>Línea Recta sobre el Hielo</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward" style="background:#0284C7;border-color:#0369A1;"><i class="fas fa-arrows-alt-v"></i> avanzar 100 píxeles</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Elsa patina en línea recta. Es la base de los lados de cualquier figura geométrica.</div>' +
+          '</div>' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #2563EB;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#2563EB;">Nivel 2</span> <strong>Esquina y Ángulo Recto (90°)</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward" style="background:#0284C7;border-color:#0369A1;"><i class="fas fa-arrows-alt-v"></i> avanzar 100 píxeles</div>' +
+              '<div class="co-block turn-right" style="background:#2563EB;border-color:#1D4ED8;"><i class="fas fa-redo"></i> girar a la derecha 90 grados ↷</div>' +
+              '<div class="co-block move-forward" style="background:#0284C7;border-color:#0369A1;"><i class="fas fa-arrows-alt-v"></i> avanzar 100 píxeles</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Girar 90° crea una esquina recta perfecta, igual que los arcos de fútbol en Paint.</div>' +
+          '</div>' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #10B981;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#10B981;">Nivel 3</span> <strong>Cuadrado Completo con Bucle</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block" style="background:#10B981;border-color:#047857;color:#FFF;padding:4px 8px;border-radius:4px;font-size:0.76rem;margin-bottom:3px;"><i class="fas fa-sync-alt"></i> repetir 4 veces</div>' +
+              '<div style="padding-left:14px;border-left:2px dashed #10B981;">' +
+                '<div class="co-block move-forward" style="background:#0284C7;border-color:#0369A1;"><i class="fas fa-arrows-alt-v"></i> avanzar 100 píxeles</div>' +
+                '<div class="co-block turn-right" style="background:#2563EB;border-color:#1D4ED8;"><i class="fas fa-redo"></i> girar a la derecha 90° ↷</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="col-sc-note">En lugar de usar 8 bloques, el bucle repite 4 veces las órdenes para cerrar el cuadrado.</div>' +
+          '</div>' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #7C3AED;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#7C3AED;">Nivel 4</span> <strong>Copos de Nieve y Estrellas</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block" style="background:#7C3AED;border-color:#5B21B6;color:#FFF;padding:4px 8px;border-radius:4px;font-size:0.76rem;margin-bottom:3px;"><i class="fas fa-sync-alt"></i> repetir 6 veces</div>' +
+              '<div style="padding-left:14px;border-left:2px dashed #7C3AED;">' +
+                '<div class="co-block move-forward" style="background:#0284C7;border-color:#0369A1;"><i class="fas fa-arrows-alt-v"></i> avanzar 100 píxeles</div>' +
+                '<div class="co-block turn-right" style="background:#2563EB;border-color:#1D4ED8;"><i class="fas fa-redo"></i> girar a la derecha 60° ↷</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Reduciendo los grados del giro (60°), ¡Elsa crea un hexágono y copos de nieve mágicos!</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="text-align:center;margin-top:20px;">' +
+          '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#0284C7;border-color:#0369A1;padding:10px 22px;">' +
+            '<i class="fas fa-external-link-alt"></i> Abrir Desafío en Code.org Frozen' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderCodeorgSolutionHtml(mission) {
+    var isFrozen = mission && ((mission.tags && mission.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(mission.title || '')));
+    if (isFrozen) {
+      return renderFrozenSolutionHtml(mission);
+    }
     var gameUrl = (mission && mission.gameUrl) || 'https://studio.code.org/es/hoc/1';
     return '<div class="apm-sol-codeorg-wrap">' +
       '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #9F1239 0%, #E11D48 100%);">' +
@@ -2049,7 +2123,9 @@
 
     var isObjective = (conceptType === 'objective');
     var isPaint = data.type === 'paint' || (data.tags && data.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })) || (/cancha|paint/i.test(data.title || ''));
-    var isCodeorg = !isPaint && (data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); })));
+    var isFrozen = !isPaint && ((data.tags && data.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(data.title || '')));
+    var isCodeorg = !isPaint && (data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa/i.test(t); })));
+    var isAngryBirds = isCodeorg && !isFrozen;
     var isElectronica = !isPaint && !isCodeorg && (data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
 
     var title = data.title || 'Misión Educativa';
@@ -2061,14 +2137,22 @@
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = isPaint ? 'Paint' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego');
+    var platText = isPaint ? 'Paint' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'));
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
     var tipBoxText = '';
 
     if (isObjective) {
-      if (isPaint) {
+      if (isFrozen) {
+        pillars = [
+          { icon: 'fa-snowflake', color: '#0284C7', title: 'Geometría sobre el Hielo', desc: 'Aprender a formar figuras geométricas haciendo que Elsa y Ana patinen con líneas y giros.' },
+          { icon: 'fa-shapes', color: '#2563EB', title: 'De Paint a la Programación', desc: 'Conectar lo dibujado a mano en Paint con órdenes de código exactas (avanzar píxeles y girar).' },
+          { icon: 'fa-redo', color: '#D97706', title: 'Ángulos Rectos (90°)', desc: 'Comprender que las esquinas de un cuadrado o rectángulo se forman girando exactamente 90 grados.' },
+          { icon: 'fa-sync-alt', color: '#16A34A', title: 'Repetición y Bucles', desc: 'Descubrir cómo repetir secuencias para trazar copos de nieve y estrellas sin repetir código.' }
+        ];
+        tipBoxText = '<strong>💡 Clave Pedagógica (Conexión Paint):</strong> En el Nivel 4 tu peque dibujó rectángulos y líneas arrastrando el mouse. Ahora en este nivel programa a Elsa para que la computadora trace esas mismas figuras con código. ¡Preguntale cómo se forma una esquina con un giro de 90°!';
+      } else if (isPaint) {
         pillars = [
           { icon: 'fa-shapes', color: '#16A34A', title: 'Figuras Geométricas', desc: 'Identificar y trazar rectángulos, círculos y líneas para delimitar el campo de juego.' },
           { icon: 'fa-paint-brush', color: '#2563EB', title: 'Manejo de Herramientas Paint', desc: 'Aprender a seleccionar figuras, bote de pintura para relleno de césped y paleta de colores.' },
@@ -2103,7 +2187,15 @@
       }
     } else {
       // Beneficios
-      if (isPaint) {
+      if (isFrozen) {
+        pillars = [
+          { icon: 'fa-shapes', color: '#0284C7', title: 'Pensamiento Geométrico', desc: 'Descomponer figuras en partes: comprender que un cuadrado son 4 lados iguales y 4 giros de 90°.' },
+          { icon: 'fa-code-branch', color: '#2563EB', title: 'Introducción a Bucles (Loops)', desc: 'Descubrir el bloque "Repetir", uno de los pilares de la programación para optimizar instrucciones.' },
+          { icon: 'fa-compass', color: '#D97706', title: 'Orientación y Perspectiva', desc: 'Ponerse en el lugar de Elsa sobre la pista de hielo para calcular hacia dónde debe girar su cuerpo.' },
+          { icon: 'fa-magic', color: '#7C3AED', title: 'Creatividad Matemática', desc: 'Sentir orgullo al ver cómo las matemáticas, los ángulos y el código generan arte sobre el hielo.' }
+        ];
+        tipBoxText = '<strong>❄️ De Paint a la Programación:</strong> Mientras Paint estimula la motricidad fina manual, Ana y Elsa desarrollan la abstracción mental: programar para que las máquinas dibujen con precisión matemática.';
+      } else if (isPaint) {
         pillars = [
           { icon: 'fa-mouse-pointer', color: '#16A34A', title: 'Motricidad Fina Digital', desc: 'Precisión y control muscular en la mano al manipular el mouse o touchpad para trazar formas.' },
           { icon: 'fa-vector-square', color: '#2563EB', title: 'Geometría y Proporción', desc: 'Reconocer simetría bilateral (dos mitades de cancha), tamaños relativos y límites espaciales.' },
@@ -2252,7 +2344,9 @@
       mission.gameUrl = null;
       mission.externalUrl = null;
     }
-    var isCodeorg = !isPaint && (mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); })));
+    var isFrozen = !isPaint && ((mission.tags && mission.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(mission.title || '')));
+    var isCodeorg = !isPaint && (mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa/i.test(t); })));
+    var isAngryBirds = isCodeorg && !isFrozen;
     var isGame = !isPaint && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
@@ -2443,16 +2537,21 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isCodeorg ? '#E11D48' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1'))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
-                        (isCodeorg ? '🎮 Programación con Bloques • Code.org' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level))) +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)))) +
                       '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card" style="' + (isCodeorg ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : '')) + '">' +
-                        '<h4 style="' + (isCodeorg ? 'color:#9F1239;' : (isPaint ? 'color:#15803D;' : '')) + '"><i class="fas ' + (isCodeorg ? 'fa-bullseye' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered')) + '"></i> ' + (isCodeorg ? 'Objetivo Pedagógico:' : '¿Cuál es nuestra misión?') + '</h4>' +
-                        '<p style="' + (isCodeorg ? 'color:#4C0519;' : (isPaint ? 'color:#14532D;' : '')) + '">' + (mission.objective || mission.description) + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : ''))) + '">' +
+                        '<h4 style="' + (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaint ? 'color:#15803D;' : ''))) + '"><i class="fas ' + (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered'))) + '"></i> ' + (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : '¿Cuál es nuestra misión?')) + '</h4>' +
+                        '<p style="' + (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaint ? 'color:#14532D;' : ''))) + '">' + (mission.objective || mission.description) + '</p>' +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
-                        (isCodeorg ?
+                        (isFrozen ?
+                          '<span class="apm-skill-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-snowflake"></i> Geometría en el Hielo</span>' +
+                          '<span class="apm-skill-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-shapes"></i> De Paint al Código</span>' +
+                          '<span class="apm-skill-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-redo"></i> Giros de 90°</span>' +
+                          '<span class="apm-skill-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-sync-alt"></i> Bucles (Repetir)</span>' :
+                         isAngryBirds ?
                           '<span class="apm-skill-pill"><i class="fas fa-puzzle-piece"></i> Primeros Pasos en Programación</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-brain"></i> Razonamiento Lógico</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-compass"></i> Lateralidad & Orientación</span>' +
@@ -2471,8 +2570,8 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isCodeorg ? 'background:#E11D48;border-color:#BE123C;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))) + '">' +
-                        (isCodeorg ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>')) +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))) + '">' +
+                        (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>'))) +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -2480,7 +2579,60 @@
 
                 // SLIDE 1: Materiales & Beneficios
                 '<div class="apm-slide-page" data-slide-idx="1">' +
-                  (isCodeorg ?
+                  (isFrozen ?
+                    '<div style="max-width:850px;margin:0 auto;">' +
+                      '<div style="text-align:center;margin-bottom:20px;">' +
+                        '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
+                          '❄️ ¿Por qué Ana y Elsa? De Paint a la Programación Geométrica' +
+                        '</h3>' +
+                        '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
+                          'En el Nivel 4 dibujamos con el mouse en Paint. ¡Ahora en <strong><a href="https://studio.code.org/s/frozen/lessons/1/levels/1" target="_blank" style="color:#0284C7;text-decoration:underline;">Code.org Frozen</a></strong> programamos a las patinadoras para que tracen figuras geométricas con código!' +
+                        '</p>' +
+                      '</div>' +
+                      '<div class="apm-materials-grid">' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #0284C7;">' +
+                          '<div class="apm-mat-icon" style="color:#0284C7;"><i class="fas fa-shapes"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>1. De Paint a la Programación (Conexión)</h5>' +
+                            '<p>En Paint trazabas líneas y rectángulos arrastrando el mouse. Acá aprendés a <strong>dar órdenes precisas</strong> (avanzar píxeles y girar) para que la computadora dibuje la figura sola.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #2563EB;">' +
+                          '<div class="apm-mat-icon" style="color:#2563EB;"><i class="fas fa-redo"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>2. Ángulos Rectos y Giros (90°)</h5>' +
+                            '<p>Comprender cómo se forman las esquinas de un cuadrado o un rectángulo: un trazo recto hacia adelante y un giro perfecto de 90° hacia la derecha o izquierda.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #10B981;">' +
+                          '<div class="apm-mat-icon" style="color:#10B981;"><i class="fas fa-sync-alt"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>3. Introducción a Bucles (Repetir)</h5>' +
+                            '<p>En lugar de poner 8 bloques repetidos, descubrimos la magia de <code>repetir 4 veces</code>. Es el primer paso hacia la automatización y eficiencia de los programadores.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #7C3AED;">' +
+                          '<div class="apm-mat-icon" style="color:#7C3AED;"><i class="fas fa-snowflake"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>4. Creatividad Matemática en el Hielo</h5>' +
+                            '<p>Combinar giros y repeticiones para transformar simples líneas en flores de hielo, estrellas y copos de nieve mientras Elsa y Ana patinan.</p>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-reto-card" style="margin-top:20px;background:#F0F9FF;border-color:#BAE6FD;">' +
+                        '<h4 style="color:#0369A1;"><i class="fas fa-snowflake"></i> Actividad Oficial: Code.org Frozen (Arte en el Hielo)</h4>' +
+                        '<p style="color:#0C4A6E;margin:0 0 10px;">Plataforma mundial adaptada para niñas y niños de 5 años para explorar arte geométrico y algoritmos.</p>' +
+                        '<a href="https://studio.code.org/s/frozen/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#0284C7;border-color:#0369A1;display:inline-flex;align-items:center;gap:8px;padding:8px 18px;font-size:0.86rem;color:#FFF;text-decoration:none;">' +
+                          '<i class="fas fa-play"></i> Abrir studio.code.org/s/frozen en el navegador' +
+                        '</a>' +
+                      '</div>' +
+                      '<div style="text-align:center;margin-top:20px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;background:#0284C7;border-color:#0369A1;">' +
+                          '¡Ir al Desafío Interactivo de Ana y Elsa! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isAngryBirds ?
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
@@ -2586,7 +2738,66 @@
 
                 // SLIDE 2: Instrucciones de Armado (Electrónica) O Desafío Angry Birds (Code.org) O Código y Simulador (MakeCode/Scratch)
                 '<div class="apm-slide-page" data-slide-idx="2">' +
-                  (isCodeorg ?
+                  (isFrozen ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-snowflake" style="color:#0284C7;"></i> Nivel 5: ¡A Patinar y Programar con Ana y Elsa!</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Plataforma interactiva: <strong>https://studio.code.org/s/frozen/lessons/1/levels/1</strong></p>' +
+                        '</div>' +
+                        '<a href="https://studio.code.org/s/frozen/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#0284C7;border-color:#0369A1;font-size:0.84rem;padding:7px 16px;">' +
+                          '<i class="fas fa-external-link-alt"></i> Abrir en Pantalla Completa' +
+                        '</a>' +
+                      '</div>' +
+                      '<div class="codeorg-challenge-hero-card" style="border-left:4px solid #0284C7;">' +
+                        '<div class="chc-left">' +
+                          '<img src="img/frozen.png" alt="Ana y Elsa Frozen Code.org" class="chc-img" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80\'">' +
+                        '</div>' +
+                        '<div class="chc-right">' +
+                          '<span class="chc-tag" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-snowflake"></i> Misión Nivel 5</span>' +
+                          '<h4>Ayudá a Elsa a trazar figuras geométricas en el hielo</h4>' +
+                          '<p>Arrastrá los bloques de <code>avanzar píxeles</code> y <code>girar 90 grados</code> hacia el bloque <code>al ejecutar</code>. ¿Cómo creamos un cuadrado con esquinas en ángulo recto?</p>' +
+                          '<div class="chc-blocks-preview">' +
+                            '<span class="cbp-block run"><i class="fas fa-play"></i> al ejecutar</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#0284C7;"><i class="fas fa-arrows-alt-v"></i> avanzar 100 px</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#2563EB;"><i class="fas fa-redo"></i> girar 90°</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#0284C7;"><i class="fas fa-arrows-alt-v"></i> avanzar 100 px</span>' +
+                          '</div>' +
+                          '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">' +
+                            '<a href="https://studio.code.org/s/frozen/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#0284C7;border-color:#0369A1;font-size:0.92rem;padding:9px 20px;">' +
+                              '<i class="fas fa-snowflake"></i> ¡Jugar Ahora en Code.org! (studio.code.org/s/frozen)' +
+                            '</a>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-tb-grid" style="margin-top:8px;">' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #0284C7;">' +
+                          '<h6>Paso 1: Trazar la primera línea</h6>' +
+                          '<p>Encastrá el bloque <strong>avanzar 100 píxeles</strong> para que Elsa patine en línea recta.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #2563EB;">' +
+                          '<h6>Paso 2: Doblar en la esquina (90°)</h6>' +
+                          '<p>Agregá <strong>girar a la derecha 90 grados</strong> para formar una esquina recta como en la cancha de fútbol.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #10B981;">' +
+                          '<h6>Paso 3: Cerrar el Cuadrado</h6>' +
+                          '<p>Repetí los lados o usá el bloque <strong>repetir 4 veces</strong> para armar la figura geométrica completa.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #7C3AED;">' +
+                          '<h6>Paso 4: ¡Copos de nieve mágicos!</h6>' +
+                          '<p>Al superar los niveles, ¡Elsa y Ana crearán copos de nieve y estrellas combinando más figuras!</p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div style="text-align:right;margin-top:8px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#0284C7;border-color:#0369A1;">' +
+                          '¡Ver Misión Cumplida y Consejos! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isAngryBirds ?
                     '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
@@ -2764,14 +2975,18 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isPaint ? '⚽' : (isCodeorg ? '🐦' : '🏆')) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isCodeorg ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isCodeorg ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isFrozen ? '❄️' : (isPaint ? '⚽' : (isAngryBirds ? '🐦' : '🏆'))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
                     '<div class="apm-extra-challenges">' +
-                      (isCodeorg ?
+                      (isFrozen ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0284C7;">1</div><div><h6>Crear un Copo de Nieve de 6 Puntas</h6><p>Repetí el giro de 60 grados y avanza para formar un copo de nieve mágico completo en el hielo.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0284C7;">2</div><div><h6>Patinar Dibujando Círculos Suaves</h6><p>Usá giros pequeños de 1 grado repetidos muchas veces para que Elsa dibuje círculos perfectos como en Paint.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0284C7;">3</div><div><h6>Cambiar Colores de los Patines</h6><p>Programá a Ana y Elsa para que el hielo cambie de color con cada figura geométrica que tracen.</p></div></div>' :
+                       isAngryBirds ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge">1</div><div><h6>Superar los niveles con giros</h6><p>Llegar al nivel 3 y 4 de Code.org practicando giros a la derecha e izquierda sin perder la orientación.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge">2</div><div><h6>Usar el menor número de bloques</h6><p>Encontrar la ruta más directa sin bloques sobrantes pensando el algoritmo antes de ejecutar.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge">3</div><div><h6>Enseñarle a un compañero</h6><p>Explicarle a un amigo cómo anticipar los pasos del pájaro antes de encastrar los bloques.</p></div></div>' :
@@ -2805,8 +3020,8 @@
 
                     '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap;">' +
                       (isGame ?
-                        '<a href="' + (mission.gameUrl || 'https://studio.code.org/es/hoc/1') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;font-size:0.92rem;padding:9px 20px;">' +
-                          '<i class="fas fa-gamepad"></i> ¡Jugar Ahora en Code.org!' +
+                        '<a href="' + (mission.gameUrl || (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1')) + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:' + (isFrozen ? '#0284C7;border-color:#0369A1;' : '#E11D48;border-color:#BE123C;') + 'font-size:0.92rem;padding:9px 20px;">' +
+                          (isFrozen ? '<i class="fas fa-snowflake"></i> ¡Jugar Ahora con Ana y Elsa!' : '<i class="fas fa-gamepad"></i> ¡Jugar Ahora en Code.org!') +
                         '</a>' +
                         '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía Didáctica</button>' +
                         '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
@@ -2852,8 +3067,8 @@
               '<div class="apm-deliv-format-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#F8FAFC;border-radius:12px;margin-bottom:14px;border:1.5px solid #E2E8F0;flex-wrap:wrap;">' +
                 '<span style="font-size:0.84rem;font-weight:800;color:#334155;"><i class="fas fa-sliders-h" style="color:#6366F1;"></i> Formato de Entrega:</span>' +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isCodeorg ? 'active' : '') + '" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isCodeorg ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
-                    '<i class="fas fa-gamepad"></i> Desafío Code.org' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isCodeorg ? 'active' : '') + '" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isCodeorg ? (isFrozen ? 'background:#0284C7;color:#FFF;box-shadow:0 2px 6px rgba(2,132,199,0.3);' : 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);') : 'background:#E2E8F0;color:#475569;') + '">' +
+                    (isFrozen ? '<i class="fas fa-snowflake"></i> Desafío Frozen' : '<i class="fas fa-gamepad"></i> Desafío Code.org') +
                   '</button>' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isPaint ? 'active' : '') + '" id="apm-switch-to-paint" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isPaint ? 'background:#16A34A;color:#FFF;box-shadow:0 2px 6px rgba(22,163,74,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-palette"></i> Dibujo Paint' +
@@ -2870,42 +3085,49 @@
                 '</div>' +
               '</div>' +
 
-              // SUB-PANEL CODE.ORG / ANGRY BIRDS
+              // SUB-PANEL CODE.ORG / ANGRY BIRDS / FROZEN
               '<div id="apm-codeorg-delivery-section" style="' + (isCodeorg ? 'display:block;' : 'display:none;') + '">' +
-                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #BE123C 0%, #E11D48 100%);">' +
-                  '<div class="apm-dh-icon"><i class="fas fa-gamepad"></i></div>' +
+                '<div class="apm-delivery-header" style="background:' + (isFrozen ? 'linear-gradient(135deg, #0369A1 0%, #0284C7 100%)' : 'linear-gradient(135deg, #BE123C 0%, #E11D48 100%)') + ';">' +
+                  '<div class="apm-dh-icon">' + (isFrozen ? '<i class="fas fa-snowflake"></i>' : '<i class="fas fa-gamepad"></i>') + '</div>' +
                   '<div>' +
-                    '<h4>Registrar Misión de Angry Birds (Code.org)</h4>' +
-                    '<p>¡Iniciación a la programación! Si superaste los retos en <strong>https://studio.code.org/es/hoc/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.</p>' +
+                    '<h4>' + (isFrozen ? 'Registrar Misión de Ana y Elsa (Code.org Frozen)' : 'Registrar Misión de Angry Birds (Code.org)') + '</h4>' +
+                    '<p>' + (isFrozen ? '¡Arte y geometría con código! Si superaste los retos en <strong>https://studio.code.org/s/frozen/lessons/1/levels/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.' : '¡Iniciación a la programación! Si superaste los retos en <strong>https://studio.code.org/es/hoc/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.') + '</p>' +
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body">' +
-                  '<div style="background:#FFF1F2;border:2px dashed #FDA4AF;border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;">' +
-                    '<div style="font-size:3.2rem;margin-bottom:8px;">🐦🎯</div>' +
-                    '<h3 style="font-size:1.3rem;font-weight:900;color:#9F1239;margin:0 0 8px;">¿Guiaste al Pájaro hasta el Cerdito Verde?</h3>' +
-                    '<p style="font-size:0.92rem;color:#4C0519;max-width:550px;margin:0 auto 18px;line-height:1.5;">' +
+                  '<div style="' + (isFrozen ? 'background:#F0F9FF;border:2px dashed #BAE6FD;' : 'background:#FFF1F2;border:2px dashed #FDA4AF;') + 'border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;">' +
+                    '<div style="font-size:3.2rem;margin-bottom:8px;">' + (isFrozen ? '❄️⛸️' : '🐦🎯') + '</div>' +
+                    '<h3 style="font-size:1.3rem;font-weight:900;' + (isFrozen ? 'color:#0369A1;' : 'color:#9F1239;') + 'margin:0 0 8px;">' + (isFrozen ? '¿Creaste Figuras Geométricas y Copos de Nieve con Elsa?' : '¿Guiaste al Pájaro hasta el Cerdito Verde?') + '</h3>' +
+                    '<p style="font-size:0.92rem;' + (isFrozen ? 'color:#0C4A6E;' : 'color:#4C0519;') + 'max-width:550px;margin:0 auto 18px;line-height:1.5;">' +
                       'Hacé clic en el botón de abajo para registrar tu logro en el sistema, completar la estación del mapa y sumar puntos al progreso de tu taller.' +
                     '</p>' +
-                    '<button type="button" id="apm-btn-complete-codeorg" class="apm-delivery-submit-btn" style="background:#E11D48;font-size:1.05rem;padding:12px 28px;box-shadow:0 4px 12px rgba(225,29,72,0.35);cursor:pointer;">' +
-                      '<i class="fas fa-trophy"></i> ¡Completé el Nivel en Code.org! (+100 XP)' +
+                    '<button type="button" id="apm-btn-complete-codeorg" class="apm-delivery-submit-btn" style="background:' + (isFrozen ? '#0284C7' : '#E11D48') + ';font-size:1.05rem;padding:12px 28px;box-shadow:0 4px 12px ' + (isFrozen ? 'rgba(2,132,199,0.35)' : 'rgba(225,29,72,0.35)') + ';cursor:pointer;">' +
+                      (isFrozen ? '<i class="fas fa-snowflake"></i> ¡Completé el Reto de Frozen en Code.org! (+100 XP)' : '<i class="fas fa-trophy"></i> ¡Completé el Nivel en Code.org! (+100 XP)') +
                     '</button>' +
                     '<div style="margin-top:14px;">' +
-                      '<a href="https://studio.code.org/es/hoc/1" target="_blank" rel="noopener noreferrer" style="font-size:0.86rem;color:#E11D48;font-weight:700;text-decoration:underline;">' +
-                        '<i class="fas fa-external-link-alt"></i> Ir a jugar en https://studio.code.org/es/hoc/1' +
+                      '<a href="' + (mission.gameUrl || (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1')) + '" target="_blank" rel="noopener noreferrer" style="font-size:0.86rem;color:' + (isFrozen ? '#0284C7' : '#E11D48') + ';font-weight:700;text-decoration:underline;">' +
+                        '<i class="fas fa-external-link-alt"></i> Ir a jugar en ' + (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1') +
                       '</a>' +
                     '</div>' +
                   '</div>' +
                   '<div id="apm-codeorg-delivery-status">' +
                     (isAlreadyCompleted ?
-                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">¡Desafío de Angry Birds en Code.org registrado con éxito! Tu avance está sumado.</span></div></div>' : '') +
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">¡Desafío de ' + (isFrozen ? 'Ana y Elsa' : 'Angry Birds') + ' en Code.org registrado con éxito! Tu avance está sumado.</span></div></div>' : '') +
                   '</div>' +
                   '<div class="apm-delivery-guide" style="margin-top:16px;">' +
                     '<h5><i class="fas fa-brain"></i> Objetivos Pedagógicos y Beneficios Cumplidos:</h5>' +
-                    '<ol>' +
-                      '<li><strong>Secuenciación de Algoritmos:</strong> Comprender que los bloques deben ordenarse paso a paso para que el programa funcione.</li>' +
-                      '<li><strong>Lateralidad y Orientación:</strong> Diferenciar entre avanzar, girar a la derecha o izquierda en el espacio.</li>' +
-                      '<li><strong>Descomposición & Depuración:</strong> Analizar el error cuando el pájaro choca y corregir el código sin frustración.</li>' +
-                    '</ol>' +
+                    (isFrozen ?
+                      '<ol>' +
+                        '<li><strong>De Paint a la Programación:</strong> En Paint dibujaste figuras a mano con el mouse; con Ana y Elsa le das órdenes exactas (algoritmos) a la computadora para que trace esas mismas figuras en el hielo.</li>' +
+                        '<li><strong>Ángulos y Geometría en el Espacio:</strong> Aprender qué es un giro de 90° (esquina recta como en la cancha) y cómo orientar a Elsa en el plano.</li>' +
+                        '<li><strong>Bucles y Patrones Repetitivos:</strong> Descubrir que para hacer un cuadrado o un copo de nieve basta con repetir una secuencia de avanzar y girar.</li>' +
+                      '</ol>' :
+                      '<ol>' +
+                        '<li><strong>Secuenciación de Algoritmos:</strong> Comprender que los bloques deben ordenarse paso a paso para que el programa funcione.</li>' +
+                        '<li><strong>Lateralidad y Orientación:</strong> Diferenciar entre avanzar, girar a la derecha o izquierda en el espacio.</li>' +
+                        '<li><strong>Descomposición & Depuración:</strong> Analizar el error cuando el pájaro choca y corregir el código sin frustración.</li>' +
+                      '</ol>'
+                    ) +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -3619,9 +3841,9 @@
       if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
 
       if (switchToCodeorg) {
-        switchToCodeorg.style.background = (mode === 'codeorg' ? '#E11D48' : '#E2E8F0');
+        switchToCodeorg.style.background = (mode === 'codeorg' ? (isFrozen ? '#0284C7' : '#E11D48') : '#E2E8F0');
         switchToCodeorg.style.color = (mode === 'codeorg' ? '#FFF' : '#475569');
-        switchToCodeorg.style.boxShadow = (mode === 'codeorg' ? '0 2px 6px rgba(225,29,72,0.3)' : 'none');
+        switchToCodeorg.style.boxShadow = (mode === 'codeorg' ? (isFrozen ? '0 2px 6px rgba(2,132,199,0.3)' : '0 2px 6px rgba(225,29,72,0.3)') : 'none');
       }
       if (switchToPaint) {
         switchToPaint.style.background = (mode === 'paint' ? '#16A34A' : '#E2E8F0');
@@ -3654,7 +3876,7 @@
     // Establecer modo de entrega inicial
     setDeliveryMode(isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'))));
 
-    // --- Subida / Completar Misión Code.org (Angry Birds) con 1-Click ---
+    // --- Subida / Completar Misión Code.org (Angry Birds / Frozen) con 1-Click ---
     var btnCompleteCodeorg = modal.querySelector('#apm-btn-complete-codeorg');
     if (btnCompleteCodeorg) {
       btnCompleteCodeorg.onclick = function() {
@@ -3664,19 +3886,19 @@
         var nowStr = new Date().toLocaleDateString('es-ES');
         var submissionData = {
           type: 'codeorg',
-          gameUrl: mission.gameUrl || 'https://studio.code.org/es/hoc/1',
+          gameUrl: mission.gameUrl || (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1'),
           date: nowStr,
           completed: true,
           missionId: mission.id,
           missionTitle: mission.title,
-          fileName: 'Angry Birds Code.org (Completado)'
+          fileName: isFrozen ? 'Ana y Elsa Frozen Code.org (Completado)' : 'Angry Birds Code.org (Completado)'
         };
 
         markMissionCompleted(student, mission.id, submissionData);
 
         var stContainer = modal.querySelector('#apm-codeorg-delivery-status');
         if (stContainer) {
-          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Misión Completada con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Se registró tu entrega de Angry Birds (' + nowStr + '). ¡Puntos y avance sumados!</span></div></div>';
+          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Misión Completada con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Se registró tu entrega de ' + (isFrozen ? 'Ana y Elsa' : 'Angry Birds') + ' (' + nowStr + '). ¡Puntos y avance sumados!</span></div></div>';
         }
         var topBadge = modal.querySelector('#apm-header-status-badge');
         if (topBadge) {
@@ -3685,7 +3907,7 @@
 
         if (typeof refreshDashboard === 'function') refreshDashboard();
 
-        alert('🎉 ¡Felicitaciones! Completaste la misión de Angry Birds (Nivel 2).\nSumaste +100 XP al taller de robótica.');
+        alert('🎉 ¡Felicitaciones! Completaste la misión de ' + (isFrozen ? 'Ana y Elsa (Nivel 5)' : 'Angry Birds (Nivel 2)') + '.\nSumaste +100 XP al taller de robótica.');
       };
     }
 
