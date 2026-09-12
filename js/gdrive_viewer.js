@@ -1855,6 +1855,156 @@
     '</div>';
   }
 
+  function renderDiaMadreSolutionHtml(mission) {
+    return '<div class="apm-sol-electro-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #9F1239 0%, #E11D48 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-heart"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: Tarjeta Pop-Up 3D con Circuito Papertronics y Escudo Freire 💖</h4>' +
+          '<p>Plegado escalonado del corazón pixelado, foto centrada, circuito de cinta de cobre y pulsador en el escudo del Colegio Paulo Freire.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body">' +
+
+        // Galería de planos oficiales: Portada y Plantilla
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:18px;">' +
+          '<div class="apm-circuit-schematic-card" style="background:#FFF1F2;border:1.5px solid #FDA4AF;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#FECDD3;">' +
+              '<span style="color:#9F1239;font-weight:900;"><i class="fas fa-heart"></i> Portada y Corazón 3D con Escudo</span>' +
+              '<a href="img/proyectos/dia_madre_tarjeta_3d_cover.png" target="_blank" class="apm-csc-badge" style="background:#E11D48;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ampliar</a>' +
+            '</div>' +
+            '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/dia_madre_tarjeta_3d_cover.png" alt="Portada Tarjeta Pop-Up 3D" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;" onclick="window.open(this.src,\'_blank\')">' +
+              '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">"Para Quien Ilumina Mi Vida", corazón 3D escalonado con foto central y escudo del Colegio Paulo Freire en la base.</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="apm-circuit-schematic-card" style="background:#FFFBEB;border:1.5px solid #FCD34D;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#FDE68A;">' +
+              '<span style="color:#92400E;font-weight:900;"><i class="fas fa-microchip"></i> Plantilla Técnica del Circuito</span>' +
+              '<a href="img/proyectos/dia_madre_circuito_plantilla.png" target="_blank" class="apm-csc-badge" style="background:#D97706;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ampliar</a>' +
+            '</div>' +
+            '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/dia_madre_circuito_plantilla.png" alt="Plantilla Circuito Papertronics" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;" onclick="window.open(this.src,\'_blank\')">' +
+              '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Trazado de pistas de cinta de cobre, alojamiento de pila botón CR2032, patitas del LED y solapa con contactos.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Diagrama esquemático
+        '<div class="apm-circuit-schematic-card">' +
+          '<div class="apm-csc-header">' +
+            '<span><i class="fas fa-project-diagram"></i> Diagrama Esquemático: Circuito Papertronics 3V</span>' +
+            '<span class="apm-csc-badge" style="background:#E11D48;">Efecto Iluminación Pop-Up</span>' +
+          '</div>' +
+          '<div class="apm-circuit-visual-diagram">' +
+            '<div class="apm-cv-node batt">' +
+              '<div class="cv-icon"><i class="fas fa-battery-full"></i></div>' +
+              '<div class="cv-label">Pila Botón CR2032<br><strong>3V en Solapa</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line pos">' +
+              '<span class="cv-wire-label">+ Pista Positiva (Cobre)</span>' +
+              '<i class="fas fa-arrow-right"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node switch" style="border-color:#E11D48;">' +
+              '<div class="cv-icon" style="color:#E11D48;"><i class="fas fa-shield-alt"></i></div>' +
+              '<div class="cv-label">Escudo Paulo Freire<br><strong>Pulsador Táctil</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line pos2">' +
+              '<i class="fas fa-arrow-right"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node led" style="border-color:#E11D48;">' +
+              '<div class="cv-icon" style="color:#E11D48;"><i class="fas fa-lightbulb"></i></div>' +
+              '<div class="cv-label">LED de Alto Brillo<br><strong>Ilumina Bordes 3D</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line neg">' +
+              '<span class="cv-wire-label">- Pista Negativa de Retorno</span>' +
+              '<i class="fas fa-arrow-left"></i>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Tabla de componentes y conexiones
+        '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-table"></i> Especificaciones de Armado y Conexiones:</h5>' +
+          '<div class="apm-pinout-table-wrap">' +
+          '<table class="apm-pinout-table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Elemento</th>' +
+                '<th>Posición / Conexión</th>' +
+                '<th>Instrucción de Armado</th>' +
+                '<th>Efecto / Resultado</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              '<tr>' +
+                '<td><strong>✂️ Corazón Pixelado 3D</strong></td>' +
+                '<td>Centro de la tarjeta</td>' +
+                '<td>Cortar solo líneas sólidas; doblar líneas de puntos hacia adelante</td>' +
+                '<td>Se despliega en relieve 3D autoportante al abrir la tarjeta</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>🖼️ Foto del Niño/a</strong></td>' +
+                '<td>Centro exacto del corazón</td>' +
+                '<td>Fijar con pegamento en barra dentro del marco del corazón</td>' +
+                '<td>Mamá ve el rostro de su hijo/a en el centro del corazón</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>🛡️ Escudo Paulo Freire</strong></td>' +
+                '<td>Base inferior de la tarjeta</td>' +
+                '<td>Solapa con cinta de cobre que al apretar cierra el contacto eléctrico</td>' +
+                '<td>¡Funciona como botón pulsador secreto para encender la luz!</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>💡 Diodo LED Alto Brillo</strong></td>' +
+                '<td>Pata larga (+) a pista / Pata corta (-) a retorno</td>' +
+                '<td>Orientado hacia arriba bañando la base del corazón</td>' +
+                '<td>La luz resalta los bordes y relieve del corazón pixel</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>🔋 Pila Botón CR2032</strong></td>' +
+                '<td>Solapa esquinera</td>' +
+                '<td>Cara rugosa (-) contra la base, cara lisa (+) hacia el interruptor</td>' +
+                '<td>Alimentación eléctrica segura de bajo voltaje (3V)</td>' +
+              '</tr>' +
+            '</tbody>' +
+          '</table>' +
+          '</div>' +
+        '</div>' +
+
+        // Consejos y solución de fallas
+        '<div class="apm-troubleshoot-box" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-stethoscope"></i> Consejos Clave para un Funcionamiento Perfecto</h5>' +
+          '<div class="apm-tb-grid">' +
+            '<div class="apm-tb-item" style="border-left-color:#E11D48;">' +
+              '<h6>1. Si no prende al presionar el escudo</h6>' +
+              '<p>Revisá que la cinta de cobre debajo del escudo del colegio baje lo suficiente para tocar firmemente la pista de la pila al presionar.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#2563EB;">' +
+              '<h6>2. Polaridad del LED</h6>' +
+              '<p>La patita más larga del LED debe ir siempre conectada a la pista que proviene del polo positivo (+) de la pila.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#D97706;">' +
+              '<h6>3. Contacto firme sin soldadura</h6>' +
+              '<p>Aplastá la cinta de cobre con fuerza sobre las patitas metálicas del LED para asegurar una conducción eléctrica sin chispazos.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#10B981;">' +
+              '<h6>4. Doblez elástico del corazón</h6>' +
+              '<p>Marcá bien los pliegues con la uña. El corazón debe flexionarse suavemente al cerrar y saltar al abrir en 90 grados.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="text-align:center;margin-top:20px;">' +
+          '<a href="docs/dia_de_la_madre_tarjeta_3d.pdf" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.92rem;">' +
+            '<i class="fas fa-file-pdf"></i> Descargar Plantilla y Guía Oficial en PDF' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   // ──────────────────────────────────────────────────
   // EXTRAE información de MakeCode y genera URLs de Simulador + Bloques
   // Soporta: microbit.org, arcade.makecode.com, makecode.com genérico
@@ -2288,7 +2438,8 @@
     var isFrozen = !isPaint && !isMinecraft && ((data.tags && data.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(data.title || '')));
     var isCodeorg = !isPaint && (isFrozen || isMinecraft || data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
     var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
-    var isElectronica = !isPaint && !isCodeorg && (data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
+    var isDiaMadre = !isPaint && ((data.tags && data.tags.some(function(t){ return /madre|coraz[oó]n|ilumina/i.test(t); })) || (/madre|coraz[oó]n|ilumina/i.test(data.title || '')));
+    var isElectronica = !isPaint && !isCodeorg && (isDiaMadre || data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
 
     var title = data.title || 'Misión Educativa';
     var levelText = data.level ? ('Nivel ' + data.level) : 'Taller Maker';
@@ -2299,14 +2450,22 @@
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'))));
+    var platText = isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego')))));
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
     var tipBoxText = '';
 
     if (isObjective) {
-      if (isMinecraft) {
+      if (isDiaMadre) {
+        pillars = [
+          { icon: 'fa-heart', color: '#E11D48', title: 'Geometría y Efecto Pop-Up 3D', desc: 'Comprender cómo los cortes escalonados y pliegues inversos transforman un dibujo plano en un corazón con volumen 3D al abrir la tarjeta.' },
+          { icon: 'fa-microchip', color: '#7C3AED', title: 'Papertronics & Circuito', desc: 'Construir un circuito real sobre papel con cinta de cobre autoadhesiva, pila botón CR2032 de 3V y diodo LED de alto brillo.' },
+          { icon: 'fa-shield-alt', color: '#2563EB', title: 'Pulsador en Escudo Freire', desc: 'Armar un interruptor táctil oculto detrás del escudo del Colegio Paulo Freire que cierra el circuito al ser presionado.' },
+          { icon: 'fa-lightbulb', color: '#D97706', title: 'Iluminación en los Bordes', desc: 'Orientar el haz de luz del LED para que resalte los bordes del corazón 3D enmarcando con orgullo la foto del niño/a.' }
+        ];
+        tipBoxText = '<strong>💖 Tarjeta Pop-Up 3D del Día de la Madre (Papertronics):</strong> Esta misión une arte tridimensional y electrónica segura. El niño experimenta el asombro de crear un relieve que emerge del papel y activa la luz LED al pulsar el escudo del colegio Paulo Freire.';
+      } else if (isMinecraft) {
         pillars = [
           { icon: 'fa-cube', color: '#059669', title: 'Adaptación Educativa Oficial', desc: 'No es el juego comercial libre: es una plataforma oficial de Code.org para aprender programación.' },
           { icon: 'fa-laptop-code', color: '#2563EB', title: 'Programar a Steve y Alex', desc: 'Descubrir que los personajes solo se mueven cuando encastramos instrucciones algorítmicas en orden.' },
@@ -2365,7 +2524,15 @@
       }
     } else {
       // Beneficios
-      if (isMinecraft) {
+      if (isDiaMadre) {
+        pillars = [
+          { icon: 'fa-cut', color: '#E11D48', title: 'Motricidad Fina y Precisión', desc: 'Coordinación óculo-manual avanzada para cortar únicamente las líneas sólidas de los escalones sin cortar las líneas de puntos de pliegue.' },
+          { icon: 'fa-cube', color: '#7C3AED', title: 'Percepción Espacial Tridimensional', desc: 'Visualizar cómo los planos se pliegan y despliegan en el espacio físico para cobrar vida al abrir la tarjeta en 90°.' },
+          { icon: 'fa-bolt', color: '#2563EB', title: 'Causa y Efecto con Circuito Oculto', desc: 'Entender el funcionamiento del circuito eléctrico: el escudo actúa como un interruptor normalmente abierto que conecta los polos al presionar.' },
+          { icon: 'fa-heart', color: '#D97706', title: 'Vínculo Afectivo y Autoestima Maker', desc: 'Empoderamiento emocional: entregar a mamá un regalo tecnológico y afectivo de alta calidad construido 100% con sus propias manos.' }
+        ];
+        tipBoxText = '<strong>✨ Papertronics en Acción:</strong> Combinar manualidades, ciencia de circuitos y diseño pop-up demuestra a los exploradores de 5 años que ellos pueden construir tecnología real y emocionante para compartir en familia.';
+      } else if (isMinecraft) {
         pillars = [
           { icon: 'fa-user-cog', color: '#059669', title: 'De Jugador Pasivo a Creador', desc: 'Superar la fascinación pasiva por Minecraft: comprender cómo se crean y programan las reglas del juego.' },
           { icon: 'fa-cube', color: '#2563EB', title: 'Razonamiento Espacial 3D', desc: 'Estructurar el espacio en tres dimensiones: calcular pasos, giros y planos en el entorno cúbico.' },
@@ -2544,6 +2711,7 @@
     var isFrozen = !isPaint && !isMinecraft && ((mission.tags && mission.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(mission.title || '')));
     var isCodeorg = !isPaint && (isFrozen || isMinecraft || mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
     var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
+    var isDiaMadre = !isPaint && ((mission.tags && mission.tags.some(function(t){ return /madre|coraz[oó]n|ilumina/i.test(t); })) || (/madre|coraz[oó]n|ilumina/i.test(mission.title || '')));
     var isGame = !isPaint && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
@@ -2553,7 +2721,7 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var isElectronica = !isGame && !isPaint && (mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isElectronica = !isGame && !isPaint && (isDiaMadre || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
     var isMakecode = !isGame && !isElectronica && !isPaint && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
     var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint;
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
@@ -2734,17 +2902,22 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
-                        (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)))))) +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1'))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isDiaMadre ? '💖 Tarjeta Pop-Up 3D • Papertronics & Circuito' : (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level))))))) +
                       '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card" style="' + (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : ''))))) + '">' +
-                        '<h4 style="' + (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : ''))))) + '"><i class="fas ' + (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered'))))) + '"></i> ' + (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?')))) + '</h4>' +
-                        '<p style="' + (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : ''))))) + '">' + (mission.objective || mission.description) + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isDiaMadre ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : '')))))) + '">' +
+                        '<h4 style="' + (isDiaMadre ? 'color:#9F1239;' : (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : '')))))) + '"><i class="fas ' + (isDiaMadre ? 'fa-heart' : (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered')))))) + '"></i> ' + (isDiaMadre ? 'Reto Maker: Corazón 3D y Luz en el Escudo' : (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?'))))) + '</h4>' +
+                        '<p style="' + (isDiaMadre ? 'color:#4C0519;' : (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : '')))))) + '">' + (mission.objective || mission.description) + '</p>' +
                         (isMinecraft ? '<div style="margin-top:10px;padding:8px 12px;background:#FEF3C7;border-left:3px solid #D97706;border-radius:6px;font-size:0.8rem;color:#92400E;line-height:1.4;"><strong><i class="fas fa-exclamation-triangle"></i> ¡Aclaración Importante!</strong> No es el Minecraft comercial tradicional de juego libre: es una adaptación pedagógica oficial de Code.org para aprender a programar con bloques.</div>' : '') +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
-                        (isMinecraft ?
+                        (isDiaMadre ?
+                          '<span class="apm-skill-pill" style="background:#FFE4E6;color:#9F1239;"><i class="fas fa-heart"></i> Corazón Pop-Up 3D</span>' +
+                          '<span class="apm-skill-pill" style="background:#FFE4E6;color:#9F1239;"><i class="fas fa-shield-alt"></i> Botón Escudo Freire</span>' +
+                          '<span class="apm-skill-pill" style="background:#FFE4E6;color:#9F1239;"><i class="fas fa-microchip"></i> Circuito Papertronics</span>' +
+                          '<span class="apm-skill-pill" style="background:#FFE4E6;color:#9F1239;"><i class="fas fa-portrait"></i> Foto del Niño/a</span>' :
+                         isMinecraft ?
                           '<span class="apm-skill-pill" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-cube"></i> Adaptación Code.org</span>' +
                           '<span class="apm-skill-pill" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-laptop-code"></i> Programar a Steve y Alex</span>' +
                           '<span class="apm-skill-pill" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-arrows-alt"></i> Cuadrícula 3D</span>' +
@@ -2778,8 +2951,8 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))) + '">' +
-                        (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>'))))) +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))))) + '">' +
+                        (isDiaMadre ? 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' : (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>')))))) +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -2949,15 +3122,24 @@
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                          (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')) +
+                          (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller'))) +
                         '</h3>' +
                         '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                          (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')) +
+                          (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:'))) +
                         '</p>' +
                       '</div>' +
                       '<div class="apm-materials-grid">' +
                         materialsList.map(function(m){
-                          var mIcon = isPaint ? (
+                          var mIcon = isDiaMadre ? (
+                            /plantilla|hoja|l[aá]mina/i.test(m.title) ? 'fa-file-alt' :
+                            /circuito|papertronics/i.test(m.title) ? 'fa-microchip' :
+                            /foto|retrato/i.test(m.title) ? 'fa-portrait' :
+                            /led|luz/i.test(m.title) ? 'fa-lightbulb' :
+                            /pila|bater/i.test(m.title) ? 'fa-battery-full' :
+                            /cobre|cinta/i.test(m.title) ? 'fa-tape' :
+                            /escudo|bot[oó]n|pulsador/i.test(m.title) ? 'fa-shield-alt' :
+                            /tijer|pegamento/i.test(m.title) ? 'fa-cut' : 'fa-tools'
+                          ) : isPaint ? (
                             /rect[aá]ngulo|franja|figura|geometr/i.test(m.title) ? 'fa-vector-square' :
                             /c[ií]rculo|centro|sol|elipse/i.test(m.title) ? 'fa-circle' :
                             /estrella|pol[ií]gono/i.test(m.title) ? 'fa-star' :
@@ -2982,16 +3164,17 @@
                           '</div>';
                         }).join('') +
                       '</div>' +
-                      '<div class="apm-reto-card" style="margin-top:22px;' + (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : '')) + '">' +
-                        '<h4 style="' + (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : ''))) + '"><i class="fas fa-lightbulb"></i> ' + (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')) + '</h4>' +
-                        '<p style="' + (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : '')) + '">' +
-                          (isPaint ? (isPaintBanderas ? '¡El secreto de las franjas parejas y los soles! Usá <strong>Rectángulo</strong> para el marco de la bandera, <strong>Líneas</strong> rectas con la tecla <strong>Shift</strong> para dividir las franjas iguales y <strong>Elipse con Shift</strong> para el sol amarillo. ¡Con <strong>Ctrl + Z</strong> corregís cualquier trazo sin borrar todo!' : '¡El secreto de los círculos perfectos! Mantené presionada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás el mouse con la herramienta Elipse para que salga un círculo redondo perfecto en la mitad de la cancha. ¡Y si te equivocás, apretá <strong>Ctrl + Z</strong> para deshacer sin borrar todo!') :
+                      '<div class="apm-reto-card" style="margin-top:22px;' + (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : ''))) + '">' +
+                        '<h4 style="' + (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : '')))) + '"><i class="fas fa-lightbulb"></i> ' + (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker'))) + '</h4>' +
+                        '<p style="' + (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : ''))) + '">' +
+                          (isDiaMadre ? '¡El secreto del Pop-Up y la Luz! Cortá con tijera <strong>únicamente por las líneas continuas</strong> de los escalones del corazón pixelado (nunca cortes las líneas de puntos, esas son para doblar hacia adelante). Pegá tu foto en el centro exacto. Y asegurate de que la cinta de cobre detrás del <strong>escudo del Colegio Paulo Freire</strong> baje en solapa para tocar la pista de la pila al presionar con el dedo.' :
+                           isPaint ? (isPaintBanderas ? '¡El secreto de las franjas parejas y los soles! Usá <strong>Rectángulo</strong> para el marco de la bandera, <strong>Líneas</strong> rectas con la tecla <strong>Shift</strong> para dividir las franjas iguales y <strong>Elipse con Shift</strong> para el sol amarillo. ¡Con <strong>Ctrl + Z</strong> corregís cualquier trazo sin borrar todo!' : '¡El secreto de los círculos perfectos! Mantené presionada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás el mouse con la herramienta Elipse para que salga un círculo redondo perfecto en la mitad de la cancha. ¡And si te equivocás, apretá <strong>Ctrl + Z</strong> para deshacer sin borrar todo!') :
                            isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
                         '</p>' +
                       '</div>' +
                       '<div style="text-align:center;margin-top:20px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))) + '">' +
-                          (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')) +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))) + '">' +
+                          (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>'))) +
                         '</button>' +
                       '</div>' +
                     '</div>'
@@ -3004,7 +3187,7 @@
                     '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
-                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-cube" style="color:#059669;"></i> Nivel 7: ¡Hora del Código con Minecraft! (Steve y Alex)</h3>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-cube" style="color:#059669;"></i> Nivel 8: ¡Hora del Código con Minecraft! (Steve y Alex)</h3>' +
                           '<p style="font-size:0.82rem;color:#64748B;margin:0;">Plataforma interactiva oficial: <strong>https://studio.code.org/s/mc/lessons/1/levels/1</strong></p>' +
                         '</div>' +
                         '<a href="https://studio.code.org/s/mc/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#059669;border-color:#047857;font-size:0.84rem;padding:7px 16px;">' +
@@ -3016,7 +3199,7 @@
                           '<img src="img/minecraft.png" alt="Minecraft Code.org" class="chc-img" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80\'">' +
                         '</div>' +
                         '<div class="chc-right">' +
-                          '<span class="chc-tag" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-cube"></i> Misión Nivel 7 • Adaptación Educativa</span>' +
+                          '<span class="chc-tag" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-cube"></i> Misión Nivel 8 • Adaptación Educativa</span>' +
                           '<h4>Programá a Steve o Alex para explorar el mundo en bloques</h4>' +
                           '<p><strong>Importante:</strong> ¡No es el juego tradicional de juego libre! Aquí los personajes no se mueven con flechas ni teclado: tenés que programar con bloques de <code>avanzar</code>, <code>girar</code> y <code>destruir bloque</code>.</p>' +
                           '<div class="chc-blocks-preview">' +
@@ -3063,7 +3246,7 @@
                     '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
-                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-snowflake" style="color:#0284C7;"></i> Nivel 5: ¡A Patinar y Programar con Ana y Elsa!</h3>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-snowflake" style="color:#0284C7;"></i> Nivel 6: ¡A Patinar y Programar con Ana y Elsa!</h3>' +
                           '<p style="font-size:0.82rem;color:#64748B;margin:0;">Plataforma interactiva: <strong>https://studio.code.org/s/frozen/lessons/1/levels/1</strong></p>' +
                         '</div>' +
                         '<a href="https://studio.code.org/s/frozen/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#0284C7;border-color:#0369A1;font-size:0.84rem;padding:7px 16px;">' +
@@ -3075,7 +3258,7 @@
                           '<img src="img/frozen.png" alt="Ana y Elsa Frozen Code.org" class="chc-img" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80\'">' +
                         '</div>' +
                         '<div class="chc-right">' +
-                          '<span class="chc-tag" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-snowflake"></i> Misión Nivel 5</span>' +
+                          '<span class="chc-tag" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-snowflake"></i> Misión Nivel 6</span>' +
                           '<h4>Ayudá a Elsa a trazar figuras geométricas en el hielo</h4>' +
                           '<p>Arrastrá los bloques de <code>avanzar píxeles</code> y <code>girar 90 grados</code> hacia el bloque <code>al ejecutar</code>. ¿Cómo creamos un cuadrado con esquinas en ángulo recto?</p>' +
                           '<div class="chc-blocks-preview">' +
@@ -3215,35 +3398,35 @@
                     '<div style="height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:6px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
-                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-tools" style="color:#D97706;"></i> Paso a Paso: Armado del Circuito (Sin Programación)</h3>' +
-                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Seguí cada paso en orden para ensamblar los componentes y hacer funcionar tu invento:</p>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas ' + (isDiaMadre ? 'fa-heart' : 'fa-tools') + '" style="color:' + (isDiaMadre ? '#E11D48' : '#D97706') + ';"></i> ' + (isDiaMadre ? 'Paso a Paso: Tarjeta Pop-Up 3D, Foto y Botón Escudo Freire' : 'Paso a Paso: Armado del Circuito (Sin Programación)') + '</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">' + (isDiaMadre ? 'Seguí cada paso para cortar el corazón 3D, colocar la foto y armar el circuito con pulsador en el escudo:' : 'Seguí cada paso en orden para ensamblar los componentes y hacer funcionar tu invento:') + '</p>' +
                         '</div>' +
                         '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.8rem;padding:6px 12px;">' +
                           '<i class="fas fa-print"></i> Guía Imprimible' +
                         '</button>' +
                       '</div>' +
                       (mission.gallery && mission.gallery.length > 1 ?
-                        '<div style="display:flex;gap:12px;align-items:center;background:#FEF3C7;border:1.5px dashed #D97706;border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
-                          '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="width:68px;height:68px;object-fit:contain;background:#FFF;border-radius:8px;border:1px solid #FCD34D;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar plano">' +
+                        '<div style="display:flex;gap:12px;align-items:center;' + (isDiaMadre ? 'background:#FFF1F2;border:1.5px dashed #E11D48;' : 'background:#FEF3C7;border:1.5px dashed #D97706;') + 'border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
+                          '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="width:68px;height:68px;object-fit:contain;background:#FFF;border-radius:8px;border:1px solid ' + (isDiaMadre ? '#FDA4AF' : '#FCD34D') + ';padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar plano">' +
                           '<div style="flex:1;">' +
-                            '<h5 style="margin:0 0 2px;font-size:0.86rem;color:#92400E;font-weight:800;"><i class="fas fa-drafting-compass"></i> ' + (mission.title.includes('Varita') ? 'Esquema de Conexiones de la Varita Mágica' : 'Plano de Conexiones: ' + mission.title) + '</h5>' +
-                            '<p style="margin:0;font-size:0.79rem;color:#78350F;line-height:1.4;">' + (mission.title.includes('Varita') ? 'Mirá cómo van las pistas de cinta conductora desde el LED en la punta hasta la pila y el pulsador táctil en el mango.' : 'Mirá cómo van las pistas de cobre desde el trébol hasta la pila y la solapa.') + (mission.pdfUrl ? ' <a href="' + mission.pdfUrl + '" target="_blank" style="color:#B45309;font-weight:700;text-decoration:underline;">Ver plantilla completa en PDF</a>' : ' <span style="color:#B45309;font-weight:700;">¡Tocá el diagrama para ampliarlo!</span>') + '</p>' +
+                            '<h5 style="margin:0 0 2px;font-size:0.86rem;color:' + (isDiaMadre ? '#9F1239' : '#92400E') + ';font-weight:800;"><i class="fas fa-drafting-compass"></i> ' + (isDiaMadre ? 'Plantilla Oficial: Circuito Papertronics y Contactos del Escudo' : (mission.title.includes('Varita') ? 'Esquema de Conexiones de la Varita Mágica' : 'Plano de Conexiones: ' + mission.title)) + '</h5>' +
+                            '<p style="margin:0;font-size:0.79rem;color:' + (isDiaMadre ? '#881337' : '#78350F') + ';line-height:1.4;">' + (isDiaMadre ? 'Mirá cómo corren las pistas de cobre desde la pila CR2032 hasta el LED superior y el botón táctil en el escudo del Colegio Paulo Freire.' : (mission.title.includes('Varita') ? 'Mirá cómo van las pistas de cinta conductora desde el LED en la punta hasta la pila y el pulsador táctil en el mango.' : 'Mirá cómo van las pistas de cobre desde el trébol hasta la pila y la solapa.')) + (mission.pdfUrl ? ' <a href="' + mission.pdfUrl + '" target="_blank" style="color:' + (isDiaMadre ? '#BE123C' : '#B45309') + ';font-weight:700;text-decoration:underline;">Ver plantilla completa en PDF</a>' : ' <span style="color:' + (isDiaMadre ? '#BE123C' : '#B45309') + ';font-weight:700;">¡Tocá el diagrama para ampliarlo!</span>') + '</p>' +
                           '</div>' +
                         '</div>' : '') +
                       '<div class="apm-instructions-steps-grid">' +
                         instructionsList.map(function(st){
                           return '<div class="apm-step-card">' +
-                            '<div class="apm-step-badge">' + st.step + '</div>' +
+                            '<div class="apm-step-badge" style="background:' + (isDiaMadre ? '#E11D48' : '#D97706') + ';">' + st.step + '</div>' +
                             '<div class="apm-step-body">' +
                               '<h5>' + st.title + '</h5>' +
                               '<p>' + st.desc + '</p>' +
-                              (st.tip ? '<div class="apm-step-tip"><i class="fas fa-info-circle"></i> ' + st.tip + '</div>' : '') +
+                              (st.tip ? '<div class="apm-step-tip" style="' + (isDiaMadre ? 'background:#FFF1F2;border-left-color:#E11D48;color:#881337;' : '') + '"><i class="fas fa-info-circle"></i> ' + st.tip + '</div>' : '') +
                             '</div>' +
                           '</div>';
                         }).join('') +
                       '</div>' +
                       '<div style="text-align:right;margin-top:10px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#D97706;border-color:#B45309;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:' + (isDiaMadre ? '#E11D48;border-color:#BE123C;' : '#D97706;border-color:#B45309;') + '">' +
                           '¡Ver Retos Finales y Entrega! <i class="fas fa-arrow-right"></i>' +
                         '</button>' +
                       '</div>' +
@@ -3296,9 +3479,9 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isAngryBirds ? '🐦' : '🏆'))))) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))))) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))))) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆')))))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')))))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')))))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
@@ -3314,7 +3497,7 @@
                        isAngryBirds ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge">1</div><div><h6>Superar los niveles con giros</h6><p>Llegar al nivel 3 y 4 de Code.org practicando giros a la derecha e izquierda sin perder la orientación.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge">2</div><div><h6>Usar el menor número de bloques</h6><p>Encontrar la ruta más directa sin bloques sobrantes pensando el algoritmo antes de ejecutar.</p></div></div>' +
-                        '<div class="apm-ec-item"><div class="apm-ec-badge">3</div><div><h6>Enseñarle a un compañero</h6><p>Explicarle a un amigo cómo anticipar los pasos del pájaro antes de encastrar los bloques.</p></div></div>' :
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0284C7;">3</div><div><h6>Enseñarle a un compañero</h6><p>Explicarle a un amigo cómo anticipar los pasos del pájaro antes de encastrar los bloques.</p></div></div>' :
                        isPaintBanderas ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#2563EB;">1</div><div><h6>Dibujar la bandera de Uruguay con sus 9 franjas</h6><p>Contá 4 franjas azules y 5 blancas, y agregá el Sol de Mayo en el cantón superior izquierdo.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#2563EB;">2</div><div><h6>Crear la bandera de Brasil con rombo y círculo</h6><p>Dibujá el fondo verde, el rombo amarillo en el medio y el círculo azul con la franja blanca curva.</p></div></div>' +
@@ -3323,6 +3506,10 @@
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">1</div><div><h6>Dibujar a los jugadores y la pelota</h6><p>Usá círculos pequeños con colores de camisetas diferentes para armar dos equipos y agregá una pelota en el centro.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">2</div><div><h6>Agregar tribunas y banderas de córner</h6><p>Dibujá gradas alrededor de la cancha con rectángulos y poné banderines en los tiros de esquina.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">3</div><div><h6>Escribir el marcador del partido</h6><p>Usá la herramienta de Texto "A" para escribir los nombres de los equipos y un resultado emocionante (ej: Freire FC 3 - 2 Tigres).</p></div></div>' :
+                       isDiaMadre ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#E11D48;">1</div><div><h6>Probar el Pulsador en el Escudo Paulo Freire</h6><p>Apretá el escudo del colegio en la portada: el circuito de cobre debe cerrarse y el LED brillar iluminando los bordes del corazón.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#E11D48;">2</div><div><h6>Tu Foto y Dedicatoria con Mucho Amor</h6><p>Pegá tu foto centrada en el corazón desplegable y escribí una dedicatoria especial o dibujá detalles para mamá.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#E11D48;">3</div><div><h6>Efecto Tridimensional Pop-Up</h6><p>Al abrir la tarjeta a 90°, verificá que las pestañas cortadas proyecten el corazón hacia adelante creando el efecto 3D.</p></div></div>' :
                         '<div class="apm-ec-item">' +
                           '<div class="apm-ec-badge">1</div>' +
                           '<div>' +
@@ -3357,11 +3544,11 @@
                           '<i class="fas fa-undo"></i> Repasar Presentación' +
                         '</button>'
                       :
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981'))) + ';border-color:' + (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669'))) + ';font-size:0.9rem;padding:9px 18px;">' +
-                          (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')) +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981')))) + ';border-color:' + (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669')))) + ';font-size:0.9rem;padding:9px 18px;">' +
+                          (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación'))) +
                         '</button>' +
                         '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                          (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')) +
+                          (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial'))) +
                         '</button>' +
                         '<button type="button" class="arm-btn-secondary" id="apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía PDF</button>' +
                         '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
@@ -3402,8 +3589,8 @@
                   '<button type="button" class="apm-deliv-switch-btn ' + (isPaint ? 'active' : '') + '" id="apm-switch-to-paint" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isPaint ? 'background:#16A34A;color:#FFF;box-shadow:0 2px 6px rgba(22,163,74,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-palette"></i> Dibujo Paint' +
                   '</button>' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
-                    '<i class="fas fa-bolt"></i> Foto / Video Circuito' +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? (isDiaMadre ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);') : 'background:#E2E8F0;color:#475569;') + '">' +
+                    (isDiaMadre ? '<i class="fas fa-heart"></i> Foto Tarjeta 3D' : '<i class="fas fa-bolt"></i> Foto / Video Circuito') +
                   '</button>' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isScratch ? 'active' : '') + '" id="apm-switch-to-scratch" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isScratch ? 'background:#EA580C;color:#FFF;box-shadow:0 2px 6px rgba(234,88,12,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-cat"></i> Archivo Scratch Jr' +
@@ -3503,20 +3690,20 @@
 
               // SUB-PANEL ELECTRÓNICA / CIRCUITO FÍSICO (FOTO O VIDEO)
               '<div id="apm-electro-delivery-section" style="' + (isElectronica ? 'display:block;' : 'display:none;') + '">' +
-                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #B45309 0%, #D97706 100%);">' +
-                  '<div class="apm-dh-icon"><i class="fas fa-bolt"></i></div>' +
+                '<div class="apm-delivery-header" style="background:' + (isDiaMadre ? 'linear-gradient(135deg, #BE123C 0%, #E11D48 100%)' : 'linear-gradient(135deg, #B45309 0%, #D97706 100%)') + ';">' +
+                  '<div class="apm-dh-icon">' + (isDiaMadre ? '<i class="fas fa-heart"></i>' : '<i class="fas fa-bolt"></i>') + '</div>' +
                   '<div>' +
-                    '<h4>Subir Foto o Video del Circuito Armado</h4>' +
-                    '<p>¡Proyecto práctico manual! Tomá una foto o video donde se vea tu circuito funcionando con el LED encendido para guardarlo en tu carpeta de Proyectos de Google Drive.</p>' +
+                    '<h4>' + (isDiaMadre ? 'Subir Foto de tu Tarjeta Pop-Up 3D del Día de la Madre' : 'Subir Foto o Video del Circuito Armado') + '</h4>' +
+                    '<p>' + (isDiaMadre ? '¡Regalo especial para mamá! Tomá una foto donde se vea el corazón en 3D desplegado con tu foto y el LED encendido en el escudo para guardarla en tu Google Drive.' : '¡Proyecto práctico manual! Tomá una foto o video donde se vea tu circuito funcionando con el LED encendido para guardarlo en tu carpeta de Proyectos de Google Drive.') + '</p>' +
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body">' +
-                  '<div class="apm-scratch-dropzone" id="apm-electro-dropzone" style="border-color:#F59E0B;background:#FFFBEB;">' +
-                    '<div class="apm-sd-icon" style="color:#D97706;"><i class="fas fa-camera"></i></div>' +
-                    '<h4>Arrastrá tu foto o video del circuito aquí</h4>' +
+                  '<div class="apm-scratch-dropzone" id="apm-electro-dropzone" style="' + (isDiaMadre ? 'border-color:#FDA4AF;background:#FFF1F2;' : 'border-color:#F59E0B;background:#FFFBEB;') + '">' +
+                    '<div class="apm-sd-icon" style="color:' + (isDiaMadre ? '#E11D48' : '#D97706') + ';"><i class="fas ' + (isDiaMadre ? 'fa-heart' : 'fa-camera') + '"></i></div>' +
+                    '<h4>' + (isDiaMadre ? 'Arrastrá tu foto de la tarjeta 3D aquí' : 'Arrastrá tu foto o video del circuito aquí') + '</h4>' +
                     '<p>O hacé clic en el botón para seleccionarlo (.jpg, .png, .jpeg, .mp4, .mov, .webp)</p>' +
                     '<input type="file" id="apm-electro-file-input" style="display:none;" accept="image/*,video/*,.png,.jpg,.jpeg,.mp4,.mov,.webp">' +
-                    '<button type="button" id="apm-electro-browse-btn" class="apm-delivery-submit-btn" style="background:#D97706;"><i class="fas fa-camera"></i> Seleccionar Foto / Video</button>' +
+                    '<button type="button" id="apm-electro-browse-btn" class="apm-delivery-submit-btn" style="background:' + (isDiaMadre ? '#E11D48' : '#D97706') + ';"><i class="fas fa-camera"></i> ' + (isDiaMadre ? 'Seleccionar Foto de la Tarjeta 3D' : 'Seleccionar Foto / Video') + '</button>' +
                   '</div>' +
                   '<div id="apm-electro-delivery-status" style="margin-top:14px;">' +
                     (savedFileName ?
@@ -3620,6 +3807,8 @@
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
             (isCodeorg ?
               renderCodeorgSolutionHtml(mission) :
+             isDiaMadre ?
+              renderDiaMadreSolutionHtml(mission) :
              isPaint ?
               (isPaintBanderas ? renderPaintBanderasSolutionHtml(mission) :
               '<div class="apm-sol-electro-wrap">' +
@@ -4188,9 +4377,9 @@
         switchToPaint.style.boxShadow = (mode === 'paint' ? (isPaintBanderas ? '0 2px 6px rgba(37,99,235,0.3)' : '0 2px 6px rgba(22,163,74,0.3)') : 'none');
       }
       if (switchToElectro) {
-        switchToElectro.style.background = (mode === 'electro' ? '#D97706' : '#E2E8F0');
+        switchToElectro.style.background = (mode === 'electro' ? (isDiaMadre ? '#E11D48' : '#D97706') : '#E2E8F0');
         switchToElectro.style.color = (mode === 'electro' ? '#FFF' : '#475569');
-        switchToElectro.style.boxShadow = (mode === 'electro' ? '0 2px 6px rgba(217,119,6,0.3)' : 'none');
+        switchToElectro.style.boxShadow = (mode === 'electro' ? (isDiaMadre ? '0 2px 6px rgba(225,29,72,0.3)' : '0 2px 6px rgba(217,119,6,0.3)') : 'none');
       }
       if (switchToScratch) {
         switchToScratch.style.background = (mode === 'scratch' ? '#EA580C' : '#E2E8F0');
@@ -4244,7 +4433,7 @@
 
         if (typeof refreshDashboard === 'function') refreshDashboard();
 
-        alert('🎉 ¡Felicitaciones! Completaste la misión de ' + (isMinecraft ? 'Minecraft (Nivel 7)' : (isFrozen ? 'Ana y Elsa (Nivel 5)' : 'Angry Birds (Nivel 2)')) + '.\nSumaste +100 XP al taller de robótica.');
+        alert('🎉 ¡Felicitaciones! Completaste la misión de ' + (isMinecraft ? 'Minecraft (Nivel 8)' : (isFrozen ? 'Ana y Elsa (Nivel 6)' : 'Angry Birds (Nivel 2)')) + '.\nSumaste +100 XP al taller de robótica.');
       };
     }
 

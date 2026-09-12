@@ -58,25 +58,25 @@ const SCHOOL_DATA = {
         },
         {
           id: "s5-g3",
-          level: 5,
+          level: 6,
           title: "Ana y Elsa (Frozen): Geometría en el Hielo ❄️⛸️",
           platform: "codeorg",
           externalUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
           thumbnail: "img/frozen.png",
-          description: "¡Nivel 5 de la Ruta de Aventuras! Conectamos lo aprendido en Paint con la programación: guiamos a Elsa y Ana a patinar para trazar figuras geométricas, ángulos y copos de nieve con código.",
+          description: "¡Nivel 6 de la Ruta de Aventuras! Conectamos lo aprendido en Paint con la programación: guiamos a Elsa y Ana a patinar para trazar figuras geométricas, ángulos y copos de nieve con código.",
           benefits: "Conecta el dibujo geométrico manual de Paint con el pensamiento algorítmico, comprensión de ángulos rectos (90°), nociones de bucles (repetición) y orientación espacial sobre el hielo.",
-          tags: ["Code.org", "Frozen", "Geometría", "Ángulos", "Nivel 5"]
+          tags: ["Code.org", "Frozen", "Geometría", "Ángulos", "Nivel 6"]
         },
         {
           id: "s5-g2",
-          level: 7,
+          level: 8,
           title: "Minecraft: Hora del Código (Aprender a Programar) ⛏️🧱",
           platform: "codeorg",
           externalUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
           thumbnail: "img/minecraft.png",
-          description: "¡Nivel 7 de la Ruta de Aventuras! ⚠️ Aclaración: no es el juego tradicional de Minecraft de juego libre, sino una adaptación pedagógica oficial de Code.org para aprender a programar dando órdenes en bloques a Steve y Alex.",
+          description: "¡Nivel 8 de la Ruta de Aventuras! ⚠️ Aclaración: no es el juego tradicional de Minecraft de juego libre, sino una adaptación pedagógica oficial de Code.org para aprender a programar dando órdenes en bloques a Steve y Alex.",
           benefits: "Canaliza el entusiasmo por Minecraft hacia el aprendizaje del pensamiento computacional: secuenciación lógica, orientación en cuadrícula 3D isométrica, descomposición de acciones y bucles de repetición.",
-          tags: ["Code.org", "Minecraft", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 7"]
+          tags: ["Code.org", "Minecraft", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 8"]
         }
       ],
 
@@ -350,6 +350,78 @@ const SCHOOL_DATA = {
         {
           id: "s5-p5",
           level: 5,
+          title: "Tarjeta Pop-Up 3D: Corazón Luminoso para Mamá 💖✨",
+          author: "Taller Maker Sala 5",
+          date: "Mayo 2026",
+          type: "electronica",
+          badge: "💖 Tarjeta Pop-Up 3D • Papertronics",
+          icon: "fa-heart",
+          color: "#E11D48",
+          coverImage: "img/proyectos/dia_madre_tarjeta_3d_cover.png",
+          description: "¡Regalo especial del Día de la Madre! Diseñamos y construimos una tarjeta tridimensional interactiva (Papertronics). Mediante cortes precisos y pliegues pop-up escalonados, el corazón de píxeles se transforma mágicamente en 3D al abrir la tarjeta, revelando en su centro la foto del niño/a. En la base, al presionar el escudo del Colegio Paulo Freire, ¡se activa un circuito con diodo LED de alto brillo que ilumina con un efecto especial los bordes del corazón!",
+          objective: "Construir una tarjeta pop-up tridimensional con circuito eléctrico de papel (Papertronics), integrando plegado geométrico 3D, colocación de foto en el centro del corazón y un circuito cerrado con pila botón CR2032, cinta conductora y LED que se ilumina al pulsar el escudo del colegio Paulo Freire.",
+          benefits: "Desarrolla la motricidad fina y precisión de corte con tijera, comprensión de estructuras tridimensionales y relieve a partir de un plano bidimensional, nociones de circuito eléctrico con pulsador de presión oculta y conexión afectiva a través del arte maker.",
+          tags: ["Día de la Madre", "Pop-Up 3D", "Papertronics", "Electrónica", "Corazón", "Colegio Paulo Freire", "LED", "Maker", "Nivel 5"],
+          gallery: [
+            "img/proyectos/dia_madre_tarjeta_3d_cover.png",
+            "img/proyectos/dia_madre_circuito_plantilla.png"
+          ],
+          pdfUrl: "pdf/dia_de_la_madre_tarjeta_3d.pdf",
+          downloadPdfUrl: "pdf/dia_de_la_madre_tarjeta_3d.pdf",
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Plantilla Oficial 'Corazón Pixelado Pop-Up'", description: "Hoja con diseño escalonado 'Para Quien Ilumina Mi Vida' y escudo del Colegio Paulo Freire.", icon: "fa-file-alt" },
+            { title: "Plantilla de Circuito Papertronics", description: "Lámina técnica con el trazado de pistas para la cinta de cobre, pila y LED.", icon: "fa-microchip" },
+            { title: "Foto del niño o la niña", description: "Fotografía personal recortada para montar en el centro del corazón 3D.", icon: "fa-portrait" },
+            { title: "1 Diodo LED de alto brillo", description: "Luz especial orientada para proyectar su brillo por los bordes del corazón 3D.", icon: "fa-lightbulb" },
+            { title: "1 Pila botón CR2032 (3V)", description: "Fuente de energía segura que se aloja en la solapa inferior de la tarjeta.", icon: "fa-battery-full" },
+            { title: "Cinta de cobre conductora", description: "Pistas metálicas autoadhesivas que conectan la pila, el pulsador y el LED.", icon: "fa-tape" },
+            { title: "Pulsador en Escudo Paulo Freire", description: "Interruptor táctil disimulado detrás del escudo del colegio en la base de la tarjeta.", icon: "fa-shield-alt" },
+            { title: "Tijera escolar y pegamento en barra", description: "Para realizar los cortes precisos del corazón y ensamblar las capas de cartulina.", icon: "fa-cut" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Cortes precisos en el Corazón Pixelado",
+              desc: "Tomá la lámina del corazón y cortá con tijera únicamente por las líneas continuas marcadas en los escalones del corazón pixel. ¡Cuidado de no cortar las líneas de puntos!",
+              tip: "Las líneas sólidas son para cortar con tijera; las líneas de puntos son para doblar."
+            },
+            {
+              step: 2,
+              title: "Plegado Pop-Up 3D hacia adelante",
+              desc: "Doblá la tarjeta por la mitad mientras empujás suavemente los escalones del corazón hacia adelante. Al abrir la tarjeta a 90 grados, el corazón se levanta automáticamente en relieve 3D.",
+              tip: "Marcá bien los pliegues con la yema del dedo para que el efecto pop-up sea firme y elástico."
+            },
+            {
+              step: 3,
+              title: "Pegar la foto del niño en el centro del corazón",
+              desc: "Colocá una pizca de pegamento en barra y fijá tu foto en el centro exacto del corazón 3D. Mamá verá tu sonrisa flotando en relieve al abrir la tarjeta.",
+              tip: "Recortá la foto siguiendo la silueta de tu rostro para que encaje como una gema en el corazón."
+            },
+            {
+              step: 4,
+              title: "Trazar las pistas de Cinta de Cobre",
+              desc: "En la lámina de base (circuito), pegá la cinta de cobre siguiendo las líneas marcadas: una pista desde el polo positivo (+) hasta la patita larga del LED, y otra pista desde el polo negativo (-) pasando por el escudo.",
+              tip: "Mantené la cinta de cobre lisa y bien presionada para que la corriente fluya sin interrupciones."
+            },
+            {
+              step: 5,
+              title: "Instalar el LED y Pila Botón CR2032",
+              desc: "Fijá la pata larga (+) y la pata corta (-) del LED sobre sus pistas. Pegá la pila CR2032 en la solapa de la esquina asegurando que haga contacto firme.",
+              tip: "Ubicá el LED de modo que su resplandor apunte hacia arriba e ilumine los bordes y relieve del corazón."
+            },
+            {
+              step: 6,
+              title: "¡Pulsador en el Escudo Paulo Freire y Efecto Mágico!",
+              desc: "Pegá la solapa del escudo del Colegio Paulo Freire sobre los contactos abiertos del circuito. Al presionar el escudo con el dedo, el circuito se cierra y el corazón se ilumina mágicamente.",
+              tip: "¡Decile a mamá: 'Apretá el escudo del colegio Paulo Freire' y mirá su cara de emoción cuando se prenda la luz!"
+            }
+          ]
+        },
+        {
+          id: "s5-p6",
+          level: 6,
           title: "Ana y Elsa: Arte Geométrico sobre el Hielo ❄️⛸️",
           author: "Taller Maker Sala 5",
           date: "Julio 2026",
@@ -361,10 +433,10 @@ const SCHOOL_DATA = {
           coverImage: "img/frozen.png",
           gameUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
           externalUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
-          description: "¡Nivel 5 de nuestra Ruta de Aventuras! En el nivel anterior usamos Paint para dibujar figuras geométricas a mano alzada. Ahora con Ana y Elsa damos el gran salto a la programación: le damos órdenes a las patinadoras con bloques de código para trazar líneas rectas, esquinas en ángulo recto (90°), cuadrados y copos de nieve sobre el hielo.",
+          description: "¡Nivel 6 de nuestra Ruta de Aventuras! En el Nivel 4 usamos Paint para dibujar figuras geométricas a mano alzada. Ahora con Ana y Elsa damos el gran salto a la programación: le damos órdenes a las patinadoras con bloques de código para trazar líneas rectas, esquinas en ángulo recto (90°), cuadrados y copos de nieve sobre el hielo.",
           objective: "Aprender a programar figuras geométricas en el hielo con Elsa y Ana, conectando los trazos manuales de Paint con algoritmos de código: bloques de avanzar píxeles, giros en ángulo recto de 90° y bucles de repetición.",
           benefits: "Crea un puente directo entre el arte de Paint y la geometría computacional: enseña la descomposición de figuras en trazos y giros, introduce el concepto de ángulo recto (90°), estimula la abstracción con bucles (repetir 4 veces) y fortalece la orientación espacial bidimensional.",
-          tags: ["Frozen", "Ana y Elsa", "Code.org", "Geometría", "Ángulos", "Algoritmos", "Nivel 5"],
+          tags: ["Frozen", "Ana y Elsa", "Code.org", "Geometría", "Ángulos", "Algoritmos", "Nivel 6"],
           gallery: [
             "img/frozen.png"
           ],
@@ -406,8 +478,8 @@ const SCHOOL_DATA = {
           ]
         },
         {
-          id: "s5-p6",
-          level: 6,
+          id: "s5-p7",
+          level: 7,
           title: "Banderas del Mundial en Paint: Geometría y Colores 🇺🇾⚽🎨",
           author: "Taller Digital Sala 5",
           date: "Agosto 2026",
@@ -416,10 +488,10 @@ const SCHOOL_DATA = {
           icon: "fa-flag",
           color: "#2563EB",
           coverImage: "img/proyectos/banderas_mundial_paint_cover.png",
-          description: "En este proyecto usamos Paint para diseñar las banderas de los países del mundial combinando figuras geométricas básicas: rectángulos para el perímetro y las franjas (horizontales o verticales), círculos y estrellas para los soles y emblemas patrios, y el bote de pintura para colorear con los tonos oficiales. ¡Subí tu dibujo para ganar +100 XP!",
+          description: "¡Nivel 7 de nuestra Ruta de Aventuras! En este proyecto usamos Paint para diseñar las banderas de los países del mundial combinando figuras geométricas básicas: rectángulos para el perímetro y las franjas (horizontales o verticales), círculos y estrellas para los soles y emblemas patrios, y el bote de pintura para colorear con los tonos oficiales. ¡Subí tu dibujo para ganar +100 XP!",
           objective: "Aprender a descomponer y dibujar banderas del mundial en Paint utilizando figuras geométricas básicas (rectángulos para franjas, círculos y estrellas para detalles) y rellenar con color respetando los límites de cada figura cerrada.",
           benefits: "Fortalece la coordinación motriz fina con el mouse, introduce nociones de fraccionamiento espacial y proporciones (dividir un lienzo en dos mitades o tres tercios iguales), ejercita la simetría y amplía el conocimiento cultural y geográfico del mundo.",
-          tags: ["Paint", "Arte Digital", "Banderas", "Mundial", "Figuras Geométricas", "Colores", "Nivel 6"],
+          tags: ["Paint", "Arte Digital", "Banderas", "Mundial", "Figuras Geométricas", "Colores", "Nivel 7"],
           gallery: [
             "img/proyectos/banderas_mundial_paint_cover.png",
             "img/proyectos/banderas_mundial_paint_guia.png"
@@ -478,8 +550,8 @@ const SCHOOL_DATA = {
           ]
         },
         {
-          id: "s5-p7",
-          level: 7,
+          id: "s5-p8",
+          level: 8,
           title: "Minecraft: Hora del Código (Aprender a Programar) ⛏️🧱",
           author: "Taller de Programación Sala 5",
           date: "Septiembre 2026",
@@ -491,10 +563,10 @@ const SCHOOL_DATA = {
           coverImage: "img/minecraft.png",
           gameUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
           externalUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
-          description: "¡Nivel 7 de nuestra Ruta de Aventuras! ⚠️ ACLARACIÓN IMPORTANTE: No es el juego tradicional de Minecraft comercial (supervivencia o modo libre con joystick), sino una adaptación pedagógica oficial de Code.org para aprender a programar desde el juego. Steve y Alex no se mueven solos; ¡vos los controlás encastrando bloques de código para que caminen, talen árboles, esquilen ovejas y construyan!",
+          description: "¡Nivel 8 de nuestra Ruta de Aventuras! ⚠️ ACLARACIÓN IMPORTANTE: No es el juego tradicional de Minecraft comercial (supervivencia o modo libre con joystick), sino una adaptación pedagógica oficial de Code.org para aprender a programar desde el juego. Steve y Alex no se mueven solos; ¡vos los controlás encastrando bloques de código para que caminen, talen árboles, esquilen ovejas y construyan!",
           objective: "Aprender los fundamentos del pensamiento computacional resolviendo los desafíos de la adaptación oficial de Minecraft en Code.org: programar secuencias algorítmicas, interactuar con el entorno 3D (destruir bloques, esquilar, colocar) y optimizar instrucciones con bucles de repetición.",
           benefits: "Canaliza el gran entusiasmo por Minecraft hacia el aprendizaje activo de las ciencias de la computación: transforma a los niños de jugadores pasivos a creadores de código, desarrolla la orientación espacial isométrica, ejercita la descomposición de problemas y la lógica de bucles tempranos.",
-          tags: ["Minecraft", "Code.org", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 7"],
+          tags: ["Minecraft", "Code.org", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 8"],
           gallery: [
             "img/minecraft.png"
           ],
@@ -1445,24 +1517,25 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Ana y Elsa, Banderas, Minecraft, les falta objective, o Paint tiene gameUrl residual, actualizar Firestore
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Día de la Madre, Ana y Elsa, Banderas, Minecraft, les falta objective, o Paint tiene gameUrl residual, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
                 !targetProjects.some(p => (p.title || '').includes('Varita') || (p.title || '').includes('varita')) ||
                 !targetProjects.some(p => (p.title || '').includes('Cancha') || (p.title || '').includes('cancha')) ||
-                !targetProjects.some(p => (p.title || '').includes('Elsa') || (p.title || '').includes('Frozen') || (p.title || '').includes('Ana')) ||
-                !targetProjects.some(p => (p.title || '').includes('Bandera') || (p.title || '').includes('bandera') || p.id === 's5-p6') ||
-                !targetProjects.some(p => (p.title || '').includes('Minecraft') || (p.title || '').includes('minecraft') || p.id === 's5-p7') ||
+                !targetProjects.some(p => (p.title || '').includes('Madre') || (p.title || '').includes('madre') || p.id === 's5-p5') ||
+                !targetProjects.some(p => (p.title || '').includes('Elsa') || (p.title || '').includes('Frozen') || (p.title || '').includes('Ana') || p.id === 's5-p6') ||
+                !targetProjects.some(p => (p.title || '').includes('Bandera') || (p.title || '').includes('bandera') || p.id === 's5-p7') ||
+                !targetProjects.some(p => (p.title || '').includes('Minecraft') || (p.title || '').includes('minecraft') || p.id === 's5-p8') ||
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective)) ||
-                targetProjects.some(p => ((p.id === 's5-p4' || p.id === 's5-p6') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
+                targetProjects.some(p => ((p.id === 's5-p4' || p.id === 's5-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
               if (isStaleSala5) {
                 console.log("🔄 Re-sembrando proyectos reales de sala5 con objetivos y beneficios en Firestore...");
                 seedGradeProjectsToFirestore(true);
               } else {
                 targetProjects.forEach(function(p) {
-                  if (p.id === 's5-p4' || p.id === 's5-p6' || /cancha|paint|bandera/i.test(p.title || '') || p.type === 'paint') {
+                  if (p.id === 's5-p4' || p.id === 's5-p7' || /cancha|paint|bandera/i.test(p.title || '') || p.type === 'paint') {
                     p.gameUrl = null;
                     p.externalUrl = null;
                     p.type = 'paint';
