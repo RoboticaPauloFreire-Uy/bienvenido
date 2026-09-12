@@ -69,14 +69,14 @@ const SCHOOL_DATA = {
         },
         {
           id: "s5-g2",
-          level: 4,
-          title: "Minecraft: Hora del Código ⛏️",
+          level: 7,
+          title: "Minecraft: Hora del Código (Aprender a Programar) ⛏️🧱",
           platform: "codeorg",
-          externalUrl: "https://code.org/es-ES/hour-of-code/minecraft",
+          externalUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
           thumbnail: "img/minecraft.png",
-          description: "Guiá a los personajes del universo Minecraft resolviendo desafíos con pensamiento computacional.",
-          benefits: "Desarrolla el razonamiento lógico, la orientación espacial en 3D y el pensamiento estructurado.",
-          tags: ["Code.org", "Minecraft", "Lógica"]
+          description: "¡Nivel 7 de la Ruta de Aventuras! ⚠️ Aclaración: no es el juego tradicional de Minecraft de juego libre, sino una adaptación pedagógica oficial de Code.org para aprender a programar dando órdenes en bloques a Steve y Alex.",
+          benefits: "Canaliza el entusiasmo por Minecraft hacia el aprendizaje del pensamiento computacional: secuenciación lógica, orientación en cuadrícula 3D isométrica, descomposición de acciones y bucles de repetición.",
+          tags: ["Code.org", "Minecraft", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 7"]
         }
       ],
 
@@ -402,6 +402,136 @@ const SCHOOL_DATA = {
               title: "Tocar 'Ejecutar' y crear copos de nieve",
               desc: "Tocá el botón naranja 'Ejecutar' para ver a Elsa deslizarse patinando con música y magia. Al completar los niveles, ¡desbloquearás a Ana y hermosos copos de nieve!",
               tip: "Si Elsa patina para otro lado, ¡no pasa nada! Tocá 'Reiniciar', cambiá el giro de derecha a izquierda y probá otra vez."
+            }
+          ]
+        },
+        {
+          id: "s5-p6",
+          level: 6,
+          title: "Banderas del Mundial en Paint: Geometría y Colores 🇺🇾⚽🎨",
+          author: "Taller Digital Sala 5",
+          date: "Agosto 2026",
+          type: "paint",
+          badge: "🎨 Arte Digital & Banderas",
+          icon: "fa-flag",
+          color: "#2563EB",
+          coverImage: "img/proyectos/banderas_mundial_paint_cover.png",
+          description: "En este proyecto usamos Paint para diseñar las banderas de los países del mundial combinando figuras geométricas básicas: rectángulos para el perímetro y las franjas (horizontales o verticales), círculos y estrellas para los soles y emblemas patrios, y el bote de pintura para colorear con los tonos oficiales. ¡Subí tu dibujo para ganar +100 XP!",
+          objective: "Aprender a descomponer y dibujar banderas del mundial en Paint utilizando figuras geométricas básicas (rectángulos para franjas, círculos y estrellas para detalles) y rellenar con color respetando los límites de cada figura cerrada.",
+          benefits: "Fortalece la coordinación motriz fina con el mouse, introduce nociones de fraccionamiento espacial y proporciones (dividir un lienzo en dos mitades o tres tercios iguales), ejercita la simetría y amplía el conocimiento cultural y geográfico del mundo.",
+          tags: ["Paint", "Arte Digital", "Banderas", "Mundial", "Figuras Geométricas", "Colores", "Nivel 6"],
+          gallery: [
+            "img/proyectos/banderas_mundial_paint_cover.png",
+            "img/proyectos/banderas_mundial_paint_guia.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          gameUrl: null,
+          externalUrl: null,
+          materials: [
+            { title: "Programa Paint / Lienzo Digital", description: "Espacio de trabajo digital para dibujar con herramientas gráficas.", icon: "fa-paint-brush" },
+            { title: "Herramienta Rectángulo", description: "Para el marco exterior de la bandera y las franjas de colores.", icon: "fa-vector-square" },
+            { title: "Herramienta Línea Recta", description: "Para dividir las banderas en franjas horizontales o verticales.", icon: "fa-slash" },
+            { title: "Herramientas Círculo y Formas", description: "Para dibujar el Sol de Mayo (Uruguay/Argentina), rombos (Brasil) y estrellas.", icon: "fa-circle" },
+            { title: "Bote de Pintura (Relleno)", description: "Para pintar cada franja con los colores patrios oficiales sin derramar pintura.", icon: "fa-fill-drip" },
+            { title: "Mouse o Pantalla Táctil", description: "Para ejercitar precisión y motricidad fina al arrastrar figuras.", icon: "fa-mouse-pointer" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Trazar el rectángulo exterior de la bandera",
+              desc: "Abrí Paint. Seleccioná la herramienta Rectángulo con color negro o gris oscuro. Hacé clic arriba a la izquierda y arrastrá para armar el lienzo de tu bandera.",
+              tip: "Mantené un tamaño amplio en la pantalla para tener espacio cómodo donde colocar las franjas."
+            },
+            {
+              step: 2,
+              title: "Dividir en franjas (Horizontales o Verticales)",
+              desc: "Elegí la bandera que querés dibujar: si es como Uruguay o Argentina, dividí el rectángulo con franjas horizontales; si es como Francia o Italia, usá franjas verticales.",
+              tip: "Usá la herramienta Rectángulo o Línea asegurándote de tocar los dos bordes para que no queden huecos abiertos."
+            },
+            {
+              step: 3,
+              title: "Agregar figuras y símbolos centrales",
+              desc: "Seleccioná la herramienta Círculo (Elipse) para dibujar el sol (Uruguay / Argentina) o la forma de Rombo para la bandera de Brasil.",
+              tip: "Mantené pulsada la tecla Shift mientras arrastrás para que el círculo salga redondito perfecto."
+            },
+            {
+              step: 4,
+              title: "Colorear con el Bote de Pintura",
+              desc: "Seleccioná el Bote de Pintura, elegí los colores en la paleta (azul, celeste, amarillo, verde, rojo) y hacé clic dentro de cada franja para rellenarla.",
+              tip: "Si se pinta toda la pantalla de un solo color, ¡apretá Ctrl + Z de inmediato! Significa que había un pequeño espacio abierto en la línea."
+            },
+            {
+              step: 5,
+              title: "Dibujar más banderas de tus países favoritos",
+              desc: "Al lado de tu primera bandera podés dibujar otra de tus selecciones favoritas del mundial para armar tu propia colección digital de banderas.",
+              tip: "¡Probá una fácil con 2 o 3 franjas y luego desafiate con una que tenga sol o estrellas!"
+            },
+            {
+              step: 6,
+              title: "Guardar tu dibujo y subirlo a Drive",
+              desc: "Andá a 'Archivo' > 'Guardar como' > 'Imagen PNG' y guardalo con el nombre 'banderas_mundial.png'. ¡Arrastralo a la pestaña 'Mi Entrega' para sumar +100 XP!",
+              tip: "¡Tus profesores y compañeros van a poder ver tu lámina de banderas en tu carpeta de Google Drive!"
+            }
+          ]
+        },
+        {
+          id: "s5-p7",
+          level: 7,
+          title: "Minecraft: Hora del Código (Aprender a Programar) ⛏️🧱",
+          author: "Taller de Programación Sala 5",
+          date: "Septiembre 2026",
+          type: "codeorg",
+          platform: "codeorg",
+          badge: "⛏️ Código & Minecraft",
+          icon: "fa-cube",
+          color: "#059669",
+          coverImage: "img/minecraft.png",
+          gameUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
+          externalUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
+          description: "¡Nivel 7 de nuestra Ruta de Aventuras! ⚠️ ACLARACIÓN IMPORTANTE: No es el juego tradicional de Minecraft comercial (supervivencia o modo libre con joystick), sino una adaptación pedagógica oficial de Code.org para aprender a programar desde el juego. Steve y Alex no se mueven solos; ¡vos los controlás encastrando bloques de código para que caminen, talen árboles, esquilen ovejas y construyan!",
+          objective: "Aprender los fundamentos del pensamiento computacional resolviendo los desafíos de la adaptación oficial de Minecraft en Code.org: programar secuencias algorítmicas, interactuar con el entorno 3D (destruir bloques, esquilar, colocar) y optimizar instrucciones con bucles de repetición.",
+          benefits: "Canaliza el gran entusiasmo por Minecraft hacia el aprendizaje activo de las ciencias de la computación: transforma a los niños de jugadores pasivos a creadores de código, desarrolla la orientación espacial isométrica, ejercita la descomposición de problemas y la lógica de bucles tempranos.",
+          tags: ["Minecraft", "Code.org", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 7"],
+          gallery: [
+            "img/minecraft.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Adaptación Educativa Code.org Minecraft", description: "Módulos interactivos oficiales de la Hora del Código (https://studio.code.org/s/mc/lessons/1/levels/1).", icon: "fa-cube" },
+            { title: "Bloques de Desplazamiento", description: "Comandos 'avanzar', 'girar a la derecha' y 'girar a la izquierda'.", icon: "fa-arrows-alt" },
+            { title: "Bloques de Acción", description: "Comandos 'destruir bloque', 'trasquilar oveja', 'colocar tablones'.", icon: "fa-hammer" },
+            { title: "Bloque 'Repetir' (Bucles)", description: "Para que Steve o Alex repitan acciones sin llenar la pantalla de bloques.", icon: "fa-sync-alt" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Elegir tu personaje: ¿Steve o Alex?",
+              desc: "Al ingresar a la actividad en Code.org podés elegir si querés jugar como Steve o como Alex para iniciar tu aventura de programación.",
+              tip: "Recordá: ¡aquí no usamos teclado para movernos! Solo avanzamos cuando colocamos bloques de programación."
+            },
+            {
+              step: 2,
+              title: "Contar los bloques de distancia en el mapa",
+              desc: "Mirá la cuadrícula isométrica: contá cuántos casilleros de distancia separan a tu personaje de la oveja o del árbol.",
+              tip: "Si hay 2 casilleros, necesitás encastrar 2 bloques de 'avanzar' debajo de 'al ejecutar'."
+            },
+            {
+              step: 3,
+              title: "Encastrar las acciones: ¡Talar y Construir!",
+              desc: "Cuando llegues al árbol o a la oveja, colocá el bloque de acción correspondiente: 'destruir bloque' para conseguir madera o 'trasquilar' para obtener lana.",
+              tip: "Pensá el orden exacto: primero caminar hasta el bloque y recién después ejecutar la acción."
+            },
+            {
+              step: 4,
+              title: "Tocar 'Ejecutar' y celebrar la misión",
+              desc: "Hacé clic en el botón naranja 'Ejecutar'. Mirá cómo tu personaje cobra vida y sigue fielmente cada orden que programaste. ¡Al terminar podés marcar tu entrega para sumar +100 XP!",
+              tip: "Si tu personaje choca con agua o lava, ¡tocá 'Reiniciar' y corregí el camino! Así programan los ingenieros."
             }
           ]
         }
@@ -1315,22 +1445,24 @@ if (typeof window !== 'undefined') {
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
             const gradeObj = window.SCHOOL_DATA.grades.find(g => g.id === gradeId);
             if (gradeObj) {
-              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Ana y Elsa, les falta objective, o Cancha tiene gameUrl residual, actualizar Firestore
+              // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Ana y Elsa, Banderas, Minecraft, les falta objective, o Paint tiene gameUrl residual, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
                 !targetProjects.some(p => (p.title || '').includes('Varita') || (p.title || '').includes('varita')) ||
-                !targetProjects.some(p => (p.title || '').includes('Cancha') || (p.title || '').includes('cancha') || (p.title || '').includes('Paint')) ||
+                !targetProjects.some(p => (p.title || '').includes('Cancha') || (p.title || '').includes('cancha')) ||
                 !targetProjects.some(p => (p.title || '').includes('Elsa') || (p.title || '').includes('Frozen') || (p.title || '').includes('Ana')) ||
+                !targetProjects.some(p => (p.title || '').includes('Bandera') || (p.title || '').includes('bandera') || p.id === 's5-p6') ||
+                !targetProjects.some(p => (p.title || '').includes('Minecraft') || (p.title || '').includes('minecraft') || p.id === 's5-p7') ||
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective)) ||
-                targetProjects.some(p => ((p.id === 's5-p4') || /cancha|paint/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
+                targetProjects.some(p => ((p.id === 's5-p4' || p.id === 's5-p6') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
               if (isStaleSala5) {
                 console.log("🔄 Re-sembrando proyectos reales de sala5 con objetivos y beneficios en Firestore...");
                 seedGradeProjectsToFirestore(true);
               } else {
                 targetProjects.forEach(function(p) {
-                  if (p.id === 's5-p4' || /cancha|paint/i.test(p.title || '') || p.type === 'paint') {
+                  if (p.id === 's5-p4' || p.id === 's5-p6' || /cancha|paint|bandera/i.test(p.title || '') || p.type === 'paint') {
                     p.gameUrl = null;
                     p.externalUrl = null;
                     p.type = 'paint';

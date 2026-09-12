@@ -432,15 +432,15 @@
     // 1. Proyectos definidos en SCHOOL_DATA para el grado
     if (gradeObj && Array.isArray(gradeObj.projects)) {
       gradeObj.projects.forEach(function(p, idx) {
-        var isPaint    = p.type === 'paint' || (p.tags && p.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })) || (/cancha/i.test(p.title || ''));
+        var isPaint    = p.type === 'paint' || (p.tags && p.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|bandera/i.test(p.title || ''));
         var isMakecode = !isPaint && !!p.makecodeUrl;
         var isScratch  = !isPaint && (!!p.scratchId || (p.tags && p.tags.indexOf('Scratch Jr') !== -1));
-        var isCodeorg  = !isPaint && (p.type === 'codeorg' || p.platform === 'codeorg' || (p.externalUrl && p.externalUrl.includes('code.org')) || (p.tags && p.tags.some(function(t){ return /code\.org|angry ?birds/i.test(t); })));
+        var isCodeorg  = !isPaint && (p.type === 'codeorg' || p.platform === 'codeorg' || (p.externalUrl && p.externalUrl.includes('code.org')) || (p.tags && p.tags.some(function(t){ return /code\.org|angry ?birds|frozen|minecraft/i.test(t); })));
         var isElectronica = !isPaint && !isCodeorg && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
         var type  = isPaint ? 'paint' : (p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica')))));
         var badge = isPaint ? (p.badge || '🎨 Arte Digital & Figuras') : (p.badge || (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch' : '🚀 Proyecto Maker')))));
         var icon  = isPaint ? (p.icon || 'fa-palette') : (p.icon || (isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket')))));
-        var color = isPaint ? (p.color || '#16A34A') : (p.color || (isCodeorg ? '#E11D48' : (isElectronica ? '#D97706' : (gradeObj.color || '#2563EB'))));
+        var color = isPaint ? (p.color || '#16A34A') : (p.color || (isCodeorg ? (p.color || '#E11D48') : (isElectronica ? '#D97706' : (gradeObj.color || '#2563EB'))));
 
         missions.push({
           id: p.id || ('proj-' + idx),
@@ -1622,7 +1622,80 @@
     '</div>';
   }
 
+  function renderMinecraftSolutionHtml(mission) {
+    var gameUrl = (mission && mission.gameUrl) || 'https://studio.code.org/s/mc/lessons/1/levels/1';
+    return '<div class="apm-sol-codeorg-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #064E3B 0%, #059669 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-cube"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: Programación en Minecraft (Code.org)</h4>' +
+          '<p>Secuencias paso a paso de los primeros niveles en <strong>' + gameUrl + '</strong> para Steve y Alex.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body" style="padding:18px;">' +
+        '<div style="margin-bottom:16px;background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:12px;padding:14px;">' +
+          '<h5 style="margin:0 0 6px;color:#92400E;font-size:0.95rem;"><i class="fas fa-exclamation-triangle"></i> Aclaración Importante: Adaptación Educativa Oficial de Code.org</h5>' +
+          '<p style="margin:0;font-size:0.86rem;color:#78350F;line-height:1.5;">' +
+            'Este NO es el videojuego comercial de Minecraft de supervivencia o modo libre. Es una adaptación interactiva creada por Code.org junto a Mojang para enseñar programación temprana: Steve y Alex no responden al teclado ni joystick, solo ejecutan los bloques de código que los alumnos encastran.' +
+          '</p>' +
+        '</div>' +
+        '<div class="codeorg-levels-solutions-grid">' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #059669;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#059669;">Nivel 1</span> <strong>Llegar a la Oveja</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward" style="background:#059669;border-color:#047857;"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block move-forward" style="background:#059669;border-color:#047857;"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Steve o Alex dan dos pasos en línea recta por la cuadrícula para encontrarse con la oveja.</div>' +
+          '</div>' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #B45309;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#B45309;">Nivel 2</span> <strong>Talar el Árbol de Madera</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward" style="background:#059669;border-color:#047857;"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block move-forward" style="background:#059669;border-color:#047857;"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block" style="background:#B45309;border-color:#92400E;color:#FFF;padding:4px 8px;border-radius:4px;font-size:0.76rem;margin-bottom:3px;"><i class="fas fa-hammer"></i> destruir bloque</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Combinar movimiento con una acción física: caminar hasta el tronco y picar la madera.</div>' +
+          '</div>' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #2563EB;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#2563EB;">Nivel 3</span> <strong>Esquilar las Ovejas</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block move-forward" style="background:#059669;border-color:#047857;"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block move-forward" style="background:#059669;border-color:#047857;"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+              '<div class="co-block" style="background:#2563EB;border-color:#1D4ED8;color:#FFF;padding:4px 8px;border-radius:4px;font-size:0.76rem;margin-bottom:3px;"><i class="fas fa-cut"></i> trasquilar</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Aprender a obtener lana para construir la cama antes de que caiga la noche.</div>' +
+          '</div>' +
+          '<div class="col-sol-card" style="border-left:3.5px solid #7C3AED;">' +
+            '<div class="col-sc-header"><span class="col-sc-lvl" style="background:#7C3AED;">Nivel 4</span> <strong>Talar con Bucles (Repetición)</strong></div>' +
+            '<div class="col-sc-blocks">' +
+              '<div class="co-block when-run"><i class="fas fa-play"></i> Al ejecutar</div>' +
+              '<div class="co-block" style="background:#7C3AED;border-color:#5B21B6;color:#FFF;padding:4px 8px;border-radius:4px;font-size:0.76rem;margin-bottom:3px;"><i class="fas fa-sync-alt"></i> repetir 3 veces</div>' +
+              '<div style="padding-left:14px;border-left:2px dashed #7C3AED;">' +
+                '<div class="co-block move-forward" style="background:#059669;border-color:#047857;"><i class="fas fa-arrow-up"></i> avanzar</div>' +
+                '<div class="co-block" style="background:#B45309;border-color:#92400E;color:#FFF;padding:4px 8px;border-radius:4px;font-size:0.76rem;margin-bottom:3px;"><i class="fas fa-hammer"></i> destruir bloque</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="col-sc-note">Uso del bucle para que el personaje recolecte tres bloques de madera de forma automática.</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="text-align:center;margin-top:20px;">' +
+          '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#059669;border-color:#047857;padding:10px 22px;">' +
+            '<i class="fas fa-external-link-alt"></i> Abrir Desafío en Code.org Minecraft' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderCodeorgSolutionHtml(mission) {
+    var isMinecraft = mission && ((mission.tags && mission.tags.some(function(t){ return /minecraft|steve|alex/i.test(t); })) || (/minecraft/i.test(mission.title || '')));
+    if (isMinecraft) {
+      return renderMinecraftSolutionHtml(mission);
+    }
     var isFrozen = mission && ((mission.tags && mission.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(mission.title || '')));
     if (isFrozen) {
       return renderFrozenSolutionHtml(mission);
@@ -1691,6 +1764,92 @@
           '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;padding:10px 22px;">' +
             '<i class="fas fa-external-link-alt"></i> Practicar estos Niveles en Code.org' +
           '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderPaintBanderasSolutionHtml(mission) {
+    return '<div class="apm-sol-electro-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-flag"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: Banderas del Mundial en Paint (Descomposición Geométrica)</h4>' +
+          '<p>Guía de figuras paso a paso: marco exterior rectangular, división en franjas horizontales/verticales, círculo central con sol y relleno con el bote de pintura.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body">' +
+        '<div class="apm-circuit-schematic-card" style="margin-bottom:16px;background:#EFF6FF;border:1.5px solid #93C5FD;">' +
+          '<div class="apm-csc-header" style="border-bottom-color:#BFDBFE;">' +
+            '<span style="color:#1E40AF;font-weight:900;"><i class="fas fa-image"></i> Modelo Visual de Banderas en Paint</span>' +
+            '<a href="img/proyectos/banderas_mundial_paint_guia.png" target="_blank" class="apm-csc-badge" style="background:#2563EB;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
+          '</div>' +
+          '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+            '<img src="img/proyectos/banderas_mundial_paint_guia.png" alt="Guía Banderas Paint" style="max-height:240px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
+            '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Descomposición de banderas: 1. Marco rectangular base, 2. Franjas paralelas rectas, 3. Soles, círculos o estrellas, 4. Colores oficiales con balde.</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-shapes"></i> Figuras y Herramientas Utilizadas para Cada Bandera:</h5>' +
+          '<div class="apm-pinout-table-wrap">' +
+            '<table class="apm-pinout-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th>Bandera</th>' +
+                  '<th>Figuras Geométricas</th>' +
+                  '<th>Herramientas de Paint</th>' +
+                  '<th>Detalle y Colores</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                '<tr>' +
+                  '<td><strong>🇺🇾 Uruguay</strong></td>' +
+                  '<td>Rectángulo base + 9 franjas + Cuadrado cantón + Círculo sol</td>' +
+                  '<td>Rectángulo, Línea recta (Shift), Elipse (Shift), Balde</td>' +
+                  '<td>4 franjas azul marino, 5 franjas blancas, Sol de Mayo amarillo</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>🇦🇷 Argentina</strong></td>' +
+                  '<td>Rectángulo base + 3 franjas horizontales + Círculo sol</td>' +
+                  '<td>Rectángulo, Línea recta (Shift), Elipse (Shift), Balde</td>' +
+                  '<td>2 franjas celeste cielo, 1 blanca central, Sol de Mayo amarillo</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>🇧🇷 Brasil</strong></td>' +
+                  '<td>Rectángulo base + Rombo central + Círculo central</td>' +
+                  '<td>Rectángulo, Polígono (rombo 4 lados), Elipse, Balde</td>' +
+                  '<td>Fondo verde bosque, rombo amarillo oro, círculo azul central</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>🇫🇷 Francia</strong></td>' +
+                  '<td>Rectángulo base + 3 franjas verticales iguales</td>' +
+                  '<td>Rectángulo, 2 Líneas rectas verticales con Shift, Balde</td>' +
+                  '<td>Azul oscuro a la izquierda, blanco al medio y rojo a la derecha</td>' +
+                '</tr>' +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+        '<div class="apm-troubleshoot-box" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-magic"></i> Consejos y Trucos para Dibujar Banderas en Paint</h5>' +
+          '<div class="apm-tb-grid">' +
+            '<div class="apm-tb-item" style="border-left-color:#2563EB;">' +
+              '<h6>1. Franjas derechas y paralelas</h6>' +
+              '<p>Mantené pulsada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás la herramienta <strong>Línea</strong> para trazar franjas 100% horizontales sin torcerte.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#10B981;">' +
+              '<h6>2. Unir bien las esquinas</h6>' +
+              '<p>Asegurate de que las líneas toquen exactamente el borde del marco. Si queda un milímetro abierto, el balde pintará todo el lienzo.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#D97706;">' +
+              '<h6>3. Sol y círculos redondos</h6>' +
+              '<p>Usá la herramienta <strong>Elipse</strong> con <strong>Shift</strong> para que el sol salga redondo y no ovalado. Pintalo de amarillo antes de hacer los rayos.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#7C3AED;">' +
+              '<h6>4. Deshacer con Ctrl + Z</h6>' +
+              '<p>Si un color se derrama o una línea sale torcida, apretá inmediatamente <strong>Ctrl + Z</strong> para corregirlo sin empezar de nuevo.</p>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -2122,10 +2281,13 @@
     }
 
     var isObjective = (conceptType === 'objective');
-    var isPaint = data.type === 'paint' || (data.tags && data.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })) || (/cancha|paint/i.test(data.title || ''));
-    var isFrozen = !isPaint && ((data.tags && data.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(data.title || '')));
-    var isCodeorg = !isPaint && (data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa/i.test(t); })));
-    var isAngryBirds = isCodeorg && !isFrozen;
+    var isPaint = data.type === 'paint' || (data.tags && data.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|paint|bandera/i.test(data.title || ''));
+    var isPaintBanderas = isPaint && (/bandera/i.test(data.title || '') || (data.tags && data.tags.some(function(t){ return /bandera/i.test(t); })));
+    var isPaintCancha = isPaint && !isPaintBanderas;
+    var isMinecraft = !isPaint && ((data.tags && data.tags.some(function(t){ return /minecraft|steve|alex/i.test(t); })) || (/minecraft/i.test(data.title || '')));
+    var isFrozen = !isPaint && !isMinecraft && ((data.tags && data.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(data.title || '')));
+    var isCodeorg = !isPaint && (isFrozen || isMinecraft || data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
+    var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
     var isElectronica = !isPaint && !isCodeorg && (data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
 
     var title = data.title || 'Misión Educativa';
@@ -2137,22 +2299,38 @@
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = isPaint ? 'Paint' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'));
+    var platText = isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'))));
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
     var tipBoxText = '';
 
     if (isObjective) {
-      if (isFrozen) {
+      if (isMinecraft) {
+        pillars = [
+          { icon: 'fa-cube', color: '#059669', title: 'Adaptación Educativa Oficial', desc: 'No es el juego comercial libre: es una plataforma oficial de Code.org para aprender programación.' },
+          { icon: 'fa-laptop-code', color: '#2563EB', title: 'Programar a Steve y Alex', desc: 'Descubrir que los personajes solo se mueven cuando encastramos instrucciones algorítmicas en orden.' },
+          { icon: 'fa-hammer', color: '#B45309', title: 'Acciones en el Entorno 3D', desc: 'Combinar movimiento en cuadrícula isométrica con acciones reales: talar madera, esquilar y construir.' },
+          { icon: 'fa-sync-alt', color: '#7C3AED', title: 'Bucles y Optimización', desc: 'Aprender a usar el bloque "Repetir" para que el personaje complete tareas complejas sin repetir código.' }
+        ];
+        tipBoxText = '<strong>⛏️ Aclaración Crucial:</strong> En este taller no jugamos al Minecraft tradicional de juego libre o supervivencia; utilizamos la adaptación educativa de Code.org donde cada acción de Steve y Alex es el resultado de un programa de bloques creado por los niños.';
+      } else if (isFrozen) {
         pillars = [
           { icon: 'fa-snowflake', color: '#0284C7', title: 'Geometría sobre el Hielo', desc: 'Aprender a formar figuras geométricas haciendo que Elsa y Ana patinen con líneas y giros.' },
           { icon: 'fa-shapes', color: '#2563EB', title: 'De Paint a la Programación', desc: 'Conectar lo dibujado a mano en Paint con órdenes de código exactas (avanzar píxeles y girar).' },
           { icon: 'fa-redo', color: '#D97706', title: 'Ángulos Rectos (90°)', desc: 'Comprender que las esquinas de un cuadrado o rectángulo se forman girando exactamente 90 grados.' },
           { icon: 'fa-sync-alt', color: '#16A34A', title: 'Repetición y Bucles', desc: 'Descubrir cómo repetir secuencias para trazar copos de nieve y estrellas sin repetir código.' }
         ];
-        tipBoxText = '<strong>💡 Clave Pedagógica (Conexión Paint):</strong> En el Nivel 4 tu peque dibujó rectángulos y líneas arrastrando el mouse. Ahora en este nivel programa a Elsa para que la computadora trace esas mismas figuras con código. ¡Preguntale cómo se forma una esquina con un giro de 90°!';
-      } else if (isPaint) {
+        tipBoxText = '<strong>💡 Clave Pedagógica (Conexión Paint):</strong> En los niveles de Paint tu peque dibujó figuras arrastrando el mouse. Ahora en Frozen programa a Elsa para que trace esas mismas figuras con código exacto. ¡Preguntale cómo se forma una esquina con un giro de 90°!';
+      } else if (isPaintBanderas) {
+        pillars = [
+          { icon: 'fa-flag', color: '#2563EB', title: 'Descomposición de Banderas', desc: 'Identificar que las banderas del mundo están formadas por rectángulos, franjas, círculos y estrellas.' },
+          { icon: 'fa-vector-square', color: '#0284C7', title: 'Franjas y Proporciones', desc: 'Dividir el lienzo en dos mitades o tres franjas iguales horizontales o verticales.' },
+          { icon: 'fa-sun', color: '#EAB308', title: 'Símbolos y Soles', desc: 'Utilizar la herramienta Elipse con Shift para trazar el Sol de Mayo y formas para emblemas patrios.' },
+          { icon: 'fa-fill-drip', color: '#16A34A', title: 'Relleno de Color Cerrado', desc: 'Aprender a no dejar huecos abiertos en las líneas para que el bote de pintura no desborde.' }
+        ];
+        tipBoxText = '<strong>🇺🇾 Banderas del Mundial en Paint:</strong> Esta actividad une el entusiasmo deportivo con la geometría digital: enseña a los niños a mirar símbolos complejos y descomponerlos en figuras geométricas básicas y colores.';
+      } else if (isPaintCancha) {
         pillars = [
           { icon: 'fa-shapes', color: '#16A34A', title: 'Figuras Geométricas', desc: 'Identificar y trazar rectángulos, círculos y líneas para delimitar el campo de juego.' },
           { icon: 'fa-paint-brush', color: '#2563EB', title: 'Manejo de Herramientas Paint', desc: 'Aprender a seleccionar figuras, bote de pintura para relleno de césped y paleta de colores.' },
@@ -2187,7 +2365,15 @@
       }
     } else {
       // Beneficios
-      if (isFrozen) {
+      if (isMinecraft) {
+        pillars = [
+          { icon: 'fa-user-cog', color: '#059669', title: 'De Jugador Pasivo a Creador', desc: 'Superar la fascinación pasiva por Minecraft: comprender cómo se crean y programan las reglas del juego.' },
+          { icon: 'fa-cube', color: '#2563EB', title: 'Razonamiento Espacial 3D', desc: 'Estructurar el espacio en tres dimensiones: calcular pasos, giros y planos en el entorno cúbico.' },
+          { icon: 'fa-puzzle-piece', color: '#B45309', title: 'Descomposición Algorítmica', desc: 'Dividir metas complejas (construir una casa) en pasos individuales encastrados con bloques lógicos.' },
+          { icon: 'fa-sync-alt', color: '#7C3AED', title: 'Pensamiento en Bucles', desc: 'Descubrir que repetir órdenes mediante código ahorra tiempo y esfuerzo, base de la programación moderna.' }
+        ];
+        tipBoxText = '<strong>⛏️ Minecraft Educativo en Acción:</strong> Guiar a Steve y Alex en Code.org desarrolla perseverancia, pensamiento computacional y creatividad estructurada en un entorno amado por los niños.';
+      } else if (isFrozen) {
         pillars = [
           { icon: 'fa-shapes', color: '#0284C7', title: 'Pensamiento Geométrico', desc: 'Descomponer figuras en partes: comprender que un cuadrado son 4 lados iguales y 4 giros de 90°.' },
           { icon: 'fa-code-branch', color: '#2563EB', title: 'Introducción a Bucles (Loops)', desc: 'Descubrir el bloque "Repetir", uno de los pilares de la programación para optimizar instrucciones.' },
@@ -2195,7 +2381,15 @@
           { icon: 'fa-magic', color: '#7C3AED', title: 'Creatividad Matemática', desc: 'Sentir orgullo al ver cómo las matemáticas, los ángulos y el código generan arte sobre el hielo.' }
         ];
         tipBoxText = '<strong>❄️ De Paint a la Programación:</strong> Mientras Paint estimula la motricidad fina manual, Ana y Elsa desarrollan la abstracción mental: programar para que las máquinas dibujen con precisión matemática.';
-      } else if (isPaint) {
+      } else if (isPaintBanderas) {
+        pillars = [
+          { icon: 'fa-vector-square', color: '#2563EB', title: 'Fraccionamiento y Simetría', desc: 'Comprender mitades y tercios espaciales al dibujar banderas de 2 y 3 franjas equilibradas.' },
+          { icon: 'fa-mouse-pointer', color: '#16A34A', title: 'Control y Motricidad Fina', desc: 'Dominio de la precisión del puntero para unir esquinas sin dejar aberturas en los trazos.' },
+          { icon: 'fa-globe-americas', color: '#D97706', title: 'Cultura e Identidad Global', desc: 'Aprender sobre los países del mundial, sus colores y sus símbolos representativos.' },
+          { icon: 'fa-palette', color: '#7C3AED', title: 'Autoexpresión y Autonomía', desc: 'Confianza para crear colecciones digitales propias de banderas y guardarlas en su Google Drive.' }
+        ];
+        tipBoxText = '<strong>🎨 Arte Digital en Acción:</strong> Dibujar banderas del mundial en Paint afianza las nociones de proporción, precisión y manejo del software gráfico.';
+      } else if (isPaintCancha) {
         pillars = [
           { icon: 'fa-mouse-pointer', color: '#16A34A', title: 'Motricidad Fina Digital', desc: 'Precisión y control muscular en la mano al manipular el mouse o touchpad para trazar formas.' },
           { icon: 'fa-vector-square', color: '#2563EB', title: 'Geometría y Proporción', desc: 'Reconocer simetría bilateral (dos mitades de cancha), tamaños relativos y límites espaciales.' },
@@ -2339,14 +2533,17 @@
     }
 
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
-    var isPaint = mission.type === 'paint' || (mission.tags && mission.tags.some(function(t){ return /paint|dibujo|cancha/i.test(t); })) || (/cancha|paint/i.test(mission.title || ''));
+    var isPaint = mission.type === 'paint' || (mission.tags && mission.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|paint|bandera/i.test(mission.title || ''));
     if (isPaint) {
       mission.gameUrl = null;
       mission.externalUrl = null;
     }
-    var isFrozen = !isPaint && ((mission.tags && mission.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(mission.title || '')));
-    var isCodeorg = !isPaint && (mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa/i.test(t); })));
-    var isAngryBirds = isCodeorg && !isFrozen;
+    var isPaintBanderas = isPaint && (/bandera/i.test(mission.title || '') || (mission.tags && mission.tags.some(function(t){ return /bandera/i.test(t); })));
+    var isPaintCancha = isPaint && !isPaintBanderas;
+    var isMinecraft = !isPaint && ((mission.tags && mission.tags.some(function(t){ return /minecraft|steve|alex/i.test(t); })) || (/minecraft/i.test(mission.title || '')));
+    var isFrozen = !isPaint && !isMinecraft && ((mission.tags && mission.tags.some(function(t){ return /frozen|elsa|anna|ana/i.test(t); })) || (/frozen|elsa|anna|ana/i.test(mission.title || '')));
+    var isCodeorg = !isPaint && (isFrozen || isMinecraft || mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
+    var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
     var isGame = !isPaint && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
@@ -2537,16 +2734,22 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
-                        (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)))) +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)))))) +
                       '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card" style="' + (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : ''))) + '">' +
-                        '<h4 style="' + (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaint ? 'color:#15803D;' : ''))) + '"><i class="fas ' + (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered'))) + '"></i> ' + (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : '¿Cuál es nuestra misión?')) + '</h4>' +
-                        '<p style="' + (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaint ? 'color:#14532D;' : ''))) + '">' + (mission.objective || mission.description) + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : ''))))) + '">' +
+                        '<h4 style="' + (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : ''))))) + '"><i class="fas ' + (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered'))))) + '"></i> ' + (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?')))) + '</h4>' +
+                        '<p style="' + (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : ''))))) + '">' + (mission.objective || mission.description) + '</p>' +
+                        (isMinecraft ? '<div style="margin-top:10px;padding:8px 12px;background:#FEF3C7;border-left:3px solid #D97706;border-radius:6px;font-size:0.8rem;color:#92400E;line-height:1.4;"><strong><i class="fas fa-exclamation-triangle"></i> ¡Aclaración Importante!</strong> No es el Minecraft comercial tradicional de juego libre: es una adaptación pedagógica oficial de Code.org para aprender a programar con bloques.</div>' : '') +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
-                        (isFrozen ?
+                        (isMinecraft ?
+                          '<span class="apm-skill-pill" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-cube"></i> Adaptación Code.org</span>' +
+                          '<span class="apm-skill-pill" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-laptop-code"></i> Programar a Steve y Alex</span>' +
+                          '<span class="apm-skill-pill" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-arrows-alt"></i> Cuadrícula 3D</span>' +
+                          '<span class="apm-skill-pill" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-sync-alt"></i> Bucles de Repetición</span>' :
+                         isFrozen ?
                           '<span class="apm-skill-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-snowflake"></i> Geometría en el Hielo</span>' +
                           '<span class="apm-skill-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-shapes"></i> De Paint al Código</span>' +
                           '<span class="apm-skill-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-redo"></i> Giros de 90°</span>' +
@@ -2556,7 +2759,12 @@
                           '<span class="apm-skill-pill"><i class="fas fa-brain"></i> Razonamiento Lógico</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-compass"></i> Lateralidad & Orientación</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-bug"></i> Descomposición y Depuración</span>' :
-                         isPaint ?
+                         isPaintBanderas ?
+                          '<span class="apm-skill-pill" style="background:#DBEAFE;color:#1E40AF;"><i class="fas fa-flag"></i> Banderas del Mundial</span>' +
+                          '<span class="apm-skill-pill" style="background:#DBEAFE;color:#1E40AF;"><i class="fas fa-vector-square"></i> Franjas y Proporciones</span>' +
+                          '<span class="apm-skill-pill" style="background:#DBEAFE;color:#1E40AF;"><i class="fas fa-circle"></i> Soles y Símbolos</span>' +
+                          '<span class="apm-skill-pill" style="background:#DBEAFE;color:#1E40AF;"><i class="fas fa-fill-drip"></i> Bote de Pintura</span>' :
+                         isPaintCancha ?
                           '<span class="apm-skill-pill"><i class="fas fa-palette"></i> Dibujo en Paint</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-shapes"></i> Figuras Geométricas</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-mouse-pointer"></i> Precisión con Mouse</span>' +
@@ -2570,8 +2778,8 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))) + '">' +
-                        (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>'))) +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))) + '">' +
+                        (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>'))))) +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -2579,7 +2787,60 @@
 
                 // SLIDE 1: Materiales & Beneficios
                 '<div class="apm-slide-page" data-slide-idx="1">' +
-                  (isFrozen ?
+                  (isMinecraft ?
+                    '<div style="max-width:850px;margin:0 auto;">' +
+                      '<div style="text-align:center;margin-bottom:20px;">' +
+                        '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
+                          '⛏️ ¿Por qué Code.org Minecraft? De Jugador a Creador de Código' +
+                        '</h3>' +
+                        '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
+                          'En el juego tradicional solo explorás o construís con teclas. En <strong><a href="https://studio.code.org/s/mc/lessons/1/levels/1" target="_blank" style="color:#059669;text-decoration:underline;">Code.org Minecraft</a></strong>, ¡Steve y Alex se mueven ÚNICAMENTE cuando programás secuencias de bloques y bucles!' +
+                        '</p>' +
+                      '</div>' +
+                      '<div class="apm-materials-grid">' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #059669;">' +
+                          '<div class="apm-mat-icon" style="color:#059669;"><i class="fas fa-laptop-code"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>1. De Jugador Pasivo a Programador Activo</h5>' +
+                            '<p>En lugar de mover al personaje con el teclado o joystick en tiempo real, acá tenés que <strong>planificar una secuencia de órdenes precisas</strong> (avanzar, girar, talar o colocar bloques) antes de ejecutar.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #2563EB;">' +
+                          '<div class="apm-mat-icon" style="color:#2563EB;"><i class="fas fa-cubes"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>2. Orientación Espacial en Cuadrícula 3D</h5>' +
+                            '<p>El mundo de Minecraft está formado por cubos y bloques. Los niños aprenden a <strong>calcular distancias exactas</strong> y giros de 90° para posicionar a Alex o Steve frente al recurso adecuado.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #D97706;">' +
+                          '<div class="apm-mat-icon" style="color:#D97706;"><i class="fas fa-sync-alt"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>3. Bucles y Automatización (Repetir)</h5>' +
+                            '<p>Descubrir la potencia del bloque <code>repetir X veces</code> o <code>repetir hasta meta</code>. Talar 3 árboles o trasquilar ovejas sin repetir bloques innecesarios.</p>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="apm-mat-card" style="border-left:3.5px solid #10B981;">' +
+                          '<div class="apm-mat-icon" style="color:#10B981;"><i class="fas fa-shield-alt"></i></div>' +
+                          '<div class="apm-mat-info">' +
+                            '<h5>4. Adaptación 100% Pedagógica y Segura</h5>' +
+                            '<p>Desarrollada oficialmente por Code.org junto a Mojang / Microsoft con entornos guiados paso a paso sin chats, monstruos invasivos ni distracciones de supervivencia.</p>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-reto-card" style="margin-top:20px;background:#ECFDF5;border-color:#A7F3D0;">' +
+                        '<h4 style="color:#065F46;"><i class="fas fa-cube"></i> Actividad Oficial: Code.org Minecraft (Hora del Código)</h4>' +
+                        '<p style="color:#064E3B;margin:0 0 10px;">Plataforma mundial de iniciación a la ciencia de la computación adaptada para niñas y niños de 5 años.</p>' +
+                        '<a href="https://studio.code.org/s/mc/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#059669;border-color:#047857;display:inline-flex;align-items:center;gap:8px;padding:8px 18px;font-size:0.86rem;color:#FFF;text-decoration:none;">' +
+                          '<i class="fas fa-play"></i> Abrir studio.code.org/s/mc en el navegador' +
+                        '</a>' +
+                      '</div>' +
+                      '<div style="text-align:center;margin-top:20px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;background:#059669;border-color:#047857;">' +
+                          '¡Ir al Desafío Interactivo de Minecraft! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isFrozen ?
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
@@ -2688,17 +2949,18 @@
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                          (isPaint ? '🎨 Herramientas y Figuras de Paint' : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')) +
+                          (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')) +
                         '</h3>' +
                         '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                          (isPaint ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:' : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')) +
+                          (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')) +
                         '</p>' +
                       '</div>' +
                       '<div class="apm-materials-grid">' +
                         materialsList.map(function(m){
                           var mIcon = isPaint ? (
-                            /rect[aá]ngulo|figura|geometr/i.test(m.title) ? 'fa-vector-square' :
-                            /c[ií]rculo|centro/i.test(m.title) ? 'fa-circle' :
+                            /rect[aá]ngulo|franja|figura|geometr/i.test(m.title) ? 'fa-vector-square' :
+                            /c[ií]rculo|centro|sol|elipse/i.test(m.title) ? 'fa-circle' :
+                            /estrella|pol[ií]gono/i.test(m.title) ? 'fa-star' :
                             /l[ií]nea|recta/i.test(m.title) ? 'fa-slash' :
                             /bote|balde|relleno|color|pintura/i.test(m.title) ? 'fa-fill-drip' :
                             /mouse|puntero|rat[oó]n/i.test(m.title) ? 'fa-mouse-pointer' :
@@ -2720,16 +2982,16 @@
                           '</div>';
                         }).join('') +
                       '</div>' +
-                      '<div class="apm-reto-card" style="margin-top:22px;background:#F0FDF4;border-color:#16A34A;">' +
-                        '<h4 style="color:#15803D;"><i class="fas fa-lightbulb"></i> ' + (isPaint ? 'Consejo del Artista Digital' : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')) + '</h4>' +
-                        '<p style="color:#166534;">' +
-                          (isPaint ? '¡El secreto de los círculos perfectos! Mantené presionada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás el mouse con la herramienta Elipse para que salga un círculo redondo perfecto en la mitad de la cancha. ¡Y si te equivocás, apretá <strong>Ctrl + Z</strong> para deshacer sin borrar todo!' :
+                      '<div class="apm-reto-card" style="margin-top:22px;' + (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : '')) + '">' +
+                        '<h4 style="' + (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : ''))) + '"><i class="fas fa-lightbulb"></i> ' + (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')) + '</h4>' +
+                        '<p style="' + (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : '')) + '">' +
+                          (isPaint ? (isPaintBanderas ? '¡El secreto de las franjas parejas y los soles! Usá <strong>Rectángulo</strong> para el marco de la bandera, <strong>Líneas</strong> rectas con la tecla <strong>Shift</strong> para dividir las franjas iguales y <strong>Elipse con Shift</strong> para el sol amarillo. ¡Con <strong>Ctrl + Z</strong> corregís cualquier trazo sin borrar todo!' : '¡El secreto de los círculos perfectos! Mantené presionada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás el mouse con la herramienta Elipse para que salga un círculo redondo perfecto en la mitad de la cancha. ¡Y si te equivocás, apretá <strong>Ctrl + Z</strong> para deshacer sin borrar todo!') :
                            isElectronica ? '¡Recordá siempre la polaridad! La patita larga del LED es el polo positivo (+) y la corta el negativo (-). La cara lisa con letras de la pila es (+). Si las conectás al revés, no pasará nada malo, pero el LED no encenderá hasta que lo pongas en el sentido correcto.' : 'Antes de transferir o probar el código, pensá la secuencia paso a paso: ¿Qué pasa primero? ¿Qué botón activa la acción? ¡El orden de las instrucciones es la clave!') +
                         '</p>' +
                       '</div>' +
                       '<div style="text-align:center;margin-top:20px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')) + '">' +
-                          (isPaint ? '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>' : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')) +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))) + '">' +
+                          (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')) +
                         '</button>' +
                       '</div>' +
                     '</div>'
@@ -2738,7 +3000,66 @@
 
                 // SLIDE 2: Instrucciones de Armado (Electrónica) O Desafío Angry Birds (Code.org) O Código y Simulador (MakeCode/Scratch)
                 '<div class="apm-slide-page" data-slide-idx="2">' +
-                  (isFrozen ?
+                  (isMinecraft ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-cube" style="color:#059669;"></i> Nivel 7: ¡Hora del Código con Minecraft! (Steve y Alex)</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Plataforma interactiva oficial: <strong>https://studio.code.org/s/mc/lessons/1/levels/1</strong></p>' +
+                        '</div>' +
+                        '<a href="https://studio.code.org/s/mc/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#059669;border-color:#047857;font-size:0.84rem;padding:7px 16px;">' +
+                          '<i class="fas fa-external-link-alt"></i> Abrir en Pantalla Completa' +
+                        '</a>' +
+                      '</div>' +
+                      '<div class="codeorg-challenge-hero-card" style="border-left:4px solid #059669;">' +
+                        '<div class="chc-left">' +
+                          '<img src="img/minecraft.png" alt="Minecraft Code.org" class="chc-img" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80\'">' +
+                        '</div>' +
+                        '<div class="chc-right">' +
+                          '<span class="chc-tag" style="background:#D1FAE5;color:#065F46;"><i class="fas fa-cube"></i> Misión Nivel 7 • Adaptación Educativa</span>' +
+                          '<h4>Programá a Steve o Alex para explorar el mundo en bloques</h4>' +
+                          '<p><strong>Importante:</strong> ¡No es el juego tradicional de juego libre! Aquí los personajes no se mueven con flechas ni teclado: tenés que programar con bloques de <code>avanzar</code>, <code>girar</code> y <code>destruir bloque</code>.</p>' +
+                          '<div class="chc-blocks-preview">' +
+                            '<span class="cbp-block run"><i class="fas fa-play"></i> al ejecutar</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#059669;"><i class="fas fa-arrow-up"></i> avanzar</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#059669;"><i class="fas fa-arrow-up"></i> avanzar</span>' +
+                            '<span class="cbp-arrow">➔</span>' +
+                            '<span class="cbp-block move" style="background:#D97706;"><i class="fas fa-hammer"></i> destruir bloque</span>' +
+                          '</div>' +
+                          '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">' +
+                            '<a href="https://studio.code.org/s/mc/lessons/1/levels/1" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#059669;border-color:#047857;font-size:0.92rem;padding:9px 20px;">' +
+                              '<i class="fas fa-cube"></i> ¡Jugar Ahora en Code.org Minecraft! (studio.code.org/s/mc)' +
+                            '</a>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-tb-grid" style="margin-top:8px;">' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #059669;">' +
+                          '<h6>Paso 1: Elegir a Steve o Alex</h6>' +
+                          '<p>Al comenzar elegí tu personaje favorito para guiarlo en cada puzzle.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #2563EB;">' +
+                          '<h6>Paso 2: Calcular los bloques de distancia</h6>' +
+                          '<p>Contá cuántos bloques de pasto te separan de la oveja o del árbol.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #D97706;">' +
+                          '<h6>Paso 3: Acciones especiales (Talar / Trasquilar)</h6>' +
+                          '<p>Colocá la orden <strong>destruir bloque</strong> o <strong>trasquilar</strong> justo frente al objetivo.</p>' +
+                        '</div>' +
+                        '<div class="apm-tb-item" style="border-left:3px solid #10B981;">' +
+                          '<h6>Paso 4: Bucles de repetición</h6>' +
+                          '<p>Usá <strong>repetir</strong> para tareas largas como talar árboles altos o construir refugios.</p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div style="text-align:right;margin-top:8px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#059669;border-color:#047857;">' +
+                          '¡Ver Misión Cumplida y Consejos! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isFrozen ?
                     '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
@@ -2858,34 +3179,34 @@
                     '<div style="height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:6px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
-                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-paint-brush" style="color:#16A34A;"></i> Paso a Paso: Cancha de Fútbol con Figuras Geométricas</h3>' +
-                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Seguí cada paso para dibujar tu cancha profesional usando figuras en Paint:</p>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas ' + (isPaintBanderas ? 'fa-flag' : 'fa-paint-brush') + '" style="color:' + (isPaintBanderas ? '#2563EB' : '#16A34A') + ';"></i> ' + (isPaintBanderas ? 'Paso a Paso: Banderas del Mundial con Geometría en Paint' : 'Paso a Paso: Cancha de Fútbol con Figuras Geométricas') + '</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">' + (isPaintBanderas ? 'Seguí cada paso para descomponer y dibujar banderas oficiales (Uruguay, Argentina, Brasil y otras) usando figuras en Paint:' : 'Seguí cada paso para dibujar tu cancha profesional usando figuras en Paint:') + '</p>' +
                         '</div>' +
                         '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.8rem;padding:6px 12px;">' +
                           '<i class="fas fa-print"></i> Guía Imprimible' +
                         '</button>' +
                       '</div>' +
-                      '<div style="display:flex;gap:12px;align-items:center;background:#F0FDF4;border:1.5px dashed #16A34A;border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
-                        '<img src="img/proyectos/cancha_futbol_paint_guia.png" alt="Guía de Figuras en Paint" style="width:78px;height:68px;object-fit:cover;background:#FFF;border-radius:8px;border:1px solid #86EFAC;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar guía">' +
+                      '<div style="display:flex;gap:12px;align-items:center;' + (isPaintBanderas ? 'background:#EFF6FF;border:1.5px dashed #2563EB;' : 'background:#F0FDF4;border:1.5px dashed #16A34A;') + 'border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
+                        '<img src="' + (isPaintBanderas ? 'img/proyectos/banderas_mundial_paint_guia.png' : 'img/proyectos/cancha_futbol_paint_guia.png') + '" alt="' + (isPaintBanderas ? 'Guía de Banderas en Paint' : 'Guía de Figuras en Paint') + '" style="width:78px;height:68px;object-fit:cover;background:#FFF;border-radius:8px;border:1px solid ' + (isPaintBanderas ? '#93C5FD' : '#86EFAC') + ';padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar guía">' +
                         '<div style="flex:1;">' +
-                          '<h5 style="margin:0 0 2px;font-size:0.86rem;color:#166534;font-weight:800;"><i class="fas fa-shapes"></i> Guía Visual: Figuras Geométricas de la Cancha</h5>' +
-                          '<p style="margin:0;font-size:0.79rem;color:#14532D;line-height:1.4;">Rectángulo verde (césped), rectángulo blanco (límites), línea recta (medio campo), círculo central y arcos con rectángulos pequeños. <span style="font-weight:700;color:#15803D;">¡Tocá la imagen para ampliar el modelo!</span></p>' +
+                          '<h5 style="margin:0 0 2px;font-size:0.86rem;color:' + (isPaintBanderas ? '#1E40AF' : '#166534') + ';font-weight:800;"><i class="fas fa-shapes"></i> ' + (isPaintBanderas ? 'Guía Visual: Descomposición Geométrica de Banderas' : 'Guía Visual: Figuras Geométricas de la Cancha') + '</h5>' +
+                          '<p style="margin:0;font-size:0.79rem;color:' + (isPaintBanderas ? '#1E3A8A' : '#14532D') + ';line-height:1.4;">' + (isPaintBanderas ? 'Marco rectangular base, franjas paralelas con Línea/Rectángulo, símbolos centrales (Sol de Mayo, estrellas) y relleno con el Bote de Pintura. <span style="font-weight:700;color:#2563EB;">¡Tocá la imagen para ampliar la guía!</span>' : 'Rectángulo verde (césped), rectángulo blanco (límites), línea recta (medio campo), círculo central y arcos con rectángulos pequeños. <span style="font-weight:700;color:#15803D;">¡Tocá la imagen para ampliar el modelo!</span>') + '</p>' +
                         '</div>' +
                       '</div>' +
                       '<div class="apm-instructions-steps-grid">' +
                         instructionsList.map(function(st){
                           return '<div class="apm-step-card">' +
-                            '<div class="apm-step-badge" style="background:#16A34A;">' + st.step + '</div>' +
+                            '<div class="apm-step-badge" style="background:' + (isPaintBanderas ? '#2563EB' : '#16A34A') + ';">' + st.step + '</div>' +
                             '<div class="apm-step-body">' +
                               '<h5>' + st.title + '</h5>' +
                               '<p>' + st.desc + '</p>' +
-                              (st.tip ? '<div class="apm-step-tip" style="background:#F0FDF4;border-left-color:#16A34A;color:#14532D;"><i class="fas fa-info-circle" style="color:#16A34A;"></i> ' + st.tip + '</div>' : '') +
+                              (st.tip ? '<div class="apm-step-tip" style="' + (isPaintBanderas ? 'background:#EFF6FF;border-left-color:#2563EB;color:#1E3A8A;' : 'background:#F0FDF4;border-left-color:#16A34A;color:#14532D;') + '"><i class="fas fa-info-circle" style="color:' + (isPaintBanderas ? '#2563EB' : '#16A34A') + ';"></i> ' + st.tip + '</div>' : '') +
                             '</div>' +
                           '</div>';
                         }).join('') +
                       '</div>' +
                       '<div style="text-align:right;margin-top:10px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#16A34A;border-color:#15803D;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="' + (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : 'background:#16A34A;border-color:#15803D;') + '">' +
                           '¡Ver Retos Finales y Entrega! <i class="fas fa-arrow-right"></i>' +
                         '</button>' +
                       '</div>' +
@@ -2975,14 +3296,18 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isFrozen ? '❄️' : (isPaint ? '⚽' : (isAngryBirds ? '🐦' : '🏆'))) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isAngryBirds ? '🐦' : '🏆'))))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
                     '<div class="apm-extra-challenges">' +
-                      (isFrozen ?
+                      (isMinecraft ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#059669;">1</div><div><h6>Talar árboles altos con bucles</h6><p>Usá el bloque <code>repetir 3 veces</code> para talar troncos sin encastrar muchos bloques.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#059669;">2</div><div><h6>Construir un refugio antes de la noche</h6><p>Programá una secuencia de colocar tablas de madera para armar una pared o puerta.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#059669;">3</div><div><h6>Completar los 14 puzzles</h6><p>Llegá hasta el certificado final guiando a Steve y Alex por ríos, minas y bosques.</p></div></div>' :
+                       isFrozen ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0284C7;">1</div><div><h6>Crear un Copo de Nieve de 6 Puntas</h6><p>Repetí el giro de 60 grados y avanza para formar un copo de nieve mágico completo en el hielo.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0284C7;">2</div><div><h6>Patinar Dibujando Círculos Suaves</h6><p>Usá giros pequeños de 1 grado repetidos muchas veces para que Elsa dibuje círculos perfectos como en Paint.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0284C7;">3</div><div><h6>Cambiar Colores de los Patines</h6><p>Programá a Ana y Elsa para que el hielo cambie de color con cada figura geométrica que tracen.</p></div></div>' :
@@ -2990,6 +3315,10 @@
                         '<div class="apm-ec-item"><div class="apm-ec-badge">1</div><div><h6>Superar los niveles con giros</h6><p>Llegar al nivel 3 y 4 de Code.org practicando giros a la derecha e izquierda sin perder la orientación.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge">2</div><div><h6>Usar el menor número de bloques</h6><p>Encontrar la ruta más directa sin bloques sobrantes pensando el algoritmo antes de ejecutar.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge">3</div><div><h6>Enseñarle a un compañero</h6><p>Explicarle a un amigo cómo anticipar los pasos del pájaro antes de encastrar los bloques.</p></div></div>' :
+                       isPaintBanderas ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#2563EB;">1</div><div><h6>Dibujar la bandera de Uruguay con sus 9 franjas</h6><p>Contá 4 franjas azules y 5 blancas, y agregá el Sol de Mayo en el cantón superior izquierdo.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#2563EB;">2</div><div><h6>Crear la bandera de Brasil con rombo y círculo</h6><p>Dibujá el fondo verde, el rombo amarillo en el medio y el círculo azul con la franja blanca curva.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#2563EB;">3</div><div><h6>Inventar la bandera de tu propio equipo o país</h6><p>Combiná figuras y colores favoritos para crear una bandera original de tu colegio o taller maker.</p></div></div>' :
                        isPaint ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">1</div><div><h6>Dibujar a los jugadores y la pelota</h6><p>Usá círculos pequeños con colores de camisetas diferentes para armar dos equipos y agregá una pelota en el centro.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#16A34A;">2</div><div><h6>Agregar tribunas y banderas de córner</h6><p>Dibujá gradas alrededor de la cancha con rectángulos y poné banderines en los tiros de esquina.</p></div></div>' +
@@ -3020,15 +3349,15 @@
 
                     '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap;">' +
                       (isGame ?
-                        '<a href="' + (mission.gameUrl || (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1')) + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:' + (isFrozen ? '#0284C7;border-color:#0369A1;' : '#E11D48;border-color:#BE123C;') + 'font-size:0.92rem;padding:9px 20px;">' +
-                          (isFrozen ? '<i class="fas fa-snowflake"></i> ¡Jugar Ahora con Ana y Elsa!' : '<i class="fas fa-gamepad"></i> ¡Jugar Ahora en Code.org!') +
+                        '<a href="' + (mission.gameUrl || (isMinecraft ? 'https://studio.code.org/s/mc/lessons/1/levels/1' : (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1'))) + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:' + (isMinecraft ? '#059669;border-color:#047857;' : (isFrozen ? '#0284C7;border-color:#0369A1;' : '#E11D48;border-color:#BE123C;')) + 'font-size:0.92rem;padding:9px 20px;">' +
+                          (isMinecraft ? '<i class="fas fa-cube"></i> ¡Jugar Ahora en Code.org Minecraft!' : (isFrozen ? '<i class="fas fa-snowflake"></i> ¡Jugar Ahora con Ana y Elsa!' : '<i class="fas fa-gamepad"></i> ¡Jugar Ahora en Code.org!')) +
                         '</a>' +
                         '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.9rem;padding:9px 18px;"><i class="fas fa-file-pdf"></i> Ver Guía Didáctica</button>' +
                         '<button type="button" class="arm-btn-secondary" id="apm-restart-slides-btn" style="font-size:0.9rem;padding:9px 18px;">' +
                           '<i class="fas fa-undo"></i> Repasar Presentación' +
                         '</button>'
                       :
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981')) + ';border-color:' + (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669')) + ';font-size:0.9rem;padding:9px 18px;">' +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981'))) + ';border-color:' + (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669'))) + ';font-size:0.9rem;padding:9px 18px;">' +
                           (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')) +
                         '</button>' +
                         '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
@@ -3067,8 +3396,8 @@
               '<div class="apm-deliv-format-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#F8FAFC;border-radius:12px;margin-bottom:14px;border:1.5px solid #E2E8F0;flex-wrap:wrap;">' +
                 '<span style="font-size:0.84rem;font-weight:800;color:#334155;"><i class="fas fa-sliders-h" style="color:#6366F1;"></i> Formato de Entrega:</span>' +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isCodeorg ? 'active' : '') + '" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isCodeorg ? (isFrozen ? 'background:#0284C7;color:#FFF;box-shadow:0 2px 6px rgba(2,132,199,0.3);' : 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);') : 'background:#E2E8F0;color:#475569;') + '">' +
-                    (isFrozen ? '<i class="fas fa-snowflake"></i> Desafío Frozen' : '<i class="fas fa-gamepad"></i> Desafío Code.org') +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isCodeorg ? 'active' : '') + '" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isCodeorg ? (isMinecraft ? 'background:#059669;color:#FFF;box-shadow:0 2px 6px rgba(5,150,105,0.3);' : (isFrozen ? 'background:#0284C7;color:#FFF;box-shadow:0 2px 6px rgba(2,132,199,0.3);' : 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);')) : 'background:#E2E8F0;color:#475569;') + '">' +
+                    (isMinecraft ? '<i class="fas fa-cube"></i> Desafío Minecraft' : (isFrozen ? '<i class="fas fa-snowflake"></i> Desafío Frozen' : '<i class="fas fa-gamepad"></i> Desafío Code.org')) +
                   '</button>' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isPaint ? 'active' : '') + '" id="apm-switch-to-paint" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isPaint ? 'background:#16A34A;color:#FFF;box-shadow:0 2px 6px rgba(22,163,74,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-palette"></i> Dibujo Paint' +
@@ -3085,38 +3414,45 @@
                 '</div>' +
               '</div>' +
 
-              // SUB-PANEL CODE.ORG / ANGRY BIRDS / FROZEN
+              // SUB-PANEL CODE.ORG / ANGRY BIRDS / FROZEN / MINECRAFT
               '<div id="apm-codeorg-delivery-section" style="' + (isCodeorg ? 'display:block;' : 'display:none;') + '">' +
-                '<div class="apm-delivery-header" style="background:' + (isFrozen ? 'linear-gradient(135deg, #0369A1 0%, #0284C7 100%)' : 'linear-gradient(135deg, #BE123C 0%, #E11D48 100%)') + ';">' +
-                  '<div class="apm-dh-icon">' + (isFrozen ? '<i class="fas fa-snowflake"></i>' : '<i class="fas fa-gamepad"></i>') + '</div>' +
+                '<div class="apm-delivery-header" style="background:' + (isMinecraft ? 'linear-gradient(135deg, #065F46 0%, #059669 100%)' : (isFrozen ? 'linear-gradient(135deg, #0369A1 0%, #0284C7 100%)' : 'linear-gradient(135deg, #BE123C 0%, #E11D48 100%)')) + ';">' +
+                  '<div class="apm-dh-icon">' + (isMinecraft ? '<i class="fas fa-cube"></i>' : (isFrozen ? '<i class="fas fa-snowflake"></i>' : '<i class="fas fa-gamepad"></i>')) + '</div>' +
                   '<div>' +
-                    '<h4>' + (isFrozen ? 'Registrar Misión de Ana y Elsa (Code.org Frozen)' : 'Registrar Misión de Angry Birds (Code.org)') + '</h4>' +
-                    '<p>' + (isFrozen ? '¡Arte y geometría con código! Si superaste los retos en <strong>https://studio.code.org/s/frozen/lessons/1/levels/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.' : '¡Iniciación a la programación! Si superaste los retos en <strong>https://studio.code.org/es/hoc/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.') + '</p>' +
+                    '<h4>' + (isMinecraft ? 'Registrar Misión de Minecraft (Code.org Hora del Código)' : (isFrozen ? 'Registrar Misión de Ana y Elsa (Code.org Frozen)' : 'Registrar Misión de Angry Birds (Code.org)')) + '</h4>' +
+                    '<p>' + (isMinecraft ? '¡Aprender a programar con Steve y Alex! Si superaste los retos en <strong>https://studio.code.org/s/mc/lessons/1/levels/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.' : (isFrozen ? '¡Arte y geometría con código! Si superaste los retos en <strong>https://studio.code.org/s/frozen/lessons/1/levels/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.' : '¡Iniciación a la programación! Si superaste los retos en <strong>https://studio.code.org/es/hoc/1</strong> marcá tu entrega con un solo clic para ganar tus <strong>+100 XP</strong>.')) + '</p>' +
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body">' +
-                  '<div style="' + (isFrozen ? 'background:#F0F9FF;border:2px dashed #BAE6FD;' : 'background:#FFF1F2;border:2px dashed #FDA4AF;') + 'border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;">' +
-                    '<div style="font-size:3.2rem;margin-bottom:8px;">' + (isFrozen ? '❄️⛸️' : '🐦🎯') + '</div>' +
-                    '<h3 style="font-size:1.3rem;font-weight:900;' + (isFrozen ? 'color:#0369A1;' : 'color:#9F1239;') + 'margin:0 0 8px;">' + (isFrozen ? '¿Creaste Figuras Geométricas y Copos de Nieve con Elsa?' : '¿Guiaste al Pájaro hasta el Cerdito Verde?') + '</h3>' +
-                    '<p style="font-size:0.92rem;' + (isFrozen ? 'color:#0C4A6E;' : 'color:#4C0519;') + 'max-width:550px;margin:0 auto 18px;line-height:1.5;">' +
+                  '<div style="' + (isMinecraft ? 'background:#ECFDF5;border:2px dashed #A7F3D0;' : (isFrozen ? 'background:#F0F9FF;border:2px dashed #BAE6FD;' : 'background:#FFF1F2;border:2px dashed #FDA4AF;')) + 'border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;">' +
+                    '<div style="font-size:3.2rem;margin-bottom:8px;">' + (isMinecraft ? '⛏️🧱' : (isFrozen ? '❄️⛸️' : '🐦🎯')) + '</div>' +
+                    '<h3 style="font-size:1.3rem;font-weight:900;' + (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : 'color:#9F1239;')) + 'margin:0 0 8px;">' + (isMinecraft ? '¿Programaste a Steve o Alex en los Desafíos de Minecraft?' : (isFrozen ? '¿Creaste Figuras Geométricas y Copos de Nieve con Elsa?' : '¿Guiaste al Pájaro hasta el Cerdito Verde?')) + '</h3>' +
+                    (isMinecraft ? '<div style="margin:8px auto 14px;max-width:520px;padding:8px 12px;background:#FEF3C7;border-left:3px solid #D97706;border-radius:6px;font-size:0.8rem;color:#92400E;text-align:left;line-height:1.4;"><strong><i class="fas fa-exclamation-triangle"></i> Recordatorio pedagógico:</strong> Esta entrega certifica el aprendizaje de programación en bloques en la adaptación oficial de Code.org, no horas de juego libre.</div>' : '') +
+                    '<p style="font-size:0.92rem;' + (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : 'color:#4C0519;')) + 'max-width:550px;margin:0 auto 18px;line-height:1.5;">' +
                       'Hacé clic en el botón de abajo para registrar tu logro en el sistema, completar la estación del mapa y sumar puntos al progreso de tu taller.' +
                     '</p>' +
-                    '<button type="button" id="apm-btn-complete-codeorg" class="apm-delivery-submit-btn" style="background:' + (isFrozen ? '#0284C7' : '#E11D48') + ';font-size:1.05rem;padding:12px 28px;box-shadow:0 4px 12px ' + (isFrozen ? 'rgba(2,132,199,0.35)' : 'rgba(225,29,72,0.35)') + ';cursor:pointer;">' +
-                      (isFrozen ? '<i class="fas fa-snowflake"></i> ¡Completé el Reto de Frozen en Code.org! (+100 XP)' : '<i class="fas fa-trophy"></i> ¡Completé el Nivel en Code.org! (+100 XP)') +
+                    '<button type="button" id="apm-btn-complete-codeorg" class="apm-delivery-submit-btn" style="background:' + (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : '#E11D48')) + ';font-size:1.05rem;padding:12px 28px;box-shadow:0 4px 12px ' + (isMinecraft ? 'rgba(5,150,105,0.35)' : (isFrozen ? 'rgba(2,132,199,0.35)' : 'rgba(225,29,72,0.35)')) + ';cursor:pointer;">' +
+                      (isMinecraft ? '<i class="fas fa-cube"></i> ¡Completé el Reto de Minecraft en Code.org! (+100 XP)' : (isFrozen ? '<i class="fas fa-snowflake"></i> ¡Completé el Reto de Frozen en Code.org! (+100 XP)' : '<i class="fas fa-trophy"></i> ¡Completé el Nivel en Code.org! (+100 XP)')) +
                     '</button>' +
                     '<div style="margin-top:14px;">' +
-                      '<a href="' + (mission.gameUrl || (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1')) + '" target="_blank" rel="noopener noreferrer" style="font-size:0.86rem;color:' + (isFrozen ? '#0284C7' : '#E11D48') + ';font-weight:700;text-decoration:underline;">' +
-                        '<i class="fas fa-external-link-alt"></i> Ir a jugar en ' + (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1') +
+                      '<a href="' + (mission.gameUrl || (isMinecraft ? 'https://studio.code.org/s/mc/lessons/1/levels/1' : (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1'))) + '" target="_blank" rel="noopener noreferrer" style="font-size:0.86rem;color:' + (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : '#E11D48')) + ';font-weight:700;text-decoration:underline;">' +
+                        '<i class="fas fa-external-link-alt"></i> Ir a jugar en ' + (isMinecraft ? 'https://studio.code.org/s/mc/lessons/1/levels/1' : (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1')) +
                       '</a>' +
                     '</div>' +
                   '</div>' +
                   '<div id="apm-codeorg-delivery-status">' +
                     (isAlreadyCompleted ?
-                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">¡Desafío de ' + (isFrozen ? 'Ana y Elsa' : 'Angry Birds') + ' en Code.org registrado con éxito! Tu avance está sumado.</span></div></div>' : '') +
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">¡Desafío de ' + (isMinecraft ? 'Minecraft' : (isFrozen ? 'Ana y Elsa' : 'Angry Birds')) + ' en Code.org registrado con éxito! Tu avance está sumado.</span></div></div>' : '') +
                   '</div>' +
                   '<div class="apm-delivery-guide" style="margin-top:16px;">' +
                     '<h5><i class="fas fa-brain"></i> Objetivos Pedagógicos y Beneficios Cumplidos:</h5>' +
-                    (isFrozen ?
+                    (isMinecraft ?
+                      '<ol>' +
+                        '<li><strong>Programar en vez de Jugar Libremente:</strong> Steve y Alex avanzan, giran o destruyen bloques únicamente cuando el alumno encastra el bloque correcto en la secuencia algorítmica.</li>' +
+                        '<li><strong>Orientación Espacial y Cuadrícula:</strong> Contar distancias exactas y planificar movimientos en el plano cuadriculado sin caer al agua ni a la lava.</li>' +
+                        '<li><strong>Bucles y Automatización:</strong> Aprender a repetir tareas largas (como talar un árbol completo o esquivar obstáculos) con bloques de repetición.</li>' +
+                      '</ol>' :
+                     isFrozen ?
                       '<ol>' +
                         '<li><strong>De Paint a la Programación:</strong> En Paint dibujaste figuras a mano con el mouse; con Ana y Elsa le das órdenes exactas (algoritmos) a la computadora para que trace esas mismas figuras en el hielo.</li>' +
                         '<li><strong>Ángulos y Geometría en el Espacio:</strong> Aprender qué es un giro de 90° (esquina recta como en la cancha) y cómo orientar a Elsa en el plano.</li>' +
@@ -3158,7 +3494,7 @@
                     '<ol>' +
                       '<li>En Paint, andá arriba a la izquierda a <strong>Archivo</strong> (o el icono azul de guardar).</li>' +
                       '<li>Elegí <strong>Guardar como</strong> y seleccioná <em>Imagen PNG</em> o <em>Imagen JPEG</em>.</li>' +
-                      '<li>Guardalo en el Escritorio o Documentos con tu nombre (ej: <code>cancha_futbol.png</code>).</li>' +
+                      '<li>Guardalo en el Escritorio o Documentos con tu nombre (ej: <code>' + (isPaintBanderas ? 'banderas_mundial.png' : 'cancha_futbol.png') + '</code>).</li>' +
                       '<li>¡Arrastrá ese archivo dentro del recuadro verde o tocalo con el botón "Seleccionar Dibujo de Paint"!</li>' +
                     '</ol>' +
                   '</div>' +
@@ -3285,6 +3621,7 @@
             (isCodeorg ?
               renderCodeorgSolutionHtml(mission) :
              isPaint ?
+              (isPaintBanderas ? renderPaintBanderasSolutionHtml(mission) :
               '<div class="apm-sol-electro-wrap">' +
                 '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #15803D 0%, #16A34A 100%);">' +
                   '<div class="apm-seh-icon"><i class="fas fa-shapes"></i></div>' +
@@ -3373,7 +3710,7 @@
                     '</div>' +
                   '</div>' +
                 '</div>' +
-              '</div>' :
+              '</div>') :
              isElectronica ?
               '<div class="apm-sol-electro-wrap">' +
                 '<div class="apm-sol-electro-header">' +
@@ -3841,14 +4178,14 @@
       if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
 
       if (switchToCodeorg) {
-        switchToCodeorg.style.background = (mode === 'codeorg' ? (isFrozen ? '#0284C7' : '#E11D48') : '#E2E8F0');
+        switchToCodeorg.style.background = (mode === 'codeorg' ? (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : '#E11D48')) : '#E2E8F0');
         switchToCodeorg.style.color = (mode === 'codeorg' ? '#FFF' : '#475569');
-        switchToCodeorg.style.boxShadow = (mode === 'codeorg' ? (isFrozen ? '0 2px 6px rgba(2,132,199,0.3)' : '0 2px 6px rgba(225,29,72,0.3)') : 'none');
+        switchToCodeorg.style.boxShadow = (mode === 'codeorg' ? (isMinecraft ? '0 2px 6px rgba(5,150,105,0.3)' : (isFrozen ? '0 2px 6px rgba(2,132,199,0.3)' : '0 2px 6px rgba(225,29,72,0.3)')) : 'none');
       }
       if (switchToPaint) {
-        switchToPaint.style.background = (mode === 'paint' ? '#16A34A' : '#E2E8F0');
+        switchToPaint.style.background = (mode === 'paint' ? (isPaintBanderas ? '#2563EB' : '#16A34A') : '#E2E8F0');
         switchToPaint.style.color = (mode === 'paint' ? '#FFF' : '#475569');
-        switchToPaint.style.boxShadow = (mode === 'paint' ? '0 2px 6px rgba(22,163,74,0.3)' : 'none');
+        switchToPaint.style.boxShadow = (mode === 'paint' ? (isPaintBanderas ? '0 2px 6px rgba(37,99,235,0.3)' : '0 2px 6px rgba(22,163,74,0.3)') : 'none');
       }
       if (switchToElectro) {
         switchToElectro.style.background = (mode === 'electro' ? '#D97706' : '#E2E8F0');
@@ -3876,7 +4213,7 @@
     // Establecer modo de entrega inicial
     setDeliveryMode(isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'))));
 
-    // --- Subida / Completar Misión Code.org (Angry Birds / Frozen) con 1-Click ---
+    // --- Subida / Completar Misión Code.org (Angry Birds / Frozen / Minecraft) con 1-Click ---
     var btnCompleteCodeorg = modal.querySelector('#apm-btn-complete-codeorg');
     if (btnCompleteCodeorg) {
       btnCompleteCodeorg.onclick = function() {
@@ -3886,19 +4223,19 @@
         var nowStr = new Date().toLocaleDateString('es-ES');
         var submissionData = {
           type: 'codeorg',
-          gameUrl: mission.gameUrl || (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1'),
+          gameUrl: mission.gameUrl || (isMinecraft ? 'https://studio.code.org/s/mc/lessons/1/levels/1' : (isFrozen ? 'https://studio.code.org/s/frozen/lessons/1/levels/1' : 'https://studio.code.org/es/hoc/1')),
           date: nowStr,
           completed: true,
           missionId: mission.id,
           missionTitle: mission.title,
-          fileName: isFrozen ? 'Ana y Elsa Frozen Code.org (Completado)' : 'Angry Birds Code.org (Completado)'
+          fileName: isMinecraft ? 'Minecraft Code.org (Completado)' : (isFrozen ? 'Ana y Elsa Frozen Code.org (Completado)' : 'Angry Birds Code.org (Completado)')
         };
 
         markMissionCompleted(student, mission.id, submissionData);
 
         var stContainer = modal.querySelector('#apm-codeorg-delivery-status');
         if (stContainer) {
-          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Misión Completada con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Se registró tu entrega de ' + (isFrozen ? 'Ana y Elsa' : 'Angry Birds') + ' (' + nowStr + '). ¡Puntos y avance sumados!</span></div></div>';
+          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Misión Completada con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Se registró tu entrega de ' + (isMinecraft ? 'Minecraft' : (isFrozen ? 'Ana y Elsa' : 'Angry Birds')) + ' (' + nowStr + '). ¡Puntos y avance sumados!</span></div></div>';
         }
         var topBadge = modal.querySelector('#apm-header-status-badge');
         if (topBadge) {
@@ -3907,7 +4244,7 @@
 
         if (typeof refreshDashboard === 'function') refreshDashboard();
 
-        alert('🎉 ¡Felicitaciones! Completaste la misión de ' + (isFrozen ? 'Ana y Elsa (Nivel 5)' : 'Angry Birds (Nivel 2)') + '.\nSumaste +100 XP al taller de robótica.');
+        alert('🎉 ¡Felicitaciones! Completaste la misión de ' + (isMinecraft ? 'Minecraft (Nivel 7)' : (isFrozen ? 'Ana y Elsa (Nivel 5)' : 'Angry Birds (Nivel 2)')) + '.\nSumaste +100 XP al taller de robótica.');
       };
     }
 
