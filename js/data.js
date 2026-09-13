@@ -2098,6 +2098,78 @@ const SCHOOL_DATA = {
         {
           id: "g6-p2",
           level: 2,
+          title: "Control de Servo y Joystick con Mapeo Matemático 🕹️⚙️📐",
+          author: "Taller de Robótica y Tecnología 6° Grado",
+          date: "Abril 2026",
+          type: "makecode",
+          platform: "makecode",
+          badge: "🕹️ Servo, Joystick & Mapeo Matemático",
+          icon: "fa-gamepad",
+          color: "#7C3AED",
+          coverImage: "img/proyectos/servo_joystick_makecode_cover.svg",
+          gameUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
+          externalUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
+          makecodeUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
+          description: "¡Nivel 2 de nuestra Ruta de Aventuras! Aprendemos a conectar un servomotor SG90 y un joystick analógico a la placa BBC micro:bit. Aplicamos el concepto matemático de 'Ajuste de Intervalo' (bloque mapear de MakeCode) para transformar las lecturas analógicas del joystick (0 a 1023) en el ángulo exacto de giro del servo (0° a 180°).",
+          objective: "Aprender a controlar un servomotor con un joystick analógico usando la micro:bit en MakeCode, aplicando el ajuste de intervalo matemático (mapeo proporcional) para traducir valores analógicos de entrada (0 a 1023) en grados angulares de salida (0° a 180°).",
+          benefits: "Conecta conceptos matemáticos de razón, proporción, funciones lineales y conversión de intervalos con la robótica física tangible. Desarrolla la comprensión de entradas analógicas continuas vs actuadores de posición angular, y el control en tiempo real en bucle cerrado.",
+          tags: ["MakeCode", "BBC micro:bit", "Servomotor", "Joystick", "Mapeo Matemático", "Ajuste de Intervalo", "Robótica", "Nivel 2"],
+          gallery: [
+            "img/proyectos/servo_joystick_makecode_cover.svg"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Placa BBC micro:bit v2", description: "Microcontrolador central con pines analógicos de lectura y modulación PWM para el servo.", icon: "fa-microchip" },
+            { title: "Joystick Analógico (2 ejes)", description: "Palanca con potenciómetros que entrega lecturas analógicas de 0 a 1023 según su inclinación.", icon: "fa-gamepad" },
+            { title: "Micro Servomotor SG90", description: "Motor reductor capaz de posicionarse con precisión entre 0° y 180° mediante señal PWM.", icon: "fa-cogs" },
+            { title: "Shield o Placa de Expansión", description: "Base con pines de alimentación 3V, GND y señales P0 y P2 para conectar sin soldar.", icon: "fa-plug" },
+            { title: "Cables Dupont Hembra-Macho", description: "Para conectar los 3 pines del servo y los pines VCC, GND y VRx del joystick.", icon: "fa-bezier-curve" },
+            { title: "Editor MakeCode Micro:bit", description: "Entorno de programación en bloques con la categoría Matemática y bloque 'mapear'.", icon: "fa-laptop-code" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Identificación de Pines y Polaridad",
+              desc: "Revisá los componentes: el servomotor tiene 3 cables (marrón: GND tierra, rojo: 3V alimentación, naranja: Señal de control en P2). El joystick tiene pines GND, VCC (3V) y VRx (lectura analógica en P0).",
+              tip: "¡Nunca conectes el positivo con el negativo al revés para proteger la placa micro:bit!"
+            },
+            {
+              step: 2,
+              title: "Cableado del Circuito con la micro:bit",
+              desc: "Conectá la alimentación del joystick y del servomotor a 3V y GND en el shield. Llevá la señal VRx del joystick al pin analógico P0 y la señal de datos del servomotor al pin P2.",
+              tip: "Asegurate de que los cables queden firmes para que la señal analógica no tenga ruido ni fluctuaciones."
+            },
+            {
+              step: 3,
+              title: "El Problema Matemático de los Intervalos",
+              desc: "El joystick entrega lecturas analógicas continuas entre 0 y 1023 (resolución de 10 bits). Pero el servomotor solo entiende ángulos entre 0° y 180°. Si no ajustáramos el intervalo, el motor intentaría dar más de 1000° y se dañaría.",
+              tip: "El ajuste de intervalo matemático funciona como una regla de tres continua calculada a la velocidad de la luz."
+            },
+            {
+              step: 4,
+              title: "Programar el Bloque Matemático 'Mapear'",
+              desc: "En MakeCode, dentro del bloque 'para siempre', creá una variable llamada 'angulo' y encastrá: 'fijar angulo a mapear [lectura analógica pin P0] de bajo 0 alto 1023 a bajo 0 alto 180'.",
+              tip: "Encontrás el bloque 'mapear' en la categoría 'Matemática' de MakeCode."
+            },
+            {
+              step: 5,
+              title: "Enviar el Ángulo al Servomotor",
+              desc: "Debajo del mapeo, colocá el bloque 'servomotor escribir pin P2 en (angulo)'. Agregá una pequeña pausa de 20 milisegundos para permitir que el mecanismo físico gire sin forzar los engranajes.",
+              tip: "La pausa de 20 ms es el tiempo óptimo para que el servo alcance la posición deseada de forma fluida."
+            },
+            {
+              step: 6,
+              title: "Prueba, Calibración y Entrega",
+              desc: "Descargá el programa a tu micro:bit. Incliná la palanca del joystick hacia los costados y comprobá cómo el brazo del servomotor gira exactamente imitando el ángulo de tu mano. Compartí tu link de MakeCode en 'Mi Entrega' para sumar +100 XP.",
+              tip: "¡Completaste tu segundo proyecto de robótica y matemáticas aplicadas con éxito!"
+            }
+          ]
+        },
+        {
+          id: "g6-p3",
+          level: 3,
           title: "Neon Cyber Runner — Proyecto Arcade ⚡",
           author: "Florencia A. y Agustín B.",
           date: "Agosto 2026",
@@ -2106,7 +2178,7 @@ const SCHOOL_DATA = {
           color: "#059669",
           coverImage: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
           description: "Videojuego arcade de JavaScript con Canvas HTML5, física de salto, sistema de partículas y sintetizador Web Audio API.",
-          tags: ["JavaScript", "Canvas API", "Web Audio API", "Videojuegos", "Nivel 2"],
+          tags: ["JavaScript", "Canvas API", "Web Audio API", "Videojuegos", "Nivel 3"],
           gallery: [
             "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
             "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
@@ -2125,8 +2197,8 @@ const SCHOOL_DATA = {
           ]
         },
         {
-          id: "g6-p3",
-          level: 3,
+          id: "g6-p4",
+          level: 4,
           title: "Mi Primera Página Web Personal 🌐",
           author: "Grupo 6° Grado",
           date: "Agosto 2026",
@@ -2135,7 +2207,7 @@ const SCHOOL_DATA = {
           color: "#2563EB",
           coverImage: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80",
           description: "Cada alumno de 6° diseñó y programó su propia página web con HTML y CSS desde cero.",
-          tags: ["HTML5", "CSS3", "Diseño Web", "Nivel 3"],
+          tags: ["HTML5", "CSS3", "Diseño Web", "Nivel 4"],
           gallery: [
             "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80",
             "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80"
@@ -2237,8 +2309,8 @@ const MAKECODE_LIBRARY = {
   // 6° Grado
   grado6: [
     {
-      title: "Proyecto Micro:bit — Ejemplo",
-      description: "Código de bloques en MakeCode para Micro:bit (solo lectura)",
+      title: "Control de Servo y Joystick con Mapeo Matemático",
+      description: "Lectura analógica en pin P0, bloque matemático 'mapear' de 0-1023 a 0-180°, y posicionamiento del servomotor en pin P2.",
       shareUrl: "https://makecode.microbit.org/S18043-28109-69626-83440"
     }
   ]
@@ -2413,9 +2485,10 @@ if (typeof window !== 'undefined') {
 
               // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA
               const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
-                targetProjects.length < 1 ||
+                targetProjects.length < 2 ||
                 !targetProjects.some(p => (p.title || '').includes('Canva') || (p.title || '').includes('Arquero') || p.id === 'g6-p1') ||
-                !targetProjects.some(p => (p.id === 'g6-p1' && p.objective))
+                !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
+                !targetProjects.some(p => (p.id === 'g6-p2' && p.objective))
               );
 
               if (isStaleSala5 || isStaleGrado1 || isStaleGrado6) {

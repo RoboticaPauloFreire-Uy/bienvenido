@@ -274,6 +274,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Control de Servo y Joystick interactivo de 6° Grado (gira el servo y muestra el ángulo con sonido)
+  const servoCard = document.getElementById('g6-interactive-servo-card');
+  if (servoCard) {
+    const angles = [0, 45, 90, 135, 180];
+    let aIdx = 2; // Iniciar en 90 grados
+    servoCard.addEventListener('click', () => {
+      aIdx = (aIdx + 1) % angles.length;
+      const angle = angles[aIdx];
+      const badge = document.getElementById('g6-live-servo-badge');
+      if (badge) {
+        badge.style.opacity = '1';
+        badge.innerHTML = `<i class="fas fa-compass"></i> ${angle}°`;
+        badge.style.transform = `translate(-50%,-50%) scale(1.15) rotate(${angle - 90}deg)`;
+      }
+      if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+      else if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    });
+  }
+
   const bookmarkCard = document.getElementById('g1-interactive-bookmark-card');
   if (bookmarkCard) {
     bookmarkCard.addEventListener('click', () => {
@@ -524,6 +543,70 @@ function renderProjectsSectionHtml(grade) {
               </button>
               <a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#0284C7;border-color:#BAE6FD;">
                 <i class="fas fa-palette"></i> Abrir Canva Animaciones
+              </a>
+              <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
+                <i class="fas fa-compass"></i> Ruta de Aventuras
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NIVEL 2: Control de Servo y Joystick con Mapeo Matemático -->
+      <section class="sala5-hero-showcase" style="border-top:4px solid #0D9488;background:linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%);margin-top:24px;">
+        <div class="s5-showcase-header">
+          <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
+          <div class="s5-header-titles">
+            <span class="s5-dept-tag" style="background:rgba(13,148,136,0.15);color:#0D9488;border:1px solid rgba(13,148,136,0.3);"><i class="fas fa-microchip"></i> Robótica, Programación & Matemáticas</span>
+            <h2 class="s5-main-title" style="color:#0F766E;">🕹️ Control de Servo y Joystick con Mapeo Matemático ⚙️📐</h2>
+            <p class="s5-subtitle" style="color:#134E4A;">Nivel 2 para Graduados de 6° Grado · ¡Ajuste de intervalo proporcional en MakeCode micro:bit!</p>
+          </div>
+        </div>
+
+        <div class="s5-interactive-stage">
+          <div class="s5-stage-left">
+            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-servo-card" role="button" tabindex="0" title="¡Tocá para probar el giro del servomotor SG90!">
+              <img src="img/proyectos/servo_joystick_makecode_cover.svg" alt="Servo y Joystick MakeCode" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
+              <div class="arm-s5-led-glow" id="g6-live-servo-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:#0D9488;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 20px #0D9488,0 0 40px #4F46E5;background:rgba(255,255,255,0.92);padding:6px 14px;border-radius:20px;border:2px solid #0D9488;"><i class="fas fa-compass"></i> 90°</div>
+              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para girar el servo!</div>
+            </div>
+          </div>
+
+          <div class="s5-stage-right">
+            <div class="s5-intro-bubble">
+              <div class="s5-bubble-badge" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-calculator"></i> ¿Cómo funciona el ajuste de intervalo matemático?</div>
+              <p>
+                El <strong>joystick analógico</strong> entrega lecturas continuas entre <strong>0 y 1023</strong> en el pin P0. Como el <strong>servomotor SG90</strong> en el pin P2 solo gira entre <strong>0° y 180°</strong>, usamos el bloque matemático <strong>mapear de [0..1023] a [0..180]</strong>. Este cálculo proporcional convierte la posición de la palanca en el ángulo exacto del servo en tiempo real dentro de un bucle continuo con pausa de 20 ms.
+              </p>
+            </div>
+
+            <!-- Materiales clave visuales -->
+            <div class="s5-materials-grid">
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#CCFBF1;color:#0D9488;"><i class="fas fa-gamepad"></i></div>
+                <div class="s5-mat-text"><strong>Joystick VRx</strong><span>Pin P0 (0 a 1023)</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#E0E7FF;color:#4338CA;"><i class="fas fa-calculator"></i></div>
+                <div class="s5-mat-text"><strong>Mapeo Matemático</strong><span>Ajuste de intervalo</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FFEDD5;color:#C2410C;"><i class="fas fa-cogs"></i></div>
+                <div class="s5-mat-text"><strong>Servo SG90</strong><span>Pin P2 (0° a 180°)</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-microchip"></i></div>
+                <div class="s5-mat-text"><strong>micro:bit v2</strong><span>Bucle para siempre</span></div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="s5-actions-row">
+              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g6-p2" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);">
+                <i class="fas fa-folder-open"></i> Ver Ficha y Pasos Oficiales
+              </button>
+              <a href="https://makecode.microbit.org/S18043-28109-69626-83440" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#0D9488;border-color:#99F6E4;">
+                <i class="fas fa-code"></i> Abrir en MakeCode
               </a>
               <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
                 <i class="fas fa-compass"></i> Ruta de Aventuras
