@@ -250,6 +250,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Marca-libros interactivo de Tom Sawyer en 1° Grado (enciende y apaga la luz en el gorro con sonido)
+
+  // Arquero interactivo con IA de 6° Grado
+  const canvaCard = document.getElementById('g6-interactive-canva-card');
+  if (canvaCard) {
+    canvaCard.addEventListener('click', () => {
+      const badge = document.getElementById('g6-live-ai-badge');
+      if (badge) {
+        badge.classList.toggle('active');
+        if (badge.classList.contains('active')) {
+          badge.style.opacity = '1';
+          badge.style.transform = 'translate(-50%,-50%) scale(1.25) rotate(15deg)';
+          if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+          else if (window.sounds) window.sounds.playClick();
+          setTimeout(() => {
+            badge.style.transform = 'translate(-50%,-50%) scale(1)';
+          }, 300);
+        } else {
+          badge.style.opacity = '0';
+          if (window.sounds) window.sounds.playClick();
+        }
+      }
+    });
+  }
+
   const bookmarkCard = document.getElementById('g1-interactive-bookmark-card');
   if (bookmarkCard) {
     bookmarkCard.addEventListener('click', () => {
@@ -433,6 +457,73 @@ function renderProjectsSectionHtml(grade) {
               </button>
               <a href="img/proyectos/marcalibros_origami_guia.png" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#D97706;border-color:#FDE68A;">
                 <i class="fas fa-scroll"></i> Guía de Doblado
+              </a>
+              <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
+                <i class="fas fa-compass"></i> Ruta de Aventuras
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  else if (grade.id === 'grado6' || grade.id === '6to') {
+    extraHeroHtml = `
+      <section class="sala5-hero-showcase" style="border-top:4px solid #0284C7;background:linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);">
+        <div class="s5-showcase-header">
+          <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
+          <div class="s5-header-titles">
+            <span class="s5-dept-tag" style="background:rgba(2,132,199,0.15);color:#0284C7;border:1px solid rgba(2,132,199,0.3);"><i class="fas fa-robot"></i> Taller de robótica y programación</span>
+            <h2 class="s5-main-title" style="color:#0369A1;">⚽ El Arquero con Inteligencia Artificial en Canva 🧤🤖</h2>
+            <p class="s5-subtitle" style="color:#0C4A6E;">Proyecto oficial para Graduados de 6° Grado · ¡De la foto real en el aula a la animación con IA!</p>
+          </div>
+        </div>
+
+        <div class="s5-interactive-stage">
+          <div class="s5-stage-left">
+            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-canva-card" role="button" tabindex="0" title="¡Tocá para activar la animación con Inteligencia Artificial!">
+              <img src="img/proyectos/canva_arquero_ia_cover.svg" alt="Arquero con IA en Canva" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
+              <div class="arm-s5-led-glow" id="g6-live-ai-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:42px;color:#0284C7;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 30px #0284C7,0 0 60px #7C3AED;"><i class="fas fa-wand-magic-sparkles"></i></div>
+              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para probar IA!</div>
+            </div>
+          </div>
+
+          <div class="s5-stage-right">
+            <div class="s5-intro-bubble">
+              <div class="s5-bubble-badge" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-sparkles"></i> ¿Cómo funciona este proyecto con IA?</div>
+              <p>
+                Los estudiantes se toman una <strong>foto en pose de arquero</strong> en el aula. Con la <strong>IA de Canva (Quitafondos)</strong> aíslan su silueta con total precisión, la integran en una <strong>plantilla deportiva con arco y pelota</strong>, y mediante <strong>Magic Animate</strong> generan una animación dinámica de atajada exportable en <strong>video MP4 o GIF</strong>.
+              </p>
+            </div>
+
+            <!-- Materiales clave visuales -->
+            <div class="s5-materials-grid">
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#E0F2FE;color:#0284C7;"><i class="fas fa-camera"></i></div>
+                <div class="s5-mat-text"><strong>Foto Real</strong><span>Pose de atajada</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#F3E8FF;color:#7C3AED;"><i class="fas fa-wand-magic-sparkles"></i></div>
+                <div class="s5-mat-text"><strong>Quitafondos IA</strong><span>Canva Magic Studio</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-futbol"></i></div>
+                <div class="s5-mat-text"><strong>Plantilla Cancha</strong><span>Arco, red y pelota</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-film"></i></div>
+                <div class="s5-mat-text"><strong>Magic Animate</strong><span>Video MP4 y GIF</span></div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="s5-actions-row">
+              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g6-p1" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);">
+                <i class="fas fa-folder-open"></i> Ver Ficha y Pasos Oficiales
+              </button>
+              <a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#0284C7;border-color:#BAE6FD;">
+                <i class="fas fa-palette"></i> Abrir Canva Animaciones
               </a>
               <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
                 <i class="fas fa-compass"></i> Ruta de Aventuras

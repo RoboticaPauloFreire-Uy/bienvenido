@@ -2025,12 +2025,88 @@ const SCHOOL_DATA = {
       projects: [
         {
           id: "g6-p1",
-          title: "Neon Cyber Runner — Proyecto Final ⚡",
+          level: 1,
+          title: "El Arquero con Inteligencia Artificial en Canva ⚽🧤🤖",
+          author: "Taller de Robótica y Tecnología 6° Grado",
+          date: "Marzo 2026",
+          type: "canva",
+          platform: "canva",
+          badge: "🤖 Canva & Animación con IA",
+          icon: "fa-wand-magic-sparkles",
+          color: "#0284C7",
+          coverImage: "img/proyectos/canva_arquero_ia_cover.svg",
+          gameUrl: "https://www.canva.com",
+          externalUrl: "https://www.canva.com",
+          description: "¡Nivel 1 de nuestra Ruta de Aventuras! Aprendemos diseño digital e Inteligencia Artificial en Canva: nos tomamos una fotografía con pose de arquero, la recortamos e integramos en una plantilla deportiva y usamos la IA generativa de animación para darle movimiento realista atajando en el arco de fútbol.",
+          objective: "Aprender a componer imágenes digitales en Canva combinando fotografía real, eliminación de fondo inteligente (Quitafondos IA) y herramientas de Inteligencia Artificial generativa para transformar un diseño estático en una animación de video exportada en formato MP4 o GIF.",
+          benefits: "Desarrolla la alfabetización en herramientas de Inteligencia Artificial generativa, la composición visual y edición fotográfica digital, el dominio de parámetros de animación con IA, y la creatividad al verse a sí mismos como protagonistas animados de su propio proyecto.",
+          tags: ["Canva", "Inteligencia Artificial", "IA Generativa", "Animación", "Arquero", "Fútbol", "Quitafondos", "Magic Animate", "Nivel 1"],
+          gallery: [
+            "img/proyectos/canva_arquero_ia_cover.svg"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Cámara o Tablet del Taller", description: "Para la sesión de fotos con pose de arquero en plena acción.", icon: "fa-camera" },
+            { title: "Plataforma Canva (Educación)", description: "Entorno de diseño gráfico digital y acceso a Magic Studio con IA.", icon: "fa-palette" },
+            { title: "Plantilla Deportiva de Fútbol", description: "Marco base con los tres palos, estadio y red de fútbol.", icon: "fa-futbol" },
+            { title: "Quitafondos con IA de Canva", description: "Herramienta inteligente que aísla la silueta del arquero con un solo click.", icon: "fa-cut" },
+            { title: "Magic Animate / Animación IA", description: "Aplica movimiento dinámico a la pose, la pelota y los efectos del arco.", icon: "fa-wand-magic-sparkles" },
+            { title: "Formato de Video MP4 o GIF", description: "Para exportar la animación y subirla a la entrega en Google Drive.", icon: "fa-file-video" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Toma de Fotografía y Pose de Arquero",
+              desc: "Con la cámara o tablet del taller, tomá una foto en pose de arquero: estirándote hacia un costado, saltando para atajar o con las manos preparadas para atrapar la pelota.",
+              tip: "Buscá un fondo con buen contraste para que el quitafondos de la IA recorte tu silueta con máxima precisión."
+            },
+            {
+              step: 2,
+              title: "Abrir Canva y Elegir la Plantilla de Fútbol",
+              desc: "Ingresá a Canva con la cuenta del colegio. En la barra de búsqueda escribí 'fútbol arquero' o 'arco de fútbol' y seleccioná la plantilla de diseño que más te guste para tu póster.",
+              tip: "Fijate que el arco tenga buena perspectiva para que tu salto quede perfectamente encuadrado."
+            },
+            {
+              step: 3,
+              title: "Subir tu Foto y Aplicar el Quitafondos con IA",
+              desc: "Andá a la pestaña 'Subidos' y cargá tu fotografía. Insertala en el lienzo, tocá 'Editar la foto' y hacé clic en 'Quitafondos' (Efecto IA). La Inteligencia Artificial eliminará el fondo automáticamente.",
+              tip: "¡En un segundo la IA deja solo tu cuerpo con tu buzo y guantes de arquero listo para volar!"
+            },
+            {
+              step: 4,
+              title: "Componer la Escena y Agregar la Pelota",
+              desc: "Acomodá tu figura en el aire frente a los tres palos. Sumá elementos gráficos como una pelota de fútbol con estela de fuego, luces de estadio y tu nombre en el dorsal.",
+              tip: "Ajustá la inclinación de tu cuerpo con el tirador circular de Canva para dar sensación de vuelo dinámico."
+            },
+            {
+              step: 5,
+              title: "Transformar en Animación con la IA de Canva",
+              desc: "Tocá el botón 'Animar' en la barra superior y seleccioná 'Magic Animate' (Animación con IA). La IA analizará todos los elementos y creará transiciones cinematográficas donde el arquero y la pelota cobran vida.",
+              tip: "Probá los estilos 'Enérgico' o 'Épico' para que el movimiento parezca una repetición de transmisión televisiva."
+            },
+            {
+              step: 6,
+              title: "Descargar en Video MP4 y Subir a Google Drive",
+              desc: "Tocá 'Compartir' > 'Descargar', elegí el formato 'Video MP4' (o 'GIF animado') y guardalo. Luego arrastralo a la pestaña 'Mi Entrega' de tu panel para certificar tu misión y sumar +100 XP.",
+              tip: "¡Tus profesores y compañeros van a poder reproducir tu atajada animada directamente en el aula virtual!"
+            }
+          ]
+        },
+        {
+          id: "g6-p2",
+          level: 2,
+          title: "Neon Cyber Runner — Proyecto Arcade ⚡",
           author: "Florencia A. y Agustín B.",
           date: "Agosto 2026",
+          badge: "⚡ Programación Web & Canvas",
+          icon: "fa-gamepad",
+          color: "#059669",
           coverImage: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
           description: "Videojuego arcade de JavaScript con Canvas HTML5, física de salto, sistema de partículas y sintetizador Web Audio API.",
-          tags: ["JavaScript", "Canvas API", "Web Audio API", "Proyecto Final"],
+          tags: ["JavaScript", "Canvas API", "Web Audio API", "Videojuegos", "Nivel 2"],
           gallery: [
             "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
             "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
@@ -2043,19 +2119,23 @@ const SCHOOL_DATA = {
             {
               title: "Manual Técnico de Desarrollo",
               type: "Documentación",
-              icon: "fas fa-book",
+              icon: "fa-book",
               description: "Estructura del motor del juego: clases Player, Obstacle, ParticleSystem y ScoreManager."
             }
           ]
         },
         {
-          id: "g6-p2",
+          id: "g6-p3",
+          level: 3,
           title: "Mi Primera Página Web Personal 🌐",
           author: "Grupo 6° Grado",
           date: "Agosto 2026",
+          badge: "🌐 Desarrollo Web & HTML/CSS",
+          icon: "fa-code",
+          color: "#2563EB",
           coverImage: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80",
           description: "Cada alumno de 6° diseñó y programó su propia página web con HTML y CSS desde cero.",
-          tags: ["HTML5", "CSS3", "Diseño Web"],
+          tags: ["HTML5", "CSS3", "Diseño Web", "Nivel 3"],
           gallery: [
             "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80",
             "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80"
@@ -2067,7 +2147,7 @@ const SCHOOL_DATA = {
             {
               title: "Plantilla Base HTML5 & CSS3",
               type: "Plantilla Web",
-              icon: "fas fa-file-code",
+              icon: "fa-file-code",
               description: "Estructura semántica inicial con header, main, section y footer utilizada por los alumnos."
             }
           ]
@@ -2284,12 +2364,14 @@ if (typeof window !== 'undefined') {
         }
         let hasSala5 = false;
         let hasGrado1 = false;
+        let hasGrado6 = false;
         let needsReseed = false;
 
         snapshot.forEach((doc) => {
           const gradeId = doc.id;
           if (gradeId === 'sala5') hasSala5 = true;
           if (gradeId === 'grado1') hasGrado1 = true;
+          if (gradeId === 'grado6') hasGrado6 = true;
           const data = doc.data();
           const targetProjects = data.projects || data.items;
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
@@ -2329,7 +2411,14 @@ if (typeof window !== 'undefined') {
                 targetProjects.some(p => ((p.id === 'g1-p4' || p.id === 'g1-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
 
-              if (isStaleSala5 || isStaleGrado1) {
+              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA
+              const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
+                targetProjects.length < 1 ||
+                !targetProjects.some(p => (p.title || '').includes('Canva') || (p.title || '').includes('Arquero') || p.id === 'g6-p1') ||
+                !targetProjects.some(p => (p.id === 'g6-p1' && p.objective))
+              );
+
+              if (isStaleSala5 || isStaleGrado1 || isStaleGrado6) {
                 console.log("🔄 Proyectos desactualizados en Firestore para " + gradeId + ". Conservando definición oficial y re-sembrando en Firestore...");
                 needsReseed = true;
                 // NO sobrescribir gradeObj.projects con datos viejos de Firestore! Mantener definición oficial de SCHOOL_DATA
@@ -2346,7 +2435,7 @@ if (typeof window !== 'undefined') {
             }
           }
         });
-        if (!hasSala5 || !hasGrado1 || needsReseed) {
+        if (!hasSala5 || !hasGrado1 || !hasGrado6 || needsReseed) {
           seedGradeProjectsToFirestore(true);
         }
         console.log("☁️ Proyectos de grado sincronizados desde Firestore.");

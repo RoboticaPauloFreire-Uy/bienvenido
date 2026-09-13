@@ -1020,7 +1020,7 @@
                 '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                   '<i class="fas fa-play"></i> Iniciar Misión' +
                 '</button>' +
-                (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
+                (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Abrir Canva</a>' : (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Abrir Canva</a>' : (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : ''))) +
                 '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Abrir Modo Presentación">' +
                   '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
                 '</button>' +
@@ -2651,6 +2651,165 @@
     '</div>';
   }
 
+  
+  function renderCanvaArqueroSolutionHtml(mission) {
+    return '<div class="apm-sol-electro-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-wand-magic-sparkles"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: El Arquero con Inteligencia Artificial en Canva ⚽🧤🤖</h4>' +
+          '<p>Fotografía real en el aula, remoción de fondo con IA, integración en plantilla de arco de fútbol y animación generativa de la atajada en video MP4 o GIF.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body">' +
+
+        // Galería y visual de la solución
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:18px;">' +
+          '<div class="apm-circuit-schematic-card" style="background:#F0F9FF;border:1.5px solid #BAE6FD;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#E0F2FE;">' +
+              '<span style="color:#0369A1;font-weight:900;"><i class="fas fa-image"></i> Modelo Final del Arquero Animado</span>' +
+              '<a href="img/proyectos/canva_arquero_ia_cover.svg" target="_blank" class="apm-csc-badge" style="background:#0284C7;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ampliar</a>' +
+            '</div>' +
+            '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/canva_arquero_ia_cover.svg" alt="Arquero con IA Canva" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;" onclick="window.open(this.src,\'_blank\')">' +
+              '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Silueta recortada con IA, guantes luminosos, red de arco y trayectoria animada de la atajada.</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="apm-circuit-schematic-card" style="background:#FAF5FF;border:1.5px solid #D8B4FE;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#F3E8FF;">' +
+              '<span style="color:#6B21A8;font-weight:900;"><i class="fas fa-robot"></i> Las 4 Fases de la Inteligencia Artificial</span>' +
+              '<a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" class="apm-csc-badge" style="background:#7C3AED;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Canva</a>' +
+            '</div>' +
+            '<div style="padding:10px;background:#FFF;border-radius:10px;margin-top:8px;font-size:0.82rem;color:#475569;line-height:1.5;">' +
+              '<div style="margin-bottom:8px;"><strong>1. Captura Real:</strong> Posar en suspensión horizontal simulando tapar un tiro al ángulo.</div>' +
+              '<div style="margin-bottom:8px;"><strong>2. Quitafondos IA:</strong> Magic Studio detecta los bordes corporales y quita el aula en 1 clic.</div>' +
+              '<div style="margin-bottom:8px;"><strong>3. Montaje de Capas:</strong> Colocar el arco detrás y la pelota delante para generar tridimensionalidad.</div>' +
+              '<div><strong>4. Animación Generativa:</strong> Canva Magic Animate sintetiza la trayectoria de estirada hacia el balón.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Diagrama de Flujo
+        '<div class="apm-circuit-schematic-card">' +
+          '<div class="apm-csc-header">' +
+            '<span><i class="fas fa-project-diagram"></i> Flujo Creativo: De la Foto Real a la Animación con IA</span>' +
+            '<span class="apm-csc-badge" style="background:#0284C7;">Flujo Multimedia</span>' +
+          '</div>' +
+          '<div class="apm-circuit-visual-diagram">' +
+            '<div class="apm-cv-node" style="border-color:#0284C7;">' +
+              '<div class="cv-icon" style="color:#0284C7;"><i class="fas fa-camera"></i></div>' +
+              '<div class="cv-label">Foto en el Aula<br><strong>Pose de Arquero</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line pos">' +
+              '<span class="cv-wire-label">Subir a Canva</span>' +
+              '<i class="fas fa-arrow-right"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node" style="border-color:#7C3AED;">' +
+              '<div class="cv-icon" style="color:#7C3AED;"><i class="fas fa-wand-magic-sparkles"></i></div>' +
+              '<div class="cv-label">Quitafondos IA<br><strong>Magic Studio</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line pos2">' +
+              '<span class="cv-wire-label">Plantilla Cancha</span>' +
+              '<i class="fas fa-arrow-right"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node" style="border-color:#10B981;">' +
+              '<div class="cv-icon" style="color:#10B981;"><i class="fas fa-film"></i></div>' +
+              '<div class="cv-label">Animar con IA<br><strong>Video MP4 / GIF</strong></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Tabla de pasos y herramientas Canva
+        '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-table"></i> Especificaciones de Herramientas y Efectos en Canva:</h5>' +
+          '<div class="apm-pinout-table-wrap">' +
+          '<table class="apm-pinout-table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Herramienta / Menú</th>' +
+                '<th>Ubicación en Canva</th>' +
+                '<th>Instrucción del Alumno</th>' +
+                '<th>Efecto / Resultado</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              '<tr>' +
+                '<td><strong>📸 Captura de Foto</strong></td>' +
+                '<td>Cámara / Dispositivo</td>' +
+                '<td>Sacarse una foto con brazos extendidos simulando atajar la pelota en el aire.</td>' +
+                '<td>Imagen base del protagonista del proyecto.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>🪄 Quitafondos con IA</strong></td>' +
+                '<td>Editar la foto &gt; Efectos &gt; Quitar fondos</td>' +
+                '<td>Activar la herramienta de IA para suprimir automáticamente paredes y muebles del aula.</td>' +
+                '<td>Silueta transparente y limpia del arquero.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>🥅 Plantilla de Cancha</strong></td>' +
+                '<td>Diseño &gt; Plantillas &gt; Buscar "Fútbol"</td>' +
+                '<td>Elegir o armar un fondo con arco, red blanca y césped verde profesional.</td>' +
+                '<td>Escenario deportivo inmersivo.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>⚽ Inserción de Pelota</strong></td>' +
+                '<td>Elementos &gt; Gráficos &gt; Pelota de fútbol</td>' +
+                '<td>Ubicar la pelota en el ángulo del arco y orientar las manos del arquero hacia ella.</td>' +
+                '<td>Punto de contacto visual de la atajada.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>✨ Magic Animate (IA)</strong></td>' +
+                '<td>Menú superior &gt; Animar</td>' +
+                '<td>Seleccionar animación deportiva, crear trayectoria curva hacia el balón y ajustar velocidad.</td>' +
+                '<td>¡La foto estática cobra vida con movimiento fluido!</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>📥 Exportación</strong></td>' +
+                '<td>Compartir &gt; Descargar &gt; MP4 o GIF</td>' +
+                '<td>Descargar en formato de video de alta definición o GIF animado para la entrega.</td>' +
+                '<td>Archivo multimedia listo para entregar (+100 XP).</td>' +
+              '</tr>' +
+            '</tbody>' +
+          '</table>' +
+          '</div>' +
+        '</div>' +
+
+        // Consejos y solución de fallas
+        '<div class="apm-troubleshoot-box" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-stethoscope"></i> Consejos Clave para un Proyecto de Impacto</h5>' +
+          '<div class="apm-tb-grid">' +
+            '<div class="apm-tb-item" style="border-left-color:#0284C7;">' +
+              '<h6>1. Buena iluminación al sacar la foto</h6>' +
+              '<p>Ubicarse frente a una luz natural o foco blanco. Así la IA de Canva recortará dedos y contornos con máxima nitidez.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#7C3AED;">' +
+              '<h6>2. Orden de las capas (Posición)</h6>' +
+              '<p>El fondo va atrás, el arco en el medio, el arquero volando al frente y la pelota apenas tocando las puntas de los dedos.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#10B981;">' +
+              '<h6>3. Trayectoria y dinamismo</h6>' +
+              '<p>En Canva podés arrastrar el elemento mientras grabás su trayectoria ("Crear una animación") para simular la volada épica.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#F59E0B;">' +
+              '<h6>4. Entrega en Video MP4 o GIF</h6>' +
+              '<p>Descargá el archivo como MP4 o GIF y subilo a la plataforma. ¡También podés compartir el link público de Canva!</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
+          '<a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);padding:10px 22px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.92rem;">' +
+            '<i class="fas fa-palette"></i> Abrir Canva Animaciones en Vivo' +
+          '</a>' +
+          '<a href="img/proyectos/canva_arquero_ia_cover.svg" download="canva_arquero_ia_cover.svg" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;padding:10px 18px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.92rem;">' +
+            '<i class="fas fa-download"></i> Descargar Portada SVG' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderScratchJrVelocidadSolutionHtml(mission) {
     var sampleFileUrl = (mission && (mission.projectFileUrl || mission.downloadUrl)) || 'proyectos/velocidad.sjr';
     return '<div class="apm-sol-electro-wrap">' +
@@ -3337,6 +3496,7 @@
     }
 
     var isObjective = (conceptType === 'objective');
+    var isCanva = data.type === 'canva' || (data.tags && data.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(data.title || ''));
     var isPaint = data.type === 'paint' || (data.tags && data.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|paint|bandera/i.test(data.title || ''));
     var isPaintBanderas = isPaint && (/bandera/i.test(data.title || '') || (data.tags && data.tags.some(function(t){ return /bandera/i.test(t); })));
     var isPaintCancha = isPaint && !isPaintBanderas;
@@ -3359,7 +3519,7 @@
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = isMarcalibro ? 'Origami & Circuito (Tom Sawyer)' : (isScratchJrPerspectiva ? 'Scratch Jr (Perspectiva)' : (isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'))))))));
+    var platText = isCanva ? 'Canva & Animación IA' : (isMarcalibro ? 'Origami & Circuito (Tom Sawyer)' : (isScratchJrPerspectiva ? 'Scratch Jr (Perspectiva)' : (isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego')))))))));
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
@@ -3374,6 +3534,14 @@
           { icon: 'fa-hand-pointer', color: '#10B981', title: 'Pulsador Táctil por Presión', desc: 'Cerrar el circuito eléctrico al colocar el marca-libros en la esquina de la página o apretar la punta con los dedos.' }
         ];
         tipBoxText = '<strong>📖 El Marca-Libros Origami de Tom Sawyer:</strong> Esta misión para 1° Grado integra destreza motriz fina (origami), literatura de aventuras y electrónica práctica con un LED chato integrado en el gorro del personaje.';
+      } else if (isCanva) {
+        pillars = [
+          { icon: 'fa-camera', color: '#0284C7', title: 'Captura y Fotografía en Acción', desc: 'Posar como arquero atajando un penal y tomar una foto en el taller con buena iluminación y encuadre.' },
+          { icon: 'fa-wand-magic-sparkles', color: '#7C3AED', title: 'Quitafondos Automático con IA', desc: 'Utilizar la inteligencia artificial de Canva para eliminar el fondo real y aislar la silueta del estudiante de forma nítida.' },
+          { icon: 'fa-futbol', color: '#10B981', title: 'Composición en Plantilla de Fútbol', desc: 'Integrar la silueta en una plantilla deportiva profesional con arco, red, césped, efectos de estadio y pelota.' },
+          { icon: 'fa-film', color: '#F59E0B', title: 'Animación Generativa con IA (Magic Animate)', desc: 'Dar vida a la imagen con IA seleccionando trayectorias, estiradas de arquero y exportando en video MP4 o GIF.' }
+        ];
+        tipBoxText = '<strong>⚽ El Arquero con Inteligencia Artificial en Canva:</strong> En este primer nivel de 6° Grado, los estudiantes transforman su propia imagen física en una animación digital dinámica. Aprenden a usar la IA generativa como herramienta de creación gráfica, edición de medios y producción audiovisual interactiva.';
       } else if (isDiaMadre) {
         pillars = [
           { icon: 'fa-heart', color: '#E11D48', title: 'Geometría y Efecto Pop-Up 3D', desc: 'Comprender cómo los cortes escalonados y pliegues inversos transforman un dibujo plano en un corazón con volumen 3D al abrir la tarjeta.' },
@@ -3672,7 +3840,8 @@
     var isMarcalibro = !isPaint && !isCodeorg && (mission.id === 'g1-p3' || (mission.tags && mission.tags.some(function(t){ return /marca ?libro|marcalibro|origami|tom sawyer/i.test(t); })) || (/marca ?libro|marcalibro|origami|tom sawyer/i.test(mission.title || '')));
     var isScratchJrPerspectiva = !isPaint && !isCodeorg && !isMarcalibro && (mission.id === 's5-p10' || mission.id === 's5-g5' || mission.id === 'g1-p10' || mission.id === 'g1-g5' || (mission.tags && mission.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(mission.title || '')));
     var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (mission.id === 's5-p9' || mission.id === 's5-g1' || mission.id === 'g1-p9' || mission.id === 'g1-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
-    var isGame = !isPaint && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
+    var isCanva = mission.type === 'canva' || (mission.tags && mission.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(mission.title || ''));
+    var isGame = !isPaint && !isCanva && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
       activeTab = 'presentacion';
@@ -3681,9 +3850,9 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var isElectronica = !isGame && !isPaint && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-    var isMakecode = !isGame && !isElectronica && !isPaint && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint;
+    var isElectronica = !isGame && !isPaint && !isCanva && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isMakecode = !isGame && !isElectronica && !isPaint && !isCanva && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint && !isCanva;
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -3862,13 +4031,13 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1'))))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
-                        (isScratchJrPerspectiva ? '🐱 Scratch Jr • Escenarios & Perspectiva' : (isScratchJrVelocidad ? '🐱 Scratch Jr • Escenarios & Velocidades' : (isDiaMadre ? '💖 Tarjeta Pop-Up 3D • Papertronics & Circuito' : (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level))))))))) +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isCanva ? '#0284C7' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isCanva ? '🤖 Inteligencia Artificial & Animación • Canva' : (isScratchJrPerspectiva ? '🐱 Scratch Jr • Escenarios & Perspectiva' : (isScratchJrVelocidad ? '🐱 Scratch Jr • Escenarios & Velocidades' : (isDiaMadre ? '💖 Tarjeta Pop-Up 3D • Papertronics & Circuito' : (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)))))))))) +
                       '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card" style="' + (isScratchJrPerspectiva ? 'border-left:4px solid #7C3AED;background:#FAF5FF;' : (isScratchJrVelocidad ? 'border-left:4px solid #EA580C;background:#FFF7ED;' : (isDiaMadre ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : '')))))))) + '">' +
-                        '<h4 style="' + (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : '')))))))) + '"><i class="fas ' + (isScratchJrPerspectiva ? 'fa-search-plus' : (isScratchJrVelocidad ? 'fa-tachometer-alt' : (isDiaMadre ? 'fa-heart' : (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered')))))))) + '"></i> ' + (isScratchJrPerspectiva ? 'Objetivo: Perspectiva 3D y Bloques Violetas' : (isScratchJrVelocidad ? 'Objetivo: Entorno Scratch Jr y Control de Velocidades' : (isDiaMadre ? 'Reto Maker: Corazón 3D y Luz en el Escudo' : (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?'))))))) + '</h4>' +
-                        '<p style="' + (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : '')))))))) + '">' + (mission.objective || mission.description) + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isCanva ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isScratchJrPerspectiva ? 'border-left:4px solid #7C3AED;background:#FAF5FF;' : (isScratchJrVelocidad ? 'border-left:4px solid #EA580C;background:#FFF7ED;' : (isDiaMadre ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : ''))))))))) + '">' +
+                        '<h4 style="' + (isCanva ? 'color:#0369A1;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : ''))))))))) + '"><i class="fas ' + (isCanva ? 'fa-wand-magic-sparkles' : (isScratchJrPerspectiva ? 'fa-search-plus' : (isScratchJrVelocidad ? 'fa-tachometer-alt' : (isDiaMadre ? 'fa-heart' : (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered'))))))))) + '"></i> ' + (isCanva ? 'Objetivo: Foto Real, Quitafondos y Animación con IA' : (isScratchJrPerspectiva ? 'Objetivo: Perspectiva 3D y Bloques Violetas' : (isScratchJrVelocidad ? 'Objetivo: Entorno Scratch Jr y Control de Velocidades' : (isDiaMadre ? 'Reto Maker: Corazón 3D y Luz en el Escudo' : (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?')))))))) + '</h4>' +
+                        '<p style="' + (isCanva ? 'color:#0C4A6E;' : (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : ''))))))))) + '">' + (mission.objective || mission.description) + '</p>' +
                         (isMinecraft ? '<div style="margin-top:10px;padding:8px 12px;background:#FEF3C7;border-left:3px solid #D97706;border-radius:6px;font-size:0.8rem;color:#92400E;line-height:1.4;"><strong><i class="fas fa-exclamation-triangle"></i> ¡Aclaración Importante!</strong> No es el Minecraft comercial tradicional de juego libre: es una adaptación pedagógica oficial de Code.org para aprender a programar con bloques.</div>' : '') +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
@@ -3921,8 +4090,8 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))))))) + '">' +
-                        (isScratchJrPerspectiva ? 'Ver Materiales y Bloques Violetas <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? 'Ver Herramientas y Bloques <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' : (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>')))))))) +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isCanva ? 'background:#0284C7;border-color:#0369A1;' : (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))))))) + '">' +
+                        (isCanva ? 'Ver Recursos y Herramientas de Canva <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? 'Ver Materiales y Bloques Violetas <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? 'Ver Herramientas y Bloques <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' : (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>'))))))))) +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -4603,9 +4772,9 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isMarcalibro ? '📖' : (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆'))))))))) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isMarcalibro ? '¡Marca-Libros Origami de Tom Sawyer Terminado!' : (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))))))))) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isMarcalibro ? '¡Plegaste tu marca-libros esquinero con papel glacé y le diste luz al sombrero de Tom Sawyer con un circuito y LED chato! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))))))))) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isCanva ? '🧤' : (isMarcalibro ? '📖' : (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆')))))))))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isCanva ? '¡Arquero con Inteligencia Artificial Creado con Éxito en Canva!' : (isMarcalibro ? '¡Marca-Libros Origami de Tom Sawyer Terminado!' : (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')))))))))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isCanva ? '¡Te tomaste la foto en pose de arquero, removiste el fondo con la IA de Canva, montaste la escena en el arco y diste vida a una atajada épica en video MP4 o GIF! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMarcalibro ? '¡Plegaste tu marca-libros esquinero con papel glacé y le diste luz al sombrero de Tom Sawyer con un circuito y LED chato! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')))))))))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
