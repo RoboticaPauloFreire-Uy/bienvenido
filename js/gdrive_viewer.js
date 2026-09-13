@@ -645,26 +645,113 @@
       '</div>';
 
     var sala5SpecialBannerHtml = '';
-    if (student.gradeId === 'sala5') {
+    var isSpotlightGrade = (student.gradeId === 'sala5' || student.gradeId === 'grado1' || student.gradeId === '1ero');
+    if (isSpotlightGrade) {
       var adventureMissions = missions || [];
+      var isGrado1 = (student.gradeId === 'grado1' || student.gradeId === '1ero');
+
       var idxSombrero = adventureMissions.findIndex(function(m){
-        return (m.id === 's5-p1') || (/sombrero|patricio/i.test(m.title || ''));
+        return (m.id === 's5-p1' || m.id === 'g1-p1') || (/sombrero|patricio/i.test(m.title || ''));
       });
       if (idxSombrero === -1) idxSombrero = 0;
 
-      var idxVarita = adventureMissions.findIndex(function(m){
-        return (m.id === 's5-p3') || (/varita/i.test(m.title || ''));
-      });
-      if (idxVarita === -1) idxVarita = 2;
+      var idxSlide1 = -1;
+      if (isGrado1) {
+        idxSlide1 = adventureMissions.findIndex(function(m){
+          return (m.id === 'g1-p3') || (/marca ?libro|origami|tom sawyer/i.test(m.title || ''));
+        });
+        if (idxSlide1 === -1) idxSlide1 = 2;
+      } else {
+        idxSlide1 = adventureMissions.findIndex(function(m){
+          return (m.id === 's5-p3') || (/varita/i.test(m.title || ''));
+        });
+        if (idxSlide1 === -1) idxSlide1 = 2;
+      }
 
       var idxMadre = adventureMissions.findIndex(function(m){
-        return (m.id === 's5-p5') || (/madre|coraz[oó]n|pop-up/i.test(m.title || ''));
+        return (m.id === 's5-p5' || m.id === 'g1-p5') || (/madre|coraz[oó]n|pop-up/i.test(m.title || ''));
       });
       if (idxMadre === -1) idxMadre = 4;
 
       var activeSpotlight = window.sala5SpotlightCurrentSlide || 0;
       if (activeSpotlight < 0 || activeSpotlight > 2) activeSpotlight = 0;
-      var spotlightTheme = (activeSpotlight === 1) ? 'theme-varita' : (activeSpotlight === 2 ? 'theme-madre' : 'theme-sombrero');
+      var slide1Theme = isGrado1 ? 'theme-marcalibro' : 'theme-varita';
+      var spotlightTheme = (activeSpotlight === 1) ? slide1Theme : (activeSpotlight === 2 ? 'theme-madre' : 'theme-sombrero');
+
+      var slide1TabHtml = isGrado1
+        ? '<button type="button" class="arm-s5-tab-pill tab-marcalibro ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" data-spotlight-theme="marcalibro">' +
+            '<span>📖 Marca-Libros Tom Sawyer</span>' +
+          '</button>'
+        : '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1">' +
+            '<span>🪄 Varita Mágica</span>' +
+          '</button>';
+
+      var slide1ContentHtml = isGrado1
+        ? // SLIDE 1: Marca-Libros Origami de Tom Sawyer (1° Grado)
+          '<div class="arm-s5-slide ' + (activeSpotlight === 1 ? 'active' : '') + '" data-slide-idx="1" style="' + (activeSpotlight === 1 ? 'display:block;' : 'display:none;') + '">' +
+            '<span class="arm-s5-watermark">📖</span>' +
+            '<div class="arm-s5-content-row">' +
+              '<div class="arm-s5-preview arm-s5-bookmark-preview" id="arm-g1-bookmark-interactive" role="button" tabindex="0" title="¡Hacé click para encender la luz en el gorro de Tom Sawyer!">' +
+                '<img src="img/proyectos/tomsawyer_marcalibro_cover.svg" alt="Marca-Libros Origami de Tom Sawyer" class="arm-s5-preview-img">' +
+                '<div class="arm-s5-led-glow glow-marcalibro" id="arm-g1-led-glow-bookmark"><i class="fas fa-lightbulb"></i></div>' +
+                '<span class="arm-s5-interactive-hint" style="background:rgba(217, 119, 6, 0.95);"><i class="fas fa-hand-pointer"></i> ¡Tocá el gorro para encender!</span>' +
+              '</div>' +
+              '<div class="arm-s5-info">' +
+                '<div class="arm-s5-tag" style="color:#D97706;"><i class="fas fa-bookmark"></i> PROYECTO OFICIAL 1° GRADO • NIVEL 3</div>' +
+                '<h3 class="arm-s5-title" style="color:#78350F;">El Marca-Libros Origami de Tom Sawyer 📖🎩💡</h3>' +
+                '<p class="arm-s5-desc">¡Nuestro señalador esquinero con tecnología! Doblamos una <strong>hoja de papel glacé</strong> con la técnica origami para calzar en la esquina de las páginas del libro. Montamos un circuito ultraplano con <strong>cinta de cobre</strong>, una <strong>pila botón</strong> y un <strong>LED chato (SMD)</strong> en el centro del gorro de Tom Sawyer. Al marcar el libro y presionar, ¡el gorro se ilumina con una luz brillante!</p>' +
+                '<div class="arm-s5-materials-pills">' +
+                  '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-scroll"></i> Hoja papel glacé</span>' +
+                  '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-shapes"></i> Plegado esquinero</span>' +
+                  '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-lightbulb"></i> LED chato (SMD)</span>' +
+                  '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-tape"></i> Cinta de cobre</span>' +
+                  '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
+                  '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-hat-cowboy"></i> Gorro Tom Sawyer</span>' +
+                '</div>' +
+                '<div class="arm-s5-actions">' +
+                  '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #D97706 0%, #F59E0B 100%);box-shadow:0 4px 14px rgba(217,119,6,0.35);" data-mission-idx="' + idxSlide1 + '">' +
+                    '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                  '</button>' +
+                  '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" style="color:#D97706;border-color:#FDE68A;" data-mission-idx="' + idxSlide1 + '">' +
+                    '<i class="fas fa-microchip"></i> <span>Guía de Doblado y Circuito</span>' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        : // SLIDE 1: La Varita Mágica Luminosa (Sala de 5)
+          '<div class="arm-s5-slide ' + (activeSpotlight === 1 ? 'active' : '') + '" data-slide-idx="1" style="' + (activeSpotlight === 1 ? 'display:block;' : 'display:none;') + '">' +
+            '<span class="arm-s5-watermark">🪄</span>' +
+            '<div class="arm-s5-content-row">' +
+              '<div class="arm-s5-preview arm-s5-wand-preview" id="arm-s5-wand-interactive" role="button" tabindex="0" title="¡Hacé click para encender la luz de la varita!">' +
+                '<img src="img/proyectos/varita_magica_cover.png" alt="Varita Mágica Luminosa" class="arm-s5-preview-img">' +
+                '<div class="arm-s5-led-glow glow-varita" id="arm-s5-led-glow-varita"><i class="fas fa-magic"></i></div>' +
+                '<span class="arm-s5-interactive-hint" style="background:rgba(124, 58, 237, 0.9);"><i class="fas fa-wand-magic-sparkles"></i> ¡Tocá para hacer magia!</span>' +
+              '</div>' +
+              '<div class="arm-s5-info">' +
+                '<div class="arm-s5-tag" style="color:#7C3AED;"><i class="fas fa-magic"></i> PROYECTO OFICIAL SALA DE 5 AÑOS • NIVEL 3</div>' +
+                '<h3 class="arm-s5-title" style="color:#581C87;">La Varita Mágica Luminosa 🪄✨</h3>' +
+                '<p class="arm-s5-desc">¡Construimos una varita mágica brillante! Montamos un circuito sobre un <strong>palito de algodón de azúcar</strong> con <strong>cinta de cobre</strong>, un <strong>diodo LED</strong> en la punta y una <strong>pila botón</strong>. Al presionar el interruptor táctil en el mango, ¡la varita se ilumina con destellos mágicos!</p>' +
+                '<div class="arm-s5-materials-pills">' +
+                  '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-magic"></i> Palito de algodón</span>' +
+                  '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-lightbulb"></i> LED alto brillo</span>' +
+                  '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-tape"></i> Cinta de cobre</span>' +
+                  '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
+                  '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-hand-pointer"></i> Pulsador en mango</span>' +
+                '</div>' +
+                '<div class="arm-s5-actions">' +
+                  '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);box-shadow:0 4px 14px rgba(124,58,237,0.35);" data-mission-idx="' + idxSlide1 + '">' +
+                    '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                  '</button>' +
+                  '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" style="color:#7C3AED;border-color:#DDD6FE;" data-mission-idx="' + idxSlide1 + '">' +
+                    '<i class="fas fa-microchip"></i> <span>Guía y Esquema del Circuito</span>' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+
+      var gradeLabelText = isGrado1 ? '1° GRADO' : 'SALA DE 5 AÑOS';
 
       sala5SpecialBannerHtml =
         '<div class="arm-sala5-spotlight-card ' + spotlightTheme + '" id="arm-sala5-spotlight-carousel">' +
@@ -682,9 +769,7 @@
                 '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0">' +
                   '<span>🍀 Sombrero</span>' +
                 '</button>' +
-                '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1">' +
-                  '<span>🪄 Varita Mágica</span>' +
-                '</button>' +
+                slide1TabHtml +
                 '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2">' +
                   '<span>💖 Tarjeta Pop-Up 3D</span>' +
                 '</button>' +
@@ -707,7 +792,7 @@
                   '<span class="arm-s5-interactive-hint"><i class="fas fa-hand-pointer"></i> ¡Tocá para encender!</span>' +
                 '</div>' +
                 '<div class="arm-s5-info">' +
-                  '<div class="arm-s5-tag"><i class="fas fa-sparkles"></i> PROYECTO OFICIAL SALA DE 5 AÑOS • NIVEL 1</div>' +
+                  '<div class="arm-s5-tag"><i class="fas fa-sparkles"></i> PROYECTO OFICIAL ' + gradeLabelText + ' • NIVEL 1</div>' +
                   '<h3 class="arm-s5-title">El Sombrero Luminoso de San Patricio 🍀🎩</h3>' +
                   '<p class="arm-s5-desc">¡Nuestro primer invento maker! Aprendemos cómo viaja la electricidad con <strong>cinta de cobre conductora</strong>, un <strong>diodo LED verde</strong> en el trébol y una <strong>pila botón CR2032</strong> con interruptor en la vincha.</p>' +
                   '<div class="arm-s5-materials-pills">' +
@@ -728,37 +813,8 @@
               '</div>' +
             '</div>' +
 
-            // SLIDE 1: La Varita Mágica Luminosa
-            '<div class="arm-s5-slide ' + (activeSpotlight === 1 ? 'active' : '') + '" data-slide-idx="1" style="' + (activeSpotlight === 1 ? 'display:block;' : 'display:none;') + '">' +
-              '<span class="arm-s5-watermark">🪄</span>' +
-              '<div class="arm-s5-content-row">' +
-                '<div class="arm-s5-preview arm-s5-wand-preview" id="arm-s5-wand-interactive" role="button" tabindex="0" title="¡Hacé click para encender la luz de la varita!">' +
-                  '<img src="img/proyectos/varita_magica_cover.png" alt="Varita Mágica Luminosa" class="arm-s5-preview-img">' +
-                  '<div class="arm-s5-led-glow glow-varita" id="arm-s5-led-glow-varita"><i class="fas fa-magic"></i></div>' +
-                  '<span class="arm-s5-interactive-hint" style="background:rgba(124, 58, 237, 0.9);"><i class="fas fa-wand-magic-sparkles"></i> ¡Tocá para hacer magia!</span>' +
-                '</div>' +
-                '<div class="arm-s5-info">' +
-                  '<div class="arm-s5-tag" style="color:#7C3AED;"><i class="fas fa-magic"></i> PROYECTO OFICIAL SALA DE 5 AÑOS • NIVEL 3</div>' +
-                  '<h3 class="arm-s5-title" style="color:#581C87;">La Varita Mágica Luminosa 🪄✨</h3>' +
-                  '<p class="arm-s5-desc">¡Construimos una varita mágica brillante! Montamos un circuito sobre un <strong>palito de algodón de azúcar</strong> con <strong>cinta de cobre</strong>, un <strong>diodo LED</strong> en la punta y una <strong>pila botón</strong>. Al presionar el interruptor táctil en el mango, ¡la varita se ilumina con destellos mágicos!</p>' +
-                  '<div class="arm-s5-materials-pills">' +
-                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-magic"></i> Palito de algodón</span>' +
-                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-lightbulb"></i> LED alto brillo</span>' +
-                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-tape"></i> Cinta de cobre</span>' +
-                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-battery-full"></i> Pila CR2032</span>' +
-                    '<span style="border-color:#D8B4FE;color:#6B21A8;"><i class="fas fa-hand-pointer"></i> Pulsador en mango</span>' +
-                  '</div>' +
-                  '<div class="arm-s5-actions">' +
-                    '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);box-shadow:0 4px 14px rgba(124,58,237,0.35);" data-mission-idx="' + idxVarita + '">' +
-                      '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
-                    '</button>' +
-                    '<button type="button" class="arm-s5-btn-pdf arm-btn-open-pdf" style="color:#7C3AED;border-color:#DDD6FE;" data-mission-idx="' + idxVarita + '">' +
-                      '<i class="fas fa-microchip"></i> <span>Guía y Esquema del Circuito</span>' +
-                    '</button>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
+            // SLIDE 1 (Varita para Sala 5, Marca-Libros para 1° Grado)
+            slide1ContentHtml +
 
             // SLIDE 2: Tarjeta Pop-Up 3D (Día de la Madre)
             '<div class="arm-s5-slide ' + (activeSpotlight === 2 ? 'active' : '') + '" data-slide-idx="2" style="' + (activeSpotlight === 2 ? 'display:block;' : 'display:none;') + '">' +
@@ -770,7 +826,7 @@
                   '<span class="arm-s5-interactive-hint" style="background:rgba(225, 29, 72, 0.9);"><i class="fas fa-shield-alt"></i> ¡Tocá el escudo!</span>' +
                 '</div>' +
                 '<div class="arm-s5-info">' +
-                  '<div class="arm-s5-tag" style="color:#BE123C;"><i class="fas fa-heart"></i> PROYECTO OFICIAL SALA DE 5 AÑOS • NIVEL 5</div>' +
+                  '<div class="arm-s5-tag" style="color:#BE123C;"><i class="fas fa-heart"></i> PROYECTO OFICIAL ' + gradeLabelText + ' • NIVEL 5</div>' +
                   '<h3 class="arm-s5-title" style="color:#881337;">Tarjeta Pop-Up 3D: Corazón Luminoso para Mamá 💖✨</h3>' +
                   '<p class="arm-s5-desc">¡Regalo especial en Papertronics! Al abrir la tarjeta se despliega un <strong>corazón pixel 3D en relieve</strong> con la foto del peque en el centro. Al presionar el <strong>escudo del Colegio Paulo Freire</strong>, ¡se activa un circuito con luz LED que baña los bordes del corazón con un resplandor mágico!</p>' +
                   '<div class="arm-s5-materials-pills">' +
@@ -797,7 +853,7 @@
           // Indicador de puntos (dots)
           '<div class="arm-s5-carousel-dots">' +
             '<span class="arm-s5-dot ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" title="El Sombrero Luminoso"></span>' +
-            '<span class="arm-s5-dot ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" title="La Varita Mágica"></span>' +
+            '<span class="arm-s5-dot ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" title="' + (isGrado1 ? 'Marca-Libros Tom Sawyer' : 'La Varita Mágica') + '"></span>' +
             '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="Tarjeta Pop-Up 3D"></span>' +
           '</div>' +
         '</div>';
@@ -1639,8 +1695,10 @@
           window.sala5SpotlightCurrentSlide = newIdx;
 
           // Theme del card
-          spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre');
-          spotlightCarousel.classList.add(newIdx === 1 ? 'theme-varita' : (newIdx === 2 ? 'theme-madre' : 'theme-sombrero'));
+          var isG1Student = student && (student.gradeId === 'grado1' || student.gradeId === '1ero');
+          var slide1Theme = isG1Student ? 'theme-marcalibro' : 'theme-varita';
+          spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre', 'theme-marcalibro');
+          spotlightCarousel.classList.add(newIdx === 1 ? slide1Theme : (newIdx === 2 ? 'theme-madre' : 'theme-sombrero'));
 
           // Slides
           spotlightCarousel.querySelectorAll('.arm-s5-slide').forEach(function(sl){
@@ -1739,6 +1797,24 @@
           wandInteractive.onclick = function(e){
             e.stopPropagation();
             var glow = spotlightCarousel.querySelector('#arm-s5-led-glow-varita');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (glow.classList.contains('active')) {
+                if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+                else if (window.sounds) window.sounds.playClick();
+              } else {
+                if (window.sounds) window.sounds.playClick();
+              }
+            }
+          };
+        }
+
+        // 2b. Marca-Libros Origami de Tom Sawyer (luz ámbar en el sombrero - Grado 1)
+        var bookmarkInteractive = spotlightCarousel.querySelector('#arm-g1-bookmark-interactive');
+        if (bookmarkInteractive) {
+          bookmarkInteractive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-g1-led-glow-bookmark');
             if (glow) {
               glow.classList.toggle('active');
               if (glow.classList.contains('active')) {
@@ -2410,6 +2486,162 @@
         '<div style="text-align:center;margin-top:20px;">' +
           '<a href="docs/dia_de_la_madre_tarjeta_3d.pdf" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#E11D48;border-color:#BE123C;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.92rem;">' +
             '<i class="fas fa-file-pdf"></i> Descargar Plantilla y Guía Oficial en PDF' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderMarcalibroOrigamiSolutionHtml(mission) {
+    return '<div class="apm-sol-electro-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #B45309 0%, #F59E0B 100%);">' +
+        '<div class="apm-seh-icon"><i class="fas fa-book-open"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: El Marca-Libros Origami de Tom Sawyer (Circuito & LED Chato) 📖🎩💡</h4>' +
+          '<p>Doblado de papel glacé en esquina de libro, inserción del circuito con cinta de cobre, pila botón y LED chato en el sombrero de paja.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body">' +
+
+        // Galería de planos oficiales: Guía Origami y Portada con Tom Sawyer
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:18px;">' +
+          '<div class="apm-circuit-schematic-card" style="background:#FFFBEB;border:1.5px solid #FCD34D;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#FDE68A;">' +
+              '<span style="color:#92400E;font-weight:900;"><i class="fas fa-origami"></i> Guía Oficial de Doblado Origami (Paso a Paso)</span>' +
+              '<a href="img/proyectos/marcalibros_origami_guia.png" target="_blank" class="apm-csc-badge" style="background:#D97706;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ampliar</a>' +
+            '</div>' +
+            '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/marcalibros_origami_guia.png" alt="Guía de Doblado Marca-Libros Origami" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;" onclick="window.open(this.src,\'_blank\')">' +
+              '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Doblado paso a paso con hoja de papel glacé para formar el bolsillo esquinero que calza en las hojas de los libros.</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="apm-circuit-schematic-card" style="background:#FFF7ED;border:1.5px solid #FDBA74;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#FED7AA;">' +
+              '<span style="color:#9A3412;font-weight:900;"><i class="fas fa-user"></i> Tom Sawyer con LED Chato en el Sombrero</span>' +
+              '<a href="img/proyectos/tomsawyer_marcalibro_cover.svg" target="_blank" class="apm-csc-badge" style="background:#EA580C;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ampliar</a>' +
+            '</div>' +
+            '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/tomsawyer_marcalibro_cover.svg" alt="Tom Sawyer Marca-Libros" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;" onclick="window.open(this.src,\'_blank\')">' +
+              '<div style="font-size:0.8rem;color:#64748B;margin-top:6px;">Ubicación del LED chato centrado en el gorro de Tom Sawyer y pistas de cobre conectadas a la pila botón CR2032.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Diagrama esquemático
+        '<div class="apm-circuit-schematic-card">' +
+          '<div class="apm-csc-header">' +
+            '<span><i class="fas fa-project-diagram"></i> Diagrama Esquemático: Circuito Papertronics Esquinero 3V</span>' +
+            '<span class="apm-csc-badge" style="background:#D97706;">Luz en el Sombrero</span>' +
+          '</div>' +
+          '<div class="apm-circuit-visual-diagram">' +
+            '<div class="apm-cv-node batt">' +
+              '<div class="cv-icon"><i class="fas fa-battery-full"></i></div>' +
+              '<div class="cv-label">Pila Botón CR2032<br><strong>3V en Bolsillo</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line pos">' +
+              '<span class="cv-wire-label">+ Pista Positiva (Cobre)</span>' +
+              '<i class="fas fa-arrow-right"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node switch" style="border-color:#D97706;">' +
+              '<div class="cv-icon" style="color:#D97706;"><i class="fas fa-hand-pointer"></i></div>' +
+              '<div class="cv-label">Solapa Esquinera<br><strong>Pulsador por Presión</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line pos2">' +
+              '<i class="fas fa-arrow-right"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node led" style="border-color:#F59E0B;">' +
+              '<div class="cv-icon" style="color:#F59E0B;"><i class="fas fa-lightbulb"></i></div>' +
+              '<div class="cv-label">LED Chato (SMD)<br><strong>Centro del Sombrero</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line neg">' +
+              '<span class="cv-wire-label">- Pista Negativa de Retorno</span>' +
+              '<i class="fas fa-arrow-left"></i>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Tabla de componentes y conexiones
+        '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-table"></i> Especificaciones de Armado del Origami y Circuito:</h5>' +
+          '<div class="apm-pinout-table-wrap">' +
+          '<table class="apm-pinout-table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Fase / Elemento</th>' +
+                '<th>Posición / Conexión</th>' +
+                '<th>Instrucción de Armado</th>' +
+                '<th>Efecto / Resultado</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              '<tr>' +
+                '<td><strong>1. 📄 Plegado Triangular</strong></td>' +
+                '<td>Papel glacé cuadrado</td>' +
+                '<td>Doblar el papel glacé por la mitad en diagonal para formar un triángulo perfecto.</td>' +
+                '<td>Base angular para el bolsillo esquinero.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>2. 📐 Puntas al Vértice</strong></td>' +
+                '<td>Extremos izquierdo y derecho</td>' +
+                '<td>Llevar las dos esquinas inferiores hacia la punta superior del triángulo y marcar bien los pliegues.</td>' +
+                '<td>Se forman dos aletas simétricas.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>3. 📂 Formar el Bolsillo</strong></td>' +
+                '<td>Capa frontal del triángulo</td>' +
+                '<td>Desplegar las puntas y bajar solo la primera capa del vértice superior hacia la base.</td>' +
+                '<td>Queda formado el hueco o bolsillo que encajará en la página del libro.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>4. 📥 Meter Puntas Adentro</strong></td>' +
+                '<td>Solapas laterales</td>' +
+                '<td>Doblar cada una de las dos puntas hacia adentro del bolsillo hasta que queden trabadas.</td>' +
+                '<td>Estructura autoportante de origami lista sin necesidad de pegamento.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>5. ⚡ Circuito con LED Chato</strong></td>' +
+                '<td>Pista de cobre + Pila CR2032</td>' +
+                '<td>Pegar la pista positiva (+) hacia el interruptor de presión y ubicar el LED chato exactamente en el centro del sombrero de Tom Sawyer.</td>' +
+                '<td>Conexión eléctrica plana y compacta que no abulta el libro.</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td><strong>6. 🎩 Personaje Tom Sawyer</strong></td>' +
+                '<td>Frente del marca-páginas</td>' +
+                '<td>Pegar a Tom Sawyer en la cara visible del origami alineando el LED chato con el medio de su gorro.</td>' +
+                '<td>¡Al colocar el marca-libros en la esquina o apretar la punta, el sombrero se ilumina!</td>' +
+              '</tr>' +
+            '</tbody>' +
+          '</table>' +
+          '</div>' +
+        '</div>' +
+
+        // Consejos y solución de fallas
+        '<div class="apm-troubleshoot-box" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-stethoscope"></i> Consejos Clave para un Funcionamiento Perfecto</h5>' +
+          '<div class="apm-tb-grid">' +
+            '<div class="apm-tb-item" style="border-left-color:#D97706;">' +
+              '<h6>1. Si no prende al presionar la esquina</h6>' +
+              '<p>Verificá que las tiras de cinta de cobre de la solapa se toquen firmemente al apretar con los dedos. La pila CR2032 debe estar bien ajustada dentro del pliegue.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#2563EB;">' +
+              '<h6>2. Polaridad del LED Chato (SMD)</h6>' +
+              '<p>El lado positivo (+) del LED chato debe conectarse con la cara lisa (+) de la pila, y el negativo (-) con la pista de retorno.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#10B981;">' +
+              '<h6>3. Contacto plano sin abultar</h6>' +
+              '<p>Al usar un LED chato y cinta de cobre fina, el marca-libros queda completamente plano y podés cerrar el libro sin dañar las hojas.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#7C3AED;">' +
+              '<h6>4. Ajuste en el libro</h6>' +
+              '<p>Deslizá el bolsillo esquinero sobre 2 o 3 páginas del libro para que calce bien firme sin caerse.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="text-align:center;margin-top:20px;">' +
+          '<a href="img/proyectos/marcalibros_origami_guia.png" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#D97706;border-color:#B45309;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.92rem;">' +
+            '<i class="fas fa-image"></i> Ver Guía de Doblado en Alta Resolución' +
           '</a>' +
         '</div>' +
       '</div>' +
@@ -3110,9 +3342,10 @@
     var isCodeorg = !isPaint && (isFrozen || isMinecraft || data.type === 'codeorg' || (data.platform === 'codeorg') || (data.tags && data.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
     var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
     var isDiaMadre = !isPaint && ((data.tags && data.tags.some(function(t){ return /madre|coraz[oó]n|ilumina/i.test(t); })) || (/madre|coraz[oó]n|ilumina/i.test(data.title || '')));
-    var isScratchJrPerspectiva = !isPaint && !isCodeorg && (data.id === 's5-p10' || data.id === 's5-g5' || (data.tags && data.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(data.title || '')));
-    var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && (data.id === 's5-p9' || data.id === 's5-g1' || (data.tags && data.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(data.title || '')));
-    var isElectronica = !isPaint && !isCodeorg && !isScratchJrVelocidad && !isScratchJrPerspectiva && (isDiaMadre || data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
+    var isMarcalibro = !isPaint && !isCodeorg && (data.id === 'g1-p3' || (data.tags && data.tags.some(function(t){ return /marca ?libro|marcalibro|origami|tom sawyer/i.test(t); })) || (/marca ?libro|marcalibro|origami|tom sawyer/i.test(data.title || '')));
+    var isScratchJrPerspectiva = !isPaint && !isCodeorg && !isMarcalibro && (data.id === 's5-p10' || data.id === 's5-g5' || data.id === 'g1-p10' || data.id === 'g1-g5' || (data.tags && data.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(data.title || '')));
+    var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (data.id === 's5-p9' || data.id === 's5-g1' || data.id === 'g1-p9' || data.id === 'g1-g1' || (data.tags && data.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(data.title || '')));
+    var isElectronica = !isPaint && !isCodeorg && !isScratchJrVelocidad && !isScratchJrPerspectiva && (isDiaMadre || isMarcalibro || data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
 
     var title = data.title || 'Misión Educativa';
     var levelText = data.level ? ('Nivel ' + data.level) : 'Taller Maker';
@@ -3123,14 +3356,22 @@
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = isScratchJrPerspectiva ? 'Scratch Jr (Perspectiva)' : (isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego')))))));
+    var platText = isMarcalibro ? 'Origami & Circuito (Tom Sawyer)' : (isScratchJrPerspectiva ? 'Scratch Jr (Perspectiva)' : (isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'))))))));
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
     var tipBoxText = '';
 
     if (isObjective) {
-      if (isDiaMadre) {
+      if (isMarcalibro) {
+        pillars = [
+          { icon: 'fa-book-open', color: '#D97706', title: 'Geometría del Doblado Origami', desc: 'Transformar una hoja cuadrada de papel glacé en un bolsillo esquinero autoportante mediante pliegues diagonales precisos.' },
+          { icon: 'fa-microchip', color: '#2563EB', title: 'Circuito Esquinero Plano', desc: 'Diseñar un circuito con cinta de cobre que recorre el interior del marca-páginas sin abultar las hojas del libro.' },
+          { icon: 'fa-lightbulb', color: '#F59E0B', title: 'LED Chato en el Sombrero', desc: 'Ubicar el LED SMD en el centro exacto del sombrero de paja de Tom Sawyer para que ilumine la lectura.' },
+          { icon: 'fa-hand-pointer', color: '#10B981', title: 'Pulsador Táctil por Presión', desc: 'Cerrar el circuito eléctrico al colocar el marca-libros en la esquina de la página o apretar la punta con los dedos.' }
+        ];
+        tipBoxText = '<strong>📖 El Marca-Libros Origami de Tom Sawyer:</strong> Esta misión para 1° Grado integra destreza motriz fina (origami), literatura de aventuras y electrónica práctica con un LED chato integrado en el gorro del personaje.';
+      } else if (isDiaMadre) {
         pillars = [
           { icon: 'fa-heart', color: '#E11D48', title: 'Geometría y Efecto Pop-Up 3D', desc: 'Comprender cómo los cortes escalonados y pliegues inversos transforman un dibujo plano en un corazón con volumen 3D al abrir la tarjeta.' },
           { icon: 'fa-microchip', color: '#7C3AED', title: 'Papertronics & Circuito', desc: 'Construir un circuito real sobre papel con cinta de cobre autoadhesiva, pila botón CR2032 de 3V y diodo LED de alto brillo.' },
@@ -3213,7 +3454,15 @@
       }
     } else {
       // Beneficios
-      if (isDiaMadre) {
+      if (isMarcalibro) {
+        pillars = [
+          { icon: 'fa-hands', color: '#D97706', title: 'Destreza Manual y Concentración', desc: 'El origami fomenta la paciencia, el orden secuencial y el refinamiento de la motricidad fina en los dedos al marcar cada pliegue.' },
+          { icon: 'fa-lightbulb', color: '#F59E0B', title: 'Causalidad y Comprensión Electrónica', desc: 'Comprender cómo la corriente viaja por las pistas y se interrumpe o activa al hacer presión con las manos o el libro.' },
+          { icon: 'fa-book-reader', color: '#2563EB', title: 'Estímulo a la Lectura y Fantasía', desc: 'Vincular el proyecto con Las Aventuras de Tom Sawyer, incentivando el placer por la lectura con un objeto creado por ellos.' },
+          { icon: 'fa-award', color: '#10B981', title: 'Autoestima Maker', desc: 'Orgullo y satisfacción al crear un accesorio funcional y útil para sus libros escolares y de cuentos.' }
+        ];
+        tipBoxText = '<strong>📖 Beneficios Maker:</strong> El marca-libros origami une literatura de aventuras con ciencia práctica, demostrando que con papel, ingenio y un LED chato los alumnos de 1° grado pueden fabricar sus propios inventos.';
+      } else if (isDiaMadre) {
         pillars = [
           { icon: 'fa-cut', color: '#E11D48', title: 'Motricidad Fina y Precisión', desc: 'Coordinación óculo-manual avanzada para cortar únicamente las líneas sólidas de los escalones sin cortar las líneas de puntos de pliegue.' },
           { icon: 'fa-cube', color: '#7C3AED', title: 'Percepción Espacial Tridimensional', desc: 'Visualizar cómo los planos se pliegan y despliegan en el espacio físico para cobrar vida al abrir la tarjeta en 90°.' },
@@ -3417,8 +3666,9 @@
     var isCodeorg = !isPaint && (isFrozen || isMinecraft || mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
     var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
     var isDiaMadre = !isPaint && ((mission.tags && mission.tags.some(function(t){ return /madre|coraz[oó]n|ilumina/i.test(t); })) || (/madre|coraz[oó]n|ilumina/i.test(mission.title || '')));
-    var isScratchJrPerspectiva = !isPaint && !isCodeorg && (mission.id === 's5-p10' || mission.id === 's5-g5' || (mission.tags && mission.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(mission.title || '')));
-    var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && (mission.id === 's5-p9' || mission.id === 's5-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
+    var isMarcalibro = !isPaint && !isCodeorg && (mission.id === 'g1-p3' || (mission.tags && mission.tags.some(function(t){ return /marca ?libro|marcalibro|origami|tom sawyer/i.test(t); })) || (/marca ?libro|marcalibro|origami|tom sawyer/i.test(mission.title || '')));
+    var isScratchJrPerspectiva = !isPaint && !isCodeorg && !isMarcalibro && (mission.id === 's5-p10' || mission.id === 's5-g5' || mission.id === 'g1-p10' || mission.id === 'g1-g5' || (mission.tags && mission.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(mission.title || '')));
+    var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (mission.id === 's5-p9' || mission.id === 's5-g1' || mission.id === 'g1-p9' || mission.id === 'g1-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
     var isGame = !isPaint && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
@@ -3428,7 +3678,7 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var isElectronica = !isGame && !isPaint && (isDiaMadre || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isElectronica = !isGame && !isPaint && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
     var isMakecode = !isGame && !isElectronica && !isPaint && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
     var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint;
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
@@ -3839,15 +4089,23 @@
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                          (isScratchJrPerspectiva ? '🐱 Materiales y Bloques de Perspectiva (Scratch Jr)' : (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller'))))) +
+                          (isMarcalibro ? '📖 Materiales para el Marca-Libros Origami de Tom Sawyer' : (isScratchJrPerspectiva ? '🐱 Materiales y Bloques de Perspectiva (Scratch Jr)' : (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')))))) +
                         '</h3>' +
                         '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                          (isScratchJrPerspectiva ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo perpestiva.sjr de ejemplo:' : (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:'))))) +
+                          (isMarcalibro ? 'Asegurate de tener tu papel glacé, el dibujo de Tom Sawyer con su sombrero, cinta de cobre, pila botón y LED chato:' : (isScratchJrPerspectiva ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo perpestiva.sjr de ejemplo:' : (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')))))) +
                         '</p>' +
                       '</div>' +
                       '<div class="apm-materials-grid">' +
                         materialsList.map(function(m){
-                          var mIcon = isScratchJrPerspectiva ? (
+                          var mIcon = isMarcalibro ? (
+                            /papel|glac[eé]|cuadrado/i.test(m.title) ? 'fa-square' :
+                            /origami|plegado|marca/i.test(m.title) ? 'fa-bookmark' :
+                            /tom sawyer|gorro|sombrero|dibujo/i.test(m.title) ? 'fa-user' :
+                            /led|chato|smd|luz/i.test(m.title) ? 'fa-lightbulb' :
+                            /pila|bater[ií]a|cr2032/i.test(m.title) ? 'fa-battery-full' :
+                            /cobre|cinta/i.test(m.title) ? 'fa-tape' :
+                            /tijer|pegamento/i.test(m.title) ? 'fa-cut' : 'fa-tools'
+                          ) : isScratchJrPerspectiva ? (
                             /perspectiva|apariencia|achicar|agrandar/i.test(m.title) ? 'fa-expand-arrows-alt' :
                             /inicio|home/i.test(m.title) ? 'fa-home' :
                             /restaurar|reset/i.test(m.title) ? 'fa-sync-alt' :
@@ -3896,10 +4154,11 @@
                           '</div>';
                         }).join('') +
                       '</div>' +
-                      '<div class="apm-reto-card" style="margin-top:22px;' + (isScratchJrPerspectiva ? 'background:#FAF5FF;border-color:#D8B4FE;' : (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : ''))))) + '">' +
-                        '<h4 style="' + (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : '')))))) + '"><i class="fas fa-lightbulb"></i> ' + (isScratchJrPerspectiva ? 'Consejo del Programador: Bloques Violetas de Perspectiva' : (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker'))))) + '</h4>' +
-                        '<p style="' + (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : ''))))) + '">' +
-                          (isScratchJrPerspectiva ? '¡El secreto de la perspectiva 3D! Al tocar la <strong>Bandera Verde</strong>, colocá primero <strong>Inicio 🏠</strong> y <strong>Restaurar Tamaño 🔄</strong>. Luego <strong>Achicar 5 ➖</strong> para que Teen3 empiece chiquito en el horizonte del camino. A medida que agregás <strong>Bajar ⬇️</strong>, encastrá <strong>Agrandar 2 ➕</strong> para que crezca simulando que camina hacia el frente. ¡Probalo en perpestiva.sjr!' :
+                      '<div class="apm-reto-card" style="margin-top:22px;' + (isMarcalibro ? 'background:#FFFBEB;border-color:#FCD34D;' : (isScratchJrPerspectiva ? 'background:#FAF5FF;border-color:#D8B4FE;' : (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : '')))))) + '">' +
+                        '<h4 style="' + (isMarcalibro ? 'color:#92400E;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : ''))))))) + '"><i class="fas fa-lightbulb"></i> ' + (isMarcalibro ? 'Consejo Origami Maker: Bolsillo Esquinero y Luz en el Sombrero' : (isScratchJrPerspectiva ? 'Consejo del Programador: Bloques Violetas de Perspectiva' : (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')))))) + '</h4>' +
+                        '<p style="' + (isMarcalibro ? 'color:#78350F;' : (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : '')))))) + '">' +
+                          (isMarcalibro ? '¡El secreto del doblado y la luz en el sombrero de Tom Sawyer! Doblá con paciencia el papel glacé marcando bien cada pliegue con la yema de los dedos para que las dos puntas encajen firmes en el bolsillo esquinero. Pegá a Tom Sawyer en el frente alineando el LED chato en el medio de su sombrero de paja. Al calzarlo en una página o apretar la punta, las pistas de cobre harán contacto y el sombrero brillará.' :
+                           isScratchJrPerspectiva ? '¡El secreto de la perspectiva 3D! Al tocar la <strong>Bandera Verde</strong>, colocá primero <strong>Inicio 🏠</strong> y <strong>Restaurar Tamaño 🔄</strong>. Luego <strong>Achicar 5 ➖</strong> para que Teen3 empiece chiquito en el horizonte del camino. A medida que agregás <strong>Bajar ⬇️</strong>, encastrá <strong>Agrandar 2 ➕</strong> para que crezca simulando que camina hacia el frente. ¡Probalo en perpestiva.sjr!' :
                            isScratchJrVelocidad ? '¡El secreto de la carrera a diferentes velocidades! Encastrá la <strong>Bandera Verde</strong> de inicio, luego el <strong>bloque naranja de Velocidad</strong> (tocalo para elegir 1 caracol, 2 caminante o 3 corredor) y por último la <strong>flecha azul de movimiento</strong>. ¡Al pulsar la bandera verde, todos los personajes arrancan juntos pero el más veloz llega primero!' :
                            isDiaMadre ? '¡El secreto del Pop-Up y la Luz! Cortá con tijera <strong>únicamente por las líneas continuas</strong> de los escalones del corazón pixelado (nunca cortes las líneas de puntos, esas son para doblar hacia adelante). Pegá tu foto en el centro exacto. Y asegurate de que la cinta de cobre detrás del <strong>escudo del Colegio Paulo Freire</strong> baje en solapa para tocar la pista de la pila al presionar con el dedo.' :
                            isPaint ? (isPaintBanderas ? '¡El secreto de las franjas parejas y los soles! Usá <strong>Rectángulo</strong> para el marco de la bandera, <strong>Líneas</strong> rectas con la tecla <strong>Shift</strong> para dividir las franjas iguales y <strong>Elipse con Shift</strong> para el sol amarillo. ¡Con <strong>Ctrl + Z</strong> corregís cualquier trazo sin borrar todo!' : '¡El secreto de los círculos perfectos! Mantené presionada la tecla <strong>Shift (Mayús)</strong> mientras arrastrás el mouse con la herramienta Elipse para que salga un círculo redondo perfecto en la mitad de la cancha. ¡And si te equivocás, apretá <strong>Ctrl + Z</strong> para deshacer sin borrar todo!') :
@@ -3907,8 +4166,8 @@
                         '</p>' +
                       '</div>' +
                       '<div style="text-align:center;margin-top:20px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))) + '">' +
-                          (isScratchJrPerspectiva ? '¡Ver Pasos de Programación y Ejemplo perpestiva.sjr! <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>'))))) +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isMarcalibro ? 'background:#D97706;border-color:#B45309;' : (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))))) + '">' +
+                          (isMarcalibro ? '¡Ver Pasos de Doblado Origami y Circuito! <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? '¡Ver Pasos de Programación y Ejemplo perpestiva.sjr! <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')))))) +
                         '</button>' +
                       '</div>' +
                     '</div>'
@@ -4260,19 +4519,19 @@
                     '<div style="height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:6px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
-                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas ' + (isDiaMadre ? 'fa-heart' : 'fa-tools') + '" style="color:' + (isDiaMadre ? '#E11D48' : '#D97706') + ';"></i> ' + (isDiaMadre ? 'Paso a Paso: Tarjeta Pop-Up 3D, Foto y Botón Escudo Freire' : 'Paso a Paso: Armado del Circuito (Sin Programación)') + '</h3>' +
-                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">' + (isDiaMadre ? 'Seguí cada paso para cortar el corazón 3D, colocar la foto y armar el circuito con pulsador en el escudo:' : 'Seguí cada paso en orden para ensamblar los componentes y hacer funcionar tu invento:') + '</p>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas ' + (isMarcalibro ? 'fa-book-open' : (isDiaMadre ? 'fa-heart' : 'fa-tools')) + '" style="color:' + (isMarcalibro ? '#D97706' : (isDiaMadre ? '#E11D48' : '#D97706')) + ';"></i> ' + (isMarcalibro ? 'Paso a Paso: Marca-Libros Origami de Tom Sawyer con LED Chato' : (isDiaMadre ? 'Paso a Paso: Tarjeta Pop-Up 3D, Foto y Botón Escudo Freire' : 'Paso a Paso: Armado del Circuito (Sin Programación)')) + '</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">' + (isMarcalibro ? 'Seguí cada paso para plegar el papel glacé, colocar a Tom Sawyer y armar el circuito con LED chato en su sombrero:' : (isDiaMadre ? 'Seguí cada paso para cortar el corazón 3D, colocar la foto y armar el circuito con pulsador en el escudo:' : 'Seguí cada paso en orden para ensamblar los componentes y hacer funcionar tu invento:')) + '</p>' +
                         '</div>' +
                         '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.8rem;padding:6px 12px;">' +
                           '<i class="fas fa-print"></i> Guía Imprimible' +
                         '</button>' +
                       '</div>' +
                       (mission.gallery && mission.gallery.length > 1 ?
-                        '<div style="display:flex;gap:12px;align-items:center;' + (isDiaMadre ? 'background:#FFF1F2;border:1.5px dashed #E11D48;' : 'background:#FEF3C7;border:1.5px dashed #D97706;') + 'border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
-                          '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="width:68px;height:68px;object-fit:contain;background:#FFF;border-radius:8px;border:1px solid ' + (isDiaMadre ? '#FDA4AF' : '#FCD34D') + ';padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar plano">' +
+                        '<div style="display:flex;gap:12px;align-items:center;' + (isMarcalibro ? 'background:#FFFBEB;border:1.5px dashed #F59E0B;' : (isDiaMadre ? 'background:#FFF1F2;border:1.5px dashed #E11D48;' : 'background:#FEF3C7;border:1.5px dashed #D97706;')) + 'border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
+                          '<img src="' + mission.gallery[1] + '" alt="Plano del Circuito" style="width:68px;height:68px;object-fit:contain;background:#FFF;border-radius:8px;border:1px solid ' + (isMarcalibro ? '#FCD34D' : (isDiaMadre ? '#FDA4AF' : '#FCD34D')) + ';padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar plano">' +
                           '<div style="flex:1;">' +
-                            '<h5 style="margin:0 0 2px;font-size:0.86rem;color:' + (isDiaMadre ? '#9F1239' : '#92400E') + ';font-weight:800;"><i class="fas fa-drafting-compass"></i> ' + (isDiaMadre ? 'Plantilla Oficial: Circuito Papertronics y Contactos del Escudo' : (mission.title.includes('Varita') ? 'Esquema de Conexiones de la Varita Mágica' : 'Plano de Conexiones: ' + mission.title)) + '</h5>' +
-                            '<p style="margin:0;font-size:0.79rem;color:' + (isDiaMadre ? '#881337' : '#78350F') + ';line-height:1.4;">' + (isDiaMadre ? 'Mirá cómo corren las pistas de cobre desde la pila CR2032 hasta el LED superior y el botón táctil en el escudo del Colegio Paulo Freire.' : (mission.title.includes('Varita') ? 'Mirá cómo van las pistas de cinta conductora desde el LED en la punta hasta la pila y el pulsador táctil en el mango.' : 'Mirá cómo van las pistas de cobre desde el trébol hasta la pila y la solapa.')) + (mission.pdfUrl ? ' <a href="' + mission.pdfUrl + '" target="_blank" style="color:' + (isDiaMadre ? '#BE123C' : '#B45309') + ';font-weight:700;text-decoration:underline;">Ver plantilla completa en PDF</a>' : ' <span style="color:' + (isDiaMadre ? '#BE123C' : '#B45309') + ';font-weight:700;">¡Tocá el diagrama para ampliarlo!</span>') + '</p>' +
+                            '<h5 style="margin:0 0 2px;font-size:0.86rem;color:' + (isMarcalibro ? '#92400E' : (isDiaMadre ? '#9F1239' : '#92400E')) + ';font-weight:800;"><i class="fas fa-drafting-compass"></i> ' + (isMarcalibro ? 'Guía Oficial: Doblado Origami y Circuito con LED Chato en el Sombrero' : (isDiaMadre ? 'Plantilla Oficial: Circuito Papertronics y Contactos del Escudo' : (mission.title.includes('Varita') ? 'Esquema de Conexiones de la Varita Mágica' : 'Plano de Conexiones: ' + mission.title))) + '</h5>' +
+                            '<p style="margin:0;font-size:0.79rem;color:' + (isMarcalibro ? '#78350F' : (isDiaMadre ? '#881337' : '#78350F')) + ';line-height:1.4;">' + (isMarcalibro ? 'Mirá cómo corre la cinta conductora desde la pila CR2032 dentro del doblez esquinero hasta el LED chato en el medio del sombrero de Tom Sawyer.' : (isDiaMadre ? 'Mirá cómo corren las pistas de cobre desde la pila CR2032 hasta el LED superior y el botón táctil en el escudo del Colegio Paulo Freire.' : (mission.title.includes('Varita') ? 'Mirá cómo van las pistas de cinta conductora desde el LED en la punta hasta la pila y el pulsador táctil en el mango.' : 'Mirá cómo van las pistas de cobre desde el trébol hasta la pila y la solapa.'))) + (mission.pdfUrl ? ' <a href="' + mission.pdfUrl + '" target="_blank" style="color:' + (isMarcalibro ? '#B45309' : (isDiaMadre ? '#BE123C' : '#B45309')) + ';font-weight:700;text-decoration:underline;">Ver plantilla completa en PDF</a>' : ' <span style="color:' + (isMarcalibro ? '#B45309' : (isDiaMadre ? '#BE123C' : '#B45309')) + ';font-weight:700;">¡Tocá el diagrama para ampliarlo!</span>') + '</p>' +
                           '</div>' +
                         '</div>' : '') +
                       '<div class="apm-instructions-steps-grid">' +
@@ -4341,14 +4600,18 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆')))))))) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')))))))) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')))))))) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isMarcalibro ? '📖' : (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆'))))))))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isMarcalibro ? '¡Marca-Libros Origami de Tom Sawyer Terminado!' : (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))))))))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isMarcalibro ? '¡Plegaste tu marca-libros esquinero con papel glacé y le diste luz al sombrero de Tom Sawyer con un circuito y LED chato! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))))))))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
                     '<div class="apm-extra-challenges">' +
-                      (isScratchJrPerspectiva ?
+                      (isMarcalibro ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#D97706;">1</div><div><h6>Probar el Marca-Páginas en un Libro</h6><p>Calzá el bolsillo esquinero en tu libro de cuentos favorito. Al presionar suavemente la punta, el sombrero de Tom Sawyer debe encender su luz LED chata.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#D97706;">2</div><div><h6>Decorar a Tom Sawyer</h6><p>Coloreá el sombrero de paja, la camisa y agregale pecas o detalles con lápices y marcadores para personalizar tu personaje.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#D97706;">3</div><div><h6>Interruptor Automático al Cerrar el Libro</h6><p>Ajustá la solapa con cinta de cobre para que cuando el libro esté cerrado la presión de las hojas mantenga el contacto cerrado o lo prenda al abrirlo.</p></div></div>' :
+                       isScratchJrPerspectiva ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#7C3AED;">1</div><div><h6>Alejarse hacia el Horizonte</h6><p>Invertí el algoritmo: empezá grande al frente y programá pasos hacia arriba con bloques de achicar para que parezca que se aleja.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#7C3AED;">2</div><div><h6>Dos Personajes Cruzándose</h6><p>Programá un personaje que camine hacia adelante agrandándose y otro que camine hacia el fondo achicándose al mismo tiempo.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#7C3AED;">3</div><div><h6>Diálogo en Primer Plano</h6><p>Al llegar al final del camino en tamaño grande, agregá el bloque violeta de diálogo para que diga "¡Hola, llegué!".</p></div></div>' :
@@ -4414,11 +4677,11 @@
                           '<i class="fas fa-undo"></i> Repasar Presentación' +
                         '</button>'
                       :
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981')))))) + ';border-color:' + (isScratchJrPerspectiva ? '#6D28D9' : (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669')))))) + ';font-size:0.9rem;padding:9px 18px;">' +
-                          (isScratchJrPerspectiva ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación'))))) +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isMarcalibro ? '#D97706' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981'))))))) + ';border-color:' + (isMarcalibro ? '#B45309' : (isScratchJrPerspectiva ? '#6D28D9' : (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669'))))))) + ';font-size:0.9rem;padding:9px 18px;">' +
+                          (isMarcalibro ? '<i class="fas fa-camera"></i> Subir Foto de Mi Marca-Libros' : (isScratchJrPerspectiva ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')))))) +
                         '</button>' +
                         '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                          (isScratchJrPerspectiva ? '<i class="fas fa-search-plus"></i> Ver Esquema de Perspectiva' : (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial'))))) +
+                          (isMarcalibro ? '<i class="fas fa-book-open"></i> Ver Guía de Doblado y Circuito' : (isScratchJrPerspectiva ? '<i class="fas fa-search-plus"></i> Ver Esquema de Perspectiva' : (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')))))) +
                         '</button>' +
                         (isScratchJrPerspectiva ?
                           '<a href="' + (mission.projectFileUrl || 'proyectos/perpestiva.sjr') + '" download="perpestiva.sjr" class="arm-btn-secondary" style="font-size:0.9rem;padding:9px 18px;text-decoration:none;"><i class="fas fa-download"></i> Descargar perpestiva.sjr</a>' :
@@ -4463,8 +4726,8 @@
                   '<button type="button" class="apm-deliv-switch-btn ' + (isPaint ? 'active' : '') + '" id="apm-switch-to-paint" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isPaint ? 'background:#16A34A;color:#FFF;box-shadow:0 2px 6px rgba(22,163,74,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-palette"></i> Dibujo Paint' +
                   '</button>' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? (isDiaMadre ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);') : 'background:#E2E8F0;color:#475569;') + '">' +
-                    (isDiaMadre ? '<i class="fas fa-heart"></i> Foto Tarjeta 3D' : '<i class="fas fa-bolt"></i> Foto / Video Circuito') +
+                  '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? (isMarcalibro ? 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);' : (isDiaMadre ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);')) : 'background:#E2E8F0;color:#475569;') + '">' +
+                    (isMarcalibro ? '<i class="fas fa-book-open"></i> Foto Marca-Libros' : (isDiaMadre ? '<i class="fas fa-heart"></i> Foto Tarjeta 3D' : '<i class="fas fa-bolt"></i> Foto / Video Circuito')) +
                   '</button>' +
                   '<button type="button" class="apm-deliv-switch-btn ' + (isScratch ? 'active' : '') + '" id="apm-switch-to-scratch" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isScratch ? 'background:#EA580C;color:#FFF;box-shadow:0 2px 6px rgba(234,88,12,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
                     '<i class="fas fa-cat"></i> Archivo Scratch Jr' +
@@ -4564,20 +4827,20 @@
 
               // SUB-PANEL ELECTRÓNICA / CIRCUITO FÍSICO (FOTO O VIDEO)
               '<div id="apm-electro-delivery-section" style="' + (isElectronica ? 'display:block;' : 'display:none;') + '">' +
-                '<div class="apm-delivery-header" style="background:' + (isDiaMadre ? 'linear-gradient(135deg, #BE123C 0%, #E11D48 100%)' : 'linear-gradient(135deg, #B45309 0%, #D97706 100%)') + ';">' +
-                  '<div class="apm-dh-icon">' + (isDiaMadre ? '<i class="fas fa-heart"></i>' : '<i class="fas fa-bolt"></i>') + '</div>' +
+                '<div class="apm-delivery-header" style="background:' + (isMarcalibro ? 'linear-gradient(135deg, #B45309 0%, #D97706 100%)' : (isDiaMadre ? 'linear-gradient(135deg, #BE123C 0%, #E11D48 100%)' : 'linear-gradient(135deg, #B45309 0%, #D97706 100%)')) + ';">' +
+                  '<div class="apm-dh-icon">' + (isMarcalibro ? '<i class="fas fa-book-open"></i>' : (isDiaMadre ? '<i class="fas fa-heart"></i>' : '<i class="fas fa-bolt"></i>')) + '</div>' +
                   '<div>' +
-                    '<h4>' + (isDiaMadre ? 'Subir Foto de tu Tarjeta Pop-Up 3D del Día de la Madre' : 'Subir Foto o Video del Circuito Armado') + '</h4>' +
-                    '<p>' + (isDiaMadre ? '¡Regalo especial para mamá! Tomá una foto donde se vea el corazón en 3D desplegado con tu foto y el LED encendido en el escudo para guardarla en tu Google Drive.' : '¡Proyecto práctico manual! Tomá una foto o video donde se vea tu circuito funcionando con el LED encendido para guardarlo en tu carpeta de Proyectos de Google Drive.') + '</p>' +
+                    '<h4>' + (isMarcalibro ? 'Subir Foto de tu Marca-Libros Origami de Tom Sawyer' : (isDiaMadre ? 'Subir Foto de tu Tarjeta Pop-Up 3D del Día de la Madre' : 'Subir Foto o Video del Circuito Armado')) + '</h4>' +
+                    '<p>' + (isMarcalibro ? '¡Proyecto maker esquinero! Tomá una foto donde se vea tu marca-libros colocado en la página de un libro con el sombrero de Tom Sawyer encendido para guardarla en tu Google Drive.' : (isDiaMadre ? '¡Regalo especial para mamá! Tomá una foto donde se vea el corazón en 3D desplegado con tu foto y el LED encendido en el escudo para guardarla en tu Google Drive.' : '¡Proyecto práctico manual! Tomá una foto o video donde se vea tu circuito funcionando con el LED encendido para guardarlo en tu carpeta de Proyectos de Google Drive.')) + '</p>' +
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body">' +
-                  '<div class="apm-scratch-dropzone" id="apm-electro-dropzone" style="' + (isDiaMadre ? 'border-color:#FDA4AF;background:#FFF1F2;' : 'border-color:#F59E0B;background:#FFFBEB;') + '">' +
-                    '<div class="apm-sd-icon" style="color:' + (isDiaMadre ? '#E11D48' : '#D97706') + ';"><i class="fas ' + (isDiaMadre ? 'fa-heart' : 'fa-camera') + '"></i></div>' +
-                    '<h4>' + (isDiaMadre ? 'Arrastrá tu foto de la tarjeta 3D aquí' : 'Arrastrá tu foto o video del circuito aquí') + '</h4>' +
+                  '<div class="apm-scratch-dropzone" id="apm-electro-dropzone" style="' + (isMarcalibro ? 'border-color:#F59E0B;background:#FFFBEB;' : (isDiaMadre ? 'border-color:#FDA4AF;background:#FFF1F2;' : 'border-color:#F59E0B;background:#FFFBEB;')) + '">' +
+                    '<div class="apm-sd-icon" style="color:' + (isMarcalibro ? '#D97706' : (isDiaMadre ? '#E11D48' : '#D97706')) + ';"><i class="fas ' + (isMarcalibro ? 'fa-book-open' : (isDiaMadre ? 'fa-heart' : 'fa-camera')) + '"></i></div>' +
+                    '<h4>' + (isMarcalibro ? 'Arrastrá tu foto del marca-libros aquí' : (isDiaMadre ? 'Arrastrá tu foto de la tarjeta 3D aquí' : 'Arrastrá tu foto o video del circuito aquí')) + '</h4>' +
                     '<p>O hacé clic en el botón para seleccionarlo (.jpg, .png, .jpeg, .mp4, .mov, .webp)</p>' +
                     '<input type="file" id="apm-electro-file-input" style="display:none;" accept="image/*,video/*,.png,.jpg,.jpeg,.mp4,.mov,.webp">' +
-                    '<button type="button" id="apm-electro-browse-btn" class="apm-delivery-submit-btn" style="background:' + (isDiaMadre ? '#E11D48' : '#D97706') + ';"><i class="fas fa-camera"></i> ' + (isDiaMadre ? 'Seleccionar Foto de la Tarjeta 3D' : 'Seleccionar Foto / Video') + '</button>' +
+                    '<button type="button" id="apm-electro-browse-btn" class="apm-delivery-submit-btn" style="background:' + (isMarcalibro ? '#D97706' : (isDiaMadre ? '#E11D48' : '#D97706')) + ';"><i class="fas fa-camera"></i> ' + (isMarcalibro ? 'Seleccionar Foto del Marca-Libros' : (isDiaMadre ? 'Seleccionar Foto de la Tarjeta 3D' : 'Seleccionar Foto / Video')) + '</button>' +
                   '</div>' +
                   '<div id="apm-electro-delivery-status" style="margin-top:14px;">' +
                     (savedFileName ?
@@ -4689,7 +4952,9 @@
 
           // ── PANEL 3: SOLUCIÓN OFICIAL ──
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
-            (isScratchJrPerspectiva ?
+            (isMarcalibro ?
+              renderMarcalibroOrigamiSolutionHtml(mission) :
+             isScratchJrPerspectiva ?
               renderScratchJrPerspectivaSolutionHtml(mission) :
              isScratchJrVelocidad ?
               renderScratchJrVelocidadSolutionHtml(mission) :
@@ -5265,9 +5530,9 @@
         switchToPaint.style.boxShadow = (mode === 'paint' ? (isPaintBanderas ? '0 2px 6px rgba(37,99,235,0.3)' : '0 2px 6px rgba(22,163,74,0.3)') : 'none');
       }
       if (switchToElectro) {
-        switchToElectro.style.background = (mode === 'electro' ? (isDiaMadre ? '#E11D48' : '#D97706') : '#E2E8F0');
+        switchToElectro.style.background = (mode === 'electro' ? (isMarcalibro ? '#D97706' : (isDiaMadre ? '#E11D48' : '#D97706')) : '#E2E8F0');
         switchToElectro.style.color = (mode === 'electro' ? '#FFF' : '#475569');
-        switchToElectro.style.boxShadow = (mode === 'electro' ? (isDiaMadre ? '0 2px 6px rgba(225,29,72,0.3)' : '0 2px 6px rgba(217,119,6,0.3)') : 'none');
+        switchToElectro.style.boxShadow = (mode === 'electro' ? (isMarcalibro ? '0 2px 6px rgba(217,119,6,0.3)' : (isDiaMadre ? '0 2px 6px rgba(225,29,72,0.3)' : '0 2px 6px rgba(217,119,6,0.3)')) : 'none');
       }
       if (switchToScratch) {
         switchToScratch.style.background = (mode === 'scratch' ? '#EA580C' : '#E2E8F0');

@@ -783,129 +783,740 @@ const SCHOOL_DATA = {
       games: [
         {
           id: "g1-g1",
-          title: "Scratch Jr 🎨",
+          level: 9,
+          title: "Escenarios CodeJr - Primera Parte: Ambiente y Velocidades 🐱⚡",
           platform: "codejr",
           externalUrl: "https://codejr.org",
           thumbnail: "img/scratchjr.png",
-          description: "Crea personajes, proyectos interactivos y animaciones combinando bloques con símbolos intuitivos.",
-          benefits: "Potencia la lógica de programación, el diseño de historias y la estructuración de ideas.",
-          tags: ["Scratch Jr", "Bloques", "Iniciación"]
-        },
-        {
-          id: "g1-g2",
-          title: "Minecraft: Hora del Código ⛏️",
-          platform: "codeorg",
-          externalUrl: "https://code.org/es-ES/hour-of-code/minecraft",
-          thumbnail: "img/minecraft.png",
-          description: "Resolvé los desafíos de construcciones y recolección de recursos en Minecraft usando código en bloques.",
-          benefits: "Fortalece la resolución de problemas complejas y la comprensión de algoritmos secuenciales.",
-          tags: ["Code.org", "Minecraft", "Lógica"]
-        },
-        {
-          id: "g1-g3",
-          title: "Ana y Elsa (Frozen) ❄️",
-          platform: "codeorg",
-          externalUrl: "https://studio.code.org/es/courses/frozen/units/1/lessons/1/levels/1",
-          thumbnail: "img/frozen.png",
-          description: "Programá los trazos de patinaje sobre hielo con Ana y Elsa diseñando figuras y cristales geométricos.",
-          benefits: "Enseña bucles de repetición, trazado de líneas y apreciación artística mediante código.",
-          tags: ["Code.org", "Frozen", "Geometría"]
+          description: "¡Nivel 9 de la Ruta de Aventuras! Aprendemos a explorar el ambiente de Scratch Jr: creación de escenarios con fondos ilustrados, personajes y cómo programar diferentes velocidades (lenta, media y rápida) con el bloque naranja de velocidad.",
+          benefits: "Fomenta la creatividad en historias digitales, el reconocimiento del ambiente y escenarios de Scratch Jr, el control de la velocidad y el movimiento algorítmico, y la experimentación causa-efecto comparando velocidades en carreras de personajes.",
+          tags: ["Scratch Jr", "CodeJr", "Escenarios", "Velocidad", "Bloques", "Nivel 9"]
         },
         {
           id: "g1-g4",
-          title: "Angry Birds 🐦",
+          level: 2,
+          title: "Angry Birds: Primeros Pasos 🐦",
           platform: "codeorg",
           externalUrl: "https://studio.code.org/es/hoc/1",
           thumbnail: "img/angrybirds.png",
-          description: "Superá los niveles del laberinto ordenando bloques de movimiento para que el pájaro atrape al cerdo.",
-          benefits: "Desarrolla el pensamiento algorítmico, la depuración de errores y la anticipación de soluciones.",
-          tags: ["Code.org", "Angry Birds", "Algoritmos"]
+          description: "¡Nivel 2 de la Ruta de Aventuras! Guiá al pájaro por el laberinto para aprender a programar y dar los primeros pasos de razonamiento computacional.",
+          benefits: "Aprender a programar y los primeros pasos del razonamiento en programación: secuenciación de algoritmos paso a paso, lateralidad (izquierda/derecha), descomposición de problemas y prueba y error.",
+          tags: ["Code.org", "Angry Birds", "Algoritmos", "Hora del Código"]
+        },
+        {
+          id: "g1-g3",
+          level: 6,
+          title: "Ana y Elsa (Frozen): Geometría en el Hielo ❄️⛸️",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
+          thumbnail: "img/frozen.png",
+          description: "¡Nivel 6 de la Ruta de Aventuras! Conectamos lo aprendido en Paint con la programación: guiamos a Elsa y Ana a patinar para trazar figuras geométricas, ángulos y copos de nieve con código.",
+          benefits: "Conecta el dibujo geométrico manual de Paint con el pensamiento algorítmico, comprensión de ángulos rectos (90°), nociones de bucles (repetición) y orientación espacial sobre el hielo.",
+          tags: ["Code.org", "Frozen", "Geometría", "Ángulos", "Nivel 6"]
+        },
+        {
+          id: "g1-g2",
+          level: 8,
+          title: "Minecraft: Hora del Código (Aprender a Programar) ⛏️🧱",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
+          thumbnail: "img/minecraft.png",
+          description: "¡Nivel 8 de la Ruta de Aventuras! ⚠️ Aclaración: no es el juego tradicional de Minecraft de juego libre, sino una adaptación pedagógica oficial de Code.org para aprender a programar dando órdenes en bloques a Steve y Alex.",
+          benefits: "Canaliza el entusiasmo por Minecraft hacia el aprendizaje del pensamiento computacional: secuenciación lógica, orientación en cuadrícula 3D isométrica, descomposición de acciones y bucles de repetición.",
+          tags: ["Code.org", "Minecraft", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 8"]
+        },
+        {
+          id: "g1-g5",
+          level: 10,
+          title: "Escenarios CodeJr - Segunda Parte: Perspectiva y Profundidad 🐱🔍",
+          platform: "codejr",
+          externalUrl: "https://codejr.org",
+          thumbnail: "img/scratchjr.png",
+          description: "¡Nivel 10 de la Ruta de Aventuras! Aprendemos a cambiar la perspectiva visual y escala de los personajes en Scratch Jr: usamos los bloques violetas de apariencia (achicar para alejar en el horizonte y agrandar para acercar) combinados con movimientos en el sendero.",
+          benefits: "Desarrolla la noción espacial de profundidad tridimensional en un plano 2D, la comprensión de variables visuales y escalas (lejos = pequeño, cerca = grande), y la coordinación de secuencias de apariencia y movimiento en Scratch Jr.",
+          tags: ["Scratch Jr", "CodeJr", "Escenarios", "Perspectiva", "Profundidad", "Apariencia", "Bloques Violetas", "Nivel 10"]
         }
       ],
 
       projects: [
         {
           id: "g1-p1",
-          title: "El Laberinto del Taller 🗺️",
-          author: "Grupo 1° Grado",
-          date: "Agosto 2026",
-          coverImage: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80",
-          description: "Resolvimos laberintos en Code.org dando instrucciones paso a paso. Aprendimos que una computadora solo hace exactamente lo que le decimos, ¡ni más ni menos!",
-          tags: ["Code.org", "Laberinto", "Lógica"],
+          level: 1,
+          title: "El Sombrero Luminoso de San Patricio 🍀🎩",
+          author: "Taller Maker 1° Grado",
+          date: "Marzo 2026",
+          type: "electronica",
+          badge: "🍀 Circuito & Sombrero Maker",
+          icon: "fa-hat-wizard",
+          color: "#16A34A",
+          coverImage: "img/proyectos/sombrero_san_patricio_solo_sombrero.png",
+          description: "¡Nivel 1 de nuestra Ruta de Aventuras! Aprendemos cómo viaja la electricidad construyendo un sombrero festivo de San Patricio con vincha interactiva: usamos cinta de cobre conductora, un diodo LED verde en el trébol y una pila botón CR2032 con interruptor de presión en la vincha.",
+          objective: "Construir un circuito eléctrico seguro con cinta de cobre conductora, pila botón CR2032 y luz LED verde en el trébol del sombrero de San Patricio, logrando que se encienda con la presión de la cabeza sobre la vincha.",
+          benefits: "Desarrolla la motricidad fina, comprensión vivencial de circuito cerrado y polaridad (+ y -), causa-efecto en electricidad básica y confianza creativa en el taller maker sin pantallas.",
+          tags: ["San Patricio", "Electrónica", "Circuito", "LED", "Sin programación", "Maker", "Nivel 1"],
           gallery: [
-            "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80"
+            "img/proyectos/sombrero_san_patricio_solo_sombrero.png",
+            "img/proyectos/sombrero_san_patricio_solo_circuito.png"
           ],
-          pdfUrl: null,
+          pdfUrl: "docs/sombrero_san_patricio_guia.pdf",
+          downloadPdfUrl: "docs/sombrero_san_patricio_guia.pdf",
           makecodeUrl: null,
           scratchId: null,
           materials: [
+            { title: "Plantilla del Sombrero de San Patricio", description: "Cuerpo del sombrero con el trébol troquelado para iluminar.", icon: "fa-hat-cowboy" },
+            { title: "1 Diodo LED verde (5mm)", description: "Luz que brilla en el centro del trébol.", icon: "fa-lightbulb" },
+            { title: "Cinta de cobre conductora autoadhesiva", description: "Pistas metálicas por donde viaja la electricidad.", icon: "fa-tape" },
+            { title: "1 Pila de botón CR2032 (3V)", description: "Fuente de energía segura de bajo voltaje.", icon: "fa-battery-full" },
+            { title: "Interruptor en la solapa de la vincha", description: "Cierra el circuito automáticamente al calzarse el sombrero.", icon: "fa-toggle-on" },
+            { title: "Tijera, pegamento en barra y colores", description: "Para recortar, ensamblar y decorar tu sombrero maker.", icon: "fa-cut" }
+          ],
+          instructions: [
             {
-              title: "Ficha de Actividades: Flechas y Direcciones",
-              type: "Ficha Didáctica",
-              icon: "fas fa-file-alt",
-              description: "Guía impresa que usamos en el aula para trazar recorridos en papel antes de pasar a la computadora."
+              step: 1,
+              title: "Colorear y Recortar la Plantilla",
+              desc: "Pintá tu sombrero con tonos verdes y dorados. Luego recortá con tijera por la línea exterior del sombrero y las tiras de la vincha.",
+              tip: "¡No cortes el trébol por completo! Solo hacé un orificio diminuto en el centro para pasar la cabeza del LED."
+            },
+            {
+              step: 2,
+              title: "Pegar las Pistas de Cinta de Cobre",
+              desc: "Del lado de atrás del sombrero, pegá una tira de cinta de cobre desde la solapa de la vincha hasta el trébol (pista positiva) y otra tira para el retorno a la pila (pista negativa).",
+              tip: "Asegurate de que las dos cintas no se toquen entre sí para evitar cortocircuitos."
+            },
+            {
+              step: 3,
+              title: "Instalar el LED Verde en el Trébol",
+              desc: "Abrí las patitas del LED. Apoyá la patita larga (positiva +) sobre la pista que va al polo positivo y la patita corta (negativa -) sobre la pista de retorno.",
+              tip: "Fijá firmemente cada patita con un pedacito de cinta de cobre encima para asegurar excelente contacto."
+            },
+            {
+              step: 4,
+              title: "Fijar la Pila Botón CR2032",
+              desc: "Colocá la pila en su base: la cara rugosa (-) contra la pista negativa, y pegala con cinta adhesiva dejando la cara lisa con letras (+) libre hacia arriba.",
+              tip: "¡Probá antes de cerrar! Al tocar la cara lisa con la pista positiva, el LED verde debe encender al instante."
+            },
+            {
+              step: 5,
+              title: "Armar el Interruptor en la Solapa de la Vincha",
+              desc: "Envolvé con cinta de cobre la solapa de la vincha. Al colocar la vincha en la cabeza, las dos cintas de cobre se tocan y cierran el circuito.",
+              tip: "¡Al calzarte el sombrero, la presión de tu cabeza hace contacto y enciende la luz verde automáticamente!"
+            },
+            {
+              step: 6,
+              title: "¡Ajustar la vincha y lucir tu invento!",
+              desc: "Uní las tiras de la vincha según el contorno de tu cabeza con cinta o abrochadora. ¡Mirá cómo brilla el trébol de la suerte!",
+              tip: "¿No prende? Apretá bien sobre las patitas del LED y la cinta de cobre para eliminar falsos contactos."
             }
           ]
         },
         {
           id: "g1-p2",
-          title: "El Bicho Robot Saltador (Vibro-Bot) 🐞",
-          author: "Taller 1° Grado",
-          date: "Septiembre 2026",
-          type: "electronica",
-          coverImage: "img/microbit.png",
-          description: "¡Robótica manual sin pantallas ni programación! Construimos un simpático insecto mecánico usando un pequeño motor vibrador y un cepillo. Al cerrar el circuito con un clip, ¡el bicho sale corriendo y vibrando por la mesa!",
-          tags: ["Electrónica", "Sin programación", "Robótica", "Motores"],
+          level: 2,
+          title: "Angry Birds: Primeros Pasos de Programación 🐦🎯",
+          author: "Taller de Programación 1° Grado",
+          date: "Abril 2026",
+          type: "codeorg",
+          platform: "codeorg",
+          coverImage: "img/angrybirds.png",
+          gameUrl: "https://studio.code.org/es/hoc/1",
+          externalUrl: "https://studio.code.org/es/hoc/1",
+          description: "¡Nivel 2 de nuestra Ruta de Aventuras! Aprendemos a programar y damos los primeros pasos del razonamiento computacional guiando a los Angry Birds a través del laberinto hasta atrapar al cerdito travieso con bloques de flechas en secuencia.",
+          objective: "Aprender a programar y dar los primeros pasos de razonamiento en programación guiando al pájaro a través del laberinto hasta el cerdito.",
+          benefits: "Desarrolla el pensamiento computacional, la estructuración de algoritmos paso a paso, la lateralidad y orientación espacial (adelante, izquierda, derecha), la descomposición de problemas y el método de prueba y depuración de errores (debugging) de forma divertida.",
+          tags: ["Angry Birds", "Code.org", "Lógica", "Algoritmos", "Hora del Código", "Nivel 2"],
           gallery: [
-            "img/microbit.png"
+            "img/angrybirds.png"
           ],
           pdfUrl: null,
+          downloadPdfUrl: null,
           makecodeUrl: null,
           scratchId: null,
           materials: [
-            { title: "1 Mini motor vibrador 3V", description: "Genera vibraciones rápidas que impulsan al robot" },
-            { title: "1 Pila de botón CR2032 o 2 pilas AAA", description: "Energía segura para activar el motor" },
-            { title: "1 Cabezal de cepillo de dientes viejo", description: "Las cerdas actúan como patas que transmiten el movimiento" },
-            { title: "Cinta doble faz y gomitas elásticas", description: "Para sujetar el motor y la pila sobre el cepillo" },
-            { title: "Limpiapipas y ojitos móviles", description: "Antenas y decoración del bicho robot" }
+            { title: "Plataforma Code.org (Hora del Código)", description: "Desafío interactivo online con laberintos progresivos (https://studio.code.org/es/hoc/1).", icon: "fa-gamepad" },
+            { title: "Bloques de Dirección de Flechas", description: "Comandos secuenciales: avanzar, girar a la izquierda y girar a la derecha.", icon: "fa-arrows-alt" },
+            { title: "Computadora o Tablet", description: "Para arrastrar y encastrar los bloques como piezas de rompecabezas.", icon: "fa-laptop" }
           ],
           instructions: [
             {
               step: 1,
-              title: "Preparar el cabezal del cepillo",
-              desc: "Cortamos el mango de un cepillo viejo dejando solo el cabezal con cerdas. Nos aseguramos de que quede plano y firme sobre la mesa.",
-              tip: "Las cerdas inclinadas hacia atrás harán que avance más rápido."
+              title: "Observar el laberinto y al cerdito",
+              desc: "Mirá bien la pantalla: ubicá dónde está el pájaro rojo y hacia dónde debe caminar para llegar hasta el cerdito travieso.",
+              tip: "¿Está en línea recta o tiene que doblar? ¡Contá cuántos casilleros debe avanzar!"
             },
             {
               step: 2,
-              title: "Fijar la cinta doble faz",
-              desc: "Pegamos un trozo de cinta bifaz o silicona fría sobre el lomo del cepillo de dientes.",
-              tip: "Debe quedar bien adherido para soportar la vibración."
+              title: "Arrastrar el bloque 'Avanzar'",
+              desc: "Tomá con el dedo o el mouse el bloque anaranjado 'avanzar' y encastralo debajo del bloque amarillo 'cuando se ejecuta'. Cada bloque hace que el pájaro dé un paso.",
+              tip: "Escucharás un 'clic' mágico cuando las dos piezas encastren perfectamente."
             },
             {
               step: 3,
-              title: "Instalar el mini motor vibrador",
-              desc: "Colocamos el motor en la parte delantera con la masa excéntrica girando libremente sin tocar el plástico.",
-              tip: "Si el eje roza con el plástico, el motor no podrá girar."
+              title: "Girar cuando haya una curva",
+              desc: "Si el camino dobla, colocá un bloque de 'girar a la derecha' o 'girar a la izquierda'. ¡Fijate hacia dónde mira el pico del pájaro!",
+              tip: "Usá tus manos frente a la pantalla para sentir si debe doblar hacia la izquierda o la derecha."
             },
             {
               step: 4,
-              title: "Conectar los cables a la pila",
-              desc: "Pegamos el cable azul/negro del motor con cinta conductora a la cara rugosa (-) de la pila.",
-              tip: "Dejamos el cable rojo suelto para usarlo de interruptor."
+              title: "Tocar el botón naranja 'Ejecutar'",
+              desc: "Tocá 'Ejecutar' para ver cómo el pájaro cobra vida y camina paso a paso siguiendo tu programa.",
+              tip: "Si no llega o choca contra una caja, tocá 'Reiniciar', cambiá los bloques y probalo de nuevo. ¡Así piensan los programadores!"
+            }
+          ]
+        },
+        {
+          id: "g1-p3",
+          level: 3,
+          title: "El Marca-Libros Origami de Tom Sawyer (Circuito & LED Chato) 📖🎩💡",
+          author: "Taller Maker 1° Grado",
+          date: "Mayo 2026",
+          type: "electronica",
+          badge: "📖 Circuito & Marca-Libros Origami",
+          icon: "fa-bookmark",
+          color: "#D97706",
+          coverImage: "img/proyectos/tomsawyer_marcalibro_cover.svg",
+          description: "¡Nivel 3 de nuestra Ruta de Aventuras! Construimos un marca-libros esquinero en origami con una hoja de papel glacé doblada para calzar en la esquina de las páginas. Montamos un circuito ultraplano con cinta de cobre, pila botón y un diodo LED chato (SMD) colocado en el centro del gorro de Tom Sawyer. Al marcar la página y presionar con los dedos, ¡el gorro de Tom Sawyer se ilumina con una luz resplandeciente!",
+          objective: "Aprender el plegado geométrico de origami de un marca-libros esquinero usando una hoja de papel glacé e integrar un circuito eléctrico delgado con cinta de cobre conductora, pila botón CR2032 y un LED chato en el gorro de Tom Sawyer con un interruptor por presión táctil.",
+          benefits: "Desarrolla la destreza motriz fina y precisión espacial mediante el origami, introduce la comprensión de circuitos delgados y componentes electrónicos planos (LED chato SMD), fomenta el hábito de la lectura con una creación propia y refuerza el principio de causa-efecto con interruptores de presión.",
+          tags: ["Marca-Libros", "Origami", "Tom Sawyer", "LED Chato", "Papel Glacé", "Electrónica", "Circuito", "Sin programación", "Maker", "Nivel 3"],
+          gallery: [
+            "img/proyectos/tomsawyer_marcalibro_cover.svg",
+            "img/proyectos/marcalibros_origami_guia.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "1 Hoja cuadrada de papel glacé", description: "Base para el plegado de origami (10x10 cm o 15x15 cm) que formará la funda esquinera.", icon: "fa-scroll" },
+            { title: "1 Diodo LED chato (SMD / plano)", description: "Luz ultraplana montada en el centro del gorro de Tom Sawyer.", icon: "fa-lightbulb" },
+            { title: "Cinta de cobre conductora autoadhesiva", description: "Pistas delgadas que transportan la electricidad desde la pila al LED chato.", icon: "fa-tape" },
+            { title: "1 Pila botón CR2032 (3V)", description: "Fuente de alimentación compacta alojada en la solapa interior.", icon: "fa-battery-full" },
+            { title: "Gorro y rostro de Tom Sawyer", description: "Ilustración de Tom Sawyer con su sombrero de paja para decorar la solapa.", icon: "fa-hat-cowboy" },
+            { title: "Marcadores y pegamento en barra", description: "Para personalizar la carita, pecas y fijar el personaje.", icon: "fa-paint-brush" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Plegar el papel glacé en triángulo",
+              desc: "Colocá la hoja cuadrada de papel glacé sobre la mesa con el color hacia abajo. Doblala por la mitad uniendo dos esquinas opuestas para formar un triángulo grande.",
+              tip: "Marcá bien el pliegue central pasando la uña con firmeza sobre la mesa."
+            },
+            {
+              step: 2,
+              title: "Doblar las puntas laterales hacia la base",
+              desc: "Tomá la punta derecha del triángulo y doblala hacia la punta inferior central. Hacé lo mismo con la punta izquierda para formar un rombo perfecto.",
+              tip: "Asegurate de que las dos puntas se unan en el centro sin encimarse."
+            },
+            {
+              step: 3,
+              title: "Crear la solapa y el bolsillo interior",
+              desc: "Desplegá las puntas laterales hacia arriba. Tomá solo la primera capa de la punta superior y doblala hacia abajo hasta tocar la base, formando un bolsillo triangular.",
+              tip: "Este bolsillo será la funda que calza en la esquina de las hojas del libro."
+            },
+            {
+              step: 4,
+              title: "Introducir las puntas dentro del bolsillo",
+              desc: "Doblá nuevamente las puntas derecha e izquierda y metelas hacia adentro del bolsillo. ¡Tu marca-libros esquinero de origami ya está estructurado!",
+              tip: "Probá calzarlo en la esquina de una hoja de tu cuaderno para comprobar que deslice con suavidad."
             },
             {
               step: 5,
-              title: "Fijar la pila y crear el interruptor",
-              desc: "Pegamos la pila sobre el lomo del cepillo. Con un clip metálico o cinta, conectamos el cable rojo (+) a la cara lisa (+) para encenderlo.",
-              tip: "Al despegar el cable o abrir el clip, el robot se apaga."
+              title: "Trazar las pistas de cobre y conectar el LED chato",
+              desc: "Pegá una tira de cinta de cobre desde la solapa donde irá la pila hasta la posición del LED chato. Conectá el LED chato asegurando que el polo positivo (+) toque la pista positiva.",
+              tip: "El LED chato (SMD) tiene un perfil extraplano ideal para no abultar las páginas del libro."
             },
             {
               step: 6,
-              title: "¡Decoración y carrera de robots!",
-              desc: "Pegamos ojitos locos y dos limpiapipas como antenas. ¡Apoyamos el bicho en la mesa y lo vemos bailar y vibrar a toda velocidad!",
-              tip: "Probá cambiar el peso en la punta para que cambie de dirección."
+              title: "Pegar a Tom Sawyer y probar el interruptor por presión",
+              desc: "Pegá la ilustración de Tom Sawyer en el frente, haciendo coincidir el LED chato exactamente en el centro de su gorro. Colocá la pila en la solapa: al apretar con los dedos, ¡el gorro se ilumina!",
+              tip: "¡Calzalo en tu libro favorito! Cada vez que marques una página y presiones, la luz del sombrero de Tom Sawyer te indicará la lectura."
+            }
+          ]
+        },
+        {
+          id: "g1-p4",
+          level: 4,
+          title: "Cancha de Fútbol con Figuras Geométricas en Paint ⚽🎨",
+          author: "Taller de Programación 1° Grado",
+          date: "Junio 2026",
+          type: "paint",
+          badge: "🎨 Arte Digital & Geometría",
+          icon: "fa-palette",
+          color: "#16A34A",
+          coverImage: "img/proyectos/cancha_futbol_paint_cover.png",
+          description: "¡Nivel 4 de nuestra Ruta de Aventuras! Aprendemos a usar las herramientas de figuras geométricas en Paint (rectángulos para el césped y los arcos, líneas rectas para dividir el campo y círculos con Shift para el centro) y el bote de pintura para colorear nuestro estadio.",
+          objective: "Aprender a descomponer y dibujar una cancha de fútbol completa en Paint utilizando figuras geométricas básicas y rellenar con color respetando los límites de cada figura cerrada.",
+          benefits: "Desarrolla la coordinación viso-motora con el mouse, introduce proporciones espaciales, simetría y precisión gráfica en entornos digitales.",
+          tags: ["Paint", "Arte Digital", "Geometría", "Cancha de Fútbol", "Rectángulos", "Círculos", "Nivel 4"],
+          gallery: [
+            "img/proyectos/cancha_futbol_paint_cover.png",
+            "img/proyectos/cancha_futbol_paint_guia.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Programa Paint", description: "Lienzo digital de dibujo en Windows.", icon: "fa-paint-brush" },
+            { title: "Herramienta Rectángulo", description: "Para el perímetro de la cancha, césped y arcos.", icon: "fa-vector-square" },
+            { title: "Herramienta Línea", description: "Para trazar la línea del medio campo.", icon: "fa-slash" },
+            { title: "Herramienta Círculo (Elipse)", description: "Para el círculo central y la pelota con Shift.", icon: "fa-circle" },
+            { title: "Bote de Pintura", description: "Para rellenar con verde césped y blanco.", icon: "fa-fill-drip" },
+            { title: "Mouse de Computadora", description: "Para ejercitar la motricidad fina y precisión.", icon: "fa-mouse-pointer" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Abrir Paint y Crear el Lienzo",
+              desc: "Abrí Paint. Asegurate de tener una hoja blanca amplia para dibujar tu cancha.",
+              tip: "Maximizá la ventana para tener todo el espacio disponible."
+            },
+            {
+              step: 2,
+              title: "Trazar el Rectángulo del Césped",
+              desc: "Seleccioná la herramienta Rectángulo, elegí color verde oscuro y arrastrá para cubrir la mayor parte de la pantalla.",
+              tip: "Usá el Bote de Pintura para rellenar el fondo con verde césped."
+            },
+            {
+              step: 3,
+              title: "Dibujar las Líneas de la Cancha y el Medio Campo",
+              desc: "Con color blanco y la herramienta Rectángulo trazá el perímetro interior. Luego usá la herramienta Línea para dividir la cancha en dos mitades exactas.",
+              tip: "Mantené presionada la tecla Shift mientras arrastrás la línea para que quede perfectamente derecha."
+            },
+            {
+              step: 4,
+              title: "Círculo Central con Shift",
+              desc: "Seleccioná la herramienta Elipse (círculo) con color blanco. Mantené pulsada la tecla Shift y arrastrá en el centro de la cancha.",
+              tip: "¡La tecla Shift es mágica! Hace que el óvalo se convierta en un círculo redondo perfecto."
+            },
+            {
+              step: 5,
+              title: "Dibujar los Arcos y la Pelota",
+              desc: "Trazá rectángulos pequeños a la izquierda y derecha para las áreas de gol. Agregá un pequeño círculo blanco y negro para la pelota de fútbol.",
+              tip: "Si una línea sale torcida, ¡apretá Ctrl + Z para deshacer y volver a intentar!"
+            },
+            {
+              step: 6,
+              title: "Guardar tu Dibujo y Subirlo a Drive",
+              desc: "Andá a 'Archivo' > 'Guardar como' > 'Imagen PNG' con el nombre 'mi_cancha.png'. ¡Arrastralo a la pestaña 'Mi Entrega' para ganar +100 XP!",
+              tip: "¡Tus profesores y compañeros van a poder ver tu cancha en tu carpeta de Google Drive!"
+            }
+          ]
+        },
+        {
+          id: "g1-p5",
+          level: 5,
+          title: "Tarjeta Pop-Up 3D: Corazón Luminoso para Mamá 💖✨",
+          author: "Taller Maker 1° Grado",
+          date: "Mayo 2026",
+          type: "electronica",
+          badge: "💖 Circuito & Tarjeta Pop-Up 3D",
+          icon: "fa-heart",
+          color: "#E11D48",
+          coverImage: "img/proyectos/dia_madre_tarjeta_3d_cover.png",
+          description: "¡Nivel 5 de nuestra Ruta de Aventuras! Creamos un regalo inolvidable en Papertronics: una tarjeta plegable donde al abrirse se despliega un corazón pixel 3D en relieve con la foto del alumno en el centro. Al presionar el escudo del Colegio Paulo Freire, se activa un interruptor secreto con cinta de cobre que enciende una luz LED bañando los bordes del corazón con un resplandor mágico.",
+          objective: "Construir una tarjeta interactiva pop-up con relieve tridimensional y circuito eléctrico de cinta de cobre, pila botón CR2032 y diodo LED de alto brillo activado mediante un pulsador oculto detrás del escudo del Colegio Paulo Freire.",
+          benefits: "Integra motricidad fina y precisión de corte en papel con conceptos de electrónica básica aplicada, refuerza el sentido de pertenencia y afectividad familiar a través de la tecnología tangible maker.",
+          tags: ["Día de la Madre", "Papertronics", "Tarjeta Pop-Up", "Circuito", "LED", "Electrónica", "Maker", "Nivel 5"],
+          gallery: [
+            "img/proyectos/dia_madre_tarjeta_3d_cover.png",
+            "img/proyectos/dia_madre_circuito_plantilla.png"
+          ],
+          pdfUrl: "docs/dia_de_la_madre_tarjeta_3d.pdf",
+          downloadPdfUrl: "docs/dia_de_la_madre_tarjeta_3d.pdf",
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Plantilla Oficial de la Tarjeta Pop-Up", description: "Lámina prediseñada con el corazón pixel 3D, líneas de corte y plegado.", icon: "fa-file-alt" },
+            { title: "Foto del Alumno/a", description: "Fotografía retrato para montar en el centro del corazón.", icon: "fa-portrait" },
+            { title: "1 Diodo LED de alto brillo", description: "Emite luz bañando los bordes del corazón 3D.", icon: "fa-lightbulb" },
+            { title: "Cinta de cobre conductora", description: "Pistas metálicas que conectan la pila y el LED sin soldadura.", icon: "fa-tape" },
+            { title: "1 Pila botón CR2032 (3V)", description: "Fuente de energía segura montada en la solapa interna.", icon: "fa-battery-full" },
+            { title: "Pulsador Escudo Paulo Freire", description: "Botón secreto que cierra el circuito al presionar con el dedo.", icon: "fa-shield-alt" },
+            { title: "Tijera y pegamento en barra", description: "Para recortar las líneas sólidas y plegar las solapas 3D.", icon: "fa-cut" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Recortar las líneas sólidas del corazón pixel",
+              desc: "Con tijera, recortá ÚNICAMENTE las líneas continuas de los escalones del corazón. ¡Cuidado! Las líneas de puntos NO se cortan: son para doblar.",
+              tip: "Cortá despacio con la punta de la tijera para que los bordes queden prolijos."
+            },
+            {
+              step: 2,
+              title: "Plegar el relieve pop-up hacia adelante",
+              desc: "Empujá con los dedos el corazón hacia el interior de la tarjeta doblando por las líneas de puntos. Al cerrar y abrir la tarjeta en 90°, el corazón debe saltar hacia el frente.",
+              tip: "Marcá bien los pliegues con la uña para que el mecanismo abra con fuerza."
+            },
+            {
+              step: 3,
+              title: "Pegar la foto en el centro del corazón",
+              desc: "Pegá tu foto centrada dentro del corazón pixel con pegamento en barra.",
+              tip: "¡El rostro debe quedar justo en el medio para que mamá lo vea al abrir la tarjeta!"
+            },
+            {
+              step: 4,
+              title: "Pegar las pistas de cinta de cobre",
+              desc: "Pegá la cinta de cobre desde la solapa de la pila hasta la posición del LED y hacia el botón del escudo del colegio.",
+              tip: "Dejá un pequeño espacio abierto en el escudo: ese será nuestro interruptor secreto."
+            },
+            {
+              step: 5,
+              title: "Conectar el LED y la pila botón CR2032",
+              desc: "Fijá las patitas del LED sobre las pistas de cobre (patita larga = positivo +, patita corta = negativo -). Colocá la pila en su solapa.",
+              tip: "Aplastá bien con la uña sobre las patitas del LED para asegurar buen contacto."
+            },
+            {
+              step: 6,
+              title: "Montar el pulsador del Escudo Freire",
+              desc: "Pegá el escudo del Colegio Paulo Freire sobre la solapa del interruptor. Al presionar con el dedo sobre el escudo, las cintas de cobre se tocan y encienden la luz.",
+              tip: "¡Presioná el escudo y mirá cómo resplandece el corazón! Lista para regalar con amor a mamá."
+            }
+          ]
+        },
+        {
+          id: "g1-p6",
+          level: 6,
+          title: "Ana y Elsa (Frozen): Geometría en el Hielo ❄️⛸️",
+          author: "Taller de Programación 1° Grado",
+          date: "Junio 2026",
+          type: "codeorg",
+          platform: "codeorg",
+          badge: "❄️ Código & Geometría",
+          icon: "fa-snowflake",
+          color: "#0284C7",
+          coverImage: "img/frozen.png",
+          gameUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
+          externalUrl: "https://studio.code.org/s/frozen/lessons/1/levels/1",
+          description: "¡Nivel 6 de nuestra Ruta de Aventuras! Conectamos el dibujo geométrico de Paint con el pensamiento algorítmico: programamos a Elsa y Ana para patinar sobre el hielo trazando líneas rectas, esquinas con giros en ángulo recto (90°), cuadrados completos y copos de nieve mágicos utilizando bucles de repetición.",
+          objective: "Comprender la relación entre figuras geométricas y algoritmos secuenciales guiando a Elsa y Ana en Code.org para trazar figuras con comandos de avanzar y girar en ángulos de 90° y 60°, introduciendo el concepto de bucles para automatizar repeticiones.",
+          benefits: "Transfiere la noción gráfica de Paint hacia la programación algorítmica, introduce el razonamiento de ángulos y lateralidad en 360°, desarrolla la comprensión temprana de bucles y refuerza la capacidad de anticipar trazos en el espacio.",
+          tags: ["Frozen", "Code.org", "Geometría", "Ángulos", "Bucles", "Algoritmos", "Nivel 6"],
+          gallery: [
+            "img/frozen.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Desafío Code.org Frozen (Geometría en el Hielo)", description: "Entorno interactivo online (https://studio.code.org/s/frozen/lessons/1/levels/1).", icon: "fa-snowflake" },
+            { title: "Bloque 'Avanzar'", description: "Hace patinar a Elsa trazando una línea recta de 100 píxeles.", icon: "fa-arrows-alt-v" },
+            { title: "Bloque 'Girar a la Derecha 90°'", description: "Crea una esquina en ángulo recto exacta para figuras cuadradas.", icon: "fa-redo" },
+            { title: "Bloque 'Repetir'", description: "Automatiza la repetición de lados sin tener que repetir bloques manualmente.", icon: "fa-sync-alt" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Trazar una Línea Recta (El lado de la figura)",
+              desc: "Encastrá el bloque azul 'avanzar 100 píxeles' debajo de 'al ejecutar'. Tocá Ejecutar para ver cómo Elsa patina y dibuja una línea sobre el hielo.",
+              tip: "Cada línea recta es uno de los lados de la figura geométrica que vas a armar."
+            },
+            {
+              step: 2,
+              title: "Girar en Ángulo Recto de 90 Grados",
+              desc: "Para doblar la esquina, agregá el bloque 'girar a la derecha 90 grados' y luego otro bloque 'avanzar 100 píxeles'.",
+              tip: "90 grados es una esquina perfecta, igual a la esquina de una hoja o de los arcos de fútbol en Paint."
+            },
+            {
+              step: 3,
+              title: "Cerrar el Cuadrado con un Bucle",
+              desc: "En lugar de encastrar 8 bloques seguidos, colocá el bloque rosa 'repetir 4 veces' y meté adentro un 'avanzar' y un 'girar a la derecha'.",
+              tip: "¡Elsa repetirá la orden 4 veces automáticamente hasta cerrar el cuadrado!"
+            },
+            {
+              step: 4,
+              title: "Copos de Nieve y Figuras Mágicas",
+              desc: "A medida que avanzás de nivel, cambiá los giros a 60 grados para crear hexágonos, cruces y copos de nieve deslumbrantes.",
+              tip: "¡Al terminar los niveles tocá '¡Completé el Reto de Frozen en Code.org!' para sumar tus +100 XP!"
+            }
+          ]
+        },
+        {
+          id: "g1-p7",
+          level: 7,
+          title: "Banderas del Mundial con Figuras Geométricas en Paint 🇺🇾🎨",
+          author: "Taller de Programación 1° Grado",
+          date: "Julio 2026",
+          type: "paint",
+          badge: "🎨 Arte Digital & Banderas",
+          icon: "fa-flag",
+          color: "#2563EB",
+          coverImage: "img/proyectos/banderas_mundial_paint_cover.png",
+          description: "¡Nivel 7 de nuestra Ruta de Aventuras! En este proyecto usamos Paint para diseñar las banderas de los países del mundial combinando figuras geométricas básicas: rectángulos para el perímetro y las franjas (horizontales o verticales), círculos y estrellas para los soles y emblemas patrios, y el bote de pintura para colorear con los tonos oficiales. ¡Subí tu dibujo para ganar +100 XP!",
+          objective: "Aprender a descomponer y dibujar banderas del mundial en Paint utilizando figuras geométricas básicas (rectángulos para franjas, círculos y estrellas para detalles) y rellenar con color respetando los límites de cada figura cerrada.",
+          benefits: "Fortalece la coordinación motriz fina con el mouse, introduce nociones de fraccionamiento espacial y proporciones (dividir un lienzo en dos mitades o tres tercios iguales), ejercita la simetría y amplía el conocimiento cultural y geográfico del mundo.",
+          tags: ["Paint", "Arte Digital", "Banderas", "Mundial", "Figuras Geométricas", "Colores", "Nivel 7"],
+          gallery: [
+            "img/proyectos/banderas_mundial_paint_cover.png",
+            "img/proyectos/banderas_mundial_paint_guia.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          gameUrl: null,
+          externalUrl: null,
+          materials: [
+            { title: "Programa Paint / Lienzo Digital", description: "Espacio de trabajo digital para dibujar con herramientas gráficas.", icon: "fa-paint-brush" },
+            { title: "Herramienta Rectángulo", description: "Para el marco exterior de la bandera y las franjas de colores.", icon: "fa-vector-square" },
+            { title: "Herramienta Línea Recta", description: "Para dividir las banderas en franjas horizontales o verticales.", icon: "fa-slash" },
+            { title: "Herramientas Círculo y Formas", description: "Para dibujar el Sol de Mayo (Uruguay/Argentina), rombos (Brasil) y estrellas.", icon: "fa-circle" },
+            { title: "Bote de Pintura (Relleno)", description: "Para pintar cada franja con los colores patrios oficiales sin derramar pintura.", icon: "fa-fill-drip" },
+            { title: "Mouse o Pantalla Táctil", description: "Para ejercitar precisión y motricidad fina al arrastrar figuras.", icon: "fa-mouse-pointer" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Trazar el rectángulo exterior de la bandera",
+              desc: "Abrí Paint. Seleccioná la herramienta Rectángulo con color negro o gris oscuro. Hacé clic arriba a la izquierda y arrastrá para armar el lienzo de tu bandera.",
+              tip: "Mantené un tamaño amplio en la pantalla para tener espacio cómodo donde colocar las franjas."
+            },
+            {
+              step: 2,
+              title: "Dividir en franjas (Horizontales o Verticales)",
+              desc: "Elegí la bandera que querés dibujar: si es como Uruguay o Argentina, dividí el rectángulo con franjas horizontales; si es como Francia o Italia, usá franjas verticales.",
+              tip: "Usá la herramienta Rectángulo o Línea asegurándote de tocar los dos bordes para que no queden huecos abiertos."
+            },
+            {
+              step: 3,
+              title: "Agregar figuras y símbolos centrales",
+              desc: "Seleccioná la herramienta Círculo (Elipse) para dibujar el sol (Uruguay / Argentina) o la forma de Rombo para la bandera de Brasil.",
+              tip: "Mantené pulsada la tecla Shift mientras arrastrás para que el círculo salga redondito perfecto."
+            },
+            {
+              step: 4,
+              title: "Colorear con el Bote de Pintura",
+              desc: "Seleccioná el Bote de Pintura, elegí los colores en la paleta (azul, celeste, amarillo, verde, rojo) y hacé clic dentro de cada franja para rellenarla.",
+              tip: "Si se pinta toda la pantalla de un solo color, ¡apretá Ctrl + Z de inmediato! Significa que había un pequeño espacio abierto en la línea."
+            },
+            {
+              step: 5,
+              title: "Dibujar más banderas de tus países favoritos",
+              desc: "Al lado de tu primera bandera podés dibujar otra de tus selecciones favoritas del mundial para armar tu propia colección digital de banderas.",
+              tip: "¡Probá una fácil con 2 o 3 franjas y luego desafiate con una que tenga sol o estrellas!"
+            },
+            {
+              step: 6,
+              title: "Guardar tu dibujo y subirlo a Drive",
+              desc: "Andá a 'Archivo' > 'Guardar como' > 'Imagen PNG' y guardalo con el nombre 'banderas_mundial.png'. ¡Arrastralo a la pestaña 'Mi Entrega' para sumar +100 XP!",
+              tip: "¡Tus profesores y compañeros van a poder ver tu lámina de banderas en tu carpeta de Google Drive!"
+            }
+          ]
+        },
+        {
+          id: "g1-p8",
+          level: 8,
+          title: "Minecraft: Hora del Código (Aprender a Programar) ⛏️🧱",
+          author: "Taller de Programación 1° Grado",
+          date: "Septiembre 2026",
+          type: "codeorg",
+          platform: "codeorg",
+          badge: "⛏️ Código & Minecraft",
+          icon: "fa-cube",
+          color: "#059669",
+          coverImage: "img/minecraft.png",
+          gameUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
+          externalUrl: "https://studio.code.org/s/mc/lessons/1/levels/1",
+          description: "¡Nivel 8 de nuestra Ruta de Aventuras! ⚠️ ACLARACIÓN IMPORTANTE: No es el juego tradicional de Minecraft comercial (supervivencia o modo libre con joystick), sino una adaptación pedagógica oficial de Code.org para aprender a programar desde el juego. Steve y Alex no se mueven solos; ¡vos los controlás encastrando bloques de código para que caminen, talen árboles, esquilen ovejas y construyan!",
+          objective: "Aprender los fundamentos del pensamiento computacional resolviendo los desafíos de la adaptación oficial de Minecraft en Code.org: programar secuencias algorítmicas, interactuar con el entorno 3D (destruir bloques, esquilar, colocar) y optimizar instrucciones con bucles de repetición.",
+          benefits: "Canaliza el gran entusiasmo por Minecraft hacia el aprendizaje activo de las ciencias de la computación: transforma a los niños de jugadores pasivos a creadores de código, desarrolla la orientación espacial isométrica, ejercita la descomposición de problemas y la lógica de bucles tempranos.",
+          tags: ["Minecraft", "Code.org", "Steve", "Alex", "Algoritmos", "Hora del Código", "Nivel 8"],
+          gallery: [
+            "img/minecraft.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Adaptación Educativa Code.org Minecraft", description: "Módulos interactivos oficiales de la Hora del Código (https://studio.code.org/s/mc/lessons/1/levels/1).", icon: "fa-cube" },
+            { title: "Bloques de Desplazamiento", description: "Comandos 'avanzar', 'girar a la derecha' y 'girar a la izquierda'.", icon: "fa-arrows-alt" },
+            { title: "Bloques de Acción", description: "Comandos 'destruir bloque', 'trasquilar oveja', 'colocar tablones'.", icon: "fa-hammer" },
+            { title: "Bloque 'Repetir' (Bucles)", description: "Para que Steve o Alex repitan acciones sin llenar la pantalla de bloques.", icon: "fa-sync-alt" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Elegir tu personaje: ¿Steve o Alex?",
+              desc: "Al ingresar a la actividad en Code.org podés elegir si querés jugar como Steve o como Alex para iniciar tu aventura de programación.",
+              tip: "Recordá: ¡aquí no usamos teclado para movernos! Solo avanzamos cuando colocamos bloques de programación."
+            },
+            {
+              step: 2,
+              title: "Llegar hasta la oveja",
+              desc: "Mirá cuántos pasos faltan para alcanzar la oveja y encastrá los bloques 'avanzar'. Tocá 'Ejecutar' para comprobar que tu personaje llegue a su destino.",
+              tip: "Contá los casilleros en la cuadrícula de tierra para saber cuántos bloques colocar."
+            },
+            {
+              step: 3,
+              title: "Talar el primer árbol",
+              desc: "Colocá bloques de avanzar hasta el tronco del árbol y luego sumá el bloque 'destruir bloque' para recolectar madera.",
+              tip: "¡Así se combinan órdenes de movimiento con acciones de trabajo en programación!"
+            },
+            {
+              step: 4,
+              title: "Esquilar ovejas y construir",
+              desc: "Usá el comando 'trasquilar' para conseguir lana y construir una cama antes de que anochezca en el mundo de bloques.",
+              tip: "Revisá que Steve mire exactamente en la dirección de la oveja antes de esquilarla."
+            },
+            {
+              step: 5,
+              title: "Optimizar con el bloque 'Repetir'",
+              desc: "Cuando tengas que dar muchos pasos o talar varios bloques seguidos, usá el bloque rosa de repetición. ¡Ahorra tiempo y hace que tu código sea más limpio!",
+              tip: "¡Los programadores profesionales siempre usan bucles para no repetir código innecesario!"
+            },
+            {
+              step: 6,
+              title: "¡Completar los desafíos y sumar tus +100 XP!",
+              desc: "Superá los niveles de la Hora del Código y tocá el botón '¡Completé el Reto de Minecraft en Code.org!' en la plataforma para certificar tu entrega.",
+              tip: "¡Felicitaciones! Has demostrado que dominás el pensamiento computacional con Minecraft."
+            }
+          ]
+        },
+        {
+          id: "g1-p9",
+          level: 9,
+          title: "Escenarios CodeJr - Primera Parte: Ambiente y Velocidades 🐱⚡",
+          author: "Taller de Programación 1° Grado",
+          date: "Septiembre 2026",
+          type: "scratch",
+          platform: "codejr",
+          badge: "🐱 Scratch Jr • Escenarios & Velocidad",
+          icon: "fa-tachometer-alt",
+          color: "#EA580C",
+          coverImage: "img/scratchjr.png",
+          projectFileUrl: "proyectos/velocidad.sjr",
+          downloadUrl: "proyectos/velocidad.sjr",
+          externalUrl: "https://codejr.org",
+          description: "¡Nivel 9 de nuestra Ruta de Aventuras! En esta misión exploramos el ambiente de Scratch Jr: creación y selección de escenarios ilustrados (paisajes), agregado de personajes múltiples y programación de velocidades (lenta, media y rápida) con el bloque naranja de velocidad para armar carreras de personajes. Podés descargar el proyecto de ejemplo velocidad.sjr para abrirlo en Scratch Jr.",
+          objective: "Explorar y dominar el ambiente de Scratch Jr: seleccionar escenarios, añadir personajes y programar algoritmos de movimiento con variación de velocidades (bloque naranja de control) para comparar ritmos de desplazamiento.",
+          benefits: "Desarrolla la orientación en entornos gráficos de programación temprana, introduce la noción de parámetros y variables visuales (velocidad 1, 2 y 3), estimula la creatividad narrativa y el análisis comparativo de velocidad (tiempo y distancia).",
+          tags: ["Scratch Jr", "CodeJr", "Escenarios", "Velocidad", "Carrera", "Bloques Naranjas", "Nivel 9"],
+          gallery: [
+            "img/scratchjr.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Aplicación Scratch Jr", description: "Entorno visual de bloques en tablet o PC (https://codejr.org).", icon: "fa-cat" },
+            { title: "Archivo de Ejemplo 'velocidad.sjr'", description: "Proyecto oficial descargable con carrera a diferentes velocidades.", icon: "fa-file-code" },
+            { title: "Bloque Amarillo 'Bandera Verde'", description: "Comando de inicio para poner en marcha a los personajes simultáneamente.", icon: "fa-flag" },
+            { title: "Bloque Naranja de 'Velocidad'", description: "Permite elegir entre 3 ritmos: Lento (caminar), Medio (trotar) o Rápido (correr).", icon: "fa-tachometer-alt" },
+            { title: "Bloques Azules de 'Movimiento'", description: "Comandos de flechas para avanzar casilleros hacia adelante en el escenario.", icon: "fa-arrows-alt-h" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Explorar el Ambiente de Scratch Jr",
+              desc: "Abrí Scratch Jr tocando la casita. Observá el escenario central, la columna izquierda donde se agregan personajes y la columna derecha con los escenarios/fondos.",
+              tip: "Tocá el botón del paisaje arriba para elegir un fondo divertido (parque, luna, cancha o bosque)."
+            },
+            {
+              step: 2,
+              title: "Elegir personajes para una carrera",
+              desc: "Tocá el botón '+' a la izquierda para sumar otro personaje al escenario. Por ejemplo, al gato Scratch Jr y a un amigo para que compitan a diferentes velocidades.",
+              tip: "Arrastrá los personajes con el dedo o mouse al borde izquierdo del escenario listos para la largada."
+            },
+            {
+              step: 3,
+              title: "Conectar la Bandera Verde de inicio",
+              desc: "Andá a la categoría amarilla (Disparadores) y arrastrá el bloque de la 'Bandera Verde' al área de programación.",
+              tip: "Al tocar la bandera verde grande de arriba, ¡todos los personajes arrancarán al mismo tiempo!"
+            },
+            {
+              step: 4,
+              title: "Programar la Velocidad con el Bloque Naranja",
+              desc: "Andá a la categoría naranja (Control) y arrastrá el bloque de 'Velocidad'. Tocalo para elegir una de las 3 velocidades: 1 (Lento), 2 (Medio) o 3 (Rápido).",
+              tip: "El ícono del caracol/hombre caminando es lento; la persona trotando es velocidad media; y la persona corriendo o auto es súper rápido."
+            },
+            {
+              step: 5,
+              title: "Agregar bloques de movimiento hacia adelante",
+              desc: "Andá a la categoría azul (Movimiento) y encastrá una flecha hacia la derecha con el número de pasos deseado (por ejemplo, 10 pasos).",
+              tip: "Poné a un personaje en velocidad 1 y al otro en velocidad 3 para ver claramente la diferencia de velocidad en la carrera."
+            },
+            {
+              step: 6,
+              title: "¡Tocar la Bandera Verde y disfrutar!",
+              desc: "Tocá la bandera verde arriba a la derecha. Mirá cómo cada personaje recorre el escenario con su propio ritmo programado. ¡Subí tu proyecto o foto para sumar +100 XP!",
+              tip: "Podés descargar el archivo velocidad.sjr desde el botón de la misión para ver el ejemplo completo."
+            }
+          ]
+        },
+        {
+          id: "g1-p10",
+          level: 10,
+          title: "Escenarios CodeJr - Segunda Parte (1° Grado): Cambiar la Perspectiva de las Figuras 🐱🔍",
+          author: "Taller de Programación 1° Grado",
+          date: "Septiembre 2026",
+          type: "scratch",
+          platform: "codejr",
+          badge: "🐱 Scratch Jr • Escenarios & Perspectiva",
+          icon: "fa-search-plus",
+          color: "#7C3AED",
+          coverImage: "img/scratchjr.png",
+          projectFileUrl: "proyectos/perpestiva.sjr",
+          downloadUrl: "proyectos/perpestiva.sjr",
+          externalUrl: "https://codejr.org",
+          description: "¡Nivel 10 de nuestra Ruta de Aventuras! En esta segunda parte aprendemos a cambiar la perspectiva visual y el tamaño de las figuras en Scratch Jr. Descubrimos cómo crear la ilusión óptica de profundidad 3D en un escenario 2D: enviamos al personaje Teen3 al fondo del camino haciéndolo pequeño con el bloque violeta de achicar (5 veces), y a medida que desciende por el sendero hacia nosotros, lo agrandamos progresivamente para simular que camina hacia el frente. Descargá el proyecto de ejemplo perpestiva.sjr para abrirlo en Scratch Jr.",
+          objective: "Comprender y programar la perspectiva visual y profundidad en Scratch Jr utilizando los bloques violetas de apariencia (achicar para alejar, agrandar para acercar y restaurar tamaño estándar) combinados con movimientos en el escenario para simular que un personaje avanza hacia el observador.",
+          benefits: "Desarrolla la percepción espacial tridimensional, la diferenciación conceptual de escala y distancia (lejos/pequeño vs. cerca/grande), la estructuración de algoritmos con cambio de apariencia secuencial, la abstracción visual y la creatividad en animación digital.",
+          tags: ["Scratch Jr", "CodeJr", "Perspectiva", "Profundidad", "Escenarios", "Apariencia", "Bloques Violetas", "Nivel 10"],
+          gallery: [
+            "img/scratchjr.png"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Aplicación Scratch Jr", description: "Entorno visual de programación en tablets o PC (https://codejr.org).", icon: "fa-cat" },
+            { title: "Archivo de Ejemplo 'perpestiva.sjr'", description: "Proyecto oficial con Teen3 caminando en perspectiva por el sendero del bosque.", icon: "fa-file-code" },
+            { title: "Bloque Amarillo 'Bandera Verde'", description: "Comando de inicio para disparar la animación de perspectiva.", icon: "fa-flag" },
+            { title: "Bloque Azul 'Ir al Inicio' (Home)", description: "Devuelve al personaje a su posición inicial en la parte superior del camino.", icon: "fa-home" },
+            { title: "Bloque Violeta 'Restaurar Tamaño'", description: "Reinicia la escala del personaje a su tamaño normal estándar (100%).", icon: "fa-sync-alt" },
+            { title: "Bloques Violetas 'Achicar' y 'Agrandar'", description: "Permiten simular distancia (achicar 5) y acercamiento hacia la pantalla (agrandar 2).", icon: "fa-expand-arrows-alt" },
+            { title: "Bloques Azules 'Bajar' (Movimiento)", description: "Hacen descender al personaje por el camino hacia el primer plano.", icon: "fa-arrow-down" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Abrir Scratch Jr y Elegir un Fondo con Camino",
+              desc: "Abrí Scratch Jr y tocá el botón del paisaje arriba. Elegí un escenario que tenga profundidad, como un camino, bosque o sendero (por ejemplo el fondo del bosque).",
+              tip: "Los fondos con un sendero que va desde el horizonte hacia el frente son ideales para practicar perspectiva."
+            },
+            {
+              step: 2,
+              title: "Seleccionar el Personaje y Ubicarlo al Fondo",
+              desc: "Seleccioná al personaje (por ejemplo Teen3 o el gato) y arrastralo con el dedo o mouse a la parte superior del camino, donde empieza el sendero.",
+              tip: "Ese punto será el inicio de su viaje hacia adelante."
+            },
+            {
+              step: 3,
+              title: "Poner Bandera Verde, Volver a Casa y Restaurar Tamaño",
+              desc: "Iniciá tu programa con el bloque amarillo de 'Bandera Verde'. Luego encastrá el bloque azul de 'Volver al Inicio' (casa) y el bloque violeta de 'Restaurar Tamaño' (personita con círculo).",
+              tip: "Esto asegura que cada vez que toques la bandera verde, el personaje arranque en el lugar exacto y con tamaño normal."
+            },
+            {
+              step: 4,
+              title: "Achicar al Personaje para Mandarlo Lejos (Perspectiva)",
+              desc: "Encastrá el bloque violeta de 'Achicar' (personita con flechas hacia adentro) y escribí el número 5.",
+              tip: "¡El personaje se volverá diminuto, simulando que está parado en el horizonte lejano!"
+            },
+            {
+              step: 5,
+              title: "Combinar 'Bajar' y 'Agrandar' Progresivamente",
+              desc: "Encastrá bloques de 'Bajar 2' combinados con 'Agrandar 2'. Repetí la secuencia hasta que el personaje llegue al frente de la pantalla.",
+              tip: "A medida que baja por el camino, el bloque violeta lo agranda creando la sensación de que avanza hacia vos."
+            },
+            {
+              step: 6,
+              title: "¡Tocar la Bandera Verde y Probar!",
+              desc: "Tocá la bandera verde arriba a la derecha. Mirá cómo tu personaje aparece a lo lejos y camina hacia vos haciéndose cada vez más grande. ¡Subí tu proyecto o foto para sumar +100 XP!",
+              tip: "Podés descargar el archivo perpestiva.sjr desde el botón de la misión para ver el ejemplo completo funcionando."
             }
           ]
         }

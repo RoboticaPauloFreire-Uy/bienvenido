@@ -9058,6 +9058,12 @@ body.student-logged-in #student-drive-dashboard-container {
   box-shadow: 0 10px 30px rgba(225, 29, 72, 0.16);
 }
 
+.arm-sala5-spotlight-card.theme-marcalibro {
+  background: linear-gradient(145deg, #FFFBEB 0%, #FEF3C7 40%, #FDE68A 100%);
+  border-color: #F59E0B;
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.18);
+}
+
 .arm-s5-watermark {
   position: absolute;
   right: -15px;
@@ -9177,6 +9183,13 @@ body.student-logged-in #student-drive-dashboard-container {
   box-shadow: 0 2px 8px rgba(225, 29, 72, 0.35);
 }
 
+.arm-s5-tab-pill.active.tab-marcalibro,
+.arm-s5-tab-pill.active[data-spotlight-theme="marcalibro"] {
+  background: #D97706 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35) !important;
+}
+
 .arm-s5-slides-container {
   position: relative;
   z-index: 3;
@@ -9249,6 +9262,16 @@ body.student-logged-in #student-drive-dashboard-container {
   box-shadow: 0 10px 25px rgba(225, 29, 72, 0.25);
 }
 
+.arm-s5-bookmark-preview {
+  border: 3px dashed #F59E0B;
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.15);
+}
+.arm-s5-bookmark-preview:hover {
+  transform: scale(1.04) rotate(1deg);
+  border-color: #D97706;
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.28);
+}
+
 .arm-s5-preview-img {
   max-width: 100%;
   max-height: 100%;
@@ -9296,6 +9319,13 @@ body.student-logged-in #student-drive-dashboard-container {
   animation: ledGlowPulseMadre 1.4s infinite ease-in-out;
 }
 
+.arm-s5-led-glow.glow-marcalibro.active {
+  background: #F59E0B;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px #F59E0B, 0 0 35px #FDE047, 0 0 60px #D97706;
+  animation: ledGlowPulseMarcalibro 1.4s infinite ease-in-out;
+}
+
 @keyframes ledGlowPulseVarita {
   0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #8B5CF6, 0 0 28px #8B5CF6, 0 0 45px #6D28D9; }
   50% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 18px #A78BFA, 0 0 42px #8B5CF6, 0 0 70px #7C3AED; }
@@ -9306,6 +9336,12 @@ body.student-logged-in #student-drive-dashboard-container {
   0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #E11D48, 0 0 28px #E11D48, 0 0 45px #BE123C; }
   50% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 18px #FB7185, 0 0 42px #E11D48, 0 0 70px #9F1239; }
   100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #E11D48, 0 0 28px #E11D48, 0 0 45px #BE123C; }
+}
+
+@keyframes ledGlowPulseMarcalibro {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #F59E0B, 0 0 28px #F59E0B, 0 0 45px #B45309; }
+  50% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 18px #FDE047, 0 0 42px #F59E0B, 0 0 70px #D97706; }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #F59E0B, 0 0 28px #F59E0B, 0 0 45px #B45309; }
 }
 
 .arm-s5-interactive-hint {
