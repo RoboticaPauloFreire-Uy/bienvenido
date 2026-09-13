@@ -248,6 +248,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Marca-libros interactivo de Tom Sawyer en 1° Grado (enciende y apaga la luz en el gorro con sonido)
+  const bookmarkCard = document.getElementById('g1-interactive-bookmark-card');
+  if (bookmarkCard) {
+    bookmarkCard.addEventListener('click', () => {
+      const led = document.getElementById('g1-live-led-bookmark');
+      if (led) {
+        led.classList.toggle('active');
+        if (led.classList.contains('active')) {
+          led.style.opacity = '1';
+          if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+          else if (window.sounds) window.sounds.playClick();
+        } else {
+          led.style.opacity = '0';
+          if (window.sounds) window.sounds.playClick();
+        }
+      }
+    });
+  }
 });
 
 /* =============================================================
@@ -349,6 +368,71 @@ function renderProjectsSectionHtml(grade) {
               </button>
               <a href="pdf/sombrero_san_patricio_5anos.pdf" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf">
                 <i class="fas fa-file-pdf"></i> Plantilla PDF
+              </a>
+              <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
+                <i class="fas fa-compass"></i> Ruta de Aventuras
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  } else if (grade.id === 'grado1' || grade.id === '1ero') {
+    extraHeroHtml = `
+      <section class="sala5-hero-showcase" style="border-top:4px solid #D97706;background:linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);">
+        <div class="s5-showcase-header">
+          <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
+          <div class="s5-header-titles">
+            <span class="s5-dept-tag" style="background:rgba(217,119,6,0.15);color:#D97706;border:1px solid rgba(217,119,6,0.3);"><i class="fas fa-robot"></i> Taller de robótica y programación</span>
+            <h2 class="s5-main-title" style="color:#78350F;">📖 El Marca-Libros Origami de Tom Sawyer 🎩💡</h2>
+            <p class="s5-subtitle" style="color:#92400E;">Proyecto oficial para Creadores de 1° Grado · ¡Plegado de papel con circuito y LED chato!</p>
+          </div>
+        </div>
+
+        <div class="s5-interactive-stage">
+          <div class="s5-stage-left">
+            <div class="s5-hat-box arm-s5-bookmark-preview" id="g1-interactive-bookmark-card" role="button" tabindex="0" title="¡Tocá el gorro de Tom Sawyer para encender la luz!">
+              <img src="img/proyectos/tomsawyer_marcalibro_cover.svg" alt="Marca-Libros Origami de Tom Sawyer" class="s5-hat-render">
+              <div class="arm-s5-led-glow glow-marcalibro" id="g1-live-led-bookmark" style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:36px;color:#F59E0B;opacity:0;transition:opacity .2s;text-shadow:0 0 24px #F59E0B,0 0 45px #D97706;"><i class="fas fa-lightbulb"></i></div>
+              <div class="s5-tap-badge" style="background:rgba(217, 119, 6, 0.95);"><i class="fas fa-hand-pointer"></i> ¡Tocá para encender!</div>
+            </div>
+          </div>
+
+          <div class="s5-stage-right">
+            <div class="s5-intro-bubble">
+              <div class="s5-bubble-badge" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-sparkles"></i> ¿Cómo funciona este invento?</div>
+              <p>
+                Doblamos una <strong>hoja de papel glacé</strong> con técnica origami para calzar en la esquina de las páginas del libro. Montamos un circuito ultraplano con <strong>cinta de cobre</strong>, una <strong>pila botón</strong> y un <strong>LED chato (SMD)</strong> en el centro del gorro de Tom Sawyer. Al marcar el libro y presionar, ¡el gorro se ilumina con una luz resplandeciente!
+              </p>
+            </div>
+
+            <!-- Materiales clave visuales -->
+            <div class="s5-materials-grid">
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FEF3C7;color:#D97706;"><i class="fas fa-scroll"></i></div>
+                <div class="s5-mat-text"><strong>Papel Glacé</strong><span>Plegado esquinero</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FEF3C7;color:#D97706;"><i class="fas fa-lightbulb"></i></div>
+                <div class="s5-mat-text"><strong>LED Chato (SMD)</strong><span>Luz en el gorro</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#EFF6FF;color:#2563EB;"><i class="fas fa-tape"></i></div>
+                <div class="s5-mat-text"><strong>Cinta de Cobre</strong><span>Pistas conductoras</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FDF2F8;color:#DB2777;"><i class="fas fa-battery-full"></i></div>
+                <div class="s5-mat-text"><strong>Pila CR2032 (3V)</strong><span>Interruptor táctil</span></div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="s5-actions-row">
+              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g1-p3" style="background:linear-gradient(135deg, #D97706 0%, #F59E0B 100%);">
+                <i class="fas fa-folder-open"></i> Ver Pasos y Materiales
+              </button>
+              <a href="img/proyectos/marcalibros_origami_guia.png" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#D97706;border-color:#FDE68A;">
+                <i class="fas fa-scroll"></i> Guía de Doblado
               </a>
               <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
                 <i class="fas fa-compass"></i> Ruta de Aventuras

@@ -170,6 +170,9 @@ const SCHOOL_DATA = {
           date: "Abril 2026",
           type: "codeorg",
           platform: "codeorg",
+          badge: "🎮 Programación & Algoritmos",
+          icon: "fa-puzzle-piece",
+          color: "#E11D48",
           coverImage: "img/angrybirds.png",
           gameUrl: "https://studio.code.org/es/hoc/1",
           externalUrl: "https://studio.code.org/es/hoc/1",
@@ -917,6 +920,9 @@ const SCHOOL_DATA = {
           date: "Abril 2026",
           type: "codeorg",
           platform: "codeorg",
+          badge: "🎮 Programación & Algoritmos",
+          icon: "fa-puzzle-piece",
+          color: "#E11D48",
           coverImage: "img/angrybirds.png",
           gameUrl: "https://studio.code.org/es/hoc/1",
           externalUrl: "https://studio.code.org/es/hoc/1",
@@ -1449,7 +1455,7 @@ const SCHOOL_DATA = {
         {
           id: "g1-p10",
           level: 10,
-          title: "Escenarios CodeJr - Segunda Parte (1° Grado): Cambiar la Perspectiva de las Figuras 🐱🔍",
+          title: "Escenarios CodeJr - Segunda Parte: Cambiar la Perspectiva de las Figuras 🐱🔍",
           author: "Taller de Programación 1° Grado",
           date: "Septiembre 2026",
           type: "scratch",
@@ -2109,14 +2115,8 @@ const MAKECODE_LIBRARY = {
   // Sala de 5 años (Electrónica y Circuitos en Papel sin MakeCode)
   sala5: [],
 
-  // 1° Grado
-  grado1: [
-    {
-      title: "Proyecto Micro:bit — Ejemplo",
-      description: "Código de bloques en MakeCode para Micro:bit (solo lectura)",
-      shareUrl: "https://makecode.microbit.org/S18043-28109-69626-83440"
-    }
-  ],
+  // 1° Grado (Electrónica, Paint, Code.org y Scratch Jr sin MakeCode)
+  grado1: [],
 
   // 2° Grado
   grado2: [
@@ -2244,17 +2244,23 @@ if (typeof window !== 'undefined') {
           return;
         }
         let hasSala5 = false;
+        let hasGrado1 = false;
         snapshot.forEach((doc) => {
           const gradeId = doc.id;
           if (gradeId === 'sala5') hasSala5 = true;
+          if (gradeId === 'grado1') hasGrado1 = true;
           const data = doc.data();
+          if (gradeId === 'sala5' || gradeId === 'grado1' || gradeId === '1ero') {
+            MAKECODE_LIBRARY[gradeId] = [];
+            return;
+          }
           if (Array.isArray(data.items) && data.items.length > 0) {
             MAKECODE_LIBRARY[gradeId] = data.items;
           }
         });
-        // Si falta sala5 en la nube, guardarlo
-        if (!hasSala5) {
-          seedMakecodeLibraryToFirestore();
+        // Si falta sala5 o grado1 en la nube, guardarlo
+        if (!hasSala5 || !hasGrado1) {
+          seedMakecodeLibraryToFirestore(true);
         }
         console.log("☁️ MakeCode sincronizado desde Firestore.");
       }, (err) => {
@@ -2273,13 +2279,17 @@ if (typeof window !== 'undefined') {
       window.db.collection('grade_projects').onSnapshot((snapshot) => {
         if (snapshot.empty) {
           console.log("🌱 Firestore vacío en grade_projects: subiendo proyectos a la nube...");
-          seedGradeProjectsToFirestore();
+          seedGradeProjectsToFirestore(true);
           return;
         }
         let hasSala5 = false;
+        let hasGrado1 = false;
+        let needsReseed = false;
+
         snapshot.forEach((doc) => {
           const gradeId = doc.id;
           if (gradeId === 'sala5') hasSala5 = true;
+          if (gradeId === 'grado1') hasGrado1 = true;
           const data = doc.data();
           const targetProjects = data.projects || data.items;
           if (Array.isArray(targetProjects) && targetProjects.length > 0) {
@@ -2287,6 +2297,7 @@ if (typeof window !== 'undefined') {
             if (gradeObj) {
               // Si es sala5 y los proyectos en Firestore no tienen San Patricio, Angry Birds, Varita Mágica, Cancha de Fútbol, Día de la Madre, Ana y Elsa, Banderas, Minecraft, CodeJr/Velocidades, les falta objective, o Paint tiene gameUrl residual, actualizar Firestore
               const isStaleSala5 = gradeId === 'sala5' && (
+                targetProjects.length < 10 ||
                 !targetProjects.some(p => (p.title || '').includes('San Patricio')) ||
                 !targetProjects.some(p => (p.title || '').includes('Angry Birds')) ||
                 !targetProjects.some(p => (p.title || '').includes('Varita') || (p.title || '').includes('varita')) ||
@@ -2300,12 +2311,31 @@ if (typeof window !== 'undefined') {
                 !targetProjects.some(p => (p.id === 's5-p1' && p.objective)) ||
                 targetProjects.some(p => ((p.id === 's5-p4' || p.id === 's5-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
-              if (isStaleSala5) {
-                console.log("🔄 Re-sembrando proyectos reales de sala5 con objetivos y beneficios en Firestore...");
-                seedGradeProjectsToFirestore(true);
+
+              // Para 1° Grado: verificar que tenga exactamente los 10 proyectos con Marca-Libros de Tom Sawyer
+              const isStaleGrado1 = (gradeId === 'grado1' || gradeId === '1ero') && (
+                targetProjects.length < 10 ||
+                !targetProjects.some(p => (p.title || '').includes('San Patricio') || p.id === 'g1-p1') ||
+                !targetProjects.some(p => (p.title || '').includes('Angry Birds') || p.id === 'g1-p2') ||
+                !targetProjects.some(p => (p.title || '').includes('Tom Sawyer') || (p.title || '').includes('Marca-Libro') || (p.title || '').includes('marcalibro') || p.id === 'g1-p3') ||
+                !targetProjects.some(p => (p.title || '').includes('Cancha') || p.id === 'g1-p4') ||
+                !targetProjects.some(p => (p.title || '').includes('Madre') || (p.title || '').includes('Pop-Up') || p.id === 'g1-p5') ||
+                !targetProjects.some(p => (p.title || '').includes('Frozen') || (p.title || '').includes('Elsa') || p.id === 'g1-p6') ||
+                !targetProjects.some(p => (p.title || '').includes('Bandera') || p.id === 'g1-p7') ||
+                !targetProjects.some(p => (p.title || '').includes('Minecraft') || p.id === 'g1-p8') ||
+                !targetProjects.some(p => (p.title || '').includes('Velocidad') || p.id === 'g1-p9') ||
+                !targetProjects.some(p => (p.title || '').includes('Perspectiva') || p.id === 'g1-p10') ||
+                !targetProjects.some(p => (p.id === 'g1-p3' && p.objective)) ||
+                targetProjects.some(p => ((p.id === 'g1-p4' || p.id === 'g1-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
+              );
+
+              if (isStaleSala5 || isStaleGrado1) {
+                console.log("🔄 Proyectos desactualizados en Firestore para " + gradeId + ". Conservando definición oficial y re-sembrando en Firestore...");
+                needsReseed = true;
+                // NO sobrescribir gradeObj.projects con datos viejos de Firestore! Mantener definición oficial de SCHOOL_DATA
               } else {
                 targetProjects.forEach(function(p) {
-                  if (p.id === 's5-p4' || p.id === 's5-p7' || /cancha|paint|bandera/i.test(p.title || '') || p.type === 'paint') {
+                  if (p.id === 's5-p4' || p.id === 's5-p7' || p.id === 'g1-p4' || p.id === 'g1-p7' || /cancha|paint|bandera/i.test(p.title || '') || p.type === 'paint') {
                     p.gameUrl = null;
                     p.externalUrl = null;
                     p.type = 'paint';
@@ -2316,7 +2346,7 @@ if (typeof window !== 'undefined') {
             }
           }
         });
-        if (!hasSala5) {
+        if (!hasSala5 || !hasGrado1 || needsReseed) {
           seedGradeProjectsToFirestore(true);
         }
         console.log("☁️ Proyectos de grado sincronizados desde Firestore.");

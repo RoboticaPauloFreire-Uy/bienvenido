@@ -485,6 +485,9 @@
 
     // 2. Proyectos de MAKECODE_LIBRARY para el grado
     var mkLib = (window.MAKECODE_LIBRARY && window.MAKECODE_LIBRARY[gradeId]) || [];
+    if (gradeId === 'sala5' || gradeId === 'grado1' || gradeId === '1ero') {
+      mkLib = [];
+    }
     mkLib.forEach(function(m, idx) {
       if (!missions.some(function(it){ return it.title === m.title; })) {
         missions.push({
