@@ -3860,6 +3860,7 @@
     try { savedEntrega = JSON.parse(localStorage.getItem(storageKey)); } catch(e){}
     var savedMakecodeUrl = (savedEntrega && savedEntrega.makecodeUrl) ? savedEntrega.makecodeUrl : '';
     var studentMkInfo = savedMakecodeUrl ? extractMakecodeInfo(savedMakecodeUrl) : null;
+    var mkInfo = (mission && mission.makecodeUrl) ? extractMakecodeInfo(mission.makecodeUrl) : null;
     var savedFileName = (savedEntrega && savedEntrega.fileName) ? savedEntrega.fileName : '';
     var savedFileDate = (savedEntrega && savedEntrega.date) ? savedEntrega.date : '';
     var isAlreadyCompleted = isMissionCompleted(student, mission.id) || mission.status === 'completado';
@@ -4261,10 +4262,10 @@
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                          (isMarcalibro ? '📖 Materiales para el Marca-Libros Origami de Tom Sawyer' : (isScratchJrPerspectiva ? '🐱 Materiales y Bloques de Perspectiva (Scratch Jr)' : (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')))))) +
+                          (isCanva ? '🤖 Materiales y Herramientas: Canva & Inteligencia Artificial' : (isMarcalibro ? '📖 Materiales para el Marca-Libros Origami de Tom Sawyer' : (isScratchJrPerspectiva ? '🐱 Materiales y Bloques de Perspectiva (Scratch Jr)' : (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller'))))))) +
                         '</h3>' +
                         '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                          (isMarcalibro ? 'Asegurate de tener tu papel glacé, el dibujo de Tom Sawyer con su sombrero, cinta de cobre, pila botón y LED chato:' : (isScratchJrPerspectiva ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo perpestiva.sjr de ejemplo:' : (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')))))) +
+                          (isCanva ? 'Asegurate de tener abierta la plataforma Canva en tu tablet o PC y tener lista la cámara o foto del taller:' : (isMarcalibro ? 'Asegurate de tener tu papel glacé, el dibujo de Tom Sawyer con su sombrero, cinta de cobre, pila botón y LED chato:' : (isScratchJrPerspectiva ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo perpestiva.sjr de ejemplo:' : (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:'))))))) +
                         '</p>' +
                       '</div>' +
                       '<div class="apm-materials-grid">' +
@@ -4326,10 +4327,11 @@
                           '</div>';
                         }).join('') +
                       '</div>' +
-                      '<div class="apm-reto-card" style="margin-top:22px;' + (isMarcalibro ? 'background:#FFFBEB;border-color:#FCD34D;' : (isScratchJrPerspectiva ? 'background:#FAF5FF;border-color:#D8B4FE;' : (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : '')))))) + '">' +
-                        '<h4 style="' + (isMarcalibro ? 'color:#92400E;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : ''))))))) + '"><i class="fas fa-lightbulb"></i> ' + (isMarcalibro ? 'Consejo Origami Maker: Bolsillo Esquinero y Luz en el Sombrero' : (isScratchJrPerspectiva ? 'Consejo del Programador: Bloques Violetas de Perspectiva' : (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')))))) + '</h4>' +
+                      '<div class="apm-reto-card" style="margin-top:22px;' + (isCanva ? 'background:#F0F9FF;border-color:#BAE6FD;' : (isMarcalibro ? 'background:#FFFBEB;border-color:#FCD34D;' : (isScratchJrPerspectiva ? 'background:#FAF5FF;border-color:#D8B4FE;' : (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : ''))))))) + '">' +
+                        '<h4 style="' + (isCanva ? 'color:#0369A1;' : (isMarcalibro ? 'color:#92400E;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : '')))))))) + '"><i class="fas fa-lightbulb"></i> ' + (isCanva ? 'Consejo de Edición e Inteligencia Artificial' : (isMarcalibro ? 'Consejo Origami Maker: Bolsillo Esquinero y Luz en el Sombrero' : (isScratchJrPerspectiva ? 'Consejo del Programador: Bloques Violetas de Perspectiva' : (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker'))))))) + '</h4>' +
                         '<p style="' + (isMarcalibro ? 'color:#78350F;' : (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : '')))))) + '">' +
-                          (isMarcalibro ? '¡El secreto del doblado y la luz en el sombrero de Tom Sawyer! Doblá con paciencia el papel glacé marcando bien cada pliegue con la yema de los dedos para que las dos puntas encajen firmes en el bolsillo esquinero. Pegá a Tom Sawyer en el frente alineando el LED chato en el medio de su sombrero de paja. Al calzarlo en una página o apretar la punta, las pistas de cobre harán contacto y el sombrero brillará.' :
+                          (isCanva ? '¡El secreto del fotomontaje y la animación con IA! Al tomarte la foto, adoptá una pose bien expresiva estirando los brazos para atajar. El Quitafondos IA de Canva aislará tu cuerpo perfectamente si el fondo es liso. Luego, agregá la pelota de fútbol cerca del ángulo y aplicá Magic Animate para que el salto del arquero y la trayectoria del balón coincidan de forma espectacular.' :
+                           isMarcalibro ? '¡El secreto del doblado y la luz en el sombrero de Tom Sawyer! Doblá con paciencia el papel glacé marcando bien cada pliegue con la yema de los dedos para que las dos puntas encajen firmes en el bolsillo esquinero. Pegá a Tom Sawyer en el frente alineando el LED chato en el medio de su sombrero de paja. Al calzarlo en una página o apretar la punta, las pistas de cobre harán contacto y el sombrero brillará.' :
                            isScratchJrPerspectiva ? '¡El secreto de la perspectiva 3D! Al tocar la <strong>Bandera Verde</strong>, colocá primero <strong>Inicio 🏠</strong> y <strong>Restaurar Tamaño 🔄</strong>. Luego <strong>Achicar 5 ➖</strong> para que Teen3 empiece chiquito en el horizonte del camino. A medida que agregás <strong>Bajar ⬇️</strong>, encastrá <strong>Agrandar 2 ➕</strong> para que crezca simulando que camina hacia el frente. ¡Probalo en perpestiva.sjr!' :
                            isScratchJrVelocidad ? '¡El secreto de la carrera a diferentes velocidades! Encastrá la <strong>Bandera Verde</strong> de inicio, luego el <strong>bloque naranja de Velocidad</strong> (tocalo para elegir 1 caracol, 2 caminante o 3 corredor) y por último la <strong>flecha azul de movimiento</strong>. ¡Al pulsar la bandera verde, todos los personajes arrancan juntos pero el más veloz llega primero!' :
                            isDiaMadre ? '¡El secreto del Pop-Up y la Luz! Cortá con tijera <strong>únicamente por las líneas continuas</strong> de los escalones del corazón pixelado (nunca cortes las líneas de puntos, esas son para doblar hacia adelante). Pegá tu foto en el centro exacto. Y asegurate de que la cinta de cobre detrás del <strong>escudo del Colegio Paulo Freire</strong> baje en solapa para tocar la pista de la pila al presionar con el dedo.' :
@@ -4339,7 +4341,7 @@
                       '</div>' +
                       '<div style="text-align:center;margin-top:20px;">' +
                         '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isMarcalibro ? 'background:#D97706;border-color:#B45309;' : (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))))) + '">' +
-                          (isMarcalibro ? '¡Ver Pasos de Doblado Origami y Circuito! <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? '¡Ver Pasos de Programación y Ejemplo perpestiva.sjr! <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')))))) +
+                          (isCanva ? '¡Ver Pasos de Creación y Animación con IA! <i class="fas fa-arrow-right"></i>' : (isMarcalibro ? '¡Ver Pasos de Doblado Origami y Circuito! <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? '¡Ver Pasos de Programación y Ejemplo perpestiva.sjr! <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>'))))))) +
                         '</button>' +
                       '</div>' +
                     '</div>'
@@ -4348,7 +4350,45 @@
 
                 // SLIDE 2: Instrucciones de Armado (Electrónica) O Desafío Angry Birds (Code.org) O Código y Simulador (MakeCode/Scratch)
                 '<div class="apm-slide-page" data-slide-idx="2">' +
-                  (isScratchJrPerspectiva ?
+                  (isCanva ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-right:6px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-wand-magic-sparkles" style="color:#0284C7;"></i> Nivel 1: El Arquero con Inteligencia Artificial en Canva ⚽🧤</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Foto en el aula • Quitafondos IA • Plantilla de Arco • Magic Animate • Video MP4 / GIF</p>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+                          '<a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#0284C7;border-color:#0369A1;font-size:0.84rem;padding:7px 16px;text-decoration:none;">' +
+                            '<i class="fas fa-palette"></i> Abrir Canva Animaciones' +
+                          '</a>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div style="display:flex;gap:12px;align-items:center;background:#F0F9FF;border:1.5px dashed #0284C7;border-radius:12px;padding:10px 14px;margin-bottom:8px;">' +
+                        '<img src="img/proyectos/canva_arquero_ia_cover.svg" alt="Arquero con IA en Canva" style="width:78px;height:68px;object-fit:cover;background:#0F172A;border-radius:8px;border:1px solid #BAE6FD;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar portada">' +
+                        '<div style="flex:1;">' +
+                          '<h5 style="margin:0 0 2px;font-size:0.86rem;color:#0369A1;font-weight:800;"><i class="fas fa-robot"></i> Guía Oficial de Edición y Animación Generativa</h5>' +
+                          '<p style="margin:0;font-size:0.79rem;color:#0C4A6E;line-height:1.4;">Sacate la foto en pose de arquero, quitá el fondo con un solo click usando la IA de Canva, montala sobre la cancha de fútbol y aplicá <strong>Magic Animate</strong> para que tu atajada cobre vida en video. <span style="font-weight:700;color:#0284C7;">¡Tocá la imagen para ampliar el modelo!</span></p>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="apm-instructions-steps-grid">' +
+                        instructionsList.map(function(st){
+                          return '<div class="apm-step-card">' +
+                            '<div class="apm-step-badge" style="background:#0284C7;">' + st.step + '</div>' +
+                            '<div class="apm-step-body">' +
+                              '<h5>' + st.title + '</h5>' +
+                              '<p>' + st.desc + '</p>' +
+                              (st.tip ? '<div class="apm-step-tip" style="background:#F0F9FF;border-left-color:#0284C7;color:#0C4A6E;"><i class="fas fa-lightbulb" style="color:#0284C7;"></i> ' + st.tip + '</div>' : '') +
+                            '</div>' +
+                          '</div>';
+                        }).join('') +
+                      '</div>' +
+                      '<div style="text-align:right;margin-top:10px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#0284C7;border-color:#0369A1;">' +
+                          '¡Ver Retos Finales y Entrega! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isScratchJrPerspectiva ?
                     '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
                         '<div>' +
@@ -5361,6 +5401,37 @@
                   '</div>' +
                 '</div>' +
               '</div>' :
+              (isCanva ?
+                '<div class="apm-sol-canva-wrap" style="padding:18px 24px;overflow-y:auto;height:100%;">' +
+                  '<div style="display:flex;align-items:center;gap:14px;background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:14px;padding:16px 20px;margin-bottom:18px;">' +
+                    '<div style="width:48px;height:48px;border-radius:12px;background:#0284C7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;"><i class="fas fa-wand-magic-sparkles"></i></div>' +
+                    '<div style="flex:1;">' +
+                      '<h4 style="margin:0 0 4px;font-size:1.1rem;font-weight:900;color:#0369A1;">Solución Oficial: Arquero con Animación IA en Canva</h4>' +
+                      '<p style="margin:0;font-size:0.86rem;color:#0C4A6E;">Flujo completo de producción: fotografía en el aula, segmentación por IA, montaje escénico y animación generativa.</p>' +
+                    '</div>' +
+                    '<a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#0284C7;border-color:#0369A1;padding:8px 18px;font-size:0.86rem;text-decoration:none;">' +
+                      '<i class="fas fa-palette"></i> Abrir Canva' +
+                    '</a>' +
+                  '</div>' +
+                  '<div class="apm-sol-steps-list" style="display:flex;flex-direction:column;gap:12px;">' +
+                    '<div class="apm-sol-step-item" style="border-left:4px solid #0284C7;background:#FFFFFF;padding:14px 18px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">' +
+                      '<div class="apm-sol-step-num" style="background:#0284C7;color:#FFF;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">1</div>' +
+                      '<div><strong>Fase de Captura:</strong> Foto tomada en el aula con iluminación frontal y postura en extensión dorsal simulando el bloqueo de un balón al ángulo.</div>' +
+                    '</div>' +
+                    '<div class="apm-sol-step-item" style="border-left:4px solid #7C3AED;background:#FFFFFF;padding:14px 18px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">' +
+                      '<div class="apm-sol-step-num" style="background:#7C3AED;color:#FFF;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">2</div>' +
+                      '<div><strong>Segmentación Inteligente (Quitafondos IA):</strong> Algoritmo de visión computacional de Canva Magic Studio para remover el aula y conservar bordes limpios en manos, ropa y cabello.</div>' +
+                    '</div>' +
+                    '<div class="apm-sol-step-item" style="border-left:4px solid #16A34A;background:#FFFFFF;padding:14px 18px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">' +
+                      '<div class="apm-sol-step-num" style="background:#16A34A;color:#FFF;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">3</div>' +
+                      '<div><strong>Composición Espacial:</strong> Inserción en plantilla deportiva, alineación con la trayectoria del balón y aplicación de sombra paralela para integración fotorrealista.</div>' +
+                    '</div>' +
+                    '<div class="apm-sol-step-item" style="border-left:4px solid #D97706;background:#FFFFFF;padding:14px 18px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">' +
+                      '<div class="apm-sol-step-num" style="background:#D97706;color:#FFF;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">4</div>' +
+                      '<div><strong>Generación Dinámica (Magic Animate):</strong> Motor de interpolación de Canva que genera keyframes suaves de vuelo y movimiento de cámara, exportado como clip de video MP4 o GIF animado.</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' :
               (isMakecode ?
                 '<div style="height:100%;display:flex;flex-direction:column;">' +
                   '<div class="mkm-desc-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
@@ -5454,7 +5525,7 @@
                   '</div>' +
                 '</div>'
               )
-            ) +
+            )) +
           '</div>' : '') +
 
           // ── PANEL 4: GUÍA PDF & FICHA DIDÁCTICA ──
