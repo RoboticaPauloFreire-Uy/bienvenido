@@ -493,7 +493,7 @@ function renderProjectsSectionHtml(grade) {
             <div class="s5-intro-bubble">
               <div class="s5-bubble-badge" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-sparkles"></i> ¿Cómo funciona este proyecto con IA?</div>
               <p>
-                Los estudiantes se toman una <strong>foto en pose de arquero</strong> en el aula. Con la <strong>IA de Canva (Quitafondos)</strong> aíslan su silueta con total precisión, la integran en una <strong>plantilla deportiva con arco y pelota</strong>, y mediante <strong>Magic Animate</strong> generan una animación dinámica de atajada exportable en <strong>video MP4 o GIF</strong>.
+                Los estudiantes se sacan una <strong>foto en el aula</strong>, la suben a Canva y con el <strong>Quitafondos IA</strong> aíslan su cabeza. Luego eligen la imagen de un arquero atajando y <strong>reemplazan la cabeza original con su propia foto</strong>. Finalmente, mediante <strong>Magic Animate (IA de Canva)</strong> transforman el fotomontaje en una <strong>animación de video (MP4 o GIF)</strong> con movimiento de atajada realista.
               </p>
             </div>
 
@@ -501,19 +501,19 @@ function renderProjectsSectionHtml(grade) {
             <div class="s5-materials-grid">
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#E0F2FE;color:#0284C7;"><i class="fas fa-camera"></i></div>
-                <div class="s5-mat-text"><strong>Foto Real</strong><span>Pose de atajada</span></div>
+                <div class="s5-mat-text"><strong>Foto en Aula</strong><span>Rostro y cabeza</span></div>
               </div>
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#F3E8FF;color:#7C3AED;"><i class="fas fa-wand-magic-sparkles"></i></div>
-                <div class="s5-mat-text"><strong>Quitafondos IA</strong><span>Canva Magic Studio</span></div>
+                <div class="s5-mat-text"><strong>Quitafondos IA</strong><span>Aislar la cabeza</span></div>
               </div>
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-futbol"></i></div>
-                <div class="s5-mat-text"><strong>Plantilla Cancha</strong><span>Arco, red y pelota</span></div>
+                <div class="s5-mat-text"><strong>Fotomontaje</strong><span>Reemplazar cabeza</span></div>
               </div>
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-film"></i></div>
-                <div class="s5-mat-text"><strong>Magic Animate</strong><span>Video MP4 y GIF</span></div>
+                <div class="s5-mat-text"><strong>Magic Animate</strong><span>Transformar en video</span></div>
               </div>
             </div>
 

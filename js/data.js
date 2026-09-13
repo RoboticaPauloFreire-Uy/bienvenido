@@ -2037,9 +2037,9 @@ const SCHOOL_DATA = {
           coverImage: "img/proyectos/canva_arquero_ia_cover.svg",
           gameUrl: "https://www.canva.com",
           externalUrl: "https://www.canva.com",
-          description: "¡Nivel 1 de nuestra Ruta de Aventuras! Aprendemos diseño digital e Inteligencia Artificial en Canva: nos tomamos una fotografía con pose de arquero, la recortamos e integramos en una plantilla deportiva y usamos la IA generativa de animación para darle movimiento realista atajando en el arco de fútbol.",
-          objective: "Aprender a componer imágenes digitales en Canva combinando fotografía real, eliminación de fondo inteligente (Quitafondos IA) y herramientas de Inteligencia Artificial generativa para transformar un diseño estático en una animación de video exportada en formato MP4 o GIF.",
-          benefits: "Desarrolla la alfabetización en herramientas de Inteligencia Artificial generativa, la composición visual y edición fotográfica digital, el dominio de parámetros de animación con IA, y la creatividad al verse a sí mismos como protagonistas animados de su propio proyecto.",
+          description: "¡Nivel 1 de nuestra Ruta de Aventuras! Aprendemos edición digital y animación con Inteligencia Artificial en Canva: nos sacamos una foto en el aula, la subimos a Canva y usamos la IA para aislar la cabeza. Luego buscamos la imagen de un arquero atajando la pelota, reemplazamos su cabeza original con la nuestra y con Magic Animate transformamos el fotomontaje en una espectacular animación de video MP4 o GIF.",
+          objective: "Aprender la técnica de fotomontaje digital y animación con Inteligencia Artificial en Canva: tomar una fotografía en el aula, aislar la cabeza con el Quitafondos IA, reemplazar la cabeza de un arquero en una imagen de fútbol, y aplicar la IA de animación (Magic Animate) para convertir el diseño en una animación de atajada en video MP4 o GIF.",
+          benefits: "Desarrolla habilidades en Inteligencia Artificial generativa, la técnica de fotomontaje y reemplazo de rostros por capas en Canva, el ajuste de proporciones y perspectiva visual, y el entusiasmo creativo al verse a sí mismos como los arqueros protagonistas de la animación.",
           tags: ["Canva", "Inteligencia Artificial", "IA Generativa", "Animación", "Arquero", "Fútbol", "Quitafondos", "Magic Animate", "Nivel 1"],
           gallery: [
             "img/proyectos/canva_arquero_ia_cover.svg"
@@ -2049,49 +2049,49 @@ const SCHOOL_DATA = {
           makecodeUrl: null,
           scratchId: null,
           materials: [
-            { title: "Cámara o Tablet del Taller", description: "Para la sesión de fotos con pose de arquero en plena acción.", icon: "fa-camera" },
-            { title: "Plataforma Canva (Educación)", description: "Entorno de diseño gráfico digital y acceso a Magic Studio con IA.", icon: "fa-palette" },
-            { title: "Plantilla Deportiva de Fútbol", description: "Marco base con los tres palos, estadio y red de fútbol.", icon: "fa-futbol" },
-            { title: "Quitafondos con IA de Canva", description: "Herramienta inteligente que aísla la silueta del arquero con un solo click.", icon: "fa-cut" },
-            { title: "Magic Animate / Animación IA", description: "Aplica movimiento dinámico a la pose, la pelota y los efectos del arco.", icon: "fa-wand-magic-sparkles" },
-            { title: "Formato de Video MP4 o GIF", description: "Para exportar la animación y subirla a la entrega en Google Drive.", icon: "fa-file-video" }
+            { title: "Foto del Estudiante (Aula)", description: "Primer plano del rostro y cabeza con buena luz en el taller.", icon: "fa-camera" },
+            { title: "Plataforma Canva (Educación)", description: "Lienzo de diseño y acceso a Magic Studio con herramientas de IA.", icon: "fa-palette" },
+            { title: "Imagen de Arquero en el Arco", description: "Foto o diseño base de un arquero volando para atajar la pelota.", icon: "fa-futbol" },
+            { title: "Quitafondos con IA de Canva", description: "Herramienta inteligente que recorta y aísla la cabeza automáticamente.", icon: "fa-wand-magic-sparkles" },
+            { title: "Reemplazo de Cabeza (Fotomontaje)", description: "Ajuste de tamaño, inclinación y cuello sobre el cuerpo del arquero.", icon: "fa-user-astronaut" },
+            { title: "Magic Animate / Animación con IA", description: "Transforma el fotomontaje estático en una animación de video MP4 o GIF.", icon: "fa-film" }
           ],
           instructions: [
             {
               step: 1,
-              title: "Toma de Fotografía y Pose de Arquero",
-              desc: "Con la cámara o tablet del taller, tomá una foto en pose de arquero: estirándote hacia un costado, saltando para atajar o con las manos preparadas para atrapar la pelota.",
-              tip: "Buscá un fondo con buen contraste para que el quitafondos de la IA recorte tu silueta con máxima precisión."
+              title: "Toma de Fotografía en el Aula",
+              desc: "Con la tablet o cámara del taller, tomate una foto en primer plano de tu rostro y cabeza con buena iluminación y gesto concentrado de arquero listo para atajar.",
+              tip: "Mantené un fondo liso para que la IA reconozca el contorno de tu cabeza con máxima precisión."
             },
             {
               step: 2,
-              title: "Abrir Canva y Elegir la Plantilla de Fútbol",
-              desc: "Ingresá a Canva con la cuenta del colegio. En la barra de búsqueda escribí 'fútbol arquero' o 'arco de fútbol' y seleccioná la plantilla de diseño que más te guste para tu póster.",
-              tip: "Fijate que el arco tenga buena perspectiva para que tu salto quede perfectamente encuadrado."
+              title: "Buscar la Imagen del Arquero en Canva",
+              desc: "Ingresá a Canva con la cuenta del colegio. En 'Elementos' o 'Fotos', buscá 'arquero atajando' o 'goalkeeper save' y seleccioná una imagen donde el arquero esté volando hacia la pelota.",
+              tip: "Elegí una imagen donde el cuerpo tenga buena visibilidad del cuello y los guantes de arquero."
             },
             {
               step: 3,
-              title: "Subir tu Foto y Aplicar el Quitafondos con IA",
-              desc: "Andá a la pestaña 'Subidos' y cargá tu fotografía. Insertala en el lienzo, tocá 'Editar la foto' y hacé clic en 'Quitafondos' (Efecto IA). La Inteligencia Artificial eliminará el fondo automáticamente.",
-              tip: "¡En un segundo la IA deja solo tu cuerpo con tu buzo y guantes de arquero listo para volar!"
+              title: "Subir tu Foto y Aislar la Cabeza con Quitafondos IA",
+              desc: "Andá a la pestaña 'Subidos' y cargá tu foto. Colocala en el diseño, tocá 'Editar la foto' y hacé clic en 'Quitafondos' (Efecto de IA) para eliminar el fondo del aula y dejar únicamente tu cabeza limpia.",
+              tip: "Podés usar la herramienta de borrado manual para eliminar cualquier detalle sobrante alrededor del cuello."
             },
             {
               step: 4,
-              title: "Componer la Escena y Agregar la Pelota",
-              desc: "Acomodá tu figura en el aire frente a los tres palos. Sumá elementos gráficos como una pelota de fútbol con estela de fuego, luces de estadio y tu nombre en el dorsal.",
-              tip: "Ajustá la inclinación de tu cuerpo con el tirador circular de Canva para dar sensación de vuelo dinámico."
+              title: "Reemplazar la Cabeza del Arquero con tu Foto",
+              desc: "Arrastrá tu cabeza recortada y colócala exactamente sobre la cabeza del arquero de la imagen original. Ajustá el tamaño, la inclinación y la posición para que encaje de manera natural sobre el buzo de arquero.",
+              tip: "Usá los controles de rotación de Canva para inclinar tu cabeza con el mismo ángulo de vuelo del cuerpo."
             },
             {
               step: 5,
               title: "Transformar en Animación con la IA de Canva",
-              desc: "Tocá el botón 'Animar' en la barra superior y seleccioná 'Magic Animate' (Animación con IA). La IA analizará todos los elementos y creará transiciones cinematográficas donde el arquero y la pelota cobran vida.",
-              tip: "Probá los estilos 'Enérgico' o 'Épico' para que el movimiento parezca una repetición de transmisión televisiva."
+              desc: "Hacé clic en 'Animar' en la barra superior y seleccioná 'Magic Animate' (Animación Mágica con IA). La Inteligencia Artificial analizará el arquero, el fondo y la pelota para generar un movimiento dinámico y cinematográfico.",
+              tip: "Probá los estilos 'Enérgico' o 'Épico' para que la atajada parezca una repetición de fútbol real."
             },
             {
               step: 6,
-              title: "Descargar en Video MP4 y Subir a Google Drive",
-              desc: "Tocá 'Compartir' > 'Descargar', elegí el formato 'Video MP4' (o 'GIF animado') y guardalo. Luego arrastralo a la pestaña 'Mi Entrega' de tu panel para certificar tu misión y sumar +100 XP.",
-              tip: "¡Tus profesores y compañeros van a poder reproducir tu atajada animada directamente en el aula virtual!"
+              title: "Descargar en Video MP4 o GIF y Entregar",
+              desc: "Tocá 'Compartir' > 'Descargar', seleccioná formato 'Video MP4' o 'GIF animado' y guardalo. Subilo a la pestaña 'Mi Entrega' de tu panel o pegá tu enlace público de Canva para sumar tus +100 XP.",
+              tip: "¡Tus compañeros y el profe van a poder reproducir tu video atajando en el aula virtual!"
             }
           ]
         },

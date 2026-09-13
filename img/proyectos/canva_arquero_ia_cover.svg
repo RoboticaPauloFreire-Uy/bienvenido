@@ -181,15 +181,15 @@
     <g transform="translate(18, 76)">
       <circle cx="12" cy="12" r="12" fill="#0284C7"/>
       <text x="12" y="16" fill="#FFF" font-size="10" font-weight="900" text-anchor="middle">1</text>
-      <text x="32" y="15" fill="#E2E8F0" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="700">Foto Pose Arquero</text>
+      <text x="32" y="15" fill="#E2E8F0" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="700">Foto en el Aula</text>
 
       <circle cx="150" cy="12" r="12" fill="#8B5CF6"/>
       <text x="150" y="16" fill="#FFF" font-size="10" font-weight="900" text-anchor="middle">2</text>
-      <text x="170" y="15" fill="#E2E8F0" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="700">Plantilla Canva</text>
+      <text x="170" y="15" fill="#E2E8F0" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="700">Imagen de Arquero</text>
 
       <circle cx="12" cy="40" r="12" fill="#EC4899"/>
       <text x="12" y="44" fill="#FFF" font-size="10" font-weight="900" text-anchor="middle">3</text>
-      <text x="32" y="43" fill="#E2E8F0" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="700">Quitafondos IA</text>
+      <text x="32" y="43" fill="#E2E8F0" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="700">Reemplazar Cabeza</text>
 
       <circle cx="150" cy="40" r="12" fill="#10B981"/>
       <text x="150" y="44" fill="#FFF" font-size="10" font-weight="900" text-anchor="middle">4</text>
