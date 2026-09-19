@@ -508,8 +508,9 @@
           color: '#7C3AED',
           stars: 3,
           status: 'desafio',
-          coverImage: 'img/microbit.png',
-          gallery: [],
+          coverImage: m.coverImage || (m.id === 'g6-p2' || /servo.*joystick|joystick.*servo/i.test(m.title || '') ? 'img/proyectos/servo_joystick_makecode_cover.svg' : 'img/microbit.png'),
+          codeSnippet: m.codeSnippet || null,
+          gallery: m.coverImage ? [m.coverImage] : [],
           pdfUrl: null,
           downloadPdfUrl: null,
           makecodeUrl: m.shareUrl,
@@ -1114,6 +1115,20 @@
     return '<div class="adventure-roadmap-wrapper">' + headerHtml + sala5SpecialBannerHtml + bodyHtml + '</div>';
   }
 
+  function fallbackCopyText(text, callback) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      if (callback) callback();
+    } catch(e) {}
+    document.body.removeChild(ta);
+  }
+
   // ──────────────────────────────────────────────────
   // RENDER PRINCIPAL
   // ──────────────────────────────────────────────────
@@ -1244,45 +1259,132 @@
         }
         // MakeCode y Scratch Jr no tienen caja estática permanente
 
-      // ── Pestaña MAKECODE — Biblioteca de código (solo lectura) ──
+      // ── Pestaña MAKECODE / PROYECTOS DEL GRADO ──
       } else {
         var mkLibrary = (window.MAKECODE_LIBRARY && window.MAKECODE_LIBRARY[student.gradeId]) || [];
+        var gradeProjects = (gradeObj && Array.isArray(gradeObj.projects)) ? gradeObj.projects : [];
 
-        if (mkLibrary.length === 0) {
+        // Lista unificada para la carpeta Proyectos
+        var displayProjects = [];
+        var seenProjectIds = {};
+
+        // 1. Proyectos del Grado (Nivel 2 Arquero Mecánico con Servo/Joystick, Nivel 1 Canva IA, etc.)
+        gradeProjects.forEach(function(p) {
+          if (p && p.id && !seenProjectIds[p.id]) {
+            seenProjectIds[p.id] = true;
+            displayProjects.push(p);
+          }
+        });
+
+        // 2. Entradas de MAKECODE_LIBRARY si no están ya en displayProjects
+        mkLibrary.forEach(function(entry, idx) {
+          var eid = entry.id || ('mk-' + idx);
+          var alreadyExists = displayProjects.some(function(p){
+            return p.id === eid || (entry.shareUrl && p.makecodeUrl && p.makecodeUrl.includes(entry.shareUrl.split('/').pop()));
+          });
+          if (!alreadyExists) {
+            seenProjectIds[eid] = true;
+            displayProjects.push({
+              id: eid,
+              level: entry.level || (idx + 1),
+              title: entry.title || ('Código MakeCode #' + (idx + 1)),
+              description: entry.description || 'Proyecto interactivo de programación en MakeCode para Micro:bit.',
+              shareUrl: entry.shareUrl,
+              makecodeUrl: entry.shareUrl,
+              coverImage: entry.coverImage || 'img/proyectos/servo_joystick_makecode_cover.svg',
+              badge: entry.badge || '💻 MakeCode Micro:bit',
+              icon: entry.icon || 'fa-microchip',
+              color: entry.color || '#0D9488',
+              codeSnippet: entry.codeSnippet || null,
+              type: 'makecode'
+            });
+          }
+        });
+
+        if (displayProjects.length === 0) {
           tabContent = '<div class="gdb-empty-state">' +
             '<div class="ges-icon">💻</div>' +
-            '<h4>Biblioteca MakeCode vacía</h4>' +
+            '<h4>Biblioteca de Proyectos vacía</h4>' +
             '<p>El docente todavía no agregó códigos para <strong>' + student.gradeName + '</strong>.<br>' +
-            'Los códigos se configuran en el archivo <code>js/data.js</code> → sección <code>MAKECODE_LIBRARY</code>.</p>' +
+            'Los proyectos se configuran en el archivo <code>js/data.js</code>.</p>' +
           '</div>';
         } else {
-          tabContent = '<div class="mklib-cards-grid">' +
-            mkLibrary.map(function(entry, idx) {
-              return '<div class="mklib-card-item" data-entry-idx="' + idx + '">' +
-                '<div class="mklib-ci-header">' +
-                  '<div class="mklib-icon-wrap">' +
-                    '<span class="mklib-num">' + (idx + 1) + '</span>' +
-                    '<i class="fas fa-microchip mklib-chip-icon"></i>' +
-                  '</div>' +
-                  '<div class="mklib-ci-badges">' +
-                    '<span class="mklib-badge"><i class="fas fa-shield-alt"></i> Solo lectura</span>' +
-                  '</div>' +
+          tabContent =
+            (!showScratch ?
+              '<div class="mklib-header-banner" style="background:linear-gradient(135deg, #0F172A 0%, #1E293B 100%);color:#FFF;padding:16px 20px;border-radius:14px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border:1px solid #334155;">' +
+                '<div>' +
+                  '<h3 style="margin:0 0 4px;font-size:1.22rem;font-weight:900;color:#38BDF8;display:flex;align-items:center;gap:8px;"><i class="fas fa-folder-open"></i> Proyectos Oficiales del Grado (' + student.gradeName + ')</h3>' +
+                  '<p style="margin:0;font-size:0.86rem;color:#94A3B8;">Proyectos interactivos de robótica física, micro:bit, control con joystick chico negro, servomotor SG90 y diseño con IA.</p>' +
+                '</div>' +
+                '<span style="background:rgba(56, 189, 248, 0.15);color:#38BDF8;padding:6px 14px;border-radius:999px;font-size:0.8rem;font-weight:800;border:1px solid rgba(56, 189, 248, 0.3);"><i class="fas fa-cubes"></i> ' + displayProjects.length + ' proyecto(s)</span>' +
+              '</div>' : '') +
+            '<div class="mklib-cards-grid">' +
+            displayProjects.map(function(proj, idx) {
+              var isServo = (proj.id === 'g6-p2') || (/servo.*joystick|joystick.*servo/i.test(proj.title || ''));
+              var isCanva = proj.type === 'canva' || /canva/i.test(proj.title || '');
+              var coverImg = proj.coverImage || (isServo ? 'img/proyectos/servo_joystick_makecode_cover.svg' : (isCanva ? 'img/proyectos/canva_arquero_ia_cover.svg' : 'img/microbit.png'));
+              var themeColor = proj.color || (isServo ? '#0D9488' : (isCanva ? '#0284C7' : '#7C3AED'));
+              var levelNum = proj.level || (idx + 1);
+              var badgeText = proj.badge || (isServo ? '🧤 Arquero, Joystick Chico Negro & Servo SG90' : (isCanva ? '🤖 Canva & Animación con IA' : '💻 MakeCode Micro:bit'));
+              var codeSnippet = proj.codeSnippet || (isServo ? 'let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})' : null);
+              var actionUrl = proj.makecodeUrl || proj.shareUrl || proj.externalUrl || proj.gameUrl || '#';
+              var actionLabel = isCanva ? 'Abrir en Canva' : (proj.type === 'makecode' || proj.makecodeUrl ? 'Abrir en MakeCode' : 'Abrir Proyecto');
+
+              var pillsHtml = '';
+              if (isServo) {
+                pillsHtml =
+                  '<span class="mklib-pill" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-gamepad"></i> Joystick Chico Negro (P1)</span>' +
+                  '<span class="mklib-pill" style="background:#E0E7FF;color:#4338CA;"><i class="fas fa-cogs"></i> Servo SG90 (P0)</span>' +
+                  '<span class="mklib-pill" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-calculator"></i> Math.map (0..1023 ➔ 0..180°)</span>';
+              } else if (isCanva) {
+                pillsHtml =
+                  '<span class="mklib-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-camera"></i> Foto en Aula</span>' +
+                  '<span class="mklib-pill" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-wand-magic-sparkles"></i> Quitafondos IA</span>' +
+                  '<span class="mklib-pill" style="background:#FEF3C7;color:#92400E;"><i class="fas fa-film"></i> Magic Animate</span>';
+              } else {
+                pillsHtml =
+                  '<span class="mklib-pill"><i class="fas fa-puzzle-piece"></i> Código</span>' +
+                  '<span class="mklib-pill"><i class="fas fa-gamepad"></i> Simulador</span>';
+              }
+
+              var codeSnippetHtml = '';
+              if (codeSnippet) {
+                var safeCode = codeSnippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                codeSnippetHtml =
+                  '<div class="mklib-code-snippet-box">' +
+                    '<div class="mklib-code-header">' +
+                      '<span><i class="fas fa-code"></i> Código MakeCode / TypeScript</span>' +
+                      '<button type="button" class="btn-copy-mklib-code" data-code="' + safeCode + '" title="Copiar código al portapapeles">' +
+                        '<i class="far fa-copy"></i> Copiar Código' +
+                      '</button>' +
+                    '</div>' +
+                    '<pre class="mklib-code-pre"><code>' + safeCode + '</code></pre>' +
+                  '</div>';
+              }
+
+              return '<div class="mklib-card-item" data-project-id="' + (proj.id || ('p-' + idx)) + '" data-entry-idx="' + idx + '">' +
+                '<div class="mklib-ci-cover">' +
+                  '<img src="' + coverImg + '" alt="' + (proj.title || '').replace(/"/g, '&quot;') + '" class="mklib-cover-img" onerror="this.src=\'img/microbit.png\'">' +
+                  '<div class="mklib-cover-overlay"></div>' +
+                  '<span class="mklib-cover-badge" style="background:' + themeColor + ';">' +
+                    '<i class="fas ' + (proj.icon || 'fa-gamepad') + '"></i> NIVEL ' + levelNum + ' • ' + (isServo ? 'ROBÓTICA & MAKECODE' : (isCanva ? 'CANVA & IA' : 'MAKECODE')) +
+                  '</span>' +
                 '</div>' +
                 '<div class="mklib-ci-body">' +
-                  '<h4 class="mklib-ci-title">' + (entry.title || ('Código MakeCode #' + (idx + 1))) + '</h4>' +
-                  '<p class="mklib-ci-desc">' + (entry.description || 'Proyecto interactivo de programación en MakeCode para Micro:bit.') + '</p>' +
-                  '<div class="mklib-ci-pills">' +
-                    '<span class="mklib-pill"><i class="fas fa-puzzle-piece"></i> Código</span>' +
-                    '<span class="mklib-pill"><i class="fas fa-gamepad"></i> Simulador</span>' +
-                  '</div>' +
+                  '<div style="font-size:0.75rem;font-weight:800;color:' + themeColor + ';text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">' + badgeText + '</div>' +
+                  '<h4 class="mklib-ci-title">' + (proj.title || '') + '</h4>' +
+                  '<p class="mklib-ci-desc">' + (proj.description || '') + '</p>' +
+                  '<div class="mklib-ci-pills">' + pillsHtml + '</div>' +
+                  codeSnippetHtml +
                 '</div>' +
                 '<div class="mklib-ci-footer">' +
-                  '<button type="button" class="mklib-btn-modal-trigger">' +
-                    '<i class="fas fa-expand-alt"></i> Ver Proyecto' +
+                  '<button type="button" class="mklib-btn-modal-trigger" style="background:linear-gradient(135deg, ' + themeColor + ', #1E293B);">' +
+                    '<i class="fas fa-chalkboard-teacher"></i> Ver Proyecto Completo' +
                   '</button>' +
-                  '<a class="mklib-btn-entrar-link" href="' + (entry.shareUrl || '#') + '" target="_blank" rel="noopener noreferrer">' +
-                    '<i class="fas fa-external-link-alt"></i> Entrar' +
-                  '</a>' +
+                  (actionUrl && actionUrl !== '#' ?
+                    '<a class="mklib-btn-entrar-link" href="' + actionUrl + '" target="_blank" rel="noopener noreferrer" style="color:' + themeColor + ' !important;border-color:' + themeColor + '66;">' +
+                      '<i class="fas fa-external-link-alt"></i> ' + actionLabel +
+                    '</a>' : '') +
                 '</div>' +
               '</div>';
             }).join('') +
@@ -1856,35 +1958,85 @@
       }
     }
 
-    // ── Click en tarjeta MakeCode para abrir Modal de Aventura (Presentación, Simulador y PDF) ──
-    if (activeFolderKey === 'proyecto' && proyectoSubTab === 'makecode') {
+    // ── Click en tarjeta de Proyecto MakeCode / Grado para abrir Modal de Aventura ──
+    if (activeFolderKey === 'proyecto') {
       var mkLibrary = (window.MAKECODE_LIBRARY && window.MAKECODE_LIBRARY[student.gradeId]) || [];
       container.querySelectorAll('.mklib-card-item').forEach(function(card) {
         card.onclick = function(e) {
-          if (e.target.closest('.mklib-btn-entrar-link')) return; // Permite abrir en MakeCode sin abrir modal
-          var idx = parseInt(card.dataset.entryIdx, 10);
-          var entry = mkLibrary[idx];
-          if (entry) {
-            var mission = {
-              id: 'mk-' + idx,
-              level: idx + 1,
-              title: entry.title || ('Código MakeCode #' + (idx + 1)),
+          if (e.target.closest('.mklib-btn-entrar-link, .btn-copy-mklib-code, a')) return;
+          var projId = card.dataset.projectId;
+          var entryIdx = parseInt(card.dataset.entryIdx, 10);
+          var matchingProj = null;
+
+          if (gradeObj && Array.isArray(gradeObj.projects)) {
+            matchingProj = gradeObj.projects.find(function(p){
+              return (projId && p.id === projId) ||
+                     (p.id === 'g6-p2' && (student.gradeId === 'grado6' || student.gradeId === '6to'));
+            });
+          }
+          if (!matchingProj) {
+            var advMissions = getAdventureMissionsForStudent(student);
+            matchingProj = advMissions.find(function(m){
+              return (projId && m.id === projId) ||
+                     (m.id === 'g6-p2' && (student.gradeId === 'grado6' || student.gradeId === '6to'));
+            });
+          }
+          if (!matchingProj && mkLibrary && mkLibrary[entryIdx]) {
+            var entry = mkLibrary[entryIdx];
+            matchingProj = {
+              id: entry.id || ('mk-' + entryIdx),
+              level: entry.level || (entryIdx + 1),
+              title: entry.title || ('Código MakeCode #' + (entryIdx + 1)),
               subtitle: 'Simulador y Bloques Micro:bit',
               description: entry.description || 'Proyecto interactivo de programación en MakeCode.',
-              type: 'makecode',
-              badge: '💻 MakeCode Micro:bit',
-              icon: 'fa-microchip',
-              color: '#7C3AED',
-              coverImage: 'img/microbit.png',
+              type: entry.type || 'makecode',
+              badge: entry.badge || '💻 MakeCode Micro:bit',
+              icon: entry.icon || 'fa-gamepad',
+              color: entry.color || '#0D9488',
+              coverImage: entry.coverImage || 'img/proyectos/servo_joystick_makecode_cover.svg',
               makecodeUrl: entry.shareUrl,
               gradeName: student.gradeName,
+              codeSnippet: entry.codeSnippet,
               materials: [
-                { title: 'Placa BBC micro:bit v2', description: 'Controlador con matriz LED 5x5 y sensores' },
-                { title: 'Cable Micro-USB', description: 'Para transferir el código y alimentar la placa' },
-                { title: 'Batería externa', description: 'Para probar tu proyecto en movimiento' }
+                { title: 'Joystick micro:bit chico negro', description: 'Palanca analógica conectada al Pin P1' },
+                { title: 'Micro Servomotor SG90 (Pin P0)', description: 'Mecanismo del arquero de 0° a 180°' },
+                { title: 'Placa BBC micro:bit v2', description: 'Controlador y cálculo Math.map' }
               ]
             };
-            openAdventureProjectModal(mission, 'presentacion');
+          }
+          if (matchingProj) {
+            if (!matchingProj.coverImage || matchingProj.coverImage === 'img/microbit.png') {
+              matchingProj.coverImage = (matchingProj.id === 'g6-p2' || /servo.*joystick|joystick.*servo/i.test(matchingProj.title || ''))
+                ? 'img/proyectos/servo_joystick_makecode_cover.svg'
+                : 'img/proyectos/canva_arquero_ia_cover.svg';
+            }
+            openAdventureProjectModal(matchingProj, 'presentacion');
+          }
+        };
+      });
+
+      // Botón copiar código al portapapeles
+      container.querySelectorAll('.btn-copy-mklib-code').forEach(function(btn) {
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          var code = btn.dataset.code || '';
+          function showCopied() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+            btn.style.background = '#10B981';
+            btn.style.color = '#FFF';
+            setTimeout(function(){
+              btn.innerHTML = orig;
+              btn.style.background = '';
+              btn.style.color = '';
+            }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(code).then(showCopied).catch(function(){
+              fallbackCopyText(code, showCopied);
+            });
+          } else {
+            fallbackCopyText(code, showCopied);
           }
         };
       });
@@ -5577,12 +5729,19 @@
                       '<div class="mkm-code-toolbar">' +
                         '<span class="mkm-ct-label"><i class="fas fa-cubes"></i> Bloques de Código de la Solución</span>' +
                         '<div class="mkm-code-zoom-controls">' +
+                          (mission.codeSnippet || isServoJoystick ?
+                            '<button type="button" class="btn-copy-mklib-code" data-code="' + (mission.codeSnippet || 'let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') + '" style="background:#0D9488;color:#FFF;border:none;border-radius:6px;padding:3px 10px;font-size:0.75rem;cursor:pointer;margin-right:8px;"><i class="far fa-copy"></i> Copiar Código</button>' : '') +
                           '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-out" title="Reducir"><i class="fas fa-search-minus"></i></button>' +
                           '<span class="mkm-zoom-val" id="apm-sol-zoom-label">125%</span>' +
                           '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-in" title="Aumentar"><i class="fas fa-search-plus"></i></button>' +
                           '<button type="button" class="mkm-zoom-btn" id="apm-sol-zoom-reset" title="Restablecer (125%)"><i class="fas fa-undo"></i></button>' +
                         '</div>' +
                       '</div>' +
+                      (mission.codeSnippet || isServoJoystick ?
+                        '<div style="background:#090D16;border-bottom:1px solid #1E293B;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+                          '<span style="color:#38BDF8;font-size:0.75rem;font-weight:700;font-family:monospace;"><i class="fas fa-code"></i> Código MakeCode / TypeScript Oficial</span>' +
+                          '<code style="font-family:monospace;font-size:0.73rem;color:#99F6E4;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;">VRx (P1) ➔ Math.map(x, 0, 1023, 0, 180) ➔ Servo Arquero (P0)</code>' +
+                        '</div>' : '') +
                       '<div class="mkm-code-frame-wrap" style="flex:1 1 auto;position:relative;overflow:auto;">' +
                         (mkInfo ?
                           '<iframe src="' + mkInfo.codeEmbedUrl + '" class="mkm-code-iframe" id="apm-sol-code-iframe" sandbox="allow-scripts allow-same-origin allow-popups" scrolling="yes" frameborder="0"></iframe>' :
@@ -6586,6 +6745,31 @@
         };
       }
     }
+
+    modal.querySelectorAll('.btn-copy-mklib-code').forEach(function(btn) {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        var code = btn.dataset.code || '';
+        function showCopied() {
+          var orig = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+          btn.style.background = '#10B981';
+          btn.style.color = '#FFF';
+          setTimeout(function(){
+            btn.innerHTML = orig;
+            btn.style.background = '';
+            btn.style.color = '';
+          }, 2000);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(showCopied).catch(function(){
+            fallbackCopyText(code, showCopied);
+          });
+        } else {
+          fallbackCopyText(code, showCopied);
+        }
+      };
+    });
 
     modal.classList.add('active');
   }

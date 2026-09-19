@@ -2110,6 +2110,7 @@ const SCHOOL_DATA = {
           gameUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
           externalUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
           makecodeUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
+          codeSnippet: `let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})`,
           description: "¡Nivel 2 de nuestra Ruta de Aventuras! Conectamos el joystick micro:bit chico negro (palanca en Pin P1) y un servomotor SG90 (Pin P0) para mover físicamente al arquero de poste a poste en el arco de fútbol. Usamos el ajuste de intervalo matemático (Math.map de 0..1023 a 0..180°) y límites de seguridad para que el arquero ataje con precisión y fluidez.",
           objective: "Construir y programar el mecanismo del arquero atajador en el arco de fútbol: leer la palanca del joystick chico negro en el Pin P1 (0 a 1023), aplicar el ajuste de intervalo proporcional (Math.map) para convertirlo en el rango angular del servomotor SG90 en el Pin P0 (0° a 180°) y programar las condiciones de seguridad en un bucle continuo de 20 ms.",
           benefits: "Conecta la animación digital del Nivel 1 con la robótica física y la cinemática en el mundo real. Fortalece la comprensión de funciones lineales y proporcionalidad matemática (ajuste de intervalo) al controlar un actuador mecánico angular con un joystick analógico continuo.",
@@ -2309,9 +2310,17 @@ const MAKECODE_LIBRARY = {
   // 6° Grado
   grado6: [
     {
-      title: "El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático",
+      id: "g6-p2",
+      level: 2,
+      title: "El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático 🧤🕹️⚙️",
+      subtitle: "Lectura de Joystick Chico Negro (P1), Ajuste de Intervalo (Math.map) y Servomotor SG90 (P0)",
       description: "Lectura de la palanca del joystick chico negro en Pin P1, bloque matemático 'mapear' de 0-1023 a 0-180°, límites de seguridad y control del servomotor del arquero en Pin P0.",
-      shareUrl: "https://makecode.microbit.org/S17294-82339-82111-72476"
+      shareUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
+      coverImage: "img/proyectos/servo_joystick_makecode_cover.svg",
+      badge: "🧤 Arquero, Joystick Chico Negro & Servo SG90",
+      icon: "fa-gamepad",
+      color: "#0D9488",
+      codeSnippet: `let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})`
     }
   ]
 };
@@ -2397,21 +2406,35 @@ if (typeof window !== 'undefined') {
         }
         let hasSala5 = false;
         let hasGrado1 = false;
+        let hasGrado6 = false;
+        let needsReseed = false;
+
         snapshot.forEach((doc) => {
           const gradeId = doc.id;
           if (gradeId === 'sala5') hasSala5 = true;
           if (gradeId === 'grado1') hasGrado1 = true;
+          if (gradeId === 'grado6') hasGrado6 = true;
           const data = doc.data();
           if (gradeId === 'sala5' || gradeId === 'grado1' || gradeId === '1ero') {
             MAKECODE_LIBRARY[gradeId] = [];
             return;
           }
+          if (gradeId === 'grado6' || gradeId === '6to') {
+            const items = data.items || [];
+            const isStaleGrado6 = items.length === 0 ||
+              !items.some(it => (it.shareUrl || '').includes('S17294') && it.coverImage && it.coverImage.includes('servo_joystick_makecode_cover') && it.codeSnippet);
+            if (isStaleGrado6) {
+              console.log("🔄 MakeCode desactualizado en Firestore para grado6. Conservando definición oficial y re-sembrando...");
+              needsReseed = true;
+              return;
+            }
+          }
           if (Array.isArray(data.items) && data.items.length > 0) {
             MAKECODE_LIBRARY[gradeId] = data.items;
           }
         });
-        // Si falta sala5 o grado1 en la nube, guardarlo
-        if (!hasSala5 || !hasGrado1) {
+        // Si falta sala5, grado1 o grado6 en la nube o está desactualizado, guardarlo
+        if (!hasSala5 || !hasGrado1 || !hasGrado6 || needsReseed) {
           seedMakecodeLibraryToFirestore(true);
         }
         console.log("☁️ MakeCode sincronizado desde Firestore.");
@@ -2483,12 +2506,12 @@ if (typeof window !== 'undefined') {
                 targetProjects.some(p => ((p.id === 'g1-p4' || p.id === 'g1-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
 
-              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA
+              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA y el Arquero Mecánico con imagen
               const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
                 targetProjects.length < 2 ||
                 !targetProjects.some(p => (p.title || '').includes('Canva') || (p.title || '').includes('Arquero') || p.id === 'g6-p1') ||
                 !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
-                !targetProjects.some(p => (p.id === 'g6-p2' && (p.makecodeUrl || '').includes('S17294')))
+                !targetProjects.some(p => (p.id === 'g6-p2' && (p.makecodeUrl || '').includes('S17294') && p.coverImage && p.coverImage.includes('servo_joystick_makecode_cover')))
               );
 
               if (isStaleSala5 || isStaleGrado1 || isStaleGrado6) {
@@ -2501,6 +2524,10 @@ if (typeof window !== 'undefined') {
                     p.gameUrl = null;
                     p.externalUrl = null;
                     p.type = 'paint';
+                  }
+                  if (p.id === 'g6-p2' || (/servo.*joystick|joystick.*servo/i.test(p.title || ''))) {
+                    p.coverImage = 'img/proyectos/servo_joystick_makecode_cover.svg';
+                    p.makecodeUrl = 'https://makecode.microbit.org/S17294-82339-82111-72476';
                   }
                 });
                 gradeObj.projects = targetProjects;
@@ -2537,4 +2564,8 @@ if (typeof window !== 'undefined') {
   } else {
     initAllFirestoreDataSync();
   }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { SCHOOL_DATA, MAKECODE_LIBRARY, getGradeById };
 }

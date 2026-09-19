@@ -78,10 +78,10 @@
     <text x="74" y="19" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="12" fill="#2DD4BF" text-anchor="middle" letter-spacing="1">6° GRADO · NIVEL 2</text>
     
     <text x="165" y="21" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="24" fill="#FFFFFF" letter-spacing="0.5">
-      EL ARQUERO MECÁNICO <tspan fill="#38BDF8">CON JOYSTICK & SERVO</tspan> 🧤🕹️⚙️
+      EL ARQUERO MECÁNICO <tspan fill="#38BDF8">CON JOYSTICK &amp; SERVO</tspan> 🧤🕹️⚙️
     </text>
     <text x="0" y="52" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" fill="#94A3B8">
-      Robótica Física & Mapeo Matemático en MakeCode · Joystick Chico Negro (Pin P1) ➔ Servo del Arquero (Pin P0)
+      Robótica Física &amp; Mapeo Matemático en MakeCode · Joystick Chico Negro (Pin P1) ➔ Servo del Arquero (Pin P0)
     </text>
   </g>
 
@@ -191,7 +191,7 @@
     </text>
   </g>
 
-  <!-- ÁREA DERECHA: HARDWARE MICRO:BIT & JOYSTICK + CÓDIGO MAKECODE -->
+  <!-- ÁREA DERECHA: HARDWARE MICRO:BIT &amp; JOYSTICK + CÓDIGO MAKECODE -->
   
   <!-- 1. MÓDULO JOYSTICK CHICO NEGRO (X: 620, Y: 125, W: 250, H: 240) -->
   <g transform="translate(620, 125)">
@@ -292,7 +292,7 @@
       <!-- Pin P2 -->
       <rect x="110" y="4" width="30" height="30" rx="3" fill="#475569"/>
       <text x="125" y="23" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="11" fill="#FFF" text-anchor="middle">P2</text>
-      <!-- 3V & GND -->
+      <!-- 3V &amp; GND -->
       <rect x="150" y="4" width="32" height="30" rx="3" fill="#EF4444"/>
       <text x="166" y="23" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="10" fill="#FFF" text-anchor="middle">3V</text>
       <rect x="188" y="4" width="32" height="30" rx="3" fill="#1E293B"/>
