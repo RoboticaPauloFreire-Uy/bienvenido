@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const badge = document.getElementById('g6-live-servo-badge');
       if (badge) {
         badge.style.opacity = '1';
-        badge.innerHTML = `<i class="fas fa-compass"></i> ${angle}°`;
+        badge.innerHTML = `<i class="fas fa-futbol"></i> ${angle}° ${angle === 90 ? '(Centro)' : angle < 90 ? '(Palo Izq)' : '(Palo Der)'}`;
         badge.style.transform = `translate(-50%,-50%) scale(1.15) rotate(${angle - 90}deg)`;
       }
       if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
@@ -552,31 +552,31 @@ function renderProjectsSectionHtml(grade) {
         </div>
       </section>
 
-      <!-- NIVEL 2: Control de Servo y Joystick con Mapeo Matemático -->
+      <!-- NIVEL 2: El Arquero Mecánico con Joystick y Servomotor -->
       <section class="sala5-hero-showcase" style="border-top:4px solid #0D9488;background:linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%);margin-top:24px;">
         <div class="s5-showcase-header">
           <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
           <div class="s5-header-titles">
-            <span class="s5-dept-tag" style="background:rgba(13,148,136,0.15);color:#0D9488;border:1px solid rgba(13,148,136,0.3);"><i class="fas fa-microchip"></i> Robótica, Programación & Matemáticas</span>
-            <h2 class="s5-main-title" style="color:#0F766E;">🕹️ Control de Servo y Joystick con Mapeo Matemático ⚙️📐</h2>
-            <p class="s5-subtitle" style="color:#134E4A;">Nivel 2 para Graduados de 6° Grado · ¡Ajuste de intervalo proporcional en MakeCode micro:bit!</p>
+            <span class="s5-dept-tag" style="background:rgba(13,148,136,0.15);color:#0D9488;border:1px solid rgba(13,148,136,0.3);"><i class="fas fa-futbol"></i> Robótica, Programación & Deportes</span>
+            <h2 class="s5-main-title" style="color:#0F766E;">🧤 El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático 🕹️⚙️⚽</h2>
+            <p class="s5-subtitle" style="color:#134E4A;">Nivel 2 para 6° Grado · ¡Controlá los reflejos del arquero en el arco con el joystick chico negro y el servo SG90 en MakeCode micro:bit!</p>
           </div>
         </div>
 
         <div class="s5-interactive-stage">
           <div class="s5-stage-left">
-            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-servo-card" role="button" tabindex="0" title="¡Tocá para probar el giro del servomotor SG90!">
-              <img src="img/proyectos/servo_joystick_makecode_cover.svg" alt="Servo y Joystick MakeCode" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
-              <div class="arm-s5-led-glow" id="g6-live-servo-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:#0D9488;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 20px #0D9488,0 0 40px #4F46E5;background:rgba(255,255,255,0.92);padding:6px 14px;border-radius:20px;border:2px solid #0D9488;"><i class="fas fa-compass"></i> 90°</div>
-              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para girar el servo!</div>
+            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-servo-card" role="button" tabindex="0" title="¡Tocá para probar los reflejos y giro del arquero!">
+              <img src="img/proyectos/servo_joystick_makecode_cover.svg" alt="El Arquero Mecánico con Servo y Joystick MakeCode" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
+              <div class="arm-s5-led-glow" id="g6-live-servo-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;font-weight:900;color:#0D9488;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 20px #0D9488,0 0 40px #4F46E5;background:rgba(255,255,255,0.95);padding:6px 14px;border-radius:20px;border:2px solid #0D9488;white-space:nowrap;"><i class="fas fa-futbol"></i> 90° Centrado</div>
+              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para atajar a los lados!</div>
             </div>
           </div>
 
           <div class="s5-stage-right">
             <div class="s5-intro-bubble">
-              <div class="s5-bubble-badge" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-calculator"></i> ¿Cómo funciona el ajuste de intervalo matemático?</div>
+              <div class="s5-bubble-badge" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-calculator"></i> ¿Cómo funciona el ajuste de intervalo matemático del arquero?</div>
               <p>
-                El <strong>joystick analógico</strong> entrega lecturas continuas entre <strong>0 y 1023</strong> en el pin P0. Como el <strong>servomotor SG90</strong> en el pin P2 solo gira entre <strong>0° y 180°</strong>, usamos el bloque matemático <strong>mapear de [0..1023] a [0..180]</strong>. Este cálculo proporcional convierte la posición de la palanca en el ángulo exacto del servo en tiempo real dentro de un bucle continuo con pausa de 20 ms.
+                El <strong>joystick chico negro de micro:bit</strong> entrega lecturas analógicas continuas del eje horizontal entre <strong>0 y 1023</strong> en el pin <strong>P1</strong>. Como el <strong>servomotor SG90</strong> que mueve la figura del arquero en el pin <strong>P0</strong> gira entre <strong>0° y 180°</strong>, usamos el bloque matemático <strong>ajuste de intervalo (Math.map) de [0..1023] a [0..180]</strong> junto a limitadores de seguridad (clamping). Al mover la palanca de izquierda a derecha, ¡el arquero se desliza de palo a palo para atajar la pelota en tiempo real!
               </p>
             </div>
 
@@ -584,19 +584,19 @@ function renderProjectsSectionHtml(grade) {
             <div class="s5-materials-grid">
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#CCFBF1;color:#0D9488;"><i class="fas fa-gamepad"></i></div>
-                <div class="s5-mat-text"><strong>Joystick VRx</strong><span>Pin P0 (0 a 1023)</span></div>
+                <div class="s5-mat-text"><strong>Joystick micro:bit chico negro</strong><span>Pin P1 (Eje X: 0 a 1023)</span></div>
               </div>
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#E0E7FF;color:#4338CA;"><i class="fas fa-calculator"></i></div>
-                <div class="s5-mat-text"><strong>Mapeo Matemático</strong><span>Ajuste de intervalo</span></div>
+                <div class="s5-mat-text"><strong>Ajuste de Intervalo</strong><span>Math.map + Clamping</span></div>
               </div>
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#FFEDD5;color:#C2410C;"><i class="fas fa-cogs"></i></div>
-                <div class="s5-mat-text"><strong>Servo SG90</strong><span>Pin P2 (0° a 180°)</span></div>
+                <div class="s5-mat-text"><strong>Servo SG90 Arquero</strong><span>Pin P0 (Giro: 0° a 180°)</span></div>
               </div>
               <div class="s5-mat-item">
                 <div class="s5-mat-icon" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-microchip"></i></div>
-                <div class="s5-mat-text"><strong>micro:bit v2</strong><span>Bucle para siempre</span></div>
+                <div class="s5-mat-text"><strong>micro:bit v2</strong><span>Inicio a 90° + Bucle 20ms</span></div>
               </div>
             </div>
 
@@ -605,7 +605,7 @@ function renderProjectsSectionHtml(grade) {
               <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g6-p2" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);">
                 <i class="fas fa-folder-open"></i> Ver Ficha y Pasos Oficiales
               </button>
-              <a href="https://makecode.microbit.org/S18043-28109-69626-83440" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#0D9488;border-color:#99F6E4;">
+              <a href="https://makecode.microbit.org/S17294-82339-82111-72476" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#0D9488;border-color:#99F6E4;">
                 <i class="fas fa-code"></i> Abrir en MakeCode
               </a>
               <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">

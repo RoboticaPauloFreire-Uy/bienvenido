@@ -2098,22 +2098,22 @@ const SCHOOL_DATA = {
         {
           id: "g6-p2",
           level: 2,
-          title: "Control de Servo y Joystick con Mapeo Matemático 🕹️⚙️📐",
+          title: "El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático 🧤🕹️⚙️",
           author: "Taller de Robótica y Tecnología 6° Grado",
           date: "Abril 2026",
           type: "makecode",
           platform: "makecode",
-          badge: "🕹️ Servo, Joystick & Mapeo Matemático",
+          badge: "🧤 Arquero, Joystick Chico Negro & Servo SG90",
           icon: "fa-gamepad",
-          color: "#7C3AED",
+          color: "#0D9488",
           coverImage: "img/proyectos/servo_joystick_makecode_cover.svg",
-          gameUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
-          externalUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
-          makecodeUrl: "https://makecode.microbit.org/S18043-28109-69626-83440",
-          description: "¡Nivel 2 de nuestra Ruta de Aventuras! Aprendemos a conectar un servomotor SG90 y un joystick analógico a la placa BBC micro:bit. Aplicamos el concepto matemático de 'Ajuste de Intervalo' (bloque mapear de MakeCode) para transformar las lecturas analógicas del joystick (0 a 1023) en el ángulo exacto de giro del servo (0° a 180°).",
-          objective: "Aprender a controlar un servomotor con un joystick analógico usando la micro:bit en MakeCode, aplicando el ajuste de intervalo matemático (mapeo proporcional) para traducir valores analógicos de entrada (0 a 1023) en grados angulares de salida (0° a 180°).",
-          benefits: "Conecta conceptos matemáticos de razón, proporción, funciones lineales y conversión de intervalos con la robótica física tangible. Desarrolla la comprensión de entradas analógicas continuas vs actuadores de posición angular, y el control en tiempo real en bucle cerrado.",
-          tags: ["MakeCode", "BBC micro:bit", "Servomotor", "Joystick", "Mapeo Matemático", "Ajuste de Intervalo", "Robótica", "Nivel 2"],
+          gameUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
+          externalUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
+          makecodeUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
+          description: "¡Nivel 2 de nuestra Ruta de Aventuras! Conectamos el joystick micro:bit chico negro (palanca en Pin P1) y un servomotor SG90 (Pin P0) para mover físicamente al arquero de poste a poste en el arco de fútbol. Usamos el ajuste de intervalo matemático (Math.map de 0..1023 a 0..180°) y límites de seguridad para que el arquero ataje con precisión y fluidez.",
+          objective: "Construir y programar el mecanismo del arquero atajador en el arco de fútbol: leer la palanca del joystick chico negro en el Pin P1 (0 a 1023), aplicar el ajuste de intervalo proporcional (Math.map) para convertirlo en el rango angular del servomotor SG90 en el Pin P0 (0° a 180°) y programar las condiciones de seguridad en un bucle continuo de 20 ms.",
+          benefits: "Conecta la animación digital del Nivel 1 con la robótica física y la cinemática en el mundo real. Fortalece la comprensión de funciones lineales y proporcionalidad matemática (ajuste de intervalo) al controlar un actuador mecánico angular con un joystick analógico continuo.",
+          tags: ["MakeCode", "BBC micro:bit", "El Arquero Mecánico", "Joystick Chico Negro", "Servomotor SG90", "Mapeo Matemático", "Ajuste de Intervalo", "Robótica", "Nivel 2"],
           gallery: [
             "img/proyectos/servo_joystick_makecode_cover.svg"
           ],
@@ -2121,49 +2121,49 @@ const SCHOOL_DATA = {
           downloadPdfUrl: null,
           scratchId: null,
           materials: [
-            { title: "Placa BBC micro:bit v2", description: "Microcontrolador central con pines analógicos de lectura y modulación PWM para el servo.", icon: "fa-microchip" },
-            { title: "Joystick Analógico (2 ejes)", description: "Palanca con potenciómetros que entrega lecturas analógicas de 0 a 1023 según su inclinación.", icon: "fa-gamepad" },
-            { title: "Micro Servomotor SG90", description: "Motor reductor capaz de posicionarse con precisión entre 0° y 180° mediante señal PWM.", icon: "fa-cogs" },
-            { title: "Shield o Placa de Expansión", description: "Base con pines de alimentación 3V, GND y señales P0 y P2 para conectar sin soldar.", icon: "fa-plug" },
-            { title: "Cables Dupont Hembra-Macho", description: "Para conectar los 3 pines del servo y los pines VCC, GND y VRx del joystick.", icon: "fa-bezier-curve" },
-            { title: "Editor MakeCode Micro:bit", description: "Entorno de programación en bloques con la categoría Matemática y bloque 'mapear'.", icon: "fa-laptop-code" }
+            { title: "Joystick micro:bit chico negro", description: "Módulo con palanca analógica para micro:bit; eje X conectado al Pin P1 (lecturas continuas de 0 a 1023).", icon: "fa-gamepad" },
+            { title: "Micro Servomotor SG90 (Pin P0)", description: "Servomotor angular en el Pin P0 que sostiene al arquero y lo mueve de poste a poste (0° a 180°).", icon: "fa-cogs" },
+            { title: "Placa BBC micro:bit v2", description: "Microcontrolador central que ejecuta el código MakeCode, calcula el mapeo matemático y controla el servo.", icon: "fa-microchip" },
+            { title: "Arco y Figura del Arquero", description: "Estructura del arco de fútbol con el arquero atajador montado sobre el aspa mecánica del servomotor.", icon: "fa-futbol" },
+            { title: "Cables Dupont de Conexión", description: "Conexiones de alimentación (3V/VCC y GND) y pines de señal P0 (servo) y P1 (joystick).", icon: "fa-bezier-curve" },
+            { title: "Editor MakeCode micro:bit", description: "Entorno de bloques con la función matemática Math.map y escritura analógica de servo.", icon: "fa-laptop-code" }
           ],
           instructions: [
             {
               step: 1,
-              title: "Identificación de Pines y Polaridad",
-              desc: "Revisá los componentes: el servomotor tiene 3 cables (marrón: GND tierra, rojo: 3V alimentación, naranja: Señal de control en P2). El joystick tiene pines GND, VCC (3V) y VRx (lectura analógica en P0).",
-              tip: "¡Nunca conectes el positivo con el negativo al revés para proteger la placa micro:bit!"
+              title: "Conexión del Joystick Chico Negro (Pin P1)",
+              desc: "Conectá los pines de alimentación VCC a 3V y GND a tierra en el shield. Llevá la señal de la palanca (eje horizontal X) al Pin P1 de la micro:bit.",
+              tip: "El joystick chico negro permite mover al arquero con gran precisión usando el pulgar."
             },
             {
               step: 2,
-              title: "Cableado del Circuito con la micro:bit",
-              desc: "Conectá la alimentación del joystick y del servomotor a 3V y GND en el shield. Llevá la señal VRx del joystick al pin analógico P0 y la señal de datos del servomotor al pin P2.",
-              tip: "Asegurate de que los cables queden firmes para que la señal analógica no tenga ruido ni fluctuaciones."
+              title: "Conexión del Servomotor del Arquero (Pin P0)",
+              desc: "Conectá el servomotor SG90 en el Pin P0 (cable marrón a GND, rojo a 3V y naranja a Pin P0). Acoplá firmemente la figura del arquero sobre el aspa del servo.",
+              tip: "Asegurate de que el cable naranja quede en el Pin P0 de la micro:bit."
             },
             {
               step: 3,
-              title: "El Problema Matemático de los Intervalos",
-              desc: "El joystick entrega lecturas analógicas continuas entre 0 y 1023 (resolución de 10 bits). Pero el servomotor solo entiende ángulos entre 0° y 180°. Si no ajustáramos el intervalo, el motor intentaría dar más de 1000° y se dañaría.",
-              tip: "El ajuste de intervalo matemático funciona como una regla de tres continua calculada a la velocidad de la luz."
+              title: "Inicializar el Arquero al Centro (90°)",
+              desc: "Al encender la micro:bit, fijá la variable 'angulo' en 90° y escribí en el Pin P0 para que el arquero empiece ubicado en el centro exacto del arco.",
+              tip: "Código MakeCode inicial: let x = 0; let angulo = 90; pins.servoWritePin(AnalogPin.P0, angulo)."
             },
             {
               step: 4,
-              title: "Programar el Bloque Matemático 'Mapear'",
-              desc: "En MakeCode, dentro del bloque 'para siempre', creá una variable llamada 'angulo' y encastrá: 'fijar angulo a mapear [lectura analógica pin P0] de bajo 0 alto 1023 a bajo 0 alto 180'.",
-              tip: "Encontrás el bloque 'mapear' en la categoría 'Matemática' de MakeCode."
+              title: "Lectura Analógica y Mapeo Matemático",
+              desc: "En el bucle 'para siempre', leé la posición de la palanca: x = pins.analogReadPin(AnalogPin.P1). Luego calculá el ángulo proporcional con el bloque matemático: angulo = Math.map(x, 0, 1023, 0, 180).",
+              tip: "La fórmula matemática es: Ángulo = (x * 180) / 1023."
             },
             {
               step: 5,
-              title: "Enviar el Ángulo al Servomotor",
-              desc: "Debajo del mapeo, colocá el bloque 'servomotor escribir pin P2 en (angulo)'. Agregá una pequeña pausa de 20 milisegundos para permitir que el mecanismo físico gire sin forzar los engranajes.",
-              tip: "La pausa de 20 ms es el tiempo óptimo para que el servo alcance la posición deseada de forma fluida."
+              title: "Límites de Seguridad y Giro del Servo (Pin P0)",
+              desc: "Evitá que el arquero golpee los postes con dos condiciones: si angulo < 0 entonces angulo = 0, y si angulo > 180 entonces angulo = 180. Escribí el ángulo con pins.servoWritePin(AnalogPin.P0, angulo) y pausá 20 ms.",
+              tip: "La pausa de 20 milisegundos suaviza el movimiento del servomotor."
             },
             {
               step: 6,
-              title: "Prueba, Calibración y Entrega",
-              desc: "Descargá el programa a tu micro:bit. Incliná la palanca del joystick hacia los costados y comprobá cómo el brazo del servomotor gira exactamente imitando el ángulo de tu mano. Compartí tu link de MakeCode en 'Mi Entrega' para sumar +100 XP.",
-              tip: "¡Completaste tu segundo proyecto de robótica y matemáticas aplicadas con éxito!"
+              title: "¡Atajar Penales y Compartir Proyecto!",
+              desc: "Probá tu mecanismo moviendo la palanca: a la izquierda (x=0) el arquero vuela al palo izquierdo (0°), al soltarlo vuelve al centro (90°) y a la derecha (x=1023) ataja en el palo derecho (180°).",
+              tip: "Proyecto oficial MakeCode: https://makecode.microbit.org/S17294-82339-82111-72476"
             }
           ]
         },
@@ -2309,9 +2309,9 @@ const MAKECODE_LIBRARY = {
   // 6° Grado
   grado6: [
     {
-      title: "Control de Servo y Joystick con Mapeo Matemático",
-      description: "Lectura analógica en pin P0, bloque matemático 'mapear' de 0-1023 a 0-180°, y posicionamiento del servomotor en pin P2.",
-      shareUrl: "https://makecode.microbit.org/S18043-28109-69626-83440"
+      title: "El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático",
+      description: "Lectura de la palanca del joystick chico negro en Pin P1, bloque matemático 'mapear' de 0-1023 a 0-180°, límites de seguridad y control del servomotor del arquero en Pin P0.",
+      shareUrl: "https://makecode.microbit.org/S17294-82339-82111-72476"
     }
   ]
 };
@@ -2488,7 +2488,7 @@ if (typeof window !== 'undefined') {
                 targetProjects.length < 2 ||
                 !targetProjects.some(p => (p.title || '').includes('Canva') || (p.title || '').includes('Arquero') || p.id === 'g6-p1') ||
                 !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
-                !targetProjects.some(p => (p.id === 'g6-p2' && p.objective))
+                !targetProjects.some(p => (p.id === 'g6-p2' && (p.makecodeUrl || '').includes('S17294')))
               );
 
               if (isStaleSala5 || isStaleGrado1 || isStaleGrado6) {
