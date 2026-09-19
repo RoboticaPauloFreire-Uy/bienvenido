@@ -633,7 +633,8 @@ function renderProjectPostHtml(proj, grade) {
     availableBadges.push(`<span class="mat-badge mat-badge-pdf"><i class="fas fa-file-pdf"></i> Manual PDF</span>`);
   }
   if (proj.makecodeUrl) {
-    availableBadges.push(`<span class="mat-badge mat-badge-makecode"><i class="fas fa-gamepad"></i> MakeCode Arcade</span>`);
+    const isMicrobit = proj.makecodeUrl.includes('microbit.org') || (proj.tags && proj.tags.some(t => /micro:?bit/i.test(t))) || proj.id === 'g6-p2';
+    availableBadges.push(`<span class="mat-badge mat-badge-makecode"><i class="fas ${isMicrobit ? 'fa-microchip' : 'fa-gamepad'}"></i> ${isMicrobit ? 'MakeCode micro:bit' : 'MakeCode Arcade'}</span>`);
   }
   if (proj.scratchId) {
     availableBadges.push(`<span class="mat-badge mat-badge-scratch"><i class="fas fa-cat"></i> Scratch 3.0</span>`);
@@ -724,7 +725,8 @@ function openProjectModal(proj, grade) {
     tabs.push({ id: 'pdf', icon: '📄', label: 'Manual PDF' });
   }
   if (proj.makecodeUrl) {
-    tabs.push({ id: 'makecode', icon: '🕹️', label: 'MakeCode Arcade' });
+    const isMicrobit = proj.makecodeUrl.includes('microbit.org') || (proj.tags && proj.tags.some(t => /micro:?bit/i.test(t))) || proj.id === 'g6-p2';
+    tabs.push({ id: 'makecode', icon: isMicrobit ? '💻' : '🕹️', label: isMicrobit ? 'MakeCode micro:bit' : 'MakeCode Arcade' });
   }
   if (proj.scratchId) {
     tabs.push({ id: 'scratch', icon: '🐱', label: 'Scratch 3.0' });
@@ -818,13 +820,14 @@ function openProjectModal(proj, grade) {
 
   // 3. MakeCode
   if (proj.makecodeUrl) {
+    const isMicrobit = proj.makecodeUrl.includes('microbit.org') || (proj.tags && proj.tags.some(t => /micro:?bit/i.test(t))) || proj.id === 'g6-p2';
     panelsHtml += `
       <div class="pm-panel" id="pm-panel-makecode" style="${activeTabId === 'makecode' ? '' : 'display:none;'}">
         <div class="makecode-embed-header">
-          <span style="font-size:1.3rem;">🕹️</span>
+          <span style="font-size:1.3rem;">${isMicrobit ? '💻' : '🕹️'}</span>
           <div>
-            <div style="font-weight:800;">Simulador MakeCode Arcade</div>
-            <div style="font-size:.8rem;color:var(--text-muted);">Jugá directamente o abrí el editor de bloques</div>
+            <div style="font-weight:800;">Simulador ${isMicrobit ? 'MakeCode micro:bit' : 'MakeCode Arcade'}</div>
+            <div style="font-size:.8rem;color:var(--text-muted);">${isMicrobit ? 'Interactuá con la placa micro:bit y pines o abrí el editor oficial' : 'Jugá directamente o abrí el editor de bloques'}</div>
           </div>
           <a href="${proj.makecodeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="margin-left:auto;">
             <i class="fas fa-external-link-alt"></i> Abrir editor

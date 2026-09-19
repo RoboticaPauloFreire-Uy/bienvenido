@@ -433,12 +433,14 @@
     if (gradeObj && Array.isArray(gradeObj.projects)) {
       gradeObj.projects.forEach(function(p, idx) {
         var isPaint    = p.type === 'paint' || (p.tags && p.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|bandera/i.test(p.title || ''));
-        var isMakecode = !isPaint && !!p.makecodeUrl;
-        var isScratch  = !isPaint && (!!p.scratchId || p.type === 'scratch' || p.platform === 'codejr' || (p.tags && p.tags.some(function(t){ return /scratch ?jr|codejr|velocidad|perspectiva|perpestiva/i.test(t); })));
+        var isMakecode = !isPaint && (!!p.makecodeUrl || p.type === 'makecode' || p.platform === 'makecode' || (p.tags && p.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+        var isScratch  = !isPaint && (p.type === 'scratch' || p.type === 'codejr' || p.platform === 'codejr' || p.platform === 'scratch' || !!p.scratchId || (p.tags && p.tags.some(function(t){ return /scratch ?jr|codejr|velocidad|perspectiva|perpestiva/i.test(t); })));
         var isCodeorg  = !isPaint && (p.type === 'codeorg' || p.platform === 'codeorg' || (p.externalUrl && p.externalUrl.includes('code.org')) || (p.tags && p.tags.some(function(t){ return /code\.org|angry ?birds|frozen|minecraft/i.test(t); })));
-        var isElectronica = !isPaint && !isCodeorg && !isScratch && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+        var isElectronica = !isPaint && !isCodeorg && !isScratch && !isMakecode && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+        var isMkMicrobit = isMakecode && ((p.makecodeUrl && p.makecodeUrl.includes('microbit.org')) || (p.tags && p.tags.some(function(t){ return /micro:?bit/i.test(t); })) || p.id === 'g6-p2' || /servo|joystick|arquero/i.test(p.title || ''));
+        var mkDefaultBadge = isMkMicrobit ? '💻 MakeCode Micro:bit' : '🕹️ MakeCode Arcade';
         var type  = isPaint ? 'paint' : (p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica')))));
-        var badge = isPaint ? (p.badge || '🎨 Arte Digital & Figuras') : (p.badge || (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? '🕹️ MakeCode Arcade' : (isScratch ? '🐱 Scratch Jr' : '🚀 Proyecto Maker')))));
+        var badge = p.badge || (isPaint ? '🎨 Arte Digital & Figuras' : (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? mkDefaultBadge : (isScratch ? '🐱 Scratch Jr' : '🚀 Proyecto Maker')))));
         var icon  = isPaint ? (p.icon || 'fa-palette') : (p.icon || (isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket')))));
         var color = isPaint ? (p.color || '#16A34A') : (p.color || (isCodeorg ? (p.color || '#E11D48') : (isElectronica ? '#D97706' : (isScratch ? '#EA580C' : (gradeObj.color || '#2563EB')))));
 
@@ -460,7 +462,7 @@
           color: color,
           stars: 3,
           status: 'desafio',
-          coverImage: p.coverImage || (p.gallery && p.gallery[0]) || (isElectronica ? 'img/microbit.png' : 'img/scratchjr.png'),
+          coverImage: p.coverImage || (p.gallery && p.gallery[0]) || (isMakecode || isElectronica ? 'img/microbit.png' : 'img/scratchjr.png'),
           gallery: p.gallery || [],
           pdfUrl: p.pdfUrl || null,
           downloadPdfUrl: p.pdfUrl || null,
@@ -489,7 +491,11 @@
       mkLib = [];
     }
     mkLib.forEach(function(m, idx) {
-      if (!missions.some(function(it){ return it.title === m.title; })) {
+      if (!missions.some(function(it){
+        return (it.makecodeUrl && m.shareUrl && it.makecodeUrl.includes(m.shareUrl.split('/').pop())) ||
+               it.title === m.title ||
+               (it.title && m.title && it.title.replace(/[^\w]/g, '') === m.title.replace(/[^\w]/g, ''));
+      })) {
         missions.push({
           id: 'mk-' + idx,
           level: levelCount++,
@@ -1521,7 +1527,7 @@
                 '<span class="gts-qr-caption"><i class="fas fa-qrcode"></i> Escaneá con la cámara de tu celular</span>' +
               '</div>' : '') +
             '<div class="gts-footer-info">' +
-              '<i class="fas fa-info-circle"></i> En <strong>📁 Proyectos</strong> podés guardar proyectos Scratch Jr y MakeCode.' +
+              '<i class="fas fa-info-circle"></i> En <strong>📁 Proyectos</strong> podés ' + (showScratch ? 'guardar proyectos Scratch Jr y MakeCode.' : 'ver y probar proyectos MakeCode.') +
             '</div>' +
           '</aside>' +
 
@@ -3876,9 +3882,9 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var isElectronica = !isGame && !isPaint && !isCanva && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-    var isMakecode = !isGame && !isElectronica && !isPaint && !isCanva && (!!mission.makecodeUrl || mission.type === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint && !isCanva;
+    var isMakecode = !isGame && !isPaint && !isCanva && (isServoJoystick || !!mission.makecodeUrl || mission.type === 'makecode' || mission.platform === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isElectronica = !isGame && !isPaint && !isCanva && !isMakecode && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint && !isCanva && (mission.type === 'scratch' || mission.type === 'codejr' || mission.platform === 'codejr' || mission.platform === 'scratch' || !!mission.scratchId || !!mission.projectFileUrl || hasScratchJr(student ? student.gradeId : ''));
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -4055,7 +4061,7 @@
                 '<div class="apm-slide-page active" data-slide-idx="0">' +
                   '<div class="apm-slide-grid-2col">' +
                     '<div class="apm-sg-img-wrap">' +
-                      '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'img/scratchjr.png\'">' +
+                      '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'' + (isMakecode || isServoJoystick ? 'img/microbit.png' : 'img/scratchjr.png') + '\'">' +
                     '</div>' +
                     '<div>' +
                       '<div style="font-size:0.8rem;font-weight:800;color:' + (isServoJoystick ? '#0D9488' : (isCanva ? '#0284C7' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1'))))))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
@@ -5033,21 +5039,26 @@
               '<div class="apm-deliv-format-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#F8FAFC;border-radius:12px;margin-bottom:14px;border:1.5px solid #E2E8F0;flex-wrap:wrap;">' +
                 '<span style="font-size:0.84rem;font-weight:800;color:#334155;"><i class="fas fa-sliders-h" style="color:#6366F1;"></i> Formato de Entrega:</span>' +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isCodeorg ? 'active' : '') + '" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isCodeorg ? (isMinecraft ? 'background:#059669;color:#FFF;box-shadow:0 2px 6px rgba(5,150,105,0.3);' : (isFrozen ? 'background:#0284C7;color:#FFF;box-shadow:0 2px 6px rgba(2,132,199,0.3);' : 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);')) : 'background:#E2E8F0;color:#475569;') + '">' +
-                    (isMinecraft ? '<i class="fas fa-cube"></i> Desafío Minecraft' : (isFrozen ? '<i class="fas fa-snowflake"></i> Desafío Frozen' : '<i class="fas fa-gamepad"></i> Desafío Code.org')) +
-                  '</button>' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isPaint ? 'active' : '') + '" id="apm-switch-to-paint" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isPaint ? 'background:#16A34A;color:#FFF;box-shadow:0 2px 6px rgba(22,163,74,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
-                    '<i class="fas fa-palette"></i> Dibujo Paint' +
-                  '</button>' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isElectronica ? (isMarcalibro ? 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);' : (isDiaMadre ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);')) : 'background:#E2E8F0;color:#475569;') + '">' +
-                    (isMarcalibro ? '<i class="fas fa-book-open"></i> Foto Marca-Libros' : (isDiaMadre ? '<i class="fas fa-heart"></i> Foto Tarjeta 3D' : '<i class="fas fa-bolt"></i> Foto / Video Circuito')) +
-                  '</button>' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isScratch ? 'active' : '') + '" id="apm-switch-to-scratch" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isScratch ? 'background:#EA580C;color:#FFF;box-shadow:0 2px 6px rgba(234,88,12,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
-                    '<i class="fas fa-cat"></i> Archivo Scratch Jr' +
-                  '</button>' +
-                  '<button type="button" class="apm-deliv-switch-btn ' + (isMakecode ? 'active' : '') + '" id="apm-switch-to-mk" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isMakecode ? 'background:#7C3AED;color:#FFF;box-shadow:0 2px 6px rgba(124,58,237,0.3);' : 'background:#E2E8F0;color:#475569;') + '">' +
-                    '<i class="fas fa-microchip"></i> Link MakeCode' +
-                  '</button>' +
+                  (isCodeorg ?
+                    '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isMinecraft ? 'background:#059669;color:#FFF;box-shadow:0 2px 6px rgba(5,150,105,0.3);' : (isFrozen ? 'background:#0284C7;color:#FFF;box-shadow:0 2px 6px rgba(2,132,199,0.3);' : 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);')) + '">' +
+                      (isMinecraft ? '<i class="fas fa-cube"></i> Desafío Minecraft' : (isFrozen ? '<i class="fas fa-snowflake"></i> Desafío Frozen' : '<i class="fas fa-gamepad"></i> Desafío Code.org')) +
+                    '</button>' : '') +
+                  (isPaint ?
+                    '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-paint" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;background:#16A34A;color:#FFF;box-shadow:0 2px 6px rgba(22,163,74,0.3);">' +
+                      '<i class="fas fa-palette"></i> Dibujo Paint' +
+                    '</button>' : '') +
+                  ((isElectronica || isServoJoystick) ?
+                    '<button type="button" class="apm-deliv-switch-btn ' + (!isMakecode && isElectronica ? 'active' : '') + '" id="apm-switch-to-electro" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (!isMakecode && isElectronica ? (isMarcalibro ? 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);' : (isDiaMadre ? 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);' : 'background:#D97706;color:#FFF;box-shadow:0 2px 6px rgba(217,119,6,0.3);')) : 'background:#E2E8F0;color:#475569;') + '">' +
+                      (isServoJoystick ? '<i class="fas fa-camera"></i> Foto / Video del Robot' : (isMarcalibro ? '<i class="fas fa-book-open"></i> Foto Marca-Libros' : (isDiaMadre ? '<i class="fas fa-heart"></i> Foto Tarjeta 3D' : '<i class="fas fa-bolt"></i> Foto / Video Circuito'))) +
+                    '</button>' : '') +
+                  (isScratch ?
+                    '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-scratch" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;background:#EA580C;color:#FFF;box-shadow:0 2px 6px rgba(234,88,12,0.3);">' +
+                      '<i class="fas fa-cat"></i> Archivo Scratch Jr' +
+                    '</button>' : '') +
+                  (isMakecode ?
+                    '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-mk" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;background:#7C3AED;color:#FFF;box-shadow:0 2px 6px rgba(124,58,237,0.3);">' +
+                      '<i class="fas fa-microchip"></i> Link MakeCode' +
+                    '</button>' : '') +
                 '</div>' +
               '</div>' +
 
@@ -5219,7 +5230,8 @@
               '</div>' +
 
               // SUB-PANEL SCRATCH JR / FOTO
-              '<div id="apm-scratch-delivery-section" style="' + (!isElectronica && !isMakecode ? 'display:block;' : 'display:none;') + '">' +
+              (isScratch ?
+              '<div id="apm-scratch-delivery-section" style="display:block;">' +
                 '<div class="apm-delivery-header" style="background:linear-gradient(135deg, ' + (isScratchJrPerspectiva ? '#6B21A8 0%, #9333EA' : '#C2410C 0%, #EA580C') + ' 100%);">' +
                   '<div class="apm-dh-icon"><i class="fas ' + (isScratchJrPerspectiva ? 'fa-search-plus' : 'fa-cat') + '"></i></div>' +
                   '<div>' +
@@ -5259,7 +5271,8 @@
                     '</ol>' +
                   '</div>' +
                 '</div>' +
-              '</div>' +
+              '</div>' :
+              '<div id="apm-scratch-delivery-section" style="display:none;"></div>') +
             '</div>' +
           '</div>' +
 
@@ -5678,14 +5691,23 @@
                       materialsList.map(function(m){ return '<li><strong>' + m.title + ':</strong> ' + (m.description||'') + '</li>'; }).join('') +
                     '</ul>' +
 
-                    '<div class="apm-ps-section-title"><i class="fas fa-clipboard-check"></i> 3. ' + (isElectronica ? 'Pasos de Armado y Conexión' : 'Pasos de Realización') + '</div>' +
+                    '<div class="apm-ps-section-title"><i class="fas fa-clipboard-check"></i> 3. ' + (isElectronica ? 'Pasos de Armado y Conexión' : (isMakecode ? 'Pasos de Construcción y Programación MakeCode' : 'Pasos de Realización')) + '</div>' +
                     '<ol style="font-size:0.88rem;color:#334155;margin:0 0 18px;padding-left:22px;line-height:1.6;">' +
-                      (isElectronica && instructionsList && instructionsList.length > 0 ?
-                        instructionsList.map(function(st){ return '<li><strong>' + st.title + ':</strong> ' + st.desc + (st.tip ? ' <em>(' + st.tip + ')</em>' : '') + '</li>'; }).join('') :
-                        '<li><strong>Diseño previo:</strong> Dibujar en papel el personaje o el sensor que vamos a programar.</li>' +
-                        '<li><strong>Programación:</strong> Abrir el editor de código en MakeCode o Scratch y colocar los bloques secuenciales.</li>' +
-                        '<li><strong>Simulación:</strong> Probar en el simulador digital que las acciones respondan correctamente al pulsar los botones.</li>' +
-                        '<li><strong>Transferencia:</strong> Conectar la placa micro:bit por USB o guardar el proyecto en el panel del alumno.</li>'
+                      ((mission.instructions && mission.instructions.length > 0) ?
+                        mission.instructions.map(function(st){ return '<li><strong>' + st.title + ':</strong> ' + st.desc + (st.tip ? ' <em>(' + st.tip + ')</em>' : '') + '</li>'; }).join('') :
+                        (isElectronica && instructionsList && instructionsList.length > 0 ?
+                          instructionsList.map(function(st){ return '<li><strong>' + st.title + ':</strong> ' + st.desc + (st.tip ? ' <em>(' + st.tip + ')</em>' : '') + '</li>'; }).join('') :
+                          (isMakecode ?
+                            '<li><strong>Conexión de Hardware:</strong> Conectar los sensores y servomotor a los pines correspondientes de la micro:bit.</li>' +
+                            '<li><strong>Programación MakeCode:</strong> Abrir el editor de MakeCode micro:bit y programar los bloques de lectura analógica y servo.</li>' +
+                            '<li><strong>Simulación y Calibración:</strong> Probar el movimiento en el simulador interactivo verificando los límites de rotación.</li>' +
+                            '<li><strong>Transferencia a la Placa:</strong> Conectar la micro:bit por USB y transferir el programa compilado (.hex).</li>' :
+                            '<li><strong>Diseño previo:</strong> Planificar el escenario, personajes y acciones a programar.</li>' +
+                            '<li><strong>Programación:</strong> Abrir el entorno visual y estructurar los bloques paso a paso.</li>' +
+                            '<li><strong>Prueba y Ajuste:</strong> Probar que la animación responda con fluidez.</li>' +
+                            '<li><strong>Entrega:</strong> Guardar el avance en el panel del taller.</li>'
+                          )
+                        )
                       ) +
                     '</ol>' +
 
