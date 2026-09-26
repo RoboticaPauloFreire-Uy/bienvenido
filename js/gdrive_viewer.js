@@ -700,7 +700,7 @@
                     '<span>🕹️ Servo & Joystick</span>' +
                   '</button>' +
                   '<button type="button" class="arm-s5-tab-pill tab-gemini ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" data-spotlight-theme="gemini">' +
-                    '<span>🧠 Gemini & NotebookLM</span>' +
+                    '<span>🧠 Geminis Notebook ⚡</span>' +
                   '</button>' +
                 '</div>' +
                 '<button type="button" class="arm-s5-cnav-btn arm-s5-next-btn" title="Proyecto Siguiente" aria-label="Siguiente">' +
@@ -783,7 +783,7 @@
                   '</div>' +
                   '<div class="arm-s5-info">' +
                     '<div class="arm-s5-tag" style="color:#4F46E5;"><i class="fas fa-brain"></i> PROYECTO OFICIAL 6° GRADO • NIVEL 3</div>' +
-                    '<h3 class="arm-s5-title" style="color:#3730A3;">IA con Gemini & NotebookLM: Creación de Materiales de Estudio 🧠🎙️📽️📊</h3>' +
+                    '<h3 class="arm-s5-title" style="color:#3730A3;">NIVEL 3 — Geminis Notebook ⚡: Creación de Materiales de Estudio con IA 🧠🎙️📽️📊</h3>' +
                     '<p class="arm-s5-desc">Ecosistema de IA con anclaje estricto a fuentes confiables (Grounding): generá <strong>podcasts con dos locutores sintetizados (Audio Overview)</strong>, <strong>guiones audiovisuales para video educativo</strong>, <strong>esquemas para Canva</strong> y <strong>guías de estudio con flashcards para autoevaluación</strong> sin alucinaciones.</p>' +
                     '<div class="arm-s5-materials-pills">' +
                       '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-microphone"></i> Podcasts (Audio Overview)</span>' +
@@ -812,7 +812,7 @@
             '<div class="arm-s5-carousel-dots">' +
               '<span class="arm-s5-dot ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" title="Canva Arquero con IA"></span>' +
               '<span class="arm-s5-dot ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" title="El Arquero Mecánico: Servo y Joystick"></span>' +
-              '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="IA con Gemini & NotebookLM"></span>' +
+              '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="NIVEL 3 — Geminis Notebook ⚡"></span>' +
             '</div>' +
           '</div>';
 

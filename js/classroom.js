@@ -649,7 +649,7 @@ function renderProjectsSectionHtml(grade) {
           <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
           <div class="s5-header-titles">
             <span class="s5-dept-tag" style="background:rgba(79,70,229,0.15);color:#4F46E5;border:1px solid rgba(79,70,229,0.3);"><i class="fas fa-brain"></i> Inteligencia Artificial Educativa & Metodología de Estudio</span>
-            <h2 class="s5-main-title" style="color:#3730A3;">🧠 IA con Gemini & NotebookLM: Creación de Materiales de Estudio 🎙️📽️📊📑</h2>
+            <h2 class="s5-main-title" style="color:#3730A3;">🧠 NIVEL 3 — Geminis Notebook ⚡: Creación de Materiales de Estudio con IA 🎙️📽️📊📑</h2>
             <p class="s5-subtitle" style="color:#312E81;">Nivel 3 para 6° Grado · ¡Aprendé a transformar tus libros escolares y apuntes en podcasts, guiones de video, presentaciones y guías de autoevaluación con IA sin alucinaciones!</p>
           </div>
         </div>

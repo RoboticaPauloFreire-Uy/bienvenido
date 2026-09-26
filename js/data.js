@@ -2171,12 +2171,12 @@ const SCHOOL_DATA = {
         {
           id: "g6-p3",
           level: 3,
-          title: "IA con Gemini & NotebookLM: Creación de Materiales de Estudio 🧠🎙️📽️📊",
+          title: "NIVEL 3 — Geminis Notebook ⚡: Creación de Materiales de Estudio con IA 🧠🎙️📽️📊",
           author: "Taller de Robótica, IA y Tecnología 6° Grado",
           date: "Abril 2026",
           type: "gemini_notebooks",
           platform: "notebooklm",
-          badge: "🧠 Gemini & NotebookLM • IA Educativa",
+          badge: "🧠 NIVEL 3 — Geminis Notebook ⚡",
           icon: "fa-brain",
           color: "#4F46E5",
           coverImage: "img/proyectos/gemini_notebooks_cover.svg",
@@ -2189,7 +2189,7 @@ const SCHOOL_DATA = {
           description: "¡Nivel 3 de nuestra Ruta de Aventuras! Aprendemos a usar Google Gemini y NotebookLM para convertir fuentes confiables (PDFs escolares, libros de texto y apuntes) en materiales de estudio interactivos: podcasts de audio con dos locutores sintetizados (Audio Overview), guiones audiovisuales para videos educativos, esquemas para presentaciones en Canva y guías de estudio con cuestionarios tipo FAQ y flashcards para autoevaluación con cero alucinaciones.",
           objective: "Dominar el uso educativo de la IA generativa basada en fuentes verificables (Grounding): cargar libros y apuntes en Google NotebookLM, generar un podcast explicativo con dos voces sintéticas, diseñar un guión audiovisual para video con gancho y escenas, estructurar diapositivas para Canva/Slides y formular cuestionarios de autoevaluación con active recall y citas exactas a los textos originales.",
           benefits: "Desarrolla el pensamiento crítico, la alfabetización en inteligencia artificial y la autonomía en el estudio. Enseña a distinguir entre chatbots convencionales propensos a alucinaciones y modelos anclados en fuentes comprobables, transformando a los alumnos de 6° grado en creadores de contenidos educativos multimedia de vanguardia.",
-          tags: ["Google Gemini", "NotebookLM", "Inteligencia Artificial", "Podcasts Educativos", "Guiones de Video", "Materiales de Estudio", "Grounding", "Flashcards", "Nivel 3"],
+          tags: ["Google Gemini", "Geminis Notebook", "NotebookLM", "Inteligencia Artificial", "Podcasts Educativos", "Guiones de Video", "Materiales de Estudio", "Grounding", "Flashcards", "Nivel 3"],
           gallery: [
             "img/proyectos/gemini_notebooks_cover.svg"
           ],
@@ -2549,13 +2549,14 @@ if (typeof window !== 'undefined') {
                 targetProjects.some(p => ((p.id === 'g1-p4' || p.id === 'g1-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
 
-              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA, el Arquero Mecánico con imagen y Gemini & NotebookLM
+              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA, el Arquero Mecánico con imagen y NIVEL 3 — Geminis Notebook
               const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
                 targetProjects.length < 3 ||
                 !targetProjects.some(p => (p.title || '').includes('Canva') || (p.title || '').includes('Arquero') || p.id === 'g6-p1') ||
                 !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
                 !targetProjects.some(p => (p.id === 'g6-p2' && (p.makecodeUrl || '').includes('S17294') && p.coverImage && p.coverImage.includes('servo_joystick_makecode_cover'))) ||
-                !targetProjects.some(p => (p.title || '').includes('Gemini') || (p.title || '').includes('NotebookLM') || p.id === 'g6-p3')
+                !targetProjects.some(p => ((p.title || '').includes('Gemini') || (p.title || '').includes('Notebook')) && !/runner|arcade/i.test(p.title || '')) ||
+                targetProjects.some(p => /neon.*runner|cyber.*runner|arcade/i.test(p.title || ''))
               );
 
               if (isStaleSala5 || isStaleGrado1 || isStaleGrado6) {
@@ -2573,11 +2574,11 @@ if (typeof window !== 'undefined') {
                     p.coverImage = 'img/proyectos/servo_joystick_makecode_cover.svg';
                     p.makecodeUrl = 'https://makecode.microbit.org/S17294-82339-82111-72476';
                   }
-                  if (p.id === 'g6-p3' || (/gemini|notebooklm|materiales.*estudio/i.test(p.title || ''))) {
-                    p.coverImage = 'img/proyectos/gemini_notebooks_cover.svg';
-                    p.pdfUrl = 'docs/guia_ia_gemini_notebooks.pdf';
-                    p.downloadPdfUrl = 'docs/guia_ia_gemini_notebooks.pdf';
-                    p.externalUrl = 'https://notebooklm.google.com';
+                  if (p.id === 'g6-p3' || /neon|runner|arcade|gemini|notebook/i.test(p.title || '')) {
+                    var officialG6P3 = window.SCHOOL_DATA.grades.find(function(g){ return g.id === 'grado6'; }).projects.find(function(proj){ return proj.id === 'g6-p3'; });
+                    if (officialG6P3) {
+                      Object.assign(p, officialG6P3);
+                    }
                   }
                 });
                 gradeObj.projects = targetProjects;
