@@ -1322,13 +1322,14 @@
             displayProjects.map(function(proj, idx) {
               var isServo = (proj.id === 'g6-p2') || (/servo.*joystick|joystick.*servo/i.test(proj.title || ''));
               var isCanva = proj.type === 'canva' || /canva/i.test(proj.title || '');
-              var coverImg = proj.coverImage || (isServo ? 'img/proyectos/servo_joystick_makecode_cover.svg' : (isCanva ? 'img/proyectos/canva_arquero_ia_cover.svg' : 'img/microbit.png'));
-              var themeColor = proj.color || (isServo ? '#0D9488' : (isCanva ? '#0284C7' : '#7C3AED'));
+              var isGemini = (proj.id === 'g6-p3') || (/gemini|notebooklm|materiales.*estudio/i.test(proj.title || ''));
+              var coverImg = proj.coverImage || (isServo ? 'img/proyectos/servo_joystick_makecode_cover.svg' : (isCanva ? 'img/proyectos/canva_arquero_ia_cover.svg' : (isGemini ? 'img/proyectos/gemini_notebooks_cover.svg' : 'img/microbit.png')));
+              var themeColor = proj.color || (isServo ? '#0D9488' : (isCanva ? '#0284C7' : (isGemini ? '#4F46E5' : '#7C3AED')));
               var levelNum = proj.level || (idx + 1);
-              var badgeText = proj.badge || (isServo ? '🧤 Arquero, Joystick Chico Negro & Servo SG90' : (isCanva ? '🤖 Canva & Animación con IA' : '💻 MakeCode Micro:bit'));
+              var badgeText = proj.badge || (isServo ? '🧤 Arquero, Joystick Chico Negro & Servo SG90' : (isCanva ? '🤖 Canva & Animación con IA' : (isGemini ? '🧠 Gemini & NotebookLM • IA Educativa' : '💻 MakeCode Micro:bit')));
               var codeSnippet = proj.codeSnippet || (isServo ? 'let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})' : null);
-              var actionUrl = proj.makecodeUrl || proj.shareUrl || proj.externalUrl || proj.gameUrl || '#';
-              var actionLabel = isCanva ? 'Abrir en Canva' : (proj.type === 'makecode' || proj.makecodeUrl ? 'Abrir en MakeCode' : 'Abrir Proyecto');
+              var actionUrl = proj.makecodeUrl || proj.shareUrl || proj.externalUrl || proj.gameUrl || (isGemini ? 'https://notebooklm.google.com' : '#');
+              var actionLabel = isGemini ? 'Abrir NotebookLM' : (isCanva ? 'Abrir en Canva' : (proj.type === 'makecode' || proj.makecodeUrl ? 'Abrir en MakeCode' : 'Abrir Proyecto'));
 
               var pillsHtml = '';
               if (isServo) {
@@ -1341,6 +1342,12 @@
                   '<span class="mklib-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-camera"></i> Foto en Aula</span>' +
                   '<span class="mklib-pill" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-wand-magic-sparkles"></i> Quitafondos IA</span>' +
                   '<span class="mklib-pill" style="background:#FEF3C7;color:#92400E;"><i class="fas fa-film"></i> Magic Animate</span>';
+              } else if (isGemini) {
+                pillsHtml =
+                  '<span class="mklib-pill" style="background:#EEF2FF;color:#4338CA;"><i class="fas fa-brain"></i> Grounding en Fuentes</span>' +
+                  '<span class="mklib-pill" style="background:#FDF2F8;color:#BE185D;"><i class="fas fa-microphone"></i> Audio Overview</span>' +
+                  '<span class="mklib-pill" style="background:#ECFEFF;color:#0E7490;"><i class="fas fa-video"></i> Guiones de Video</span>' +
+                  '<span class="mklib-pill" style="background:#ECFDF5;color:#047857;"><i class="fas fa-file-pdf"></i> Guía PDF Unificada</span>';
               } else {
                 pillsHtml =
                   '<span class="mklib-pill"><i class="fas fa-puzzle-piece"></i> Código</span>' +
@@ -1367,7 +1374,7 @@
                   '<img src="' + coverImg + '" alt="' + (proj.title || '').replace(/"/g, '&quot;') + '" class="mklib-cover-img" onerror="this.src=\'img/microbit.png\'">' +
                   '<div class="mklib-cover-overlay"></div>' +
                   '<span class="mklib-cover-badge" style="background:' + themeColor + ';">' +
-                    '<i class="fas ' + (proj.icon || 'fa-gamepad') + '"></i> NIVEL ' + levelNum + ' • ' + (isServo ? 'ROBÓTICA & MAKECODE' : (isCanva ? 'CANVA & IA' : 'MAKECODE')) +
+                    '<i class="fas ' + (proj.icon || 'fa-gamepad') + '"></i> NIVEL ' + levelNum + ' • ' + (isServo ? 'ROBÓTICA & MAKECODE' : (isCanva ? 'CANVA & IA' : (isGemini ? 'IA & NOTEBOOKLM' : 'MAKECODE'))) +
                   '</span>' +
                 '</div>' +
                 '<div class="mklib-ci-body">' +
@@ -2008,6 +2015,8 @@
             if (!matchingProj.coverImage || matchingProj.coverImage === 'img/microbit.png') {
               matchingProj.coverImage = (matchingProj.id === 'g6-p2' || /servo.*joystick|joystick.*servo/i.test(matchingProj.title || ''))
                 ? 'img/proyectos/servo_joystick_makecode_cover.svg'
+                : (matchingProj.id === 'g6-p3' || /gemini|notebooklm/i.test(matchingProj.title || ''))
+                ? 'img/proyectos/gemini_notebooks_cover.svg'
                 : 'img/proyectos/canva_arquero_ia_cover.svg';
             }
             openAdventureProjectModal(matchingProj, 'presentacion');
@@ -2968,6 +2977,182 @@
     '</div>';
   }
 
+  function renderGeminiNotebooksSolutionHtml(mission) {
+    return '<div class="apm-sol-electro-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #1E1B4B 0%, #4338CA 50%, #4F46E5 100%);">' +
+        '<div class="apm-seh-icon" style="background:rgba(255,255,255,0.18);color:#A5B4FC;"><i class="fas fa-brain"></i></div>' +
+        '<div>' +
+          '<h4>Solución Oficial: Estudio Inteligente con Gemini & NotebookLM 🧠🎙️📽️📊</h4>' +
+          '<p>Ecosistema multimodal: Grounding en fuentes confiables, podcast con dos locutores sintetizados (Audio Overview), esquemas de diapositivas, guiones y unificación en documento PDF.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body">' +
+
+        // Galería y visual de la solución
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:18px;">' +
+          '<div class="apm-circuit-schematic-card" style="background:#EEF2FF;border:1.5px solid #C7D2FE;margin:0;color:#1E1B4B;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#DDD6FE;">' +
+              '<span style="color:#3730A3;font-weight:900;"><i class="fas fa-image"></i> Diagrama Oficial del Sistema IA</span>' +
+              '<a href="img/proyectos/gemini_notebooks_cover.svg" target="_blank" class="apm-csc-badge" style="background:#4F46E5;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ampliar</a>' +
+            '</div>' +
+            '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/gemini_notebooks_cover.svg" alt="Gemini NotebookLM Ecosistema" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;" onclick="window.open(this.src,\'_blank\')">' +
+              '<div style="font-size:0.8rem;color:#475569;margin-top:6px;">Arquitectura de NotebookLM: Fuentes confiables a la izquierda, núcleo Gemini 1.5 Pro y los 4 artefactos de estudio generados.</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="apm-circuit-schematic-card" style="background:#FDF2F8;border:1.5px solid #FBCFE8;margin:0;color:#831843;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#FCE7F3;">' +
+              '<span style="color:#9D174D;font-weight:900;"><i class="fas fa-shield-alt"></i> Grounding: IA sin Alucinaciones</span>' +
+              '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" class="apm-csc-badge" style="background:#DB2777;color:#FFF;text-decoration:none;"><i class="fas fa-file-pdf"></i> Ver Guía PDF</a>' +
+            '</div>' +
+            '<div style="padding:10px;background:#FFF;border-radius:10px;margin-top:8px;font-size:0.82rem;color:#475569;line-height:1.5;">' +
+              '<div style="margin-bottom:8px;"><strong>1. Anclaje Estricto:</strong> Gemini solo responde a partir de los documentos PDF, Docs o enlaces subidos al cuaderno.</div>' +
+              '<div style="margin-bottom:8px;"><strong>2. Citas Verificables [1]:</strong> Cada afirmación incluye un botón numérico que resalta el párrafo original en la fuente.</div>' +
+              '<div style="margin-bottom:8px;"><strong>3. Cero Alucinación:</strong> Si un dato no figura en tus apuntes, la IA declara explícitamente que no se encuentra en las fuentes.</div>' +
+              '<div><strong>4. Privacidad Total:</strong> Los datos y documentos de los estudiantes no se utilizan para entrenar los modelos públicos de Google.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Dashboard simulado de NotebookLM
+        '<div class="apm-circuit-schematic-card" style="background:#0F172A;border:1.5px solid #334155;color:#F8FAFC;">' +
+          '<div class="apm-csc-header" style="border-bottom-color:#1E293B;">' +
+            '<span><i class="fas fa-laptop-code" style="color:#818CF8;"></i> Simulación de Espacio de Trabajo en Google NotebookLM</span>' +
+            '<span class="apm-csc-badge" style="background:#4F46E5;color:#FFF;">Gemini 1.5 Pro</span>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px;">' +
+            // Columna 1: Fuentes
+            '<div style="background:#1E293B;border-radius:10px;padding:12px;border:1px solid #334155;">' +
+              '<div style="font-size:0.8rem;font-weight:800;color:#93C5FD;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">' +
+                '<span><i class="fas fa-file-alt"></i> Fuentes Activas (3)</span>' +
+                '<span style="background:#065F46;color:#6EE7B7;font-size:0.7rem;padding:2px 6px;border-radius:4px;"><i class="fas fa-check"></i> Ancladas</span>' +
+              '</div>' +
+              '<ul style="margin:0;padding-left:16px;font-size:0.75rem;color:#CBD5E1;line-height:1.6;">' +
+                '<li><strong>Historia_Uruguay_S_XIX.pdf</strong> (42 págs)</li>' +
+                '<li><strong>Apuntes_Energias_Renovables.txt</strong> (Aula)</li>' +
+                '<li><strong>Guia_Experimentos_Luz.pdf</strong> (Ceibal)</li>' +
+              '</ul>' +
+            '</div>' +
+            // Columna 2: Chat Grounded
+            '<div style="background:#1E293B;border-radius:10px;padding:12px;border:1px solid #334155;">' +
+              '<div style="font-size:0.8rem;font-weight:800;color:#A5B4FC;margin-bottom:8px;">' +
+                '<i class="fas fa-comments"></i> Pregunta al Chat Grounded' +
+              '</div>' +
+              '<div style="background:#0F172A;border-radius:6px;padding:8px;font-size:0.75rem;color:#E0E7FF;margin-bottom:6px;">' +
+                '<em>"¿Cuáles son las 3 ventajas de la energía solar según los apuntes?"</em>' +
+              '</div>' +
+              '<div style="background:#312E81;border-radius:6px;padding:8px;font-size:0.74rem;color:#C7D2FE;line-height:1.4;">' +
+                '1. No emite gases contaminantes <span style="background:#4F46E5;color:#FFF;padding:1px 4px;border-radius:3px;font-weight:800;">[1]</span>.<br>' +
+                '2. Es inagotable y disponible en todo el territorio <span style="background:#4F46E5;color:#FFF;padding:1px 4px;border-radius:3px;font-weight:800;">[2]</span>.<br>' +
+                '3. Reduce costos en escuelas rurales <span style="background:#4F46E5;color:#FFF;padding:1px 4px;border-radius:3px;font-weight:800;">[1]</span>.' +
+              '</div>' +
+            '</div>' +
+            // Columna 3: Cuaderno de Estudio
+            '<div style="background:#1E293B;border-radius:10px;padding:12px;border:1px solid #334155;">' +
+              '<div style="font-size:0.8rem;font-weight:800;color:#F472B6;margin-bottom:8px;">' +
+                '<i class="fas fa-layer-group"></i> Guía del Cuaderno Generada' +
+              '</div>' +
+              '<div style="display:flex;flex-direction:column;gap:6px;font-size:0.74rem;">' +
+                '<span style="background:#0F172A;padding:6px 10px;border-radius:6px;color:#F9A8D4;"><i class="fas fa-podcast"></i> <strong>Audio Overview:</strong> Podcast de 8 min con 2 locutores</span>' +
+                '<span style="background:#0F172A;padding:6px 10px;border-radius:6px;color:#93C5FD;"><i class="fas fa-file-alt"></i> <strong>Guía de Estudio:</strong> 12 términos clave y glosario</span>' +
+                '<span style="background:#0F172A;padding:6px 10px;border-radius:6px;color:#6EE7B7;"><i class="fas fa-question-circle"></i> <strong>Trivia:</strong> 10 preguntas tipo test con active recall</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Tabla comparativa de los 6 materiales
+        '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-cubes" style="color:#4F46E5;"></i> Catálogo de Formatos Didácticos Generados por IA:</h5>' +
+          '<div class="apm-pinout-table-wrap">' +
+            '<table class="apm-pinout-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th>Formato</th>' +
+                  '<th>Herramienta IA</th>' +
+                  '<th>Estructura Clave</th>' +
+                  '<th>Beneficio Pedagógico</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                '<tr>' +
+                  '<td><strong>🎙️ Audio Overview (Podcast)</strong></td>' +
+                  '<td>NotebookLM Audio</td>' +
+                  '<td>Conversación dinámica entre 2 locutores sintetizados con analogías</td>' +
+                  '<td>Aprendizaje auditivo mientras viajás o descansás la vista</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>📽️ Guion Audiovisual</strong></td>' +
+                  '<td>Gemini Chat</td>' +
+                  '<td>3 actos (Gancho 0-10s, Desarrollo conceptual y Cierre reflexivo)</td>' +
+                  '<td>Estructura para crear videos cortos en Canva o CapCut</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>📊 Esquema Diapositivas</strong></td>' +
+                  '<td>Gemini Chat</td>' +
+                  '<td>Regla del 6x6: máximo 6 líneas y 6 palabras por diapositiva</td>' +
+                  '<td>Síntesis visual sin saturación de texto para exposiciones</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>📝 Guía & Glosario</strong></td>' +
+                  '<td>NotebookLM Studio</td>' +
+                  '<td>Resumen ejecutivo + definiciones de términos difíciles</td>' +
+                  '<td>Comprensión lectora y fijación de vocabulario técnico</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>❓ Cuestionarios & FAQ</strong></td>' +
+                  '<td>NotebookLM Chat</td>' +
+                  '<td>Preguntas de opción múltiple, respuestas modelo y citas numéricas</td>' +
+                  '<td>Autoevaluación inmediata con active recall y feedback</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>🗺️ Línea de Tiempo</strong></td>' +
+                  '<td>Gemini / NotebookLM</td>' +
+                  '<td>Cronología secuencial con relaciones de causa y efecto</td>' +
+                  '<td>Ordenamiento temporal para ciencias sociales e inventos</td>' +
+                '</tr>' +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+
+        // Principios éticos
+        '<div class="apm-troubleshoot-box" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-balance-scale" style="color:#4F46E5;"></i> Decálogo de Ética y Buenas Prácticas con IA</h5>' +
+          '<div class="apm-tb-grid">' +
+            '<div class="apm-tb-item" style="border-left-color:#4F46E5;">' +
+              '<h6>1. Verificación Humana Siempre</h6>' +
+              '<p>La IA es un copiloto, no el autor definitivo. Siempre leé las citas numéricas y comprobá los datos en los libros antes de dar por buena una respuesta.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#10B981;">' +
+              '<h6>2. Honestidad Académica</h6>' +
+              '<p>Declarar siempre cuando un resumen, esquema o guion fue co-creado con Gemini o NotebookLM, citando el prompt y las fuentes originales utilizadas.</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#F59E0B;">' +
+              '<h6>3. Cuidado de la Privacidad</h6>' +
+              '<p>Nunca subas a los cuadernos datos personales sensibles de tus compañeros o familiares (teléfonos, documentos de identidad o contraseñas).</p>' +
+            '</div>' +
+            '<div class="apm-tb-item" style="border-left-color:#EC4899;">' +
+              '<h6>4. Pensamiento Crítico Activo</h6>' +
+              '<p>Usá la IA para debatir puntos de vista, buscar contraejemplos y enriquecer tu propio razonamiento, no para evitar leer o pensar.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Botón final destacado: PDF unificado
+        '<div style="text-align:center;margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
+          '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="arm-btn-primary" style="background:linear-gradient(135deg, #EC4899 0%, #BE185D 100%);padding:11px 24px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.95rem;box-shadow:0 4px 14px rgba(236,72,153,0.3);">' +
+            '<i class="fas fa-file-pdf"></i> Descargar Guía Didáctica Oficial Completa en PDF (Todo Unificado)' +
+          '</a>' +
+          '<a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;background:#EEF2FF;padding:11px 20px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.95rem;">' +
+            '<i class="fas fa-external-link-alt"></i> Abrir Google NotebookLM en Vivo' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderScratchJrVelocidadSolutionHtml(mission) {
     var sampleFileUrl = (mission && (mission.projectFileUrl || mission.downloadUrl)) || 'proyectos/velocidad.sjr';
     return '<div class="apm-sol-electro-wrap">' +
@@ -3656,6 +3841,7 @@
     var isObjective = (conceptType === 'objective');
     var isServoJoystick = (data.id === 'g6-p2') || (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(data.title || '')) || (data.tags && data.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
     var isCanva = !isServoJoystick && (data.type === 'canva' || (data.tags && data.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(data.title || '')));
+    var isGeminiNotebooks = (data.id === 'g6-p3') || (/gemini|notebooklm|notebooks.*ia|materiales.*estudio/i.test(data.title || '')) || (data.tags && data.tags.some(function(t){ return /notebooklm|gemini|materiales de estudio/i.test(t); }));
     var isPaint = data.type === 'paint' || (data.tags && data.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|paint|bandera/i.test(data.title || ''));
     var isPaintBanderas = isPaint && (/bandera/i.test(data.title || '') || (data.tags && data.tags.some(function(t){ return /bandera/i.test(t); })));
     var isPaintCancha = isPaint && !isPaintBanderas;
@@ -3678,7 +3864,7 @@
 
     var categoryLabel = isObjective ? '🎯 OBJETIVO PEDAGÓGICO' : '🧠 BENEFICIOS DEL RAZONAMIENTO';
     var categoryTheme = isObjective ? 'objective' : 'benefits';
-    var platText = isServoJoystick ? 'MakeCode micro:bit (Robótica & Mapeo)' : (isCanva ? 'Canva & Animación IA' : (isMarcalibro ? 'Origami & Circuito (Tom Sawyer)' : (isScratchJrPerspectiva ? 'Scratch Jr (Perspectiva)' : (isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego'))))))))));
+    var platText = isServoJoystick ? 'MakeCode micro:bit (Robótica & Mapeo)' : (isCanva ? 'Canva & Animación IA' : (isGeminiNotebooks ? 'Google Gemini & NotebookLM (IA de Estudio)' : (isMarcalibro ? 'Origami & Circuito (Tom Sawyer)' : (isScratchJrPerspectiva ? 'Scratch Jr (Perspectiva)' : (isScratchJrVelocidad ? 'Scratch Jr (CodeJr)' : (isDiaMadre ? 'Papertronics (Tarjeta 3D)' : (isPaintBanderas ? 'Paint (Banderas)' : (isPaintCancha ? 'Paint (Cancha)' : (isMinecraft ? 'Code.org Minecraft' : (isFrozen ? 'Frozen Code.org' : ((data.platform === 'codeorg' || isCodeorg) ? 'Code.org' : 'Juego')))))))))));
 
     // Pilares didácticos según el tipo de proyecto y concepto
     var pillars = [];
@@ -3693,6 +3879,14 @@
           { icon: 'fa-sync-alt', color: '#16A34A', title: 'Bucle Continuo y Tasa de Refresco (20 ms)', desc: 'Ejecutar el ciclo en el bloque "para siempre" con pausa de 20 ms para lograr atajadas fluidas sin tirones mecánicos.' }
         ];
         tipBoxText = '<strong>🧤 El Arquero Mecánico con Joystick Chico Negro y Servo:</strong> En este Nivel 2 de 6° Grado, los estudiantes construyen y programan el arquero atajador. La palanca del joystick chico negro (Pin P1) envía lecturas de 0 a 1023, la micro:bit aplica el <strong>ajuste de intervalo matemático (Math.map)</strong> con límites de 0° a 180° y comanda el servomotor SG90 (Pin P0) para atajar penales de poste a poste en tiempo real.';
+      } else if (isGeminiNotebooks) {
+        pillars = [
+          { icon: 'fa-brain', color: '#4F46E5', title: 'Grounding: Anclaje Estricto en Fuentes', desc: 'Aprender cómo Gemini 1.5 Pro y NotebookLM eliminan alucinaciones al procesar exclusivamente textos escolares y apuntes con citas verificables [1].' },
+          { icon: 'fa-microphone', color: '#EC4899', title: 'Podcasts Sintéticos (Audio Overview)', desc: 'Generar debates orales entre dos locutores de IA que dialogan, explican con metáforas y resumen los temas más complejos.' },
+          { icon: 'fa-film', color: '#06B6D4', title: 'Guiones de Video y Diapositivas', desc: 'Crear estructuras visuales de 3 actos para videos educativos y esquemas de presentación listos para Canva aplicando la regla del 6x6.' },
+          { icon: 'fa-question-circle', color: '#10B981', title: 'Autoevaluación con Active Recall y Quizzes', desc: 'Formular cuestionarios interactivos con respuestas justificadas, preguntas trampa y flashcards para consolidar la memoria a largo plazo.' }
+        ];
+        tipBoxText = '<strong>🧠 Google Gemini & NotebookLM para Estudiantes de 6° Grado:</strong> En este Nivel 3, los estudiantes aprenden a utilizar la IA generativa como un copiloto de estudio grounded. En lugar de buscar respuestas genéricas en internet, suben sus propios textos escolares para transformarlos en <strong>podcasts hablados</strong>, <strong>guiones de video</strong>, <strong>presentaciones en Canva</strong> y <strong>exámenes de autoevaluación</strong> verificando siempre las fuentes originales con pensamiento crítico y ética digital.';
       } else if (isMarcalibro) {
         pillars = [
           { icon: 'fa-book-open', color: '#D97706', title: 'Geometría del Doblado Origami', desc: 'Transformar una hoja cuadrada de papel glacé en un bolsillo esquinero autoportante mediante pliegues diagonales precisos.' },
@@ -3800,6 +3994,14 @@
           { icon: 'fa-gamepad', color: '#16A34A', title: 'Robótica Lúdica y Competitiva', desc: 'Evolucionar desde la animación en pantalla hacia un invento mecatrónico real para jugar tandas de penales con compañeros en el aula.' }
         ];
         tipBoxText = '<strong>📐 Matemáticas y Robótica en Acción:</strong> El bloque "ajustar intervalo" (Math.map) traduce las matemáticas escolares en reflejos deportivos: convierte la inclinación de la palanca del joystick en la atajada exacta del arquero mecánico en el arco.';
+      } else if (isGeminiNotebooks) {
+        pillars = [
+          { icon: 'fa-brain', color: '#4F46E5', title: 'Pensamiento Crítico y Verificación de Fuentes', desc: 'Aprender a no confiar ciegamente en la IA, usando las citas directas [1] para auditar la información contra los libros de texto originales.' },
+          { icon: 'fa-headphones', color: '#EC4899', title: 'Adaptabilidad a Múltiples Estilos de Aprendizaje', desc: 'Aprovechar formatos auditivos (podcasts), visuales (guiones y diapositivas) e interactivos (flashcards) según la preferencia de cada estudiante.' },
+          { icon: 'fa-lightbulb', color: '#F59E0B', title: 'Ingeniería de Prompts y Diálogo Pedagógico', desc: 'Aprender a formular instrucciones precisas, especificar roles, restricciones de extensión y formatos de salida para obtener resultados de calidad.' },
+          { icon: 'fa-shield-alt', color: '#10B981', title: 'Ética y Ciudadanía Digital en la Era de la IA', desc: 'Desarrollar una postura responsable: no plagiar, respetar la privacidad de datos personales y usar la IA para potenciar el entendimiento propio.' }
+        ];
+        tipBoxText = '<strong>🌟 Alfabetización en IA de Vanguardia:</strong> Generar materiales de estudio con Gemini y NotebookLM prepara a los estudiantes de 6° grado para el futuro académico, transformándolos de consumidores pasivos de tecnología en investigadores críticos capaces de crear recursos multimedia de alto impacto.';
       } else if (isCanva) {
         pillars = [
           { icon: 'fa-crop-alt', color: '#0284C7', title: 'Composición Visual y Autoedición', desc: 'Dominar escalas, capas, rotación y encuadre para integrar su rostro con naturalidad sobre el cuerpo de un deportista en acción.' },
@@ -4025,7 +4227,8 @@
     var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (mission.id === 's5-p9' || mission.id === 's5-g1' || mission.id === 'g1-p9' || mission.id === 'g1-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
     var isServoJoystick = (mission.id === 'g6-p2') || (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
     var isCanva = !isServoJoystick && (mission.type === 'canva' || (mission.tags && mission.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(mission.title || '')));
-    var isGame = !isPaint && !isCanva && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
+    var isGeminiNotebooks = (mission.id === 'g6-p3') || (/gemini|notebooklm|notebooks.*ia|materiales.*estudio/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /notebooklm|gemini|materiales de estudio/i.test(t); }));
+    var isGame = !isPaint && !isCanva && !isGeminiNotebooks && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
       activeTab = 'presentacion';
@@ -4034,9 +4237,9 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var isMakecode = !isGame && !isPaint && !isCanva && (isServoJoystick || !!mission.makecodeUrl || mission.type === 'makecode' || mission.platform === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-    var isElectronica = !isGame && !isPaint && !isCanva && !isMakecode && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint && !isCanva && (mission.type === 'scratch' || mission.type === 'codejr' || mission.platform === 'codejr' || mission.platform === 'scratch' || !!mission.scratchId || !!mission.projectFileUrl || hasScratchJr(student ? student.gradeId : ''));
+    var isMakecode = !isGame && !isPaint && !isCanva && !isGeminiNotebooks && (isServoJoystick || !!mission.makecodeUrl || mission.type === 'makecode' || mission.platform === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isElectronica = !isGame && !isPaint && !isCanva && !isGeminiNotebooks && !isMakecode && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint && !isCanva && !isGeminiNotebooks && (mission.type === 'scratch' || mission.type === 'codejr' || mission.platform === 'codejr' || mission.platform === 'scratch' || !!mission.scratchId || !!mission.projectFileUrl || hasScratchJr(student ? student.gradeId : ''));
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -4216,17 +4419,24 @@
                       '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'' + (isMakecode || isServoJoystick ? 'img/microbit.png' : 'img/scratchjr.png') + '\'">' +
                     '</div>' +
                     '<div>' +
-                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isServoJoystick ? '#0D9488' : (isCanva ? '#0284C7' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1'))))))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
-                        (isServoJoystick ? '🧤 Robótica & Matemáticas • El Arquero Mecánico MakeCode' : (isCanva ? '🤖 Inteligencia Artificial & Animación • Canva' : (isScratchJrPerspectiva ? '🐱 Scratch Jr • Escenarios & Perspectiva' : (isScratchJrVelocidad ? '🐱 Scratch Jr • Escenarios & Velocidades' : (isDiaMadre ? '💖 Tarjeta Pop-Up 3D • Papertronics & Circuito' : (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level))))))))))) +
+                      '<div style="font-size:0.8rem;font-weight:800;color:' + (isGeminiNotebooks ? '#4F46E5' : (isServoJoystick ? '#0D9488' : (isCanva ? '#0284C7' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))))))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
+                        (isGeminiNotebooks ? '🧠 Inteligencia Artificial Generativa • Google Gemini & NotebookLM' : (isServoJoystick ? '🧤 Robótica & Matemáticas • El Arquero Mecánico MakeCode' : (isCanva ? '🤖 Inteligencia Artificial & Animación • Canva' : (isScratchJrPerspectiva ? '🐱 Scratch Jr • Escenarios & Perspectiva' : (isScratchJrVelocidad ? '🐱 Scratch Jr • Escenarios & Velocidades' : (isDiaMadre ? '💖 Tarjeta Pop-Up 3D • Papertronics & Circuito' : (isMinecraft ? '⛏️ Código en Bloques • Code.org Minecraft (Adaptación Educativa)' : (isFrozen ? '❄️ Geometría & Programación • Code.org Frozen' : (isAngryBirds ? '🎮 Programación con Bloques • Code.org' : (isPaintBanderas ? '🎨 Arte Digital & Banderas • Paint' : (isPaint ? '🎨 Arte Digital & Figuras • Paint' : (isElectronica ? '⚡ Circuito Electrónico • Sin Programación' : 'Desafío Maker • Nivel ' + mission.level)))))))))))) +
                       '</div>' +
                       '<h2 style="font-size:1.6rem;font-weight:900;color:#1E293B;margin:0 0 10px;line-height:1.2;">' + mission.title + '</h2>' +
-                      '<div class="apm-reto-card" style="' + (isServoJoystick ? 'border-left:4px solid #0D9488;background:#F0FDFA;' : (isCanva ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isScratchJrPerspectiva ? 'border-left:4px solid #7C3AED;background:#FAF5FF;' : (isScratchJrVelocidad ? 'border-left:4px solid #EA580C;background:#FFF7ED;' : (isDiaMadre ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : '')))))))))) + '">' +
-                        '<h4 style="' + (isServoJoystick ? 'color:#0F766E;' : (isCanva ? 'color:#0369A1;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : '')))))))))) + '"><i class="fas ' + (isServoJoystick ? 'fa-gamepad' : (isCanva ? 'fa-wand-magic-sparkles' : (isScratchJrPerspectiva ? 'fa-search-plus' : (isScratchJrVelocidad ? 'fa-tachometer-alt' : (isDiaMadre ? 'fa-heart' : (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered')))))))))) + '"></i> ' + (isServoJoystick ? 'Reto Robótico: El Arquero Mecánico con Joystick Chico Negro y Servo SG90' : (isCanva ? 'Objetivo: Foto en Aula, Reemplazar Cabeza en Arquero y Animación con IA' : (isScratchJrPerspectiva ? 'Objetivo: Perspectiva 3D y Bloques Violetas' : (isScratchJrVelocidad ? 'Objetivo: Entorno Scratch Jr y Control de Velocidades' : (isDiaMadre ? 'Reto Maker: Corazón 3D y Luz en el Escudo' : (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?'))))))))) + '</h4>' +
-                        '<p style="' + (isServoJoystick ? 'color:#134E4A;' : (isCanva ? 'color:#0C4A6E;' : (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : '')))))))))) + '">' + (mission.objective || mission.description) + '</p>' +
+                      '<div class="apm-reto-card" style="' + (isGeminiNotebooks ? 'border-left:4px solid #4F46E5;background:#EEF2FF;' : (isServoJoystick ? 'border-left:4px solid #0D9488;background:#F0FDFA;' : (isCanva ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isScratchJrPerspectiva ? 'border-left:4px solid #7C3AED;background:#FAF5FF;' : (isScratchJrVelocidad ? 'border-left:4px solid #EA580C;background:#FFF7ED;' : (isDiaMadre ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isMinecraft ? 'border-left:4px solid #059669;background:#ECFDF5;' : (isFrozen ? 'border-left:4px solid #0284C7;background:#F0F9FF;' : (isAngryBirds ? 'border-left:4px solid #E11D48;background:#FFF1F2;' : (isPaintBanderas ? 'border-left:4px solid #2563EB;background:#EFF6FF;' : (isPaint ? 'border-left:4px solid #16A34A;background:#F0FDF4;' : ''))))))))))) + '">' +
+                        '<h4 style="' + (isGeminiNotebooks ? 'color:#3730A3;' : (isServoJoystick ? 'color:#0F766E;' : (isCanva ? 'color:#0369A1;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isMinecraft ? 'color:#065F46;' : (isFrozen ? 'color:#0369A1;' : (isAngryBirds ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : ''))))))))))) + '"><i class="fas ' + (isGeminiNotebooks ? 'fa-brain' : (isServoJoystick ? 'fa-gamepad' : (isCanva ? 'fa-wand-magic-sparkles' : (isScratchJrPerspectiva ? 'fa-search-plus' : (isScratchJrVelocidad ? 'fa-tachometer-alt' : (isDiaMadre ? 'fa-heart' : (isMinecraft ? 'fa-cube' : (isFrozen ? 'fa-snowflake' : (isAngryBirds ? 'fa-bullseye' : (isPaintBanderas ? 'fa-flag' : (isPaint ? 'fa-futbol' : 'fa-flag-checkered'))))))))))) + '"></i> ' + (isGeminiNotebooks ? 'Reto IA: Generación de Materiales de Estudio con Grounding en Fuentes Confiables' : (isServoJoystick ? 'Reto Robótico: El Arquero Mecánico con Joystick Chico Negro y Servo SG90' : (isCanva ? 'Objetivo: Foto en Aula, Reemplazar Cabeza en Arquero y Animación con IA' : (isScratchJrPerspectiva ? 'Objetivo: Perspectiva 3D y Bloques Violetas' : (isScratchJrVelocidad ? 'Objetivo: Entorno Scratch Jr y Control de Velocidades' : (isDiaMadre ? 'Reto Maker: Corazón 3D y Luz en el Escudo' : (isMinecraft ? 'Reto y Aclaración de Minecraft:' : (isFrozen ? 'Objetivo y Conexión con Paint:' : (isAngryBirds ? 'Objetivo Pedagógico:' : (isPaintBanderas ? 'Reto Artístico: Banderas del Mundial' : '¿Cuál es nuestra misión?')))))))))) + '</h4>' +
+                        '<p style="' + (isGeminiNotebooks ? 'color:#1E1B4B;' : (isServoJoystick ? 'color:#134E4A;' : (isCanva ? 'color:#0C4A6E;' : (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isMinecraft ? 'color:#064E3B;' : (isFrozen ? 'color:#0C4A6E;' : (isAngryBirds ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#14532D;' : ''))))))))))) + '">' + (mission.objective || mission.description) + '</p>' +
                         (isMinecraft ? '<div style="margin-top:10px;padding:8px 12px;background:#FEF3C7;border-left:3px solid #D97706;border-radius:6px;font-size:0.8rem;color:#92400E;line-height:1.4;"><strong><i class="fas fa-exclamation-triangle"></i> ¡Aclaración Importante!</strong> No es el Minecraft comercial tradicional de juego libre: es una adaptación pedagógica oficial de Code.org para aprender a programar con bloques.</div>' : '') +
                       '</div>' +
                       '<div class="apm-skills-pills">' +
-                        (isServoJoystick ?
+                        (isGeminiNotebooks ?
+                          '<span class="apm-skill-pill" style="background:#EEF2FF;color:#4338CA;"><i class="fas fa-brain"></i> Grounding (Cero Alucinaciones)</span>' +
+                          '<span class="apm-skill-pill" style="background:#FDF2F8;color:#BE185D;"><i class="fas fa-microphone"></i> Podcast (Audio Overview)</span>' +
+                          '<span class="apm-skill-pill" style="background:#ECFEFF;color:#0E7490;"><i class="fas fa-video"></i> Guiones de Video</span>' +
+                          '<span class="apm-skill-pill" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-tv"></i> Diapositivas para Canva</span>' +
+                          '<span class="apm-skill-pill" style="background:#ECFDF5;color:#047857;"><i class="fas fa-question-circle"></i> Quizzes & Flashcards</span>' +
+                          '<span class="apm-skill-pill" style="background:#F1F5F9;color:#334155;"><i class="fas fa-file-pdf"></i> Guía PDF Unificada</span>' :
+                         isServoJoystick ?
                           '<span class="apm-skill-pill" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-gamepad"></i> Joystick Chico Negro (P1)</span>' +
                           '<span class="apm-skill-pill" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-calculator"></i> Ajuste de Intervalo (Math.map)</span>' +
                           '<span class="apm-skill-pill" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-cog"></i> Servo del Arquero (Pin P0)</span>' +
@@ -4280,8 +4490,8 @@
                           '<span class="apm-skill-pill"><i class="fas fa-robot"></i> Pensamiento Computacional</span>'
                         ) +
                       '</div>' +
-                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isServoJoystick ? 'background:#0D9488;border-color:#0F766E;' : (isCanva ? 'background:#0284C7;border-color:#0369A1;' : (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))))))))) + '">' +
-                        (isServoJoystick ? 'Ver Componentes y Ajuste Matemático <i class="fas fa-arrow-right"></i>' : (isCanva ? 'Ver Recursos y Herramientas de Canva <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? 'Ver Materiales y Bloques Violetas <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? 'Ver Herramientas y Bloques <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' : (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>')))))))))) +
+                      '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="margin-top:18px;font-size:0.9rem;padding:9px 18px;' + (isGeminiNotebooks ? 'background:#4F46E5;border-color:#4338CA;' : (isServoJoystick ? 'background:#0D9488;border-color:#0F766E;' : (isCanva ? 'background:#0284C7;border-color:#0369A1;' : (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isMinecraft ? 'background:#059669;border-color:#047857;' : (isFrozen ? 'background:#0284C7;border-color:#0369A1;' : (isAngryBirds ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))))))))) + '">' +
+                        (isGeminiNotebooks ? 'Ver Fuentes y Herramientas de NotebookLM <i class="fas fa-arrow-right"></i>' : (isServoJoystick ? 'Ver Componentes y Ajuste Matemático <i class="fas fa-arrow-right"></i>' : (isCanva ? 'Ver Recursos y Herramientas de Canva <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? 'Ver Materiales y Bloques Violetas <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? 'Ver Herramientas y Bloques <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>' : (isMinecraft ? 'Ver Beneficios y ¿Por qué Code.org Minecraft? <i class="fas fa-arrow-right"></i>' : (isFrozen ? 'Ver Beneficios y Conexión con Paint <i class="fas fa-arrow-right"></i>' : (isAngryBirds ? 'Ver Beneficios del Razonamiento <i class="fas fa-arrow-right"></i>' : (isPaintBanderas ? 'Ver Herramientas de Paint para Banderas <i class="fas fa-arrow-right"></i>' : (isPaint ? 'Ver Herramientas de Paint <i class="fas fa-arrow-right"></i>' : 'Ver Materiales y Componentes <i class="fas fa-arrow-right"></i>'))))))))))) +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -4451,15 +4661,22 @@
                     '<div style="max-width:850px;margin:0 auto;">' +
                       '<div style="text-align:center;margin-bottom:20px;">' +
                         '<h3 style="font-size:1.35rem;font-weight:900;color:#1E293B;margin:0 0 6px;">' +
-                          (isServoJoystick ? '🕹️ Componentes y Fórmula de Mapeo: Arquero Mecánico, Joystick y Servo' : (isCanva ? '🤖 Materiales y Herramientas: Canva & Inteligencia Artificial' : (isMarcalibro ? '📖 Materiales para el Marca-Libros Origami de Tom Sawyer' : (isScratchJrPerspectiva ? '🐱 Materiales y Bloques de Perspectiva (Scratch Jr)' : (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller')))))))) +
+                          (isGeminiNotebooks ? '🧠 Materiales y Fuentes: Google NotebookLM & Gemini 1.5 Pro' : (isServoJoystick ? '🕹️ Componentes y Fórmula de Mapeo: Arquero Mecánico, Joystick y Servo' : (isCanva ? '🤖 Materiales y Herramientas: Canva & Inteligencia Artificial' : (isMarcalibro ? '📖 Materiales para el Marca-Libros Origami de Tom Sawyer' : (isScratchJrPerspectiva ? '🐱 Materiales y Bloques de Perspectiva (Scratch Jr)' : (isScratchJrVelocidad ? '🐱 Materiales y Bloques de Scratch Jr' : (isDiaMadre ? '💖 Materiales y Plantillas para la Tarjeta 3D Pop-Up' : (isPaint ? (isPaintBanderas ? '🎨 Herramientas de Paint para Dibujar Banderas' : '🎨 Herramientas y Figuras de Paint') : (isElectronica ? '⚡ Componentes y Materiales del Circuito' : '🔌 Materiales y Herramientas del Taller'))))))))) +
                         '</h3>' +
                         '<p style="font-size:0.88rem;color:#64748B;margin:0;">' +
-                          (isServoJoystick ? 'Asegurate de tener tu micro:bit v2, el joystick chico negro conectado a P1 y el servo SG90 con el arquero en P0:' : (isCanva ? 'Asegurate de tener abierta la plataforma Canva en tu tablet o PC y tener lista la cámara o foto del taller:' : (isMarcalibro ? 'Asegurate de tener tu papel glacé, el dibujo de Tom Sawyer con su sombrero, cinta de cobre, pila botón y LED chato:' : (isScratchJrPerspectiva ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo perpestiva.sjr de ejemplo:' : (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:')))))))) +
+                          (isGeminiNotebooks ? 'Asegurate de tener abierta la plataforma NotebookLM en notebooklm.google.com y tus fuentes de estudio listas en PDF o apuntes:' : (isServoJoystick ? 'Asegurate de tener tu micro:bit v2, el joystick chico negro conectado a P1 y el servo SG90 con el arquero en P0:' : (isCanva ? 'Asegurate de tener abierta la plataforma Canva en tu tablet o PC y tener lista la cámara o foto del taller:' : (isMarcalibro ? 'Asegurate de tener tu papel glacé, el dibujo de Tom Sawyer con su sombrero, cinta de cobre, pila botón y LED chato:' : (isScratchJrPerspectiva ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo perpestiva.sjr de ejemplo:' : (isScratchJrVelocidad ? 'Asegurate de tener abierta la aplicación Scratch Jr o descargá el archivo velocidad.sjr de ejemplo:' : (isDiaMadre ? 'Asegurate de tener tu lámina con el corazón, tijera, foto de tu peque y los componentes electrónicos:' : (isPaint ? (isPaintBanderas ? 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar a crear las banderas del mundial:' : 'Asegurate de tener abierta la aplicación Paint en tu computadora o tablet para comenzar:') : (isElectronica ? 'Asegurate de tener todos los elementos listos sobre tu mesa antes de armar:' : 'Asegurate de tener todo listo antes de comenzar a programar o armar:'))))))))) +
                         '</p>' +
                       '</div>' +
                       '<div class="apm-materials-grid">' +
                         materialsList.map(function(m){
-                          var mIcon = isServoJoystick ? (
+                          var mIcon = isGeminiNotebooks ? (
+                            /notebooklm|gemini|cerebro|ia/i.test(m.title) ? 'fa-brain' :
+                            /pdf|fuente|libro|apunte/i.test(m.title) ? 'fa-file-pdf' :
+                            /audio|podcast|overview|mic/i.test(m.title) ? 'fa-microphone' :
+                            /canva|slide|presentaci/i.test(m.title) ? 'fa-tv' :
+                            /gu[ií]a|pdf|documento/i.test(m.title) ? 'fa-file-alt' :
+                            /quiz|flashcard|faq|pregunta/i.test(m.title) ? 'fa-question-circle' : 'fa-lightbulb'
+                          ) : isServoJoystick ? (
                             /joystick|palanca/i.test(m.title) ? 'fa-gamepad' :
                             /servo|motor|sg90/i.test(m.title) ? 'fa-cog' :
                             /micro:?bit/i.test(m.title) ? 'fa-microchip' :
@@ -4523,10 +4740,11 @@
                           '</div>';
                         }).join('') +
                       '</div>' +
-                      '<div class="apm-reto-card" style="margin-top:22px;' + (isServoJoystick ? 'background:#F0FDFA;border-color:#99F6E4;' : (isCanva ? 'background:#F0F9FF;border-color:#BAE6FD;' : (isMarcalibro ? 'background:#FFFBEB;border-color:#FCD34D;' : (isScratchJrPerspectiva ? 'background:#FAF5FF;border-color:#D8B4FE;' : (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : '')))))))) + '">' +
-                        '<h4 style="' + (isServoJoystick ? 'color:#0F766E;' : (isCanva ? 'color:#0369A1;' : (isMarcalibro ? 'color:#92400E;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : ''))))))))) + '"><i class="fas fa-lightbulb"></i> ' + (isServoJoystick ? 'Consejo de Robótica: El Secreto del Ajuste de Intervalo (Mapeo)' : (isCanva ? 'Consejo de Edición e Inteligencia Artificial' : (isMarcalibro ? 'Consejo Origami Maker: Bolsillo Esquinero y Luz en el Sombrero' : (isScratchJrPerspectiva ? 'Consejo del Programador: Bloques Violetas de Perspectiva' : (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker')))))))) + '</h4>' +
-                        '<p style="' + (isServoJoystick ? 'color:#134E4A;' : (isMarcalibro ? 'color:#78350F;' : (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : ''))))))) + '">' +
-                          (isServoJoystick ? '¡El secreto del ajuste de intervalo para el arquero! La palanca del joystick chico negro entrega números continuos entre 0 y 1023 en el Pin P1. El servomotor SG90 en el Pin P0 solo puede rotar entre 0° y 180° para mover al arquero entre los postes. Con el bloque matemático <strong>Math.map(x, 0, 1023, 0, 180)</strong> y los límites de seguridad (si angulo < 0 ➔ 0; si angulo > 180 ➔ 180), logramos que al soltar la palanca el arquero quede al centro (90°), y al inclinarla vuele a los postes sin chocar ni trabarse.' :
+                      '<div class="apm-reto-card" style="margin-top:22px;' + (isGeminiNotebooks ? 'background:#EEF2FF;border-color:#C7D2FE;' : (isServoJoystick ? 'background:#F0FDFA;border-color:#99F6E4;' : (isCanva ? 'background:#F0F9FF;border-color:#BAE6FD;' : (isMarcalibro ? 'background:#FFFBEB;border-color:#FCD34D;' : (isScratchJrPerspectiva ? 'background:#FAF5FF;border-color:#D8B4FE;' : (isScratchJrVelocidad ? 'background:#FFF7ED;border-color:#FDBA74;' : (isDiaMadre ? 'background:#FFF1F2;border-color:#FDA4AF;' : (isPaintBanderas ? 'background:#EFF6FF;border-color:#2563EB;' : (isPaint ? 'background:#F0FDF4;border-color:#16A34A;' : ''))))))))) + '">' +
+                        '<h4 style="' + (isGeminiNotebooks ? 'color:#3730A3;' : (isServoJoystick ? 'color:#0F766E;' : (isCanva ? 'color:#0369A1;' : (isMarcalibro ? 'color:#92400E;' : (isScratchJrPerspectiva ? 'color:#581C87;' : (isScratchJrVelocidad ? 'color:#9A3412;' : (isDiaMadre ? 'color:#9F1239;' : (isPaintBanderas ? 'color:#1E40AF;' : (isPaint ? 'color:#15803D;' : (isElectronica ? 'color:#B45309;' : '')))))))))) + '"><i class="fas fa-lightbulb"></i> ' + (isGeminiNotebooks ? 'Consejo de Estudio con IA: El Secreto del Grounding (Cero Alucinaciones)' : (isServoJoystick ? 'Consejo de Robótica: El Secreto del Ajuste de Intervalo (Mapeo)' : (isCanva ? 'Consejo de Edición e Inteligencia Artificial' : (isMarcalibro ? 'Consejo Origami Maker: Bolsillo Esquinero y Luz en el Sombrero' : (isScratchJrPerspectiva ? 'Consejo del Programador: Bloques Violetas de Perspectiva' : (isScratchJrVelocidad ? 'Consejo del Programador: Bloque de Velocidad' : (isDiaMadre ? 'Consejo Maker: Pop-Up 3D y Escudo Freire' : (isPaint ? (isPaintBanderas ? 'Consejo del Diseñador de Banderas' : 'Consejo del Artista Digital') : (isElectronica ? 'Consejo de Polaridad' : 'Consejo del Profesor Maker'))))))))) + '</h4>' +
+                        '<p style="' + (isGeminiNotebooks ? 'color:#1E1B4B;' : (isServoJoystick ? 'color:#134E4A;' : (isMarcalibro ? 'color:#78350F;' : (isScratchJrPerspectiva ? 'color:#6B21A8;' : (isScratchJrVelocidad ? 'color:#7C2D12;' : (isDiaMadre ? 'color:#4C0519;' : (isPaintBanderas ? 'color:#1E3A8A;' : (isPaint ? 'color:#166534;' : '')))))))) + '">' +
+                          (isGeminiNotebooks ? '¡El secreto del estudio con IA anclada! A diferencia de los chatbots convencionales que inventan datos o fechas falsas cuando dudan (alucinaciones), NotebookLM funciona con <strong>Grounding estricto</strong>: responde únicamente en base a los documentos escolares, libros y apuntes que tú le subas. Además, cada afirmación incluye números de cita clicables [1], [2] que te llevan de inmediato a la página y párrafo original. ¡Podés auditar y comprobar la verdad de cada concepto!' :
+                           isServoJoystick ? '¡El secreto del ajuste de intervalo para el arquero! La palanca del joystick chico negro entrega números continuos entre 0 y 1023 en el Pin P1. El servomotor SG90 en el Pin P0 solo puede rotar entre 0° y 180° para mover al arquero entre los postes. Con el bloque matemático <strong>Math.map(x, 0, 1023, 0, 180)</strong> y los límites de seguridad (si angulo < 0 ➔ 0; si angulo > 180 ➔ 180), logramos que al soltar la palanca el arquero quede al centro (90°), y al inclinarla vuele a los postes sin chocar ni trabarse.' :
                            isCanva ? '¡El secreto del fotomontaje y la animación con IA! Al tomarte la foto, hacelo en primer plano de tu cabeza con buena iluminación. El Quitafondos IA de Canva aislará tu rostro con gran precisión. Luego, buscá una imagen de un arquero en plena atajada y colocá tu cabeza sobre la suya, rotándola para acompañar el ángulo del cuerpo. ¡Al aplicar Magic Animate, la IA pondrá en movimiento toda la escena transformándola en un video espectacular!' :
                            isMarcalibro ? '¡El secreto del doblado y la luz en el sombrero de Tom Sawyer! Doblá con paciencia el papel glacé marcando bien cada pliegue con la yema de los dedos para que las dos puntas encajen firmes en el bolsillo esquinero. Pegá a Tom Sawyer en el frente alineando el LED chato en el medio de su sombrero de paja. Al calzarlo en una página o apretar la punta, las pistas de cobre harán contacto y el sombrero brillará.' :
                            isScratchJrPerspectiva ? '¡El secreto de la perspectiva 3D! Al tocar la <strong>Bandera Verde</strong>, colocá primero <strong>Inicio 🏠</strong> y <strong>Restaurar Tamaño 🔄</strong>. Luego <strong>Achicar 5 ➖</strong> para que Teen3 empiece chiquito en el horizonte del camino. A medida que agregás <strong>Bajar ⬇️</strong>, encastrá <strong>Agrandar 2 ➕</strong> para que crezca simulando que camina hacia el frente. ¡Probalo en perpestiva.sjr!' :
@@ -4537,8 +4755,8 @@
                         '</p>' +
                       '</div>' +
                       '<div style="text-align:center;margin-top:20px;">' +
-                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isServoJoystick ? 'background:#0D9488;border-color:#0F766E;' : (isMarcalibro ? 'background:#D97706;border-color:#B45309;' : (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : '')))))))) + '">' +
-                          (isServoJoystick ? '¡Ver Circuito, Código MakeCode y Simulador! <i class="fas fa-arrow-right"></i>' : (isCanva ? '¡Ver Pasos de Creación y Animación con IA! <i class="fas fa-arrow-right"></i>' : (isMarcalibro ? '¡Ver Pasos de Doblado Origami y Circuito! <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? '¡Ver Pasos de Programación y Ejemplo perpestiva.sjr! <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>')))))))) +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="font-size:0.9rem;padding:9px 18px;' + (isGeminiNotebooks ? 'background:#4F46E5;border-color:#4338CA;' : (isServoJoystick ? 'background:#0D9488;border-color:#0F766E;' : (isMarcalibro ? 'background:#D97706;border-color:#B45309;' : (isScratchJrPerspectiva ? 'background:#7C3AED;border-color:#6D28D9;' : (isScratchJrVelocidad ? 'background:#EA580C;border-color:#C2410C;' : (isDiaMadre ? 'background:#E11D48;border-color:#BE123C;' : (isPaintBanderas ? 'background:#2563EB;border-color:#1D4ED8;' : (isPaint ? 'background:#16A34A;border-color:#15803D;' : (isElectronica ? 'background:#D97706;border-color:#B45309;' : ''))))))))) + '">' +
+                          (isGeminiNotebooks ? '¡Explorar Opciones de Generación y Guía PDF! <i class="fas fa-arrow-right"></i>' : (isServoJoystick ? '¡Ver Circuito, Código MakeCode y Simulador! <i class="fas fa-arrow-right"></i>' : (isCanva ? '¡Ver Pasos de Creación y Animación con IA! <i class="fas fa-arrow-right"></i>' : (isMarcalibro ? '¡Ver Pasos de Doblado Origami y Circuito! <i class="fas fa-arrow-right"></i>' : (isScratchJrPerspectiva ? '¡Ver Pasos de Programación y Ejemplo perpestiva.sjr! <i class="fas fa-arrow-right"></i>' : (isScratchJrVelocidad ? '¡Ver Pasos de Programación y Ejemplo velocidad.sjr! <i class="fas fa-arrow-right"></i>' : (isDiaMadre ? '¡Ver Pasos de Armado Pop-Up y Circuito! <i class="fas fa-arrow-right"></i>' : (isPaint ? (isPaintBanderas ? '¡Ver Pasos para Dibujar las Banderas! <i class="fas fa-arrow-right"></i>' : '¡Ver Pasos para Dibujar la Cancha! <i class="fas fa-arrow-right"></i>') : (isElectronica ? '¡Ver Instrucciones de Armado Paso a Paso! <i class="fas fa-arrow-right"></i>' : '¡Pasar al Código y Simulador! <i class="fas fa-arrow-right"></i>'))))))))) +
                         '</button>' +
                       '</div>' +
                     '</div>'
@@ -4639,6 +4857,305 @@
                       '</div>' +
                       '<div style="text-align:right;margin-top:10px;">' +
                         '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#0284C7;border-color:#0369A1;">' +
+                          '¡Ver Retos Finales y Entrega! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
+                   isGeminiNotebooks ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:6px;">' +
+                      // Header
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.22rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-brain" style="color:#4F46E5;"></i> Nivel 3: Materiales de Estudio con IA (Gemini & NotebookLM) 🧠🎙️📽️📊</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Grounding en fuentes escolares • Cero alucinaciones • Podcasts, Guiones de Video, Slides para Canva y Quizzes FAQ</p>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+                          '<a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#4F46E5;border-color:#4338CA;font-size:0.84rem;padding:7px 16px;text-decoration:none;">' +
+                            '<i class="fas fa-external-link-alt"></i> Abrir NotebookLM' +
+                          '</a>' +
+                          '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="arm-btn-secondary" style="font-size:0.84rem;padding:7px 14px;text-decoration:none;">' +
+                            '<i class="fas fa-file-pdf" style="color:#DC2626;"></i> Descargar Guía PDF' +
+                          '</a>' +
+                        '</div>' +
+                      '</div>' +
+
+                      // Banner with cover preview
+                      '<div style="display:flex;gap:14px;align-items:center;background:linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);border:1.5px solid #818CF8;border-radius:12px;padding:12px 16px;">' +
+                        '<img src="img/proyectos/gemini_notebooks_cover.svg" alt="Gemini NotebookLM" style="width:115px;height:78px;object-fit:cover;background:#0F172A;border-radius:10px;border:1px solid #A5B4FC;padding:2px;cursor:pointer;flex-shrink:0;" onclick="window.open(this.src,\'_blank\')" title="Tocar para ampliar esquema">' +
+                        '<div style="flex:1;">' +
+                          '<h5 style="margin:0 0 3px;font-size:0.88rem;color:#312E81;font-weight:900;"><i class="fas fa-sparkles" style="color:#6366F1;"></i> Explorador de Formatos Multimodales Grounded</h5>' +
+                          '<p style="margin:0;font-size:0.80rem;color:#3730A3;line-height:1.45;">' +
+                            'NotebookLM lee tus fuentes escolares (PDFs, libros, apuntes) y utiliza <strong>Gemini 1.5 Pro</strong> para crear materiales adaptados a tu forma de aprender. Tocá cada pestaña para ver la explicación, la utilidad pedagógica, una simulación en vivo y el prompt recomendado. <em>¡Al final, descargá la Guía PDF completa que reúne todos los temas!</em>' +
+                          '</p>' +
+                        '</div>' +
+                      '</div>' +
+
+                      // Selector tabs
+                      '<div class="gie-tab-buttons-bar" style="display:flex;gap:6px;overflow-x:auto;padding:4px 2px;margin:2px 0;">' +
+                        '<button type="button" class="gie-tab-btn active" data-target="podcast" style="padding:7px 13px;border-radius:8px;font-size:0.79rem;font-weight:800;border:1px solid #F472B6;background:#FDF2F8;color:#BE185D;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;"><i class="fas fa-microphone"></i> 🎙️ Podcasts (Audio Overview)</button>' +
+                        '<button type="button" class="gie-tab-btn" data-target="video" style="padding:7px 13px;border-radius:8px;font-size:0.79rem;font-weight:800;border:1px solid #22D3EE;background:#ECFEFF;color:#0E7490;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;"><i class="fas fa-video"></i> 📽️ Guiones de Video</button>' +
+                        '<button type="button" class="gie-tab-btn" data-target="slides" style="padding:7px 13px;border-radius:8px;font-size:0.79rem;font-weight:800;border:1px solid #FBBF24;background:#FEF3C7;color:#92400E;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;"><i class="fas fa-tv"></i> 📊 Diapositivas (Canva)</button>' +
+                        '<button type="button" class="gie-tab-btn" data-target="guia" style="padding:7px 13px;border-radius:8px;font-size:0.79rem;font-weight:800;border:1px solid #A78BFA;background:#F5F3FF;color:#5B21B6;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;"><i class="fas fa-file-alt"></i> 📝 Guía & Glosario</button>' +
+                        '<button type="button" class="gie-tab-btn" data-target="quizzes" style="padding:7px 13px;border-radius:8px;font-size:0.79rem;font-weight:800;border:1px solid #34D399;background:#ECFDF5;color:#065F46;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;"><i class="fas fa-question-circle"></i> ❓ Quizzes & Flashcards</button>' +
+                        '<button type="button" class="gie-tab-btn" data-target="timeline" style="padding:7px 13px;border-radius:8px;font-size:0.79rem;font-weight:800;border:1px solid #60A5FA;background:#EFF6FF;color:#1E40AF;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;"><i class="fas fa-stream"></i> 🗺️ Línea de Tiempo</button>' +
+                      '</div>' +
+
+                      // Explorer panes wrapper
+                      '<div class="gie-panes-wrapper" style="background:#FFF;border-radius:12px;border:1.5px solid #E2E8F0;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.03);">' +
+
+                        // 1. PANE PODCAST
+                        '<div class="gie-pane gie-pane-podcast active" style="display:block;">' +
+                          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">' +
+                            '<span style="background:#FCE7F3;color:#BE185D;font-size:0.75rem;font-weight:900;padding:3px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;"><i class="fas fa-headphones"></i> Aprendizaje Auditivo • Generación Deep Dive</span>' +
+                            '<span style="font-size:0.78rem;color:#64748B;">Duración habitual: 8 a 15 min • Formato WAV/MP3</span>' +
+                          '</div>' +
+                          '<p style="font-size:0.84rem;color:#1E293B;line-height:1.5;margin:0 0 12px;">' +
+                            '<strong>¿Cómo funciona?</strong> Dos presentadores de IA debaten de forma completamente realista los temas presentes en tus documentos. Hacen chistes sutiles, discuten puntos de vista, utilizan analogías cotidianas (fútbol, montañas rusas, cocina) y aclaran dudas sin inventar nada que no esté en tus fuentes [1]. Podés descargarlo al celular para escuchar camino a la escuela o mientras hacés ejercicio.' +
+                          '</p>' +
+                          // Audio Simulator Box
+                          '<div class="gie-audio-sim-box" style="background:#0F172A;border-radius:12px;padding:14px 18px;color:#FFF;margin-bottom:12px;">' +
+                            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">' +
+                              '<div style="display:flex;align-items:center;gap:10px;">' +
+                                '<button type="button" class="gie-audio-play-toggle" style="background:#EC4899;color:#FFF;border:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;box-shadow:0 0 12px rgba(236,72,153,0.5);"><i class="fas fa-play"></i></button>' +
+                                '<div>' +
+                                  '<div style="font-size:0.86rem;font-weight:800;color:#FCE7F3;">Deep Dive: Robótica Espacial & Energía Cinética</div>' +
+                                  '<div style="font-size:0.72rem;color:#94A3B8;">Locutores: Leo & Sofía (IA Gemini 1.5 Pro)</div>' +
+                                '</div>' +
+                              '</div>' +
+                              '<span style="font-size:0.75rem;font-family:monospace;color:#38BDF8;">04:18 / 11:45</span>' +
+                            '</div>' +
+                            // Audio Wave simulation
+                            '<div class="gie-audio-wave-wrap" style="display:flex;align-items:center;gap:3px;height:24px;background:#1E293B;padding:4px 10px;border-radius:6px;margin-bottom:10px;">' +
+                              '<span style="flex:1;height:8px;background:#38BDF8;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:16px;background:#818CF8;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:22px;background:#EC4899;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:12px;background:#F43F5E;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:18px;background:#818CF8;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:6px;background:#38BDF8;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:14px;background:#EC4899;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:20px;background:#818CF8;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:10px;background:#38BDF8;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:16px;background:#EC4899;border-radius:2px;"></span>' +
+                              '<span style="flex:1;height:8px;background:#38BDF8;border-radius:2px;"></span>' +
+                            '</div>' +
+                            '<div style="font-size:0.78rem;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:6px;line-height:1.45;color:#E2E8F0;">' +
+                              '💬 <strong>Sofía:</strong> <em>"¡Exacto Leo! Y como dice en la página 14 del manual escolar [1], el servomotor del arquero necesita el bloque Math.map para transformar la señal continua del joystick chico negro en un ángulo de atajada exacto de poste a poste..."</em>' +
+                            '</div>' +
+                          '</div>' +
+                          // Prompt Box
+                          '<div class="gie-prompt-box" style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;">' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+                              '<span style="font-size:0.75rem;font-weight:800;color:#475569;"><i class="fas fa-terminal"></i> Botón en NotebookLM:</span>' +
+                              '<button type="button" class="btn-copy-gie-prompt" data-prompt="Audio Overview -> Haz clic en Generate en el panel derecho Notebook Guide" style="background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;"><i class="far fa-copy"></i> Copiar Guía</button>' +
+                            '</div>' +
+                            '<code style="font-size:0.78rem;color:#1E1B4B;display:block;">En NotebookLM &gt; Panel derecho "Notebook Guide" &gt; Clic en "Generate" dentro de Audio Overview.</code>' +
+                          '</div>' +
+                        '</div>' +
+
+                        // 2. PANE VIDEO
+                        '<div class="gie-pane gie-pane-video" style="display:none;">' +
+                          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:gap:6px;">' +
+                            '<span style="background:#CFFAFE;color:#0891B2;font-size:0.75rem;font-weight:900;padding:3px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;"><i class="fas fa-film"></i> Aprendizaje Audiovisual • Guión Cinematográfico</span>' +
+                            '<span style="font-size:0.78rem;color:#64748B;">Para YouTube Shorts, TikTok o Reels educativos</span>' +
+                          '</div>' +
+                          '<p style="font-size:0.84rem;color:#1E293B;line-height:1.5;margin:0 0 12px;">' +
+                            '<strong>¿Cómo funciona?</strong> La IA extrae la esencia de tus lecturas y la traduce en un guión con estructura en 3 actos: Gancho (primeros 5 segundos que atrapan la atención), Desarrollo (analogía sencilla que explica la teoría) y Cierre (conclusión y llamado a la acción). Especifica planos de cámara, efectos de sonido y textos sobreimpresos.' +
+                          '</p>' +
+                          // Storyboard visual 3 cards
+                          '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:10px;margin-bottom:12px;">' +
+                            '<div style="background:#F0FDFA;border:1px solid #99F6E4;border-radius:8px;padding:10px;">' +
+                              '<div style="font-size:0.75rem;font-weight:800;color:#0D9488;margin-bottom:4px;">🎬 ACTO 1: EL GANCHO (0-15s)</div>' +
+                              '<div style="font-size:0.76rem;color:#134E4A;line-height:1.4;"><strong>Visual:</strong> Plano medio rápido sosteniendo el arquero con servo.<br><strong>Voz:</strong> "¿Sabías que un robot puede atajar penales usando matemáticas simples?"<br><strong>Texto:</strong> "¡Matemáticas que atajan penales!"</div>' +
+                            '</div>' +
+                            '<div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px;padding:10px;">' +
+                              '<div style="font-size:0.75rem;font-weight:800;color:#0284C7;margin-bottom:4px;">🎬 ACTO 2: EL SECRETO (15-90s)</div>' +
+                              '<div style="font-size:0.76rem;color:#0C4A6E;line-height:1.4;"><strong>Visual:</strong> Zoom a la palanca del joystick chico negro y pantalla MakeCode.<br><strong>Voz:</strong> "La palanca va de 0 a 1023, y el bloque Math.map la convierte en 0° a 180° [2]."<br><strong>Efecto:</strong> Destello luminoso al girar el servo.</div>' +
+                            '</div>' +
+                            '<div style="background:#FAF5FF;border:1px solid #E9D5FF;border-radius:8px;padding:10px;">' +
+                              '<div style="font-size:0.75rem;font-weight:800;color:#7C3AED;margin-bottom:4px;">🎬 ACTO 3: CIERRE (90-120s)</div>' +
+                              '<div style="font-size:0.76rem;color:#581C87;line-height:1.4;"><strong>Visual:</strong> El arquero atajando la pelota al ángulo y festejo.<br><strong>Voz:</strong> "¡Ahora te toca a vos! Programá tu robot y compartí tu atajada."<br><strong>Texto:</strong> "¡Reto superado! +100 XP"</div>' +
+                            '</div>' +
+                          '</div>' +
+                          // Prompt Box
+                          '<div class="gie-prompt-box" style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;">' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+                              '<span style="font-size:0.75rem;font-weight:800;color:#475569;"><i class="fas fa-terminal"></i> Prompt Estrella para el Chat:</span>' +
+                              '<button type="button" class="btn-copy-gie-prompt" data-prompt="Escribe un guión de video de 2 minutos para YouTube Shorts explicando este tema a chicos de 6° grado. Incluye: Gancho atrapante en los primeros 5 segundos, explicaciones con analogías de la vida real, indicaciones de planos de cámara y textos que deben aparecer en pantalla." style="background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;"><i class="far fa-copy"></i> Copiar Prompt</button>' +
+                            '</div>' +
+                            '<code style="font-size:0.78rem;color:#1E1B4B;display:block;">"Escribe un guión de video de 2 minutos para YouTube Shorts explicando este tema con indicaciones de cámara, analogías cotidianas y textos en pantalla."</code>' +
+                          '</div>' +
+                        '</div>' +
+
+                        // 3. PANE SLIDES
+                        '<div class="gie-pane gie-pane-slides" style="display:none;">' +
+                          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">' +
+                            '<span style="background:#FEF3C7;color:#B45309;font-size:0.75rem;font-weight:900;padding:3px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;"><i class="fas fa-tv"></i> Aprendizaje Visual • Diapositivas Listas para Canva</span>' +
+                            '<span style="font-size:0.78rem;color:#64748B;">Regla del 6x6: Máximo 6 líneas con 6 palabras cada una</span>' +
+                          '</div>' +
+                          '<p style="font-size:0.84rem;color:#1E293B;line-height:1.5;margin:0 0 12px;">' +
+                            '<strong>¿Cómo funciona?</strong> NotebookLM organiza tus apuntes en una jerarquía visual lista para trasladar a Canva o Google Slides. Separa cada diapositiva con un título potente, viñetas breves para que no aburras leyendo párrafos largos, y sugiere qué ilustración, foto o gráfico colocar en cada lámina.' +
+                          '</p>' +
+                          // Slide Cards Grid
+                          '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:10px;margin-bottom:12px;">' +
+                            '<div style="background:#0F172A;color:#FFF;border-radius:8px;padding:12px;border:1px solid #334155;">' +
+                              '<div style="font-size:0.7rem;color:#38BDF8;font-weight:800;">DIAPOSITIVA 1 (PORTADA)</div>' +
+                              '<div style="font-size:0.85rem;font-weight:900;margin:4px 0;">Robots en la Cancha: El Arquero Mecánico</div>' +
+                              '<div style="font-size:0.75rem;color:#94A3B8;">• Presentado por: Alumnos 6° Grado<br>• Taller de Robótica Freire<br>🖼️ <em>Foto sugerida: Portada con el robot en el arco</em></div>' +
+                            '</div>' +
+                            '<div style="background:#0F172A;color:#FFF;border-radius:8px;padding:12px;border:1px solid #334155;">' +
+                              '<div style="font-size:0.7rem;color:#FBBF24;font-weight:800;">DIAPOSITIVA 2 (EL RETO)</div>' +
+                              '<div style="font-size:0.85rem;font-weight:900;margin:4px 0;">¿Cómo traducir la mano al motor?</div>' +
+                              '<div style="font-size:0.75rem;color:#94A3B8;">• Joystick entrega números 0..1023<br>• Servo sólo gira de 0° a 180°<br>🖼️ <em>Gráfico: Diagrama de pines P0 y P1</em></div>' +
+                            '</div>' +
+                            '<div style="background:#0F172A;color:#FFF;border-radius:8px;padding:12px;border:1px solid #334155;">' +
+                              '<div style="font-size:0.7rem;color:#34D399;font-weight:800;">DIAPOSITIVA 3 (LA SOLUCIÓN)</div>' +
+                              '<div style="font-size:0.85rem;font-weight:900;margin:4px 0;">Mapeo Matemático con MakeCode</div>' +
+                              '<div style="font-size:0.75rem;color:#94A3B8;">• Fórmula: Ángulo = (P1 * 180) / 1023<br>• Bucle seguro con pausa de 20 ms<br>🖼️ <em>Captura: Bloque Math.map en MakeCode</em></div>' +
+                            '</div>' +
+                          '</div>' +
+                          // Prompt Box
+                          '<div class="gie-prompt-box" style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;">' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+                              '<span style="font-size:0.75rem;font-weight:800;color:#475569;"><i class="fas fa-terminal"></i> Prompt Estrella para el Chat:</span>' +
+                              '<button type="button" class="btn-copy-gie-prompt" data-prompt="Crea el esquema de una presentación de 6 diapositivas para Canva sobre este tema. Para cada una incluye: Título llamativo, exactamente 3 viñetas concisas aplicando la regla del 6x6 y qué dibujo o ícono sugieres agregar." style="background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;"><i class="far fa-copy"></i> Copiar Prompt</button>' +
+                            '</div>' +
+                            '<code style="font-size:0.78rem;color:#1E1B4B;display:block;">"Crea el esquema de una presentación de 6 diapositivas para Canva aplicando la regla del 6x6, con títulos concisos y sugerencias de elementos visuales."</code>' +
+                          '</div>' +
+                        '</div>' +
+
+                        // 4. PANE GUIA
+                        '<div class="gie-pane gie-pane-guia" style="display:none;">' +
+                          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">' +
+                            '<span style="background:#F5F3FF;color:#6D28D9;font-size:0.75rem;font-weight:900;padding:3px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;"><i class="fas fa-book"></i> Síntesis Ejecutiva & Glosario de Términos</span>' +
+                            '<span style="font-size:0.78rem;color:#64748B;">Botón ' + "'Study Guide'" + ' en Notebook Guide</span>' +
+                          '</div>' +
+                          '<p style="font-size:0.84rem;color:#1E293B;line-height:1.5;margin:0 0 12px;">' +
+                            '<strong>¿Cómo funciona?</strong> Con un solo clic en la opción "Study Guide" del panel lateral, NotebookLM procesa todos los documentos subidos y genera un resumen ejecutivo integral: índice temático, ideas clave, fórmulas indispensables y un glosario con los términos más complejos explicados en lenguaje accesible.' +
+                          '</p>' +
+                          // Sample Document Box
+                          '<div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:0.8rem;color:#334155;line-height:1.5;">' +
+                            '<h6 style="font-size:0.85rem;color:#4338CA;margin:0 0 6px;font-weight:900;"><i class="fas fa-bookmark"></i> Glosario Destacado del Proyecto:</h6>' +
+                            '<ul style="margin:0;padding-left:18px;">' +
+                              '<li><strong>Grounding (Anclaje):</strong> Técnica donde la IA responde únicamente utilizando tus fuentes originales sin inventar datos.</li>' +
+                              '<li><strong>Math.map (Ajuste de intervalo):</strong> Función matemática que re-escala valores de una escala a otra de forma proporcional directa.</li>' +
+                              '<li><strong>Servomotor SG90:</strong> Actuador mecatrónico que permite posicionar su eje en cualquier ángulo entre 0° y 180°.</li>' +
+                            '</ul>' +
+                          '</div>' +
+                          // Prompt Box
+                          '<div class="gie-prompt-box" style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;">' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+                              '<span style="font-size:0.75rem;font-weight:800;color:#475569;"><i class="fas fa-terminal"></i> Botón en NotebookLM:</span>' +
+                              '<button type="button" class="btn-copy-gie-prompt" data-prompt="En la Notebook Guide (panel derecho), haz clic en ' + "'Guía de estudio'" + '" style="background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;"><i class="far fa-copy"></i> Copiar Guía</button>' +
+                            '</div>' +
+                            '<code style="font-size:0.78rem;color:#1E1B4B;display:block;">En NotebookLM &gt; "Notebook Guide" &gt; Clic en "Guía de estudio" (Study Guide).</code>' +
+                          '</div>' +
+                        '</div>' +
+
+                        // 5. PANE QUIZZES
+                        '<div class="gie-pane gie-pane-quizzes" style="display:none;">' +
+                          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">' +
+                            '<span style="background:#ECFDF5;color:#047857;font-size:0.75rem;font-weight:900;padding:3px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;"><i class="fas fa-check-circle"></i> Autoevaluación • Active Recall & Flashcards</span>' +
+                            '<span style="font-size:0.78rem;color:#64748B;">La técnica de estudio más efectiva según la neurociencia</span>' +
+                          '</div>' +
+                          '<p style="font-size:0.84rem;color:#1E293B;line-height:1.5;margin:0 0 12px;">' +
+                            '<strong>¿Cómo funciona?</strong> Ponerse a prueba antes del examen activa las conexiones neuronales de la memoria a largo plazo. NotebookLM elabora preguntas de opción múltiple, flashcards de ida y vuelta y preguntas frecuentes (FAQ) citando el párrafo exacto donde se encuentra la fundamentación [1].' +
+                          '</p>' +
+                          // Interactive Quiz Flashcards
+                          '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">' +
+                            '<div class="gie-quiz-item" style="background:#F0FDF4;border:1px solid #A7F3D0;border-radius:8px;padding:10px 14px;">' +
+                              '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                                '<span style="font-size:0.82rem;font-weight:800;color:#065F46;">❓ Pregunta 1: ¿Por qué NotebookLM no inventa información falsa como otros chats de IA?</span>' +
+                                '<button type="button" class="btn-reveal-quiz" style="background:#10B981;color:#FFF;border:none;border-radius:6px;padding:3px 10px;font-size:0.72rem;cursor:pointer;font-weight:bold;">Ver Respuesta</button>' +
+                              '</div>' +
+                              '<div class="gie-quiz-answer" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed #A7F3D0;font-size:0.78rem;color:#064E3B;">' +
+                                '✅ <strong>Respuesta:</strong> Porque utiliza <strong>Grounding estricto</strong> en las fuentes subidas por el usuario y cita la página original con corchetes [1]. ¡No responde desde conocimiento general inventado!' +
+                              '</div>' +
+                            '</div>' +
+                            '<div class="gie-quiz-item" style="background:#F0FDF4;border:1px solid #A7F3D0;border-radius:8px;padding:10px 14px;">' +
+                              '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                                '<span style="font-size:0.82rem;font-weight:800;color:#065F46;">❓ Pregunta 2: ¿Qué función cumple el bloque Math.map en el proyecto del arquero?</span>' +
+                                '<button type="button" class="btn-reveal-quiz" style="background:#10B981;color:#FFF;border:none;border-radius:6px;padding:3px 10px;font-size:0.72rem;cursor:pointer;font-weight:bold;">Ver Respuesta</button>' +
+                              '</div>' +
+                              '<div class="gie-quiz-answer" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed #A7F3D0;font-size:0.78rem;color:#064E3B;">' +
+                                '✅ <strong>Respuesta:</strong> Re-escala los valores analógicos del joystick [0 a 1023] en los grados angulares del servomotor [0° a 180°], centrando al arquero en 90° al soltar la palanca.' +
+                              '</div>' +
+                            '</div>' +
+                          '</div>' +
+                          // Prompt Box
+                          '<div class="gie-prompt-box" style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;">' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+                              '<span style="font-size:0.75rem;font-weight:800;color:#475569;"><i class="fas fa-terminal"></i> Prompt Estrella para el Chat:</span>' +
+                              '<button type="button" class="btn-copy-gie-prompt" data-prompt="Crea una autoevaluación tipo trivia con 5 preguntas de opción múltiple basadas en estas fuentes. Para cada pregunta incluye 4 opciones, indica la correcta y justifica la respuesta citando la página del texto donde está la prueba." style="background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;"><i class="far fa-copy"></i> Copiar Prompt</button>' +
+                            '</div>' +
+                            '<code style="font-size:0.78rem;color:#1E1B4B;display:block;">"Crea una autoevaluación de 5 preguntas de opción múltiple, indicando la correcta y citando la página de la fuente original."</code>' +
+                          '</div>' +
+                        '</div>' +
+
+                        // 6. PANE TIMELINE
+                        '<div class="gie-pane gie-pane-timeline" style="display:none;">' +
+                          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">' +
+                            '<span style="background:#DBEAFE;color:#1D4ED8;font-size:0.75rem;font-weight:900;padding:3px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;"><i class="fas fa-history"></i> Cronología & Redes Conceptuales</span>' +
+                            '<span style="font-size:0.78rem;color:#64748B;">Para historia, ciencias y evolución de inventos</span>' +
+                          '</div>' +
+                          '<p style="font-size:0.84rem;color:#1E293B;line-height:1.5;margin:0 0 12px;">' +
+                            '<strong>¿Cómo funciona?</strong> Gemini rastrea fechas, eventos y relaciones de causa y efecto a lo largo de decenas de páginas y las ordena en una línea de tiempo limpia y clara con hitos numerados.' +
+                          '</p>' +
+                          // Timeline visual
+                          '<div style="border-left:3px solid #3B82F6;margin-left:14px;padding-left:16px;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">' +
+                            '<div style="position:relative;"><span style="position:absolute;left:-23px;top:2px;width:12px;height:12px;border-radius:50%;background:#3B82F6;"></span><strong style="font-size:0.82rem;color:#1E40AF;">Hito 1: Carga de Fuentes en NotebookLM</strong><p style="margin:2px 0 0;font-size:0.76rem;color:#475569;">Los estudiantes suben libros de texto y apuntes para activar el anclaje estricto (Grounding).</p></div>' +
+                            '<div style="position:relative;"><span style="position:absolute;left:-23px;top:2px;width:12px;height:12px;border-radius:50%;background:#8B5CF6;"></span><strong style="font-size:0.82rem;color:#6D28D9;">Hito 2: Generación Multimodal con IA</strong><p style="margin:2px 0 0;font-size:0.76rem;color:#475569;">Creación del podcast Audio Overview y esquemas de diapositivas para Canva.</p></div>' +
+                            '<div style="position:relative;"><span style="position:absolute;left:-23px;top:2px;width:12px;height:12px;border-radius:50%;background:#10B981;"></span><strong style="font-size:0.82rem;color:#047857;">Hito 3: Autoevaluación y Descarga de la Guía PDF</strong><p style="margin:2px 0 0;font-size:0.76rem;color:#475569;">Resolución de trivias y estudio integral unificado con el PDF oficial.</p></div>' +
+                          '</div>' +
+                          // Prompt Box
+                          '<div class="gie-prompt-box" style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;">' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+                              '<span style="font-size:0.75rem;font-weight:800;color:#475569;"><i class="fas fa-terminal"></i> Prompt Estrella para el Chat:</span>' +
+                              '<button type="button" class="btn-copy-gie-prompt" data-prompt="Extrae una línea de tiempo cronológica con los 5 acontecimientos más importantes descritos en estas fuentes, indicando fecha, causa y consecuencia inmediata." style="background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;border-radius:6px;padding:3px 8px;font-size:0.72rem;cursor:pointer;"><i class="far fa-copy"></i> Copiar Prompt</button>' +
+                            '</div>' +
+                            '<code style="font-size:0.78rem;color:#1E1B4B;display:block;">"Extrae una línea de tiempo cronológica con los acontecimientos más importantes descritos en estas fuentes."</code>' +
+                          '</div>' +
+                        '</div>' +
+
+                      '</div>' + // Fin gie-panes-wrapper
+
+                      // ================= UNIFIED PDF BANNER (Y al final un PDF que junte todo) =================
+                      '<div class="gemini-pdf-summary-banner" style="background:linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);color:#FFF;border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:4px 0 8px;border:1.5px solid #6366F1;box-shadow:0 4px 14px rgba(79,70,229,0.25);">' +
+                        '<div>' +
+                          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">' +
+                            '<span style="background:#EC4899;color:#FFF;font-size:0.72rem;font-weight:900;padding:2px 8px;border-radius:4px;text-transform:uppercase;">DOCUMENTO UNIFICADO</span>' +
+                            '<h4 style="margin:0;font-size:1.02rem;font-weight:900;color:#A5B4FC;"><i class="fas fa-file-pdf" style="color:#F43F5E;"></i> Guía Oficial Integral: Todo en un solo Documento PDF</h4>' +
+                          '</div>' +
+                          '<p style="margin:0;font-size:0.81rem;color:#E0E7FF;max-width:560px;line-height:1.4;">' +
+                            'Reúne la explicación de los 6 formatos de estudio, la tabla comparativa de Grounding, los 6 pasos guiados de clase, el catálogo de prompts estrella y el decálogo ético.' +
+                          '</p>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+                          '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="arm-btn-primary" style="background:#EC4899;border-color:#BE185D;font-size:0.86rem;padding:8px 18px;text-decoration:none;">' +
+                            '<i class="fas fa-download"></i> Descargar PDF Completo' +
+                          '</a>' +
+                          '<button type="button" class="arm-btn-secondary apm-goto-pdf-btn" style="font-size:0.86rem;padding:8px 16px;">' +
+                            '<i class="fas fa-eye"></i> Abrir Lector PDF' +
+                          '</button>' +
+                        '</div>' +
+                      '</div>' +
+
+                      // 6 Classroom steps
+                      '<h4 style="font-size:0.95rem;font-weight:900;color:#1E293B;margin:6px 0 2px;"><i class="fas fa-tasks" style="color:#4F46E5;"></i> Pasos de la Clase en el Taller:</h4>' +
+                      '<div class="apm-instructions-steps-grid">' +
+                        instructionsList.map(function(st){
+                          return '<div class="apm-step-card">' +
+                            '<div class="apm-step-badge" style="background:#4F46E5;">' + st.step + '</div>' +
+                            '<div class="apm-step-body">' +
+                              '<h5>' + st.title + '</h5>' +
+                              '<p>' + st.desc + '</p>' +
+                              (st.tip ? '<div class="apm-step-tip" style="background:#EEF2FF;border-left-color:#4F46E5;color:#312E81;"><i class="fas fa-lightbulb" style="color:#4F46E5;"></i> ' + st.tip + '</div>' : '') +
+                            '</div>' +
+                          '</div>';
+                        }).join('') +
+                      '</div>' +
+
+                      '<div style="text-align:right;margin-top:10px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#4F46E5;border-color:#4338CA;">' +
                           '¡Ver Retos Finales y Entrega! <i class="fas fa-arrow-right"></i>' +
                         '</button>' +
                       '</div>' +
@@ -5067,14 +5584,18 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isServoJoystick ? '🧤' : (isCanva ? '🧤' : (isMarcalibro ? '📖' : (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆'))))))))))) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isServoJoystick ? '¡El Arquero Mecánico Construido y Programado con Éxito!' : (isCanva ? '¡Arquero con Inteligencia Artificial Creado con Éxito en Canva!' : (isMarcalibro ? '¡Marca-Libros Origami de Tom Sawyer Terminado!' : (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))))))))))) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isServoJoystick ? '¡Conectaste el joystick chico negro en Pin P1, programaste el servomotor SG90 en Pin P0, dominaste el bloque de ajuste de intervalo matemático (Math.map de 0..1023 a 0..180°) y pusiste al arquero a atajar penales en el arco físico en tiempo real! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isCanva ? '¡Te sacaste la foto en el aula, aislaste tu cabeza con la IA de Canva, la montaste sobre la imagen de un arquero reemplazando su foto y la transformaste en una animación de atajada épica en video MP4 o GIF! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMarcalibro ? '¡Plegaste tu marca-libros esquinero con papel glacé y le diste luz al sombrero de Tom Sawyer con un circuito y LED chato! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))))))))))) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isGeminiNotebooks ? '🧠' : (isServoJoystick ? '🧤' : (isCanva ? '🧤' : (isMarcalibro ? '📖' : (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆')))))))))))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isGeminiNotebooks ? '¡Materiales de Estudio con IA Generados con Éxito!' : (isServoJoystick ? '¡El Arquero Mecánico Construido y Programado con Éxito!' : (isCanva ? '¡Arquero con Inteligencia Artificial Creado con Éxito en Canva!' : (isMarcalibro ? '¡Marca-Libros Origami de Tom Sawyer Terminado!' : (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')))))))))))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isGeminiNotebooks ? '¡Anclaste tus apuntes y libros en NotebookLM (Grounding con fuentes verificadas), generaste podcasts con 2 locutores sintéticos (Audio Overview), guiones de video en 3 actos, diapositivas jerárquicas y autoevaluaciones con citas directas! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isServoJoystick ? '¡Conectaste el joystick chico negro en Pin P1, programaste el servomotor SG90 en Pin P0, dominaste el bloque de ajuste de intervalo matemático (Math.map de 0..1023 a 0..180°) y pusiste al arquero a atajar penales en el arco físico en tiempo real! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isCanva ? '¡Te sacaste la foto en el aula, aislaste tu cabeza con la IA de Canva, la montaste sobre la imagen de un arquero reemplazando su foto y la transformaste en una animación de atajada épica en video MP4 o GIF! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMarcalibro ? '¡Plegaste tu marca-libros esquinero con papel glacé y le diste luz al sombrero de Tom Sawyer con un circuito y LED chato! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')))))))))))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
                     '<div class="apm-extra-challenges">' +
-                      (isServoJoystick ?
+                      (isGeminiNotebooks ?
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#4F46E5;">1</div><div><h6>Audio Overview con Instrucciones Personalizadas</h6><p>En NotebookLM, personalizá el podcast pidiendo a los dos anfitriones que utilicen analogías de fútbol o videojuegos para explicar los temas más difíciles.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#4F46E5;">2</div><div><h6>Cruzar Fuentes y Detectar Citas Falsas</h6><p>Hacé una pregunta capciosa al chat y hacé clic en las citas numéricas [1] y [2] para verificar el párrafo exacto de la fuente de donde la IA extrajo la respuesta.</p></div></div>' +
+                        '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#4F46E5;">3</div><div><h6>Exportar Esquema de Diapositivas a Canva</h6><p>Copiá la estructura generada de 5 diapositivas y pegala en Canva para diseñar una presentación visual interactiva con elementos gráficos.</p></div></div>' :
+                       isServoJoystick ?
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0D9488;">1</div><div><h6>Modo Penales Rápido</h6><p>Reducí la pausa en MakeCode a 10 ms para que el arquero reaccione con velocidad de reflejo profesional ante remates potentes.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0D9488;">2</div><div><h6>Celebración con LEDs de la micro:bit</h6><p>Si el arquero ataja una pelota en un palo (ángulo menor a 15° o mayor a 165°), mostrá un corazón o carita feliz en los LEDs de la micro:bit.</p></div></div>' +
                         '<div class="apm-ec-item"><div class="apm-ec-badge" style="background:#0D9488;">3</div><div><h6>Marcador de Goles con Botones A y B</h6><p>Programá el botón A para sumar goles atajados y el botón B para goles recibidos, mostrando el marcador en la pantalla de la micro:bit.</p></div></div>' :
@@ -5148,13 +5669,15 @@
                           '<i class="fas fa-undo"></i> Repasar Presentación' +
                         '</button>'
                       :
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isMarcalibro ? '#D97706' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981'))))))) + ';border-color:' + (isMarcalibro ? '#B45309' : (isScratchJrPerspectiva ? '#6D28D9' : (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669'))))))) + ';font-size:0.9rem;padding:9px 18px;">' +
-                          (isMarcalibro ? '<i class="fas fa-camera"></i> Subir Foto de Mi Marca-Libros' : (isScratchJrPerspectiva ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')))))) +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isGeminiNotebooks ? '#4F46E5' : (isMarcalibro ? '#D97706' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981')))))))) + ';border-color:' + (isGeminiNotebooks ? '#4338CA' : (isMarcalibro ? '#B45309' : (isScratchJrPerspectiva ? '#6D28D9' : (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669')))))))) + ';font-size:0.9rem;padding:9px 18px;">' +
+                          (isGeminiNotebooks ? '<i class="fas fa-brain"></i> Entregar Materiales de Estudio' : (isMarcalibro ? '<i class="fas fa-camera"></i> Subir Foto de Mi Marca-Libros' : (isScratchJrPerspectiva ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación'))))))) +
                         '</button>' +
                         '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                          (isMarcalibro ? '<i class="fas fa-book-open"></i> Ver Guía de Doblado y Circuito' : (isScratchJrPerspectiva ? '<i class="fas fa-search-plus"></i> Ver Esquema de Perspectiva' : (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')))))) +
+                          (isGeminiNotebooks ? '<i class="fas fa-laptop-code"></i> Ver Espacio de Trabajo NotebookLM' : (isMarcalibro ? '<i class="fas fa-book-open"></i> Ver Guía de Doblado y Circuito' : (isScratchJrPerspectiva ? '<i class="fas fa-search-plus"></i> Ver Esquema de Perspectiva' : (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial'))))))) +
                         '</button>' +
-                        (isScratchJrPerspectiva ?
+                        (isGeminiNotebooks ?
+                          '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="arm-btn-primary" style="background:#EC4899;border-color:#BE185D;font-size:0.9rem;padding:9px 18px;text-decoration:none;"><i class="fas fa-file-pdf"></i> Descargar Guía Completa PDF</a>' :
+                         isScratchJrPerspectiva ?
                           '<a href="' + (mission.projectFileUrl || 'proyectos/perpestiva.sjr') + '" download="perpestiva.sjr" class="arm-btn-secondary" style="font-size:0.9rem;padding:9px 18px;text-decoration:none;"><i class="fas fa-download"></i> Descargar perpestiva.sjr</a>' :
                          isScratchJrVelocidad ?
                           '<a href="' + (mission.projectFileUrl || 'proyectos/velocidad.sjr') + '" download="velocidad.sjr" class="arm-btn-secondary" style="font-size:0.9rem;padding:9px 18px;text-decoration:none;"><i class="fas fa-download"></i> Descargar velocidad.sjr</a>' : '') +
@@ -5211,6 +5734,64 @@
                     '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-mk" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;background:#7C3AED;color:#FFF;box-shadow:0 2px 6px rgba(124,58,237,0.3);">' +
                       '<i class="fas fa-microchip"></i> Link MakeCode' +
                     '</button>' : '') +
+                  (isGeminiNotebooks ?
+                    '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-gemini" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;background:#4F46E5;color:#FFF;box-shadow:0 2px 6px rgba(79,70,229,0.3);">' +
+                      '<i class="fas fa-brain"></i> Entrega IA & NotebookLM' +
+                    '</button>' : '') +
+                '</div>' +
+              '</div>' +
+
+              // SUB-PANEL GEMINI / NOTEBOOKLM
+              '<div id="apm-gemini-delivery-section" style="' + (isGeminiNotebooks ? 'display:block;' : 'display:none;') + '">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4F46E5 100%);">' +
+                  '<div class="apm-dh-icon" style="background:rgba(255,255,255,0.18);color:#A5B4FC;"><i class="fas fa-brain"></i></div>' +
+                  '<div>' +
+                    '<h4>Entrega de Materiales de Estudio con Google Gemini & NotebookLM</h4>' +
+                    '<p>Podés registrar tu entrega compartiendo el enlace a tu cuaderno de NotebookLM, subiendo tu material (podcast, presentación, guion o guía PDF) o validando tu avance en el taller.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  // Link input group
+                  '<div class="apm-delivery-input-group">' +
+                    '<div class="apm-delivery-input-wrap">' +
+                      '<i class="fas fa-link apm-delivery-link-icon"></i>' +
+                      '<input type="url" id="apm-gemini-student-url" class="apm-delivery-url-input" placeholder="https://notebooklm.google.com/notebook/... o link a Google Drive / Canva" value="' + (savedMakecodeUrl || '') + '">' +
+                    '</div>' +
+                    '<button type="button" id="apm-gemini-save-link-btn" class="apm-delivery-submit-btn" style="background:#4F46E5;"><i class="fas fa-paper-plane"></i> Guardar Enlace (+100 XP)</button>' +
+                  '</div>' +
+                  '<div class="apm-delivery-actions-row">' +
+                    '<a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#4F46E5;"><i class="fas fa-external-link-alt"></i> Ir a NotebookLM en vivo</a>' +
+                    '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="apm-delivery-link-btn" style="color:#EC4899;"><i class="fas fa-file-pdf"></i> Descargar Guía Completa PDF</a>' +
+                    '<span class="apm-delivery-hint"><i class="fas fa-info-circle"></i> Tip: Podés compartir el enlace público de tu cuaderno o pegar el link a tu carpeta de Drive.</span>' +
+                  '</div>' +
+                  // File dropzone
+                  '<div class="apm-scratch-dropzone" id="apm-gemini-dropzone" style="margin-top:16px;border-color:#A5B4FC;background:#EEF2FF;">' +
+                    '<div class="apm-sd-icon" style="color:#4F46E5;background:#C7D2FE;"><i class="fas fa-cloud-upload-alt"></i></div>' +
+                    '<h4 style="color:#312E81;">Arrastrá tu archivo de estudio aquí</h4>' +
+                    '<p style="color:#4338CA;">Subí tu resumen en PDF, guion (.txt/.docx), presentación (.pptx/enlace) o audio (.mp3/.wav)</p>' +
+                    '<input type="file" id="apm-gemini-file-input" style="display:none;" accept=".pdf,.doc,.docx,.txt,.mp3,.wav,.m4a,.png,.jpg,.jpeg,.pptx">' +
+                    '<button type="button" id="apm-gemini-browse-btn" class="apm-delivery-submit-btn" style="background:#4F46E5;"><i class="fas fa-folder-open"></i> Seleccionar Archivo de Estudio</button>' +
+                  '</div>' +
+                  // 1-Click quick complete button
+                  '<div style="text-align:center;margin-top:18px;padding:16px;background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:12px;">' +
+                    '<p style="margin:0 0 10px;font-size:0.86rem;color:#475569;">¿Ya probaste los prompts en NotebookLM, exploraste los 6 formatos y leíste la guía didáctica en clase?</p>' +
+                    '<button type="button" id="apm-btn-complete-gemini" class="apm-delivery-submit-btn" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);font-size:0.95rem;padding:10px 24px;box-shadow:0 4px 12px rgba(79,70,229,0.3);">' +
+                      '<i class="fas fa-check-circle"></i> Marcar Misión de Estudio con IA Completada (+100 XP)' +
+                    '</button>' +
+                  '</div>' +
+                  '<div id="apm-gemini-delivery-status" style="margin-top:14px;">' +
+                    (savedFileName || savedMakecodeUrl || isAlreadyCompleted ?
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">' + (savedFileName ? 'Archivo entregado: <strong>' + savedFileName + '</strong>' : (savedMakecodeUrl ? 'Enlace registrado: <strong>' + savedMakecodeUrl + '</strong>' : '¡Misión validada con éxito!')) + ' (' + (savedFileDate || 'Guardado') + ') en tu Google Drive.</span></div></div>' : '') +
+                  '</div>' +
+                  // Pedagogical guide
+                  '<div class="apm-delivery-guide" style="margin-top:16px;">' +
+                    '<h5><i class="fas fa-balance-scale" style="color:#4F46E5;"></i> Criterios de Evaluación Pedagógica con IA:</h5>' +
+                    '<ol>' +
+                      '<li><strong>Grounding Estricto:</strong> La información debe estar anclada en documentos o apuntes reales, citando las fuentes numéricas [1] y evitando alucinaciones.</li>' +
+                      '<li><strong>Diversidad de Formatos:</strong> Se valora la experimentación con al menos uno de los 6 materiales (Podcast, Video, Presentación, Guía, Quizzes o Línea de Tiempo).</li>' +
+                      '<li><strong>Pensamiento Crítico y Ética:</strong> Uso responsable de la IA como copiloto que asiste el aprendizaje y nunca como reemplazo del razonamiento humano.</li>' +
+                    '</ol>' +
+                  '</div>' +
                 '</div>' +
               '</div>' +
 
@@ -5440,6 +6021,8 @@
               renderCodeorgSolutionHtml(mission) :
              isDiaMadre ?
               renderDiaMadreSolutionHtml(mission) :
+             isGeminiNotebooks ?
+              renderGeminiNotebooksSolutionHtml(mission) :
              isPaint ?
               (isPaintBanderas ? renderPaintBanderasSolutionHtml(mission) :
               '<div class="apm-sol-electro-wrap">' +
@@ -6032,11 +6615,13 @@
     var switchToElectro = modal.querySelector('#apm-switch-to-electro');
     var switchToScratch = modal.querySelector('#apm-switch-to-scratch');
     var switchToMk = modal.querySelector('#apm-switch-to-mk');
+    var switchToGemini = modal.querySelector('#apm-switch-to-gemini');
     var secCodeorg = modal.querySelector('#apm-codeorg-delivery-section');
     var secPaint = modal.querySelector('#apm-paint-delivery-section');
     var secElectro = modal.querySelector('#apm-electro-delivery-section');
     var secScratch = modal.querySelector('#apm-scratch-delivery-section');
     var secMk = modal.querySelector('#apm-mk-delivery-section');
+    var secGemini = modal.querySelector('#apm-gemini-delivery-section');
 
     function setDeliveryMode(mode) {
       if (secCodeorg) secCodeorg.style.display = (mode === 'codeorg' ? 'block' : 'none');
@@ -6044,6 +6629,7 @@
       if (secElectro) secElectro.style.display = (mode === 'electro' ? 'block' : 'none');
       if (secScratch) secScratch.style.display = (mode === 'scratch' ? 'block' : 'none');
       if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
+      if (secGemini) secGemini.style.display = (mode === 'gemini' ? 'block' : 'none');
 
       if (switchToCodeorg) {
         switchToCodeorg.style.background = (mode === 'codeorg' ? (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : '#E11D48')) : '#E2E8F0');
@@ -6070,6 +6656,11 @@
         switchToMk.style.color = (mode === 'mk' ? '#FFF' : '#475569');
         switchToMk.style.boxShadow = (mode === 'mk' ? '0 2px 6px rgba(124,58,237,0.3)' : 'none');
       }
+      if (switchToGemini) {
+        switchToGemini.style.background = (mode === 'gemini' ? '#4F46E5' : '#E2E8F0');
+        switchToGemini.style.color = (mode === 'gemini' ? '#FFF' : '#475569');
+        switchToGemini.style.boxShadow = (mode === 'gemini' ? '0 2px 6px rgba(79,70,229,0.3)' : 'none');
+      }
     }
 
     if (switchToCodeorg) switchToCodeorg.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('codeorg'); };
@@ -6077,9 +6668,10 @@
     if (switchToElectro) switchToElectro.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('electro'); };
     if (switchToScratch) switchToScratch.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('scratch'); };
     if (switchToMk) switchToMk.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('mk'); };
+    if (switchToGemini) switchToGemini.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('gemini'); };
 
     // Establecer modo de entrega inicial
-    setDeliveryMode(isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'))));
+    setDeliveryMode(isGeminiNotebooks ? 'gemini' : (isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch')))));
 
     // --- Subida / Completar Misión Code.org (Angry Birds / Frozen / Minecraft) con 1-Click ---
     var btnCompleteCodeorg = modal.querySelector('#apm-btn-complete-codeorg');
@@ -6770,6 +7362,276 @@
         }
       };
     });
+
+    // ── INTERACTIVE EXPLORER & GEMINI DELIVERY HANDLERS ──
+    modal.querySelectorAll('.gie-tab-btn').forEach(function(tabBtn) {
+      tabBtn.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        var target = tabBtn.getAttribute('data-target');
+        modal.querySelectorAll('.gie-tab-btn').forEach(function(b) {
+          b.classList.toggle('active', b === tabBtn);
+        });
+        modal.querySelectorAll('.gie-pane').forEach(function(pane) {
+          if (pane.classList.contains('gie-pane-' + target)) {
+            pane.style.display = 'block';
+          } else {
+            pane.style.display = 'none';
+          }
+        });
+      };
+    });
+
+    // Copiar Prompts Estrella
+    modal.querySelectorAll('.btn-copy-gie-prompt').forEach(function(copyBtn) {
+      copyBtn.onclick = function(e) {
+        e.stopPropagation();
+        var promptText = copyBtn.getAttribute('data-prompt') || '';
+        function showPromptCopied() {
+          var origHtml = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+          copyBtn.style.background = '#10B981';
+          copyBtn.style.color = '#FFF';
+          setTimeout(function() {
+            copyBtn.innerHTML = origHtml;
+            copyBtn.style.background = '';
+            copyBtn.style.color = '';
+          }, 2000);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(promptText).then(showPromptCopied).catch(function() {
+            fallbackCopyText(promptText, showPromptCopied);
+          });
+        } else {
+          fallbackCopyText(promptText, showPromptCopied);
+        }
+      };
+    });
+
+    // Reproducción simulada de Audio Overview
+    var audioPlayToggle = modal.querySelector('.gie-audio-play-toggle');
+    if (audioPlayToggle) {
+      var isAudioPlaying = false;
+      audioPlayToggle.onclick = function() {
+        isAudioPlaying = !isAudioPlaying;
+        if (window.sounds) window.sounds.playClick();
+        var waveBars = modal.querySelectorAll('.gie-wave-bar');
+        var iconEl = audioPlayToggle.querySelector('i');
+        if (isAudioPlaying) {
+          if (iconEl) { iconEl.className = 'fas fa-pause'; }
+          audioPlayToggle.style.background = '#EC4899';
+          waveBars.forEach(function(bar, idx) {
+            bar.style.animation = 'gieWavePulse 0.8s ease-in-out infinite alternate ' + (idx * 0.1) + 's';
+          });
+        } else {
+          if (iconEl) { iconEl.className = 'fas fa-play'; }
+          audioPlayToggle.style.background = '#4F46E5';
+          waveBars.forEach(function(bar) {
+            bar.style.animation = 'none';
+          });
+        }
+      };
+    }
+
+    // Revelar respuestas de Quiz
+    modal.querySelectorAll('.btn-reveal-quiz').forEach(function(qBtn) {
+      qBtn.onclick = function() {
+        if (window.sounds) window.sounds.playClick();
+        var targetId = qBtn.getAttribute('data-target');
+        var targetEl = modal.querySelector('#' + targetId);
+        if (targetEl) {
+          var isHidden = targetEl.style.display === 'none';
+          targetEl.style.display = isHidden ? 'block' : 'none';
+          qBtn.innerHTML = isHidden ? '<i class="fas fa-eye-slash"></i> Ocultar Explicación' : '<i class="fas fa-lightbulb"></i> Ver Respuesta & Citas [1]';
+        }
+      };
+    });
+
+    // --- Subida / Entrega de Materiales de Estudio con Gemini & NotebookLM ---
+    var btnCompleteGemini = modal.querySelector('#apm-btn-complete-gemini');
+    if (btnCompleteGemini) {
+      btnCompleteGemini.onclick = function() {
+        if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+        else if (window.sounds) window.sounds.playClick();
+
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          type: 'gemini_notebooks',
+          url: 'https://notebooklm.google.com',
+          pdfUrl: 'docs/guia_ia_gemini_notebooks.pdf',
+          date: nowStr,
+          completed: true,
+          missionId: mission.id,
+          missionTitle: mission.title,
+          fileName: 'Cuaderno de Estudio IA Gemini & NotebookLM (Validado)'
+        };
+
+        markMissionCompleted(student, mission.id, submissionData);
+        mission.status = 'completado';
+
+        var stContainer = modal.querySelector('#apm-gemini-delivery-status');
+        if (stContainer) {
+          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Misión de Estudio con IA Completada! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Se validó tu práctica de NotebookLM y Gemini (' + nowStr + '). ¡Puntos y avance sumados a tu taller!</span></div></div>';
+        }
+        var topBadge = modal.querySelector('#apm-header-status-badge');
+        if (topBadge) {
+          topBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+        alert('🎉 ¡Felicitaciones! Completaste el Nivel 3 de 6° Grado: Creación de Materiales de Estudio con Gemini & NotebookLM.\nSumaste +100 XP al taller.');
+      };
+    }
+
+    var geminiSaveLinkBtn = modal.querySelector('#apm-gemini-save-link-btn');
+    var geminiStudentUrlInput = modal.querySelector('#apm-gemini-student-url');
+    if (geminiSaveLinkBtn && geminiStudentUrlInput) {
+      geminiSaveLinkBtn.onclick = function() {
+        var rawUrl = (geminiStudentUrlInput.value || '').trim();
+        if (!rawUrl) {
+          alert('Por favor ingresá el link de tu cuaderno de NotebookLM, presentación de Canva o archivo en Google Drive.');
+          return;
+        }
+        if (window.sounds) window.sounds.playSuccess();
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          url: rawUrl,
+          date: nowStr,
+          type: 'gemini_notebooks',
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+
+        markMissionCompleted(student, mission.id, submissionData);
+        mission.status = 'completado';
+
+        var topBadge = modal.querySelector('#apm-header-status-badge');
+        if (topBadge) {
+          topBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        var statusEl = modal.querySelector('#apm-gemini-delivery-status');
+        if (statusEl) {
+          statusEl.innerHTML =
+            '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+              '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+              '<div>' +
+                '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                '<span style="font-size:0.84rem;color:#047857;">Enlace guardado: <a href="' + rawUrl + '" target="_blank" style="color:#047857;text-decoration:underline;">' + rawUrl + '</a>. ¡Tu profesor ya puede revisar tus materiales!</span>' +
+              '</div>' +
+            '</div>';
+        }
+        refreshDashboard();
+      };
+    }
+
+    var geminiDropzone = modal.querySelector('#apm-gemini-dropzone');
+    var geminiFileInput = modal.querySelector('#apm-gemini-file-input');
+    var geminiBrowseBtn = modal.querySelector('#apm-gemini-browse-btn');
+    var geminiStatusEl = modal.querySelector('#apm-gemini-delivery-status');
+
+    if (geminiBrowseBtn && geminiFileInput) {
+      geminiBrowseBtn.onclick = function() {
+        geminiFileInput.click();
+      };
+    }
+
+    function processGeminiUpload(file) {
+      if (!file) return;
+      var name = file.name.toLowerCase();
+      var valid = /\.(pdf|doc|docx|txt|mp3|wav|m4a|png|jpe?g|webp|pptx)$/i.test(name);
+      if (!valid) {
+        if (window.sounds) window.sounds.playError();
+        alert('Formato no válido. Por favor seleccioná un archivo de estudio (.pdf, .docx, .txt, .mp3, .pptx, etc.)');
+        return;
+      }
+      if (window.sounds) window.sounds.playSuccess();
+      var sz = formatFileSize(file.size);
+      if (geminiStatusEl) {
+        geminiStatusEl.innerHTML = '<div class="apm-status-badge warning"><i class="fas fa-sync-alt fa-spin"></i> Subiendo material de estudio <strong>' + file.name + '</strong> (' + sz + ')...</div>';
+      }
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var b64 = ev.target.result.split(',')[1];
+        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        if (hook && student) {
+          var iframe = document.getElementById('gdrive_silent_upload_iframe');
+          if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+          }
+          var form = document.createElement('form');
+          form.target = 'gdrive_silent_upload_iframe';
+          form.method = 'POST';
+          form.action = hook;
+          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyectos' };
+          for (var k in fields) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = k;
+            inp.value = fields[k];
+            form.appendChild(inp);
+          }
+          document.body.appendChild(form);
+          form.submit();
+          setTimeout(function(){ form.remove(); }, 2500);
+        }
+
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          fileName: file.name,
+          fileSize: sz,
+          date: nowStr,
+          type: 'gemini_notebooks',
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+
+        markMissionCompleted(student, mission.id, submissionData);
+        mission.status = 'completado';
+
+        var headerBadge = modal.querySelector('#apm-header-status-badge');
+        if (headerBadge) {
+          headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        if (geminiStatusEl) {
+          geminiStatusEl.innerHTML =
+            '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;">' +
+              '<i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> ' +
+              '<div>' +
+                '<strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br>' +
+                '<span style="font-size:0.84rem;color:#047857;">¡Material entregado con éxito! Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu Google Drive.</span>' +
+              '</div>' +
+            '</div>';
+        }
+
+        refreshDashboard();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    if (geminiFileInput) {
+      geminiFileInput.onchange = function() {
+        if (geminiFileInput.files && geminiFileInput.files.length > 0) {
+          processGeminiUpload(geminiFileInput.files[0]);
+        }
+      };
+    }
+
+    if (geminiDropzone) {
+      geminiDropzone.addEventListener('dragover', function(e){ e.preventDefault(); geminiDropzone.classList.add('drag-over'); }, false);
+      geminiDropzone.addEventListener('dragleave', function(e){ e.preventDefault(); geminiDropzone.classList.remove('drag-over'); }, false);
+      geminiDropzone.addEventListener('drop', function(e){
+        e.preventDefault();
+        geminiDropzone.classList.remove('drag-over');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          processGeminiUpload(e.dataTransfer.files[0]);
+        }
+      }, false);
+    }
 
     modal.classList.add('active');
   }

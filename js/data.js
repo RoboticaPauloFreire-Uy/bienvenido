@@ -2171,29 +2171,72 @@ const SCHOOL_DATA = {
         {
           id: "g6-p3",
           level: 3,
-          title: "Neon Cyber Runner — Proyecto Arcade ⚡",
-          author: "Florencia A. y Agustín B.",
-          date: "Agosto 2026",
-          badge: "⚡ Programación Web & Canvas",
-          icon: "fa-gamepad",
-          color: "#059669",
-          coverImage: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
-          description: "Videojuego arcade de JavaScript con Canvas HTML5, física de salto, sistema de partículas y sintetizador Web Audio API.",
-          tags: ["JavaScript", "Canvas API", "Web Audio API", "Videojuegos", "Nivel 3"],
-          gallery: [
-            "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80"
-          ],
-          pdfUrl: null,
+          title: "IA con Gemini & NotebookLM: Creación de Materiales de Estudio 🧠🎙️📽️📊",
+          author: "Taller de Robótica, IA y Tecnología 6° Grado",
+          date: "Abril 2026",
+          type: "gemini_notebooks",
+          platform: "notebooklm",
+          badge: "🧠 Gemini & NotebookLM • IA Educativa",
+          icon: "fa-brain",
+          color: "#4F46E5",
+          coverImage: "img/proyectos/gemini_notebooks_cover.svg",
+          gameUrl: null,
+          externalUrl: "https://notebooklm.google.com",
+          pdfUrl: "docs/guia_ia_gemini_notebooks.pdf",
+          downloadPdfUrl: "docs/guia_ia_gemini_notebooks.pdf",
           makecodeUrl: null,
           scratchId: null,
+          description: "¡Nivel 3 de nuestra Ruta de Aventuras! Aprendemos a usar Google Gemini y NotebookLM para convertir fuentes confiables (PDFs escolares, libros de texto y apuntes) en materiales de estudio interactivos: podcasts de audio con dos locutores sintetizados (Audio Overview), guiones audiovisuales para videos educativos, esquemas para presentaciones en Canva y guías de estudio con cuestionarios tipo FAQ y flashcards para autoevaluación con cero alucinaciones.",
+          objective: "Dominar el uso educativo de la IA generativa basada en fuentes verificables (Grounding): cargar libros y apuntes en Google NotebookLM, generar un podcast explicativo con dos voces sintéticas, diseñar un guión audiovisual para video con gancho y escenas, estructurar diapositivas para Canva/Slides y formular cuestionarios de autoevaluación con active recall y citas exactas a los textos originales.",
+          benefits: "Desarrolla el pensamiento crítico, la alfabetización en inteligencia artificial y la autonomía en el estudio. Enseña a distinguir entre chatbots convencionales propensos a alucinaciones y modelos anclados en fuentes comprobables, transformando a los alumnos de 6° grado en creadores de contenidos educativos multimedia de vanguardia.",
+          tags: ["Google Gemini", "NotebookLM", "Inteligencia Artificial", "Podcasts Educativos", "Guiones de Video", "Materiales de Estudio", "Grounding", "Flashcards", "Nivel 3"],
+          gallery: [
+            "img/proyectos/gemini_notebooks_cover.svg"
+          ],
           materials: [
+            { title: "Google NotebookLM (Gemini 1.5 Pro)", description: "Cuaderno inteligente de Google con IA anclada a fuentes para generar podcasts, resúmenes y preguntas.", icon: "fa-brain" },
+            { title: "Fuentes en PDF, Libros y Apuntes", description: "Capítulos escolares, notas tomadas en clase y artículos educativos que alimentan el cuaderno sin alucinaciones.", icon: "fa-file-pdf" },
+            { title: "Generador de Audio Overview (Podcast)", description: "Herramienta que crea una conversación de audio entre 2 locutores virtuales analizando los temas clave.", icon: "fa-microphone" },
+            { title: "Editor Canva o Google Slides", description: "Plataforma de diseño visual para maquetar las diapositivas y esquemas generados por la IA.", icon: "fa-tv" },
+            { title: "Guía Oficial de Estudio en PDF", description: "Documento técnico y pedagógico descargable con instrucciones paso a paso, prompts y decálogo de ética.", icon: "fa-file-alt" },
+            { title: "Fichas Flashcards y Quizzes FAQ", description: "Tarjetas de autoevaluación con active recall y preguntas de opción múltiple con citas verificadas.", icon: "fa-question-circle" }
+          ],
+          instructions: [
             {
-              title: "Manual Técnico de Desarrollo",
-              type: "Documentación",
-              icon: "fa-book",
-              description: "Estructura del motor del juego: clases Player, Obstacle, ParticleSystem y ScoreManager."
+              step: 1,
+              title: "Crear tu Cuaderno en NotebookLM",
+              desc: "Ingresá a notebooklm.google.com con tu cuenta educativa y hacé clic en 'Nuevo cuaderno'. Escribí un título claro según el tema de ciencias, historia o robótica que estés investigando.",
+              tip: "NotebookLM es 100% gratuito y seguro, no comparte tus apuntes para entrenar modelos públicos."
+            },
+            {
+              step: 2,
+              title: "Cargar tus Fuentes Confiables (Grounding)",
+              desc: "Subí el archivo PDF de tu libro de texto, enlaces a artículos web de consulta o pegá tus propios apuntes de clase. NotebookLM leerá y organizará todos los textos en pocos segundos.",
+              tip: "Podés subir hasta 50 fuentes por cuaderno. Cuanto más ricas sean tus fuentes, mejores serán las respuestas."
+            },
+            {
+              step: 3,
+              title: "Generar el Podcast de Audio (Audio Overview)",
+              desc: "En el panel lateral derecho ('Notebook Guide'), pulsá el botón 'Generar' en la sección Audio Overview. Dos locutores de IA conversarán y debatirán los conceptos principales como en un programa de radio profesional.",
+              tip: "Podés pausar, retroceder y descargar el audio para escucharlo en casa o camino a la escuela."
+            },
+            {
+              step: 4,
+              title: "Crear Guión Audiovisual para Video",
+              desc: "Escribí en el chat: 'Genera un guión para un video de 2 minutos explicando este tema para mis compañeros de 6° grado, con Gancho inicial, Desarrollo con analogías simples y Cierre con llamado a la acción'.",
+              tip: "Pedile que incluya descripciones de qué imágenes mostrar en pantalla en cada escena."
+            },
+            {
+              step: 5,
+              title: "Estructurar Diapositivas para Canva o Slides",
+              desc: "Solicitá un esquema de 6 diapositivas con título, 3 puntos clave por diapositiva y recomendaciones de imágenes. Luego abrilo en Canva para darle formato gráfico atractivo.",
+              tip: "Recordá la regla del 6x6: pocas palabras por viñeta para que tus diapositivas no se sobrecarguen de texto."
+            },
+            {
+              step: 6,
+              title: "Autoevaluación con Flashcards y Descargar Guía PDF",
+              desc: "Pedile a NotebookLM que cree 5 preguntas frecuentes (FAQ) con trampa y respuestas citadas. Al finalizar, descargá la Guía PDF integral para repasar todos los prompts y el decálogo ético.",
+              tip: "¡Hacé clic en los números de cita [1], [2] para comprobar que la IA no haya inventado ningún dato!"
             }
           ]
         },
@@ -2506,12 +2549,13 @@ if (typeof window !== 'undefined') {
                 targetProjects.some(p => ((p.id === 'g1-p4' || p.id === 'g1-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
 
-              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA y el Arquero Mecánico con imagen
+              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA, el Arquero Mecánico con imagen y Gemini & NotebookLM
               const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
-                targetProjects.length < 2 ||
+                targetProjects.length < 3 ||
                 !targetProjects.some(p => (p.title || '').includes('Canva') || (p.title || '').includes('Arquero') || p.id === 'g6-p1') ||
                 !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
-                !targetProjects.some(p => (p.id === 'g6-p2' && (p.makecodeUrl || '').includes('S17294') && p.coverImage && p.coverImage.includes('servo_joystick_makecode_cover')))
+                !targetProjects.some(p => (p.id === 'g6-p2' && (p.makecodeUrl || '').includes('S17294') && p.coverImage && p.coverImage.includes('servo_joystick_makecode_cover'))) ||
+                !targetProjects.some(p => (p.title || '').includes('Gemini') || (p.title || '').includes('NotebookLM') || p.id === 'g6-p3')
               );
 
               if (isStaleSala5 || isStaleGrado1 || isStaleGrado6) {
@@ -2528,6 +2572,12 @@ if (typeof window !== 'undefined') {
                   if (p.id === 'g6-p2' || (/servo.*joystick|joystick.*servo/i.test(p.title || ''))) {
                     p.coverImage = 'img/proyectos/servo_joystick_makecode_cover.svg';
                     p.makecodeUrl = 'https://makecode.microbit.org/S17294-82339-82111-72476';
+                  }
+                  if (p.id === 'g6-p3' || (/gemini|notebooklm|materiales.*estudio/i.test(p.title || ''))) {
+                    p.coverImage = 'img/proyectos/gemini_notebooks_cover.svg';
+                    p.pdfUrl = 'docs/guia_ia_gemini_notebooks.pdf';
+                    p.downloadPdfUrl = 'docs/guia_ia_gemini_notebooks.pdf';
+                    p.externalUrl = 'https://notebooklm.google.com';
                   }
                 });
                 gradeObj.projects = targetProjects;

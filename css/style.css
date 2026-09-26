@@ -10886,8 +10886,81 @@ body.student-logged-in #student-drive-dashboard-container {
   color: #0F172A;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   GOOGLE GEMINI & NOTEBOOKLM: MATERIALES DE ESTUDIO INTERACTIVOS
+───────────────────────────────────────────────────────────── */
+.gie-tab-btn {
+  background: #EEF2FF;
+  color: #4338CA;
+  border: 1.5px solid #C7D2FE;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
 
+.gie-tab-btn:hover {
+  background: #E0E7FF;
+  border-color: #A5B4FC;
+  transform: translateY(-1px);
+}
 
+.gie-tab-btn.active {
+  background: #4F46E5 !important;
+  color: #FFFFFF !important;
+  border-color: #3730A3 !important;
+  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.35);
+}
 
+.gie-pane {
+  animation: gieFadeIn 0.25s ease forwards;
+}
 
+@keyframes gieFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
+@keyframes gieWavePulse {
+  0% { height: 6px; }
+  50% { height: 26px; }
+  100% { height: 12px; }
+}
+
+.gie-wave-bar {
+  display: inline-block;
+  width: 4px;
+  border-radius: 3px;
+  background: #4F46E5;
+  transition: height 0.15s ease;
+}
+
+.btn-copy-gie-prompt {
+  transition: all 0.15s ease;
+}
+
+.btn-copy-gie-prompt:hover {
+  background: #4F46E5 !important;
+  color: #FFFFFF !important;
+  border-color: #3730A3 !important;
+}
+
+#apm-gemini-dropzone.drag-over {
+  border-color: #4F46E5 !important;
+  background: #E0E7FF !important;
+  transform: scale(1.01);
+}
+
+.gemini-pdf-summary-banner {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gemini-pdf-summary-banner:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35) !important;
+}
