@@ -9160,6 +9160,24 @@ body.student-logged-in #student-drive-dashboard-container {
   box-shadow: 0 10px 30px rgba(245, 158, 11, 0.18);
 }
 
+.arm-sala5-spotlight-card.theme-canva {
+  background: linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 40%, #EDE9FE 100%);
+  border-color: #0284C7;
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.18);
+}
+
+.arm-sala5-spotlight-card.theme-servo {
+  background: linear-gradient(145deg, #F0FDFA 0%, #CCFBF1 40%, #E0E7FF 100%);
+  border-color: #0D9488;
+  box-shadow: 0 10px 30px rgba(13, 148, 136, 0.18);
+}
+
+.arm-sala5-spotlight-card.theme-gemini {
+  background: linear-gradient(145deg, #EEF2FF 0%, #E0E7FF 40%, #FCE7F3 100%);
+  border-color: #4F46E5;
+  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.22);
+}
+
 .arm-s5-watermark {
   position: absolute;
   right: -15px;
@@ -9286,6 +9304,27 @@ body.student-logged-in #student-drive-dashboard-container {
   box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35) !important;
 }
 
+.arm-s5-tab-pill.active.tab-canva,
+.arm-s5-tab-pill.active[data-spotlight-theme="canva"] {
+  background: #0284C7 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35) !important;
+}
+
+.arm-s5-tab-pill.active.tab-servo,
+.arm-s5-tab-pill.active[data-spotlight-theme="servo"] {
+  background: #0D9488 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35) !important;
+}
+
+.arm-s5-tab-pill.active.tab-gemini,
+.arm-s5-tab-pill.active[data-spotlight-theme="gemini"] {
+  background: #4F46E5 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35) !important;
+}
+
 .arm-s5-slides-container {
   position: relative;
   z-index: 3;
@@ -9368,6 +9407,36 @@ body.student-logged-in #student-drive-dashboard-container {
   box-shadow: 0 10px 25px rgba(245, 158, 11, 0.28);
 }
 
+.arm-s5-canva-preview {
+  border: 3px dashed #0284C7;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.15);
+}
+.arm-s5-canva-preview:hover {
+  transform: scale(1.04) rotate(-1deg);
+  border-color: #0369A1;
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.28);
+}
+
+.arm-s5-servo-preview {
+  border: 3px dashed #0D9488;
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.15);
+}
+.arm-s5-servo-preview:hover {
+  transform: scale(1.04) rotate(1deg);
+  border-color: #0F766E;
+  box-shadow: 0 10px 25px rgba(13, 148, 136, 0.28);
+}
+
+.arm-s5-gemini-preview {
+  border: 3px dashed #4F46E5;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.15);
+}
+.arm-s5-gemini-preview:hover {
+  transform: scale(1.04) rotate(1deg);
+  border-color: #4338CA;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+}
+
 .arm-s5-preview-img {
   max-width: 100%;
   max-height: 100%;
@@ -9413,6 +9482,13 @@ body.student-logged-in #student-drive-dashboard-container {
   color: #FFFFFF;
   box-shadow: 0 0 15px #E11D48, 0 0 35px #FB7185, 0 0 60px #BE123C;
   animation: ledGlowPulseMadre 1.4s infinite ease-in-out;
+}
+
+.arm-s5-led-glow.glow-gemini.active {
+  background: #4F46E5;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px #4F46E5, 0 0 35px #818CF8, 0 0 60px #EC4899;
+  animation: ledGlowPulseVarita 1.4s infinite ease-in-out;
 }
 
 .arm-s5-led-glow.glow-marcalibro.active {

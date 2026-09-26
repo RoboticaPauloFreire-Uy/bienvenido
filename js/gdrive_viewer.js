@@ -655,10 +655,168 @@
       '</div>';
 
     var sala5SpecialBannerHtml = '';
-    var isSpotlightGrade = (student.gradeId === 'sala5' || student.gradeId === 'grado1' || student.gradeId === '1ero');
+    var isGrado6 = student && (student.gradeId === 'grado6' || student.gradeId === '6to');
+    var isSpotlightGrade = (student.gradeId === 'sala5' || student.gradeId === 'grado1' || student.gradeId === '1ero' || isGrado6);
     if (isSpotlightGrade) {
       var adventureMissions = missions || [];
       var isGrado1 = (student.gradeId === 'grado1' || student.gradeId === '1ero');
+
+      if (isGrado6) {
+        var idxG6Canva = adventureMissions.findIndex(function(m){
+          return m.id === 'g6-p1' || (/canva|arquero.*ia/i.test(m.title || ''));
+        });
+        if (idxG6Canva === -1) idxG6Canva = 0;
+
+        var idxG6Servo = adventureMissions.findIndex(function(m){
+          return m.id === 'g6-p2' || (/servo.*joystick|joystick.*servo/i.test(m.title || ''));
+        });
+        if (idxG6Servo === -1) idxG6Servo = 1;
+
+        var idxG6Gemini = adventureMissions.findIndex(function(m){
+          return m.id === 'g6-p3' || (/gemini|notebooklm|materiales.*estudio/i.test(m.title || ''));
+        });
+        if (idxG6Gemini === -1) idxG6Gemini = 2;
+
+        var activeSpotlight = (window.grado6SpotlightCurrentSlide !== undefined) ? window.grado6SpotlightCurrentSlide : 2;
+        if (activeSpotlight < 0 || activeSpotlight > 2) activeSpotlight = 2;
+        var spotlightTheme = (activeSpotlight === 0) ? 'theme-canva' : (activeSpotlight === 1 ? 'theme-servo' : 'theme-gemini');
+
+        sala5SpecialBannerHtml =
+          '<div class="arm-sala5-spotlight-card ' + spotlightTheme + '" id="arm-sala5-spotlight-carousel">' +
+            '<div class="arm-s5-carousel-topbar">' +
+              '<div class="arm-s5-badge-top">' +
+                '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" class="arm-s5-crest">' +
+                '<span>Colegio Paulo Freire · Taller de Robótica, IA y Programación (6° Grado)</span>' +
+              '</div>' +
+              '<div class="arm-s5-carousel-nav">' +
+                '<button type="button" class="arm-s5-cnav-btn arm-s5-prev-btn" title="Proyecto Anterior" aria-label="Anterior">' +
+                  '<i class="fas fa-chevron-left"></i>' +
+                '</button>' +
+                '<div class="arm-s5-carousel-tabs">' +
+                  '<button type="button" class="arm-s5-tab-pill tab-canva ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" data-spotlight-theme="canva">' +
+                    '<span>🎨 Canva Arquero IA</span>' +
+                  '</button>' +
+                  '<button type="button" class="arm-s5-tab-pill tab-servo ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" data-spotlight-theme="servo">' +
+                    '<span>🕹️ Servo & Joystick</span>' +
+                  '</button>' +
+                  '<button type="button" class="arm-s5-tab-pill tab-gemini ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" data-spotlight-theme="gemini">' +
+                    '<span>🧠 Gemini & NotebookLM</span>' +
+                  '</button>' +
+                '</div>' +
+                '<button type="button" class="arm-s5-cnav-btn arm-s5-next-btn" title="Proyecto Siguiente" aria-label="Siguiente">' +
+                  '<i class="fas fa-chevron-right"></i>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="arm-s5-slides-container">' +
+              // SLIDE 0: Canva Arquero con IA
+              '<div class="arm-s5-slide ' + (activeSpotlight === 0 ? 'active' : '') + '" data-slide-idx="0" style="' + (activeSpotlight === 0 ? 'display:block;' : 'display:none;') + '">' +
+                '<span class="arm-s5-watermark">🎨</span>' +
+                '<div class="arm-s5-content-row">' +
+                  '<div class="arm-s5-preview arm-s5-canva-preview" id="arm-g6-canva-interactive" role="button" tabindex="0" title="¡Hacé click para ver la animación en Canva!">' +
+                    '<img src="img/proyectos/canva_arquero_ia_cover.svg" alt="Arquero con IA en Canva" class="arm-s5-preview-img">' +
+                    '<div class="arm-s5-led-glow glow-canva" id="arm-g6-glow-canva"><i class="fas fa-wand-magic-sparkles"></i></div>' +
+                    '<span class="arm-s5-interactive-hint" style="background:rgba(2, 132, 199, 0.95);"><i class="fas fa-magic"></i> ¡Tocá para probar IA!</span>' +
+                  '</div>' +
+                  '<div class="arm-s5-info">' +
+                    '<div class="arm-s5-tag" style="color:#0284C7;"><i class="fas fa-robot"></i> PROYECTO OFICIAL 6° GRADO • NIVEL 1</div>' +
+                    '<h3 class="arm-s5-title" style="color:#0369A1;">El Arquero con Inteligencia Artificial en Canva ⚽🧤🤖</h3>' +
+                    '<p class="arm-s5-desc">Fotografía real en el aula, remoción de fondo con <strong>Quitafondos IA</strong>, montaje en plantilla de fútbol y animación de atajada con <strong>Magic Animate</strong> en formato video MP4 o GIF animado.</p>' +
+                    '<div class="arm-s5-materials-pills">' +
+                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-camera"></i> Foto en el aula</span>' +
+                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-magic"></i> Quitafondos IA</span>' +
+                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-futbol"></i> Fotomontaje</span>' +
+                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-film"></i> Magic Animate</span>' +
+                    '</div>' +
+                    '<div class="arm-s5-actions">' +
+                      '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);box-shadow:0 4px 14px rgba(2,132,199,0.35);" data-mission-idx="' + idxG6Canva + '">' +
+                        '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                      '</button>' +
+                      '<a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;padding:9px 18px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
+                        '<i class="fas fa-palette"></i> <span>Abrir Canva</span>' +
+                      '</a>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              // SLIDE 1: El Arquero Mecánico: Servo y Joystick
+              '<div class="arm-s5-slide ' + (activeSpotlight === 1 ? 'active' : '') + '" data-slide-idx="1" style="' + (activeSpotlight === 1 ? 'display:block;' : 'display:none;') + '">' +
+                '<span class="arm-s5-watermark">🕹️</span>' +
+                '<div class="arm-s5-content-row">' +
+                  '<div class="arm-s5-preview arm-s5-servo-preview" id="arm-g6-servo-interactive" role="button" tabindex="0" title="¡Hacé click para mover el servomotor!">' +
+                    '<img src="img/proyectos/servo_joystick_makecode_cover.svg" alt="Arquero Mecánico Servo y Joystick" class="arm-s5-preview-img">' +
+                    '<div class="arm-s5-led-glow glow-servo" id="arm-g6-glow-servo"><i class="fas fa-gamepad"></i></div>' +
+                    '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);"><i class="fas fa-futbol"></i> ¡Tocá para atajar!</span>' +
+                  '</div>' +
+                  '<div class="arm-s5-info">' +
+                    '<div class="arm-s5-tag" style="color:#0D9488;"><i class="fas fa-microchip"></i> PROYECTO OFICIAL 6° GRADO • NIVEL 2</div>' +
+                    '<h3 class="arm-s5-title" style="color:#0F766E;">El Arquero Mecánico: Control de Servo y Joystick 🧤🕹️⚙️</h3>' +
+                    '<p class="arm-s5-desc">Lectura analógica del <strong>joystick chico negro</strong> en Pin P1 (0..1023), bloque matemático de <strong>ajuste de intervalo (Math.map)</strong> de 0 a 180° y control en tiempo real del <strong>servomotor SG90</strong> en Pin P0.</p>' +
+                    '<div class="arm-s5-materials-pills">' +
+                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-gamepad"></i> Joystick Chico (P1)</span>' +
+                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-calculator"></i> Ajuste Math.map</span>' +
+                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-cogs"></i> Servo SG90 (P0)</span>' +
+                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-microchip"></i> micro:bit v2</span>' +
+                    '</div>' +
+                    '<div class="arm-s5-actions">' +
+                      '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);box-shadow:0 4px 14px rgba(13,148,136,0.35);" data-mission-idx="' + idxG6Servo + '">' +
+                        '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                      '</button>' +
+                      '<a href="https://makecode.microbit.org/S17294-82339-82111-72476" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0D9488;border-color:#99F6E4;padding:9px 18px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
+                        '<i class="fas fa-code"></i> <span>Abrir MakeCode</span>' +
+                      '</a>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              // SLIDE 2: Gemini & NotebookLM: Materiales de Estudio con IA
+              '<div class="arm-s5-slide ' + (activeSpotlight === 2 ? 'active' : '') + '" data-slide-idx="2" style="' + (activeSpotlight === 2 ? 'display:block;' : 'display:none;') + '">' +
+                '<span class="arm-s5-watermark">🧠</span>' +
+                '<div class="arm-s5-content-row">' +
+                  '<div class="arm-s5-preview arm-s5-gemini-preview" id="arm-g6-gemini-interactive" role="button" tabindex="0" title="¡Hacé click para probar la generación con IA!">' +
+                    '<img src="img/proyectos/gemini_notebooks_cover.svg" alt="Gemini NotebookLM Ecosistema" class="arm-s5-preview-img">' +
+                    '<div class="arm-s5-led-glow glow-gemini" id="arm-g6-glow-gemini"><i class="fas fa-brain"></i></div>' +
+                    '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #4F46E5 0%, #EC4899 100%);"><i class="fas fa-sparkles"></i> ¡Generar con IA!</span>' +
+                  '</div>' +
+                  '<div class="arm-s5-info">' +
+                    '<div class="arm-s5-tag" style="color:#4F46E5;"><i class="fas fa-brain"></i> PROYECTO OFICIAL 6° GRADO • NIVEL 3</div>' +
+                    '<h3 class="arm-s5-title" style="color:#3730A3;">IA con Gemini & NotebookLM: Creación de Materiales de Estudio 🧠🎙️📽️📊</h3>' +
+                    '<p class="arm-s5-desc">Ecosistema de IA con anclaje estricto a fuentes confiables (Grounding): generá <strong>podcasts con dos locutores sintetizados (Audio Overview)</strong>, <strong>guiones audiovisuales para video educativo</strong>, <strong>esquemas para Canva</strong> y <strong>guías de estudio con flashcards para autoevaluación</strong> sin alucinaciones.</p>' +
+                    '<div class="arm-s5-materials-pills">' +
+                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-microphone"></i> Podcasts (Audio Overview)</span>' +
+                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-video"></i> Guiones de Video</span>' +
+                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-tv"></i> Diapositivas Canva</span>' +
+                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-question-circle"></i> Flashcards & FAQs</span>' +
+                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-file-pdf"></i> Guía PDF Completa</span>' +
+                    '</div>' +
+                    '<div class="arm-s5-actions">' +
+                      '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);box-shadow:0 4px 14px rgba(79,70,229,0.35);" data-mission-idx="' + idxG6Gemini + '">' +
+                        '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                      '</button>' +
+                      '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="arm-s5-btn-pdf arm-btn-open-pdf" style="color:#DB2777;border-color:#FBCFE8;text-decoration:none;" data-mission-idx="' + idxG6Gemini + '">' +
+                        '<i class="fas fa-file-pdf"></i> <span>Descargar Guía PDF Completa</span>' +
+                      '</a>' +
+                      '<a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;padding:9px 18px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
+                        '<i class="fas fa-external-link-alt"></i> <span>Abrir NotebookLM</span>' +
+                      '</a>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Dots para 6to
+            '<div class="arm-s5-carousel-dots">' +
+              '<span class="arm-s5-dot ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" title="Canva Arquero con IA"></span>' +
+              '<span class="arm-s5-dot ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" title="El Arquero Mecánico: Servo y Joystick"></span>' +
+              '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="IA con Gemini & NotebookLM"></span>' +
+            '</div>' +
+          '</div>';
+
+      } else {
 
       var idxSombrero = adventureMissions.findIndex(function(m){
         return (m.id === 's5-p1' || m.id === 'g1-p1') || (/sombrero|patricio/i.test(m.title || ''));
@@ -867,6 +1025,7 @@
             '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="Tarjeta Pop-Up 3D"></span>' +
           '</div>' +
         '</div>';
+      }
     }
 
     var bodyHtml = '';
@@ -1027,7 +1186,7 @@
                 '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                   '<i class="fas fa-play"></i> Iniciar Misión' +
                 '</button>' +
-                (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Abrir Canva</a>' : (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Abrir Canva</a>' : (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : ''))) +
+                (m.type === 'gemini_notebooks' ? '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;"><i class="fas fa-brain"></i> Abrir NotebookLM</a>' : (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Abrir Canva</a>' : (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : ''))) +
                 '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Abrir Modo Presentación">' +
                   '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
                 '</button>' +
@@ -1098,7 +1257,7 @@
               '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-play"></i> Iniciar' +
               '</button>' +
-              (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : '') +
+              (m.type === 'gemini_notebooks' ? '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;"><i class="fas fa-brain"></i> NotebookLM</a>' : (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Canva</a>' : (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : ''))) +
               '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
               '</button>' +
@@ -1804,19 +1963,26 @@
         };
       });
 
-      // Carrusel Spotlight para Sala de 5 (Sombrero, Varita Mágica y Tarjeta Pop-Up 3D)
+      // Carrusel Spotlight para Sala de 5, 1° Grado y 6° Grado
       var spotlightCarousel = container.querySelector('#arm-sala5-spotlight-carousel');
       if (spotlightCarousel) {
+        var isG6Student = student && (student.gradeId === 'grado6' || student.gradeId === '6to');
+        var isG1Student = student && (student.gradeId === 'grado1' || student.gradeId === '1ero');
+
         function setSpotlightSlide(newIdx) {
           if (newIdx < 0) newIdx = 2;
           if (newIdx > 2) newIdx = 0;
-          window.sala5SpotlightCurrentSlide = newIdx;
 
-          // Theme del card
-          var isG1Student = student && (student.gradeId === 'grado1' || student.gradeId === '1ero');
-          var slide1Theme = isG1Student ? 'theme-marcalibro' : 'theme-varita';
-          spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre', 'theme-marcalibro');
-          spotlightCarousel.classList.add(newIdx === 1 ? slide1Theme : (newIdx === 2 ? 'theme-madre' : 'theme-sombrero'));
+          if (isG6Student) {
+            window.grado6SpotlightCurrentSlide = newIdx;
+            spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre', 'theme-marcalibro', 'theme-canva', 'theme-servo', 'theme-gemini');
+            spotlightCarousel.classList.add(newIdx === 0 ? 'theme-canva' : (newIdx === 1 ? 'theme-servo' : 'theme-gemini'));
+          } else {
+            window.sala5SpotlightCurrentSlide = newIdx;
+            var slide1Theme = isG1Student ? 'theme-marcalibro' : 'theme-varita';
+            spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre', 'theme-marcalibro', 'theme-canva', 'theme-servo', 'theme-gemini');
+            spotlightCarousel.classList.add(newIdx === 1 ? slide1Theme : (newIdx === 2 ? 'theme-madre' : 'theme-sombrero'));
+          }
 
           // Slides
           spotlightCarousel.querySelectorAll('.arm-s5-slide').forEach(function(sl){
@@ -1850,7 +2016,8 @@
           prevBtn.onclick = function(e){
             e.stopPropagation();
             if (window.sounds) window.sounds.playClick();
-            setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) - 1);
+            var cur = isG6Student ? ((window.grado6SpotlightCurrentSlide !== undefined) ? window.grado6SpotlightCurrentSlide : 2) : (window.sala5SpotlightCurrentSlide || 0);
+            setSpotlightSlide(cur - 1);
           };
         }
 
@@ -1859,7 +2026,8 @@
           nextBtn.onclick = function(e){
             e.stopPropagation();
             if (window.sounds) window.sounds.playClick();
-            setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) + 1);
+            var cur = isG6Student ? ((window.grado6SpotlightCurrentSlide !== undefined) ? window.grado6SpotlightCurrentSlide : 2) : (window.sala5SpotlightCurrentSlide || 0);
+            setSpotlightSlide(cur + 1);
           };
         }
 
@@ -1882,10 +2050,11 @@
           touchEndX = e.changedTouches[0].screenX;
           var diff = touchStartX - touchEndX;
           if (Math.abs(diff) > 40) {
+            var cur = isG6Student ? ((window.grado6SpotlightCurrentSlide !== undefined) ? window.grado6SpotlightCurrentSlide : 2) : (window.sala5SpotlightCurrentSlide || 0);
             if (diff > 0) {
-              setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) + 1);
+              setSpotlightSlide(cur + 1);
             } else {
-              setSpotlightSlide((window.sala5SpotlightCurrentSlide || 0) - 1);
+              setSpotlightSlide(cur - 1);
             }
           }
         }, { passive: true });
@@ -1962,6 +2131,49 @@
             }
           };
         }
+
+        // 4. Previews Interactivos de 6° Grado
+        // 4a. Canva Arquero IA
+        var canvaG6Interactive = spotlightCarousel.querySelector('#arm-g6-canva-interactive');
+        if (canvaG6Interactive) {
+          canvaG6Interactive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-g6-glow-canva');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+              else if (window.sounds) window.sounds.playClick();
+            }
+          };
+        }
+
+        // 4b. Servo SG90 Arquero Mecánico
+        var servoG6Interactive = spotlightCarousel.querySelector('#arm-g6-servo-interactive');
+        if (servoG6Interactive) {
+          servoG6Interactive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-g6-glow-servo');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+              else if (window.sounds) window.sounds.playClick();
+            }
+          };
+        }
+
+        // 4c. Gemini & NotebookLM Ecosistema IA
+        var geminiG6Interactive = spotlightCarousel.querySelector('#arm-g6-gemini-interactive');
+        if (geminiG6Interactive) {
+          geminiG6Interactive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-g6-glow-gemini');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+              else if (window.sounds) window.sounds.playClick();
+            }
+          };
+        }
       }
     }
 
@@ -1977,15 +2189,13 @@
 
           if (gradeObj && Array.isArray(gradeObj.projects)) {
             matchingProj = gradeObj.projects.find(function(p){
-              return (projId && p.id === projId) ||
-                     (p.id === 'g6-p2' && (student.gradeId === 'grado6' || student.gradeId === '6to'));
+              return projId ? (p.id === projId) : (p.id === 'g6-p2' && (student.gradeId === 'grado6' || student.gradeId === '6to'));
             });
           }
           if (!matchingProj) {
             var advMissions = getAdventureMissionsForStudent(student);
             matchingProj = advMissions.find(function(m){
-              return (projId && m.id === projId) ||
-                     (m.id === 'g6-p2' && (student.gradeId === 'grado6' || student.gradeId === '6to'));
+              return projId ? (m.id === projId) : (m.id === 'g6-p2' && (student.gradeId === 'grado6' || student.gradeId === '6to'));
             });
           }
           if (!matchingProj && mkLibrary && mkLibrary[entryIdx]) {

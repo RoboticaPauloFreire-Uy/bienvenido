@@ -293,6 +293,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Explorador de Materiales de Estudio con IA (Google Gemini & NotebookLM)
+  const geminiCard = document.getElementById('g6-interactive-gemini-card');
+  if (geminiCard) {
+    const modes = [
+      { text: '<i class="fas fa-microphone"></i> 🎙️ Generando Podcast (Audio Overview)...', color: '#BE185D', scale: 1.15, rot: -3 },
+      { text: '<i class="fas fa-video"></i> 📽️ Creando Guión de Video Educativo...', color: '#0E7490', scale: 1.15, rot: 3 },
+      { text: '<i class="fas fa-tv"></i> 📊 Estructurando Diapositivas Canva...', color: '#0369A1', scale: 1.15, rot: -2 },
+      { text: '<i class="fas fa-question-circle"></i> 📑 Formulando Flashcards & FAQs...', color: '#4338CA', scale: 1.15, rot: 2 },
+      { text: '<i class="fas fa-file-pdf"></i> ✅ ¡Guía PDF Unificada Lista!', color: '#047857', scale: 1.2, rot: 0 }
+    ];
+    let mIdx = 0;
+    geminiCard.addEventListener('click', () => {
+      const mode = modes[mIdx];
+      mIdx = (mIdx + 1) % modes.length;
+      const badge = document.getElementById('g6-live-gemini-badge');
+      if (badge) {
+        badge.style.opacity = '1';
+        badge.innerHTML = mode.text;
+        badge.style.borderColor = mode.color;
+        badge.style.color = mode.color;
+        badge.style.transform = `translate(-50%,-50%) scale(${mode.scale}) rotate(${mode.rot}deg)`;
+      }
+      if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+      else if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    });
+  }
+
   const bookmarkCard = document.getElementById('g1-interactive-bookmark-card');
   if (bookmarkCard) {
     bookmarkCard.addEventListener('click', () => {
@@ -615,6 +642,73 @@ function renderProjectsSectionHtml(grade) {
           </div>
         </div>
       </section>
+
+      <!-- NIVEL 3: IA con Gemini & NotebookLM: Creación de Materiales de Estudio -->
+      <section class="sala5-hero-showcase" style="border-top:4px solid #4F46E5;background:linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 40%, #FCE7F3 100%);margin-top:24px;">
+        <div class="s5-showcase-header">
+          <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
+          <div class="s5-header-titles">
+            <span class="s5-dept-tag" style="background:rgba(79,70,229,0.15);color:#4F46E5;border:1px solid rgba(79,70,229,0.3);"><i class="fas fa-brain"></i> Inteligencia Artificial Educativa & Metodología de Estudio</span>
+            <h2 class="s5-main-title" style="color:#3730A3;">🧠 IA con Gemini & NotebookLM: Creación de Materiales de Estudio 🎙️📽️📊📑</h2>
+            <p class="s5-subtitle" style="color:#312E81;">Nivel 3 para 6° Grado · ¡Aprendé a transformar tus libros escolares y apuntes en podcasts, guiones de video, presentaciones y guías de autoevaluación con IA sin alucinaciones!</p>
+          </div>
+        </div>
+
+        <div class="s5-interactive-stage">
+          <div class="s5-stage-left">
+            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-gemini-card" role="button" tabindex="0" title="¡Tocá para probar las opciones de generación con IA!">
+              <img src="img/proyectos/gemini_notebooks_cover.svg" alt="Google Gemini & NotebookLM Ecosistema" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
+              <div class="arm-s5-led-glow" id="g6-live-gemini-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:900;color:#4F46E5;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 20px #818CF8;background:rgba(255,255,255,0.96);padding:8px 16px;border-radius:20px;border:2px solid #4F46E5;white-space:nowrap;box-shadow:0 4px 15px rgba(79,70,229,0.25);"><i class="fas fa-sparkles"></i> ¡Generar con IA!</div>
+              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #4F46E5 0%, #EC4899 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para generar materiales!</div>
+            </div>
+          </div>
+
+          <div class="s5-stage-right">
+            <div class="s5-intro-bubble">
+              <div class="s5-bubble-badge" style="background:#E0E7FF;color:#3730A3;"><i class="fas fa-sparkles"></i> ¿Cómo funciona el estudio inteligente con fuentes verificadas (Grounding)?</div>
+              <p>
+                A diferencia de los chatbots convencionales que pueden inventar datos, <strong>Google NotebookLM ancla el modelo Gemini 1.5 Pro únicamente a tus documentos de clase</strong> (capítulos en PDF, apuntes y lecturas). A partir de esas fuentes seguras, con un solo clic podés crear <strong>podcasts de audio con dos locutores sintetizados (Audio Overview)</strong> que debaten los temas centrales, <strong>guiones para videos educativos</strong>, <strong>esquemas para diapositivas en Canva</strong> y <strong>cuestionarios tipo FAQ con flashcards de autoevaluación</strong> donde cada respuesta incluye una cita exacta al texto original.
+              </p>
+            </div>
+
+            <!-- Materiales clave visuales -->
+            <div class="s5-materials-grid">
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FDF2F8;color:#BE185D;"><i class="fas fa-microphone"></i></div>
+                <div class="s5-mat-text"><strong>Podcasts (Audio Overview)</strong><span>2 locutores sintéticos</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#ECFEFF;color:#0E7490;"><i class="fas fa-video"></i></div>
+                <div class="s5-mat-text"><strong>Guiones de Video</strong><span>Hook, escenas & remate</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-tv"></i></div>
+                <div class="s5-mat-text"><strong>Diapositivas Canva</strong><span>Estructura visual limpia</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#EEF2FF;color:#4338CA;"><i class="fas fa-file-pdf"></i></div>
+                <div class="s5-mat-text"><strong>Guía PDF & Flashcards</strong><span>Active recall sin fallas</span></div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="s5-actions-row">
+              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g6-p3" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);box-shadow:0 4px 14px rgba(79,70,229,0.35);">
+                <i class="fas fa-folder-open"></i> Ver Ficha y Pasos Oficiales
+              </button>
+              <a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="btn s5-btn-action s5-btn-pdf" style="color:#DB2777;border-color:#FBCFE8;background:#FFF;">
+                <i class="fas fa-file-pdf"></i> Descargar Guía Completa PDF
+              </a>
+              <a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action" style="color:#4F46E5;border:1.5px solid #C7D2FE;background:#EEF2FF;">
+                <i class="fas fa-external-link-alt"></i> Abrir NotebookLM
+              </a>
+              <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
+                <i class="fas fa-compass"></i> Ruta de Aventuras
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     `;
   }
 
@@ -715,6 +809,9 @@ function openProjectModal(proj, grade) {
 
   // Determinar pestañas disponibles
   const tabs = [];
+  if (proj.type === 'gemini_notebooks' || proj.id === 'g6-p3' || /gemini|notebooklm/i.test(proj.title || '')) {
+    tabs.push({ id: 'gemini', icon: '🧠', label: 'Ecosistema IA & Opciones' });
+  }
   if (proj.instructions && proj.instructions.length > 0) {
     tabs.push({ id: 'instructions', icon: '🛠️', label: `Pasos de Armado (${proj.instructions.length})` });
   }
@@ -753,6 +850,81 @@ function openProjectModal(proj, grade) {
 
   // Generar contenido de cada panel
   let panelsHtml = '';
+
+  // -1. Ecosistema IA & Opciones (Gemini & NotebookLM)
+  if (proj.type === 'gemini_notebooks' || proj.id === 'g6-p3' || /gemini|notebooklm/i.test(proj.title || '')) {
+    panelsHtml += `
+      <div class="pm-panel" id="pm-panel-gemini" style="${activeTabId === 'gemini' ? '' : 'display:none;'}">
+        <div style="background:linear-gradient(135deg, #1E1B4B 0%, #4338CA 100%);color:#FFF;padding:18px 22px;border-radius:14px;margin-bottom:18px;">
+          <h4 style="margin:0 0 6px;font-size:1.15rem;display:flex;align-items:center;gap:8px;"><i class="fas fa-brain" style="color:#A5B4FC;"></i> Cómo Funciona la IA con Fuentes Verificadas (Grounding)</h4>
+          <p style="margin:0;font-size:0.86rem;color:#C7D2FE;line-height:1.5;">Subí tus apuntes escolares, capítulos de libros y guías de clase a Google NotebookLM. Gemini 1.5 Pro leerá únicamente esos documentos para generar 4 materiales de estudio interactivos sin inventar información.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:18px;">
+          <!-- 1. Podcast -->
+          <div style="background:#FFF;border:1.5px solid #FBCFE8;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:#FDF2F8;color:#BE185D;display:flex;align-items:center;justify-content:center;font-size:1.1rem;"><i class="fas fa-microphone"></i></div>
+              <div>
+                <strong style="color:#831843;display:block;">1. Generador de Podcasts (Audio Overview)</strong>
+                <span style="font-size:0.75rem;color:#9D174D;">2 locutores sintéticos de IA</span>
+              </div>
+            </div>
+            <p style="font-size:0.82rem;color:#475569;margin-bottom:10px;line-height:1.45;">NotebookLM analiza tus notas y crea una conversación de radio fluida entre dos voces sintetizadas que debaten, explican con metáforas y resumen los temas más difíciles para estudiar mientras descansás la vista.</p>
+            <div style="background:#FDF2F8;padding:8px 12px;border-radius:8px;font-size:0.76rem;color:#831843;"><strong>Uso clave:</strong> Repasar antes de una prueba auditivamente.</div>
+          </div>
+
+          <!-- 2. Guión de Video -->
+          <div style="background:#FFF;border:1.5px solid #BAE6FD;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:#ECFEFF;color:#0E7490;display:flex;align-items:center;justify-content:center;font-size:1.1rem;"><i class="fas fa-video"></i></div>
+              <div>
+                <strong style="color:#155E75;display:block;">2. Guiones para Videos Educativos</strong>
+                <span style="font-size:0.75rem;color:#0891B2;">Estructura Hook ➔ Intro ➔ Core ➔ Outro</span>
+              </div>
+            </div>
+            <p style="font-size:0.82rem;color:#475569;margin-bottom:10px;line-height:1.45;">Crea guiones audiovisuales con gancho inicial, división por escenas, indicaciones de cámara y tono narrativo atractivo para grabar videos explicativos en clase o en YouTube.</p>
+            <div style="background:#ECFEFF;padding:8px 12px;border-radius:8px;font-size:0.76rem;color:#155E75;"><strong>Uso clave:</strong> Proyectos audiovisuales escolares y ferias de ciencias.</div>
+          </div>
+
+          <!-- 3. Diapositivas Canva -->
+          <div style="background:#FFF;border:1.5px solid #C7D2FE;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:#EEF2FF;color:#4338CA;display:flex;align-items:center;justify-content:center;font-size:1.1rem;"><i class="fas fa-tv"></i></div>
+              <div>
+                <strong style="color:#312E81;display:block;">3. Esquemas para Presentaciones</strong>
+                <span style="font-size:0.75rem;color:#4F46E5;">Diseño en Canva & Google Slides</span>
+              </div>
+            </div>
+            <p style="font-size:0.82rem;color:#475569;margin-bottom:10px;line-height:1.45;">La IA organiza la información en títulos breves, 3 a 5 viñetas de impacto visual por filmina y sugerencias de iconos y gráficos para no sobrecargar las diapositivas.</p>
+            <div style="background:#EEF2FF;padding:8px 12px;border-radius:8px;font-size:0.76rem;color:#312E81;"><strong>Uso clave:</strong> Exposiciones orales limpias y profesionales.</div>
+          </div>
+
+          <!-- 4. Guía PDF & Flashcards -->
+          <div style="background:#FFF;border:1.5px solid #A7F3D0;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:#ECFDF5;color:#047857;display:flex;align-items:center;justify-content:center;font-size:1.1rem;"><i class="fas fa-question-circle"></i></div>
+              <div>
+                <strong style="color:#064E3B;display:block;">4. Fichas Flashcards & Quizzes FAQ</strong>
+                <span style="font-size:0.75rem;color:#059669;">Active recall con citas exactas</span>
+              </div>
+            </div>
+            <p style="font-size:0.82rem;color:#475569;margin-bottom:10px;line-height:1.45;">Genera tarjetas de pregunta-respuesta y preguntas de opción múltiple para autoevaluarse. Cada respuesta incluye un botón de cita que resalta el párrafo original en tus apuntes.</p>
+            <div style="background:#ECFDF5;padding:8px 12px;border-radius:8px;font-size:0.76rem;color:#064E3B;"><strong>Uso clave:</strong> Autoevaluación previa a exámenes sin dudas.</div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:14px;background:#F8FAFC;border-radius:12px;border:1px solid #E2E8F0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="btn btn-primary" style="background:linear-gradient(135deg, #EC4899 0%, #BE185D 100%);color:#FFF;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.9rem;border-radius:8px;box-shadow:0 4px 12px rgba(236,72,153,0.3);">
+            <i class="fas fa-file-pdf"></i> Descargar Guía Didáctica Oficial Completa en PDF
+          </a>
+          <a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="btn" style="background:#EEF2FF;color:#4F46E5;border:1.5px solid #C7D2FE;padding:10px 20px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:0.9rem;border-radius:8px;">
+            <i class="fas fa-external-link-alt"></i> Abrir Google NotebookLM
+          </a>
+        </div>
+      </div>
+    `;
+  }
 
   // 0. Pasos de Armado (Instrucciones)
   if (proj.instructions && proj.instructions.length > 0) {
