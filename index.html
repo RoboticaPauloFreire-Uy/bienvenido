@@ -51,9 +51,13 @@
           <i class="fas fa-newspaper"></i>
           <span>Noticias</span>
         </a>
-        <a href="#actividades" class="topbar-nav-link" data-view="actividades" onclick="window.switchView('actividades'); return false;">
-          <i class="fas fa-puzzle-piece"></i>
-          <span>Actividades</span>
+        <a href="#clase" class="topbar-nav-link" data-view="clase" onclick="window.switchView('clase'); return false;">
+          <i class="fas fa-chalkboard-teacher"></i>
+          <span>Clase</span>
+        </a>
+        <a href="#casa" class="topbar-nav-link" data-view="casa" onclick="window.switchView('casa'); return false;">
+          <i class="fas fa-laptop-house"></i>
+          <span>Casa</span>
         </a>
         <a href="#agenda" class="topbar-nav-link" data-view="agenda" onclick="window.switchView('agenda'); return false;">
           <i class="fas fa-calendar-day"></i>
@@ -131,11 +135,20 @@
               <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
 
-            <a href="#actividades" class="hn-shortcut-card" onclick="window.switchView('actividades'); return false;">
-              <div class="hsc-icon" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-puzzle-piece"></i></div>
+            <a href="#clase" class="hn-shortcut-card" onclick="window.switchView('clase'); return false;">
+              <div class="hsc-icon" style="background:#E3F2FD;color:#1565C0;"><i class="fas fa-chalkboard-teacher"></i></div>
               <div class="hsc-text">
-                <span class="hsc-title">Actividades</span>
-                <span class="hsc-desc">En clase y para hacer en casa</span>
+                <span class="hsc-title">Clase</span>
+                <span class="hsc-desc">Proyectos y desafíos del taller</span>
+              </div>
+              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a href="#casa" class="hn-shortcut-card" onclick="window.switchView('casa'); return false;">
+              <div class="hsc-icon" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-laptop-house"></i></div>
+              <div class="hsc-text">
+                <span class="hsc-title">Casa</span>
+                <span class="hsc-desc">Simuladores, retos y en familia</span>
               </div>
               <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
@@ -180,65 +193,50 @@
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 3: ACTIVIDADES
+           VISTA 3: CLASE (EN EL AULA)
       ══════════════════════════════════════════ -->
-      <div id="view-actividades" class="hn-view">
-        <section class="hn-section" id="actividades" style="margin-top:0;">
+      <div id="view-clase" class="hn-view">
+        <section class="hn-section" id="clase" style="margin-top:0;">
           <div class="hn-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-puzzle-piece"></i> Actividades</span>
-              <h2 class="hn-section-title">Actividades del Taller</h2>
-              <p class="hn-section-sub">Lo que trabajamos en clase y las propuestas para seguir creando en casa.</p>
+              <span class="hn-kicker"><i class="fas fa-chalkboard-teacher"></i> En el aula</span>
+              <h2 class="hn-section-title">Actividades en Clase</h2>
+              <p class="hn-section-sub">Proyectos prácticos, programación y robótica que construimos en el taller escolar.</p>
             </div>
             <div class="hn-controls">
-              <label class="sr-only" for="hn-act-grade">Filtrar actividades por grado</label>
-              <select id="hn-act-grade" class="hn-select"></select>
+              <label class="sr-only" for="hn-clase-grade">Filtrar por grado</label>
+              <select id="hn-clase-grade" class="hn-select"></select>
             </div>
           </div>
 
-          <!-- Selector de sección -->
-          <div class="hn-seg" role="tablist" aria-label="Sección de actividades">
-            <button type="button" class="hn-seg-btn active" data-seccion="clase" role="tab" aria-selected="true" aria-controls="act-clase">
-              <span class="hn-seg-emoji">🏫</span>
-              <span class="hn-seg-txt"><strong>En clase</strong><small>Proyectos del taller</small></span>
-              <span class="hn-seg-count" id="hn-count-clase">0</span>
-            </button>
-            <button type="button" class="hn-seg-btn" data-seccion="casa" role="tab" aria-selected="false" aria-controls="act-casa">
-              <span class="hn-seg-emoji">🏠</span>
-              <span class="hn-seg-txt"><strong>En casa</strong><small>Para hacer solo o en familia</small></span>
-              <span class="hn-seg-count" id="hn-count-casa">0</span>
-            </button>
-          </div>
-
-          <!-- SECCIÓN: EN CLASE -->
-          <div id="act-clase" class="hn-act-panel active" role="tabpanel">
-            <div class="hn-act-panel-head clase">
-              <i class="fas fa-chalkboard-teacher"></i>
-              <div>
-                <h3>Actividades en clase</h3>
-                <p>Proyectos que estamos construyendo y programando en el taller con cada grado.</p>
-              </div>
-            </div>
-            <div class="hn-act-grid" id="hn-act-grid-clase"></div>
-          </div>
-
-          <!-- SECCIÓN: EN CASA -->
-          <div id="act-casa" class="hn-act-panel" role="tabpanel">
-            <div class="hn-act-panel-head casa">
-              <i class="fas fa-house-user"></i>
-              <div>
-                <h3>Actividades en casa</h3>
-                <p>Fichas, simuladores y desafíos para seguir aprendiendo desde el hogar.</p>
-              </div>
-            </div>
-            <div class="hn-tabs hn-casa-filters" id="hn-casa-filters" role="toolbar" aria-label="Tipo de actividad en casa"></div>
-            <div class="hn-act-grid" id="hn-act-grid-casa"></div>
-          </div>
+          <div class="hn-act-grid" id="hn-act-grid-clase"></div>
         </section>
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 4: AGENDA
+           VISTA 4: CASA (DESDE EL HOGAR)
+      ══════════════════════════════════════════ -->
+      <div id="view-casa" class="hn-view">
+        <section class="hn-section" id="casa" style="margin-top:0;">
+          <div class="hn-section-head">
+            <div>
+              <span class="hn-kicker"><i class="fas fa-laptop-house"></i> Desde el hogar</span>
+              <h2 class="hn-section-title">Actividades en Casa</h2>
+              <p class="hn-section-sub">Fichas descargables, simuladores y desafíos para resolver en familia o de forma autónoma.</p>
+            </div>
+            <div class="hn-controls">
+              <label class="sr-only" for="hn-casa-grade">Filtrar por grado</label>
+              <select id="hn-casa-grade" class="hn-select"></select>
+            </div>
+          </div>
+
+          <div class="hn-tabs hn-casa-filters" id="hn-casa-filters" role="toolbar" aria-label="Tipo de actividad en casa"></div>
+          <div class="hn-act-grid" id="hn-act-grid-casa"></div>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           VISTA 5: AGENDA
       ══════════════════════════════════════════ -->
       <div id="view-agenda" class="hn-view">
         <section class="hn-section" id="agenda" style="margin-top:0;">

@@ -261,35 +261,13 @@
     return filtroGradoAct === 'todos' || gr.indexOf('todos') > -1 || gr.indexOf(filtroGradoAct) > -1;
   }
 
-  function mostrarSeccionAct(sec, actualizarHash) {
-    seccionAct = sec === 'casa' ? 'casa' : 'clase';
-    document.querySelectorAll('.hn-act-panel').forEach(function (p) {
-      p.classList.toggle('active', p.id === 'act-' + seccionAct);
-    });
-    document.querySelectorAll('.hn-seg-btn').forEach(function (b) {
-      var on = b.dataset.seccion === seccionAct;
-      b.classList.toggle('active', on);
-      b.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-    if (actualizarHash !== false && history.replaceState) {
-      history.replaceState(null, '', '#actividades-' + seccionAct);
-    }
-  }
-
   function renderFiltrosActividades() {
-    // Selector de sección (En clase / En casa)
-    document.querySelectorAll('.hn-seg-btn').forEach(function (b) {
-      if (b.dataset.bound) return;
-      b.dataset.bound = '1';
-      b.addEventListener('click', function () { mostrarSeccionAct(b.dataset.seccion); });
-    });
-
-    // Filtro interno de "En casa"
+    // Filtro interno de "En casa" (Todas / Individual / En familia)
     var cont = document.getElementById('hn-casa-filters');
     if (cont) {
       var opciones = [
-        { id: 'todas', nombre: 'Todas', icono: 'fas fa-th-large' },
-        { id: 'casa', nombre: 'Individual', icono: 'fas fa-user' },
+        { id: 'todas', nombre: 'Todas las de casa', icono: 'fas fa-th-large' },
+        { id: 'casa', nombre: 'Solo alumno', icono: 'fas fa-user' },
         { id: 'familia', nombre: 'En familia', icono: 'fas fa-heart' }
       ];
       cont.innerHTML = opciones.map(function (o) {
@@ -305,15 +283,23 @@
       });
     }
 
-    var sel = document.getElementById('hn-act-grade');
-    if (sel && !sel.options.length) {
-      sel.innerHTML = '<option value="todos">Todos los grados</option>' +
-        GRADOS.map(function (g) { return '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>'; }).join('');
-      sel.addEventListener('change', function () {
-        filtroGradoAct = sel.value;
-        renderActividades();
-      });
-    }
+    // Selectores de grado sincronizados en ambas vistas (Clase y Casa)
+    ['hn-clase-grade', 'hn-casa-grade'].forEach(function (id) {
+      var sel = document.getElementById(id);
+      if (sel && !sel.options.length) {
+        sel.innerHTML = '<option value="todos">Todos los grados</option>' +
+          GRADOS.map(function (g) { return '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>'; }).join('');
+        sel.value = filtroGradoAct;
+        sel.addEventListener('change', function () {
+          filtroGradoAct = sel.value;
+          ['hn-clase-grade', 'hn-casa-grade'].forEach(function (otherId) {
+            var other = document.getElementById(otherId);
+            if (other) other.value = filtroGradoAct;
+          });
+          renderActividades();
+        });
+      }
+    });
   }
 
   function renderActividades() {
@@ -325,12 +311,6 @@
 
     renderGridActividades('hn-act-grid-clase', clase, '🏫', 'No hay actividades de clase para este grado.');
     renderGridActividades('hn-act-grid-casa', casa, '🏠', 'No hay actividades para hacer en casa con ese filtro.');
-
-    // Contadores en el selector (respetan el filtro de grado)
-    var nClase = document.getElementById('hn-count-clase');
-    var nCasa = document.getElementById('hn-count-casa');
-    if (nClase) nClase.textContent = clase.length;
-    if (nCasa) nCasa.textContent = todas.filter(function (a) { return seccionDe(a) === 'casa' && pasaGrado(a); }).length;
   }
 
   function renderGridActividades(gridId, actividades, emoji, vacio) {
@@ -536,9 +516,11 @@
   }
 
   /* ───────────── Vistas por Pestañas (Diferentes DIVs) ───────────── */
-  var VALID_VIEWS = ['inicio', 'noticias', 'actividades', 'agenda'];
+  var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'agenda'];
 
   function switchView(viewName, updateHash) {
+    // Compatibilidad si se solicita "actividades"
+    if (viewName === 'actividades') viewName = 'clase';
     if (VALID_VIEWS.indexOf(viewName) === -1) viewName = 'inicio';
 
     // 1. Mostrar únicamente el DIV correspondiente
@@ -573,13 +555,13 @@
   function handleHash() {
     var raw = location.hash.replace(/^#/, '');
     if (!raw) return;
-    var sub = raw.match(/^actividades-(clase|casa)$/);
     if (/^noticia-/.test(raw)) {
       switchView('noticias', false);
       abrirNoticia(raw.replace(/^noticia-/, ''), false);
-    } else if (sub) {
-      switchView('actividades', false);
-      mostrarSeccionAct(sub[1], false);
+    } else if (raw === 'clase' || raw === 'actividades-clase' || raw === 'actividades') {
+      switchView('clase', false);
+    } else if (raw === 'casa' || raw === 'actividades-casa') {
+      switchView('casa', false);
     } else if (VALID_VIEWS.indexOf(raw) !== -1) {
       switchView(raw, false);
     }
@@ -626,8 +608,18 @@
     var more = document.getElementById('hn-news-more');
     if (more) more.addEventListener('click', function () { visibles += POR_PAGINA; renderNoticias(); });
 
-    // Si el alumno inicia/cierra sesión, se reordenan las actividades
-    window.addEventListener('student_session_changed', renderActividades);
+    // Si el alumno inicia/cierra sesión, se reordenan las actividades y sincronizan selects
+    window.addEventListener('student_session_changed', function () {
+      var st = alumno();
+      if (st && st.gradeId) {
+        filtroGradoAct = st.gradeId;
+        ['hn-clase-grade', 'hn-casa-grade'].forEach(function (id) {
+          var sel = document.getElementById(id);
+          if (sel) sel.value = st.gradeId;
+        });
+      }
+      renderActividades();
+    });
 
     if (window.renderGDriveDashboard && alumno()) {
       window.renderGDriveDashboard('student-drive-dashboard-container');
@@ -639,5 +631,5 @@
 
   window.openNoticia = abrirNoticia;
   window.switchView = switchView;
-  window.showActividades = function (sec) { switchView('actividades', false); mostrarSeccionAct(sec); };
+  window.showActividades = function (sec) { switchView(sec === 'casa' ? 'casa' : 'clase'); };
 })();
