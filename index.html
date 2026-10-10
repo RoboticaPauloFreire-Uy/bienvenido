@@ -43,25 +43,25 @@
 
       <!-- Menú Horizontal Principal -->
       <nav class="topbar-nav" id="topbar-nav">
-        <a href="#inicio" class="topbar-nav-link active" data-section="inicio">
+        <a href="#inicio" class="topbar-nav-link active" data-view="inicio" onclick="window.switchView('inicio'); return false;">
           <i class="fas fa-home"></i>
           <span>Inicio</span>
         </a>
-        <a href="#noticias" class="topbar-nav-link" data-section="noticias">
+        <a href="#noticias" class="topbar-nav-link" data-view="noticias" onclick="window.switchView('noticias'); return false;">
           <i class="fas fa-newspaper"></i>
           <span>Noticias</span>
         </a>
-        <a href="#actividades" class="topbar-nav-link" data-section="actividades">
+        <a href="#actividades" class="topbar-nav-link" data-view="actividades" onclick="window.switchView('actividades'); return false;">
           <i class="fas fa-puzzle-piece"></i>
           <span>Actividades</span>
         </a>
-        <a href="#agenda" class="topbar-nav-link" data-section="agenda">
+        <a href="#agenda" class="topbar-nav-link" data-view="agenda" onclick="window.switchView('agenda'); return false;">
           <i class="fas fa-calendar-day"></i>
           <span>Agenda</span>
         </a>
 
         <!-- Mi Carpeta Drive (Visible al iniciar sesión) -->
-        <a href="#student-drive-dashboard-container" class="nav-drive-link" style="display:none;">
+        <a href="#student-drive-dashboard-container" class="nav-drive-link" style="display:none;" onclick="const d = document.getElementById('student-drive-dashboard-container'); if(d) d.scrollIntoView({behavior:'smooth'});">
           <i class="fab fa-google-drive"></i>
           <span>Mi Carpeta Drive</span>
         </a>
@@ -89,110 +89,159 @@
       <div id="student-drive-dashboard-container"></div>
 
       <!-- ══════════════════════════════════════════
-           CABECERA TIPO DIARIO + AVISOS
+           VISTA 1: INICIO (PORTADA)
       ══════════════════════════════════════════ -->
-      <section id="inicio">
-        <div class="hn-masthead">
-          <div class="hn-mh-brand">
-            <img src="img/escudo_paulo_freire.png" alt="">
+      <div id="view-inicio" class="hn-view active">
+        <section id="inicio">
+          <div class="hn-masthead">
+            <div class="hn-mh-brand">
+              <img src="img/escudo_paulo_freire.png" alt="">
+              <div>
+                <h1 class="hn-mh-title">El Diario del Taller</h1>
+                <div class="hn-mh-tag">Robótica, programación y cultura maker · Sala de 5 a 6° Grado</div>
+              </div>
+            </div>
+            <div class="hn-mh-right">
+              <div class="hn-mh-date" id="hn-masthead-date"></div>
+              <div class="hn-mh-stats" id="hn-masthead-stats"></div>
+            </div>
+          </div>
+
+          <div class="hn-ticker" id="hn-ticker" aria-label="Avisos">
+            <div class="hn-ticker-label"><span class="dot"></span><span class="txt">Último momento</span></div>
+            <div class="hn-ticker-viewport">
+              <div class="hn-ticker-track" id="hn-ticker-track"></div>
+            </div>
+          </div>
+
+          <!-- Noticia destacada + lo último -->
+          <div class="hn-featured">
+            <div id="hn-featured-main"></div>
+            <aside class="hn-featured-side" id="hn-featured-side"></aside>
+          </div>
+
+          <!-- Bloque de accesos directos a las demás secciones -->
+          <div class="hn-home-shortcuts">
+            <a href="#noticias" class="hn-shortcut-card" onclick="window.switchView('noticias'); return false;">
+              <div class="hsc-icon"><i class="fas fa-newspaper"></i></div>
+              <div class="hsc-text">
+                <span class="hsc-title">Ver todas las Noticias</span>
+                <span class="hsc-desc">Proyectos, desafíos y novedades de los alumnos</span>
+              </div>
+              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a href="#actividades" class="hn-shortcut-card" onclick="window.switchView('actividades'); return false;">
+              <div class="hsc-icon" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-puzzle-piece"></i></div>
+              <div class="hsc-text">
+                <span class="hsc-title">Actividades y Retos</span>
+                <span class="hsc-desc">Fichas para descargar, simuladores y propuestas</span>
+              </div>
+              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a href="#agenda" class="hn-shortcut-card" onclick="window.switchView('agenda'); return false;">
+              <div class="hsc-icon" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-calendar-day"></i></div>
+              <div class="hsc-text">
+                <span class="hsc-title">Agenda y Fechas</span>
+                <span class="hsc-desc">Muestras, entregas y eventos del taller</span>
+              </div>
+              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           VISTA 2: NOTICIAS
+      ══════════════════════════════════════════ -->
+      <div id="view-noticias" class="hn-view">
+        <section class="hn-section" id="noticias" style="margin-top:0;">
+          <div class="hn-section-head">
             <div>
-              <h1 class="hn-mh-title">El Diario del Taller</h1>
-              <div class="hn-mh-tag">Robótica, programación y cultura maker · Sala de 5 a 6° Grado</div>
+              <span class="hn-kicker"><i class="fas fa-newspaper"></i> Noticias</span>
+              <h2 class="hn-section-title">Lo que pasa en el Taller</h2>
+              <p class="hn-section-sub">Proyectos, eventos y novedades de todos los grados.</p>
+            </div>
+            <div class="hn-controls">
+              <label class="sr-only" for="hn-news-grade">Filtrar noticias por grado</label>
+              <select id="hn-news-grade" class="hn-select"></select>
             </div>
           </div>
-          <div class="hn-mh-right">
-            <div class="hn-mh-date" id="hn-masthead-date"></div>
-            <div class="hn-mh-stats" id="hn-masthead-stats"></div>
-          </div>
-        </div>
 
-        <div class="hn-ticker" id="hn-ticker" aria-label="Avisos">
-          <div class="hn-ticker-label"><span class="dot"></span><span class="txt">Último momento</span></div>
-          <div class="hn-ticker-viewport">
-            <div class="hn-ticker-track" id="hn-ticker-track"></div>
+          <div class="hn-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
+          <div class="hn-news-grid" id="hn-news-grid"></div>
+          <div class="hn-more-wrap">
+            <button type="button" class="hn-more" id="hn-news-more" style="display:none;">
+              <i class="fas fa-plus"></i> Ver más noticias
+            </button>
           </div>
-        </div>
-
-        <!-- Noticia destacada + lo último -->
-        <div class="hn-featured">
-          <div id="hn-featured-main"></div>
-          <aside class="hn-featured-side" id="hn-featured-side"></aside>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <!-- ══════════════════════════════════════════
-           NOTICIAS
+           VISTA 3: ACTIVIDADES
       ══════════════════════════════════════════ -->
-      <section class="hn-section" id="noticias">
-        <div class="hn-section-head">
-          <div>
-            <span class="hn-kicker"><i class="fas fa-newspaper"></i> Noticias</span>
-            <h2 class="hn-section-title">Lo que pasa en el Taller</h2>
-            <p class="hn-section-sub">Proyectos, eventos y novedades de todos los grados.</p>
-          </div>
-          <div class="hn-controls">
-            <label class="sr-only" for="hn-news-grade">Filtrar noticias por grado</label>
-            <select id="hn-news-grade" class="hn-select"></select>
-          </div>
-        </div>
-
-        <div class="hn-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
-        <div class="hn-news-grid" id="hn-news-grid"></div>
-        <div class="hn-more-wrap">
-          <button type="button" class="hn-more" id="hn-news-more" style="display:none;">
-            <i class="fas fa-plus"></i> Ver más noticias
-          </button>
-        </div>
-      </section>
-
-      <!-- ══════════════════════════════════════════
-           ACTIVIDADES + AGENDA
-      ══════════════════════════════════════════ -->
-      <section class="hn-section" id="actividades">
-        <div class="hn-section-head">
-          <div>
-            <span class="hn-kicker"><i class="fas fa-puzzle-piece"></i> Actividades</span>
-            <h2 class="hn-section-title">Para hacer en casa, en familia y en el taller</h2>
-            <p class="hn-section-sub">Propuestas vigentes, fichas para descargar y herramientas para seguir creando.</p>
-          </div>
-        </div>
-
-        <div class="hn-two-col">
-          <div>
-            <div class="hn-act-toolbar">
-              <div class="hn-tabs" id="hn-act-tabs" role="tablist" aria-label="Tipo de actividad"></div>
-              <label class="sr-only" for="hn-act-grade">Filtrar actividades por grado</label>
-              <select id="hn-act-grade" class="hn-select"></select>
+      <div id="view-actividades" class="hn-view">
+        <section class="hn-section" id="actividades" style="margin-top:0;">
+          <div class="hn-section-head">
+            <div>
+              <span class="hn-kicker"><i class="fas fa-puzzle-piece"></i> Actividades</span>
+              <h2 class="hn-section-title">Para hacer en casa, en familia y en el taller</h2>
+              <p class="hn-section-sub">Propuestas vigentes, fichas para descargar y herramientas para seguir creando.</p>
             </div>
-            <div class="hn-act-grid" id="hn-act-grid"></div>
           </div>
 
-          <aside class="hn-aside">
-            <div class="hn-box hn-section" id="agenda" style="margin-top:0;">
-              <div class="hn-box-title"><i class="fas fa-calendar-day"></i> Agenda</div>
+          <div class="hn-act-toolbar">
+            <div class="hn-tabs" id="hn-act-tabs" role="tablist" aria-label="Tipo de actividad"></div>
+            <label class="sr-only" for="hn-act-grade">Filtrar actividades por grado</label>
+            <select id="hn-act-grade" class="hn-select"></select>
+          </div>
+          <div class="hn-act-grid" id="hn-act-grid"></div>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           VISTA 4: AGENDA
+      ══════════════════════════════════════════ -->
+      <div id="view-agenda" class="hn-view">
+        <section class="hn-section" id="agenda" style="margin-top:0;">
+          <div class="hn-section-head">
+            <div>
+              <span class="hn-kicker"><i class="fas fa-calendar-day"></i> Agenda</span>
+              <h2 class="hn-section-title">Próximas Fechas del Taller</h2>
+              <p class="hn-section-sub">Muestras, entregas de proyectos, semanas especiales y ferias.</p>
+            </div>
+          </div>
+
+          <div class="hn-agenda-full-layout">
+            <div class="hn-box hn-agenda-main-box">
+              <div class="hn-box-title"><i class="fas fa-calendar-alt"></i> Próximos Eventos Escolares</div>
               <ul class="hn-agenda-list" id="hn-agenda-list"></ul>
             </div>
 
-            <div class="hn-box hn-login-box">
-              <div class="hn-box-title"><i class="fas fa-user-astronaut"></i> ¿Sos alumno?</div>
-              <p>Ingresá para ver tu carpeta de Drive con tus proyectos y las actividades de tu grado primero.</p>
-              <button type="button" class="hn-login-btn" onclick="if(window.openLoginModal) window.openLoginModal();">
-                <i class="fas fa-user-circle"></i> Ingreso Alumnos
-              </button>
-            </div>
-
-            <div class="hn-box">
-              <div class="hn-box-title"><i class="fas fa-rocket"></i> Accesos rápidos</div>
-              <div class="hn-quick">
-                <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer"><span>⚡</span>MakeCode</a>
-                <a href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener noreferrer"><span>🐱</span>Scratch</a>
-                <a href="https://code.org/minecraft" target="_blank" rel="noopener noreferrer"><span>⛏️</span>Code.org</a>
-                <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html" target="_blank" rel="noopener noreferrer"><span>🗝️</span>Escape Room</a>
+            <aside class="hn-agenda-side">
+              <div class="hn-box hn-login-box">
+                <div class="hn-box-title"><i class="fas fa-user-astronaut"></i> ¿Sos alumno?</div>
+                <p>Ingresá para ver tu carpeta de Drive con tus proyectos y las actividades de tu grado primero.</p>
+                <button type="button" class="hn-login-btn" onclick="if(window.openLoginModal) window.openLoginModal();">
+                  <i class="fas fa-user-circle"></i> Ingreso Alumnos
+                </button>
               </div>
-            </div>
-          </aside>
-        </div>
-      </section>
+
+              <div class="hn-box">
+                <div class="hn-box-title"><i class="fas fa-rocket"></i> Herramientas Virtuales</div>
+                <div class="hn-quick">
+                  <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer"><span>⚡</span>MakeCode</a>
+                  <a href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener noreferrer"><span>🐱</span>Scratch</a>
+                  <a href="https://code.org/minecraft" target="_blank" rel="noopener noreferrer"><span>⛏️</span>Code.org</a>
+                  <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html" target="_blank" rel="noopener noreferrer"><span>🗝️</span>Escape Room</a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
 
     </main>
   </div>

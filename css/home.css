@@ -25,6 +25,20 @@ html, body {
 
 .hn-main { padding-top: 18px; }
 
+/* ─────────────── VISTAS POR PESTAÑAS (DIVS) ─────────────── */
+.hn-view {
+  display: none;
+  width: 100%;
+}
+.hn-view.active {
+  display: block;
+  animation: hnViewFadeIn .25s ease-out both;
+}
+@keyframes hnViewFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .hn-section,
 #inicio,
 #student-drive-dashboard-container { scroll-margin-top: calc(var(--topbar-h, 62px) + 14px); }
@@ -250,6 +264,66 @@ html, body {
   display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .hn-side-date { font-size: .74rem; color: var(--text-secondary, #606770); font-weight: 600; }
+
+/* ─────────────── ACCESOS DIRECTOS DE PORTADA ─────────────── */
+.hn-home-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 22px;
+}
+.hn-shortcut-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--hn-paper);
+  padding: 16px 18px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: var(--hn-ink);
+  border: 1.5px solid var(--hn-line);
+  transition: all .2s ease;
+}
+.hn-shortcut-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--hn-green);
+}
+.hsc-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: #E3F2FD;
+  color: #1565C0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.hsc-text {
+  display: flex; flex-direction: column; gap: 3px;
+  flex: 1; min-width: 0;
+}
+.hsc-title {
+  font-weight: 800;
+  font-size: .96rem;
+  color: var(--hn-ink);
+}
+.hsc-desc {
+  font-size: .78rem;
+  color: var(--text-secondary, #606770);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hsc-arrow {
+  color: var(--text-muted, #90A4AE);
+  font-size: .9rem;
+  transition: transform .2s ease, color .2s ease;
+}
+.hn-shortcut-card:hover .hsc-arrow {
+  transform: translateX(4px);
+  color: var(--hn-green);
+}
 
 /* ─────────────── SECCIONES ─────────────── */
 .hn-section { margin-top: 38px; }
@@ -495,6 +569,22 @@ html, body {
 .hn-act-btn.primary { background: var(--act, var(--hn-green)); border-color: var(--act, var(--hn-green)); color: #fff; }
 .hn-act-btn.primary:hover { filter: brightness(1.1); color: #fff; transform: translateY(-1px); }
 
+/* Agenda & Full Layout */
+.hn-agenda-full-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+.hn-agenda-main-box {
+  padding: 22px 24px;
+}
+.hn-agenda-side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
 /* Aside */
 .hn-aside { display: flex; flex-direction: column; gap: 18px; position: sticky; top: calc(var(--topbar-h, 62px) + 16px); }
 .hn-box { background: #fff; border-radius: 16px; box-shadow: var(--shadow-sm); padding: 18px; }
@@ -648,6 +738,8 @@ body.student-logged-in .hn-login-box { display: none; }
   .hn-side-item { grid-template-columns: 1fr; border-bottom: 0; }
   .hn-side-item img { width: 100%; height: 120px; }
   .hn-two-col { grid-template-columns: 1fr; }
+  .hn-home-shortcuts { grid-template-columns: 1fr; }
+  .hn-agenda-full-layout { grid-template-columns: 1fr; }
   .hn-aside { position: static; display: grid; grid-template-columns: 1fr 1fr; }
   .hn-aside .hn-box:first-child { grid-row: span 2; }
 }
