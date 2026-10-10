@@ -274,10 +274,18 @@
     var btn = document.getElementById('student-login-btn');
     if (btn) btn.onclick = openLoginModal;
 
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('login') === 'required' || params.get('login') === '1') {
-      setTimeout(openLoginModal, 350);
-    }
+    // Si la URL contenía parámetros de login residuales, limpiarlos sin recargar para no dejar la URL sucia
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (params.has('login')) {
+        params.delete('login');
+        var cleanSearch = params.toString() ? '?' + params.toString() : '';
+        var cleanUrl = window.location.pathname + cleanSearch + window.location.hash;
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState(null, '', cleanUrl);
+        }
+      }
+    } catch (e) {}
   }
 
   // Ejecutar cuando el DOM esté listo

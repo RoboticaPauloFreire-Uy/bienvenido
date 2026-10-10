@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Proteger aula: si el alumno no está logueado, redirigir a index para iniciar sesión
   const activeStudent = window.getActiveStudent ? window.getActiveStudent() : null;
   if (!activeStudent) {
-    window.location.replace('index.html?login=required');
+    window.location.replace('index.html');
     return;
   }
 
