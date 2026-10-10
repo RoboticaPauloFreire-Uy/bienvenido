@@ -1195,7 +1195,20 @@ html, body {
   transition: transform .18s ease;
 }
 .hn-login-btn:hover { transform: translateY(-2px); }
+/* ─────────────── ESTADO ALUMNO LOGUEADO ─────────────── */
 body.student-logged-in .hn-login-box { display: none; }
+
+/* Ocultar opciones del menú superior cuando está logueado */
+body.student-logged-in .topbar-nav .topbar-nav-link,
+body.student-logged-in #mobile-menu-btn {
+  display: none !important;
+}
+
+/* Ocultar vistas públicas y pie de página debajo del panel del alumno */
+body.student-logged-in .hn-view,
+body.student-logged-in .site-footer {
+  display: none !important;
+}
 
 /* ─────────────── LECTOR DE NOTICIAS ─────────────── */
 .hn-reader {

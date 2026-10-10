@@ -932,6 +932,12 @@
   var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'juegos', 'muro', 'agenda'];
 
   function switchView(viewName, updateHash) {
+    // Si el alumno está logueado, mantener foco exclusivo en el panel de Drive
+    if (document.body.classList.contains('student-logged-in')) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     // Compatibilidad si se solicita "actividades"
     if (viewName === 'actividades') viewName = 'clase';
     if (VALID_VIEWS.indexOf(viewName) === -1) viewName = 'inicio';
@@ -966,6 +972,7 @@
   }
 
   function handleHash() {
+    if (document.body.classList.contains('student-logged-in')) return;
     var raw = location.hash.replace(/^#/, '');
     if (!raw) return;
     if (/^noticia-/.test(raw)) {

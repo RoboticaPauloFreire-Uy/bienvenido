@@ -8007,7 +8007,11 @@ body.student-logged-in .community-chat-section,
 body.student-logged-in .aula-hero,
 body.student-logged-in .aula-content-section,
 body.student-logged-in .aula-resources-section,
-body.student-logged-in #nav-dropdown-aulas {
+body.student-logged-in #nav-dropdown-aulas,
+body.student-logged-in .topbar-nav .topbar-nav-link,
+body.student-logged-in #mobile-menu-btn,
+body.student-logged-in .hn-view,
+body.student-logged-in .site-footer {
   display: none !important;
 }
 
@@ -8036,6 +8040,7 @@ body:not(.student-logged-in) #student-drive-dashboard-container {
 body.student-logged-in #student-drive-dashboard-container {
   display: block !important;
   margin-top: 16px;
+  margin-bottom: 60px;
   animation: fadeInDashboard 0.4s ease forwards;
 }
 
