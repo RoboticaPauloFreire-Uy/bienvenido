@@ -268,14 +268,17 @@ html, body {
 /* ─────────────── ACCESOS DIRECTOS DE PORTADA ─────────────── */
 .hn-home-shortcuts {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
   margin-top: 22px;
 }
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
+  .hn-home-shortcuts { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 760px) {
   .hn-home-shortcuts { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 540px) {
+@media (max-width: 500px) {
   .hn-home-shortcuts { grid-template-columns: 1fr; }
 }
 .hn-shortcut-card {
@@ -654,6 +657,123 @@ html, body {
 
 /* Aside */
 .hn-aside { display: flex; flex-direction: column; gap: 18px; position: sticky; top: calc(var(--topbar-h, 62px) + 16px); }
+/* ─────────────── SECCIÓN JUEGOS ─────────────── */
+.hn-grade-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.hn-grade-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--hn-paper, #fff);
+  border: 1.5px solid var(--hn-line, #e0e0e0);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--hn-ink, #212121);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.hn-grade-tab:hover {
+  border-color: var(--tab-color, var(--hn-green));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.hn-grade-tab.active {
+  background: var(--tab-bg, #E8F5E9);
+  border-color: var(--tab-color, var(--hn-green));
+  color: var(--tab-color, var(--hn-green-dark));
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.hn-grade-tab .tab-icon {
+  font-size: 1.1rem;
+}
+.hn-grade-tab .tab-count {
+  background: rgba(0,0,0,0.08);
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+.hn-grade-tab.active .tab-count {
+  background: var(--tab-color, var(--hn-green));
+  color: #fff;
+}
+
+.hn-juegos-banner {
+  background: var(--hn-paper, #fff);
+  border-radius: 16px;
+  padding: 16px 20px;
+  border-left: 5px solid var(--banner-accent, var(--hn-green));
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.hn-juegos-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hn-juegos-banner-icon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--banner-bg, #E8F5E9);
+  flex-shrink: 0;
+}
+.hn-juegos-banner-info h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--hn-ink);
+  margin-bottom: 3px;
+}
+.hn-juegos-banner-info p {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #606770);
+  margin: 0;
+}
+.hn-juegos-banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--banner-accent, var(--hn-green));
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.hn-game-grade-pill {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .hn-box { background: #fff; border-radius: 16px; box-shadow: var(--shadow-sm); padding: 18px; }
 .hn-box-title {
   font-family: var(--hn-serif); font-weight: 800; font-size: 1.2rem;

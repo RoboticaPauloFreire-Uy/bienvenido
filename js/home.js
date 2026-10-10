@@ -390,6 +390,189 @@
     });
   }
 
+  /* ───────────── Juegos por Grupo ───────────── */
+  var filtroGrupoJuegos = 'todos';
+
+  function getGradesConJuegos() {
+    var d = window.SCHOOL_DATA;
+    if (!d || !d.grades) return [];
+    return d.grades;
+  }
+
+  function seleccionarGrupoJuegos(gradeId, actualizarHash) {
+    filtroGrupoJuegos = gradeId || 'todos';
+
+    // Sincronizar select
+    var sel = document.getElementById('hn-juegos-grade-select');
+    if (sel) sel.value = filtroGrupoJuegos;
+
+    // Sincronizar pestañas
+    document.querySelectorAll('.hn-grade-tab').forEach(function (t) {
+      t.classList.toggle('active', t.dataset.gradeId === filtroGrupoJuegos);
+    });
+
+    renderJuegos();
+
+    if (actualizarHash !== false && history.replaceState) {
+      var h = filtroGrupoJuegos === 'todos' ? '#juegos' : '#juegos-' + filtroGrupoJuegos;
+      history.replaceState(null, '', h);
+    }
+  }
+
+  function renderFiltrosJuegos() {
+    var grades = getGradesConJuegos();
+    var tabsCont = document.getElementById('hn-juegos-grade-tabs');
+    var sel = document.getElementById('hn-juegos-grade-select');
+    if (!tabsCont || !grades.length) return;
+
+    var totalJuegos = grades.reduce(function (acc, g) { return acc + (g.games ? g.games.length : 0); }, 0);
+
+    // Si el alumno está logueado y aún no se seleccionó grupo, sugerir su grado
+    var st = alumno();
+    if (st && st.gradeId && filtroGrupoJuegos === 'todos') {
+      filtroGrupoJuegos = st.gradeId;
+    }
+
+    // Pestañas visuales
+    var tabsHtml = '<button type="button" class="hn-grade-tab' + (filtroGrupoJuegos === 'todos' ? ' active' : '') + '" data-grade-id="todos">' +
+      '<span class="tab-icon">⭐</span>' +
+      '<span>Todos los grupos</span>' +
+      '<span class="tab-count">' + totalJuegos + '</span>' +
+    '</button>' +
+    grades.map(function (g) {
+      var count = (g.games || []).length;
+      var on = g.id === filtroGrupoJuegos;
+      return '<button type="button" class="hn-grade-tab' + (on ? ' active' : '') + '" data-grade-id="' + esc(g.id) + '" ' +
+        'style="--tab-color:' + esc(g.color) + ';--tab-bg:' + esc(g.colorLight) + ';">' +
+        '<span class="tab-icon">' + esc(g.icon || '🎮') + '</span>' +
+        '<span>' + esc(g.shortName || g.name) + '</span>' +
+        '<span class="tab-count">' + count + '</span>' +
+      '</button>';
+    }).join('');
+
+    tabsCont.innerHTML = tabsHtml;
+
+    tabsCont.querySelectorAll('.hn-grade-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        seleccionarGrupoJuegos(btn.dataset.gradeId);
+      });
+    });
+
+    // Select para móviles
+    if (sel && !sel.options.length) {
+      sel.innerHTML = '<option value="todos">Todos los grupos (' + totalJuegos + ')</option>' +
+        grades.map(function (g) {
+          return '<option value="' + esc(g.id) + '">' + esc(g.icon + ' ' + g.name) + ' (' + ((g.games || []).length) + ')</option>';
+        }).join('');
+
+      sel.value = filtroGrupoJuegos;
+      sel.addEventListener('change', function () {
+        seleccionarGrupoJuegos(sel.value);
+      });
+    }
+  }
+
+  function renderJuegos() {
+    var grid = document.getElementById('hn-juegos-grid');
+    var banner = document.getElementById('hn-juegos-banner');
+    if (!grid) return;
+
+    var grades = getGradesConJuegos();
+    var st = alumno();
+    var miGrado = st && st.gradeId;
+
+    // 1. Renderizar banner dinámico de grupo
+    if (banner) {
+      if (filtroGrupoJuegos === 'todos') {
+        banner.style.setProperty('--banner-accent', '#6A1B9A');
+        banner.style.setProperty('--banner-bg', '#F3E5F5');
+        banner.innerHTML =
+          '<div class="hn-juegos-banner-left">' +
+            '<div class="hn-juegos-banner-icon">🎮</div>' +
+            '<div class="hn-juegos-banner-info">' +
+              '<h3>Todos los Juegos del Taller</h3>' +
+              '<p>Elegí arriba tu grupo para ver los juegos preparados y recomendados para tu edad y nivel.</p>' +
+            '</div>' +
+          '</div>' +
+          (st ? '<div class="hn-juegos-banner-badge" style="background:' + (st.avatarBg || '#2E7D32') + '"><i class="fas fa-user-check"></i> Hola, ' + esc(st.name.split(' ')[0]) + ' (' + esc(st.gradeName) + ')</div>' : '');
+      } else {
+        var grSel = grades.find(function (g) { return g.id === filtroGrupoJuegos; });
+        if (grSel) {
+          banner.style.setProperty('--banner-accent', grSel.color);
+          banner.style.setProperty('--banner-bg', grSel.colorLight);
+          var esMiGrado = miGrado === grSel.id;
+          banner.innerHTML =
+            '<div class="hn-juegos-banner-left">' +
+              '<div class="hn-juegos-banner-icon">' + esc(grSel.icon || '🎮') + '</div>' +
+              '<div class="hn-juegos-banner-info">' +
+                '<h3>' + esc(grSel.name) + (esMiGrado ? ' · ¡Tu grupo escolar!' : '') + '</h3>' +
+                '<p>' + esc(grSel.description || 'Juegos y desafíos interactivos preparados para esta etapa.') + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="hn-juegos-banner-badge" style="background:' + esc(grSel.color) + '"><i class="fas fa-gamepad"></i> ' + (grSel.games || []).length + ' juegos listos</div>';
+        }
+      }
+    }
+
+    // 2. Filtrar lista de juegos
+    var listaGrados = (filtroGrupoJuegos === 'todos')
+      ? grades
+      : grades.filter(function (g) { return g.id === filtroGrupoJuegos; });
+
+    var items = [];
+    listaGrados.forEach(function (g) {
+      (g.games || []).forEach(function (gm) {
+        items.push({ game: gm, grade: g });
+      });
+    });
+
+    if (!items.length) {
+      grid.innerHTML = '<div class="hn-empty" style="grid-column:1/-1;"><span>⏳</span>Los juegos para este grupo se están preparando para la próxima clase.</div>';
+      return;
+    }
+
+    grid.innerHTML = items.map(function (it) {
+      var gm = it.game;
+      var gr = it.grade;
+      var pm = (window.platformMeta && window.platformMeta(gm.platform)) || { label: 'Juego', icon: '🎮', cls: 'pb-default' };
+      var url = (window.getGameUrl && window.getGameUrl(gm)) || gm.externalUrl || '#';
+      var ext = /^https?:/i.test(url);
+      var thumb = gm.thumbnail || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80';
+
+      var benefitsHtml = gm.benefits
+        ? '<div class="game-card-benefits">' +
+            '<div class="benefits-label"><i class="fas fa-lightbulb"></i> ¿Qué aprendemos?</div>' +
+            '<p class="benefits-text">' + esc(gm.benefits) + '</p>' +
+          '</div>'
+        : '';
+
+      var tagsHtml = (gm.tags && gm.tags.length)
+        ? '<div class="game-card-tags">' +
+            gm.tags.map(function (t) { return '<span class="post-tag">#' + esc(t) + '</span>'; }).join('') +
+          '</div>'
+        : '';
+
+      return '<article class="game-grid-card">' +
+        '<div class="game-card-thumb-wrap">' +
+          '<img src="' + esc(thumb) + '" alt="' + esc(gm.title) + '" class="game-card-thumb" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80\'">' +
+          '<span class="game-card-badge ' + esc(pm.cls) + '">' + pm.icon + ' ' + esc(pm.label) + '</span>' +
+          '<span class="hn-game-grade-pill" style="background:' + esc(gr.color) + '">' + esc(gr.icon + ' ' + (gr.shortName || gr.name)) + '</span>' +
+        '</div>' +
+        '<div class="game-card-body">' +
+          '<h3 class="game-card-title">' + esc(gm.title) + '</h3>' +
+          '<p class="game-card-desc">' + esc(gm.description || '') + '</p>' +
+          benefitsHtml +
+          tagsHtml +
+        '</div>' +
+        '<div class="game-card-footer">' +
+          '<a href="' + esc(url) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + ' class="btn-start-game" style="background:' + esc(gr.color) + ';" title="Jugar a ' + esc(gm.title) + '">' +
+            '<span>Jugar ahora</span> <i class="fas fa-play"></i>' +
+          '</a>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
   /* ───────────── Agenda ───────────── */
   function renderAgenda() {
     var cont = document.getElementById('hn-agenda-list');
@@ -516,7 +699,7 @@
   }
 
   /* ───────────── Vistas por Pestañas (Diferentes DIVs) ───────────── */
-  var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'agenda'];
+  var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'juegos', 'agenda'];
 
   function switchView(viewName, updateHash) {
     // Compatibilidad si se solicita "actividades"
@@ -562,6 +745,10 @@
       switchView('clase', false);
     } else if (raw === 'casa' || raw === 'actividades-casa') {
       switchView('casa', false);
+    } else if (/^juegos(?:-(.+))?$/.test(raw)) {
+      var m = raw.match(/^juegos(?:-(.+))?$/);
+      switchView('juegos', false);
+      if (m && m[1]) seleccionarGrupoJuegos(m[1], false);
     } else if (VALID_VIEWS.indexOf(raw) !== -1) {
       switchView(raw, false);
     }
@@ -601,6 +788,8 @@
     renderNoticias();
     renderFiltrosActividades();
     renderActividades();
+    renderFiltrosJuegos();
+    renderJuegos();
     renderAgenda();
     initReader();
     initNav();
@@ -617,8 +806,10 @@
           var sel = document.getElementById(id);
           if (sel) sel.value = st.gradeId;
         });
+        seleccionarGrupoJuegos(st.gradeId, false);
       }
       renderActividades();
+      renderJuegos();
     });
 
     if (window.renderGDriveDashboard && alumno()) {
@@ -632,4 +823,6 @@
   window.openNoticia = abrirNoticia;
   window.switchView = switchView;
   window.showActividades = function (sec) { switchView(sec === 'casa' ? 'casa' : 'clase'); };
+  window.showJuegos = function (gradeId) { switchView('juegos'); if (gradeId) seleccionarGrupoJuegos(gradeId); };
+  window.seleccionarGrupoJuegos = seleccionarGrupoJuegos;
 })();

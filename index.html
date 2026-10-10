@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=95">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=2">
+  <link rel="stylesheet" href="css/home.css?v=3">
 </head>
 <body>
 
@@ -58,6 +58,10 @@
         <a href="#casa" class="topbar-nav-link" data-view="casa" onclick="window.switchView('casa'); return false;">
           <i class="fas fa-laptop-house"></i>
           <span>Casa</span>
+        </a>
+        <a href="#juegos" class="topbar-nav-link" data-view="juegos" onclick="window.switchView('juegos'); return false;">
+          <i class="fas fa-gamepad"></i>
+          <span>Juegos</span>
         </a>
         <a href="#agenda" class="topbar-nav-link" data-view="agenda" onclick="window.switchView('agenda'); return false;">
           <i class="fas fa-calendar-day"></i>
@@ -153,6 +157,15 @@
               <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
 
+            <a href="#juegos" class="hn-shortcut-card" onclick="window.switchView('juegos'); return false;">
+              <div class="hsc-icon" style="background:#F3E5F5;color:#6A1B9A;"><i class="fas fa-gamepad"></i></div>
+              <div class="hsc-text">
+                <span class="hsc-title">Juegos</span>
+                <span class="hsc-desc">Por grupo según nivel y edad</span>
+              </div>
+              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+
             <a href="#agenda" class="hn-shortcut-card" onclick="window.switchView('agenda'); return false;">
               <div class="hsc-icon" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-calendar-day"></i></div>
               <div class="hsc-text">
@@ -236,7 +249,35 @@
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 5: AGENDA
+           VISTA 5: JUEGOS (POR GRUPO)
+      ══════════════════════════════════════════ -->
+      <div id="view-juegos" class="hn-view">
+        <section class="hn-section" id="juegos" style="margin-top:0;">
+          <div class="hn-section-head">
+            <div>
+              <span class="hn-kicker"><i class="fas fa-gamepad"></i> Zona Gamer Educativa</span>
+              <h2 class="hn-section-title">Zona de Juegos por Grupo</h2>
+              <p class="hn-section-sub">Desafíos, lógica y programación seleccionados para cada edad y grupo escolar.</p>
+            </div>
+            <div class="hn-controls">
+              <label class="sr-only" for="hn-juegos-grade-select">Filtrar por grupo</label>
+              <select id="hn-juegos-grade-select" class="hn-select"></select>
+            </div>
+          </div>
+
+          <!-- Selector de grupos con pestañas visuales -->
+          <div class="hn-grade-tabs" id="hn-juegos-grade-tabs" role="tablist" aria-label="Grupos escolares"></div>
+
+          <!-- Banner dinámico del grupo seleccionado / alumno logueado -->
+          <div class="hn-juegos-banner" id="hn-juegos-banner"></div>
+
+          <!-- Grilla de tarjetas de juegos -->
+          <div class="games-grid" id="hn-juegos-grid"></div>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           VISTA 6: AGENDA
       ══════════════════════════════════════════ -->
       <div id="view-agenda" class="hn-view">
         <section class="hn-section" id="agenda" style="margin-top:0;">
@@ -348,7 +389,7 @@
   <script src="js/main.js?v=95"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
   <script src="js/news.js?v=2"></script>
-  <script src="js/home.js?v=2"></script>
+  <script src="js/home.js?v=3"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 2.5s -->
   <script>
