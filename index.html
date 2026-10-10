@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Taller de Programación — Colegio Paulo Freire</title>
-  <meta name="description" content="Portal de proyectos y juegos del Taller de Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
+  <title>El Diario del Taller — Colegio Paulo Freire</title>
+  <meta name="description" content="Noticias, actividades y agenda del Taller de Robótica y Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=93">
-  <link rel="stylesheet" href="css/games.css?v=93">
+  <link rel="stylesheet" href="css/style.css?v=95">
+  <link rel="stylesheet" href="css/games.css?v=95">
+  <link rel="stylesheet" href="css/home.css?v=1">
 </head>
 <body>
 
@@ -30,7 +31,7 @@
   ══════════════════════════════════════════════ -->
   <header class="topbar">
     <div class="topbar-inner">
-      
+
       <!-- Brand / Logo -->
       <a href="index.html" class="topbar-brand">
         <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="topbar-shield-logo">
@@ -42,142 +43,25 @@
 
       <!-- Menú Horizontal Principal -->
       <nav class="topbar-nav" id="topbar-nav">
-        <a href="index.html" class="topbar-nav-link active">
+        <a href="#inicio" class="topbar-nav-link active" data-section="inicio">
           <i class="fas fa-home"></i>
           <span>Inicio</span>
         </a>
-
-        <!-- AULAS CON DROPDOWN (HOVER + CLICK) -->
-        <div class="topbar-nav-dropdown" id="nav-dropdown-aulas">
-          <a href="#classrooms-grid" class="topbar-nav-link dropdown-trigger">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <span>Aulas</span>
-            <i class="fas fa-chevron-down nav-chevron"></i>
-          </a>
-          
-          <div class="nav-dropdown-menu">
-            <div class="ndm-header">
-              <div class="ndm-title"><i class="fas fa-th-large"></i> Acceso rápido a las Aulas</div>
-              <div class="ndm-sub">Elegí tu grado para entrar</div>
-            </div>
-            
-            <div class="ndm-grid">
-              <a href="aula.html?grado=sala5" class="ndm-item" style="--grade-theme:#E65100;--grade-bg:#FFF3E0;">
-                <span class="ndm-icon">🌱</span>
-                <div class="ndm-info">
-                  <span class="ndm-name">Sala de 5 años</span>
-                  <span class="ndm-tag">Iniciación digital</span>
-                </div>
-              </a>
-
-              <a href="aula.html?grado=grado1" class="ndm-item" style="--grade-theme:#1565C0;--grade-bg:#E3F2FD;">
-                <span class="ndm-icon">📖</span>
-                <div class="ndm-info">
-                  <span class="ndm-name">1° Grado</span>
-                  <span class="ndm-tag">Bloques visuales</span>
-                </div>
-              </a>
-
-              <a href="aula.html?grado=grado2" class="ndm-item" style="--grade-theme:#6A1B9A;--grade-bg:#F3E5F5;">
-                <span class="ndm-icon">✏️</span>
-                <div class="ndm-info">
-                  <span class="ndm-name">2° Grado</span>
-                  <span class="ndm-tag">Historias interactivas</span>
-                </div>
-              </a>
-
-              <a href="aula.html?grado=grado3" class="ndm-item" style="--grade-theme:#00838F;--grade-bg:#E0F7FA;">
-                <span class="ndm-icon">🔢</span>
-                <div class="ndm-info">
-                  <span class="ndm-name">3° Grado</span>
-                  <span class="ndm-tag">Scratch 3.0 & Lógica</span>
-                </div>
-              </a>
-
-              <a href="aula.html?grado=grado4" class="ndm-item" style="--grade-theme:#EF6C00;--grade-bg:#FFF3E0;">
-                <span class="ndm-icon">💡</span>
-                <div class="ndm-info">
-                  <span class="ndm-name">4° Grado</span>
-                  <span class="ndm-tag">MakeCode Arcade</span>
-                </div>
-              </a>
-
-              <a href="aula.html?grado=grado5" class="ndm-item" style="--grade-theme:#2E7D32;--grade-bg:#E8F5E9;">
-                <span class="ndm-icon">⚙️</span>
-                <div class="ndm-info">
-                  <span class="ndm-name">5° Grado</span>
-                  <span class="ndm-tag">Algoritmos y retos</span>
-                </div>
-              </a>
-
-              <a href="aula.html?grado=grado6" class="ndm-item" style="--grade-theme:#C2185B;--grade-bg:#FCE4EC;">
-                <span class="ndm-icon">🚀</span>
-                <div class="ndm-info">
-                  <span class="ndm-name">6° Grado</span>
-                  <span class="ndm-tag">Web, Canvas & JS</span>
-                </div>
-              </a>
-            </div>
-
-            <a href="#classrooms-grid" class="ndm-footer">
-              <span>Ver todas las aulas en detalle</span>
-              <i class="fas fa-arrow-down"></i>
-            </a>
-          </div>
-        </div>
-
-        <!-- ACTIVIDAD FAMILIAR CON DROPDOWN (HOVER + CLICK) -->
-        <div class="topbar-nav-dropdown" id="nav-dropdown-family">
-          <a href="javascript:void(0)" class="topbar-nav-link dropdown-trigger nav-special">
-            <i class="fas fa-users"></i>
-            <span>Actividad familiar</span>
-            <i class="fas fa-chevron-down nav-chevron"></i>
-          </a>
-          
-          <div class="nav-dropdown-menu nav-dropdown-family">
-            <div class="ndm-header">
-              <div class="ndm-title"><i class="fas fa-heart"></i> Actividad Familiar</div>
-              <div class="ndm-sub">Experiencias y retos interactivos</div>
-            </div>
-            
-            <div class="ndm-family-list">
-              <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
-                 target="_blank" rel="noopener noreferrer"
-                 class="ndm-family-card">
-                <div class="nfc-icon-wrap">
-                  <span class="nfc-icon">🗝️</span>
-                </div>
-                <div class="nfc-body">
-                  <div class="nfc-header-row">
-                    <span class="nfc-title">Escape Rooms Nostálgico</span>
-                    <span class="nfc-badge">Familiar</span>
-                  </div>
-                  <p class="nfc-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades.</p>
-                  <div class="nfc-action">
-                    <span class="nfc-play-btn">
-                      <span>Entrar al Escape Room</span>
-                      <i class="fas fa-external-link-alt"></i>
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <a href="#actividad-familiar" class="ndm-footer">
-              <span>Ver actividades en familia en la página</span>
-              <i class="fas fa-arrow-down"></i>
-            </a>
-          </div>
-        </div>
-
-        <!-- ACTIVIDAD DE CASA -->
-        <a href="#actividad-de-casa" class="topbar-nav-link" id="nav-link-casa">
-          <i class="fas fa-house-user"></i>
-          <span>Actividad de casa</span>
+        <a href="#noticias" class="topbar-nav-link" data-section="noticias">
+          <i class="fas fa-newspaper"></i>
+          <span>Noticias</span>
+        </a>
+        <a href="#actividades" class="topbar-nav-link" data-section="actividades">
+          <i class="fas fa-puzzle-piece"></i>
+          <span>Actividades</span>
+        </a>
+        <a href="#agenda" class="topbar-nav-link" data-section="agenda">
+          <i class="fas fa-calendar-day"></i>
+          <span>Agenda</span>
         </a>
 
         <!-- Mi Carpeta Drive (Visible al iniciar sesión) -->
-        <a href="#student-drive-dashboard-container" class="nav-drive-link" style="display:none;" onclick="const d = document.getElementById('student-drive-dashboard-container'); if(d) d.scrollIntoView({behavior:'smooth'});">
+        <a href="#student-drive-dashboard-container" class="nav-drive-link" style="display:none;">
           <i class="fab fa-google-drive"></i>
           <span>Mi Carpeta Drive</span>
         </a>
@@ -199,353 +83,114 @@
   </header>
 
   <div class="app-body">
+    <main class="main-content hn-main">
 
-    <!-- ══════════════════════════════════════════════
-         CONTENIDO PRINCIPAL (SIN SIDEBAR VERTICAL)
-    ══════════════════════════════════════════════ -->
-    <main class="main-content">
-
-      <!-- ══════════════════════════════════════════
-           PANEL CENTRADO DE GOOGLE DRIVE (ALUMNO LOGUEADO)
-      ══════════════════════════════════════════ -->
+      <!-- Panel de Google Drive (sólo alumno logueado) -->
       <div id="student-drive-dashboard-container"></div>
 
       <!-- ══════════════════════════════════════════
-           HERO CAROUSEL — Imagen de Fondo Completa
+           CABECERA TIPO DIARIO + AVISOS
       ══════════════════════════════════════════ -->
-      <div class="hero-carousel" id="hero-carousel">
-        <div class="hc-track" id="hc-track">
-
-          <!-- SLIDE 1: Laboratorio Maker & Robótica -->
-          <div class="hc-slide">
-            <div class="hc-bg">
-              <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80" alt="" class="hc-bg-img">
-              <div class="hc-bg-overlay" style="background: linear-gradient(135deg, rgba(27,94,32,0.82) 0%, rgba(21,101,192,0.78) 100%);"></div>
-            </div>
-            <div class="hc-content">
-              <div class="hc-pill">🛠️ Robótica & Cultura Maker</div>
-              <h2 class="hc-heading">¡Construimos con Cartón y micro:bit!</h2>
-              <p class="hc-sub">Unimos manualidades, circuitos y programación en bloques para que los proyectos cobren vida y movimiento en el mundo real.</p>
-              <div class="hc-actions">
-                <button type="button" class="hc-cta" onclick="if(window.openLoginModal) window.openLoginModal();"><i class="fas fa-user-circle"></i> Ingreso Alumnos <i class="fas fa-arrow-right"></i></button>
-              </div>
+      <section id="inicio">
+        <div class="hn-masthead">
+          <div class="hn-mh-brand">
+            <img src="img/escudo_paulo_freire.png" alt="">
+            <div>
+              <h1 class="hn-mh-title">El Diario del Taller</h1>
+              <div class="hn-mh-tag">Robótica, programación y cultura maker · Sala de 5 a 6° Grado</div>
             </div>
           </div>
-
-          <!-- SLIDE 2: Escape Rooms Nostálgico -->
-          <div class="hc-slide">
-            <div class="hc-bg">
-              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80" alt="" class="hc-bg-img">
-              <div class="hc-bg-overlay" style="background: linear-gradient(135deg, rgba(26,35,126,0.85) 0%, rgba(57,73,171,0.78) 100%);"></div>
-            </div>
-            <div class="hc-content">
-              <div class="hc-pill">👨‍👩‍👧 Actividad para la Familia</div>
-              <h2 class="hc-heading">Escape Rooms Nostálgico</h2>
-              <p class="hc-sub">Una aventura interactiva para resolver enigmas, códigos secretos y acertijos en familia. ¡Desafío para todas las edades!</p>
-              <div class="hc-actions">
-                <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
-                   target="_blank" rel="noopener noreferrer" class="hc-cta">Entrar al Escape Room <i class="fas fa-external-link-alt"></i></a>
-              </div>
-            </div>
+          <div class="hn-mh-right">
+            <div class="hn-mh-date" id="hn-masthead-date"></div>
+            <div class="hn-mh-stats" id="hn-masthead-stats"></div>
           </div>
-
-          <!-- SLIDE 3: Simulador MakeCode -->
-          <div class="hc-slide">
-            <div class="hc-bg">
-              <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80" alt="" class="hc-bg-img">
-              <div class="hc-bg-overlay" style="background: linear-gradient(135deg, rgba(74,20,140,0.85) 0%, rgba(0,131,143,0.78) 100%);"></div>
-            </div>
-            <div class="hc-content">
-              <div class="hc-pill">💻 Programá desde Casa</div>
-              <h2 class="hc-heading">Simulador micro:bit MakeCode</h2>
-              <p class="hc-sub">Probá tus programas, botones, sensores y matriz de LEDs en el simulador oficial gratuito de Microsoft directamente en tu navegador.</p>
-              <div class="hc-actions">
-                <a href="https://makecode.microbit.org/"
-                   target="_blank" rel="noopener noreferrer" class="hc-cta">Abrir Simulador Virtual <i class="fas fa-external-link-alt"></i></a>
-              </div>
-            </div>
-          </div>
-
         </div>
 
-        <!-- Controles -->
-        <button class="hc-arrow hc-arrow-left" id="hc-prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
-        <button class="hc-arrow hc-arrow-right" id="hc-next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
-        <div class="hc-dots" id="hc-dots"></div>
-      </div>
-
-      <!-- ══════════════════════════════════════════
-           SECCIÓN: LA FÓRMULA MAKER (3 PASOS)
-      ══════════════════════════════════════════ -->
-      <section class="maker-formula-section">
-        <div class="maker-formula-header">
-          <div class="maker-formula-badge"><i class="fas fa-magic"></i> De la Idea a la Realidad</div>
-          <h2 class="maker-formula-title">¿Cómo creamos en el Taller?</h2>
-          <p class="maker-formula-sub">Unimos manualidades, circuitos y código para dar vida a nuestras creaciones.</p>
+        <div class="hn-ticker" id="hn-ticker" aria-label="Avisos">
+          <div class="hn-ticker-label"><span class="dot"></span><span class="txt">Último momento</span></div>
+          <div class="hn-ticker-viewport">
+            <div class="hn-ticker-track" id="hn-ticker-track"></div>
+          </div>
         </div>
 
-        <div class="maker-formula-grid">
-          <!-- Paso 1 -->
-          <div class="mf-card">
-            <div class="mf-step-num">01</div>
-            <div class="mf-icon-wrap mf-icon-carton">
-              <span>📦</span>
-            </div>
-            <h3 class="mf-card-title">Construcción en Cartón</h3>
-            <p class="mf-card-desc">Cortamos, ensamblamos y diseñamos estructuras, personajes y maquetas usando cartón y materiales reciclables.</p>
-            <span class="mf-tag"><i class="fas fa-cut"></i> Crafting & Reciclaje</span>
-          </div>
-
-          <!-- Paso 2 -->
-          <div class="mf-card">
-            <div class="mf-step-num">02</div>
-            <div class="mf-icon-wrap mf-icon-microbit">
-              <span>⚡</span>
-            </div>
-            <h3 class="mf-card-title">Placa BBC micro:bit</h3>
-            <p class="mf-card-desc">Conectamos la placa de robótica con sensores de luz, botones táctiles, luces LED, servomotores y cables cocodrilo.</p>
-            <span class="mf-tag"><i class="fas fa-microchip"></i> Circuitos & Sensores</span>
-          </div>
-
-          <!-- Paso 3 -->
-          <div class="mf-card">
-            <div class="mf-step-num">03</div>
-            <div class="mf-icon-wrap mf-icon-code">
-              <span>💻</span>
-            </div>
-            <h3 class="mf-card-title">Programación en Bloques</h3>
-            <p class="mf-card-desc">Escribimos la lógica en MakeCode y Scratch para que nuestros inventos interactúen y cobren vida en el mundo real.</p>
-            <span class="mf-tag"><i class="fas fa-laptop-code"></i> MakeCode & Scratch</span>
-          </div>
+        <!-- Noticia destacada + lo último -->
+        <div class="hn-featured">
+          <div id="hn-featured-main"></div>
+          <aside class="hn-featured-side" id="hn-featured-side"></aside>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════
-           SECCIÓN: PROYECTOS DESTACADOS (CARRUSEL + RESUMEN)
+           NOTICIAS
       ══════════════════════════════════════════ -->
-      <section class="featured-projects-section" id="featured-projects">
-        <div class="fp-header">
-          <span class="fp-badge"><i class="fas fa-award"></i> Proyectos Maker Destacados</span>
-          <h2 class="fp-title">Lo que creamos en el Taller</h2>
-          <p class="fp-sub">Hacé click en un proyecto o esperá que cambie automáticamente.</p>
-        </div>
-
-        <!-- Carrusel de tarjetas de proyecto -->
-        <div class="fp-carousel-wrap">
-          <div class="fp-carousel" id="fp-carousel">
-
-            <div class="fp-card active" data-fp="0">
-              <div class="fp-card-img">
-                <img src="img/proyectos/sombrero_san_patricio_solo_sombrero.png" alt="El Sombrero Luminoso de San Patricio">
-                <span class="fp-card-grade">Sala 5</span>
-              </div>
-              <div class="fp-card-name">🍀 Sombrero San Patricio</div>
-            </div>
-
-            <div class="fp-card" data-fp="1">
-              <div class="fp-card-img">
-                <img src="img/minecraft.png" alt="Minecraft Code.org">
-                <span class="fp-card-grade">1° Grado</span>
-              </div>
-              <div class="fp-card-name">⛏️ Minecraft Code</div>
-            </div>
-
-            <div class="fp-card" data-fp="2">
-              <div class="fp-card-img">
-                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=400&h=400&q=80" alt="Cuento Interactivo">
-                <span class="fp-card-grade">2° Grado</span>
-              </div>
-              <div class="fp-card-name">📖 Cuento Interactivo</div>
-            </div>
-
-            <div class="fp-card" data-fp="3">
-              <div class="fp-card-img">
-                <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&h=400&q=80" alt="Guitarra Musical">
-                <span class="fp-card-grade">3° Grado</span>
-              </div>
-              <div class="fp-card-name">🎸 Guitarra Musical</div>
-            </div>
-
-            <div class="fp-card" data-fp="4">
-              <div class="fp-card-img">
-                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&h=400&q=80" alt="Semáforo Inteligente">
-                <span class="fp-card-grade">4° Grado</span>
-              </div>
-              <div class="fp-card-name">🚦 Semáforo Inteligente</div>
-            </div>
-
-            <div class="fp-card" data-fp="5">
-              <div class="fp-card-img">
-                <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=400&h=400&q=80" alt="Robot Explorador">
-                <span class="fp-card-grade">5° Grado</span>
-              </div>
-              <div class="fp-card-name">🤖 Robot Explorador</div>
-            </div>
-
-            <div class="fp-card" data-fp="6">
-              <div class="fp-card-img">
-                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&h=400&q=80" alt="Alarma Casera">
-                <span class="fp-card-grade">6° Grado</span>
-              </div>
-              <div class="fp-card-name">🔔 Alarma Casera</div>
-            </div>
-
+      <section class="hn-section" id="noticias">
+        <div class="hn-section-head">
+          <div>
+            <span class="hn-kicker"><i class="fas fa-newspaper"></i> Noticias</span>
+            <h2 class="hn-section-title">Lo que pasa en el Taller</h2>
+            <p class="hn-section-sub">Proyectos, eventos y novedades de todos los grados.</p>
+          </div>
+          <div class="hn-controls">
+            <label class="sr-only" for="hn-news-grade">Filtrar noticias por grado</label>
+            <select id="hn-news-grade" class="hn-select"></select>
           </div>
         </div>
 
-        <!-- Resumen del proyecto activo -->
-        <div class="fp-summary" id="fp-summary">
-          <div class="fp-summary-inner">
-            <div class="fp-summary-left">
-              <span class="fp-summary-grade" id="fp-sum-grade">Sala de 5 años</span>
-              <h3 class="fp-summary-title" id="fp-sum-title">Texturas Mágicas: Cartón y Sensores Táctiles 🌱</h3>
-              <p class="fp-summary-desc" id="fp-sum-desc">
-                Los más chiquitos exploraron texturas de cartón, tela y papel de aluminio. Conectamos sensores táctiles a la micro:bit para que suenen distintos sonidos al tocar cada material.
-              </p>
-              <div class="fp-summary-chips" id="fp-sum-chips">
-                <span>📦 Cartón y Texturas</span>
-                <span>⚡ micro:bit</span>
-                <span>🔊 Sonidos táctiles</span>
-                <span>🎨 Exploración sensorial</span>
-              </div>
-            </div>
-            <div class="fp-summary-right">
-              <a href="javascript:void(0)" class="fp-summary-btn" id="fp-sum-btn" onclick="var s = window.getActiveStudent ? window.getActiveStudent() : null; if(!s){ if(window.openLoginModal) window.openLoginModal(); } else { window.location.href='index.html'; }">
-                <span>Ver Proyecto</span>
-                <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-          </div>
-          <!-- Barra de progreso automático -->
-          <div class="fp-progress"><div class="fp-progress-bar" id="fp-progress-bar"></div></div>
+        <div class="hn-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
+        <div class="hn-news-grid" id="hn-news-grid"></div>
+        <div class="hn-more-wrap">
+          <button type="button" class="hn-more" id="hn-news-more" style="display:none;">
+            <i class="fas fa-plus"></i> Ver más noticias
+          </button>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════
-           STORIES — Acceso rápido por grado
+           ACTIVIDADES + AGENDA
       ══════════════════════════════════════════ -->
-      <div class="stories-section">
-        <div class="stories-label">Acceso rápido a las Aulas</div>
-        <div class="stories-row" id="stories-row">
-          <!-- Generado por JS -->
-        </div>
-      </div>
-
-      <!-- ══════════════════════════════════════════
-           GRILLA DE AULAS
-      ══════════════════════════════════════════ -->
-      <div class="home-section-header">
-        <h2 class="home-section-title">Nuestras Aulas Maker & Programación</h2>
-        <span class="home-section-count" id="grades-count"></span>
-      </div>
-
-      <div class="classrooms-grid" id="classrooms-grid">
-        <!-- Generado por JS -->
-      </div>
-
-      <!-- ══════════════════════════════════════════
-           SECCIÓN: ACTIVIDAD FAMILIAR (ESCAPE ROOMS NOSTÁLGICO)
-      ══════════════════════════════════════════ -->
-      <section class="family-activity-section" id="actividad-familiar">
-        <div class="family-activity-banner">
-          <div class="fab-content">
-            <div class="fab-badge"><i class="fas fa-heart"></i> Actividad para la Familia</div>
-            <h2 class="fab-title">Escape Rooms Nostálgico</h2>
-            <p class="fab-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia interactiva y colaborativa para todas las edades con acertijos, desafíos y mucha creatividad.</p>
-            <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html"
-               target="_blank" rel="noopener noreferrer" class="fab-btn">
-              <span>Entrar al Escape Room</span>
-              <i class="fas fa-external-link-alt"></i>
-            </a>
+      <section class="hn-section" id="actividades">
+        <div class="hn-section-head">
+          <div>
+            <span class="hn-kicker"><i class="fas fa-puzzle-piece"></i> Actividades</span>
+            <h2 class="hn-section-title">Para hacer en casa, en familia y en el taller</h2>
+            <p class="hn-section-sub">Propuestas vigentes, fichas para descargar y herramientas para seguir creando.</p>
           </div>
         </div>
-      </section>
 
-      <!-- ══════════════════════════════════════════
-           SECCIÓN: ACTIVIDAD DE CASA & RINCÓN MAKER
-      ══════════════════════════════════════════ -->
-      <section class="home-maker-corner" id="actividad-de-casa">
-        <div class="hmc-header">
-          <div class="hmc-badge"><i class="fas fa-house-user"></i> Actividad de Casa</div>
-          <h2 class="hmc-title">Inventario de Material &amp; Rincón Maker</h2>
-          <p class="hmc-sub">Herramientas virtuales, inventario de piezas y tips para continuar creando proyectos desde el hogar.</p>
-        </div>
-
-        <!-- Grilla de Actividades de Casa -->
-        <div class="actividades-grid" id="actividades-grid-casa">
-          <!-- Tarjeta 1: Actividad General - Inventario de Material -->
-          <div class="actividad-grid-card">
-            <div class="agc-thumb-container" onclick="if(window.openImageModal) window.openImageModal('https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', 'Inventario de Material del Taller Maker', 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo');" title="Hacé click para ver la ficha en pantalla completa">
-              <img src="https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo" alt="Inventario de Material del Taller Maker" class="agc-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'">
-              <span class="agc-zoom-badge"><i class="fas fa-search-plus"></i> Ver Ficha</span>
+        <div class="hn-two-col">
+          <div>
+            <div class="hn-act-toolbar">
+              <div class="hn-tabs" id="hn-act-tabs" role="tablist" aria-label="Tipo de actividad"></div>
+              <label class="sr-only" for="hn-act-grade">Filtrar actividades por grado</label>
+              <select id="hn-act-grade" class="hn-select"></select>
             </div>
-            <div class="agc-card-content">
-              <div class="agc-card-badge-row">
-                <span class="agc-card-badge"><i class="fas fa-boxes"></i> General • Sala de 5 a 6° Grado</span>
-              </div>
-              <h3 class="agc-card-title">Inventario de Material del Taller Maker</h3>
-              <p class="agc-card-desc">
-                ¿Qué herramientas, sensores y componentes usamos en nuestro taller? Actividad visual para observar, clasificar, contar y relacionar los materiales de robótica y circuitos.
-              </p>
-              <div class="agc-card-actions">
-                <button type="button" class="btn-agc-primary" onclick="if(window.openImageModal) window.openImageModal('https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', 'Inventario de Material del Taller Maker', 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo');">
-                  <i class="fas fa-eye"></i>
-                  <span>Ver Ficha</span>
-                </button>
-                <a href="https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary">
-                  <i class="fas fa-download"></i>
-                  <span>Descargar</span>
-                </a>
-                <a href="https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary" style="color:#2563EB;">
-                  <i class="fab fa-google-drive"></i>
-                </a>
-              </div>
-            </div>
+            <div class="hn-act-grid" id="hn-act-grid"></div>
           </div>
 
-          <!-- Tarjeta 2: Simulador micro:bit -->
-          <div class="actividad-grid-card">
-            <div class="agc-thumb-container sim-bg">
-              <span class="agc-icon-giant">💻</span>
+          <aside class="hn-aside">
+            <div class="hn-box hn-section" id="agenda" style="margin-top:0;">
+              <div class="hn-box-title"><i class="fas fa-calendar-day"></i> Agenda</div>
+              <ul class="hn-agenda-list" id="hn-agenda-list"></ul>
             </div>
-            <div class="agc-card-content">
-              <div class="agc-card-badge-row">
-                <span class="agc-card-badge" style="background:#EBF5FF;color:#1D4ED8;"><i class="fas fa-laptop-code"></i> Herramienta Virtual</span>
-              </div>
-              <h3 class="agc-card-title">Simulador micro:bit Online</h3>
-              <p class="agc-card-desc">
-                ¿No tenés la placa física en casa? Con el simulador oficial gratuito de Microsoft MakeCode podés probar luces, botones, brújula y sonidos en la pantalla en tiempo real.
-              </p>
-              <div class="agc-card-actions">
-                <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer" class="btn-agc-primary" style="background:#1D4ED8;">
-                  <i class="fas fa-external-link-alt"></i>
-                  <span>Abrir Editor MakeCode</span>
-                </a>
-              </div>
-            </div>
-          </div>
 
-          <!-- Tarjeta 3: Materiales Reciclables -->
-          <div class="actividad-grid-card">
-            <div class="agc-thumb-container craft-bg">
-              <span class="agc-icon-giant">📦</span>
+            <div class="hn-box hn-login-box">
+              <div class="hn-box-title"><i class="fas fa-user-astronaut"></i> ¿Sos alumno?</div>
+              <p>Ingresá para ver tu carpeta de Drive con tus proyectos y las actividades de tu grado primero.</p>
+              <button type="button" class="hn-login-btn" onclick="if(window.openLoginModal) window.openLoginModal();">
+                <i class="fas fa-user-circle"></i> Ingreso Alumnos
+              </button>
             </div>
-            <div class="agc-card-content">
-              <div class="agc-card-badge-row">
-                <span class="agc-card-badge" style="background:#FFF7ED;color:#C2410C;"><i class="fas fa-recycle"></i> Maker en Casa</span>
-              </div>
-              <h3 class="agc-card-title">Materiales que reciclamos</h3>
-              <p class="agc-card-desc">
-                ¡En casa no tiramos nada! Guardamos cajas de cartón fino, tubos, tapitas plásticas, clips metálicos y papel de aluminio. ¡Todo se transforma en ciencia y tecnología!
-              </p>
-              <div class="hmc-materials-pills" style="margin-top:auto;padding-top:12px;">
-                <span>📦 Cajas</span>
-                <span>🧻 Tubos</span>
-                <span>🔴 Tapitas</span>
-                <span>📎 Clips</span>
+
+            <div class="hn-box">
+              <div class="hn-box-title"><i class="fas fa-rocket"></i> Accesos rápidos</div>
+              <div class="hn-quick">
+                <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer"><span>⚡</span>MakeCode</a>
+                <a href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener noreferrer"><span>🐱</span>Scratch</a>
+                <a href="https://code.org/minecraft" target="_blank" rel="noopener noreferrer"><span>⛏️</span>Code.org</a>
+                <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html" target="_blank" rel="noopener noreferrer"><span>🗝️</span>Escape Room</a>
               </div>
             </div>
-          </div>
+          </aside>
         </div>
       </section>
 
@@ -556,6 +201,16 @@
   <footer class="site-footer">
     <p>© 2026 Colegio Paulo Freire &bull; Taller de Programación &bull; Hecho con ❤️ y mucho código</p>
   </footer>
+
+  <!-- ══════════════════════════════════════════════
+       LECTOR DE NOTICIAS
+  ══════════════════════════════════════════════ -->
+  <div id="hn-reader" class="hn-reader" role="dialog" aria-modal="true" aria-labelledby="hn-reader-title" aria-hidden="true">
+    <div class="hn-reader-dialog">
+      <button type="button" class="hn-reader-close" id="hn-reader-close" aria-label="Cerrar nota"><i class="fas fa-times"></i></button>
+      <div id="hn-reader-body"></div>
+    </div>
+  </div>
 
   <!-- ══════════════════════════════════════════════
        MODAL UNIVERSAL
@@ -595,232 +250,22 @@
   <!-- Firebase SDKs (Cloud Database - Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=94"></script>
-  <script src="js/data.js?v=94"></script>
-  <script src="js/students.js?v=94"></script>
-  <script src="js/gdrive_viewer.js?v=94"></script>
-  <script src="js/auth.js?v=94"></script>
-  <script src="js/audio.js?v=94"></script>
+  <script src="js/firebase-config.js?v=95"></script>
+  <script src="js/data.js?v=95"></script>
+  <script src="js/students.js?v=95"></script>
+  <script src="js/gdrive_viewer.js?v=95"></script>
+  <script src="js/auth.js?v=95"></script>
+  <script src="js/audio.js?v=95"></script>
   <script src="js/games/neon_runner.js"></script>
   <script src="js/games/retro_snake.js"></script>
   <script src="js/games/code_breaker.js"></script>
   <script src="js/games/dev_quiz.js"></script>
   <script src="js/games/tools.js"></script>
   <script src="js/modal.js"></script>
-  <script src="js/main.js?v=94"></script>
-
-  <!-- Hero Carousel & Mobile Menu -->
-  <script>
-  (function() {
-    // Mobile Nav Toggle
-    const mobBtn = document.getElementById('mobile-menu-btn');
-    const nav    = document.getElementById('topbar-nav');
-    if (mobBtn && nav) {
-      mobBtn.addEventListener('click', () => {
-        nav.classList.toggle('mobile-open');
-      });
-    }
-
-    // Hero Carousel
-    const track = document.getElementById('hc-track');
-    const dots  = document.getElementById('hc-dots');
-    if (!track) return;
-    const slides = track.querySelectorAll('.hc-slide');
-    const total  = slides.length;
-    let cur = 0, timer = null;
-
-    slides.forEach((_, i) => {
-      const d = document.createElement('span');
-      d.className = 'hc-dot' + (i === 0 ? ' active' : '');
-      d.onclick = () => go(i);
-      dots.appendChild(d);
-    });
-
-    function go(n) {
-      cur = (n + total) % total;
-      track.style.transform = `translateX(-${cur * 100}%)`;
-      dots.querySelectorAll('.hc-dot').forEach((d, i) =>
-        d.classList.toggle('active', i === cur)
-      );
-    }
-
-    function reset() { clearInterval(timer); timer = setInterval(() => go(cur + 1), 5000); }
-
-    const prevBtn = document.getElementById('hc-prev');
-    const nextBtn = document.getElementById('hc-next');
-    if (prevBtn) prevBtn.onclick = () => { go(cur - 1); reset(); };
-    if (nextBtn) nextBtn.onclick = () => { go(cur + 1); reset(); };
-
-    // Swipe táctil
-    let tx = 0;
-    track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-    track.addEventListener('touchend',   e => {
-      const dx = e.changedTouches[0].clientX - tx;
-      if (Math.abs(dx) > 40) { go(dx < 0 ? cur + 1 : cur - 1); reset(); }
-    }, { passive: true });
-
-    // Dropdown Controller: Exclusivo (solo 1 abierto a la vez)
-    const allDropdowns = document.querySelectorAll('.topbar-nav-dropdown');
-    allDropdowns.forEach(dropdown => {
-      const trigger = dropdown.querySelector('.dropdown-trigger');
-
-      dropdown.addEventListener('mouseenter', () => {
-        allDropdowns.forEach(d => {
-          if (d !== dropdown) d.classList.remove('is-open');
-        });
-      });
-
-      dropdown.addEventListener('mouseleave', () => {
-        dropdown.classList.remove('is-open');
-      });
-
-      if (trigger) {
-        trigger.addEventListener('click', (e) => {
-          const href = trigger.getAttribute('href');
-          if (href === 'javascript:void(0)' || href?.startsWith('#')) {
-            e.preventDefault();
-          }
-          const isOpen = dropdown.classList.contains('is-open');
-          allDropdowns.forEach(d => d.classList.remove('is-open'));
-          if (!isOpen) {
-            dropdown.classList.add('is-open');
-          }
-        });
-      }
-    });
-
-    // Cerrar desplegables al hacer click fuera o presionar Escape
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.topbar-nav-dropdown')) {
-        allDropdowns.forEach(d => d.classList.remove('is-open'));
-      }
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        allDropdowns.forEach(d => d.classList.remove('is-open'));
-      }
-    });
-
-    reset();
-
-    // ── FEATURED PROJECTS CAROUSEL ──
-    const fpData = [
-      {
-        grade: 'Sala de 5 años',
-        title: 'El Sombrero Luminoso de San Patricio 🍀🎩',
-        desc: 'Construimos un sombrero con vincha que enciende un LED verde en el trébol usando cinta de cobre conductora y una pila botón CR2032 con interruptor que se activa con la cabeza.',
-        chips: ['🍀 San Patricio', '⚡ Circuito de Papel', '💡 LED verde', '🔋 Pila CR2032'],
-        link: 'aula.html?grado=sala5'
-      },
-      {
-        grade: '1° Grado',
-        title: 'El Marca-Libros Origami de Tom Sawyer 📖🎩💡',
-        desc: 'Doblamos una hoja cuadrada de papel glacé en origami para calzar en la esquina del libro y montamos un circuito con LED chato en el gorro de Tom Sawyer.',
-        chips: ['📖 Tom Sawyer', '⚡ Circuito de Papel', '💡 LED Chato', '📄 Papel Glacé'],
-        link: 'aula.html?grado=grado1'
-      },
-      {
-        grade: '2° Grado',
-        title: 'Cuento Interactivo con personajes animados 📖',
-        desc: 'Creamos cuentos digitales donde los personajes reaccionan al hacer click. Los chicos escribieron el guión, diseñaron escenarios y programaron las interacciones en Scratch.',
-        chips: ['💻 Scratch', '📖 Narrativa digital', '🎭 Personajes', '🖱️ Eventos click'],
-        link: 'aula.html?grado=grado2'
-      },
-      {
-        grade: '3° Grado',
-        title: 'Guitarra Musical de Cartón con micro:bit 🎸',
-        desc: 'Los alumnos diseñaron el cuerpo de la guitarra en cartón corrugado y cinta conductora. Conectaron los contactos a la BBC micro:bit con cables cocodrilo y programaron notas musicales en MakeCode.',
-        chips: ['📦 Cartón reciclado', '⚡ BBC micro:bit v2', '🐊 Cables cocodrilo', '🎵 MakeCode Audio'],
-        link: 'aula.html?grado=grado3'
-      },
-      {
-        grade: '4° Grado',
-        title: 'Semáforo Inteligente con LEDs y micro:bit 🚦',
-        desc: 'Construimos un semáforo funcional con estructura de cartón, LEDs de colores y la placa micro:bit. Programamos la secuencia roja-amarilla-verde con temporizadores en MakeCode.',
-        chips: ['📦 Cartón y LEDs', '⚡ BBC micro:bit', '🔌 Cables cocodrilo', '💡 Secuencias'],
-        link: 'aula.html?grado=grado4'
-      },
-      {
-        grade: '5° Grado',
-        title: 'Robot Explorador de Cartón con sensores 🤖',
-        desc: 'Diseñamos un robot con cuerpo de cartón reciclado, ruedas de tapitas y un servomotor controlado por micro:bit. Los sensores de luz hacen que el robot reaccione al ambiente.',
-        chips: ['📦 Cartón reciclado', '⚡ Servomotor', '🔴 Tapitas plásticas', '💻 MakeCode'],
-        link: 'aula.html?grado=grado5'
-      },
-      {
-        grade: '6° Grado',
-        title: 'El Arquero con Inteligencia Artificial en Canva ⚽🧤🤖',
-        desc: 'Los alumnos sacaron su foto en el aula, la subieron a Canva y usaron el Quitafondos IA para aislar su cabeza. Luego la montaron sobre la imagen de un arquero reemplazando la cabeza original y con la IA generativa (Magic Animate) transformaron el fotomontaje en una animación de atajada en video MP4 o GIF.',
-        chips: ['📸 Foto en Aula', '✂️ Reemplazo de Cabeza', '🤖 Quitafondos IA', '✨ Magic Animate'],
-        link: 'aula.html?grado=grado6'
-      }
-    ];
-
-    const fpCards    = document.querySelectorAll('.fp-card');
-    const fpSumGrade = document.getElementById('fp-sum-grade');
-    const fpSumTitle = document.getElementById('fp-sum-title');
-    const fpSumDesc  = document.getElementById('fp-sum-desc');
-    const fpSumChips = document.getElementById('fp-sum-chips');
-    const fpSumBtn   = document.getElementById('fp-sum-btn');
-    const fpBar      = document.getElementById('fp-progress-bar');
-    let fpCur = 0, fpTimer = null;
-
-    function fpGo(idx) {
-      fpCur = idx;
-      const p = fpData[idx];
-      // Update active card
-      fpCards.forEach(c => c.classList.toggle('active', +c.dataset.fp === idx));
-      // Update summary
-      if (fpSumGrade) fpSumGrade.textContent = p.grade;
-      if (fpSumTitle) fpSumTitle.textContent = p.title;
-      if (fpSumDesc)  fpSumDesc.textContent  = p.desc;
-      if (fpSumBtn) {
-        fpSumBtn.href = 'javascript:void(0)';
-        fpSumBtn.onclick = function(e) {
-          e.preventDefault();
-          var student = window.getActiveStudent ? window.getActiveStudent() : null;
-          if (!student) {
-            if (window.openLoginModal) window.openLoginModal();
-          } else {
-            window.location.href = p.link;
-          }
-        };
-      }
-      if (fpBar) {
-        fpBar.classList.remove('animating');
-        void fpBar.offsetWidth; // force reflow
-        fpBar.classList.add('animating');
-      }
-    }
-
-    function fpReset() {
-      clearInterval(fpTimer);
-      fpTimer = setInterval(() => fpGo((fpCur + 1) % fpData.length), 6000);
-    }
-
-    if (fpCards.length) {
-      fpCards.forEach(card => {
-        card.addEventListener('click', () => {
-          fpGo(+card.dataset.fp);
-          fpReset();
-        });
-      });
-      // Initial state
-      fpGo(0);
-      fpReset();
-    }
-
-    window.scrollToActividadGeneral = function() {
-      const el = document.getElementById('actividad-de-casa') || document.getElementById('actividades-grid-casa');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    };
-
-    // Inicializar Panel Centrado de Google Drive
-    if (window.renderGDriveDashboard) {
-      window.renderGDriveDashboard('student-drive-dashboard-container');
-    }
-  })();
-  </script>
+  <script src="js/main.js?v=95"></script>
+  <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
+  <script src="js/news.js?v=1"></script>
+  <script src="js/home.js?v=1"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 2.5s -->
   <script>
@@ -843,21 +288,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
