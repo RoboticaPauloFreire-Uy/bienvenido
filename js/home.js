@@ -402,10 +402,6 @@
   function seleccionarGrupoJuegos(gradeId, actualizarHash) {
     filtroGrupoJuegos = gradeId || 'todos';
 
-    // Sincronizar select
-    var sel = document.getElementById('hn-juegos-grade-select');
-    if (sel) sel.value = filtroGrupoJuegos;
-
     // Sincronizar pestañas
     document.querySelectorAll('.hn-grade-tab').forEach(function (t) {
       t.classList.toggle('active', t.dataset.gradeId === filtroGrupoJuegos);
@@ -422,7 +418,6 @@
   function renderFiltrosJuegos() {
     var grades = getGradesConJuegos();
     var tabsCont = document.getElementById('hn-juegos-grade-tabs');
-    var sel = document.getElementById('hn-juegos-grade-select');
     if (!tabsCont || !grades.length) return;
 
     var totalJuegos = grades.reduce(function (acc, g) { return acc + (g.games ? g.games.length : 0); }, 0);
@@ -436,7 +431,7 @@
     // Pestañas visuales
     var tabsHtml = '<button type="button" class="hn-grade-tab' + (filtroGrupoJuegos === 'todos' ? ' active' : '') + '" data-grade-id="todos">' +
       '<span class="tab-icon">⭐</span>' +
-      '<span>Todos los grupos</span>' +
+      '<span class="tab-name">Todos</span>' +
       '<span class="tab-count">' + totalJuegos + '</span>' +
     '</button>' +
     grades.map(function (g) {
@@ -445,7 +440,7 @@
       return '<button type="button" class="hn-grade-tab' + (on ? ' active' : '') + '" data-grade-id="' + esc(g.id) + '" ' +
         'style="--tab-color:' + esc(g.color) + ';--tab-bg:' + esc(g.colorLight) + ';">' +
         '<span class="tab-icon">' + esc(g.icon || '🎮') + '</span>' +
-        '<span>' + esc(g.shortName || g.name) + '</span>' +
+        '<span class="tab-name">' + esc(g.shortName || g.name) + '</span>' +
         '<span class="tab-count">' + count + '</span>' +
       '</button>';
     }).join('');
@@ -457,19 +452,6 @@
         seleccionarGrupoJuegos(btn.dataset.gradeId);
       });
     });
-
-    // Select para móviles
-    if (sel && !sel.options.length) {
-      sel.innerHTML = '<option value="todos">Todos los grupos (' + totalJuegos + ')</option>' +
-        grades.map(function (g) {
-          return '<option value="' + esc(g.id) + '">' + esc(g.icon + ' ' + g.name) + ' (' + ((g.games || []).length) + ')</option>';
-        }).join('');
-
-      sel.value = filtroGrupoJuegos;
-      sel.addEventListener('change', function () {
-        seleccionarGrupoJuegos(sel.value);
-      });
-    }
   }
 
   function renderJuegos() {
