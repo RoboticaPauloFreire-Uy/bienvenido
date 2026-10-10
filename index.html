@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=95">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=1">
+  <link rel="stylesheet" href="css/home.css?v=2">
 </head>
 <body>
 
@@ -134,8 +134,8 @@
             <a href="#actividades" class="hn-shortcut-card" onclick="window.switchView('actividades'); return false;">
               <div class="hsc-icon" style="background:#E8F5E9;color:#2E7D32;"><i class="fas fa-puzzle-piece"></i></div>
               <div class="hsc-text">
-                <span class="hsc-title">Actividades y Retos</span>
-                <span class="hsc-desc">Fichas para descargar, simuladores y propuestas</span>
+                <span class="hsc-title">Actividades</span>
+                <span class="hsc-desc">En clase y para hacer en casa</span>
               </div>
               <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
@@ -187,17 +187,53 @@
           <div class="hn-section-head">
             <div>
               <span class="hn-kicker"><i class="fas fa-puzzle-piece"></i> Actividades</span>
-              <h2 class="hn-section-title">Para hacer en casa, en familia y en el taller</h2>
-              <p class="hn-section-sub">Propuestas vigentes, fichas para descargar y herramientas para seguir creando.</p>
+              <h2 class="hn-section-title">Actividades del Taller</h2>
+              <p class="hn-section-sub">Lo que trabajamos en clase y las propuestas para seguir creando en casa.</p>
+            </div>
+            <div class="hn-controls">
+              <label class="sr-only" for="hn-act-grade">Filtrar actividades por grado</label>
+              <select id="hn-act-grade" class="hn-select"></select>
             </div>
           </div>
 
-          <div class="hn-act-toolbar">
-            <div class="hn-tabs" id="hn-act-tabs" role="tablist" aria-label="Tipo de actividad"></div>
-            <label class="sr-only" for="hn-act-grade">Filtrar actividades por grado</label>
-            <select id="hn-act-grade" class="hn-select"></select>
+          <!-- Selector de sección -->
+          <div class="hn-seg" role="tablist" aria-label="Sección de actividades">
+            <button type="button" class="hn-seg-btn active" data-seccion="clase" role="tab" aria-selected="true" aria-controls="act-clase">
+              <span class="hn-seg-emoji">🏫</span>
+              <span class="hn-seg-txt"><strong>En clase</strong><small>Proyectos del taller</small></span>
+              <span class="hn-seg-count" id="hn-count-clase">0</span>
+            </button>
+            <button type="button" class="hn-seg-btn" data-seccion="casa" role="tab" aria-selected="false" aria-controls="act-casa">
+              <span class="hn-seg-emoji">🏠</span>
+              <span class="hn-seg-txt"><strong>En casa</strong><small>Para hacer solo o en familia</small></span>
+              <span class="hn-seg-count" id="hn-count-casa">0</span>
+            </button>
           </div>
-          <div class="hn-act-grid" id="hn-act-grid"></div>
+
+          <!-- SECCIÓN: EN CLASE -->
+          <div id="act-clase" class="hn-act-panel active" role="tabpanel">
+            <div class="hn-act-panel-head clase">
+              <i class="fas fa-chalkboard-teacher"></i>
+              <div>
+                <h3>Actividades en clase</h3>
+                <p>Proyectos que estamos construyendo y programando en el taller con cada grado.</p>
+              </div>
+            </div>
+            <div class="hn-act-grid" id="hn-act-grid-clase"></div>
+          </div>
+
+          <!-- SECCIÓN: EN CASA -->
+          <div id="act-casa" class="hn-act-panel" role="tabpanel">
+            <div class="hn-act-panel-head casa">
+              <i class="fas fa-house-user"></i>
+              <div>
+                <h3>Actividades en casa</h3>
+                <p>Fichas, simuladores y desafíos para seguir aprendiendo desde el hogar.</p>
+              </div>
+            </div>
+            <div class="hn-tabs hn-casa-filters" id="hn-casa-filters" role="toolbar" aria-label="Tipo de actividad en casa"></div>
+            <div class="hn-act-grid" id="hn-act-grid-casa"></div>
+          </div>
         </section>
       </div>
 
@@ -313,8 +349,8 @@
   <script src="js/modal.js"></script>
   <script src="js/main.js?v=95"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
-  <script src="js/news.js?v=1"></script>
-  <script src="js/home.js?v=1"></script>
+  <script src="js/news.js?v=2"></script>
+  <script src="js/home.js?v=2"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 2.5s -->
   <script>

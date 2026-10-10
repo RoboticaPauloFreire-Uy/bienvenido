@@ -14,15 +14,18 @@
  *  • noticias     → notas con foto. La que tenga destacada:true
  *                   aparece grande arriba (si hay varias, la más
  *                   reciente).
- *  • actividades  → propuestas para hacer en casa, en familia o
- *                   en el taller.
+ *  • actividades  → se dividen en dos secciones: EN CLASE y
+ *                   EN CASA (según el campo 'tipo').
  *  • agenda       → próximas fechas (las fechas pasadas se
  *                   ocultan solas).
  *
  * 📅 Fechas: siempre en formato 'AAAA-MM-DD'  (ej. '2026-10-09')
  *
  * 🏷️ Categorías de noticias:  'taller' | 'proyectos' | 'eventos' | 'familias'
- * 🧩 Tipos de actividades:     'casa'   | 'familia'   | 'taller'
+ * 🧩 Tipos de actividades (definen la sección donde aparecen):
+ *      'clase'   → sección 🏫 EN CLASE
+ *      'casa'    → sección 🏠 EN CASA (para hacer solo)
+ *      'familia' → sección 🏠 EN CASA (para hacer en familia)
  * 🎓 Grados:  'todos' | 'sala5' | 'grado1' | 'grado2' | 'grado3'
  *             | 'grado4' | 'grado5' | 'grado6'
  *             (en actividades se puede poner una lista: ['grado3','grado4'])
@@ -243,7 +246,7 @@ window.HOME_CONTENT = {
       id: 'act-guitarra',
       titulo: 'Guitarra musical de cartón',
       descripcion: 'Diseñamos el cuerpo en cartón corrugado, sumamos cinta conductora y programamos notas musicales en la micro:bit.',
-      tipo: 'taller',
+      tipo: 'clase',
       grados: ['grado3'],
       icono: '🎸',
       color: '#00838F',
@@ -254,7 +257,7 @@ window.HOME_CONTENT = {
       id: 'act-cuento-scratch',
       titulo: 'Cuento interactivo en Scratch',
       descripcion: 'Escribimos el guion, diseñamos escenarios y programamos personajes que reaccionan al hacer click.',
-      tipo: 'taller',
+      tipo: 'clase',
       grados: ['grado2'],
       icono: '📖',
       color: '#6A1B9A',
@@ -268,12 +271,51 @@ window.HOME_CONTENT = {
       id: 'act-semaforo',
       titulo: 'Semáforo inteligente',
       descripcion: 'Estructura de cartón, LEDs de colores y micro:bit para programar la secuencia rojo-amarillo-verde con temporizadores.',
-      tipo: 'taller',
+      tipo: 'clase',
       grados: ['grado4'],
       icono: '🚦',
       color: '#EF6C00',
       desde: '2026-09-14',
       hasta: '2026-10-03'
+    },
+    {
+      id: 'act-servo-joystick',
+      titulo: 'Servomotor con joystick',
+      descripcion: 'Conectamos un servomotor y un joystick a la micro:bit y programamos en MakeCode el movimiento del brazo robótico.',
+      tipo: 'clase',
+      grados: ['grado5'],
+      icono: '🕹️',
+      color: '#2E7D32',
+      imagen: 'img/proyectos/servo_joystick_makecode_cover.svg',
+      desde: '2026-09-28',
+      hasta: '2026-10-24'
+    },
+    {
+      id: 'act-arquero-ia',
+      titulo: 'El arquero con IA en Canva',
+      descripcion: 'Foto en el aula, quitafondos con IA y Magic Animate para convertirnos en arqueros animados.',
+      tipo: 'clase',
+      grados: ['grado6'],
+      icono: '🧤',
+      color: '#C2185B',
+      imagen: 'img/proyectos/canva_arquero_ia_cover.svg',
+      desde: '2026-10-01',
+      hasta: '2026-10-17',
+      botones: [
+        { texto: 'Abrir Canva', url: 'https://www.canva.com/', icono: 'fas fa-external-link-alt', principal: true }
+      ]
+    },
+    {
+      id: 'act-banderas-paint',
+      titulo: 'Banderas del Mundial en Paint',
+      descripcion: 'Usamos formas, rellenos y colores en Paint para recrear banderas y armar una cancha de fútbol digital.',
+      tipo: 'clase',
+      grados: ['grado2'],
+      icono: '🎨',
+      color: '#6A1B9A',
+      imagen: 'img/proyectos/banderas_mundial_paint_cover.png',
+      desde: '2026-09-15',
+      hasta: '2026-10-10'
     },
     {
       id: 'act-minecraft',

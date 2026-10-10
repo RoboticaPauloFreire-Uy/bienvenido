@@ -26,10 +26,15 @@
   };
 
   var TIPOS = {
-    casa:    { nombre: 'De casa',     icono: 'fas fa-house-user' },
-    familia: { nombre: 'En familia',  icono: 'fas fa-heart' },
-    taller:  { nombre: 'En el taller', icono: 'fas fa-tools' }
+    clase:   { nombre: 'En clase',   icono: 'fas fa-chalkboard-teacher' },
+    taller:  { nombre: 'En clase',   icono: 'fas fa-chalkboard-teacher' }, // alias antiguo de 'clase'
+    casa:    { nombre: 'En casa',    icono: 'fas fa-house-user' },
+    familia: { nombre: 'En familia', icono: 'fas fa-heart' }
   };
+
+  // Cada tipo de actividad pertenece a una de las dos secciones
+  var SECCION_DE_TIPO = { clase: 'clase', taller: 'clase', casa: 'casa', familia: 'casa' };
+  function seccionDe(a) { return SECCION_DE_TIPO[a.tipo] || 'clase'; }
 
   var GRADOS_FALLBACK = [
     { id: 'sala5', name: 'Sala de 5 años' }, { id: 'grado1', name: '1° Grado' },
@@ -234,8 +239,9 @@
     }
   }
 
-  /* ───────────── Actividades ───────────── */
-  var filtroTipo = 'todas';
+  /* ───────────── Actividades (dos secciones: En clase / En casa) ───────────── */
+  var seccionAct = 'clase';      // sección visible
+  var filtroCasa = 'todas';      // dentro de "En casa": todas | casa | familia
   var filtroGradoAct = 'todos';
 
   function estadoActividad(a) {
@@ -250,24 +256,54 @@
 
   var ORDEN_ESTADO = { nueva: 0, curso: 1, proxima: 2, finalizada: 3 };
 
-  function renderFiltrosActividades() {
-    var cont = document.getElementById('hn-act-tabs');
-    if (!cont) return;
-    var tabs = [{ id: 'todas', nombre: 'Todas', icono: 'fas fa-th-large' }].concat(
-      Object.keys(TIPOS).map(function (k) { return { id: k, nombre: TIPOS[k].nombre, icono: TIPOS[k].icono }; })
-    );
-    cont.innerHTML = tabs.map(function (t) {
-      var n = t.id === 'todas' ? (C.actividades || []).length : (C.actividades || []).filter(function (a) { return a.tipo === t.id; }).length;
-      return '<button type="button" class="hn-tab' + (t.id === filtroTipo ? ' active' : '') + '" data-tipo="' + t.id + '">' +
-        '<i class="' + t.icono + '"></i> ' + esc(t.nombre) + ' <span class="hn-tab-count">' + n + '</span></button>';
-    }).join('');
-    cont.querySelectorAll('.hn-tab').forEach(function (b) {
-      b.addEventListener('click', function () {
-        filtroTipo = b.dataset.tipo;
-        renderFiltrosActividades();
-        renderActividades();
-      });
+  function pasaGrado(a) {
+    var gr = a.grados || ['todos'];
+    return filtroGradoAct === 'todos' || gr.indexOf('todos') > -1 || gr.indexOf(filtroGradoAct) > -1;
+  }
+
+  function mostrarSeccionAct(sec, actualizarHash) {
+    seccionAct = sec === 'casa' ? 'casa' : 'clase';
+    document.querySelectorAll('.hn-act-panel').forEach(function (p) {
+      p.classList.toggle('active', p.id === 'act-' + seccionAct);
     });
+    document.querySelectorAll('.hn-seg-btn').forEach(function (b) {
+      var on = b.dataset.seccion === seccionAct;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    if (actualizarHash !== false && history.replaceState) {
+      history.replaceState(null, '', '#actividades-' + seccionAct);
+    }
+  }
+
+  function renderFiltrosActividades() {
+    // Selector de sección (En clase / En casa)
+    document.querySelectorAll('.hn-seg-btn').forEach(function (b) {
+      if (b.dataset.bound) return;
+      b.dataset.bound = '1';
+      b.addEventListener('click', function () { mostrarSeccionAct(b.dataset.seccion); });
+    });
+
+    // Filtro interno de "En casa"
+    var cont = document.getElementById('hn-casa-filters');
+    if (cont) {
+      var opciones = [
+        { id: 'todas', nombre: 'Todas', icono: 'fas fa-th-large' },
+        { id: 'casa', nombre: 'Individual', icono: 'fas fa-user' },
+        { id: 'familia', nombre: 'En familia', icono: 'fas fa-heart' }
+      ];
+      cont.innerHTML = opciones.map(function (o) {
+        return '<button type="button" class="hn-tab' + (o.id === filtroCasa ? ' active' : '') + '" data-casa="' + o.id + '">' +
+          '<i class="' + o.icono + '"></i> ' + esc(o.nombre) + '</button>';
+      }).join('');
+      cont.querySelectorAll('.hn-tab').forEach(function (b) {
+        b.addEventListener('click', function () {
+          filtroCasa = b.dataset.casa;
+          renderFiltrosActividades();
+          renderActividades();
+        });
+      });
+    }
 
     var sel = document.getElementById('hn-act-grade');
     if (sel && !sel.options.length) {
@@ -281,17 +317,29 @@
   }
 
   function renderActividades() {
-    var grid = document.getElementById('hn-act-grid');
+    var todas = C.actividades || [];
+    var clase = todas.filter(function (a) { return seccionDe(a) === 'clase' && pasaGrado(a); });
+    var casa = todas.filter(function (a) {
+      return seccionDe(a) === 'casa' && pasaGrado(a) && (filtroCasa === 'todas' || a.tipo === filtroCasa);
+    });
+
+    renderGridActividades('hn-act-grid-clase', clase, '🏫', 'No hay actividades de clase para este grado.');
+    renderGridActividades('hn-act-grid-casa', casa, '🏠', 'No hay actividades para hacer en casa con ese filtro.');
+
+    // Contadores en el selector (respetan el filtro de grado)
+    var nClase = document.getElementById('hn-count-clase');
+    var nCasa = document.getElementById('hn-count-casa');
+    if (nClase) nClase.textContent = clase.length;
+    if (nCasa) nCasa.textContent = todas.filter(function (a) { return seccionDe(a) === 'casa' && pasaGrado(a); }).length;
+  }
+
+  function renderGridActividades(gridId, actividades, emoji, vacio) {
+    var grid = document.getElementById(gridId);
     if (!grid) return;
     var st = alumno();
     var miGrado = st && st.gradeId;
 
-    var lista = (C.actividades || []).filter(function (a) {
-      var gr = a.grados || ['todos'];
-      var okTipo = filtroTipo === 'todas' || a.tipo === filtroTipo;
-      var okGr = filtroGradoAct === 'todos' || gr.indexOf('todos') > -1 || gr.indexOf(filtroGradoAct) > -1;
-      return okTipo && okGr;
-    }).map(function (a) {
+    var lista = actividades.map(function (a) {
       var gr = a.grados || ['todos'];
       return { a: a, estado: estadoActividad(a), mia: !!(miGrado && gr.indexOf(miGrado) > -1) };
     }).sort(function (x, y) {
@@ -302,7 +350,7 @@
     });
 
     if (!lista.length) {
-      grid.innerHTML = '<div class="hn-empty"><span>🧩</span>No hay actividades con ese filtro.</div>';
+      grid.innerHTML = '<div class="hn-empty"><span>' + emoji + '</span>' + esc(vacio) + '</div>';
       return;
     }
 
@@ -525,9 +573,13 @@
   function handleHash() {
     var raw = location.hash.replace(/^#/, '');
     if (!raw) return;
+    var sub = raw.match(/^actividades-(clase|casa)$/);
     if (/^noticia-/.test(raw)) {
       switchView('noticias', false);
       abrirNoticia(raw.replace(/^noticia-/, ''), false);
+    } else if (sub) {
+      switchView('actividades', false);
+      mostrarSeccionAct(sub[1], false);
     } else if (VALID_VIEWS.indexOf(raw) !== -1) {
       switchView(raw, false);
     }
@@ -587,4 +639,5 @@
 
   window.openNoticia = abrirNoticia;
   window.switchView = switchView;
+  window.showActividades = function (sec) { switchView('actividades', false); mostrarSeccionAct(sec); };
 })();
