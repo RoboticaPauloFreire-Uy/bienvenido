@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=95">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=4">
+  <link rel="stylesheet" href="css/home.css?v=5">
 </head>
 <body>
 
@@ -62,6 +62,10 @@
         <a href="#juegos" class="topbar-nav-link" data-view="juegos" onclick="window.switchView('juegos'); return false;">
           <i class="fas fa-gamepad"></i>
           <span>Juegos</span>
+        </a>
+        <a href="#muro" class="topbar-nav-link" data-view="muro" onclick="window.switchView('muro'); return false;">
+          <i class="fas fa-photo-video"></i>
+          <span>Muro</span>
         </a>
         <a href="#agenda" class="topbar-nav-link" data-view="agenda" onclick="window.switchView('agenda'); return false;">
           <i class="fas fa-calendar-day"></i>
@@ -162,6 +166,15 @@
               <div class="hsc-text">
                 <span class="hsc-title">Juegos</span>
                 <span class="hsc-desc">Por grupo según nivel y edad</span>
+              </div>
+              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a href="#muro" class="hn-shortcut-card" onclick="window.switchView('muro'); return false;">
+              <div class="hsc-icon" style="background:#E0F7FA;color:#00838F;"><i class="fas fa-photo-video"></i></div>
+              <div class="hsc-text">
+                <span class="hsc-title">Muro</span>
+                <span class="hsc-desc">Videos y fotos de las clases</span>
               </div>
               <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
@@ -273,7 +286,47 @@
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 6: AGENDA
+           VISTA 6: MURO (TIPO RED SOCIAL / FEED)
+      ══════════════════════════════════════════ -->
+      <div id="view-muro" class="hn-view">
+        <section class="hn-section" id="muro" style="margin-top:0;">
+          <div class="hn-section-head">
+            <div>
+              <span class="hn-kicker"><i class="fas fa-photo-video"></i> Muro del Taller</span>
+              <h2 class="hn-section-title">Muro de Actividades</h2>
+              <p class="hn-section-sub">Videos, fotos y registros en vivo de lo que construimos y programamos en clase.</p>
+            </div>
+          </div>
+
+          <!-- Filtros de Contenido del Muro -->
+          <div class="hn-muro-toolbar">
+            <div class="hn-tabs" id="hn-muro-media-filters" role="toolbar" aria-label="Filtrar por tipo de publicación">
+              <button type="button" class="hn-tab active" data-muro-media="todos">
+                <i class="fas fa-stream"></i> Todo el muro (<span id="hn-muro-count-todos">0</span>)
+              </button>
+              <button type="button" class="hn-tab" data-muro-media="video">
+                <i class="fas fa-play-circle"></i> Solo videos 🎬 (<span id="hn-muro-count-videos">0</span>)
+              </button>
+              <button type="button" class="hn-tab" data-muro-media="galeria">
+                <i class="fas fa-images"></i> Fotos y galerías 📷 (<span id="hn-muro-count-fotos">0</span>)
+              </button>
+            </div>
+
+            <div class="hn-muro-grade-wrap">
+              <label for="hn-muro-grade-select" class="sr-only">Filtrar por grupo</label>
+              <select id="hn-muro-grade-select" class="hn-select"></select>
+            </div>
+          </div>
+
+          <!-- Contenedor del Feed centrado estilo Facebook -->
+          <div class="hn-muro-feed-container">
+            <div class="hn-muro-feed" id="hn-muro-feed"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           VISTA 7: AGENDA
       ══════════════════════════════════════════ -->
       <div id="view-agenda" class="hn-view">
         <section class="hn-section" id="agenda" style="margin-top:0;">
@@ -384,8 +437,8 @@
   <script src="js/modal.js"></script>
   <script src="js/main.js?v=95"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
-  <script src="js/news.js?v=2"></script>
-  <script src="js/home.js?v=4"></script>
+  <script src="js/news.js?v=5"></script>
+  <script src="js/home.js?v=5"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 2.5s -->
   <script>
@@ -406,5 +459,8 @@
       });
     })();
   </script>
+
+  <!-- Notificación flotante (Toast) para compartir enlace -->
+  <div id="hn-toast" class="hn-toast" aria-live="polite"></div>
 </body>
 </html>

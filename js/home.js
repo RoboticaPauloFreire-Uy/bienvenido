@@ -584,6 +584,254 @@
     }).join('');
   }
 
+  /* ───────────── Muro de Actividades (Estilo Red Social / Feed) ───────────── */
+  var filtroMediaMuro = 'todos';
+  var filtroGradoMuro = 'todos';
+
+  function getPostUrl(id) {
+    var base = location.origin ? (location.origin + location.pathname) : location.href.split('#')[0];
+    return base + '#post-' + id;
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('hn-toast');
+    if (!t) return;
+    t.innerHTML = '<i class="fas fa-check-circle"></i> <span>' + esc(msg) + '</span>';
+    t.classList.add('show');
+    clearTimeout(t._hideTimer);
+    t._hideTimer = setTimeout(function () {
+      t.classList.remove('show');
+    }, 3200);
+  }
+
+  function copiarEnlacePost(id) {
+    var url = getPostUrl(id);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        showToast('Enlace de la publicación copiado al portapapeles');
+      }).catch(function () {
+        window.prompt('Copia este enlace directo al post:', url);
+      });
+    } else {
+      window.prompt('Copia este enlace directo al post:', url);
+    }
+  }
+
+  function compartirPost(id) {
+    var post = (C.muro || []).filter(function (p) { return p.id === id; })[0];
+    if (!post) return;
+    var url = getPostUrl(id);
+    var previewText = (post.texto || '').length > 95 ? post.texto.substring(0, 95) + '...' : post.texto;
+    if (navigator.share) {
+      navigator.share({
+        title: (post.autor || 'Muro del Taller') + ' · Colegio Paulo Freire',
+        text: previewText,
+        url: url
+      }).catch(function (err) {
+        if (err && err.name !== 'AbortError') {
+          copiarEnlacePost(id);
+        }
+      });
+    } else {
+      copiarEnlacePost(id);
+    }
+  }
+
+  function toYouTubeEmbed(url) {
+    if (!url) return '';
+    if (url.indexOf('youtube.com/embed/') !== -1) return url;
+    var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/);
+    if (m && m[1]) {
+      return 'https://www.youtube.com/embed/' + m[1];
+    }
+    return url;
+  }
+
+  function renderFiltrosMuro() {
+    var sel = document.getElementById('hn-muro-grade-select');
+    if (sel) {
+      var html = '<option value="todos">Todos los grupos</option>';
+      GRADOS.forEach(function (g) {
+        html += '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>';
+      });
+      sel.innerHTML = html;
+      sel.value = filtroGradoMuro;
+      sel.onchange = function () {
+        filtroGradoMuro = sel.value;
+        renderMuro();
+      };
+    }
+
+    var tabs = document.querySelectorAll('#hn-muro-media-filters button[data-muro-media]');
+    tabs.forEach(function (btn) {
+      btn.onclick = function () {
+        filtroMediaMuro = btn.dataset.muroMedia;
+        tabs.forEach(function (b) { b.classList.toggle('active', b === btn); });
+        renderMuro();
+      };
+    });
+  }
+
+  function renderMuro() {
+    var cont = document.getElementById('hn-muro-feed');
+    if (!cont) return;
+
+    var allPosts = (C.muro || []).slice().sort(function (a, b) {
+      return parseFecha(b.fecha) - parseFecha(a.fecha);
+    });
+
+    // Conteo en pestañas
+    var countTodos = allPosts.length;
+    var countVideos = allPosts.filter(function (p) { return p.tipoMedia === 'video'; }).length;
+    var countFotos = allPosts.filter(function (p) { return p.tipoMedia === 'galeria' || p.tipoMedia === 'foto'; }).length;
+
+    var elTodos = document.getElementById('hn-muro-count-todos');
+    if (elTodos) elTodos.textContent = countTodos;
+    var elVideos = document.getElementById('hn-muro-count-videos');
+    if (elVideos) elVideos.textContent = countVideos;
+    var elFotos = document.getElementById('hn-muro-count-fotos');
+    if (elFotos) elFotos.textContent = countFotos;
+
+    // Filtros
+    var filtered = allPosts.filter(function (p) {
+      if (filtroGradoMuro !== 'todos' && p.grado !== filtroGradoMuro && p.grado !== 'todos') return false;
+      if (filtroMediaMuro === 'video' && p.tipoMedia !== 'video') return false;
+      if (filtroMediaMuro === 'galeria' && p.tipoMedia !== 'galeria' && p.tipoMedia !== 'foto') return false;
+      return true;
+    });
+
+    if (!filtered.length) {
+      cont.innerHTML =
+        '<div class="hn-empty">' +
+          '<i class="fas fa-filter" style="font-size:2rem;margin-bottom:10px;opacity:0.6;"></i>' +
+          '<p>No hay publicaciones con los filtros seleccionados.</p>' +
+          '<button type="button" class="hn-act-btn primary" onclick="window.resetMuroFilters()" style="margin-top:10px;">' +
+            '<i class="fas fa-redo"></i> Restablecer filtros' +
+          '</button>' +
+        '</div>';
+      return;
+    }
+
+    cont.innerHTML = filtered.map(function (p) {
+      var postUrl = getPostUrl(p.id);
+      var shareText = p.autor + ': ' + (p.texto || '').substring(0, 110) + '...\n' + postUrl;
+      var avatarSrc = p.avatar || 'img/escudo_paulo_freire.png';
+
+      // Multimedia
+      var mediaHtml = '';
+      if (p.tipoMedia === 'video' && p.video) {
+        if (p.video.tipo === 'youtube') {
+          var embedSrc = toYouTubeEmbed(p.video.url);
+          mediaHtml =
+            '<div class="hn-post-media">' +
+              '<div class="hn-video-responsive">' +
+                '<iframe src="' + esc(embedSrc) + '" title="' + esc((p.texto || '').slice(0, 50)) + '" ' +
+                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+                'allowfullscreen loading="lazy"></iframe>' +
+              '</div>' +
+            '</div>';
+        } else if (p.video.url) {
+          mediaHtml =
+            '<div class="hn-post-media">' +
+              '<video class="hn-video-player" controls preload="metadata"' + (p.video.poster ? ' poster="' + esc(p.video.poster) + '"' : '') + '>' +
+                '<source src="' + esc(p.video.url) + '" type="video/mp4">' +
+                'Tu navegador no soporta reproducción de video.' +
+              '</video>' +
+            '</div>';
+        }
+      } else if (p.fotos && p.fotos.length > 1) {
+        var numCols = Math.min(p.fotos.length, 3);
+        mediaHtml =
+          '<div class="hn-post-media">' +
+            '<div class="hn-post-gallery cols-' + numCols + '">' +
+              p.fotos.map(function (f, idx) {
+                return '<div class="gallery-item" data-photo="' + esc(f) + '" data-post-title="' + esc(p.autor) + '" role="button" tabindex="0" title="Ver foto en tamaño completo">' +
+                  '<img src="' + esc(f) + '" alt="Foto ' + (idx + 1) + ' de ' + esc(p.autor) + '" loading="lazy">' +
+                '</div>';
+              }).join('') +
+            '</div>' +
+          '</div>';
+      } else if ((p.fotos && p.fotos.length === 1) || p.imagen) {
+        var singleImg = (p.fotos && p.fotos[0]) || p.imagen;
+        mediaHtml =
+          '<div class="hn-post-media">' +
+            '<div class="hn-post-photo-single" data-photo="' + esc(singleImg) + '" data-post-title="' + esc(p.autor) + '" role="button" tabindex="0" title="Ver foto en tamaño completo">' +
+              '<img src="' + esc(singleImg) + '" alt="' + esc(p.autor) + '" loading="lazy">' +
+            '</div>' +
+          '</div>';
+      }
+
+      var tagsHtml = (p.tags && p.tags.length)
+        ? '<div class="hn-post-tags">' + p.tags.map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>'
+        : '';
+
+      return '<article class="hn-post-card" id="post-' + esc(p.id) + '">' +
+        '<header class="hn-post-header">' +
+          '<div class="hn-post-avatar-wrap">' +
+            '<img class="hn-post-avatar" src="' + esc(avatarSrc) + '" alt="' + esc(p.autor) + '">' +
+          '</div>' +
+          '<div class="hn-post-meta">' +
+            '<div class="hn-post-author-row">' +
+              '<span class="hn-post-author">' + esc(p.autor) + '</span>' +
+              '<span class="hn-post-verified" title="Publicación verificada del taller"><i class="fas fa-check-circle"></i></span>' +
+              (p.etiqueta ? '<span class="hn-post-tag-badge">' + esc(p.etiqueta) + '</span>' : '') +
+            '</div>' +
+            '<div class="hn-post-sub-row">' +
+              '<span class="hn-post-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(p.fecha)) + '</span>' +
+              '<span class="hn-post-dot">·</span>' +
+              '<span class="hn-post-grade">' + esc(nombreGrado(p.grado)) + '</span>' +
+              '<span class="hn-post-dot">·</span>' +
+              '<span class="hn-post-privacy" title="Público para toda la comunidad"><i class="fas fa-globe-americas"></i></span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="hn-post-top-action">' +
+            '<button type="button" class="hn-post-opt-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace de esta publicación">' +
+              '<i class="fas fa-link"></i>' +
+            '</button>' +
+          '</div>' +
+        '</header>' +
+        '<div class="hn-post-body">' +
+          '<p class="hn-post-text">' + esc(p.texto) + '</p>' +
+          tagsHtml +
+        '</div>' +
+        mediaHtml +
+        '<footer class="hn-post-footer">' +
+          '<div class="hn-post-actions-bar">' +
+            '<button type="button" class="hn-post-action-btn hn-post-share-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')" title="Compartir actividad">' +
+              '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
+            '</button>' +
+            '<button type="button" class="hn-post-action-btn hn-post-copy-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace al portapapeles">' +
+              '<i class="fas fa-link"></i> <span>Copiar enlace</span>' +
+            '</button>' +
+            '<a class="hn-post-action-btn hn-post-wsp-btn" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '" title="Compartir por WhatsApp">' +
+              '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
+            '</a>' +
+          '</div>' +
+        '</footer>' +
+      '</article>';
+    }).join('');
+
+    // Listener para abrir fotos en el lightbox si se tocan
+    cont.querySelectorAll('[data-photo]').forEach(function (el) {
+      var openPhoto = function () {
+        var src = el.dataset.photo;
+        var title = el.dataset.postTitle || 'Actividad en clase';
+        if (window.openImageModal) {
+          window.openImageModal(src, title);
+        } else {
+          window.open(src, '_blank');
+        }
+      };
+      el.addEventListener('click', openPhoto);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openPhoto();
+        }
+      });
+    });
+  }
+
   /* ───────────── Lector de noticias (modal) ───────────── */
   var reader, readerBody, lastFocus;
 
@@ -681,7 +929,7 @@
   }
 
   /* ───────────── Vistas por Pestañas (Diferentes DIVs) ───────────── */
-  var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'juegos', 'agenda'];
+  var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'juegos', 'muro', 'agenda'];
 
   function switchView(viewName, updateHash) {
     // Compatibilidad si se solicita "actividades"
@@ -723,10 +971,23 @@
     if (/^noticia-/.test(raw)) {
       switchView('noticias', false);
       abrirNoticia(raw.replace(/^noticia-/, ''), false);
+    } else if (/^post-(.+)$/.test(raw)) {
+      var pid = raw.replace(/^post-/, '');
+      switchView('muro', false);
+      setTimeout(function () {
+        var target = document.getElementById('post-' + pid);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target.classList.add('hn-post-highlight');
+          setTimeout(function () { target.classList.remove('hn-post-highlight'); }, 2500);
+        }
+      }, 200);
     } else if (raw === 'clase' || raw === 'actividades-clase' || raw === 'actividades') {
       switchView('clase', false);
     } else if (raw === 'casa' || raw === 'actividades-casa') {
       switchView('casa', false);
+    } else if (raw === 'muro') {
+      switchView('muro', false);
     } else if (/^juegos(?:-(.+))?$/.test(raw)) {
       var m = raw.match(/^juegos(?:-(.+))?$/);
       switchView('juegos', false);
@@ -772,6 +1033,8 @@
     renderActividades();
     renderFiltrosJuegos();
     renderJuegos();
+    renderFiltrosMuro();
+    renderMuro();
     renderAgenda();
     initReader();
     initNav();
@@ -807,4 +1070,16 @@
   window.showActividades = function (sec) { switchView(sec === 'casa' ? 'casa' : 'clase'); };
   window.showJuegos = function (gradeId) { switchView('juegos'); if (gradeId) seleccionarGrupoJuegos(gradeId); };
   window.seleccionarGrupoJuegos = seleccionarGrupoJuegos;
+  window.compartirPost = compartirPost;
+  window.copiarEnlacePost = copiarEnlacePost;
+  window.resetMuroFilters = function () {
+    filtroMediaMuro = 'todos';
+    filtroGradoMuro = 'todos';
+    var sel = document.getElementById('hn-muro-grade-select');
+    if (sel) sel.value = 'todos';
+    document.querySelectorAll('#hn-muro-media-filters button[data-muro-media]').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.muroMedia === 'todos');
+    });
+    renderMuro();
+  };
 })();

@@ -333,6 +333,77 @@ window.HOME_CONTENT = {
     }
   ],
 
+  /* ───────────── MURO (estilo Facebook para videos e imágenes) ───────────── */
+  muro: [
+    {
+      id: 'muro-semaforo-video',
+      autor: 'Taller de Robótica',
+      avatar: 'img/escudo_paulo_freire.png',
+      fecha: '2026-10-09',
+      grado: 'grado4',
+      etiqueta: '🏫 Actividad en clase',
+      texto: '¡Así probamos hoy en el aula los semáforos inteligentes! 🚦🤖 Los chicos de 4° Grado conectaron los LEDs a la placa micro:bit, montaron la maqueta de cartón y programaron la secuencia de tránsito. En este video pueden ver cómo reacciona el semáforo en tiempo real ante el paso de los autos. ¡Gran trabajo en equipo!',
+      tipoMedia: 'video',
+      video: {
+        tipo: 'youtube',
+        url: 'https://www.youtube.com/embed/9Gz4n_N9g6E',
+        poster: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80',
+        duracion: '1:15'
+      },
+      tags: ['Robótica', 'Microbit', 'EnElAula', '4toGrado']
+    },
+    {
+      id: 'muro-servo-video',
+      autor: 'Taller de Robótica & Programación',
+      avatar: 'img/escudo_paulo_freire.png',
+      fecha: '2026-10-07',
+      grado: 'grado5',
+      etiqueta: '🦾 Manos en la masa',
+      texto: '¡Controlando servomotores con Joystick analógico! 🎮🕹️ Los alumnos de 5° Grado construyeron pinzas mecánicas con cartón reciclado y las articularon con servomotores SG90. Miren cómo responden con precisión milimétrica a cada movimiento de la palanca. ¡Cada clase son más autónomos y creativos!',
+      tipoMedia: 'video',
+      video: {
+        tipo: 'youtube',
+        url: 'https://www.youtube.com/embed/fJ9rUzIMcZQ',
+        poster: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
+        duracion: '0:50'
+      },
+      tags: ['Servomotores', 'Makers', 'CartonRobotics', '5toGrado']
+    },
+    {
+      id: 'muro-circuitos-fotos',
+      autor: 'Taller Inicial de Ciencias',
+      avatar: 'img/escudo_paulo_freire.png',
+      fecha: '2026-10-04',
+      grado: 'sala5',
+      etiqueta: '🎨 Creatividad digital',
+      texto: '¡Luces que encienden historias! ⚡️🦖 Con Sala de 5 y 1° Grado experimentamos con masa conductora casera, pilas de botón y LEDs de colores. Descubrieron cómo cerrar un circuito y le dieron vida a sus propios dibujos de monstruos y naves espaciales. ¡Miren el brillo en sus caras al ver encender la luz!',
+      tipoMedia: 'galeria',
+      fotos: [
+        'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80',
+        'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=1000&q=80',
+        'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1000&q=80'
+      ],
+      tags: ['CircuitosBlandos', 'SalaDe5', 'PrimerosPasos', 'ColegioPauloFreire']
+    },
+    {
+      id: 'muro-scratch-ia-video',
+      autor: 'Taller de Programación Avanzada',
+      avatar: 'img/escudo_paulo_freire.png',
+      fecha: '2026-10-01',
+      grado: 'grado6',
+      etiqueta: '⚽ Videojuegos & IA',
+      texto: '¡Penales con Inteligencia Artificial! 🥅🧤 En 6° Grado conectaron la cámara web a Scratch usando reconocimiento de posturas. Cuando el alumno mueve sus manos hacia los costados, el arquero digital en la pantalla se lanza a tapar la pelota. ¡Un juegazo programado completamente por los chicos!',
+      tipoMedia: 'video',
+      video: {
+        tipo: 'youtube',
+        url: 'https://www.youtube.com/embed/bNpx7gpSqeI',
+        poster: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
+        duracion: '1:30'
+      },
+      tags: ['Scratch', 'InteligenciaArtificial', 'Videojuegos', '6toGrado']
+    }
+  ],
+
   /* ───────────── AGENDA ───────────── */
   agenda: [
     { fecha: '2026-10-16', titulo: 'Entrega: Semáforo inteligente (recuperación)', detalle: '4° Grado', icono: '🚦' },
