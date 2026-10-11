@@ -221,6 +221,10 @@
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeThemeModal();
+      // Atajo para el administrador (Ctrl + Alt + T): abre el selector sin botón público
+      if (e.ctrlKey && e.altKey && (e.key === 't' || e.key === 'T')) {
+        openThemeModal();
+      }
     });
   }
 
