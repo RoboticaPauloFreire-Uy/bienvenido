@@ -237,9 +237,33 @@
     applyTheme(initialTheme, false);
 
     // Preparar eventos si el botón ya está en el DOM
-    var btn = document.getElementById('theme-switcher-btn');
-    if (btn) {
-      btn.onclick = openThemeModal;
+    // Iniciar escucha en tiempo real desde Firestore (para recibir cambios del panel de administración)
+    listenToRemoteTheme();
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE FIRESTORE
+  // ─────────────────────────────────────────────────────────────
+  function listenToRemoteTheme() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('config').doc('site_theme').onSnapshot(function (doc) {
+          if (doc.exists) {
+            var data = doc.data();
+            if (data && data.activeTheme) {
+              console.log('🔄 Tema sincronizado desde Administración:', data.activeTheme);
+              applyTheme(data.activeTheme, false);
+            }
+          }
+        }, function (err) {
+          console.warn('Firebase theme sync notice:', err);
+        });
+      } else {
+        // Reintentar suavemente por si el SDK de Firebase aún está iniciando
+        setTimeout(listenToRemoteTheme, 600);
+      }
+    } catch (e) {
+      console.warn('Error en listenToRemoteTheme:', e);
     }
   }
 
@@ -255,4 +279,13 @@
   window.getTheme = function () { return activeThemeId; };
   window.openThemeModal = openThemeModal;
   window.closeThemeModal = closeThemeModal;
+  window.saveThemeToFirestore = function (themeId) {
+    if (window.db && window.db.collection) {
+      return window.db.collection('config').doc('site_theme').set({
+        activeTheme: themeId,
+        updatedAt: (window.firebase && firebase.firestore) ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+      }, { merge: true });
+    }
+    return Promise.reject(new Error('Firebase DB no inicializado'));
+  };
 })();
