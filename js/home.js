@@ -1070,6 +1070,49 @@
 
     // Sincronizar en tiempo real las publicaciones creadas desde el panel de administración
     syncRemotePosts();
+    syncRemoteNews();
+  }
+
+  function syncRemoteNews() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('news').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
+          if (!snapshot || snapshot.empty) return;
+          var remoteNews = [];
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            remoteNews.push({
+              id: doc.id,
+              titulo: d.titulo || '',
+              bajada: d.bajada || '',
+              cuerpo: Array.isArray(d.cuerpo) ? d.cuerpo : [d.cuerpo || ''],
+              fecha: d.fecha || (d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toISOString().split('T')[0] : '2026-10-11'),
+              categoria: d.categoria || 'taller',
+              grado: d.grado || 'todos',
+              imagen: d.imagen || 'img/proyectos/canva_arquero_ia_cover.svg',
+              destacada: !!d.destacada,
+              links: d.links || []
+            });
+          });
+
+          // Unir con las noticias base de news.js (dando prioridad a las de Firestore)
+          var baseNews = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.noticias) || (window.HOME_CONTENT && window.HOME_CONTENT.noticias) || [];
+          C.noticias = remoteNews.concat(baseNews.filter(function (bn) {
+            return !remoteNews.some(function (rn) { return rn.id === bn.id; });
+          }));
+
+          renderDestacada();
+          renderFiltrosNoticias();
+          renderNoticias();
+        }, function (err) {
+          console.warn('Sync news notice:', err);
+        });
+      } else {
+        setTimeout(syncRemoteNews, 800);
+      }
+    } catch (e) {
+      console.warn('Error en syncRemoteNews:', e);
+    }
   }
 
   function syncRemotePosts() {
