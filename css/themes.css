@@ -681,6 +681,7 @@
   border-bottom: 2.5px solid #FF6F00 !important;
   box-shadow: 0 4px 20px rgba(255, 111, 0, 0.25) !important;
   position: relative;
+  overflow: visible !important;
 }
 
 /* Telaraña sutil decorativa en la esquina */
@@ -710,6 +711,136 @@
   0%   { transform: translateY(0) rotate(-12deg); }
   50%  { transform: translateY(16px) rotate(12deg); }
   100% { transform: translateY(6px) rotate(-6deg); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   🎃 CARTEL FESTIVO "MES DE HALLOWEEN" EN LA BARRA SUPERIOR
+   ───────────────────────────────────────────────────────────── */
+/* Oculto por defecto en todos los temas normales */
+.topbar-theme-ribbon {
+  display: none;
+}
+
+/* Solo visible cuando el tema activo es Halloween */
+[data-theme="halloween"] .topbar-theme-ribbon {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 490;
+  pointer-events: none;
+  animation: ribbonFloat 3s infinite ease-in-out alternate;
+}
+
+@keyframes ribbonFloat {
+  0%   { transform: translateX(-50%) translateY(0); }
+  100% { transform: translateX(-50%) translateY(3px); }
+}
+
+[data-theme="halloween"] .ttr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #18032B 0%, #3B0E5D 45%, #C2410C 100%);
+  border: 2px solid #FF6F00;
+  border-top: none;
+  padding: 5px 22px 7px;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 18px rgba(234, 88, 12, 0.45);
+  position: relative;
+  user-select: none;
+  pointer-events: auto;
+  cursor: default;
+  transition: all 0.25s ease;
+}
+
+[data-theme="halloween"] .ttr-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(234, 88, 12, 0.7);
+}
+
+/* Brillo neón detrás del cartel */
+[data-theme="halloween"] .ttr-badge::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 0 0 18px 18px;
+  background: linear-gradient(90deg, #EA580C, #9333EA, #EA580C);
+  z-index: -1;
+  filter: blur(8px);
+  opacity: 0.65;
+  animation: ribbonGlowPulse 2.5s infinite alternate;
+}
+
+@keyframes ribbonGlowPulse {
+  0%   { opacity: 0.45; filter: blur(6px); }
+  100% { opacity: 0.85; filter: blur(10px); }
+}
+
+[data-theme="halloween"] .ttr-text {
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  font-size: 0.96rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FED7AA 40%, #FB923C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  white-space: nowrap;
+}
+
+[data-theme="halloween"] .ttr-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  display: inline-block;
+}
+
+[data-theme="halloween"] .ttr-pumpkin {
+  animation: pumpkinWiggle 1.8s infinite ease-in-out;
+}
+
+[data-theme="halloween"] .ttr-ghost {
+  animation: ghostFloatMini 2s infinite ease-in-out;
+}
+
+[data-theme="halloween"] .ttr-bat {
+  animation: batFlutterMini 1.6s infinite ease-in-out;
+}
+
+@keyframes batFlutterMini {
+  0%, 100% { transform: translateY(0) rotate(-10deg); }
+  50%      { transform: translateY(-3px) rotate(10deg); }
+}
+
+[data-theme="halloween"] .ttr-spider {
+  animation: spiderSwingMini 2.5s infinite ease-in-out alternate;
+}
+
+@keyframes spiderSwingMini {
+  0%   { transform: rotate(-15deg); }
+  100% { transform: rotate(15deg); }
+}
+
+/* Ajustes responsive para celulares */
+@media (max-width: 680px) {
+  [data-theme="halloween"] .ttr-badge {
+    padding: 4px 14px 5px;
+    gap: 6px;
+  }
+  [data-theme="halloween"] .ttr-text {
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+  }
+  [data-theme="halloween"] .ttr-icon {
+    font-size: 0.95rem;
+  }
+  [data-theme="halloween"] .ttr-bat,
+  [data-theme="halloween"] .ttr-spider {
+    display: none;
+  }
 }
 
 /* Fantasmita simpático que saluda flotando en la esquina inferior de la pantalla */
