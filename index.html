@@ -9,7 +9,16 @@
   <link rel="stylesheet" href="css/style.css?v=97">
   <link rel="stylesheet" href="css/games.css?v=95">
   <link rel="stylesheet" href="css/home.css?v=6">
-  <link rel="stylesheet" href="css/themes.css?v=1">
+  <link rel="stylesheet" href="css/themes.css?v=2">
+  <!-- Inicialización inmediata de tema para evitar destello -->
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('pf_selected_theme') || 'halloween';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -17,10 +26,42 @@
        PANTALLA DE PRESENTACIÓN (SPLASH SCREEN)
   ══════════════════════════════════════════════ -->
   <div id="splash-screen">
+    <!-- Decoración animada de Halloween para niños (fantasmas, murciélagos, arañita y niebla) -->
+    <div class="splash-halloween-decor" aria-hidden="true">
+      <div class="spooky-ghost-float ghost-pos-1">👻</div>
+      <div class="spooky-ghost-float ghost-pos-2">👻</div>
+      <div class="spooky-ghost-float ghost-pos-3">👻</div>
+      <div class="spooky-bat-fly bat-pos-1">🦇</div>
+      <div class="spooky-bat-fly bat-pos-2">🦇</div>
+      <div class="spooky-pumpkin-glow pumpkin-pos-1">🎃</div>
+      <div class="spooky-pumpkin-glow pumpkin-pos-2">🎃</div>
+      <div class="spooky-spider-dangle">
+        <span class="spider-thread"></span>
+        <span class="spider-body">🕷️</span>
+      </div>
+      <div class="spooky-fog-layer"></div>
+    </div>
+
     <div class="splash-content">
-      <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="splash-shield">
+      <!-- Escudo con fantasmas y murciélagos orbitando alrededor -->
+      <div class="splash-shield-wrapper">
+        <div class="shield-spooky-glow" aria-hidden="true"></div>
+        <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="splash-shield">
+        <div class="orbit-ghost og-left" aria-hidden="true">👻</div>
+        <div class="orbit-ghost og-right" aria-hidden="true">👻</div>
+        <div class="orbit-ghost og-top" aria-hidden="true">🦇</div>
+      </div>
+
       <div class="splash-name">Colegio Paulo Freire</div>
       <div class="splash-sub">Taller de Robótica, Programación &amp; Cultura Maker</div>
+
+      <!-- Banner Festivo: ¡En el Mes de Halloween! -->
+      <div class="splash-halloween-banner">
+        <span class="shb-icon shb-pump">🎃</span>
+        <span class="shb-text">¡En el Mes de Halloween!</span>
+        <span class="shb-icon shb-ghost">👻</span>
+      </div>
+
       <div class="splash-dots">
         <span></span><span></span><span></span>
       </div>
@@ -438,24 +479,24 @@
   <script src="js/modal.js"></script>
   <script src="js/main.js?v=95"></script>
   <!-- Motor de temas festivos (Halloween, Día del Niño, Día de la Madre, Navidad, etc.) -->
-  <script src="js/theme.js?v=1"></script>
+  <script src="js/theme.js?v=2"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
   <script src="js/news.js?v=5"></script>
   <script src="js/home.js?v=6"></script>
 
-  <!-- Splash Screen: se oculta automáticamente después de 2.5s -->
+  <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
     (function() {
       var splash = document.getElementById('splash-screen');
       if (!splash) return;
-      // Ocultar después de 2.5 segundos
+      // Ocultar después de 3.2 segundos para apreciar la animación festiva
       setTimeout(function() {
         splash.classList.add('splash-hidden');
         // Remover del DOM al terminar la transición
         splash.addEventListener('transitionend', function() {
           splash.remove();
         }, { once: true });
-      }, 2500);
+      }, 3200);
       // También se puede cerrar tocando/clickeando la pantalla
       splash.addEventListener('click', function() {
         splash.classList.add('splash-hidden');

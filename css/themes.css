@@ -260,6 +260,14 @@
 /* ══════════════════════════════════════════════════════════════
    TEMA 1: 🎃 HALLOWEEN (NOCHE DE BRUJAS / HALLOWEEN MAKER)
    ══════════════════════════════════════════════════════════════ */
+/* Por defecto, los elementos decorativos del splash de Halloween están ocultos */
+.splash-halloween-decor,
+.orbit-ghost,
+.shield-spooky-glow,
+.splash-halloween-banner {
+  display: none;
+}
+
 [data-theme="halloween"] {
   --topbar-bg: #220838;
   --topbar-text: #FFFFFF;
@@ -280,6 +288,393 @@
   --hn-yellow: #FF9800;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   🎃 SPLASH SCREEN TERRORÍFICO Y DIVERTIDO PARA NIÑOS
+   ───────────────────────────────────────────────────────────── */
+[data-theme="halloween"] #splash-screen {
+  background: radial-gradient(circle at center 35%, #3B0764 0%, #1A042E 45%, #0B0114 100%) !important;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+}
+
+/* Activar elementos festivos en el Splash */
+[data-theme="halloween"] .splash-halloween-decor,
+[data-theme="halloween"] .orbit-ghost,
+[data-theme="halloween"] .shield-spooky-glow,
+[data-theme="halloween"] .splash-halloween-banner {
+  display: block;
+}
+
+/* Niebla misteriosa brillante en la base */
+[data-theme="halloween"] .spooky-fog-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to top, rgba(234, 88, 12, 0.22), rgba(147, 51, 234, 0.18), transparent);
+  pointer-events: none;
+  animation: spookyFogFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes spookyFogFloat {
+  0%   { opacity: 0.5; transform: scaleY(0.9); }
+  100% { opacity: 1; transform: scaleY(1.2); }
+}
+
+/* Contenedor relativo del escudo */
+.splash-shield-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Halo místico de fuego fatuo y calabaza detrás del escudo */
+[data-theme="halloween"] .shield-spooky-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.5) 0%, rgba(168, 85, 247, 0.4) 55%, transparent 75%);
+  z-index: 1;
+  animation: spookyShieldAura 2.2s infinite ease-in-out alternate;
+  pointer-events: none;
+}
+
+@keyframes spookyShieldAura {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+    filter: drop-shadow(0 0 15px rgba(234, 88, 12, 0.6));
+  }
+  100% {
+    transform: scale(1.22);
+    opacity: 1;
+    filter: drop-shadow(0 0 35px #FF6F00) drop-shadow(0 0 50px #9333EA);
+  }
+}
+
+/* Escudo del colegio flotando en ambiente mágico */
+[data-theme="halloween"] .splash-shield {
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 35px rgba(234, 88, 12, 0.75), 0 0 70px rgba(147, 51, 234, 0.5), 0 0 0 6px #F97316 !important;
+  animation: spookyShieldFloat 3s infinite ease-in-out !important;
+}
+
+@keyframes spookyShieldFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translateY(-7px) rotate(-2deg); }
+  75%      { transform: translateY(7px) rotate(2deg); }
+}
+
+/* 👻 FANTASMAS ORBITANDO Y FLOTANDO ALREDEDOR DEL ESCUDO */
+[data-theme="halloween"] .orbit-ghost {
+  position: absolute;
+  z-index: 3;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Fantasma izquierda: flota de lado a lado saludando */
+[data-theme="halloween"] .orbit-ghost.og-left {
+  top: 15%;
+  left: -52px;
+  font-size: 3.2rem;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 25px rgba(168, 85, 247, 0.85));
+  animation: ghostOrbitLeft 2.8s infinite ease-in-out;
+}
+
+@keyframes ghostOrbitLeft {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(-10deg);
+  }
+  50% {
+    transform: translate(-18px, -28px) scale(1.18) rotate(14deg);
+  }
+}
+
+/* Fantasma derecha: flota alegremente con inclinación */
+[data-theme="halloween"] .orbit-ghost.og-right {
+  bottom: 12%;
+  right: -52px;
+  font-size: 3rem;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 25px rgba(249, 115, 22, 0.85));
+  animation: ghostOrbitRight 3.2s infinite ease-in-out;
+}
+
+@keyframes ghostOrbitRight {
+  0%, 100% {
+    transform: translate(0, 0) scale(1.1) rotate(12deg);
+  }
+  50% {
+    transform: translate(18px, -24px) scale(0.95) rotate(-12deg);
+  }
+}
+
+/* Murciélago sobre el escudo con aleteo activo */
+[data-theme="halloween"] .orbit-ghost.og-top {
+  top: -44px;
+  left: 50%;
+  margin-left: -22px;
+  font-size: 2.6rem;
+  filter: drop-shadow(0 0 12px rgba(234, 88, 12, 0.85));
+  animation: batFlapShield 1.6s infinite ease-in-out;
+}
+
+@keyframes batFlapShield {
+  0%, 100% { transform: translateY(0) scale(1) rotate(-8deg); }
+  50%      { transform: translateY(-14px) scale(1.22) rotate(8deg); }
+}
+
+/* Nombre del colegio y subtítulo en modo Halloween */
+[data-theme="halloween"] .splash-name {
+  color: #FFA726 !important;
+  text-shadow: 0 0 20px rgba(255, 111, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-theme="halloween"] .splash-sub {
+  color: #FED7AA !important;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+/* 🎃 BANNER ESPECIAL: "¡En el Mes de Halloween!" */
+[data-theme="halloween"] .splash-halloween-banner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.95) 0%, rgba(147, 51, 234, 0.95) 100%);
+  border: 2px solid #FDBA74;
+  color: #FFFFFF;
+  padding: 10px 26px;
+  border-radius: 9999px;
+  box-shadow: 0 0 25px rgba(234, 88, 12, 0.65), 0 8px 24px rgba(0, 0, 0, 0.4);
+  margin-top: 4px;
+  animation: bannerSpookyPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, bannerSpookyGlow 2.5s infinite ease-in-out alternate 0.8s;
+}
+
+@keyframes bannerSpookyPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bannerSpookyGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(234, 88, 12, 0.5), 0 0 35px rgba(168, 85, 247, 0.35);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 38px rgba(234, 88, 12, 0.95), 0 0 65px rgba(168, 85, 247, 0.75);
+    transform: scale(1.05);
+  }
+}
+
+.shb-text {
+  font-family: var(--font);
+  font-size: 1.22rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  color: #FFFFFF;
+}
+
+.shb-icon {
+  font-size: 1.55rem;
+  line-height: 1;
+  display: inline-block;
+}
+
+.shb-pump {
+  animation: pumpWiggle 1.4s infinite ease-in-out;
+}
+
+@keyframes pumpWiggle {
+  0%, 100% { transform: rotate(-10deg) scale(1); }
+  50%      { transform: rotate(12deg) scale(1.25); }
+}
+
+.shb-ghost {
+  animation: ghostFloatMini 1.8s infinite ease-in-out;
+}
+
+@keyframes ghostFloatMini {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-8px) scale(1.25); }
+}
+
+/* Puntos de carga estilo calabaza brillante */
+[data-theme="halloween"] .splash-dots span {
+  background: #FF6F00 !important;
+  box-shadow: 0 0 10px #FF6F00, 0 0 20px #FF9800 !important;
+}
+
+/* 👻 ELEMENTOS FLOTANTES EN EL FONDO DEL SPLASH (CON MOVIMIENTO) */
+[data-theme="halloween"] .spooky-ghost-float,
+[data-theme="halloween"] .spooky-bat-fly,
+[data-theme="halloween"] .spooky-pumpkin-glow {
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ghost-pos-1 {
+  top: 10%;
+  left: 7%;
+  font-size: 3.4rem;
+  opacity: 0.75;
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.8));
+  animation: spookyFloatDiagonal 5s infinite ease-in-out alternate;
+}
+
+.ghost-pos-2 {
+  bottom: 16%;
+  left: 9%;
+  font-size: 2.8rem;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.8));
+  animation: spookyFloatDiagonal 6s infinite ease-in-out alternate-reverse;
+}
+
+.ghost-pos-3 {
+  top: 20%;
+  right: 8%;
+  font-size: 3.2rem;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.8));
+  animation: spookyFloatDiagonal 5.5s infinite ease-in-out alternate 1s;
+}
+
+@keyframes spookyFloatDiagonal {
+  0% {
+    transform: translate(0, 0) rotate(-8deg);
+  }
+  50% {
+    transform: translate(25px, -32px) rotate(10deg);
+  }
+  100% {
+    transform: translate(-18px, -55px) rotate(-12deg);
+  }
+}
+
+.bat-pos-1 {
+  top: 14%;
+  left: 40%;
+  font-size: 2.4rem;
+  animation: batSwoop 5s infinite linear;
+}
+
+.bat-pos-2 {
+  bottom: 22%;
+  right: 14%;
+  font-size: 2.2rem;
+  animation: batFlutter 2.2s infinite ease-in-out;
+}
+
+@keyframes batSwoop {
+  0%   { transform: translate(-80px, 0) scaleX(1); }
+  49%  { transform: translate(110px, -25px) scaleX(1); }
+  50%  { transform: translate(110px, -25px) scaleX(-1); }
+  99%  { transform: translate(-80px, 0) scaleX(-1); }
+  100% { transform: translate(-80px, 0) scaleX(1); }
+}
+
+@keyframes batFlutter {
+  0%, 100% { transform: translateY(0) rotate(-15deg); }
+  50%      { transform: translateY(-22px) rotate(15deg); }
+}
+
+.pumpkin-pos-1 {
+  bottom: 8%;
+  left: 20%;
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 16px #EA580C);
+  animation: pumpkinBounce 2s infinite ease-in-out;
+}
+
+.pumpkin-pos-2 {
+  bottom: 10%;
+  right: 20%;
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 16px #EA580C);
+  animation: pumpkinBounce 2s infinite ease-in-out 0.6s;
+}
+
+@keyframes pumpkinBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-12px) scale(1.15); }
+}
+
+/* 🕷️ Arañita colgada con su hilo que se hamaca en el splash */
+.spooky-spider-dangle {
+  position: absolute;
+  top: 0;
+  right: 16%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: spiderDangle 3.8s infinite ease-in-out alternate;
+  z-index: 2;
+  user-select: none;
+}
+
+.spider-thread {
+  width: 1.5px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+}
+
+.spider-body {
+  font-size: 2.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.7));
+}
+
+@keyframes spiderDangle {
+  0%   { transform: translateY(0) rotate(-10deg); }
+  50%  { transform: translateY(35px) rotate(10deg); }
+  100% { transform: translateY(12px) rotate(-6deg); }
+}
+
+@media (max-width: 560px) {
+  [data-theme="halloween"] .orbit-ghost.og-left {
+    font-size: 2.2rem;
+    left: -28px;
+    top: 18%;
+  }
+  [data-theme="halloween"] .orbit-ghost.og-right {
+    font-size: 2.1rem;
+    right: -28px;
+    bottom: 12%;
+  }
+  [data-theme="halloween"] .orbit-ghost.og-top {
+    font-size: 1.8rem;
+    top: -30px;
+    margin-left: -15px;
+  }
+  [data-theme="halloween"] .splash-halloween-banner {
+    padding: 8px 18px;
+    gap: 8px;
+  }
+  [data-theme="halloween"] .shb-text {
+    font-size: 1.02rem;
+  }
+  [data-theme="halloween"] .shb-icon {
+    font-size: 1.25rem;
+  }
+  .ghost-pos-1, .ghost-pos-3 {
+    font-size: 2.2rem;
+  }
+  .ghost-pos-2 {
+    font-size: 1.9rem;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BARRA SUPERIOR Y AMBIENTE EN TODA LA PÁGINA DURANTE HALLOWEEN
+   ───────────────────────────────────────────────────────────── */
 /* Barra superior festiva Halloween */
 [data-theme="halloween"] .topbar {
   background: linear-gradient(135deg, #18032B 0%, #2A0845 50%, #C2410C 120%) !important;
@@ -295,8 +690,50 @@
   right: 12px;
   bottom: -4px;
   font-size: 26px;
-  opacity: 0.65;
+  opacity: 0.7;
   pointer-events: none;
+}
+
+/* Arañita colgante que se hamaca en la barra superior */
+[data-theme="halloween"] .topbar::before {
+  content: '🕷️';
+  position: absolute;
+  top: 38px;
+  left: 28px;
+  font-size: 1.4rem;
+  animation: topbarSpider 4s infinite ease-in-out alternate;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes topbarSpider {
+  0%   { transform: translateY(0) rotate(-12deg); }
+  50%  { transform: translateY(16px) rotate(12deg); }
+  100% { transform: translateY(6px) rotate(-6deg); }
+}
+
+/* Fantasmita simpático que saluda flotando en la esquina inferior de la pantalla */
+[data-theme="halloween"] body::after {
+  content: '👻';
+  position: fixed;
+  bottom: 20px;
+  right: 25px;
+  font-size: 2.5rem;
+  z-index: 990;
+  pointer-events: none;
+  animation: floatingCornerGhost 4s infinite ease-in-out;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.85)) drop-shadow(0 0 25px rgba(168, 85, 247, 0.75));
+}
+
+@keyframes floatingCornerGhost {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-16px) rotate(12deg) scale(1.14);
+    opacity: 1;
+  }
 }
 
 /* Píldora del tema con brillo de calabaza */
