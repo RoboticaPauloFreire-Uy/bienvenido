@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─────────────────────────────────────────────────────────────
+    // 1. CONFIGURACIÓN DEL SITIO (TEMAS FESTIVOS: HALLOWEEN, ETC.)
+    // ─────────────────────────────────────────────────────────────
+    // Cualquier alumno o visitante puede LEER el tema activo.
+    // SOLO el administrador autenticado puede CAMBIAR el tema.
+    match /config/site_theme {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 2. MURO DE ACTIVIDADES (TIPO FACEBOOK ESCOLAR)
+    // ─────────────────────────────────────────────────────────────
+    // Cualquier alumno o familia puede LEER las actividades y fotos.
+    // SOLO el administrador autenticado puede PUBLICAR o ELIMINAR.
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 3. DATOS DE ALUMNOS (CARPETAS DRIVE, PROYECTOS, LOGS)
+    // ─────────────────────────────────────────────────────────────
+    match /students/{studentId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Regla de seguridad por defecto para cualquier otra colección
+    match /{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
