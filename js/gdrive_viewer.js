@@ -623,34 +623,18 @@
     var progressPercent = missions.length > 0 ? Math.min(100, Math.round((completedCount / missions.length) * 100)) : 0;
 
     var headerHtml =
-      '<div class="arm-header-banner">' +
-        '<div class="arm-hb-left">' +
-          '<div class="arm-hb-badge"><i class="fas fa-compass"></i> RUTA MAKER 2026</div>' +
-          '<h3 class="arm-hb-title">Camino de Aventuras — ' + student.gradeName + '</h3>' +
-          '<p class="arm-hb-sub">¡Superá cada estación, programá inventos y descubrí nuevos desafíos tecnológicos!</p>' +
+      '<div class="arm-toolbar-compact">' +
+        '<div class="atc-left">' +
+          '<span class="atc-badge"><i class="fas fa-route"></i> RUTA MAKER 2026</span>' +
+          '<h3 class="atc-title">Sendero de Desafíos &bull; ' + student.gradeName + '</h3>' +
         '</div>' +
-        '<div class="arm-hb-right">' +
-          '<div class="arm-progress-box">' +
-            '<div class="arm-pb-top">' +
-              '<span><i class="fas fa-trophy"></i> Progreso del Taller</span>' +
-              '<strong>' + completedCount + ' / ' + missions.length + ' Misiones</strong>' +
-            '</div>' +
-            '<div class="arm-pb-bar">' +
-              '<div class="arm-pb-fill" style="width:' + progressPercent + '%;"></div>' +
-            '</div>' +
-            '<div class="arm-pb-stars">' +
-              '<span>⭐ Explorador Maker</span>' +
-              '<span class="arm-pb-xp">⚡ +' + (completedCount * 100) + ' XP</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="arm-view-toggle">' +
-            '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="Ver como Sendero de Niveles">' +
-              '<i class="fas fa-route"></i> Mapa' +
-            '</button>' +
-            '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Cuadrícula">' +
-              '<i class="fas fa-th-large"></i> Cuadrícula' +
-            '</button>' +
-          '</div>' +
+        '<div class="arm-view-toggle">' +
+          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="Ver como Sendero de Niveles">' +
+            '<i class="fas fa-route"></i> <span>Mapa</span>' +
+          '</button>' +
+          '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Cuadrícula">' +
+            '<i class="fas fa-th-large"></i> <span>Cuadrícula</span>' +
+          '</button>' +
         '</div>' +
       '</div>';
 
@@ -1748,67 +1732,137 @@
     }
 
     // ──────────────────────────────────────────────────
-    // HTML COMPLETO DEL PANEL
+    // ESTADÍSTICAS GAMER Y PROGRESO
+    // ──────────────────────────────────────────────────
+    var completedCount = adventureMissions.filter(function(m){ return m.status === 'completado'; }).length;
+    var totalMissions = adventureMissions.length;
+    var progressPercent = totalMissions > 0 ? Math.min(100, Math.round((completedCount / totalMissions) * 100)) : 0;
+    var studentLevel = Math.max(1, Math.floor(completedCount / 2) + 1);
+    var totalXp = completedCount * 100;
+    var nextMission = adventureMissions.find(function(m){ return m.status !== 'completado'; }) || adventureMissions[0];
+
+    // ──────────────────────────────────────────────────
+    // HTML COMPLETO DEL PANEL GAMER MODERNO
     // ──────────────────────────────────────────────────
     container.innerHTML =
-      '<section class="gdrive-dashboard-centered" id="student-drive-dashboard">' +
-        '<div class="gdb-header">' +
-          '<div class="gdb-header-left">' +
-            '<span class="gdb-avatar">' + (student.avatar||'👦') + '</span>' +
-            '<div>' +
-              '<h2 class="gdb-title">' + student.name + '</h2>' +
-              '<span class="gdb-grade"><i class="fab fa-google-drive"></i> ' + student.gradeName + ' • Conectado</span>' +
+      '<section class="gdrive-dashboard-centered gamer-dashboard-container" id="student-drive-dashboard">' +
+        // 1. HERO HEADER: PERFIL DEL JUGADOR
+        '<div class="gamer-hero-card">' +
+          '<div class="gh-main-row">' +
+            '<div class="gh-player-profile">' +
+              '<div class="gh-avatar-container">' +
+                '<span class="gh-avatar">' + (student.avatar || '👦') + '</span>' +
+                '<span class="gh-status-dot" title="Conectado al Taller"></span>' +
+              '</div>' +
+              '<div class="gh-player-meta">' +
+                '<div class="gh-tag-row">' +
+                  '<span class="gh-badge grade"><i class="fas fa-graduation-cap"></i> ' + student.gradeName + '</span>' +
+                  '<span class="gh-badge level"><i class="fas fa-trophy"></i> Nivel ' + studentLevel + ' Maker</span>' +
+                '</div>' +
+                '<h2 class="gh-player-name">¡Hola, ' + student.name.split(' ')[0] + '! 🚀</h2>' +
+                '<span class="gh-player-sub">Taller de Robótica & Programación · Colegio Paulo Freire</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="gh-actions-group">' +
+              (nextMission ?
+                '<button type="button" class="gh-btn-continue" id="gh-btn-continue-mission" title="Continuar tu aventura en el taller">' +
+                  '<div class="gbc-icon"><i class="fas fa-play"></i></div>' +
+                  '<div class="gbc-text">' +
+                    '<span class="gbc-sub">Continuar Misión</span>' +
+                    '<strong class="gbc-title">' + (nextMission.level ? 'Misión ' + nextMission.level + ': ' : '') + nextMission.title + '</strong>' +
+                  '</div>' +
+                  '<i class="fas fa-chevron-right gbc-arrow"></i>' +
+                '</button>' : '') +
+
+              '<div class="gh-extra-links">' +
+                (driveTargetUrl ?
+                  '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="Abrir carpeta en Google Drive">' +
+                    '<i class="fab fa-google-drive"></i> <span>Mi Drive</span>' +
+                  '</a>' : '') +
+                '<button type="button" class="gh-pill-link logout" onclick="if(window.openLoginModal) window.openLoginModal();" title="Cambiar usuario o cerrar sesión">' +
+                  '<i class="fas fa-user-circle"></i> <span>Mi Cuenta</span>' +
+                '</button>' +
+              '</div>' +
             '</div>' +
           '</div>' +
-          '<div class="gdb-header-quick-pills">' +
-            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='proyectos'?'active':'') + '" data-folder="proyectos"><i class="fas fa-compass"></i> 🗺️ Ruta de Aventuras <span class="gdb-qp-badge">' + badgeProyectos + '</span></button>' +
-            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='juegos'?'active':'') + '" data-folder="juegos"><i class="fas fa-gamepad"></i> 🎮 Juegos <span class="gdb-qp-badge">' + badgeJuegos + '</span></button>' +
-            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='dibujos'?'active':'') + '" data-folder="dibujos"><i class="fas fa-paint-brush"></i> 🎨 Dibujos <span class="gdb-qp-badge">' + badgeDibujos + '</span></button>' +
-            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='proyecto'?'active':'') + '" data-folder="proyecto"><i class="fas fa-folder-open"></i> 📁 Proyectos <span class="gdb-qp-badge">' + badgeProyecto + '</span></button>' +
-            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='actividades'?'active':'') + '" data-folder="actividades"><i class="fas fa-house-user"></i> 🏠 Actividades</button>' +
-            '<button type="button" class="gdb-qpill ' + (activeFolderKey==='familiar'?'active':'') + '" data-folder="familiar"><i class="fas fa-heart"></i> 👨‍👩‍👧 Familiar</button>' +
+
+          '<div class="gh-stats-row">' +
+            '<div class="gh-xp-badge">' +
+              '<span class="gh-xp-spark">⚡</span>' +
+              '<span class="gh-xp-num">+' + totalXp + ' XP</span>' +
+            '</div>' +
+            '<div class="gh-progress-wrapper">' +
+              '<div class="gh-progress-header">' +
+                '<span class="gh-ph-label"><i class="fas fa-flag-checkered"></i> Progreso de Aventuras</span>' +
+                '<span class="gh-ph-count"><strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> misiones completadas (' + progressPercent + '%)</span>' +
+              '</div>' +
+              '<div class="gh-progress-track">' +
+                '<div class="gh-progress-fill" style="width:' + progressPercent + '%;">' +
+                  '<div class="gh-progress-light"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
         '</div>' +
 
-        '<div class="gdb-main-layout">' +
-
-          // ÁRBOL
-          '<aside class="gdb-tree-sidebar">' +
-            '<div class="gts-title"><i class="fas fa-sitemap"></i> Carpetas de ' + student.name.split(' ')[0] + '</div>' +
-            '<div class="gts-tree">' +
-              treeFolder('dibujos', '🎨 Dibujos', badgeDibujos, activeFolderKey, '#16A34A') +
-              treeFolder('proyectos', '🗺️ Ruta de Aventuras', badgeProyectos, activeFolderKey, '#2563EB') +
-              treeFolder('juegos', '🎮 Juegos del Grado', badgeJuegos, activeFolderKey, '#E11D48') +
-              treeFolder('proyecto', '📁 Proyectos', badgeProyecto, activeFolderKey, '#7C3AED') +
-              treeFolder('actividades', '🏠 Actividad de casa', badgeActividades, activeFolderKey, '#EA580C') +
-              treeFolder('familiar', '👨‍👩‍👧 Actividad familiar', badgeFamiliar, activeFolderKey, '#DB2777') +
+        // 2. NAVEGACIÓN GAMER MODERNA (TABS TÁCTILES)
+        '<div class="gamer-nav-bar" role="tablist" aria-label="Secciones del Tablero">' +
+          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyectos' ? 'active' : '') + '" data-folder="proyectos">' +
+            '<span class="gnb-emoji">🗺️</span>' +
+            '<div class="gnb-info">' +
+              '<span class="gnb-title">Ruta de Aventuras</span>' +
+              '<span class="gnb-badge">' + badgeProyectos + ' misiones</span>' +
             '</div>' +
-            (driveTargetUrl ?
-              '<div class="gts-qr-card">' +
-                '<div class="gts-qr-header">' +
-                  '<i class="fab fa-google-drive"></i>' +
-                  '<span>Abrir en el celular</span>' +
-                '</div>' +
-                '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gts-qr-link" title="Hacé click o escaneá para abrir en Google Drive">' +
-                  '<img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&margin=3&data=' + encodeURIComponent(driveTargetUrl) + '" alt="QR Google Drive" class="gts-qr-img" loading="lazy">' +
-                '</a>' +
-                '<span class="gts-qr-caption"><i class="fas fa-qrcode"></i> Escaneá con la cámara de tu celular</span>' +
-              '</div>' : '') +
-            '<div class="gts-footer-info">' +
-              '<i class="fas fa-info-circle"></i> En <strong>📁 Proyectos</strong> podés ' + (showScratch ? 'guardar proyectos Scratch Jr y MakeCode.' : 'ver y probar proyectos MakeCode.') +
+          '</button>' +
+          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'juegos' ? 'active' : '') + '" data-folder="juegos">' +
+            '<span class="gnb-emoji">🎮</span>' +
+            '<div class="gnb-info">' +
+              '<span class="gnb-title">Zona de Juegos</span>' +
+              '<span class="gnb-badge">' + badgeJuegos + ' juegos</span>' +
             '</div>' +
-          '</aside>' +
+          '</button>' +
+          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'dibujos' ? 'active' : '') + '" data-folder="dibujos">' +
+            '<span class="gnb-emoji">🎨</span>' +
+            '<div class="gnb-info">' +
+              '<span class="gnb-title">Mis Dibujos</span>' +
+              '<span class="gnb-badge">' + badgeDibujos + ' dibujos</span>' +
+            '</div>' +
+          '</button>' +
+          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyecto' ? 'active' : '') + '" data-folder="proyecto">' +
+            '<span class="gnb-emoji">💻</span>' +
+            '<div class="gnb-info">' +
+              '<span class="gnb-title">Mis Proyectos</span>' +
+              '<span class="gnb-badge">' + badgeProyecto + ' archivos</span>' +
+            '</div>' +
+          '</button>' +
+          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'actividades' ? 'active' : '') + '" data-folder="actividades">' +
+            '<span class="gnb-emoji">🏠</span>' +
+            '<div class="gnb-info">' +
+              '<span class="gnb-title">Actividades</span>' +
+              '<span class="gnb-badge">' + badgeActividades + ' retos</span>' +
+            '</div>' +
+          '</button>' +
+          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'familiar' ? 'active' : '') + '" data-folder="familiar">' +
+            '<span class="gnb-emoji">👨‍👩‍👧</span>' +
+            '<div class="gnb-info">' +
+              '<span class="gnb-title">En Familia</span>' +
+              '<span class="gnb-badge">Desafío</span>' +
+            '</div>' +
+          '</button>' +
+        '</div>' +
 
-          // CONTENIDO
-          '<main class="gdb-content-area">' +
+        // 3. CONTENEDOR PRINCIPAL A PANTALLA COMPLETA (SIN ÁRBOL DUPLICADO)
+        '<div class="gamer-content-wrapper">' +
+          '<main class="gdb-content-area gamer-fullwidth">' +
             '<div class="gca-folder-bar">' +
               '<div class="gca-fb-title">' +
                 '<i class="fas ' + currentFolder.icon + '"></i>' +
-                '<span>Contenido de: <strong>' +
+                '<span>Contenido: <strong>' +
                   (activeFolderKey === 'proyectos' ? 'Ruta de Aventuras (' + student.gradeName + ')' :
                    activeFolderKey === 'juegos' ? 'Juegos de Programación (' + student.gradeName + ')' :
                    activeFolderKey === 'proyecto'  ? 'Proyectos' :
-                   activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de casa (' + student.gradeName + ' + Inventario de material)' : 'Actividad de casa (Inventario de material)') :
+                   activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de clase y hogar (' + student.gradeName + ')' : 'Actividades del Taller') :
                    activeFolderKey === 'familiar' ? 'Actividad familiar (Escape Rooms Nostálgico)' : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
@@ -1823,21 +1877,28 @@
         '</div>' +
       '</section>';
 
-    // ── Eventos de navegación rápida en cabecera (pills) ──
-    container.querySelectorAll('.gdb-qpill').forEach(function(btn){
+    // ── Botón Continuar Misión ──
+    var btnCont = container.querySelector('#gh-btn-continue-mission');
+    if (btnCont && nextMission) {
+      btnCont.onclick = function(){
+        if (window.sounds) window.sounds.playClick();
+        if (activeFolderKey !== 'proyectos') {
+          activeFolderKey = 'proyectos';
+          renderGDriveDashboard(containerId);
+          setTimeout(function(){
+            openAdventureProjectModal(nextMission, 'presentacion');
+          }, 150);
+        } else {
+          openAdventureProjectModal(nextMission, 'presentacion');
+        }
+      };
+    }
+
+    // ── Eventos de navegación rápida en cabecera (pills / tabs gamer) ──
+    container.querySelectorAll('.gdb-qpill, .gnb-tab').forEach(function(btn){
       btn.onclick = function(){
         if (window.sounds) window.sounds.playClick();
         activeFolderKey = btn.dataset.folder;
-        currentCarouselIndex = 0;
-        renderGDriveDashboard(containerId);
-      };
-    });
-
-    // ── Eventos del árbol ──
-    container.querySelectorAll('.gts-folder').forEach(function(el){
-      el.onclick = function(){
-        if (window.sounds) window.sounds.playClick();
-        activeFolderKey = el.dataset.folder;
         currentCarouselIndex = 0;
         renderGDriveDashboard(containerId);
       };

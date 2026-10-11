@@ -11045,3 +11045,636 @@ body.student-logged-in #student-drive-dashboard-container {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   NUEVO TABLERO GAMER MODERNO DEL ALUMNO (DASHBOARD 2.0)
+   ══════════════════════════════════════════════════════════════ */
+.gamer-dashboard-container {
+  max-width: 1200px;
+  margin: 16px auto 50px;
+  padding: 0 14px;
+}
+
+/* ── 1. Hero Card: Perfil del Jugador ── */
+.gamer-hero-card {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #064E3B 100%);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 26px;
+  padding: 24px 28px;
+  color: #FFFFFF;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInDashboard 0.4s ease forwards;
+}
+
+.gamer-hero-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.gh-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.gh-player-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.gh-avatar-container {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10B981 0%, #06B6D4 100%);
+  border: 3.5px solid #34D399;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  flex-shrink: 0;
+}
+
+.gh-avatar {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+.gh-status-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #22C55E;
+  border: 2.5px solid #0F172A;
+  box-shadow: 0 0 10px #22C55E;
+}
+
+.gh-player-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.gh-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.gh-badge {
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 3px 11px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.gh-badge.grade {
+  background: rgba(255, 255, 255, 0.14);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gh-badge.level {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #FFFFFF;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
+}
+
+.gh-player-name {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0 0 3px;
+  letter-spacing: -0.02em;
+}
+
+.gh-player-sub {
+  font-size: 0.82rem;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+/* Acciones de Cabecera Gamer */
+.gh-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gh-btn-continue {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #FFFFFF;
+  border: 2px solid #34D399;
+  border-radius: 18px;
+  padding: 10px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+  transition: all 0.22s ease;
+  font-family: inherit;
+}
+
+.gh-btn-continue:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #34D399 0%, #059669 100%);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.48);
+}
+
+.gbc-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.gbc-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.gbc-sub {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.gbc-title {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gbc-arrow {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-left: 2px;
+}
+
+.gh-extra-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gh-pill-link {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #F8FAFC;
+  border-radius: 9999px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.gh-pill-link:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+/* Fila de Estadísticas y Barra de Progreso */
+.gh-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+}
+
+.gh-xp-badge {
+  background: rgba(254, 240, 138, 0.14);
+  border: 1.5px solid #FACC15;
+  color: #FEF08A;
+  font-size: 0.96rem;
+  font-weight: 900;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 10px rgba(250, 204, 21, 0.2);
+}
+
+.gh-xp-spark {
+  font-size: 1.1rem;
+}
+
+.gh-progress-wrapper {
+  flex: 1;
+  min-width: 240px;
+}
+
+.gh-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #CBD5E1;
+  margin-bottom: 6px;
+}
+
+.gh-ph-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.gh-progress-track {
+  height: 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+  position: relative;
+}
+
+.gh-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #38BDF8 0%, #818CF8 50%, #34D399 100%);
+  position: relative;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gh-progress-light {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  filter: blur(3px);
+}
+
+/* ── 2. Navegación Gamer Moderna (Pestañas Táctiles) ── */
+.gamer-nav-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.gnb-tab {
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 13px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  font-family: inherit;
+}
+
+.gnb-tab:hover {
+  border-color: #38BDF8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+}
+
+.gnb-tab.active {
+  background: linear-gradient(135deg, #0F766E 0%, #0D9488 100%);
+  border-color: #0F766E;
+  color: #FFFFFF;
+  box-shadow: 0 10px 25px rgba(13, 148, 136, 0.35);
+  transform: translateY(-2px);
+}
+
+.gnb-emoji {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.gnb-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gnb-title {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #1E293B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gnb-tab.active .gnb-title {
+  color: #FFFFFF;
+}
+
+.gnb-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #F1F5F9;
+  color: #64748B;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  display: inline-block;
+  width: fit-content;
+  margin-top: 3px;
+}
+
+.gnb-tab.active .gnb-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* ── 3. Contenedor de Contenido a Pantalla Completa ── */
+.gamer-content-wrapper {
+  width: 100%;
+}
+
+.gdb-content-area.gamer-fullwidth {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 26px;
+  padding: 24px 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Barra superior de la carpeta actual */
+.gca-folder-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1.5px solid #F1F5F9;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.gca-fb-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.gca-fb-title i {
+  color: #0D9488;
+  font-size: 1.15rem;
+}
+
+.gca-fb-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gca-fb-count {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748B;
+  background: #F8FAFC;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+}
+
+.gca-btn-upload {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.gca-btn-upload:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+}
+
+.gca-btn-upload.scratch {
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+}
+
+/* Toolbar compacto de la Ruta de Aventuras */
+.arm-toolbar-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding: 14px 18px;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.atc-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.atc-badge {
+  font-size: 0.74rem;
+  font-weight: 900;
+  background: #E0F2FE;
+  color: #0284C7;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.atc-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 0;
+}
+
+/* Adaptación Responsiva para Celulares y Tablets */
+@media (max-width: 1024px) {
+  .gamer-nav-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .gamer-dashboard-container {
+    padding: 0 8px;
+  }
+  .gamer-hero-card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+  .gh-avatar-container {
+    width: 60px;
+    height: 60px;
+  }
+  .gh-avatar {
+    font-size: 2.1rem;
+  }
+  .gh-player-name {
+    font-size: 1.35rem;
+  }
+  .gh-btn-continue {
+    width: 100%;
+    justify-content: center;
+  }
+  .gbc-title {
+    max-width: 180px;
+  }
+  .gamer-nav-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .gnb-tab {
+    padding: 10px 8px;
+    border-radius: 14px;
+    gap: 8px;
+  }
+  .gnb-emoji {
+    font-size: 1.35rem;
+  }
+  .gnb-title {
+    font-size: 0.82rem;
+  }
+  .gdb-content-area.gamer-fullwidth {
+    padding: 16px 14px;
+    border-radius: 20px;
+  }
+}
+
+/* ── 4. Tarjetas Táctiles y Visuales de Juegos, Proyectos y Actividades ── */
+.grade-game-card {
+  border-radius: 20px !important;
+  border: 2px solid #E2E8F0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.grade-game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12) !important;
+  border-color: #38BDF8 !important;
+}
+
+.grade-game-card .ggc-thumb-wrap {
+  height: 175px !important;
+  border-radius: 18px 18px 0 0;
+}
+
+.grade-game-card .ggc-btn-play {
+  border-radius: 14px !important;
+  padding: 10px 16px !important;
+  font-weight: 900 !important;
+  font-size: 0.92rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.mklib-card-item {
+  border-radius: 22px !important;
+  border: 2px solid #E2E8F0 !important;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.mklib-card-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(13, 148, 136, 0.18) !important;
+  border-color: #0D9488 !important;
+}
+
+.mklib-ci-cover {
+  height: 175px !important;
+}
+
+.scratch-file-card {
+  border-radius: 20px !important;
+  border: 2px solid #E2E8F0 !important;
+  padding: 16px 18px !important;
+  transition: all 0.2s ease !important;
+}
+
+.scratch-file-card:hover {
+  transform: translateY(-3px);
+  border-color: #F97316 !important;
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.15) !important;
+}
+
+.actividad-grid-card {
+  border-radius: 22px !important;
+  border: 2px solid #E2E8F0 !important;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.actividad-grid-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(234, 88, 12, 0.18) !important;
+  border-color: #EA580C !important;
+}
