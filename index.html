@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=97">
   <link rel="stylesheet" href="css/games.css?v=95">
   <link rel="stylesheet" href="css/home.css?v=6">
+  <link rel="stylesheet" href="css/themes.css?v=1">
 </head>
 <body>
 
@@ -79,8 +80,14 @@
         </a>
       </nav>
 
-      <!-- Right Side (Student Login + Year + Mobile Hamburger) -->
+      <!-- Right Side (Student Login + Theme + Year + Mobile Hamburger) -->
       <div class="topbar-right">
+        <!-- Selector de Tema Festivo (Halloween, etc.) -->
+        <button type="button" id="theme-switcher-btn" class="topbar-theme-pill" title="Temas festivos: Cambiar tema (Halloween, etc.)" onclick="if(window.openThemeModal) window.openThemeModal();">
+          <span class="ttp-icon">🎃</span>
+          <span class="ttp-label">Halloween</span>
+        </button>
+
         <button id="student-login-btn" class="topbar-student-pill logged-out" onclick="if(window.openLoginModal) window.openLoginModal()">
           <i class="fas fa-user-circle"></i>
           <span>Ingreso Alumnos</span>
@@ -436,6 +443,8 @@
   <script src="js/games/tools.js"></script>
   <script src="js/modal.js"></script>
   <script src="js/main.js?v=95"></script>
+  <!-- Motor de temas festivos (Halloween, Día del Niño, Día de la Madre, Navidad, etc.) -->
+  <script src="js/theme.js?v=1"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
   <script src="js/news.js?v=5"></script>
   <script src="js/home.js?v=6"></script>

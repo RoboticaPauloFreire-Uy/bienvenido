@@ -1,0 +1,561 @@
+/**
+ * =============================================================
+ * THEMES.CSS — SISTEMA DE TEMAS FESTIVOS (HALLOWEEN, DÍA DEL NIÑO, ETC.)
+ * Colegio Paulo Freire · Taller de Robótica & Programación
+ * =============================================================
+ */
+
+/* ─────────────────────────────────────────────────────────────
+   PÍLDORA Y BOTÓN DEL SELECTOR DE TEMAS EN TOPBAR
+───────────────────────────────────────────────────────────── */
+.topbar-theme-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+
+.topbar-theme-pill:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.topbar-theme-pill .ttp-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+  display: inline-block;
+  animation: themeIconBounce 2.5s infinite ease-in-out;
+}
+
+@keyframes themeIconBounce {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.15) rotate(6deg); }
+}
+
+@media (max-width: 680px) {
+  .topbar-theme-pill .ttp-label {
+    display: none;
+  }
+  .topbar-theme-pill {
+    padding: 6px 9px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MODAL VISUAL SELECTOR DE TEMAS
+───────────────────────────────────────────────────────────── */
+.theme-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.theme-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.theme-modal-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  max-width: 580px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  transform: scale(0.95) translateY(12px);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-modal-overlay.open .theme-modal-card {
+  transform: scale(1) translateY(0);
+}
+
+.theme-modal-header {
+  padding: 20px 24px 16px;
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.theme-modal-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-modal-close {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #FFFFFF;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.theme-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.08);
+}
+
+.theme-modal-body {
+  padding: 20px 24px 24px;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.theme-modal-desc {
+  font-size: 0.9rem;
+  color: #64748B;
+  margin: 0 0 18px;
+  line-height: 1.45;
+}
+
+.theme-options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.theme-option-card {
+  border: 2px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 14px 18px;
+  background: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.22s ease;
+  position: relative;
+  text-align: left;
+  width: 100%;
+}
+
+.theme-option-card:hover {
+  border-color: #38BDF8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.18);
+}
+
+.theme-option-card.active {
+  border-color: #10B981;
+  background: #F0FDF4;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+}
+
+.toc-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.toc-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.toc-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.toc-name {
+  font-size: 1.02rem;
+  font-weight: 900;
+  color: #1E293B;
+}
+
+.toc-badge-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.toc-desc {
+  font-size: 0.8rem;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.toc-check {
+  font-size: 1.3rem;
+  color: #10B981;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.2s ease;
+}
+
+.theme-option-card.active .toc-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.theme-modal-footer {
+  padding: 14px 24px;
+  background: #F8FAFC;
+  border-top: 1.5px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+.theme-modal-footer a,
+.theme-modal-footer button {
+  color: #0284C7;
+  font-weight: 800;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMA 1: 🎃 HALLOWEEN (NOCHE DE BRUJAS / HALLOWEEN MAKER)
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="halloween"] {
+  --topbar-bg: #220838;
+  --topbar-text: #FFFFFF;
+  --green-900: #19052A;
+  --green-800: #2C0B48;
+  --green-700: #4A148C;
+  --green-600: #E65100;
+  --green-500: #FF6F00;
+  --green-100: #FFF3E0;
+  --green-50:  #FFF8E1;
+
+  --yellow-600: #FF6F00;
+  --yellow-500: #FF9800;
+  --yellow-100: #FFF3E0;
+
+  --hn-green: #FF6F00;
+  --hn-green-dark: #2C0B48;
+  --hn-yellow: #FF9800;
+}
+
+/* Barra superior festiva Halloween */
+[data-theme="halloween"] .topbar {
+  background: linear-gradient(135deg, #18032B 0%, #2A0845 50%, #C2410C 120%) !important;
+  border-bottom: 2.5px solid #FF6F00 !important;
+  box-shadow: 0 4px 20px rgba(255, 111, 0, 0.25) !important;
+  position: relative;
+}
+
+/* Telaraña sutil decorativa en la esquina */
+[data-theme="halloween"] .topbar::after {
+  content: '🕸️';
+  position: absolute;
+  right: 12px;
+  bottom: -4px;
+  font-size: 26px;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* Píldora del tema con brillo de calabaza */
+[data-theme="halloween"] .topbar-theme-pill {
+  background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%) !important;
+  border-color: #FDBA74 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 14px rgba(234, 88, 12, 0.5) !important;
+}
+
+/* Ticker Halloween */
+[data-theme="halloween"] .hn-ticker {
+  background: linear-gradient(90deg, #240738 0%, #3B0E5D 100%) !important;
+  border-color: #EA580C !important;
+}
+
+[data-theme="halloween"] .hn-ticker-label {
+  background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%) !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="halloween"] .hn-ticker-label .dot {
+  background: #FACC15 !important;
+  box-shadow: 0 0 8px #FACC15 !important;
+}
+
+[data-theme="halloween"] .hn-ticker-item {
+  color: #FED7AA !important;
+}
+
+/* Pestañas de Vistas en Barra Superior */
+[data-theme="halloween"] .topbar-nav-link.active {
+  background: rgba(255, 111, 0, 0.25) !important;
+  color: #FFB74D !important;
+  border-color: rgba(255, 111, 0, 0.6) !important;
+}
+
+[data-theme="halloween"] .topbar-nav-link:hover {
+  background: rgba(255, 111, 0, 0.18) !important;
+  color: #FFFFFF !important;
+}
+
+/* Botones principales de la portada */
+[data-theme="halloween"] .hn-act-btn.primary,
+[data-theme="halloween"] .btn-start-game {
+  background: linear-gradient(135deg, #EA580C 0%, #9333EA 100%) !important;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4) !important;
+}
+
+[data-theme="halloween"] .hn-kicker {
+  background: #FFF3E0 !important;
+  color: #C2410C !important;
+  border: 1px solid #FFCC80 !important;
+}
+
+/* ── Panel del Alumno Logueado en Halloween ── */
+[data-theme="halloween"] .gamer-hero-card {
+  background: linear-gradient(135deg, #18032B 0%, #2E084D 45%, #7C2D12 100%) !important;
+  border-color: rgba(249, 115, 22, 0.45) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 30px rgba(234, 88, 12, 0.2) !important;
+}
+
+[data-theme="halloween"] .gamer-hero-card::before {
+  content: '🦇';
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-size: 70px;
+  opacity: 0.12;
+  pointer-events: none;
+  animation: batFloat 4s infinite ease-in-out alternate;
+}
+
+@keyframes batFloat {
+  0%   { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-12px) rotate(8deg); }
+}
+
+[data-theme="halloween"] .gh-avatar-container {
+  background: linear-gradient(135deg, #EA580C 0%, #A855F7 100%) !important;
+  border-color: #FB923C !important;
+  box-shadow: 0 0 24px rgba(234, 88, 12, 0.5) !important;
+}
+
+[data-theme="halloween"] .gh-badge.level {
+  background: linear-gradient(135deg, #EA580C 0%, #9333EA 100%) !important;
+  box-shadow: 0 2px 10px rgba(234, 88, 12, 0.4) !important;
+}
+
+[data-theme="halloween"] .gh-btn-continue {
+  background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%) !important;
+  border-color: #FDBA74 !important;
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.45) !important;
+}
+
+[data-theme="halloween"] .gh-btn-continue:hover {
+  background: linear-gradient(135deg, #F97316 0%, #9333EA 100%) !important;
+}
+
+[data-theme="halloween"] .gh-progress-fill {
+  background: linear-gradient(90deg, #A855F7 0%, #F97316 60%, #EAB308 100%) !important;
+}
+
+[data-theme="halloween"] .gnb-tab.active {
+  background: linear-gradient(135deg, #EA580C 0%, #7E22CE 100%) !important;
+  border-color: #EA580C !important;
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.35) !important;
+}
+
+[data-theme="halloween"] .arm-toolbar-compact .atc-badge {
+  background: #FFF3E0 !important;
+  color: #C2410C !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMA 2: 🎈 DÍA DEL NIÑO / DÍA DE LA NIÑEZ
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="diadelnino"] {
+  --topbar-bg: #0284C7;
+  --topbar-text: #FFFFFF;
+  --green-900: #0C4A6E;
+  --green-800: #0284C7;
+  --green-700: #0369A1;
+  --green-600: #0284C7;
+  --green-500: #38BDF8;
+  --green-100: #E0F2FE;
+  --green-50:  #F0F9FF;
+
+  --yellow-600: #EAB308;
+  --yellow-500: #FACC15;
+
+  --hn-green: #0284C7;
+  --hn-green-dark: #0C4A6E;
+  --hn-yellow: #EC4899;
+}
+
+[data-theme="diadelnino"] .topbar {
+  background: linear-gradient(135deg, #0284C7 0%, #6366F1 50%, #EC4899 100%) !important;
+  border-bottom: 2.5px solid #FACC15 !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25) !important;
+}
+
+[data-theme="diadelnino"] .topbar-theme-pill {
+  background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%) !important;
+  border-color: #F472B6 !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="diadelnino"] .gamer-hero-card {
+  background: linear-gradient(135deg, #0C4A6E 0%, #1E3A8A 50%, #831843 100%) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25), 0 0 25px rgba(236, 72, 153, 0.2) !important;
+}
+
+[data-theme="diadelnino"] .gh-avatar-container {
+  background: linear-gradient(135deg, #38BDF8 0%, #EC4899 100%) !important;
+  border-color: #FACC15 !important;
+}
+
+[data-theme="diadelnino"] .gnb-tab.active {
+  background: linear-gradient(135deg, #0284C7 0%, #EC4899 100%) !important;
+  border-color: #0284C7 !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMA 3: 🌸 DÍA DE LA MADRE / MES DE LA FAMILIA
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="diadelamadre"] {
+  --topbar-bg: #9D174D;
+  --topbar-text: #FFFFFF;
+  --green-900: #831843;
+  --green-800: #9D174D;
+  --green-700: #BE185D;
+  --green-600: #E11D48;
+  --green-500: #FB7185;
+  --green-100: #FFE4E6;
+  --green-50:  #FFF1F2;
+
+  --yellow-600: #F43F5E;
+  --yellow-500: #FDA4AF;
+
+  --hn-green: #BE185D;
+  --hn-green-dark: #831843;
+  --hn-yellow: #FB7185;
+}
+
+[data-theme="diadelamadre"] .topbar {
+  background: linear-gradient(135deg, #831843 0%, #BE185D 50%, #F43F5E 100%) !important;
+  border-bottom: 2.5px solid #FDA4AF !important;
+  box-shadow: 0 4px 20px rgba(190, 24, 93, 0.25) !important;
+}
+
+[data-theme="diadelamadre"] .topbar-theme-pill {
+  background: linear-gradient(135deg, #BE185D 0%, #E11D48 100%) !important;
+  border-color: #FDA4AF !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="diadelamadre"] .gamer-hero-card {
+  background: linear-gradient(135deg, #4C0519 0%, #831843 50%, #431407 100%) !important;
+  border-color: rgba(251, 113, 133, 0.4) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25), 0 0 25px rgba(225, 29, 72, 0.2) !important;
+}
+
+[data-theme="diadelamadre"] .gh-avatar-container {
+  background: linear-gradient(135deg, #FB7185 0%, #C084FC 100%) !important;
+  border-color: #FECDD3 !important;
+}
+
+[data-theme="diadelamadre"] .gnb-tab.active {
+  background: linear-gradient(135deg, #BE185D 0%, #E11D48 100%) !important;
+  border-color: #BE185D !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMA 4: 🎄 NAVIDAD & FIN DE AÑO
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="navidad"] {
+  --topbar-bg: #14532D;
+  --topbar-text: #FFFFFF;
+  --green-900: #14532D;
+  --green-800: #166534;
+  --green-700: #15803D;
+  --green-600: #DC2626;
+  --green-500: #EF4444;
+  --green-100: #DCFCE7;
+  --green-50:  #F0FDF4;
+
+  --yellow-600: #EAB308;
+  --yellow-500: #FACC15;
+
+  --hn-green: #15803D;
+  --hn-green-dark: #14532D;
+  --hn-yellow: #DC2626;
+}
+
+[data-theme="navidad"] .topbar {
+  background: linear-gradient(135deg, #14532D 0%, #166534 40%, #B91C1C 100%) !important;
+  border-bottom: 2.5px solid #FACC15 !important;
+  box-shadow: 0 4px 20px rgba(185, 28, 28, 0.25) !important;
+}
+
+[data-theme="navidad"] .topbar-theme-pill {
+  background: linear-gradient(135deg, #DC2626 0%, #16A34A 100%) !important;
+  border-color: #FACC15 !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="navidad"] .gamer-hero-card {
+  background: linear-gradient(135deg, #052E16 0%, #14532D 50%, #7F1D1D 100%) !important;
+  border-color: rgba(250, 204, 21, 0.4) !important;
+}
+
+[data-theme="navidad"] .gh-avatar-container {
+  background: linear-gradient(135deg, #22C55E 0%, #EF4444 100%) !important;
+  border-color: #FACC15 !important;
+}
+
+[data-theme="navidad"] .gnb-tab.active {
+  background: linear-gradient(135deg, #15803D 0%, #DC2626 100%) !important;
+  border-color: #15803D !important;
+}
