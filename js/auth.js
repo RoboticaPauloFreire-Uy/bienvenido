@@ -9,6 +9,11 @@
 
   function getActiveStudent() {
     try {
+      var cached = localStorage.getItem('pf_active_student_data');
+      if (cached) {
+        var parsed = JSON.parse(cached);
+        if (parsed && parsed.id) return parsed;
+      }
       var id = localStorage.getItem(STORAGE_KEY);
       if (!id) return null;
       if (window.getStudentById) return window.getStudentById(id);
@@ -18,11 +23,17 @@
     }
   }
 
-  function setActiveStudent(studentId) {
-    if (studentId) {
-      localStorage.setItem(STORAGE_KEY, studentId);
+  function setActiveStudent(studentDataOrId) {
+    if (studentDataOrId) {
+      if (typeof studentDataOrId === 'object' && studentDataOrId.id) {
+        localStorage.setItem(STORAGE_KEY, studentDataOrId.id);
+        localStorage.setItem('pf_active_student_data', JSON.stringify(studentDataOrId));
+      } else {
+        localStorage.setItem(STORAGE_KEY, studentDataOrId);
+      }
     } else {
       localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('pf_active_student_data');
     }
     updateUI();
     window.dispatchEvent(new CustomEvent('student_session_changed', { detail: getActiveStudent() }));
@@ -31,6 +42,7 @@
   function logoutStudent() {
     if (window.sounds) window.sounds.playClick();
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('pf_active_student_data');
     closeLoginModal();
     window.location.reload();
   }
@@ -205,27 +217,48 @@
       var form  = document.getElementById('classic-login-form');
       var error = document.getElementById('clf-error-alert');
 
-      form.onsubmit = function(e) {
+      form.onsubmit = async function(e) {
         e.preventDefault();
+        var submitBtn = form.querySelector('.clf-submit-btn');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span>Verificando...</span> <i class="fas fa-spinner fa-spin"></i>';
+        }
         var u = document.getElementById('clf-user').value;
         var p = document.getElementById('clf-pass').value;
-        var matches = window.findMatchingStudents ? window.findMatchingStudents(u, p) : [];
-        if (matches.length === 0 && window.authenticateStudent) {
-          var single = window.authenticateStudent(u, p);
-          if (single) matches = [single];
-        }
 
-        if (matches.length === 1) {
-          error.classList.add('hidden');
-          setActiveStudent(matches[0].id);
-          closeLoginModal();
-          if (window.sounds) window.sounds.playSuccess();
-        } else if (matches.length > 1) {
-          error.classList.add('hidden');
-          showStudentPicker(matches);
-        } else {
+        try {
+          var matches = [];
+          if (typeof window.authenticateStudentAsync === 'function') {
+            matches = await window.authenticateStudentAsync(u, p);
+          } else if (window.findMatchingStudents) {
+            matches = window.findMatchingStudents(u, p);
+          }
+          if (matches.length === 0 && window.authenticateStudent) {
+            var single = window.authenticateStudent(u, p);
+            if (single) matches = [single];
+          }
+
+          if (matches.length === 1) {
+            error.classList.add('hidden');
+            setActiveStudent(matches[0]);
+            closeLoginModal();
+            if (window.sounds) window.sounds.playSuccess();
+          } else if (matches.length > 1) {
+            error.classList.add('hidden');
+            showStudentPicker(matches);
+          } else {
+            error.classList.remove('hidden');
+            if (window.sounds) window.sounds.playError();
+          }
+        } catch (err) {
+          console.error("Error en login:", err);
           error.classList.remove('hidden');
-          if (window.sounds) window.sounds.playError();
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Iniciar Sesión</span> <i class="fas fa-sign-in-alt"></i>';
+          }
         }
       };
 
@@ -254,7 +287,8 @@
         body.querySelectorAll('.slm-picker-card').forEach(function(cardBtn) {
           cardBtn.onclick = function() {
             var stId = cardBtn.getAttribute('data-student-id');
-            setActiveStudent(stId);
+            var selectedStudent = studentList.find(function(s) { return s.id === stId; });
+            setActiveStudent(selectedStudent || stId);
             closeLoginModal();
             if (window.sounds) window.sounds.playSuccess();
           };
