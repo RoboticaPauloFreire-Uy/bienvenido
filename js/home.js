@@ -95,7 +95,17 @@
     return '<span class="hn-cat" style="--cat:' + c.color + '">' + c.icono + ' ' + esc(c.nombre) + '</span>';
   }
 
-  var noticias = (C.noticias || []).slice().sort(function (a, b) { return parseFecha(b.fecha) - parseFecha(a.fecha); });
+  var noticias = [];
+  function refrescarNoticias() {
+    noticias = (C.noticias || []).slice().sort(function (a, b) {
+      var fa = parseFecha(a.fecha);
+      var fb = parseFecha(b.fecha);
+      var ta = fa ? fa.getTime() : (a._time || 0);
+      var tb = fb ? fb.getTime() : (b._time || 0);
+      return tb - ta;
+    });
+  }
+  refrescarNoticias();
 
   /* ───────────── Cabecera tipo diario ───────────── */
   function renderMasthead() {
@@ -1076,20 +1086,23 @@
   function syncRemoteNews() {
     try {
       if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
-        window.db.collection('news').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
-          if (!snapshot || snapshot.empty) return;
+        window.db.collection('news').onSnapshot(function (snapshot) {
+          if (!snapshot) return;
           var remoteNews = [];
           snapshot.forEach(function (doc) {
             var d = doc.data();
+            var docDate = d.fecha || (d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toISOString().split('T')[0] : '2026-10-11');
+            var rawTime = d.createdAt ? (d.createdAt.toMillis ? d.createdAt.toMillis() : (d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0)) : 0;
             remoteNews.push({
               id: doc.id,
               titulo: d.titulo || '',
               bajada: d.bajada || '',
               cuerpo: Array.isArray(d.cuerpo) ? d.cuerpo : [d.cuerpo || ''],
-              fecha: d.fecha || (d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toISOString().split('T')[0] : '2026-10-11'),
+              fecha: docDate,
+              _time: rawTime,
               categoria: d.categoria || 'taller',
               grado: d.grado || 'todos',
-              imagen: d.imagen || 'img/proyectos/canva_arquero_ia_cover.svg',
+              imagen: d.imagen || 'img/bienvenida_taller.jpg',
               destacada: !!d.destacada,
               links: d.links || []
             });
@@ -1101,6 +1114,8 @@
             return !remoteNews.some(function (rn) { return rn.id === bn.id; });
           }));
 
+          refrescarNoticias();
+          renderMasthead();
           renderDestacada();
           renderFiltrosNoticias();
           renderNoticias();
@@ -1118,8 +1133,8 @@
   function syncRemotePosts() {
     try {
       if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
-        window.db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
-          if (!snapshot || snapshot.empty) return;
+        window.db.collection('posts').onSnapshot(function (snapshot) {
+          if (!snapshot) return;
           var remote = [];
           snapshot.forEach(function (doc) {
             var d = doc.data();
