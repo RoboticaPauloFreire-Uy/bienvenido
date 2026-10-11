@@ -1067,6 +1067,70 @@
     if (window.renderGDriveDashboard && alumno()) {
       window.renderGDriveDashboard('student-drive-dashboard-container');
     }
+
+    // Sincronizar en tiempo real las publicaciones creadas desde el panel de administración
+    syncRemotePosts();
+  }
+
+  function syncRemotePosts() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
+          if (!snapshot || snapshot.empty) return;
+          var remote = [];
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            var targetGradeVal = d.targetGrade || 'Todo el Colegio';
+            var gradeCode = 'todos';
+            if (targetGradeVal.indexOf('Sala') !== -1) gradeCode = 'sala5';
+            else if (targetGradeVal.indexOf('1') !== -1) gradeCode = '1ro';
+            else if (targetGradeVal.indexOf('2') !== -1) gradeCode = '2do';
+            else if (targetGradeVal.indexOf('3') !== -1) gradeCode = '3ro';
+            else if (targetGradeVal.indexOf('4') !== -1) gradeCode = '4to';
+            else if (targetGradeVal.indexOf('5') !== -1) gradeCode = '5to';
+            else if (targetGradeVal.indexOf('6') !== -1) gradeCode = '6to';
+
+            remote.push({
+              id: doc.id,
+              tipoMedia: d.mediaType || 'foto',
+              autor: d.author || 'Taller de Robótica & Programación',
+              rolAutor: 'Docente Paulo Freire',
+              avatarAutor: 'img/escudo_paulo_freire.png',
+              fecha: d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toLocaleDateString('es-UY', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Reciente',
+              grado: gradeCode,
+              etiquetaGrado: targetGradeVal,
+              texto: d.description || '',
+              titulo: d.title || '',
+              categoria: d.category || 'Actividad',
+              video: d.mediaType === 'video' ? {
+                titulo: d.title || 'Video de la actividad',
+                url: d.mediaUrl || '',
+                subtitulo: 'Actividad realizada en clase'
+              } : null,
+              fotos: d.mediaType !== 'video' && d.mediaUrl ? [{
+                url: d.mediaUrl,
+                alt: d.title || 'Foto de actividad',
+                caption: d.title || ''
+              }] : []
+            });
+          });
+
+          // Unir publicaciones de Firestore con las de news.js
+          var basePosts = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.muro) || [];
+          C.muro = remote.concat(basePosts.filter(function (bp) {
+            return !remote.some(function (rp) { return rp.id === bp.id; });
+          }));
+          renderFiltrosMuro();
+          renderMuro();
+        }, function (err) {
+          console.warn('Sync posts notice:', err);
+        });
+      } else {
+        setTimeout(syncRemotePosts, 800);
+      }
+    } catch (e) {
+      console.warn('Error en syncRemotePosts:', e);
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
