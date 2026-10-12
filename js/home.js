@@ -261,6 +261,13 @@
     var h = hoy();
     var desde = parseFecha(a.desde);
     var hasta = parseFecha(a.hasta);
+    if (a.tipo === 'clase') {
+      if (!desde) return { clave: 'curso', texto: 'En clase' };
+      var diff = Math.round((desde.getTime() - h.getTime()) / (1000 * 60 * 60 * 24));
+      if (diff > 0) return { clave: 'proxima', texto: 'Próxima presentación' };
+      if (diff === 0) return { clave: 'nueva', texto: '¡Presentación hoy!' };
+      return { clave: 'finalizada', texto: 'Presentado' };
+    }
     if (desde && desde > h) return { clave: 'proxima', texto: 'Próximamente' };
     if (hasta && hasta < h) return { clave: 'finalizada', texto: 'Finalizada' };
     if (desde && diasEntre(desde, h) <= 10) return { clave: 'nueva', texto: 'Nueva' };
@@ -352,9 +359,11 @@
       var tipo = TIPOS[a.tipo] || { nombre: a.tipo, icono: 'fas fa-star' };
       var gr = a.grados || ['todos'];
       var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
-      var hasta = a.hasta && it.estado.clave !== 'finalizada'
+      var fechaPresentacion = (a.tipo === 'clase' && a.desde)
+        ? '<span class="hn-act-deadline"><i class="far fa-calendar-alt"></i> Presentación: ' + esc(fechaLarga(a.desde).replace(/ de \d{4}$/, '')) + '</span>' : '';
+      var hasta = (a.tipo !== 'clase' && a.hasta && it.estado.clave !== 'finalizada')
         ? '<span class="hn-act-deadline"><i class="far fa-calendar-check"></i> Hasta el ' + esc(fechaLarga(a.hasta).replace(/ de \d{4}$/, '')) + '</span>' : '';
-      var desdeProx = it.estado.clave === 'proxima'
+      var desdeProx = (a.tipo !== 'clase' && it.estado.clave === 'proxima')
         ? '<span class="hn-act-deadline"><i class="far fa-calendar"></i> Empieza el ' + esc(fechaLarga(a.desde).replace(/ de \d{4}$/, '')) + '</span>' : '';
 
       var thumb = a.imagen
@@ -385,7 +394,7 @@
           '<h3 class="hn-act-title">' + esc(a.titulo) + '</h3>' +
           '<p class="hn-act-desc">' + esc(a.descripcion) + '</p>' +
           chips +
-          '<div class="hn-act-info"><span><i class="fas fa-user-graduate"></i> ' + esc(grTxt) + '</span>' + hasta + desdeProx + '</div>' +
+          '<div class="hn-act-info"><span><i class="fas fa-user-graduate"></i> ' + esc(grTxt) + '</span>' + fechaPresentacion + hasta + desdeProx + '</div>' +
           (botones ? '<div class="hn-act-actions">' + botones + '</div>' : '') +
         '</div>' +
       '</article>';
@@ -568,31 +577,72 @@
     }).join('');
   }
 
-  /* ───────────── Agenda ───────────── */
+  /* ───────────── Agenda (Solo Proyectos en Clase: Título, Imagen, Día de Presentación y Grado) ───────────── */
   function renderAgenda() {
     var cont = document.getElementById('hn-agenda-list');
     if (!cont) return;
     var h = hoy();
-    var prox = (C.agenda || []).filter(function (e) { var d = parseFecha(e.fecha); return d && d >= h; })
-      .sort(function (a, b) { return parseFecha(a.fecha) - parseFecha(b.fecha); })
-      .slice(0, 6);
 
-    if (!prox.length) {
-      cont.innerHTML = '<div class="hn-empty small"><span>📅</span>No hay fechas próximas cargadas.</div>';
+    // La agenda muestra únicamente los proyectos y actividades de clase
+    var proyectosClase = (C.actividades || []).filter(function (a) {
+      return (a.tipo === 'clase' || seccionDe(a) === 'clase') && (a.desde || a.fecha);
+    });
+
+    if (!proyectosClase.length) {
+      cont.innerHTML = '<div class="hn-empty small"><span>📅</span>No hay presentaciones de proyectos de clase cargadas.</div>';
       return;
     }
 
-    cont.innerHTML = prox.map(function (e) {
-      var d = parseFecha(e.fecha);
-      var n = diasEntre(h, d);
-      var falta = n === 0 ? '¡Hoy!' : n === 1 ? 'Mañana' : 'En ' + n + ' días';
-      return '<li class="hn-ag-item' + (n <= 7 ? ' soon' : '') + '">' +
-        '<div class="hn-ag-date"><span class="d">' + d.getDate() + '</span><span class="m">' + MESES_CORTOS[d.getMonth()] + '</span></div>' +
-        '<div class="hn-ag-body">' +
-          '<strong>' + (e.icono ? esc(e.icono) + ' ' : '') + esc(e.titulo) + '</strong>' +
-          (e.detalle ? '<span>' + esc(e.detalle) + '</span>' : '') +
+    // Ordenar cronológicamente por día de presentación
+    proyectosClase.sort(function (a, b) {
+      var da = parseFecha(a.desde || a.fecha) || 0;
+      var db = parseFecha(b.desde || b.fecha) || 0;
+      return da - db;
+    });
+
+    cont.innerHTML = proyectosClase.map(function (p) {
+      var fechaStr = p.desde || p.fecha;
+      var d = parseFecha(fechaStr);
+      var diaNum = d ? d.getDate() : '--';
+      var mesTxt = d ? MESES_CORTOS[d.getMonth()] : '';
+
+      var n = d ? diasEntre(h, d) : null;
+      var estadoTiempo = '';
+      var isSoon = false;
+      if (n !== null) {
+        if (n === 0) {
+          estadoTiempo = '¡Hoy!';
+          isSoon = true;
+        } else if (n === 1) {
+          estadoTiempo = 'Mañana';
+          isSoon = true;
+        } else if (n > 1) {
+          estadoTiempo = 'En ' + n + ' días';
+          if (n <= 7) isSoon = true;
+        } else {
+          estadoTiempo = 'Presentado';
+        }
+      }
+
+      var gr = p.grados || [p.grado || 'todos'];
+      var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
+
+      // Imagen en miniatura si hay, o ícono representativo
+      var thumbHtml = '';
+      if (p.imagen) {
+        thumbHtml = '<img src="' + esc(p.imagen) + '" alt="" style="width:48px; height:48px; object-fit:cover; border-radius:10px; flex-shrink:0; border:1px solid #E2E8F0;" onerror="this.style.display=\'none\';">';
+      } else {
+        thumbHtml = '<div style="width:48px; height:48px; border-radius:10px; background:#F8FAFC; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">' + esc(p.icono || '🤖') + '</div>';
+      }
+
+      return '<li class="hn-ag-item' + (isSoon ? ' soon' : '') + '" style="display:flex; align-items:center; gap:14px; padding:12px 14px;">' +
+        '<div class="hn-ag-date"><span class="d">' + diaNum + '</span><span class="m">' + mesTxt + '</span></div>' +
+        thumbHtml +
+        '<div class="hn-ag-body" style="flex:1; min-width:0;">' +
+          '<strong style="font-size:0.95rem; color:#0F172A; display:block; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + esc(p.titulo) + '">' + esc(p.titulo) + '</strong>' +
+          '<span style="font-size:0.82rem; color:#64748B;"><i class="fas fa-chalkboard-teacher" style="color:#15803D; margin-right:4px;"></i>' + esc(grTxt) + '</span>' +
         '</div>' +
-        '<span class="hn-ag-left">' + falta + '</span>' +
+        '<span class="hn-ag-left" style="font-weight:700; font-size:0.8rem;">' + estadoTiempo + '</span>' +
       '</li>';
     }).join('');
   }
@@ -1135,6 +1185,7 @@
           renderFiltrosActividades();
           renderActividades();
           renderMasthead();
+          renderAgenda();
         }, function (err) {
           console.warn('Sync clase activities notice:', err);
         });
@@ -1193,6 +1244,7 @@
           renderFiltrosActividades();
           renderActividades();
           renderMasthead();
+          renderAgenda();
         }, function (err) {
           console.warn('Sync casa activities notice:', err);
         });

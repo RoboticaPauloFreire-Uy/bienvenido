@@ -250,8 +250,7 @@ window.HOME_CONTENT = {
       grados: ['grado3'],
       icono: '🎸',
       color: '#00838F',
-      desde: '2026-10-05',
-      hasta: '2026-10-30'
+      desde: '2026-10-30'
     },
     {
       id: 'act-cuento-scratch',
@@ -261,8 +260,7 @@ window.HOME_CONTENT = {
       grados: ['grado2'],
       icono: '📖',
       color: '#6A1B9A',
-      desde: '2026-10-05',
-      hasta: '2026-11-13',
+      desde: '2026-11-13',
       botones: [
         { texto: 'Abrir Scratch', url: 'https://scratch.mit.edu/projects/editor/', icono: 'fas fa-external-link-alt', principal: true }
       ]
@@ -275,8 +273,7 @@ window.HOME_CONTENT = {
       grados: ['grado4'],
       icono: '🚦',
       color: '#EF6C00',
-      desde: '2026-09-14',
-      hasta: '2026-10-03'
+      desde: '2026-10-03'
     },
     {
       id: 'act-servo-joystick',
@@ -287,8 +284,7 @@ window.HOME_CONTENT = {
       icono: '🕹️',
       color: '#2E7D32',
       imagen: 'img/proyectos/servo_joystick_makecode_cover.svg',
-      desde: '2026-09-28',
-      hasta: '2026-10-24'
+      desde: '2026-10-24'
     },
     {
       id: 'act-arquero-ia',
@@ -299,8 +295,7 @@ window.HOME_CONTENT = {
       icono: '🧤',
       color: '#C2185B',
       imagen: 'img/proyectos/canva_arquero_ia_cover.svg',
-      desde: '2026-10-01',
-      hasta: '2026-10-17',
+      desde: '2026-10-17',
       botones: [
         { texto: 'Abrir Canva', url: 'https://www.canva.com/', icono: 'fas fa-external-link-alt', principal: true }
       ]
@@ -314,8 +309,7 @@ window.HOME_CONTENT = {
       icono: '🎨',
       color: '#6A1B9A',
       imagen: 'img/proyectos/banderas_mundial_paint_cover.png',
-      desde: '2026-09-15',
-      hasta: '2026-10-10'
+      desde: '2026-10-10'
     },
     {
       id: 'act-minecraft',
