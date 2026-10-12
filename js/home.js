@@ -89,8 +89,21 @@
 
   function parseFecha(s) {
     if (!s) return null;
-    var p = String(s).split('-');
-    return new Date(+p[0], (+p[1] || 1) - 1, +p[2] || 1);
+    if (s instanceof Date) return isNaN(s.getTime()) ? null : s;
+    if (typeof s === 'number') {
+      var d = new Date(s);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    var str = String(s).trim();
+    if (!str) return null;
+    if (/^\d{4}-\d{1,2}-\d{1,2}/.test(str)) {
+      var p = str.split('T')[0].split('-');
+      var d = new Date(+p[0], (+p[1] || 1) - 1, +p[2] || 1);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    var d2 = new Date(str);
+    if (!isNaN(d2.getTime())) return d2;
+    return null;
   }
 
   function hoy() {
@@ -102,17 +115,20 @@
 
   function fechaLarga(s) {
     var d = parseFecha(s);
-    return d ? d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear() : '';
+    if (!d || isNaN(d.getTime())) return String(s || '');
+    var m = MESES[d.getMonth()];
+    return d.getDate() + ' de ' + (m || '') + ' de ' + d.getFullYear();
   }
 
   function fechaRelativa(s) {
     var d = parseFecha(s);
-    if (!d) return '';
+    if (!d || isNaN(d.getTime())) return String(s || 'Reciente');
     var n = diasEntre(d, hoy());
     if (n === 0) return 'Hoy';
     if (n === 1) return 'Ayer';
     if (n > 1 && n < 7) return 'Hace ' + n + ' días';
-    return d.getDate() + ' ' + MESES[d.getMonth()].slice(0, 3) + ' ' + d.getFullYear();
+    var m = MESES[d.getMonth()];
+    return d.getDate() + ' ' + (m ? m.slice(0, 3) : '') + ' ' + d.getFullYear();
   }
 
   function alumno() {
@@ -782,7 +798,9 @@
     if (!cont) return;
 
     var allPosts = (C.muro || []).slice().sort(function (a, b) {
-      return parseFecha(b.fecha) - parseFecha(a.fecha);
+      var ta = a._time || (parseFecha(a.fecha) ? parseFecha(a.fecha).getTime() : 0);
+      var tb = b._time || (parseFecha(b.fecha) ? parseFecha(b.fecha).getTime() : 0);
+      return tb - ta;
     });
 
     // Conteo en pestañas
@@ -842,7 +860,8 @@
       // Multimedia
       var mediaHtml = '';
       if (p.tipoMedia === 'video' && p.video) {
-        if (p.video.tipo === 'youtube') {
+        var isYt = (p.video.tipo === 'youtube') || (p.video.url && p.video.url.indexOf('youtu') !== -1);
+        if (isYt) {
           var embedSrc = toYouTubeEmbed(p.video.url);
           var watchUrl = getYouTubeWatchUrl(p.video.url);
           mediaHtml =
@@ -1413,25 +1432,32 @@
               labelGrado = postGrades.indexOf('todos') !== -1 ? 'Todo el Colegio' : postGrades.map(nombreGrado).join(' · ');
             }
 
+            var rawTime = d.createdAt ? (d.createdAt.toMillis ? d.createdAt.toMillis() : (d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0)) : (d.updatedAt ? (d.updatedAt.toMillis ? d.updatedAt.toMillis() : 0) : Date.now());
+            var docDate = d.fecha || (d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
+            var isVideo = (d.mediaType === 'video') || (d.mediaUrl && (d.mediaUrl.indexOf('youtu') !== -1 || d.mediaUrl.indexOf('.mp4') !== -1));
+            var isYt = isVideo && d.mediaUrl && (d.mediaUrl.indexOf('youtu') !== -1);
+
             remote.push({
               id: doc.id,
-              tipoMedia: d.mediaType || 'foto',
+              tipoMedia: isVideo ? 'video' : (d.mediaType || 'foto'),
               autor: d.author || 'Taller de Robótica & Programación',
               rolAutor: 'Docente Paulo Freire',
               avatarAutor: 'img/escudo_paulo_freire.png',
-              fecha: d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toLocaleDateString('es-UY', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Reciente',
+              fecha: docDate,
+              _time: rawTime,
               grado: postGrades[0] || 'todos',
               grados: postGrades,
               etiquetaGrado: labelGrado,
               texto: d.description || '',
               titulo: d.title || '',
               categoria: d.category || 'Actividad',
-              video: d.mediaType === 'video' ? {
+              video: isVideo ? {
+                tipo: isYt ? 'youtube' : 'video',
                 titulo: d.title || 'Video de la actividad',
                 url: d.mediaUrl || '',
                 subtitulo: 'Actividad realizada en clase'
               } : null,
-              fotos: d.mediaType !== 'video' && d.mediaUrl ? [{
+              fotos: !isVideo && d.mediaUrl ? [{
                 url: d.mediaUrl,
                 alt: d.title || 'Foto de actividad',
                 caption: d.title || ''
