@@ -1092,8 +1092,13 @@
         window.db.collection('news').onSnapshot(function (snapshot) {
           if (!snapshot) return;
           var remoteNews = [];
+          var deletedIds = [];
           snapshot.forEach(function (doc) {
             var d = doc.data();
+            if (d.deleted) {
+              deletedIds.push(doc.id);
+              return;
+            }
             var docDate = d.fecha || (d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toISOString().split('T')[0] : '2026-10-11');
             var rawTime = d.createdAt ? (d.createdAt.toMillis ? d.createdAt.toMillis() : (d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0)) : 0;
             remoteNews.push({
@@ -1111,10 +1116,10 @@
             });
           });
 
-          // Unir con las noticias base de news.js (dando prioridad a las de Firestore)
+          // Unir con las noticias base de news.js (dando prioridad a las de Firestore y excluyendo eliminadas)
           var baseNews = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.noticias) || (window.HOME_CONTENT && window.HOME_CONTENT.noticias) || [];
           C.noticias = remoteNews.concat(baseNews.filter(function (bn) {
-            return !remoteNews.some(function (rn) { return rn.id === bn.id; });
+            return !remoteNews.some(function (rn) { return rn.id === bn.id; }) && deletedIds.indexOf(bn.id) === -1;
           }));
 
           refrescarNoticias();
