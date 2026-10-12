@@ -87,6 +87,97 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  function formatMarkdown(raw) {
+    if (!raw) return '';
+    var s = String(raw).trim();
+    if (!s) return '';
+
+    // Si marked.js está cargado, usarlo
+    if (typeof window.marked !== 'undefined' && typeof window.marked.parse === 'function') {
+      try {
+        return window.marked.parse(s, { breaks: true, gfm: true });
+      } catch (e) {}
+    }
+
+    // Separación inteligente de secciones y pasos si el texto viene sin saltos de línea
+    if ((s.match(/\n/g) || []).length < 2) {
+      s = s.replace(/([^\n])\s+([📌🛠️💡🚀⚡🎯📦🎨🎮]\s*)/g, '$1\n\n$2');
+      s = s.replace(/([^\n])\s+(\d+[\.\)]\s+)/g, '$1\n$2');
+    }
+
+    // Escapar caracteres peligrosos
+    var safe = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // Títulos Markdown
+    safe = safe.replace(/^### (.*$)/gim, '<h4>$1</h4>');
+    safe = safe.replace(/^## (.*$)/gim, '<h3>$1</h3>');
+    safe = safe.replace(/^# (.*$)/gim, '<h3>$1</h3>');
+
+    // Negrita y cursiva
+    safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    safe = safe.replace(/__(.*?)__/g, '<strong>$1</strong>');
+    safe = safe.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    safe = safe.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    // Código en línea
+    safe = safe.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Enlaces Markdown [texto](url)
+    safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    // Enlaces directos http(s):// que no estén ya dentro de un atributo href
+    safe = safe.replace(/(^|[^"'])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>');
+
+    // Procesar líneas, listas y párrafos
+    var lines = safe.split(/\r?\n/);
+    var inUl = false, inOl = false, html = [];
+
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[i].trim();
+      if (!l) {
+        if (inUl) { html.push('</ul>'); inUl = false; }
+        if (inOl) { html.push('</ol>'); inOl = false; }
+        continue;
+      }
+
+      // Viñetas: - item o * item o • item
+      var ulM = l.match(/^[-*•]\s+(.*)/);
+      if (ulM) {
+        if (inOl) { html.push('</ol>'); inOl = false; }
+        if (!inUl) { html.push('<ul>'); inUl = true; }
+        var itemContent = ulM[1].replace(/^([^:]+):/g, '<strong>$1:</strong>');
+        html.push('<li>' + itemContent + '</li>');
+        continue;
+      }
+
+      // Listas numeradas: 1. item o 1) item
+      var olM = l.match(/^(\d+)[\.\)]\s+(.*)/);
+      if (olM) {
+        if (inUl) { html.push('</ul>'); inUl = false; }
+        if (!inOl) { html.push('<ol>'); inOl = true; }
+        var stepContent = olM[2].replace(/^([^:]+):/g, '<strong>$1:</strong>');
+        html.push('<li>' + stepContent + '</li>');
+        continue;
+      }
+
+      if (inUl) { html.push('</ul>'); inUl = false; }
+      if (inOl) { html.push('</ol>'); inOl = false; }
+
+      if (/^<h[1-6]>/.test(l)) {
+        html.push(l);
+      } else if (l.indexOf('&gt; ') === 0) {
+        html.push('<blockquote>' + l.substring(5) + '</blockquote>');
+      } else {
+        html.push('<p>' + l + '</p>');
+      }
+    }
+
+    if (inUl) html.push('</ul>');
+    if (inOl) html.push('</ol>');
+
+    return html.join('');
+  }
+
   function parseFecha(s) {
     if (!s) return null;
     if (s instanceof Date) return isNaN(s.getTime()) ? null : s;
@@ -939,7 +1030,7 @@
           '</div>' +
         '</header>' +
         '<div class="hn-post-body">' +
-          '<p class="hn-post-text">' + esc(p.texto) + '</p>' +
+          '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
           tagsHtml +
         '</div>' +
         mediaHtml +

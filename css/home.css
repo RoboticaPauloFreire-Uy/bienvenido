@@ -951,11 +951,66 @@ html, body {
   padding: 0 18px 14px;
 }
 .hn-post-text {
-  font-size: 0.96rem;
-  line-height: 1.55;
-  color: var(--hn-ink, #212121);
-  margin: 0 0 8px;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--hn-ink, #1E293B);
+  margin: 0 0 10px;
   word-break: break-word;
+}
+.hn-post-text p {
+  margin: 0 0 10px;
+}
+.hn-post-text p:last-child {
+  margin-bottom: 0;
+}
+.hn-post-text h1,
+.hn-post-text h2,
+.hn-post-text h3,
+.hn-post-text h4 {
+  color: #0F172A;
+  font-weight: 800;
+  margin: 14px 0 6px;
+  line-height: 1.35;
+}
+.hn-post-text h3 { font-size: 1.12rem; }
+.hn-post-text h4 { font-size: 1.02rem; }
+.hn-post-text ul,
+.hn-post-text ol {
+  margin: 8px 0 12px 22px;
+  padding: 0;
+}
+.hn-post-text li {
+  margin-bottom: 6px;
+  line-height: 1.55;
+}
+.hn-post-text strong {
+  font-weight: 800;
+  color: #0F172A;
+}
+.hn-post-text blockquote {
+  margin: 10px 0;
+  padding: 8px 14px;
+  background: #F1F5F9;
+  border-left: 4px solid #2563EB;
+  border-radius: 0 8px 8px 0;
+  color: #334155;
+  font-style: italic;
+}
+.hn-post-text a {
+  color: #2563EB;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.hn-post-text a:hover {
+  color: #1D4ED8;
+}
+.hn-post-text code {
+  background: #F1F5F9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.88em;
+  color: #C026D3;
 }
 .hn-post-tags {
   display: flex;
