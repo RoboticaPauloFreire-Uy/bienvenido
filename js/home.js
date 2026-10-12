@@ -147,10 +147,8 @@
       side.innerHTML = '';
       return;
     }
-    // 1. Noticia Arriba (Destacada Principal de la Portada)
-    var dest = noticias.filter(function (n) {
-      return n.ubicacion === 'destacada' || n.destacada;
-    })[0] || noticias[0];
+    // 1. Noticia Destacada (Portada Principal): la más reciente con estrella destacada, o la primera más reciente
+    var dest = noticias.filter(function (n) { return n.destacada; })[0] || noticias[0];
 
     main.innerHTML =
       '<article class="hn-hero" data-noticia="' + esc(dest.id) + '" tabindex="0" role="button" aria-label="Leer: ' + esc(dest.titulo) + '">' +
@@ -167,16 +165,8 @@
         '</div>' +
       '</article>';
 
-    // 2. Noticias Al Costado (Sección "Lo último")
-    // Prioridad 1: Marcadas explícitamente para el costado (lateral)
-    var marcadasCostado = noticias.filter(function (n) {
-      return n !== dest && (n.ubicacion === 'lateral' || n.lateral);
-    });
-    // Prioridad 2: Relleno con las más recientes para que la columna siempre esté completa
-    var relleno = noticias.filter(function (n) {
-      return n !== dest && marcadasCostado.indexOf(n) === -1;
-    });
-    var otras = marcadasCostado.concat(relleno).slice(0, 3);
+    // 2. Columna lateral ("Lo último"): automáticamente las siguientes 3 noticias más recientes
+    var otras = noticias.filter(function (n) { return n !== dest; }).slice(0, 3);
 
     side.innerHTML =
       '<div class="hn-side-title"><i class="fas fa-bolt"></i> Lo último</div>' +
@@ -1106,7 +1096,6 @@
             var d = doc.data();
             var docDate = d.fecha || (d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toISOString().split('T')[0] : '2026-10-11');
             var rawTime = d.createdAt ? (d.createdAt.toMillis ? d.createdAt.toMillis() : (d.createdAt.toDate ? d.createdAt.toDate().getTime() : 0)) : 0;
-            var ubi = d.ubicacion || (d.destacada ? 'destacada' : (d.lateral ? 'lateral' : 'normal'));
             remoteNews.push({
               id: doc.id,
               titulo: d.titulo || '',
@@ -1117,9 +1106,7 @@
               categoria: d.categoria || 'taller',
               grado: d.grado || 'todos',
               imagen: d.imagen || 'img/bienvenida_taller.jpg',
-              destacada: (ubi === 'destacada'),
-              lateral: (ubi === 'lateral'),
-              ubicacion: ubi,
+              destacada: !!d.destacada,
               links: d.links || []
             });
           });
