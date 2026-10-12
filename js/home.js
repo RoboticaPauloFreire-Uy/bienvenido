@@ -1084,6 +1084,62 @@
     // Sincronizar en tiempo real las publicaciones creadas desde el panel de administración
     syncRemotePosts();
     syncRemoteNews();
+    syncRemoteClaseActivities();
+  }
+
+  function syncRemoteClaseActivities() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('clase_activities').onSnapshot(function (snapshot) {
+          if (!snapshot) return;
+          var remoteClase = [];
+          var deletedIds = [];
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            if (d.deleted) {
+              deletedIds.push(doc.id);
+              return;
+            }
+            remoteClase.push({
+              id: doc.id,
+              titulo: d.titulo || '',
+              tipo: 'clase',
+              grados: d.grados || [d.grado || 'todos'],
+              grado: d.grado || 'todos',
+              descripcion: d.descripcion || '',
+              icono: d.icono || '🤖',
+              color: d.color || '#2E7D32',
+              imagen: d.imagen || '',
+              desde: d.desde || '',
+              hasta: d.hasta || '',
+              botones: d.botones || []
+            });
+          });
+
+          // Obtener actividades iniciales de news.js
+          var baseActivities = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
+          var baseOtras = baseActivities.filter(function (a) { return a.tipo !== 'clase'; });
+          var baseClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
+
+          // Unir las de clase: Firestore prevalece sobre base y se descartan las eliminadas
+          var mergedClase = remoteClase.concat(baseClase.filter(function (ba) {
+            return !remoteClase.some(function (rc) { return rc.id === ba.id; }) && deletedIds.indexOf(ba.id) === -1;
+          }));
+
+          C.actividades = baseOtras.concat(mergedClase);
+
+          renderFiltrosActividades();
+          renderActividades();
+          renderMasthead();
+        }, function (err) {
+          console.warn('Sync clase activities notice:', err);
+        });
+      } else {
+        setTimeout(syncRemoteClaseActivities, 800);
+      }
+    } catch (e) {
+      console.warn('Error en syncRemoteClaseActivities:', e);
+    }
   }
 
   function syncRemoteNews() {
