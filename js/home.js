@@ -731,11 +731,24 @@
 
   function toYouTubeEmbed(url) {
     if (!url) return '';
-    if (url.indexOf('youtube.com/embed/') !== -1) return url;
+    var videoId = '';
     var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/);
     if (m && m[1]) {
-      return 'https://www.youtube.com/embed/' + m[1];
+      videoId = m[1];
+    } else {
+      var m2 = url.match(/embed\/([\w-]{11})/);
+      if (m2 && m2[1]) videoId = m2[1];
     }
+    if (videoId) {
+      return 'https://www.youtube-nocookie.com/embed/' + videoId + '?rel=0';
+    }
+    return url;
+  }
+
+  function getYouTubeWatchUrl(url) {
+    if (!url) return '';
+    var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/);
+    if (m && m[1]) return 'https://www.youtube.com/watch?v=' + m[1];
     return url;
   }
 
@@ -831,13 +844,20 @@
       if (p.tipoMedia === 'video' && p.video) {
         if (p.video.tipo === 'youtube') {
           var embedSrc = toYouTubeEmbed(p.video.url);
+          var watchUrl = getYouTubeWatchUrl(p.video.url);
           mediaHtml =
             '<div class="hn-post-media">' +
               '<div class="hn-video-responsive">' +
                 '<iframe src="' + esc(embedSrc) + '" title="' + esc((p.texto || '').slice(0, 50)) + '" ' +
                 'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-                'allowfullscreen loading="lazy"></iframe>' +
+                'referrerpolicy="strict-origin-when-cross-origin" ' +
+                'allowfullscreen></iframe>' +
               '</div>' +
+              (watchUrl ? '<div style="padding:8px 12px; background:#F8FAFC; border-top:1px solid #E2E8F0; display:flex; justify-content:flex-end;">' +
+                '<a href="' + esc(watchUrl) + '" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem; font-weight:700; color:#DC2626; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">' +
+                  '<i class="fab fa-youtube"></i> Ver en YouTube <i class="fas fa-external-link-alt" style="font-size:0.7rem;"></i>' +
+                '</a>' +
+              '</div>' : '') +
             '</div>';
         } else if (p.video.url) {
           mediaHtml =
