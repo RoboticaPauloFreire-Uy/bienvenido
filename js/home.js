@@ -1030,7 +1030,12 @@
           '</div>' +
         '</header>' +
         '<div class="hn-post-body">' +
-          '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
+          '<div class="hn-post-text-wrap">' +
+            '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
+            '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="display:none;" title="Expandir publicación">' +
+              '<span>Ver más</span> <i class="fas fa-chevron-down"></i>' +
+            '</button>' +
+          '</div>' +
           tagsHtml +
         '</div>' +
         mediaHtml +
@@ -1049,6 +1054,9 @@
         '</footer>' +
       '</article>';
     }).join('');
+
+    // Detectar posts largos (más de aprox. 9-10 líneas) y activar el botón "Ver más"
+    checkCollapsiblePosts(cont);
 
     // Listener para abrir fotos en el lightbox si se tocan
     cont.querySelectorAll('[data-photo]').forEach(function (el) {
@@ -1070,6 +1078,43 @@
       });
     });
   }
+
+  function checkCollapsiblePosts(container) {
+    if (!container) return;
+    requestAnimationFrame(function () {
+      var wraps = container.querySelectorAll('.hn-post-text-wrap');
+      wraps.forEach(function (wrap) {
+        var textEl = wrap.querySelector('.hn-post-text');
+        var btn = wrap.querySelector('.hn-post-readmore');
+        if (!textEl || !btn) return;
+        // Si el contenido supera ~240px (aprox. 9-10 líneas), colapsar con "Ver más"
+        if (textEl.scrollHeight > 245) {
+          wrap.classList.add('is-collapsed');
+          btn.style.display = 'inline-flex';
+          btn.innerHTML = '<span>Ver más</span> <i class="fas fa-chevron-down"></i>';
+        } else {
+          wrap.classList.remove('is-collapsed');
+          btn.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  window.togglePostText = function (btn) {
+    var wrap = btn.closest('.hn-post-text-wrap');
+    if (!wrap) return;
+    var isCollapsed = wrap.classList.contains('is-collapsed');
+    if (isCollapsed) {
+      wrap.classList.remove('is-collapsed');
+      wrap.classList.add('is-expanded');
+      btn.innerHTML = '<span>Ver menos</span> <i class="fas fa-chevron-up"></i>';
+    } else {
+      wrap.classList.add('is-collapsed');
+      wrap.classList.remove('is-expanded');
+      btn.innerHTML = '<span>Ver más</span> <i class="fas fa-chevron-down"></i>';
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
 
   /* ───────────── Lector de noticias (modal) ───────────── */
   var reader, readerBody, lastFocus;
