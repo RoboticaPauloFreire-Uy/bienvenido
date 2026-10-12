@@ -1085,6 +1085,7 @@
     syncRemotePosts();
     syncRemoteNews();
     syncRemoteClaseActivities();
+    syncRemoteCasaActivities();
   }
 
   function syncRemoteClaseActivities() {
@@ -1118,7 +1119,10 @@
 
           // Obtener actividades iniciales de news.js
           var baseActivities = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
-          var baseOtras = baseActivities.filter(function (a) { return a.tipo !== 'clase'; });
+          var currentOtras = (C.actividades || []).filter(function (a) { return a.tipo !== 'clase'; });
+          if (!currentOtras.length) {
+            currentOtras = baseActivities.filter(function (a) { return a.tipo !== 'clase'; });
+          }
           var baseClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
 
           // Unir las de clase: Firestore prevalece sobre base y se descartan las eliminadas
@@ -1126,7 +1130,7 @@
             return !remoteClase.some(function (rc) { return rc.id === ba.id; }) && deletedIds.indexOf(ba.id) === -1;
           }));
 
-          C.actividades = baseOtras.concat(mergedClase);
+          C.actividades = currentOtras.concat(mergedClase);
 
           renderFiltrosActividades();
           renderActividades();
@@ -1139,6 +1143,64 @@
       }
     } catch (e) {
       console.warn('Error en syncRemoteClaseActivities:', e);
+    }
+  }
+
+  function syncRemoteCasaActivities() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('casa_activities').onSnapshot(function (snapshot) {
+          if (!snapshot) return;
+          var remoteCasa = [];
+          var deletedIds = [];
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            if (d.deleted) {
+              deletedIds.push(doc.id);
+              return;
+            }
+            remoteCasa.push({
+              id: doc.id,
+              titulo: d.titulo || '',
+              tipo: d.tipo || 'casa',
+              grados: d.grados || [d.grado || 'todos'],
+              grado: d.grado || 'todos',
+              descripcion: d.descripcion || '',
+              icono: d.icono || (d.tipo === 'familia' ? '👨‍👩‍👧‍👦' : '🏠'),
+              color: d.color || '#1D4ED8',
+              imagen: d.imagen || '',
+              desde: d.desde || '',
+              hasta: d.hasta || '',
+              botones: d.botones || []
+            });
+          });
+
+          // Obtener actividades iniciales de news.js
+          var baseActivities = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
+          var currentClase = (C.actividades || []).filter(function (a) { return a.tipo === 'clase'; });
+          if (!currentClase.length) {
+            currentClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
+          }
+          var baseCasa = baseActivities.filter(function (a) { return a.tipo === 'casa' || a.tipo === 'familia'; });
+
+          // Unir las de casa: Firestore prevalece sobre base y se descartan las eliminadas
+          var mergedCasa = remoteCasa.concat(baseCasa.filter(function (ba) {
+            return !remoteCasa.some(function (rc) { return rc.id === ba.id; }) && deletedIds.indexOf(ba.id) === -1;
+          }));
+
+          C.actividades = currentClase.concat(mergedCasa);
+
+          renderFiltrosActividades();
+          renderActividades();
+          renderMasthead();
+        }, function (err) {
+          console.warn('Sync casa activities notice:', err);
+        });
+      } else {
+        setTimeout(syncRemoteCasaActivities, 800);
+      }
+    } catch (e) {
+      console.warn('Error en syncRemoteCasaActivities:', e);
     }
   }
 
