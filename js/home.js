@@ -52,6 +52,35 @@
     return id;
   }
 
+  function normalizarGrado(g) {
+    if (!g) return 'todos';
+    var s = String(g).toLowerCase().trim();
+    if (s === 'todos' || s.indexOf('todo') !== -1) return 'todos';
+    if (s === 'sala5' || s.indexOf('sala') !== -1) return 'sala5';
+    if (s === 'grado1' || s === '1ro' || s.indexOf('1') !== -1) return 'grado1';
+    if (s === 'grado2' || s === '2do' || s.indexOf('2') !== -1) return 'grado2';
+    if (s === 'grado3' || s === '3ro' || s.indexOf('3') !== -1) return 'grado3';
+    if (s === 'grado4' || s === '4to' || s.indexOf('4') !== -1) return 'grado4';
+    if (s === 'grado5' || s === '5to' || s.indexOf('5') !== -1) return 'grado5';
+    if (s === 'grado6' || s === '6to' || s.indexOf('6') !== -1) return 'grado6';
+    return s;
+  }
+
+  function parseGradesFromText(text) {
+    if (!text) return ['todos'];
+    var t = String(text).toLowerCase();
+    if (t.indexOf('todo') !== -1 || t.indexOf('colegio') !== -1) return ['todos'];
+    var found = [];
+    if (t.indexOf('sala') !== -1) found.push('sala5');
+    if (t.indexOf('1') !== -1) found.push('grado1');
+    if (t.indexOf('2') !== -1) found.push('grado2');
+    if (t.indexOf('3') !== -1) found.push('grado3');
+    if (t.indexOf('4') !== -1) found.push('grado4');
+    if (t.indexOf('5') !== -1) found.push('grado5');
+    if (t.indexOf('6') !== -1) found.push('grado6');
+    return found.length ? found : ['todos'];
+  }
+
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -757,7 +786,13 @@
 
     // Filtros
     var filtered = allPosts.filter(function (p) {
-      if (filtroGradoMuro !== 'todos' && p.grado !== filtroGradoMuro && p.grado !== 'todos') return false;
+      if (filtroGradoMuro !== 'todos') {
+        var postGrades = p.grados || [p.grado || 'todos'];
+        var normalizedPostGrades = postGrades.map(normalizarGrado);
+        var normFiltro = normalizarGrado(filtroGradoMuro);
+        var match = normalizedPostGrades.indexOf('todos') !== -1 || normalizedPostGrades.indexOf(normFiltro) !== -1;
+        if (!match) return false;
+      }
       if (filtroMediaMuro === 'video' && p.tipoMedia !== 'video') return false;
       if (filtroMediaMuro === 'galeria' && p.tipoMedia !== 'galeria' && p.tipoMedia !== 'foto') return false;
       return true;
@@ -779,6 +814,17 @@
       var postUrl = getPostUrl(p.id);
       var shareText = p.autor + ': ' + (p.texto || '').substring(0, 110) + '...\n' + postUrl;
       var avatarSrc = p.avatar || 'img/escudo_paulo_freire.png';
+
+      // Etiqueta de grupos
+      var grDisplay = '';
+      if (p.etiquetaGrado && p.etiquetaGrado !== 'todos') {
+        grDisplay = p.etiquetaGrado;
+      } else if (p.grados && p.grados.length) {
+        if (p.grados.indexOf('todos') !== -1) grDisplay = 'Todo el Colegio';
+        else grDisplay = p.grados.map(nombreGrado).join(' · ');
+      } else {
+        grDisplay = nombreGrado(p.grado);
+      }
 
       // Multimedia
       var mediaHtml = '';
@@ -842,7 +888,7 @@
             '<div class="hn-post-sub-row">' +
               '<span class="hn-post-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(p.fecha)) + '</span>' +
               '<span class="hn-post-dot">·</span>' +
-              '<span class="hn-post-grade">' + esc(nombreGrado(p.grado)) + '</span>' +
+              '<span class="hn-post-grade">' + esc(grDisplay) + '</span>' +
               '<span class="hn-post-dot">·</span>' +
               '<span class="hn-post-privacy" title="Público para toda la comunidad"><i class="fas fa-globe-americas"></i></span>' +
             '</div>' +
@@ -1316,15 +1362,28 @@
           var remote = [];
           snapshot.forEach(function (doc) {
             var d = doc.data();
-            var targetGradeVal = d.targetGrade || 'Todo el Colegio';
-            var gradeCode = 'todos';
-            if (targetGradeVal.indexOf('Sala') !== -1) gradeCode = 'sala5';
-            else if (targetGradeVal.indexOf('1') !== -1) gradeCode = '1ro';
-            else if (targetGradeVal.indexOf('2') !== -1) gradeCode = '2do';
-            else if (targetGradeVal.indexOf('3') !== -1) gradeCode = '3ro';
-            else if (targetGradeVal.indexOf('4') !== -1) gradeCode = '4to';
-            else if (targetGradeVal.indexOf('5') !== -1) gradeCode = '5to';
-            else if (targetGradeVal.indexOf('6') !== -1) gradeCode = '6to';
+            // Extraer lista de grados (soporta arrays y strings legacy)
+            var postGrades = [];
+            if (Array.isArray(d.grades) && d.grades.length) {
+              postGrades = d.grades.map(normalizarGrado);
+            } else if (Array.isArray(d.grados) && d.grados.length) {
+              postGrades = d.grados.map(normalizarGrado);
+            } else if (Array.isArray(d.targetGrades) && d.targetGrades.length) {
+              postGrades = d.targetGrades.map(normalizarGrado);
+            } else if (d.targetGrade) {
+              postGrades = parseGradesFromText(d.targetGrade);
+            } else {
+              postGrades = ['todos'];
+            }
+
+            var labelGrado = '';
+            if (Array.isArray(d.targetGrades) && d.targetGrades.length) {
+              labelGrado = d.targetGrades.join(' · ');
+            } else if (d.targetGrade) {
+              labelGrado = d.targetGrade;
+            } else {
+              labelGrado = postGrades.indexOf('todos') !== -1 ? 'Todo el Colegio' : postGrades.map(nombreGrado).join(' · ');
+            }
 
             remote.push({
               id: doc.id,
@@ -1333,8 +1392,9 @@
               rolAutor: 'Docente Paulo Freire',
               avatarAutor: 'img/escudo_paulo_freire.png',
               fecha: d.createdAt ? new Date(d.createdAt.toDate ? d.createdAt.toDate() : d.createdAt).toLocaleDateString('es-UY', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Reciente',
-              grado: gradeCode,
-              etiquetaGrado: targetGradeVal,
+              grado: postGrades[0] || 'todos',
+              grados: postGrades,
+              etiquetaGrado: labelGrado,
               texto: d.description || '',
               titulo: d.title || '',
               categoria: d.category || 'Actividad',

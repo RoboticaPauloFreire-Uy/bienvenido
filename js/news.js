@@ -369,6 +369,8 @@ window.HOME_CONTENT = {
       avatar: 'img/escudo_paulo_freire.png',
       fecha: '2026-10-04',
       grado: 'sala5',
+      grados: ['sala5', 'grado1'],
+      etiquetaGrado: 'Sala de 5 · 1° Grado',
       etiqueta: '🎨 Creatividad digital',
       texto: '¡Luces que encienden historias! ⚡️🦖 Con Sala de 5 y 1° Grado experimentamos con masa conductora casera, pilas de botón y LEDs de colores. Descubrieron cómo cerrar un circuito y le dieron vida a sus propios dibujos de monstruos y naves espaciales. ¡Miren el brillo en sus caras al ver encender la luz!',
       tipoMedia: 'galeria',
