@@ -1,61 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // ─────────────────────────────────────────────────────────────
-    // 1. CONFIGURACIÓN DEL SITIO (TEMAS FESTIVOS: HALLOWEEN, ETC.)
-    // ─────────────────────────────────────────────────────────────
-    match /config/{docId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // 2. NOTICIAS DEL PORTAL ESCOLAR
-    // ─────────────────────────────────────────────────────────────
-    match /news/{newsId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // 3. MURO DE ACTIVIDADES (TIPO FACEBOOK ESCOLAR)
-    // ─────────────────────────────────────────────────────────────
-    match /posts/{postId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // 4. ACTIVIDADES DE CLASE
-    // ─────────────────────────────────────────────────────────────
-    match /clase_activities/{activityId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // 5. ACTIVIDADES DE CASA Y FAMILIA
-    // ─────────────────────────────────────────────────────────────
-    match /casa_activities/{activityId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // 6. DATOS DE ALUMNOS (CARPETAS DRIVE, PROYECTOS)
-    // ─────────────────────────────────────────────────────────────
-    match /students/{studentId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // Regla global: solo el administrador autenticado puede escribir o borrar
-    // ─────────────────────────────────────────────────────────────
     match /{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read, write: if true;
     }
   }
 }
