@@ -684,8 +684,13 @@
       : grades.filter(function (g) { return g.id === filtroGrupoJuegos; });
 
     var items = [];
+    var seenGameIds = {};
     listaGrados.forEach(function (g) {
       (g.games || []).forEach(function (gm) {
+        if (filtroGrupoJuegos === 'todos' && gm.id) {
+          if (seenGameIds[gm.id]) return;
+          seenGameIds[gm.id] = true;
+        }
         items.push({ game: gm, grade: g });
       });
     });
@@ -702,6 +707,16 @@
       var url = (window.getGameUrl && window.getGameUrl(gm)) || gm.externalUrl || '#';
       var ext = /^https?:/i.test(url);
       var thumb = gm.thumbnail || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80';
+
+      var gradePillText = esc(gr.icon + ' ' + (gr.shortName || gr.name));
+      var gradePillBg = esc(gr.color || '#4F46E5');
+      if (gm.grades && (gm.grades.indexOf('todos') !== -1 || gm.grades.length >= 7)) {
+        gradePillText = '🌟 Todo el Colegio';
+        gradePillBg = '#7C3AED';
+      } else if (gm.grades && gm.grades.length > 1 && filtroGrupoJuegos === 'todos') {
+        gradePillText = '👥 ' + gm.grades.length + ' Grados';
+        gradePillBg = '#2563EB';
+      }
 
       var benefitsHtml = gm.benefits
         ? '<div class="game-card-benefits">' +
@@ -720,7 +735,7 @@
         '<div class="game-card-thumb-wrap">' +
           '<img src="' + esc(thumb) + '" alt="' + esc(gm.title) + '" class="game-card-thumb" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80\'">' +
           '<span class="game-card-badge ' + esc(pm.cls) + '">' + pm.icon + ' ' + esc(pm.label) + '</span>' +
-          '<span class="hn-game-grade-pill" style="background:' + esc(gr.color) + '">' + esc(gr.icon + ' ' + (gr.shortName || gr.name)) + '</span>' +
+          '<span class="hn-game-grade-pill" style="background:' + gradePillBg + '">' + gradePillText + '</span>' +
         '</div>' +
         '<div class="game-card-body">' +
           '<h3 class="game-card-title">' + esc(gm.title) + '</h3>' +
