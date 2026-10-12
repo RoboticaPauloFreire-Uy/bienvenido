@@ -550,11 +550,35 @@
 
   /* ───────────── Juegos por Grupo ───────────── */
   var filtroGrupoJuegos = 'todos';
+  window._customRemoteGames = [];
 
   function getGradesConJuegos() {
     var d = window.SCHOOL_DATA;
     if (!d || !d.grades) return [];
-    return d.grades;
+    var baseGrades = d.grades;
+    var remote = window._customRemoteGames || [];
+    if (!remote.length) return baseGrades;
+
+    return baseGrades.map(function (g) {
+      var cloned = Object.assign({}, g);
+      var gradeBaseGames = (g.games || []).slice();
+      var normG = normalizarGrado(g.id);
+
+      // Filtrar los juegos remotos que correspondan a este grado o a todos
+      var matchingRemote = remote.filter(function (rg) {
+        var rgGrades = rg.grades || [rg.grade || rg.gradeId || 'todos'];
+        var norm = rgGrades.map(normalizarGrado);
+        return norm.indexOf('todos') !== -1 || norm.indexOf(normG) !== -1;
+      });
+
+      // Poner primero los juegos remotos, evitando duplicados por id
+      var merged = matchingRemote.concat(gradeBaseGames.filter(function (bg) {
+        return !matchingRemote.some(function (rg) { return rg.id === bg.id; });
+      }));
+
+      cloned.games = merged;
+      return cloned;
+    });
   }
 
   function seleccionarGrupoJuegos(gradeId, actualizarHash) {
@@ -1482,6 +1506,7 @@
     syncRemoteNews();
     syncRemoteClaseActivities();
     syncRemoteCasaActivities();
+    syncRemoteGames();
   }
 
   function syncRemoteClaseActivities() {
@@ -1746,6 +1771,45 @@
       }
     } catch (e) {
       console.warn('Error en syncRemotePosts:', e);
+    }
+  }
+
+  function syncRemoteGames() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('games').onSnapshot(function (snapshot) {
+          if (!snapshot) return;
+          var remoteGames = [];
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            if (d.deleted) return;
+            remoteGames.push({
+              id: doc.id,
+              title: d.title || '',
+              grade: d.grade || d.gradeId || 'todos',
+              gradeId: d.grade || d.gradeId || 'todos',
+              grades: d.grades || [d.grade || 'todos'],
+              platform: d.platform || 'web',
+              scratchId: d.scratchId || null,
+              externalUrl: d.externalUrl || '',
+              thumbnail: d.thumbnail || '',
+              description: d.description || '',
+              benefits: d.benefits || '',
+              tags: d.tags || []
+            });
+          });
+
+          window._customRemoteGames = remoteGames;
+          renderFiltrosJuegos();
+          renderJuegos();
+        }, function (err) {
+          console.warn('Sync games notice:', err);
+        });
+      } else {
+        setTimeout(syncRemoteGames, 800);
+      }
+    } catch (e) {
+      console.warn('Error en syncRemoteGames:', e);
     }
   }
 
