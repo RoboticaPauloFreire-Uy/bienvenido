@@ -884,6 +884,127 @@
     });
   }
 
+  function extractPostThumbnail(p) {
+    if (!p) return { url: 'img/escudo_paulo_freire.png', badge: '🤖' };
+
+    // 1. Si es video (YouTube o directo)
+    var vidUrl = (p.video && p.video.url) || (p.tipoMedia === 'video' && p.mediaUrl) || (p.mediaUrl && p.mediaUrl.indexOf('youtu') !== -1 ? p.mediaUrl : '');
+    if (vidUrl) {
+      var ytMatch = vidUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+      if (ytMatch) {
+        return {
+          url: 'https://img.youtube.com/vi/' + ytMatch[1] + '/mqdefault.jpg',
+          badge: '🎬'
+        };
+      }
+      if (p.video && p.video.poster) {
+        return { url: p.video.poster, badge: '🎬' };
+      }
+    }
+
+    // 2. Si tiene galería de fotos
+    if (p.fotos && p.fotos.length) {
+      var first = p.fotos[0];
+      var fUrl = typeof first === 'string' ? first : (first && (first.url || first.src));
+      if (fUrl) return { url: fUrl, badge: p.fotos.length > 1 ? '📷 ' + p.fotos.length : '🖼️' };
+    }
+
+    // 3. Si tiene foto o imagen individual
+    if (p.imagen) {
+      return { url: p.imagen, badge: '🖼️' };
+    }
+    if (p.mediaUrl && p.tipoMedia !== 'video') {
+      return { url: p.mediaUrl, badge: '🖼️' };
+    }
+
+    // 4. Fallback: escudo del colegio
+    return { url: 'img/escudo_paulo_freire.png', badge: '🤖' };
+  }
+
+  function getPostDisplayTitle(p) {
+    if (p.titulo && String(p.titulo).trim()) return String(p.titulo).trim();
+    if (p.title && String(p.title).trim()) return String(p.title).trim();
+    if (p.video && p.video.titulo && String(p.video.titulo).trim()) return String(p.video.titulo).trim();
+    var txt = String(p.texto || '').replace(/[#*`_>]/g, '').trim();
+    if (txt) {
+      var lines = txt.split(/\r?\n/);
+      var first = (lines[0] || '').trim();
+      var punctMatch = first.match(/^[^\.!\?]+[\.!\?]/);
+      if (punctMatch && punctMatch[0].length >= 10 && punctMatch[0].length <= 65) {
+        return punctMatch[0].trim();
+      }
+      return first.length > 55 ? first.substring(0, 52) + '...' : first;
+    }
+    return 'Actividad en clase';
+  }
+
+  function getPostGradeDisplay(p) {
+    if (p.etiquetaGrado && p.etiquetaGrado !== 'todos') {
+      return p.etiquetaGrado;
+    } else if (p.grados && p.grados.length) {
+      if (p.grados.indexOf('todos') !== -1) return 'Todo el Colegio';
+      return p.grados.map(nombreGrado).join(' · ');
+    } else if (p.grado) {
+      return nombreGrado(p.grado);
+    }
+    return 'Todo el Colegio';
+  }
+
+  function renderMuroIndex(posts) {
+    var listEl = document.getElementById('hn-muro-index-list');
+    var countEl = document.getElementById('hn-muro-index-count');
+    if (!listEl) return;
+
+    if (countEl) countEl.textContent = posts ? posts.length : 0;
+
+    if (!posts || !posts.length) {
+      listEl.innerHTML = '<div class="hn-muro-index-empty"><i class="fas fa-search" style="font-size:1.1rem; margin-bottom:4px; display:block;"></i>No hay actividades</div>';
+      return;
+    }
+
+    listEl.innerHTML = posts.map(function (p) {
+      var thumb = extractPostThumbnail(p);
+      var title = getPostDisplayTitle(p);
+      var grade = getPostGradeDisplay(p);
+
+      return (
+        '<div class="hn-muro-index-item" data-post-id="' + esc(p.id) + '" onclick="window.jumpToPost(\'' + esc(p.id) + '\')" role="button" tabindex="0" title="Ir a: ' + esc(title) + '">' +
+          '<div class="hn-muro-index-thumb">' +
+            '<img src="' + esc(thumb.url) + '" alt="' + esc(title) + '" onerror="this.onerror=null; this.src=\'img/escudo_paulo_freire.png\';">' +
+            (thumb.badge ? '<span class="thumb-badge">' + thumb.badge + '</span>' : '') +
+          '</div>' +
+          '<div class="hn-muro-index-info">' +
+            '<span class="hn-muro-index-item-title">' + esc(title) + '</span>' +
+            '<span class="hn-muro-index-item-sub"><i class="fas fa-users"></i> ' + esc(grade) + '</span>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  window.jumpToPost = function (postId) {
+    var card = document.getElementById('post-' + postId);
+    if (!card) return;
+
+    var indexItems = document.querySelectorAll('.hn-muro-index-item');
+    indexItems.forEach(function (it) {
+      if (it.getAttribute('data-post-id') === postId) it.classList.add('active');
+      else it.classList.remove('active');
+    });
+
+    var topbarH = 80;
+    var rect = card.getBoundingClientRect();
+    var targetY = window.pageYOffset + rect.top - topbarH;
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+
+    card.classList.remove('highlight-jump');
+    void card.offsetWidth;
+    card.classList.add('highlight-jump');
+    setTimeout(function () {
+      card.classList.remove('highlight-jump');
+    }, 2200);
+  };
+
   function renderMuro() {
     var cont = document.getElementById('hn-muro-feed');
     if (!cont) return;
@@ -921,6 +1042,7 @@
     });
 
     if (!filtered.length) {
+      renderMuroIndex([]);
       cont.innerHTML =
         '<div class="hn-empty">' +
           '<i class="fas fa-filter" style="font-size:2rem;margin-bottom:10px;opacity:0.6;"></i>' +
@@ -1057,6 +1179,9 @@
 
     // Detectar posts largos (más de aprox. 9-10 líneas) y activar el botón "Ver más"
     checkCollapsiblePosts(cont);
+
+    // Renderizar el índice lateral de actividades
+    renderMuroIndex(filtered);
 
     // Listener para abrir fotos en el lightbox si se tocan
     cont.querySelectorAll('[data-photo]').forEach(function (el) {
@@ -1585,7 +1710,9 @@
               grados: postGrades,
               etiquetaGrado: labelGrado,
               texto: d.description || '',
-              titulo: d.title || '',
+              titulo: d.title || d.titulo || '',
+              mediaUrl: d.mediaUrl || '',
+              mediaType: d.mediaType || (isVideo ? 'video' : 'foto'),
               categoria: d.category || 'Actividad',
               video: isVideo ? {
                 tipo: isYt ? 'youtube' : 'video',

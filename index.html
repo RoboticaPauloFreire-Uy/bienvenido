@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=97">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=9">
+  <link rel="stylesheet" href="css/home.css?v=10">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -372,9 +372,28 @@
             </div>
           </div>
 
-          <!-- Contenedor del Feed centrado estilo Facebook -->
-          <div class="hn-muro-feed-container">
-            <div class="hn-muro-feed" id="hn-muro-feed"></div>
+          <!-- Layout del Muro: Índice a la izquierda + Feed de publicaciones -->
+          <div class="hn-muro-layout">
+            <!-- Sidebar / Índice de Actividades (Izquierda) -->
+            <aside class="hn-muro-sidebar" id="hn-muro-sidebar">
+              <div class="hn-muro-index-card">
+                <div class="hn-muro-index-header">
+                  <div class="hn-muro-index-title">
+                    <i class="fas fa-list-ul"></i> Índice de Actividades
+                  </div>
+                  <span class="hn-muro-index-count" id="hn-muro-index-count">0</span>
+                </div>
+                <p class="hn-muro-index-sub">Acceso rápido a las publicaciones</p>
+                <div class="hn-muro-index-list" id="hn-muro-index-list">
+                  <!-- Se genera dinámicamente con JavaScript -->
+                </div>
+              </div>
+            </aside>
+
+            <!-- Contenedor del Feed de Actividades -->
+            <div class="hn-muro-feed-container">
+              <div class="hn-muro-feed" id="hn-muro-feed"></div>
+            </div>
           </div>
         </section>
       </div>
@@ -496,7 +515,7 @@
   <script src="js/news.js?v=9"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=29"></script>
+  <script src="js/home.js?v=30"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
