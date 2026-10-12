@@ -5,9 +5,7 @@ service cloud.firestore {
     // ─────────────────────────────────────────────────────────────
     // 1. CONFIGURACIÓN DEL SITIO (TEMAS FESTIVOS: HALLOWEEN, ETC.)
     // ─────────────────────────────────────────────────────────────
-    // Cualquier alumno o visitante puede LEER el tema activo.
-    // SOLO el administrador autenticado puede CAMBIAR el tema.
-    match /config/site_theme {
+    match /config/{docId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
@@ -23,22 +21,38 @@ service cloud.firestore {
     // ─────────────────────────────────────────────────────────────
     // 3. MURO DE ACTIVIDADES (TIPO FACEBOOK ESCOLAR)
     // ─────────────────────────────────────────────────────────────
-    // Cualquier alumno o familia puede LEER las actividades y fotos.
-    // SOLO el administrador autenticado puede PUBLICAR o ELIMINAR.
     match /posts/{postId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
 
     // ─────────────────────────────────────────────────────────────
-    // 3. DATOS DE ALUMNOS (CARPETAS DRIVE, PROYECTOS, LOGS)
+    // 4. ACTIVIDADES DE CLASE
+    // ─────────────────────────────────────────────────────────────
+    match /clase_activities/{activityId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 5. ACTIVIDADES DE CASA Y FAMILIA
+    // ─────────────────────────────────────────────────────────────
+    match /casa_activities/{activityId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 6. DATOS DE ALUMNOS (CARPETAS DRIVE, PROYECTOS)
     // ─────────────────────────────────────────────────────────────
     match /students/{studentId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
 
-    // Regla de seguridad por defecto para cualquier otra colección
+    // ─────────────────────────────────────────────────────────────
+    // Regla global por defecto para cualquier documento
+    // ─────────────────────────────────────────────────────────────
     match /{document=**} {
       allow read: if true;
       allow write: if request.auth != null;

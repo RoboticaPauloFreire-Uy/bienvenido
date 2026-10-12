@@ -1241,9 +1241,11 @@
           }
           var baseClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
 
-          // Unir las de clase: Firestore prevalece sobre base y se descartan las eliminadas
+          // Unir las de clase: Firestore prevalece sobre base y se descartan las eliminadas o duplicadas
           var mergedClase = remoteClase.concat(baseClase.filter(function (ba) {
-            return !remoteClase.some(function (rc) { return rc.id === ba.id; }) && deletedIds.indexOf(ba.id) === -1;
+            return !remoteClase.some(function (rc) {
+              return rc.id === ba.id || (rc.titulo && ba.titulo && rc.titulo.trim().toLowerCase() === ba.titulo.trim().toLowerCase());
+            }) && deletedIds.indexOf(ba.id) === -1;
           }));
 
           C.actividades = currentOtras.concat(mergedClase);
@@ -1300,9 +1302,11 @@
           }
           var baseCasa = baseActivities.filter(function (a) { return a.tipo === 'casa' || a.tipo === 'familia'; });
 
-          // Unir las de casa: Firestore prevalece sobre base y se descartan las eliminadas
+          // Unir las de casa: Firestore prevalece sobre base y se descartan las eliminadas o duplicadas
           var mergedCasa = remoteCasa.concat(baseCasa.filter(function (ba) {
-            return !remoteCasa.some(function (rc) { return rc.id === ba.id; }) && deletedIds.indexOf(ba.id) === -1;
+            return !remoteCasa.some(function (rc) {
+              return rc.id === ba.id || (rc.titulo && ba.titulo && rc.titulo.trim().toLowerCase() === ba.titulo.trim().toLowerCase());
+            }) && deletedIds.indexOf(ba.id) === -1;
           }));
 
           C.actividades = currentClase.concat(mergedCasa);
@@ -1352,11 +1356,15 @@
             });
           });
 
-          // Unir con las noticias base de news.js (dando prioridad a las de Firestore y excluyendo eliminadas)
+          // Unir con las noticias base de news.js (dando prioridad a las de Firestore, excluyendo eliminadas o sustituidas por título/id)
           var baseNews = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.noticias) || (window.HOME_CONTENT && window.HOME_CONTENT.noticias) || [];
-          C.noticias = remoteNews.concat(baseNews.filter(function (bn) {
-            return !remoteNews.some(function (rn) { return rn.id === bn.id; }) && deletedIds.indexOf(bn.id) === -1;
+          var mergedNews = remoteNews.concat(baseNews.filter(function (bn) {
+            return !remoteNews.some(function (rn) {
+              return rn.id === bn.id || (rn.titulo && bn.titulo && rn.titulo.trim().toLowerCase() === bn.titulo.trim().toLowerCase());
+            }) && deletedIds.indexOf(bn.id) === -1;
           }));
+
+          C.noticias = mergedNews;
 
           refrescarNoticias();
           renderMasthead();
@@ -1431,11 +1439,14 @@
             });
           });
 
-          // Unir publicaciones de Firestore con las de news.js
-          var basePosts = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.muro) || [];
-          C.muro = remote.concat(basePosts.filter(function (bp) {
-            return !remote.some(function (rp) { return rp.id === bp.id; });
-          }));
+          // Si hay publicaciones en Firestore, Firestore es la fuente de verdad (igual que en el panel administrativo).
+          // Solo si no hay publicaciones en Firestore se usan las de demostración iniciales.
+          var basePosts = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.muro) || (window.HOME_CONTENT && window.HOME_CONTENT.muro) || [];
+          if (remote.length > 0) {
+            C.muro = remote;
+          } else {
+            C.muro = basePosts;
+          }
           renderFiltrosMuro();
           renderMuro();
         }, function (err) {
