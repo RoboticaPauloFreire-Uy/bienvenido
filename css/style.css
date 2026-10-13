@@ -2338,122 +2338,222 @@ button, input, select, textarea { font-family: inherit; }
 .pb-default  { background: #F5F5F5; color: #616161; }
 
 /* ─────────────────────────────────────────────────────────────
-   FOOTER CON CANALES DE COMUNICACIÓN
+   PIE DE PÁGINA INSTITUCIONAL (3 COLUMNAS)
 ───────────────────────────────────────────────────────────── */
 .site-footer {
   margin-left: 0;
-  background: var(--bg-surface, #ffffff);
+  background: var(--bg-surface, #FFFFFF);
   border-top: 1px solid var(--border, #E2E8F0);
-  padding: 30px 20px 24px;
-  text-align: center;
-  font-size: .86rem;
+  padding: 44px 24px 24px;
   color: var(--text-muted, #64748B);
-}
-
-.site-footer .footer-content-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.site-footer .footer-channels-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.site-footer .footer-channels-title {
-  font-size: 0.82rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-heading, #1E293B);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.site-footer .footer-channels-title i {
-  color: #2E7D32;
-  font-size: 0.95rem;
-}
-
-.site-footer .footer-channels-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-}
-
-.site-footer .footer-channel-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 20px;
-  border-radius: 50px;
   font-size: 0.88rem;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.site-footer .footer-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.35fr 1.05fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+/* Columna 1: Identidad */
+.footer-col-brand .footer-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.footer-col-brand .footer-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+}
+
+.footer-col-brand .footer-brand-title {
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: var(--text-heading, #0F172A);
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+}
+
+.footer-col-brand .footer-brand-tagline {
+  font-size: 0.78rem;
   font-weight: 700;
-  text-decoration: none;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  color: var(--primary, #2E7D32);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
 }
 
-.site-footer .footer-channel-email {
-  background: #EFF6FF;
-  color: #1E40AF;
-  border: 1.5px solid #BFDBFE;
-}
-
-.site-footer .footer-channel-email:hover {
-  background: #DBEAFE;
-  color: #1D4ED8;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
-}
-
-.site-footer .footer-channel-email i {
-  font-size: 1.05rem;
-  color: #2563EB;
-}
-
-.site-footer .footer-channel-youtube {
-  background: #FEF2F2;
-  color: #991B1B;
-  border: 1.5px solid #FECACA;
-}
-
-.site-footer .footer-channel-youtube:hover {
-  background: #FEE2E2;
-  color: #B91C1C;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.2);
-}
-
-.site-footer .footer-channel-youtube i {
-  font-size: 1.15rem;
-  color: #DC2626;
-}
-
-.site-footer .footer-divider {
-  width: 100%;
-  max-width: 520px;
-  height: 1px;
-  background: var(--border, #E2E8F0);
-  opacity: 0.8;
-  margin: 4px auto 0;
-}
-
-.site-footer .footer-copyright-text {
+.footer-col-brand .footer-brand-desc {
   font-size: 0.84rem;
   line-height: 1.6;
   color: var(--text-muted, #64748B);
   margin: 0;
+  max-width: 360px;
+}
+
+/* Columnas 2 y 3 */
+.footer-col-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-heading, #0F172A);
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-col-contact .footer-col-title i {
+  color: #2563EB;
+}
+
+.footer-col-media .footer-col-title i {
+  color: #DC2626;
+}
+
+.footer-col-text {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-muted, #64748B);
+  margin: 0 0 12px;
+}
+
+/* Tarjetas de enlace estilizadas */
+.footer-contact-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  background: var(--bg-card, #F8FAFC);
+  border: 1px solid var(--border, #E2E8F0);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.footer-contact-card:hover {
+  transform: translateY(-2px);
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.footer-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.footer-icon-email {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.footer-contact-card:hover .footer-icon-email {
+  background: #2563EB;
+  color: #FFFFFF;
+}
+
+.footer-icon-yt {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.footer-contact-card:hover .footer-icon-yt {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+.footer-card-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.footer-card-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94A3B8;
+  margin-bottom: 2px;
+}
+
+.footer-card-val {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-heading, #1E293B);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer-contact-card:hover .footer-card-val {
+  color: var(--primary, #2E7D32);
+}
+
+.footer-external-icon {
+  font-size: 0.78rem;
+  color: #94A3B8;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.footer-contact-card:hover .footer-external-icon {
+  color: #DC2626;
+  transform: translate(2px, -2px);
+}
+
+/* Barra inferior */
+.site-footer .footer-bottom-bar {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light, #F1F5F9);
+  text-align: center;
+}
+
+.site-footer .footer-copy {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted, #94A3B8);
+  line-height: 1.6;
+}
+
+/* Responsive para tablet y móvil */
+@media (max-width: 980px) {
+  .site-footer .footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .footer-col-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-footer {
+    padding: 32px 18px 20px;
+  }
+  .site-footer .footer-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .footer-col-brand .footer-brand-desc {
+    max-width: 100%;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
