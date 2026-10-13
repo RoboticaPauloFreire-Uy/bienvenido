@@ -2359,6 +2359,25 @@ button, input, select, textarea { font-family: inherit; }
   gap: 16px;
 }
 
+.footer-brand-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-brand-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+  transition: transform 0.25s ease;
+}
+
+.footer-brand-logo:hover {
+  transform: scale(1.08);
+}
+
 .footer-copy-text {
   font-weight: 600;
   color: var(--text-muted, #64748B);
@@ -2424,6 +2443,11 @@ button, input, select, textarea { font-family: inherit; }
     justify-content: center;
     text-align: center;
     gap: 12px;
+  }
+  .footer-brand-side {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
   }
 }
 
