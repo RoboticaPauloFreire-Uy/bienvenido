@@ -571,8 +571,10 @@
         return norm.indexOf('todos') !== -1 || norm.indexOf(normG) !== -1;
       });
 
-      // Poner primero los juegos remotos, evitando duplicados por id
+      // Poner primero los juegos remotos, evitando duplicados por id y excluyendo los eliminados
+      var delMap = window._deletedRemoteGameIds || {};
       var merged = matchingRemote.concat(gradeBaseGames.filter(function (bg) {
+        if (delMap[bg.id]) return false;
         return !matchingRemote.some(function (rg) { return rg.id === bg.id; });
       }));
 
@@ -1795,9 +1797,13 @@
         window.db.collection('games').onSnapshot(function (snapshot) {
           if (!snapshot) return;
           var remoteGames = [];
+          var deletedMap = {};
           snapshot.forEach(function (doc) {
             var d = doc.data();
-            if (d.deleted) return;
+            if (d.deleted) {
+              deletedMap[doc.id] = true;
+              return;
+            }
             remoteGames.push({
               id: doc.id,
               title: d.title || '',
@@ -1814,6 +1820,7 @@
             });
           });
 
+          window._deletedRemoteGameIds = deletedMap;
           window._customRemoteGames = remoteGames;
           renderFiltrosJuegos();
           renderJuegos();
