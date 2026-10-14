@@ -1290,31 +1290,86 @@
     if (!n || !reader) return;
     lastFocus = document.activeElement;
 
+    var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: '📰', color: '#3B82F6' };
+
+    var coverHtml = n.imagen
+      ? '<div class="hn-reader-cover">' +
+          '<img src="' + esc(n.imagen) + '" alt="' + esc(n.titulo) + '" loading="eager">' +
+          '<div class="hn-reader-cover-scrim"></div>' +
+        '</div>'
+      : '';
+
+    var chipsHtml =
+      '<div class="hn-reader-chips-bar">' +
+        '<span class="hn-reader-chip hn-chip-cat" style="--chip-color:' + (cat.color || '#3B82F6') + '">' +
+          (cat.icono ? '<span class="hn-chip-icon">' + cat.icono + '</span> ' : '') + esc(cat.nombre) +
+        '</span>' +
+        '<span class="hn-reader-chip hn-chip-grade">' +
+          '<i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) +
+        '</span>' +
+        '<span class="hn-reader-chip hn-chip-date">' +
+          '<i class="far fa-calendar-alt"></i> ' + esc(fechaLarga(n.fecha)) +
+        '</span>' +
+      '</div>';
+
+    var specsHtml = '';
+    if (Array.isArray(n.datos) && n.datos.length > 0) {
+      specsHtml =
+        '<div class="hn-reader-specs-card">' +
+          '<div class="hn-specs-title"><i class="fas fa-bolt"></i> Datos clave de la actividad</div>' +
+          '<div class="hn-specs-grid">' +
+            n.datos.map(function(d) {
+              return '<div class="hn-spec-item">' +
+                '<div class="hn-spec-icon"><i class="' + esc(d.icono || 'fas fa-info') + '"></i></div>' +
+                '<div class="hn-spec-info">' +
+                  '<span class="hn-spec-label">' + esc(d.etiqueta) + '</span>' +
+                  '<span class="hn-spec-val">' + esc(d.valor) + '</span>' +
+                '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+    }
+
     var galeria = (n.galeria || []).length
       ? '<div class="hn-reader-gallery">' + n.galeria.map(function (src) {
           return '<button type="button" class="hn-reader-thumb" data-src="' + esc(src) + '"><img src="' + esc(src) + '" alt="" loading="lazy"></button>';
         }).join('') + '</div>' : '';
 
     var links = (n.links || []).length
-      ? '<div class="hn-reader-links">' + n.links.map(function (l) {
+      ? '<div class="hn-reader-cta-box">' + n.links.map(function (l) {
           var ext = /^https?:/i.test(l.url || '');
-          return '<a class="hn-act-btn primary" href="' + esc(l.url) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' +
-            (l.icono ? '<i class="' + esc(l.icono) + '"></i> ' : '') + esc(l.texto) + '</a>';
+          return '<a class="hn-reader-cta-btn" href="' + esc(l.url) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' +
+            '<div class="hn-reader-cta-icon"><i class="' + esc(l.icono || 'fas fa-arrow-right') + '"></i></div>' +
+            '<div class="hn-reader-cta-content">' +
+              '<span class="hn-reader-cta-kicker">Acceso directo</span>' +
+              '<span class="hn-reader-cta-title">' + esc(l.texto) + '</span>' +
+            '</div>' +
+            '<i class="fas fa-chevron-right hn-reader-cta-arrow"></i>' +
+          '</a>';
         }).join('') + '</div>' : '';
 
+    var bodyHtml = '<div class="hn-reader-body-text">' +
+      formatMarkdown((n.cuerpo || []).join('\n\n')) +
+    '</div>';
+
     readerBody.innerHTML =
-      '<div class="hn-reader-cover"><img src="' + esc(n.imagen) + '" alt=""></div>' +
+      coverHtml +
       '<div class="hn-reader-content">' +
-        '<div class="hn-card-meta">' + catBadge(n.categoria) + '<span class="hn-card-grade">' + esc(nombreGrado(n.grado)) + '</span></div>' +
-        '<h2 id="hn-reader-title">' + esc(n.titulo) + '</h2>' +
-        '<p class="hn-reader-lead">' + esc(n.bajada) + '</p>' +
-        '<div class="hn-reader-date"><i class="far fa-calendar"></i> ' + esc(fechaLarga(n.fecha)) + '</div>' +
-        (n.cuerpo || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
-        galeria + links +
-        '<div class="hn-reader-share">' +
-          '<button type="button" class="hn-share-btn" id="hn-share-btn"><i class="fas fa-link"></i> Copiar enlace</button>' +
-          '<a class="hn-share-btn wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=' +
-            encodeURIComponent(n.titulo + ' — ' + location.href.split('#')[0] + '#noticia-' + n.id) + '"><i class="fab fa-whatsapp"></i> Compartir</a>' +
+        chipsHtml +
+        '<h2 id="hn-reader-title" class="hn-reader-headline">' + esc(n.titulo) + '</h2>' +
+        (n.bajada ? '<div class="hn-reader-lead">' + esc(n.bajada) + '</div>' : '') +
+        specsHtml +
+        bodyHtml +
+        galeria +
+        links +
+        '<div class="hn-reader-footer-bar">' +
+          '<div class="hn-reader-share-group">' +
+            '<button type="button" class="hn-share-btn" id="hn-share-btn"><i class="fas fa-link"></i> Copiar enlace</button>' +
+            '<a class="hn-share-btn wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=' +
+              encodeURIComponent(n.titulo + ' — ' + location.href.split('#')[0] + '#noticia-' + n.id) + '"><i class="fab fa-whatsapp"></i> Compartir</a>' +
+          '</div>' +
+          '<button type="button" class="hn-reader-bottom-close-btn" id="hn-reader-bottom-close"><i class="fas fa-times"></i> Cerrar</button>' +
         '</div>' +
       '</div>';
 
@@ -1324,12 +1379,16 @@
         else window.open(t.dataset.src, '_blank', 'noopener');
       });
     });
+
     var share = document.getElementById('hn-share-btn');
     if (share) share.addEventListener('click', function () {
       var url = location.href.split('#')[0] + '#noticia-' + n.id;
       var done = function () { share.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!'; };
       if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, done); else done();
     });
+
+    var bottomClose = document.getElementById('hn-reader-bottom-close');
+    if (bottomClose) bottomClose.addEventListener('click', cerrarNoticia);
 
     reader.classList.add('open');
     reader.setAttribute('aria-hidden', 'false');

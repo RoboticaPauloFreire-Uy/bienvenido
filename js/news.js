@@ -68,18 +68,25 @@ window.HOME_CONTENT = {
     {
       id: 'escape-room-nostalgico',
       titulo: 'Llegó el Escape Rooms Nostálgico para jugar en familia',
-      bajada: 'Una aventura de enigmas, códigos secretos y acertijos pensada para todas las edades.',
+      bajada: 'Una emocionante aventura de enigmas, códigos secretos y cultura retro diseñada para compartir y jugar en familia.',
+      datos: [
+        { icono: 'fas fa-users', etiqueta: 'Equipo recomendado', valor: 'Chicos con padres y abuelos' },
+        { icono: 'fas fa-clock', etiqueta: 'Duración estimada', valor: '30 a 45 min (sin límite de tiempo)' },
+        { icono: 'fas fa-laptop-house', etiqueta: 'Dispositivos', valor: '100% Online (PC, Tablet o Celular)' },
+        { icono: 'fas fa-puzzle-piece', etiqueta: 'Habilidades', valor: 'Lógica, memoria e ingenio' }
+      ],
       cuerpo: [
-        'Lanzamos una nueva propuesta para compartir en casa: un escape room digital lleno de pistas nostálgicas.',
-        'La idea es que chicos y grandes trabajen en equipo para descifrar códigos y resolver acertijos. ¡Los abuelos tienen ventaja en algunas pistas!',
-        'Se juega desde cualquier navegador, en computadora, tablet o celular.'
+        '¡Te damos la bienvenida al **Escape Rooms Nostálgico**! Una experiencia digital interactiva creada por el Taller de Robótica y Programación para unir a distintas generaciones en torno a un gran misterio.',
+        'El juego recorre salas temáticas repletas de recuerdos: arcades de fichines, cassettes de audio, consolas clásicas, juguetes retro y tecnología de décadas pasadas.',
+        '🧩 **El valor del trabajo cooperativo:**\nPara superar cada habitación se necesita verdadero trabajo en equipo: los chicos aportan su agilidad visual y destreza digital, mientras que los adultos y abuelos tienen la clave para reconocer aparatos, música y referencias de su época que no se encuentran fácilmente en Google.',
+        '🚀 **¿Cómo jugar paso a paso?**\n1. Hacé clic en el botón de abajo para ingresar a la sala virtual.\n2. Lean atentamente la historia y exploren cada rincón de la pantalla.\n3. Descifren las pistas y prueben las combinaciones secretas.\n4. ¡Completen el recorrido y desbloqueen el cofre final del tiempo!'
       ],
       fecha: '2026-10-02',
       categoria: 'familias',
       grado: 'todos',
       imagen: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
       links: [
-        { texto: 'Entrar al Escape Room', url: 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html', icono: 'fas fa-key' }
+        { texto: 'Jugar al Escape Room ahora', url: 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html', icono: 'fas fa-gamepad' }
       ]
     },
     {
