@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=101">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=13">
+  <link rel="stylesheet" href="css/home.css?v=14">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -311,7 +311,16 @@
           </div>
 
           <div class="hn-tabs hn-casa-filters" id="hn-casa-filters" role="toolbar" aria-label="Tipo de actividad en casa"></div>
-          <div class="hn-act-grid" id="hn-act-grid-casa"></div>
+
+          <!-- Tablero Perforado de Taller Maker (Pegboard) -->
+          <div class="hn-pegboard-wrapper">
+            <div class="hn-pegboard-header-bar">
+              <div class="hn-peg-screw"></div>
+              <div class="hn-peg-title-badge"><i class="fas fa-toolbox"></i> PANEL DE DESAFÍOS MAKER // EN CASA</div>
+              <div class="hn-peg-screw"></div>
+            </div>
+            <div class="hn-act-grid hn-pegboard-grid" id="hn-act-grid-casa"></div>
+          </div>
         </section>
       </div>
 
@@ -587,10 +596,10 @@
   <!-- Motor de temas festivos (Halloween, Día del Niño, Día de la Madre, Navidad, etc.) -->
   <script src="js/theme.js?v=2"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
-  <script src="js/news.js?v=11"></script>
+  <script src="js/news.js?v=12"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=36"></script>
+  <script src="js/home.js?v=37"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>

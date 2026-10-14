@@ -524,43 +524,51 @@
         return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
       }).join('');
 
-      // ── CASO CASA: FICHAS DE MISIÓN MAKER & JUEGOS EN FAMILIA (Opción 1.1) ──
+      // ── CASO CASA: FICHAS COLGADAS EN TABLERO PEGBOARD MAKER (Opción A) ──
       if (isCasa) {
         var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
         var isMaker = a.modalidad === 'maker' || !isJuego;
+        var stampText = isMaker ? '★ MISIÓN MAKER' : '🎲 RETO FAMILIAR';
+        var stampClass = isMaker ? 'stamp-maker' : 'stamp-juego';
         var tagClass = isMaker ? 'tag-maker' : 'tag-juego';
         var tagIcon = isMaker ? 'fas fa-tools' : 'fas fa-dice';
-        var tagText = isMaker ? 'Misión Maker · Manos a la obra' : 'Juego en Familia · Para compartir';
-        var matLabel = isMaker ? 'Materiales de casa:' : '¿Cómo se juega?:';
+        var tagText = isMaker ? 'Manos a la obra' : 'Juego en Familia';
+        var matLabel = isMaker ? 'MATERIALES DE CASA:' : 'DISPOSITIVO / REQUISITO:';
         var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o computadora (100% online, sin instalar nada)');
-        var cardClass = 'hn-casa-mission-card ' + (isMaker ? 'is-maker' : 'is-juego') + ' estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
+        var cardClass = 'hn-peg-card ' + (isMaker ? 'peg-maker' : 'peg-juego') + ' estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
         var cardColor = a.color || (isMaker ? '#D97706' : '#4F46E5');
 
-        return '<article class="' + cardClass + '" style="--mission-color:' + esc(cardColor) + '">' +
-          '<div class="hn-mission-header-stripe">' +
-            '<span class="hn-mission-tag ' + tagClass + '"><i class="' + tagIcon + '"></i> ' + tagText + '</span>' +
+        return '<article class="' + cardClass + '" style="--peg-accent:' + esc(cardColor) + '">' +
+          '<div class="peg-hook-hardware">' +
+            '<div class="peg-wall-hole"></div>' +
+            '<div class="peg-metal-hook"></div>' +
+            '<div class="peg-card-eyelet"><div class="peg-eyelet-hole"></div></div>' +
+          '</div>' +
+          '<div class="peg-stamp ' + stampClass + '">' +
+            '<span>' + stampText + '</span>' +
+          '</div>' +
+          '<div class="peg-card-header">' +
+            '<span class="peg-type-badge ' + tagClass + '"><i class="' + tagIcon + '"></i> ' + tagText + '</span>' +
             '<span class="hn-act-state">' + esc(it.estado.texto) + '</span>' +
           '</div>' +
-          '<div class="hn-mission-main">' +
-            thumb +
-            '<div class="hn-mission-body">' +
-              (it.mia ? '<span class="hn-act-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
-              '<h3 class="hn-mission-title">' + esc(a.titulo) + '</h3>' +
-              '<p class="hn-mission-desc">' + esc(a.descripcion) + '</p>' +
-              '<div class="hn-mission-reqs-box">' +
-                '<div class="hn-reqs-icon"><i class="' + (isMaker ? 'fas fa-box-open' : 'fas fa-mobile-alt') + '"></i></div>' +
-                '<div class="hn-reqs-content">' +
-                  '<span class="hn-reqs-label">' + matLabel + '</span>' +
-                  '<span class="hn-reqs-text">' + esc(matText) + '</span>' +
-                '</div>' +
+          thumb +
+          '<div class="peg-card-body">' +
+            (it.mia ? '<span class="hn-act-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
+            '<h3 class="peg-card-title">' + esc(a.titulo) + '</h3>' +
+            '<p class="peg-card-desc">' + esc(a.descripcion) + '</p>' +
+            '<div class="peg-materials-slip">' +
+              '<div class="peg-slip-clip"><i class="fas fa-paperclip"></i></div>' +
+              '<div class="peg-slip-content">' +
+                '<span class="peg-slip-label">' + matLabel + '</span>' +
+                '<span class="peg-slip-text">' + esc(matText) + '</span>' +
               '</div>' +
-              chips +
-              '<div class="hn-mission-footer">' +
-                '<span><i class="fas fa-user-graduate"></i> ' + esc(grTxt) + '</span>' +
-                hasta + desdeProx +
-              '</div>' +
-              (botones ? '<div class="hn-mission-actions">' + botones + '</div>' : '') +
             '</div>' +
+            chips +
+            '<div class="peg-card-footer">' +
+              '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
+              hasta + desdeProx +
+            '</div>' +
+            (botones ? '<div class="peg-card-actions">' + botones + '</div>' : '') +
           '</div>' +
         '</article>';
       }

@@ -637,98 +637,255 @@ html, body {
 .hn-act-btn.primary:hover { filter: brightness(1.1); color: #fff; transform: translateY(-1px); }
 
 /* ─────────────────────────────────────────────────────────────
-   FICHAS DE MISIÓN EN CASA (MAKER & JUEGOS FAMILIARES - OPCIÓN 1.1)
+   TABLERO PEGBOARD DE TALLER & FICHAS COLGADAS (OPCIÓN A)
 ───────────────────────────────────────────────────────────── */
-.hn-casa-mission-card {
-  --mission-color: #D97706;
+
+/* Contenedor del Tablero Perforado */
+.hn-pegboard-wrapper {
+  background-color: #ECE7DA;
+  background-image: 
+    radial-gradient(#4A3B2C 20%, transparent 22%),
+    radial-gradient(rgba(255, 255, 255, 0.7) 24%, transparent 26%);
+  background-size: 28px 28px;
+  background-position: 0 0, 1px 1px;
+  border-radius: 24px;
+  border: 6px solid #C4B29E;
+  box-shadow: 
+    inset 0 4px 18px rgba(0, 0, 0, 0.14),
+    0 12px 36px -6px rgba(0, 0, 0, 0.12);
+  padding: 30px 22px 36px;
+  margin-top: 10px;
+  position: relative;
+}
+
+/* Barra superior de serigrafía / Placa de bronce */
+.hn-pegboard-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding: 0 8px;
+}
+
+.hn-peg-screw {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FDE68A, #D4AF37 50%, #854D0E 100%);
+  border: 1px solid #78350F;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.hn-peg-screw::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 1.5px;
+  background: #451A03;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.hn-peg-title-badge {
+  background: linear-gradient(180deg, #FDE68A 0%, #D4AF37 50%, #B45309 100%);
+  color: #451A03;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  padding: 6px 18px;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  border: 1px solid #92400E;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Grilla de actividades sobre el pegboard */
+.hn-pegboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 36px 20px;
+}
+
+/* Ficha / Placa colgada de taller */
+.hn-peg-card {
+  --peg-accent: #D97706;
   background: #FFFFFF;
-  border-radius: 18px;
-  border: 1.5px solid #E2E8F0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  border: 2px solid #E2E8F0;
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   position: relative;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  margin-top: 14px;
+  transform-origin: 50% -18px;
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease, border-color 0.25s ease;
   animation: hnFadeUp 0.35s ease both;
 }
 
-.hn-casa-mission-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 28px -4px rgba(0, 0, 0, 0.1);
-  border-color: var(--mission-color);
+/* Balanceo físico al pasar el mouse por encima */
+.hn-peg-card:hover {
+  animation: peg-gentle-swing 1.6s ease-in-out infinite alternate;
+  box-shadow: 0 18px 36px -4px rgba(0, 0, 0, 0.22);
+  border-color: var(--peg-accent);
 }
 
-.hn-casa-mission-card.is-maker {
-  --mission-color: #D97706;
-  border-top: 4px solid #D97706;
+@keyframes peg-gentle-swing {
+  0% { transform: rotate(-2deg); }
+  50% { transform: rotate(1.8deg); }
+  100% { transform: rotate(-1.5deg); }
 }
 
-.hn-casa-mission-card.is-juego {
-  --mission-color: #4F46E5;
-  border-top: 4px solid #4F46E5;
+.hn-peg-card.peg-maker {
+  --peg-accent: #D97706;
 }
 
-.hn-casa-mission-card.es-mia {
-  box-shadow: 0 0 0 2px var(--hn-yellow, #F59E0B), var(--shadow-sm);
+.hn-peg-card.peg-juego {
+  --peg-accent: #4F46E5;
 }
 
-.hn-casa-mission-card.estado-finalizada {
+.hn-peg-card.es-mia {
+  box-shadow: 0 0 0 2.5px var(--hn-yellow, #F59E0B), 0 12px 24px -4px rgba(0, 0, 0, 0.15);
+}
+
+.hn-peg-card.estado-finalizada {
   opacity: 0.65;
   filter: grayscale(0.5);
 }
 
-/* Banda superior de la misión */
-.hn-mission-header-stripe {
+/* Herraje del gancho metálico superior */
+.peg-hook-hardware {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.peg-wall-hole {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #23190F;
+  border: 1.5px solid #8C7561;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.peg-metal-hook {
+  width: 7px;
+  height: 24px;
+  background: linear-gradient(90deg, #F1F5F9 0%, #94A3B8 45%, #475569 100%);
+  border-radius: 4px;
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.4);
+  margin-top: -5px;
+}
+
+.peg-card-eyelet {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FDE68A, #D4AF37 60%, #92400E 100%);
+  border: 1px solid #78350F;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-top: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.peg-eyelet-hole {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #23190F;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Sello de Tinta de Goma (Rubber Stamp) */
+.peg-stamp {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  z-index: 5;
+  transform: rotate(7deg);
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 900;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
+
+.peg-stamp.stamp-maker {
+  border: 2px dashed #B45309;
+  color: #B45309;
+  background: rgba(254, 243, 199, 0.5);
+}
+
+.peg-stamp.stamp-juego {
+  border: 2px dashed #4338CA;
+  color: #4338CA;
+  background: rgba(238, 242, 255, 0.5);
+}
+
+/* Cabecera interna de la placa */
+.peg-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 14px;
-  background: #F8FAFC;
-  border-bottom: 1px solid #F1F5F9;
+  padding: 12px 14px 6px;
   gap: 8px;
 }
 
-.hn-mission-tag {
+.peg-type-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  padding: 3px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
 }
 
-.hn-mission-tag.tag-maker {
+.peg-type-badge.tag-maker {
   background: #FEF3C7;
   color: #B45309;
-  border: 1px solid #FDE68A;
 }
 
-.hn-mission-tag.tag-juego {
+.peg-type-badge.tag-juego {
   background: #EEF2FF;
   color: #4338CA;
-  border: 1px solid #C7D2FE;
 }
 
-/* Estructura y cuerpo */
-.hn-mission-main {
+/* Imagen dentro de la placa */
+.hn-peg-card .hn-act-thumb {
+  height: 110px;
+  margin: 4px 12px 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Cuerpo de la placa */
+.peg-card-body {
+  padding: 12px 16px 16px;
   display: flex;
   flex-direction: column;
+  gap: 9px;
   flex: 1;
 }
 
-.hn-mission-body {
-  padding: 14px 16px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-}
-
-.hn-mission-title {
+.peg-card-title {
   font-size: 1.08rem;
   font-weight: 800;
   color: #0F172A;
@@ -736,66 +893,51 @@ html, body {
   margin: 0;
 }
 
-.hn-mission-desc {
+.peg-card-desc {
   font-size: 0.88rem;
   color: #475569;
   line-height: 1.5;
   margin: 0;
 }
 
-/* Recuadro visual de Materiales de Casa / Requisitos */
-.hn-mission-reqs-box {
+/* Etiqueta de Materiales estilo Remito con Clip metálico */
+.peg-materials-slip {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  background: #F8FAFC;
+  background: #FFFDF0;
   border: 1.5px dashed #CBD5E1;
   border-radius: 12px;
-  padding: 9px 12px;
-  margin-top: 2px;
+  padding: 10px 14px;
+  position: relative;
+  margin-top: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-.hn-casa-mission-card.is-maker .hn-mission-reqs-box {
-  background: #FFFBEB;
-  border-color: #FCD34D;
-}
-
-.hn-casa-mission-card.is-juego .hn-mission-reqs-box {
-  background: #F5F3FF;
-  border-color: #DDD6FE;
-}
-
-.hn-reqs-icon {
+.peg-slip-clip {
+  color: #64748B;
   font-size: 1.15rem;
-  color: var(--mission-color);
-  margin-top: 1px;
+  transform: rotate(-15deg);
+  margin-top: -2px;
   flex-shrink: 0;
 }
 
-.hn-reqs-content {
+.peg-slip-content {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.hn-reqs-label {
+.peg-slip-label {
   font-size: 0.68rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
+  letter-spacing: 0.05em;
+  color: var(--peg-accent);
 }
 
-.hn-casa-mission-card.is-maker .hn-reqs-label {
-  color: #B45309;
-}
-
-.hn-casa-mission-card.is-juego .hn-reqs-label {
-  color: #6D28D9;
-}
-
-.hn-reqs-text {
-  font-size: 0.84rem;
+.peg-slip-text {
+  font-size: 0.85rem;
   font-weight: 700;
   color: #1E293B;
   line-height: 1.35;
@@ -803,7 +945,7 @@ html, body {
 }
 
 /* Footer y Botones */
-.hn-mission-footer {
+.peg-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -817,21 +959,21 @@ html, body {
   border-top: 1px solid #F1F5F9;
 }
 
-.hn-mission-actions {
+.peg-card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 4px;
 }
 
-.hn-casa-mission-card .hn-act-btn.primary {
-  background: var(--mission-color) !important;
-  border-color: var(--mission-color) !important;
+.hn-peg-card .hn-act-btn.primary {
+  background: var(--peg-accent) !important;
+  border-color: var(--peg-accent) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
-.hn-casa-mission-card .hn-act-btn.primary:hover {
+.hn-peg-card .hn-act-btn.primary:hover {
   filter: brightness(1.1);
   transform: translateY(-1px);
 }
