@@ -418,13 +418,13 @@
   }
 
   function renderFiltrosActividades() {
-    // Filtro interno de "En casa" (Todas / Individual / En familia)
+    // Filtro interno de "En casa" (Todas / Misiones Maker / Juegos en Familia)
     var cont = document.getElementById('hn-casa-filters');
     if (cont) {
       var opciones = [
-        { id: 'todas', nombre: 'Todas las de casa', icono: 'fas fa-th-large' },
-        { id: 'casa', nombre: 'Solo alumno', icono: 'fas fa-user' },
-        { id: 'familia', nombre: 'En familia', icono: 'fas fa-heart' }
+        { id: 'todas', nombre: 'Todos los desafíos', icono: 'fas fa-th-large' },
+        { id: 'maker', nombre: 'Misiones Maker (Manos a la obra)', icono: 'fas fa-tools' },
+        { id: 'familia', nombre: 'Juegos en Familia (Online)', icono: 'fas fa-dice' }
       ];
       cont.innerHTML = opciones.map(function (o) {
         return '<button type="button" class="hn-tab' + (o.id === filtroCasa ? ' active' : '') + '" data-casa="' + o.id + '">' +
@@ -462,11 +462,16 @@
     var todas = C.actividades || [];
     var clase = todas.filter(function (a) { return seccionDe(a) === 'clase' && pasaGrado(a); });
     var casa = todas.filter(function (a) {
-      return seccionDe(a) === 'casa' && pasaGrado(a) && (filtroCasa === 'todas' || a.tipo === filtroCasa);
+      if (seccionDe(a) !== 'casa' || !pasaGrado(a)) return false;
+      if (filtroCasa === 'todas') return true;
+      var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
+      if (filtroCasa === 'maker') return !isJuego;
+      if (filtroCasa === 'familia') return isJuego;
+      return true;
     });
 
     renderGridActividades('hn-act-grid-clase', clase, '🏫', 'No hay actividades de clase para este grado.');
-    renderGridActividades('hn-act-grid-casa', casa, '🏠', 'No hay actividades para hacer en casa con ese filtro.');
+    renderGridActividades('hn-act-grid-casa', casa, '🏠', 'No hay desafíos en casa para este filtro.');
   }
 
   function renderGridActividades(gridId, actividades, emoji, vacio) {
@@ -474,6 +479,7 @@
     if (!grid) return;
     var st = alumno();
     var miGrado = st && st.gradeId;
+    var isCasa = gridId === 'hn-act-grid-casa';
 
     var lista = actividades.map(function (a) {
       var gr = a.grados || ['todos'];
@@ -492,7 +498,6 @@
 
     grid.innerHTML = lista.map(function (it, idx) {
       var a = it.a;
-      var tipo = TIPOS[a.tipo] || { nombre: a.tipo, icono: 'fas fa-star' };
       var gr = a.grados || ['todos'];
       var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
       var fechaPresentacion = (a.tipo === 'clase' && a.desde)
@@ -519,6 +524,49 @@
         return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
       }).join('');
 
+      // ── CASO CASA: FICHAS DE MISIÓN MAKER & JUEGOS EN FAMILIA (Opción 1.1) ──
+      if (isCasa) {
+        var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
+        var isMaker = a.modalidad === 'maker' || !isJuego;
+        var tagClass = isMaker ? 'tag-maker' : 'tag-juego';
+        var tagIcon = isMaker ? 'fas fa-tools' : 'fas fa-dice';
+        var tagText = isMaker ? 'Misión Maker · Manos a la obra' : 'Juego en Familia · Para compartir';
+        var matLabel = isMaker ? 'Materiales de casa:' : '¿Cómo se juega?:';
+        var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o computadora (100% online, sin instalar nada)');
+        var cardClass = 'hn-casa-mission-card ' + (isMaker ? 'is-maker' : 'is-juego') + ' estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
+        var cardColor = a.color || (isMaker ? '#D97706' : '#4F46E5');
+
+        return '<article class="' + cardClass + '" style="--mission-color:' + esc(cardColor) + '">' +
+          '<div class="hn-mission-header-stripe">' +
+            '<span class="hn-mission-tag ' + tagClass + '"><i class="' + tagIcon + '"></i> ' + tagText + '</span>' +
+            '<span class="hn-act-state">' + esc(it.estado.texto) + '</span>' +
+          '</div>' +
+          '<div class="hn-mission-main">' +
+            thumb +
+            '<div class="hn-mission-body">' +
+              (it.mia ? '<span class="hn-act-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
+              '<h3 class="hn-mission-title">' + esc(a.titulo) + '</h3>' +
+              '<p class="hn-mission-desc">' + esc(a.descripcion) + '</p>' +
+              '<div class="hn-mission-reqs-box">' +
+                '<div class="hn-reqs-icon"><i class="' + (isMaker ? 'fas fa-box-open' : 'fas fa-mobile-alt') + '"></i></div>' +
+                '<div class="hn-reqs-content">' +
+                  '<span class="hn-reqs-label">' + matLabel + '</span>' +
+                  '<span class="hn-reqs-text">' + esc(matText) + '</span>' +
+                '</div>' +
+              '</div>' +
+              chips +
+              '<div class="hn-mission-footer">' +
+                '<span><i class="fas fa-user-graduate"></i> ' + esc(grTxt) + '</span>' +
+                hasta + desdeProx +
+              '</div>' +
+              (botones ? '<div class="hn-mission-actions">' + botones + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>';
+      }
+
+      // ── CASO CLASE: PROYECTOS DEL AULA ESCOLAR ──
+      var tipo = TIPOS[a.tipo] || { nombre: a.tipo, icono: 'fas fa-star' };
       return '<article class="hn-act-card estado-' + it.estado.clave + (it.mia ? ' es-mia' : '') + '" style="--act:' + esc(a.color || '#2E7D32') + '">' +
         thumb +
         '<div class="hn-act-body">' +

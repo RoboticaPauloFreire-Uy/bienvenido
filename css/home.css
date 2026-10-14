@@ -636,6 +636,206 @@ html, body {
 .hn-act-btn.primary { background: var(--act, var(--hn-green)); border-color: var(--act, var(--hn-green)); color: #fff; }
 .hn-act-btn.primary:hover { filter: brightness(1.1); color: #fff; transform: translateY(-1px); }
 
+/* ─────────────────────────────────────────────────────────────
+   FICHAS DE MISIÓN EN CASA (MAKER & JUEGOS FAMILIARES - OPCIÓN 1.1)
+───────────────────────────────────────────────────────────── */
+.hn-casa-mission-card {
+  --mission-color: #D97706;
+  background: #FFFFFF;
+  border-radius: 18px;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  animation: hnFadeUp 0.35s ease both;
+}
+
+.hn-casa-mission-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px -4px rgba(0, 0, 0, 0.1);
+  border-color: var(--mission-color);
+}
+
+.hn-casa-mission-card.is-maker {
+  --mission-color: #D97706;
+  border-top: 4px solid #D97706;
+}
+
+.hn-casa-mission-card.is-juego {
+  --mission-color: #4F46E5;
+  border-top: 4px solid #4F46E5;
+}
+
+.hn-casa-mission-card.es-mia {
+  box-shadow: 0 0 0 2px var(--hn-yellow, #F59E0B), var(--shadow-sm);
+}
+
+.hn-casa-mission-card.estado-finalizada {
+  opacity: 0.65;
+  filter: grayscale(0.5);
+}
+
+/* Banda superior de la misión */
+.hn-mission-header-stripe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #F8FAFC;
+  border-bottom: 1px solid #F1F5F9;
+  gap: 8px;
+}
+
+.hn-mission-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.hn-mission-tag.tag-maker {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.hn-mission-tag.tag-juego {
+  background: #EEF2FF;
+  color: #4338CA;
+  border: 1px solid #C7D2FE;
+}
+
+/* Estructura y cuerpo */
+.hn-mission-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.hn-mission-body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.hn-mission-title {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.hn-mission-desc {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Recuadro visual de Materiales de Casa / Requisitos */
+.hn-mission-reqs-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #F8FAFC;
+  border: 1.5px dashed #CBD5E1;
+  border-radius: 12px;
+  padding: 9px 12px;
+  margin-top: 2px;
+}
+
+.hn-casa-mission-card.is-maker .hn-mission-reqs-box {
+  background: #FFFBEB;
+  border-color: #FCD34D;
+}
+
+.hn-casa-mission-card.is-juego .hn-mission-reqs-box {
+  background: #F5F3FF;
+  border-color: #DDD6FE;
+}
+
+.hn-reqs-icon {
+  font-size: 1.15rem;
+  color: var(--mission-color);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.hn-reqs-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hn-reqs-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.hn-casa-mission-card.is-maker .hn-reqs-label {
+  color: #B45309;
+}
+
+.hn-casa-mission-card.is-juego .hn-reqs-label {
+  color: #6D28D9;
+}
+
+.hn-reqs-text {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #1E293B;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+/* Footer y Botones */
+.hn-mission-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748B;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #F1F5F9;
+}
+
+.hn-mission-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.hn-casa-mission-card .hn-act-btn.primary {
+  background: var(--mission-color) !important;
+  border-color: var(--mission-color) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.hn-casa-mission-card .hn-act-btn.primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
 /* Agenda & Full Layout */
 .hn-agenda-full-layout {
   display: grid;

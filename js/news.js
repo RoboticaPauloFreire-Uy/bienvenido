@@ -197,54 +197,80 @@ window.HOME_CONTENT = {
     {
       id: 'act-escape-room',
       titulo: 'Escape Rooms Nostálgico',
-      descripcion: 'Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades.',
+      descripcion: 'Resolvé enigmas y pistas nostálgicas en familia. Una experiencia interactiva cooperativa y divertida para todas las edades.',
       tipo: 'familia',
+      modalidad: 'juego',
+      materiales: 'Celular, tablet o computadora (100% online, sin instalar nada)',
       grados: ['todos'],
       icono: '🗝️',
-      color: '#3949AB',
+      color: '#4F46E5',
       desde: '2026-10-01',
       hasta: '2026-11-30',
       botones: [
-        { texto: 'Jugar', url: 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html', icono: 'fas fa-external-link-alt', principal: true }
+        { texto: '¡Jugar Ahora!', url: 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html', icono: 'fas fa-gamepad', principal: true }
+      ]
+    },
+    {
+      id: 'act-laberinto-canicas',
+      titulo: 'Misión Maker: Laberinto de Canicas en Cartón',
+      descripcion: 'Diseñá tu propio juego físico: usá una tapa de caja y tiras de cartón para crear caminos, desvíos y trampas para hacer rodar una bolita.',
+      tipo: 'casa',
+      modalidad: 'maker',
+      materiales: 'Tapa de caja de zapatos, tiras de cartón, tijera, plasticola y 1 canica o bolita',
+      grados: ['todos'],
+      icono: '🌀',
+      color: '#D97706',
+      desde: '2026-10-10',
+      hasta: '2026-11-30',
+      chips: ['📦 Cartón', '✂️ Tijera', '🔴 Bolita', '🎯 Puntería'],
+      botones: [
+        { texto: 'Ver Guía del Desafío', url: 'aula.html', icono: 'fas fa-tools', principal: true }
+      ]
+    },
+    {
+      id: 'act-robot-reciclado',
+      titulo: 'Misión Maker: Mi Primer Robot con Reciclaje',
+      descripcion: 'Uní cajitas de remedios o té para el torso, tapitas plásticas para las ruedas y tubos de cartón para los brazos. ¡Podés pintarlo como quieras!',
+      tipo: 'casa',
+      modalidad: 'maker',
+      materiales: 'Cajitas de remedios/té, 4 tapitas plásticas, tubos de rollo y cinta/plasticola',
+      grados: ['todos'],
+      icono: '🤖',
+      color: '#059669',
+      desde: '2026-10-05',
+      hasta: '2026-11-30',
+      chips: ['♻️ Reciclaje', '🎨 Pintura', '✂️ Construcción'],
+      botones: [
+        { texto: 'Ver Ficha de Armado', url: 'aula.html', icono: 'fas fa-clipboard-list', principal: true }
       ]
     },
     {
       id: 'act-inventario',
-      titulo: 'Inventario de Material del Taller Maker',
-      descripcion: '¿Qué herramientas, sensores y componentes usamos? Observá, clasificá, contá y relacioná los materiales de robótica y circuitos.',
+      titulo: 'Inventario de Materiales Maker',
+      descripcion: '¿Qué herramientas, sensores y componentes usamos en el taller? Observá, clasificá y reconocé los materiales de robótica en casa.',
       tipo: 'casa',
+      modalidad: 'maker',
+      materiales: 'Lápiz, colores y ficha descargable (impresa o en pantalla)',
       grados: ['todos'],
       icono: '🧰',
       color: '#2E7D32',
       imagen: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo',
       desde: '2026-09-01',
       botones: [
-        { texto: 'Ver ficha', imagenModal: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', descarga: 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', icono: 'fas fa-eye', principal: true },
-        { texto: 'Descargar', url: 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', icono: 'fas fa-download' },
-        { texto: 'Drive', url: 'https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing', icono: 'fab fa-google-drive' }
-      ]
-    },
-    {
-      id: 'act-simulador',
-      titulo: 'Programá la micro:bit desde casa',
-      descripcion: 'Con el simulador oficial y gratuito de MakeCode podés probar luces, botones, brújula y sonidos en la pantalla, sin tener la placa.',
-      tipo: 'casa',
-      grados: ['grado3', 'grado4', 'grado5', 'grado6'],
-      icono: '💻',
-      color: '#1D4ED8',
-      desde: '2026-09-01',
-      botones: [
-        { texto: 'Abrir MakeCode', url: 'https://makecode.microbit.org/', icono: 'fas fa-external-link-alt', principal: true }
+        { texto: 'Ver Ficha Maker', imagenModal: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', descarga: 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', icono: 'fas fa-eye', principal: true },
+        { texto: 'Descargar PDF', url: 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', icono: 'fas fa-download' }
       ]
     },
     {
       id: 'act-reciclaje',
-      titulo: 'Juntamos materiales para el taller',
-      descripcion: '¡En casa no tiramos nada! Guardamos cajas de cartón fino, tubos, tapitas, clips y papel de aluminio. Traelos los días de taller.',
+      titulo: 'Campaña Eco-Maker: Juntamos Materiales',
+      descripcion: '¡En casa no tiramos nada! Guardamos cajas de cartón fino, tubos, tapitas, clips y papel de aluminio para los proyectos del taller.',
       tipo: 'familia',
+      modalidad: 'maker',
+      materiales: 'Cajas de cartón fino, tubos de cocina, tapitas plásticas y clips limpios',
       grados: ['todos'],
       icono: '📦',
-      color: '#C2410C',
+      color: '#EA580C',
       desde: '2026-09-01',
       hasta: '2026-12-05',
       chips: ['📦 Cajas', '🧻 Tubos', '🔴 Tapitas', '📎 Clips', '🥫 Aluminio']
