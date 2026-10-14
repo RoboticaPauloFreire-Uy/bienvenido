@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=101">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=11">
+  <link rel="stylesheet" href="css/home.css?v=12">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -466,12 +466,70 @@
   </footer>
 
   <!-- ══════════════════════════════════════════════
-       LECTOR DE NOTICIAS
+       LECTOR DE NOTICIAS (CHASIS HARDWARE MICRO:BIT)
   ══════════════════════════════════════════════ -->
   <div id="hn-reader" class="hn-reader" role="dialog" aria-modal="true" aria-labelledby="hn-reader-title" aria-hidden="true">
-    <div class="hn-reader-dialog">
-      <button type="button" class="hn-reader-close" id="hn-reader-close" aria-label="Cerrar nota"><i class="fas fa-times"></i></button>
-      <div id="hn-reader-body"></div>
+    <div class="hn-reader-dialog microbit-chassis">
+      
+      <!-- Cabecera de Hardware micro:bit (Pernos, LED Matrix, Botones y Estado) -->
+      <div class="mb-hardware-header">
+        <div class="mb-hole mb-hole-tl" title="Conector GND"><span>GND</span></div>
+        
+        <div class="mb-header-brand">
+          <div class="mb-pwr-indicator">
+            <span class="mb-pwr-led"></span>
+            <span class="mb-pwr-text">PWR</span>
+          </div>
+          <div class="mb-silkscreen-title">
+            <span class="mb-brand-name">micro:bit</span>
+            <span class="mb-brand-sub">TALLER CPF</span>
+          </div>
+        </div>
+
+        <!-- Matriz de 5x5 LEDs con carita feliz clásica de MakeCode -->
+        <div class="mb-matrix-wrap" title="Matriz 5x5 micro:bit">
+          <div class="mb-5x5-matrix">
+            <span></span><span class="led-on"></span><span></span><span class="led-on"></span><span></span>
+            <span></span><span class="led-on"></span><span></span><span class="led-on"></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span class="led-on"></span><span></span><span></span><span></span><span class="led-on"></span>
+            <span></span><span class="led-on"></span><span class="led-on"></span><span class="led-on"></span><span></span>
+          </div>
+        </div>
+
+        <!-- Botón Físico de Salida estilo micro:bit / Arcade -->
+        <div class="mb-header-actions">
+          <button type="button" class="mb-tactile-close" id="hn-reader-close" aria-label="Cerrar nota" title="Cerrar ventana (Esc)">
+            <span class="mb-tactile-cap"><i class="fas fa-times"></i></span>
+            <span class="mb-tactile-label">ESC</span>
+          </button>
+        </div>
+
+        <div class="mb-hole mb-hole-tr" title="Conector 3V"><span>3V</span></div>
+      </div>
+
+      <!-- Pantalla Interna (Área de Lectura con Scroll) -->
+      <div class="mb-screen-bezel">
+        <div id="hn-reader-body" class="mb-screen-inner"></div>
+      </div>
+
+      <!-- Conector Dorado de Pines micro:bit (0, 1, 2, 3V, GND) -->
+      <div class="mb-edge-connector">
+        <div class="mb-pin-hole-outer mb-hole-bl"></div>
+        <div class="mb-pins-strip">
+          <div class="mb-pin-large"><div class="mb-pin-via"></div><span class="mb-pin-name">0</span></div>
+          <div class="mb-pin-tracks"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="mb-pin-large"><div class="mb-pin-via"></div><span class="mb-pin-name">1</span></div>
+          <div class="mb-pin-tracks"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="mb-pin-large"><div class="mb-pin-via"></div><span class="mb-pin-name">2</span></div>
+          <div class="mb-pin-tracks"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="mb-pin-large mb-pin-power"><div class="mb-pin-via"></div><span class="mb-pin-name">3V</span></div>
+          <div class="mb-pin-tracks"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="mb-pin-large mb-pin-ground"><div class="mb-pin-via"></div><span class="mb-pin-name">GND</span></div>
+        </div>
+        <div class="mb-pin-hole-outer mb-hole-br"></div>
+      </div>
+
     </div>
   </div>
 
@@ -532,7 +590,7 @@
   <script src="js/news.js?v=10"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=34"></script>
+  <script src="js/home.js?v=35"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>

@@ -1393,7 +1393,8 @@
     reader.classList.add('open');
     reader.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    reader.querySelector('.hn-reader-dialog').scrollTop = 0;
+    var scrollContainer = reader.querySelector('.mb-screen-bezel') || reader.querySelector('.hn-reader-dialog');
+    if (scrollContainer) scrollContainer.scrollTop = 0;
     var close = document.getElementById('hn-reader-close');
     if (close) close.focus();
     if (actualizarHash !== false && history.replaceState) history.replaceState(null, '', '#noticia-' + n.id);

@@ -1541,86 +1541,250 @@ body.student-logged-in .site-footer {
   display: none !important;
 }
 
-/* ─────────────── LECTOR DE NOTICIAS (MODAL MODERNO) ─────────────── */
+/* ─────────────── LECTOR DE NOTICIAS (CHASIS HARDWARE MICRO:BIT) ─────────────── */
 .hn-reader {
   position: fixed; inset: 0;
   z-index: 5000;
-  background: rgba(15, 23, 42, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(10, 15, 26, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex; align-items: center; justify-content: center;
-  padding: 24px 16px;
+  padding: 20px 16px;
   opacity: 0; pointer-events: none;
   transition: opacity .25s ease;
 }
 .hn-reader.open { opacity: 1; pointer-events: auto; }
 
-.hn-reader-dialog {
-  background: #FFFFFF;
-  width: 100%; max-width: 740px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 24px;
+/* ═════════════════════════════════════════════════════════════
+   CHASIS HARDWARE MICRO:BIT
+═════════════════════════════════════════════════════════════ */
+.hn-reader-dialog.microbit-chassis {
+  background: #0B0F19;
+  width: 100%;
+  max-width: 760px;
+  max-height: 92vh;
+  border-radius: 28px;
+  border: 2px solid #232D42;
+  box-shadow: 
+    0 25px 65px -10px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 40px rgba(37, 99, 235, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   position: relative;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2);
   transform: translateY(24px) scale(.97);
   transition: transform .28s cubic-bezier(0.16, 1, 0.3, 1);
-  scrollbar-width: thin;
-  scrollbar-color: #CBD5E1 transparent;
-}
-.hn-reader-dialog::-webkit-scrollbar {
-  width: 7px;
-}
-.hn-reader-dialog::-webkit-scrollbar-track {
-  background: transparent;
-}
-.hn-reader-dialog::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 4px;
-}
-.hn-reader-dialog::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
 }
 
-.hn-reader.open .hn-reader-dialog { transform: none; }
+.hn-reader.open .hn-reader-dialog.microbit-chassis { transform: none; }
 
-/* Botón flotante para cerrar */
-.hn-reader-close {
-  position: sticky;
-  top: 14px;
-  float: right;
-  margin: 14px 14px -50px 0;
-  z-index: 50;
-  width: 38px; height: 38px;
+/* Pernos / Orificios de Montaje en las 4 esquinas */
+.mb-hole {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(15, 23, 42, 0.68);
-  color: #FFFFFF;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  font-size: 1rem;
-  cursor: pointer;
+  background: radial-gradient(circle, #050811 45%, #AA771C 80%, #F5D77F 100%);
+  border: 1.5px solid #D4AF37;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.9), 0 0 6px rgba(212, 175, 55, 0.35);
+  flex-shrink: 0;
 }
-.hn-reader-close:hover {
-  background: #EF4444;
-  border-color: #EF4444;
+.mb-hole span {
+  display: none;
+}
+
+/* Cabecera de Hardware micro:bit */
+.mb-hardware-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: linear-gradient(180deg, #151D2F 0%, #0F1626 100%);
+  border-bottom: 2px solid #1E283D;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.mb-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mb-pwr-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mb-pwr-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 6px #22C55E, 0 0 10px rgba(34, 197, 94, 0.8);
+  animation: mb-pwr-blink 2.2s infinite ease-in-out;
+}
+
+@keyframes mb-pwr-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.85); }
+}
+
+.mb-pwr-text {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #86EFAC;
+}
+
+.mb-silkscreen-title {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.mb-brand-name {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
   color: #FFFFFF;
-  transform: rotate(90deg) scale(1.08);
-  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.4);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+}
+
+.mb-brand-sub {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #94A3B8;
+  text-transform: uppercase;
+}
+
+/* Matriz 5x5 de LEDs micro:bit */
+.mb-matrix-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050811;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid #1E283D;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.mb-5x5-matrix {
+  display: grid;
+  grid-template-columns: repeat(5, 5px);
+  grid-template-rows: repeat(5, 5px);
+  gap: 3px;
+}
+
+.mb-5x5-matrix span {
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: #192233;
+  transition: all 0.2s ease;
+}
+
+.mb-5x5-matrix span.led-on {
+  background: #EF4444;
+  box-shadow: 0 0 5px #EF4444, 0 0 8px rgba(239, 68, 68, 0.75);
+}
+
+/* Botón Tactile Close (Pulsador B / ESC) */
+.mb-tactile-close {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #111827;
+  border: 1.5px solid #374151;
+  border-radius: 999px;
+  padding: 4px 10px 4px 5px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.mb-tactile-close:hover {
+  background: #1F2937;
+  border-color: #EF4444;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+
+.mb-tactile-cap {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #EF4444, #B91C1C);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  transition: transform 0.2s ease;
+}
+
+.mb-tactile-close:hover .mb-tactile-cap {
+  transform: rotate(90deg);
+}
+
+.mb-tactile-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #F8FAFC;
+}
+
+/* ═════════════════════════════════════════════════════════════
+   BISEL Y PANTALLA INTERNA
+═════════════════════════════════════════════════════════════ */
+.mb-screen-bezel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: #FFFFFF;
+  margin: 6px 10px;
+  border-radius: 16px;
+  border: 2px solid #1E293B;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.12);
+  scrollbar-width: thin;
+  scrollbar-color: #CBD5E1 transparent;
+}
+
+.mb-screen-bezel::-webkit-scrollbar {
+  width: 7px;
+}
+.mb-screen-bezel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mb-screen-bezel::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+.mb-screen-bezel::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
 }
 
 /* Portada / Cover */
 .hn-reader-cover {
   position: relative;
   width: 100%;
-  height: 270px;
+  height: 260px;
   background: #0F172A;
   overflow: hidden;
+  border-radius: 14px 14px 0 0;
 }
 .hn-reader-cover img {
   width: 100%; height: 100%;
@@ -1632,11 +1796,109 @@ body.student-logged-in .site-footer {
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(15, 23, 42, 0.5) 0%,
+    rgba(15, 23, 42, 0.4) 0%,
     transparent 50%,
     rgba(15, 23, 42, 0.35) 100%
   );
   pointer-events: none;
+}
+
+/* ═════════════════════════════════════════════════════════════
+   CONECTOR DORADO DE PINES INFERIOR (micro:bit Edge Connector)
+═════════════════════════════════════════════════════════════ */
+.mb-edge-connector {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 6px 14px 0;
+  background: #070A11;
+  border-top: 1.5px solid #B8860B;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.mb-edge-connector::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #D4AF37 0%, #F5D77F 50%, #D4AF37 100%);
+  opacity: 0.7;
+}
+
+.mb-pin-hole-outer {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #050811 45%, #AA771C 80%, #F5D77F 100%);
+  border: 1.5px solid #D4AF37;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.mb-pins-strip {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+/* Pines Grandes (0, 1, 2, 3V, GND) */
+.mb-pin-large {
+  width: 44px;
+  height: 34px;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(180deg, #F5D77F 0%, #D4AF37 35%, #B8860B 80%, #8B6508 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 0 2px;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  cursor: default;
+}
+
+.mb-pin-large:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+}
+
+.mb-pin-via {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0A0E18;
+  border: 1.5px solid #AA771C;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.mb-pin-name {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #1A1305;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Pistas doradas intermedias */
+.mb-pin-tracks {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+  padding-bottom: 0;
+}
+
+.mb-pin-tracks i {
+  width: 3px;
+  height: 24px;
+  background: linear-gradient(180deg, #F5D77F 0%, #D4AF37 50%, #8B6508 100%);
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Contenido */
@@ -1976,11 +2238,24 @@ body.student-logged-in .site-footer {
   .hn-seg-txt small { display: none; }
   .hn-act-panel-head { padding: 12px 14px; }
   .hn-tab { white-space: nowrap; }
-  .hn-reader { padding: 0; align-items: stretch; }
-  .hn-reader-dialog { max-height: 100vh; border-radius: 0; max-width: none; }
-  .hn-reader-cover { height: 210px; }
-  .hn-reader-content { padding: 18px 20px 28px; }
-  .hn-reader-headline { font-size: 1.35rem; }
+  .hn-reader { padding: 8px; align-items: center; }
+  .hn-reader-dialog.microbit-chassis { max-height: 96vh; border-radius: 20px; }
+  .mb-hardware-header { padding: 8px 10px; }
+  .mb-brand-name { font-size: 0.95rem; }
+  .mb-brand-sub { display: none; }
+  .mb-hole { display: none; }
+  .mb-pin-hole-outer { display: none; }
+  .mb-pins-strip { gap: 4px; }
+  .mb-pin-large { width: 32px; height: 28px; }
+  .mb-pin-via { width: 9px; height: 9px; }
+  .mb-pin-name { font-size: 0.62rem; }
+  .mb-pin-tracks { gap: 2px; }
+  .mb-pin-tracks i { width: 2px; height: 18px; }
+  .mb-pin-tracks i:nth-child(n+4) { display: none; }
+  .mb-screen-bezel { margin: 4px 6px; border-radius: 12px; }
+  .hn-reader-cover { height: 190px; border-radius: 10px 10px 0 0; }
+  .hn-reader-content { padding: 16px 16px 24px; }
+  .hn-reader-headline { font-size: 1.3rem; }
   .hn-specs-grid { grid-template-columns: 1fr; }
   .hn-reader-footer-bar { flex-direction: column-reverse; align-items: stretch; text-align: center; }
   .hn-reader-share-group { justify-content: center; }
