@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=101">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=14">
+  <link rel="stylesheet" href="css/home.css?v=15">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -279,9 +279,9 @@
         <section class="hn-section" id="clase" style="margin-top:0;">
           <div class="hn-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-chalkboard-teacher"></i> En el aula</span>
+              <span class="hn-kicker"><i class="fas fa-microchip"></i> Laboratorio & Robótica</span>
               <h2 class="hn-section-title">Actividades en Clase</h2>
-              <p class="hn-section-sub">Proyectos prácticos, programación y robótica que construimos en el taller escolar.</p>
+              <p class="hn-section-sub">Circuitos, programación con micro:bit, robótica y proyectos digitales construidos en el taller escolar.</p>
             </div>
             <div class="hn-controls">
               <label class="sr-only" for="hn-clase-grade">Filtrar por grado</label>
@@ -289,7 +289,21 @@
             </div>
           </div>
 
-          <div class="hn-act-grid" id="hn-act-grid-clase"></div>
+          <!-- Banco de Pruebas y Placa PCB de Laboratorio (Protoboard Lab) -->
+          <div class="hn-pcb-workbench">
+            <div class="hn-pcb-header-bar">
+              <div class="hn-pcb-rail-line rail-red">
+                <span class="hn-pcb-rail-dot red" title="+5V VCC"></span>
+                <span class="hn-pcb-rail-label">+5V // POWER BUS</span>
+              </div>
+              <div class="hn-pcb-title-badge"><i class="fas fa-microchip"></i> BANCO DE PROYECTOS // LABORATORIO DE ROBÓTICA</div>
+              <div class="hn-pcb-rail-line rail-blue">
+                <span class="hn-pcb-rail-dot blue" title="GND TIERRA"></span>
+                <span class="hn-pcb-rail-label">GND // COMMON RAIL</span>
+              </div>
+            </div>
+            <div class="hn-act-grid hn-pcb-grid" id="hn-act-grid-clase"></div>
+          </div>
         </section>
       </div>
 
@@ -599,7 +613,7 @@
   <script src="js/news.js?v=12"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=37"></script>
+  <script src="js/home.js?v=38"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>

@@ -573,21 +573,47 @@
         '</article>';
       }
 
-      // ── CASO CLASE: PROYECTOS DEL AULA ESCOLAR ──
-      var tipo = TIPOS[a.tipo] || { nombre: a.tipo, icono: 'fas fa-star' };
-      return '<article class="hn-act-card estado-' + it.estado.clave + (it.mia ? ' es-mia' : '') + '" style="--act:' + esc(a.color || '#2E7D32') + '">' +
-        thumb +
-        '<div class="hn-act-body">' +
-          '<div class="hn-act-top">' +
-            '<span class="hn-act-type"><i class="' + tipo.icono + '"></i> ' + esc(tipo.nombre) + '</span>' +
-            '<span class="hn-act-state">' + esc(it.estado.texto) + '</span>' +
+      // ── CASO CLASE: BANCO DE PRUEBAS PCB & MÓDULOS DE ROBÓTICA (Opción A) ──
+      var modId = (a.id || 'MOD').replace(/^act-/, '').toUpperCase();
+      var cardColor = a.color || '#00E5FF';
+      var ledCls = 'led-' + (it.estado.clave === 'curso' ? 'green' : (it.estado.clave === 'proxima' ? 'amber' : (it.estado.clave === 'nueva' ? 'cyan' : 'blue')));
+      var cardClass = 'hn-pcb-card estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
+
+      return '<article class="' + cardClass + '" style="--pcb-accent:' + esc(cardColor) + '">' +
+        '<div class="pcb-mount-hole top-left" aria-hidden="true"></div>' +
+        '<div class="pcb-mount-hole top-right" aria-hidden="true"></div>' +
+        '<div class="pcb-card-header">' +
+          '<div class="pcb-silkscreen-id">' +
+            '<span class="pcb-circuit-icon"><i class="fas fa-microchip"></i></span>' +
+            '<span class="pcb-ic-code">MOD-' + esc(modId) + ' // 5V</span>' +
           '</div>' +
-          (it.mia ? '<span class="hn-act-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
-          '<h3 class="hn-act-title">' + esc(a.titulo) + '</h3>' +
-          '<p class="hn-act-desc">' + esc(a.descripcion) + '</p>' +
+          '<div class="pcb-status-led ' + ledCls + '" title="' + esc(it.estado.texto) + '">' +
+            '<span class="pcb-led-dot"></span>' +
+            '<span class="pcb-led-label">' + esc(it.estado.texto) + '</span>' +
+          '</div>' +
+        '</div>' +
+        thumb +
+        '<div class="pcb-card-body">' +
+          (it.mia ? '<span class="pcb-act-mine"><i class="fas fa-microchip"></i> Para tu grado</span>' : '') +
+          '<h3 class="pcb-card-title">' + esc(a.titulo) + '</h3>' +
+          '<p class="pcb-card-desc">' + esc(a.descripcion) + '</p>' +
           chips +
-          '<div class="hn-act-info"><span><i class="fas fa-user-graduate"></i> ' + esc(grTxt) + '</span>' + fechaPresentacion + hasta + desdeProx + '</div>' +
-          (botones ? '<div class="hn-act-actions">' + botones + '</div>' : '') +
+          '<div class="pcb-card-info">' +
+            '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
+            fechaPresentacion + hasta + desdeProx +
+          '</div>' +
+          (botones ? '<div class="pcb-card-actions">' + botones + '</div>' : '') +
+        '</div>' +
+        '<div class="pcb-edge-connector" aria-hidden="true">' +
+          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">0</span></div>' +
+          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
+          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">1</span></div>' +
+          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
+          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">2</span></div>' +
+          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
+          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">3V</span></div>' +
+          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
+          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">GND</span></div>' +
         '</div>' +
       '</article>';
     }).join('');
