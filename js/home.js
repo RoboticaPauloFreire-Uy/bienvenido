@@ -573,47 +573,46 @@
         '</article>';
       }
 
-      // ── CASO CLASE: BANCO DE PRUEBAS PCB & MÓDULOS DE ROBÓTICA (Opción A) ──
-      var modId = (a.id || 'MOD').replace(/^act-/, '').toUpperCase();
-      var cardColor = a.color || '#00E5FF';
-      var ledCls = 'led-' + (it.estado.clave === 'curso' ? 'green' : (it.estado.clave === 'proxima' ? 'amber' : (it.estado.clave === 'nueva' ? 'cyan' : 'blue')));
-      var cardClass = 'hn-pcb-card estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
+      // ── CASO CLASE: PLANO TÉCNICO & BLUEPRINT DE INGENIERÍA (Opción C) ──
+      var dwgId = (a.id || 'DWG').replace(/^act-/, '').toUpperCase();
+      var cardColor = a.color || '#38BDF8';
+      var stateClass = 'state-' + it.estado.clave;
+      var cardClass = 'hn-blueprint-card ' + stateClass + (it.mia ? ' es-mia' : '');
 
-      return '<article class="' + cardClass + '" style="--pcb-accent:' + esc(cardColor) + '">' +
-        '<div class="pcb-mount-hole top-left" aria-hidden="true"></div>' +
-        '<div class="pcb-mount-hole top-right" aria-hidden="true"></div>' +
-        '<div class="pcb-card-header">' +
-          '<div class="pcb-silkscreen-id">' +
-            '<span class="pcb-circuit-icon"><i class="fas fa-microchip"></i></span>' +
-            '<span class="pcb-ic-code">MOD-' + esc(modId) + ' // 5V</span>' +
+      return '<article class="' + cardClass + '" style="--bp-color:' + esc(cardColor) + '">' +
+        '<div class="bp-corner top-left" aria-hidden="true"></div>' +
+        '<div class="bp-corner top-right" aria-hidden="true"></div>' +
+        '<div class="bp-corner btm-left" aria-hidden="true"></div>' +
+        '<div class="bp-corner btm-right" aria-hidden="true"></div>' +
+        '<div class="bp-scanline" aria-hidden="true"></div>' +
+        '<div class="bp-card-cartouche">' +
+          '<div class="bp-spec-id">' +
+            '<i class="fas fa-drafting-compass"></i>' +
+            '<span>PLANO Nº ' + esc(dwgId) + '</span>' +
           '</div>' +
-          '<div class="pcb-status-led ' + ledCls + '" title="' + esc(it.estado.texto) + '">' +
-            '<span class="pcb-led-dot"></span>' +
-            '<span class="pcb-led-label">' + esc(it.estado.texto) + '</span>' +
+          '<div class="bp-approval-stamp ' + stateClass + '">' +
+            '<span>' + esc(it.estado.texto) + '</span>' +
           '</div>' +
         '</div>' +
-        thumb +
-        '<div class="pcb-card-body">' +
-          (it.mia ? '<span class="pcb-act-mine"><i class="fas fa-microchip"></i> Para tu grado</span>' : '') +
-          '<h3 class="pcb-card-title">' + esc(a.titulo) + '</h3>' +
-          '<p class="pcb-card-desc">' + esc(a.descripcion) + '</p>' +
+        '<div class="bp-cad-viewport">' +
+          thumb +
+          '<span class="bp-viewport-tag">FIG. 01 // ESQUEMA</span>' +
+        '</div>' +
+        '<div class="bp-card-body">' +
+          (it.mia ? '<span class="bp-act-mine"><i class="fas fa-crosshairs"></i> ASIGNADO A TU GRADO</span>' : '') +
+          '<h3 class="bp-card-title">' + esc(a.titulo) + '</h3>' +
+          '<p class="bp-card-desc">' + esc(a.descripcion) + '</p>' +
           chips +
-          '<div class="pcb-card-info">' +
+          '<div class="bp-card-info">' +
             '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
             fechaPresentacion + hasta + desdeProx +
           '</div>' +
-          (botones ? '<div class="pcb-card-actions">' + botones + '</div>' : '') +
+          (botones ? '<div class="bp-card-actions">' + botones + '</div>' : '') +
         '</div>' +
-        '<div class="pcb-edge-connector" aria-hidden="true">' +
-          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">0</span></div>' +
-          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
-          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">1</span></div>' +
-          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
-          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">2</span></div>' +
-          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
-          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">3V</span></div>' +
-          '<div class="pcb-pad-tracks"><span class="pcb-track"></span><span class="pcb-track"></span></div>' +
-          '<div class="pcb-gold-pad pcb-pad-lg"><span class="pcb-pad-hole"></span><span class="pcb-pad-txt">GND</span></div>' +
+        '<div class="bp-card-footer-strip" aria-hidden="true">' +
+          '<span class="bp-strip-box">ESC. 1:1</span>' +
+          '<span class="bp-strip-box">SISTEMA MÉTRICO</span>' +
+          '<span class="bp-strip-box flex-end">CTRL. TALLER ✓</span>' +
         '</div>' +
       '</article>';
     }).join('');

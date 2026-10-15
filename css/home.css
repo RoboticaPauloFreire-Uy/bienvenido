@@ -979,106 +979,130 @@ html, body {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   BANCO DE PRUEBAS PCB & MÓDULOS DE ROBÓTICA EN CLASE (OPCIÓN A)
+   MESA DE TALLER & PLANOS BLUEPRINT DE INGENIERÍA (OPCIÓN C)
 ───────────────────────────────────────────────────────────── */
 
-/* Contenedor del Banco de Pruebas Electrónico */
-.hn-pcb-workbench {
-  background-color: #0B132B;
+/* Contenedor de la Mesa de Planos Técnicos */
+.hn-blueprint-table {
+  background-color: #081B33;
   background-image: 
-    radial-gradient(#1E293B 18%, transparent 19%),
-    radial-gradient(rgba(56, 189, 248, 0.12) 14%, transparent 15%);
-  background-size: 24px 24px;
-  background-position: 0 0, 12px 12px;
-  border-radius: 24px;
-  border: 5px solid #1E293B;
+    linear-gradient(rgba(56, 189, 248, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.16) 1px, transparent 1px),
+    linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position: -1px -1px;
+  border-radius: 20px;
+  border: 4px solid #1E4976;
   box-shadow: 
-    inset 0 4px 24px rgba(0, 0, 0, 0.7),
-    0 14px 38px -6px rgba(11, 19, 43, 0.45);
+    inset 0 0 32px rgba(14, 165, 233, 0.12),
+    0 14px 38px -6px rgba(4, 16, 31, 0.5);
   padding: 26px 20px 32px;
   margin-top: 10px;
   position: relative;
 }
 
-/* Barra superior de alimentación y rieles de corriente (Power Bus) */
-.hn-pcb-header-bar {
+/* Marcas técnicas perimetrales del plano */
+.hn-blueprint-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 26px;
-  padding: 0 6px;
+  padding: 8px 14px;
+  background: rgba(11, 34, 64, 0.85);
+  border: 1px solid #1E4E7A;
+  border-radius: 10px;
+  position: relative;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.hn-pcb-rail-line {
+.hn-bp-corner-mark {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: #38BDF8;
+  border-style: solid;
+  pointer-events: none;
+}
+.hn-bp-corner-mark.top-left {
+  top: -2px; left: -2px;
+  border-width: 2px 0 0 2px;
+}
+.hn-bp-corner-mark.top-right {
+  top: -2px; right: -2px;
+  border-width: 2px 2px 0 0;
+}
+
+.hn-bp-scale-box {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid #334155;
-  padding: 5px 14px;
-  border-radius: 999px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.hn-pcb-rail-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-}
-
-.hn-pcb-rail-dot.red {
-  background: #EF4444;
-  box-shadow: 0 0 10px #EF4444;
-}
-
-.hn-pcb-rail-dot.blue {
-  background: #38BDF8;
-  box-shadow: 0 0 10px #38BDF8;
-}
-
-.hn-pcb-rail-label {
   font-family: 'SF Mono', Consolas, Monaco, monospace;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #94A3B8;
-  text-transform: uppercase;
+  color: #7DD3FC;
+  letter-spacing: 0.06em;
 }
 
-/* Placa central de titanio / circuito del laboratorio */
-.hn-pcb-title-badge {
-  background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-  color: #38BDF8;
-  border: 1px solid #0284C7;
+.hn-bp-scale-dot {
+  width: 8px;
+  height: 8px;
+  background: #38BDF8;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #38BDF8;
+}
+
+.hn-bp-title-cartouche {
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 0.82rem;
   font-weight: 900;
+  color: #FFFFFF;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 0.78rem;
-  padding: 7px 18px;
-  border-radius: 8px;
-  box-shadow: 0 0 16px rgba(2, 132, 199, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  background: rgba(2, 132, 199, 0.25);
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid #0284C7;
   display: flex;
   align-items: center;
   gap: 8px;
+  box-shadow: 0 0 14px rgba(2, 132, 199, 0.2);
 }
 
-/* Grilla de módulos PCB sobre el banco de pruebas */
-.hn-pcb-grid {
+.hn-bp-grid-coords {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #93C5FD;
+}
+
+.hn-bp-coord-sep {
+  opacity: 0.4;
+}
+
+/* Grilla de fichas técnicas CAD */
+.hn-blueprint-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 30px 20px;
+  grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+  gap: 32px 22px;
 }
 
-/* Módulo Electrónico PCB (Placa insertable) */
-.hn-pcb-card {
-  --pcb-accent: #00E5FF;
-  background: #0F172A;
-  border-radius: 16px;
-  border: 2px solid #334155;
-  border-top: 3.5px solid var(--pcb-accent);
-  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5);
+/* Ficha de Proyecto CAD / Hoja Blueprint */
+.hn-blueprint-card {
+  --bp-color: #38BDF8;
+  background-color: #0A223E;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #1A4977;
+  border-top: 3.5px solid var(--bp-color);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1087,146 +1111,167 @@ html, body {
   animation: hnFadeUp 0.35s ease both;
 }
 
-.hn-pcb-card:hover {
+.hn-blueprint-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 18px 36px -6px rgba(0, 0, 0, 0.7), 0 0 22px color-mix(in srgb, var(--pcb-accent) 45%, transparent);
-  border-color: var(--pcb-accent);
+  box-shadow: 0 18px 36px -6px rgba(0, 0, 0, 0.7), 0 0 24px rgba(56, 189, 248, 0.25);
+  border-color: var(--bp-color);
 }
 
-.hn-pcb-card.es-mia {
+.hn-blueprint-card.es-mia {
   border-color: var(--hn-yellow, #F59E0B);
   box-shadow: 0 0 0 2px var(--hn-yellow, #F59E0B), 0 12px 28px -6px rgba(0, 0, 0, 0.55);
 }
 
-.hn-pcb-card.estado-finalizada {
-  opacity: 0.68;
+.hn-blueprint-card.state-finalizada {
+  opacity: 0.65;
   filter: grayscale(0.45);
 }
 
-/* Orificios de montaje en esquinas con arandelas de cobre */
-.pcb-mount-hole {
+/* Marcas de corte y cotas en las 4 esquinas de la tarjeta */
+.bp-corner {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #FDE68A, #D4AF37 55%, #78350F 100%);
-  border: 1px solid #451A03;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  z-index: 5;
+  width: 9px;
+  height: 9px;
+  border-color: #38BDF8;
+  border-style: solid;
   pointer-events: none;
+  opacity: 0.75;
+  transition: opacity 0.25s ease, border-color 0.25s ease;
+  z-index: 5;
 }
 
-.pcb-mount-hole::after {
-  content: '';
+.hn-blueprint-card:hover .bp-corner {
+  opacity: 1;
+  border-color: #7DD3FC;
+}
+
+.bp-corner.top-left { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
+.bp-corner.top-right { top: 6px; right: 6px; border-width: 2px 2px 0 0; }
+.bp-corner.btm-left { bottom: 6px; left: 6px; border-width: 0 0 2px 2px; }
+.bp-corner.btm-right { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }
+
+/* Línea de escaneo láser interactiva al hover */
+.bp-scanline {
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #0B132B;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.45) 50%, #38BDF8 100%);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 8;
 }
 
-.pcb-mount-hole.top-left { top: 10px; left: 10px; }
-.pcb-mount-hole.top-right { top: 10px; right: 10px; }
+.hn-blueprint-card:hover .bp-scanline {
+  opacity: 1;
+  animation: bp-laser-scan 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
 
-/* Cabecera serigrafiada técnica */
-.pcb-card-header {
+@keyframes bp-laser-scan {
+  0% { top: -15%; }
+  100% { top: 110%; }
+}
+
+/* Cajetín técnico superior */
+.bp-card-cartouche {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px 6px;
-  margin: 0 18px; /* espacio para los orificios de las esquinas */
+  margin: 0 6px;
   gap: 8px;
 }
 
-.pcb-silkscreen-id {
+.bp-spec-id {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: 'SF Mono', Consolas, Monaco, monospace;
   font-size: 0.68rem;
-  font-weight: 800;
-  color: #94A3B8;
-  letter-spacing: 0.05em;
+  font-weight: 900;
+  color: #7DD3FC;
+  letter-spacing: 0.06em;
 }
 
-.pcb-circuit-icon {
-  color: var(--pcb-accent);
+.bp-spec-id i {
+  color: var(--bp-color);
 }
 
-/* LED de hardware de estado con pulso luminoso */
-.pcb-status-led {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #030712;
-  border: 1px solid #1F2937;
-  padding: 3px 9px;
-  border-radius: 999px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-.pcb-led-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  position: relative;
-}
-
-.pcb-status-led.led-green .pcb-led-dot {
-  background: #22C55E;
-  box-shadow: 0 0 10px #22C55E, 0 0 3px #FFFFFF;
-  animation: pcb-led-pulse 1.8s infinite ease-in-out;
-}
-
-.pcb-status-led.led-amber .pcb-led-dot {
-  background: #F59E0B;
-  box-shadow: 0 0 10px #F59E0B, 0 0 3px #FFFFFF;
-  animation: pcb-led-pulse 2.2s infinite ease-in-out;
-}
-
-.pcb-status-led.led-cyan .pcb-led-dot {
-  background: #06B6D4;
-  box-shadow: 0 0 10px #06B6D4, 0 0 3px #FFFFFF;
-  animation: pcb-led-pulse 1.4s infinite ease-in-out;
-}
-
-.pcb-status-led.led-blue .pcb-led-dot {
-  background: #64748B;
-  box-shadow: 0 0 4px #64748B;
-}
-
-@keyframes pcb-led-pulse {
-  0%, 100% { opacity: 0.65; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.18); }
-}
-
-.pcb-led-label {
+/* Sello técnico de aprobación */
+.bp-approval-stamp {
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
   font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 900;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #F1F5F9;
+  padding: 3px 8px;
+  border-radius: 4px;
 }
 
-/* Imagen y visor dentro del módulo PCB */
-.hn-pcb-card .hn-act-thumb {
-  height: 115px;
+.bp-approval-stamp.state-curso {
+  border: 1.5px solid #22C55E;
+  color: #4ADE80;
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.bp-approval-stamp.state-proxima {
+  border: 1.5px solid #F59E0B;
+  color: #FBBF24;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.bp-approval-stamp.state-nueva {
+  border: 1.5px solid #38BDF8;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.18);
+}
+
+.bp-approval-stamp.state-finalizada {
+  border: 1.5px solid #64748B;
+  color: #94A3B8;
+  background: rgba(100, 116, 139, 0.15);
+}
+
+/* Visor CAD esquemático de figura */
+.bp-cad-viewport {
+  position: relative;
   margin: 6px 14px 0;
-  border-radius: 12px;
-  border: 1.5px solid #334155;
-  background: #030712;
+  border-radius: 8px;
+  border: 1px solid #1E4E7A;
+  background: #061527;
   overflow: hidden;
 }
 
-.hn-pcb-card .hn-act-thumb .hn-act-emoji {
+.bp-cad-viewport .hn-act-thumb {
+  height: 115px;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.bp-cad-viewport .hn-act-thumb .hn-act-emoji {
   font-size: 2.2rem;
 }
 
-/* Cuerpo de la tarjeta */
-.pcb-card-body {
+.bp-viewport-tag {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #7DD3FC;
+  background: rgba(6, 21, 39, 0.85);
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid #1A4977;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+/* Cuerpo de la ficha técnica */
+.bp-card-body {
   padding: 12px 16px 16px;
   display: flex;
   flex-direction: column;
@@ -1234,21 +1279,23 @@ html, body {
   flex: 1;
 }
 
-.pcb-act-mine {
+.bp-act-mine {
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.72rem;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 0.68rem;
   font-weight: 900;
-  color: #451A03;
-  background: #FDE68A;
+  letter-spacing: 0.04em;
+  color: #FCD34D;
+  background: rgba(251, 191, 36, 0.14);
   border: 1px solid #F59E0B;
   padding: 2px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
-.pcb-card-title {
+.bp-card-title {
   font-size: 1.08rem;
   font-weight: 800;
   color: #F8FAFC;
@@ -1256,181 +1303,134 @@ html, body {
   margin: 0;
 }
 
-.pcb-card-desc {
+.bp-card-desc {
   font-size: 0.88rem;
-  color: #94A3B8;
+  color: #93C5FD;
   line-height: 1.5;
   margin: 0;
 }
 
-/* Chips estilo componentes SMD serigrafiados */
-.hn-pcb-card .hn-act-chips {
+/* Chips de Parámetros Técnicos (BOM - Bill of Materials) */
+.hn-blueprint-card .hn-act-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 2px;
 }
 
-.hn-pcb-card .hn-act-chips span {
+.hn-blueprint-card .hn-act-chips span {
   font-family: 'SF Mono', Consolas, Monaco, monospace;
   font-size: 0.72rem;
   font-weight: 700;
-  background: #1E293B;
-  color: #E2E8F0;
-  border: 1px solid #475569;
-  border-left: 2.5px solid var(--pcb-accent);
+  background: rgba(14, 116, 144, 0.22);
+  color: #E0F2FE;
+  border: 1px dashed #0284C7;
   padding: 3px 8px;
   border-radius: 4px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Metadatos y Fecha de presentación */
-.pcb-card-info {
+/* Metadatos y cronograma de entrega */
+.bp-card-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #94A3B8;
+  color: #93C5FD;
   margin-top: auto;
   padding-top: 10px;
-  border-top: 1px solid #1E293B;
+  border-top: 1px solid #163E66;
 }
 
-.pcb-card-info i {
-  color: var(--pcb-accent);
+.bp-card-info i {
+  color: var(--bp-color);
   margin-right: 4px;
 }
 
-.pcb-card-info .hn-act-deadline {
-  color: #F87171;
+.bp-card-info .hn-act-deadline {
+  color: #FCA5A5;
 }
 
-/* Acciones y botones tipo consola de laboratorio */
-.pcb-card-actions {
+/* Botones de acción estilo ingeniería CAD */
+.bp-card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 4px;
 }
 
-.hn-pcb-card .hn-act-btn {
-  background: #1E293B;
-  border: 1px solid #475569;
-  color: #F8FAFC;
-  border-radius: 8px;
-  font-size: 0.82rem;
+.hn-blueprint-card .hn-act-btn {
+  background: rgba(15, 42, 74, 0.85);
+  border: 1.5px solid #1E5185;
+  color: #BAE6FD;
+  border-radius: 6px;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 0.8rem;
   font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   transition: all 0.2s ease;
 }
 
-.hn-pcb-card .hn-act-btn:hover {
-  border-color: var(--pcb-accent);
-  color: var(--pcb-accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--pcb-accent) 30%, transparent);
+.hn-blueprint-card .hn-act-btn:hover {
+  border-color: #38BDF8;
+  color: #FFFFFF;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
 }
 
-.hn-pcb-card .hn-act-btn.primary {
-  background: var(--pcb-accent) !important;
-  border-color: var(--pcb-accent) !important;
-  color: #0F172A !important;
+.hn-blueprint-card .hn-act-btn.primary {
+  background: #0284C7 !important;
+  border-color: #38BDF8 !important;
+  color: #FFFFFF !important;
   font-weight: 900;
-  box-shadow: 0 3px 12px color-mix(in srgb, var(--pcb-accent) 40%, transparent);
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.45);
 }
 
-.hn-pcb-card .hn-act-btn.primary:hover {
+.hn-blueprint-card .hn-act-btn.primary:hover {
+  background: #0369A1 !important;
   filter: brightness(1.15);
   transform: translateY(-1px);
 }
 
-/* Conector de borde con pines dorados (micro:bit Edge Connector) */
-.pcb-edge-connector {
+/* Banda inferior de pie de plano técnico */
+.bp-card-footer-strip {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: space-between;
-  height: 38px;
-  background: #030712;
-  border-top: 2px solid #334155;
-  padding: 0 10px;
-  gap: 4px;
+  background: #07172B;
+  border-top: 1px solid #163E66;
+  padding: 6px 12px;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #60A5FA;
+  letter-spacing: 0.05em;
   margin-top: auto;
 }
 
-.pcb-gold-pad {
-  flex: 1.2;
-  background: linear-gradient(180deg, #FDE68A 0%, #D4AF37 50%, #92400E 100%);
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 3px;
-  position: relative;
-  border: 1px solid #78350F;
-  border-top: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+.bp-strip-box.flex-end {
+  color: #38BDF8;
 }
 
-.pcb-pad-hole {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #030712;
-  margin-bottom: auto;
-  margin-top: 4px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
-}
-
-.pcb-pad-txt {
-  font-family: 'SF Mono', Consolas, Monaco, monospace;
-  font-size: 0.62rem;
-  font-weight: 900;
-  color: #451A03;
-  line-height: 1;
-}
-
-.pcb-pad-tracks {
-  flex: 0.8;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: flex-start;
-  height: 22px;
-}
-
-.pcb-track {
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg, #FDE68A 0%, #D4AF37 100%);
-  border-radius: 1px;
-  opacity: 0.85;
-}
-
-/* Responsividad en pantallas móviles */
+/* Responsividad en dispositivos móviles */
 @media (max-width: 640px) {
-  .hn-pcb-workbench {
+  .hn-blueprint-table {
     padding: 16px 12px 20px;
-    border-radius: 18px;
+    border-radius: 14px;
     border-width: 3px;
   }
-  .hn-pcb-header-bar {
+  .hn-blueprint-header-bar {
     justify-content: center;
     gap: 8px;
   }
-  .hn-pcb-title-badge {
+  .hn-bp-title-cartouche {
     font-size: 0.72rem;
-    padding: 5px 12px;
+    padding: 5px 10px;
     order: -1;
     width: 100%;
     justify-content: center;
   }
-  .hn-pcb-rail-line {
-    padding: 4px 8px;
-  }
-  .hn-pcb-rail-label {
-    font-size: 0.62rem;
-  }
-  .hn-pcb-grid {
+  .hn-blueprint-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
