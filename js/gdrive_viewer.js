@@ -1411,12 +1411,126 @@
           '</div>' +
         '</div>';
 
+      var pirateMapBackgroundHtml =
+        '<div class="pirate-map-background" aria-hidden="true">' +
+          '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
+            '<defs>' +
+              '<linearGradient id="pmRiverGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                '<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.36"/>' +
+                '<stop offset="50%" stop-color="#0284C7" stop-opacity="0.45"/>' +
+                '<stop offset="100%" stop-color="#0369A1" stop-opacity="0.42"/>' +
+              '</linearGradient>' +
+              '<radialGradient id="pmLagoonGrad" cx="50%" cy="50%" r="50%">' +
+                '<stop offset="0%" stop-color="#67E8F9" stop-opacity="0.45"/>' +
+                '<stop offset="70%" stop-color="#38BDF8" stop-opacity="0.25"/>' +
+                '<stop offset="100%" stop-color="#0284C7" stop-opacity="0.05"/>' +
+              '</radialGradient>' +
+              '<linearGradient id="pmIslandSand1" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                '<stop offset="0%" stop-color="#FEF08A" stop-opacity="0.75"/>' +
+                '<stop offset="40%" stop-color="#86EFAC" stop-opacity="0.55"/>' +
+                '<stop offset="70%" stop-color="#BBF7D0" stop-opacity="0.55"/>' +
+                '<stop offset="100%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
+              '</linearGradient>' +
+              '<linearGradient id="pmIslandSand2" x1="100%" y1="0%" x2="0%" y2="100%">' +
+                '<stop offset="0%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
+                '<stop offset="45%" stop-color="#A7F3D0" stop-opacity="0.55"/>' +
+                '<stop offset="100%" stop-color="#FEF08A" stop-opacity="0.70"/>' +
+              '</linearGradient>' +
+            '</defs>' +
+
+            // Líneas de Rumbo Náuticas de Navegación
+            '<g class="pm-rhumb-lines" stroke="rgba(180, 83, 9, 0.12)" stroke-width="1" stroke-dasharray="4,6">' +
+              '<line x1="880" y1="120" x2="0" y2="1000" />' +
+              '<line x1="880" y1="120" x2="200" y2="1200" />' +
+              '<line x1="880" y1="120" x2="0" y2="500" />' +
+              '<line x1="880" y1="120" x2="500" y2="1200" />' +
+              '<line x1="120" y1="950" x2="1000" y2="200" />' +
+              '<line x1="120" y1="950" x2="800" y2="0" />' +
+              '<line x1="120" y1="950" x2="1000" y2="600" />' +
+              '<line x1="120" y1="950" x2="400" y2="0" />' +
+            '</g>' +
+
+            // Isla 1: Cayo Noreste
+            '<path d="M 680,20 C 720,15 820,30 900,15 C 980,0 1020,40 1000,140 C 980,220 890,260 820,240 C 750,220 700,200 660,150 C 620,100 640,25 680,20 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+            '<path d="M 690,30 C 730,25 820,38 890,25 C 960,12 1000,50 990,135 C 970,210 885,245 820,230 C 755,210 710,190 670,145 C 635,100 655,35 690,30 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
+
+            // Isla 2: Cayo de los Arrecifes con Laguna Interior
+            '<path d="M 20,340 C 90,320 180,330 230,380 C 280,430 270,520 220,570 C 170,620 80,630 20,590 C -20,550 -10,480 0,420 C 10,380 -10,350 20,340 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+            '<path d="M 30,350 C 95,335 175,342 220,390 C 265,435 255,510 210,555 C 165,600 85,615 30,580 C -10,540 0,480 10,425 C 18,385 0,360 30,350 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
+            '<path d="M 70,430 C 110,410 150,430 160,470 C 170,510 130,540 90,535 C 60,530 45,500 50,465 C 55,445 60,435 70,430 Z" fill="url(#pmLagoonGrad)" stroke="rgba(2, 132, 199, 0.4)" stroke-width="1.2" />' +
+
+            // Isla 3: Península Montañosa Sureste
+            '<path d="M 760,540 C 830,520 920,530 970,580 C 1020,630 1000,720 960,780 C 920,840 820,870 760,840 C 700,810 680,750 690,680 C 700,610 710,555 760,540 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+            '<path d="M 770,550 C 835,532 915,540 960,588 C 1005,635 985,712 950,768 C 912,825 820,855 765,828 C 710,800 692,745 700,680 C 710,615 722,565 770,550 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
+
+            // Isla 4: Atolón del Tesoro
+            '<path d="M 80,820 C 150,800 240,830 260,900 C 280,970 230,1050 160,1080 C 90,1110 20,1080 0,1020 C -20,960 10,890 40,850 C 55,830 65,825 80,820 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+            '<path d="M 90,830 C 155,812 230,840 248,905 C 265,968 220,1038 155,1065 C 92,1092 30,1065 12,1012 C -5,958 20,895 50,860 C 62,842 75,835 90,830 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
+
+            // Río Serpentino Principal que atraviesa el mapa
+            '<path d="M 1000,320 C 860,340 780,390 710,430 C 640,470 590,520 540,530 C 490,540 440,510 390,530 C 330,560 300,620 280,690 C 260,760 290,820 340,870 C 390,920 440,960 480,1020 C 520,1080 500,1150 490,1200 L 535,1200 C 550,1140 570,1070 525,1005 C 480,945 425,905 385,860 C 345,815 315,765 330,705 C 345,645 375,595 425,570 C 475,545 525,575 575,565 C 625,550 675,505 745,465 C 815,425 885,385 1000,370 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.6" />' +
+            '<path d="M 980,345 C 850,365 770,410 725,450 C 655,490 605,535 555,545 C 505,555 455,530 405,550 C 350,578 315,635 305,695 C 295,755 315,815 360,865 C 405,912 455,950 500,1015 C 535,1065 525,1135 512,1190" fill="none" stroke="rgba(255, 255, 255, 0.65)" stroke-width="2" stroke-dasharray="10,8" />' +
+
+            // Afluente del río (brazo izquierdo)
+            '<path d="M 0,210 C 80,225 150,260 210,295 C 265,330 310,355 350,390 L 335,410 C 295,375 250,350 195,315 C 140,280 70,250 0,235 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.2" />' +
+
+            // Ondas de agua marina
+            '<g stroke="rgba(2, 132, 199, 0.35)" stroke-width="1.4" fill="none" stroke-linecap="round">' +
+              '<path d="M 320,110 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
+              '<path d="M 380,125 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
+              '<path d="M 120,680 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
+              '<path d="M 820,440 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
+              '<path d="M 620,920 c 10,-4 20,-4 30,0 c 10,4 20,4 30,0" />' +
+            '</g>' +
+
+            // Cordilleras / Montañas
+            '<g fill="#FDE68A" stroke="#78350F" stroke-width="1.4" stroke-linejoin="round">' +
+              '<polygon points="760,110 780,75 800,110" />' +
+              '<polygon points="790,115 815,70 840,115" />' +
+              '<polygon points="830,120 850,85 870,120" />' +
+              '<polygon points="810,680 835,635 860,680" />' +
+              '<polygon points="850,685 875,640 900,685" />' +
+              '<polygon points="890,690 910,655 930,690" />' +
+            '</g>' +
+
+            // Profundidades náuticas (Soundings)
+            '<g font-family="Georgia, serif" font-size="11" font-weight="bold" fill="rgba(120, 53, 15, 0.35)" font-style="italic">' +
+              '<text x="450" y="80">14</text>' +
+              '<text x="610" y="240">8</text>' +
+              '<text x="180" y="230">12</text>' +
+              '<text x="490" y="420">18</text>' +
+              '<text x="660" y="600">9</text>' +
+              '<text x="210" y="740">22</text>' +
+              '<text x="620" y="860">15</text>' +
+              '<text x="400" y="1120">7</text>' +
+              '<text x="710" y="1150">16</text>' +
+            '</g>' +
+          '</svg>' +
+
+          // Elementos decorativos náuticos flotantes
+          '<div class="pm-deco pm-deco-compass" title="Rosa de los Vientos">🧭</div>' +
+          '<div class="pm-deco pm-deco-kraken" title="Monstruo Marino Kraken">🐙</div>' +
+          '<div class="pm-deco pm-deco-sea-dragon" title="Serpiente Marina">🐉</div>' +
+          '<div class="pm-deco pm-deco-shipwreck" title="Naufragio del Galeón">⛵</div>' +
+          '<div class="pm-deco pm-deco-palm1">🌴</div>' +
+          '<div class="pm-deco pm-deco-palm2">🌴</div>' +
+          '<div class="pm-deco pm-deco-palm3">🌴</div>' +
+          '<div class="pm-deco pm-deco-palm4">🌴</div>' +
+          '<div class="pm-deco pm-deco-treasure-cove" title="Cala de Piratas">🏝️</div>' +
+          '<div class="pm-deco pm-deco-bottle" title="Mensaje en Botella">🍾</div>' +
+          '<div class="pm-deco pm-deco-anchor" title="Fondeadero Real">⚓</div>' +
+
+          // Rótulos cartográficos antiguos
+          '<div class="pm-map-label label-sea">MAR DE LAS IDEAS</div>' +
+          '<div class="pm-map-label label-bay">Bahía del Código</div>' +
+          '<div class="pm-map-label label-river">Río Circuitos</div>' +
+          '<div class="pm-map-label label-island1">Cayo Robótica</div>' +
+          '<div class="pm-map-label label-island2">Isla Calavera</div>' +
+        '</div>';
+
       bodyHtml =
         '<div class="pirate-map-canvas">' +
-          '<div class="pirate-bg-compass-rose" aria-hidden="true"></div>' +
-          '<div class="pirate-bg-kraken" aria-hidden="true">🐙</div>' +
-          '<div class="pirate-bg-sea-turtle" aria-hidden="true">🐢</div>' +
-          '<div class="pirate-bg-bottle" aria-hidden="true">🍾</div>' +
+          pirateMapBackgroundHtml +
           pirateStartPortHtml +
           pirateIslandsHtml +
           pirateFinishHtml +

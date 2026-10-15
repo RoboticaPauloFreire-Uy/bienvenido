@@ -6104,64 +6104,184 @@ button, input, select, textarea { font-family: inherit; }
   z-index: 1;
 }
 
-/* Background Watermarks (Nautical chart elements) */
-.pirate-bg-compass-rose {
+/* ── Fondo de Mapa Ilustrado con Río e Islas (Illustrated Pirate Landscape) ── */
+.pirate-map-background {
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.pirate-map-bg-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.90;
+  display: block;
+}
+
+/* Decoraciones ilustradas sobre el mapa */
+.pm-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+  filter: drop-shadow(0 2px 4px rgba(120, 53, 15, 0.25));
+  transition: transform 0.3s ease;
+}
+
+.pm-deco-compass {
   top: 25px;
-  right: 25px;
-  width: 110px;
-  height: 110px;
-  opacity: 0.10;
-  background-image: radial-gradient(circle, #78350F 1.5px, transparent 2px),
-                    radial-gradient(circle, #78350F 1px, transparent 2px);
-  background-size: 16px 16px, 32px 32px;
-  border-radius: 50%;
-  border: 1.5px dashed #78350F;
-  pointer-events: none;
-  z-index: 0;
+  right: 22px;
+  font-size: 58px;
+  opacity: 0.40;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.45));
+  animation: pmCompassSpin 60s linear infinite;
 }
 
-.pirate-bg-compass-rose::after {
-  content: '🧭';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 55px;
-  opacity: 0.14;
+@keyframes pmCompassSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.pirate-bg-kraken {
-  position: absolute;
-  bottom: 120px;
-  left: 15px;
+.pm-deco-kraken {
+  bottom: 22%;
+  left: 3%;
+  font-size: 44px;
+  opacity: 0.35;
+  transform: rotate(-12deg);
+  animation: pmKrakenBob 6s ease-in-out infinite alternate;
+}
+
+@keyframes pmKrakenBob {
+  0% { transform: translateY(0) rotate(-12deg); }
+  100% { transform: translateY(-8px) rotate(-6deg); }
+}
+
+.pm-deco-sea-dragon {
+  top: 48%;
+  right: 3%;
   font-size: 38px;
-  opacity: 0.12;
-  pointer-events: none;
-  z-index: 0;
-  transform: rotate(-15deg);
+  opacity: 0.32;
+  animation: pmKrakenBob 7s ease-in-out infinite alternate;
 }
 
-.pirate-bg-sea-turtle {
-  position: absolute;
-  top: 45%;
-  right: 18px;
+.pm-deco-shipwreck {
+  bottom: 8%;
+  right: 10%;
+  font-size: 36px;
+  opacity: 0.42;
+  transform: rotate(15deg);
+}
+
+.pm-deco-palm1 {
+  top: 6%;
+  right: 20%;
+  font-size: 28px;
+  opacity: 0.50;
+}
+
+.pm-deco-palm2 {
+  top: 30%;
+  left: 5%;
   font-size: 30px;
-  opacity: 0.11;
-  pointer-events: none;
-  z-index: 0;
-  transform: rotate(20deg);
+  opacity: 0.50;
 }
 
-.pirate-bg-bottle {
+.pm-deco-palm3 {
+  top: 56%;
+  right: 16%;
+  font-size: 28px;
+  opacity: 0.50;
+}
+
+.pm-deco-palm4 {
+  bottom: 15%;
+  left: 7%;
+  font-size: 30px;
+  opacity: 0.50;
+}
+
+.pm-deco-treasure-cove {
+  top: 20%;
+  left: 3%;
+  font-size: 30px;
+  opacity: 0.45;
+}
+
+.pm-deco-bottle {
+  top: 40%;
+  left: 48%;
+  font-size: 22px;
+  opacity: 0.35;
+  transform: rotate(35deg);
+}
+
+.pm-deco-anchor {
+  top: 74%;
+  right: 48%;
+  font-size: 22px;
+  opacity: 0.35;
+  color: #78350F;
+}
+
+/* Rótulos cartográficos antiguos */
+.pm-map-label {
   position: absolute;
-  top: 60%;
-  left: 20px;
-  font-size: 26px;
-  opacity: 0.12;
+  font-family: 'Cinzel Decorative', 'Georgia', serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #78350F;
+  opacity: 0.38;
+  user-select: none;
   pointer-events: none;
-  z-index: 0;
-  transform: rotate(45deg);
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(255, 253, 245, 0.85);
+}
+
+.pm-map-label.label-sea {
+  top: 4%;
+  left: 12%;
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  transform: rotate(-3deg);
+}
+
+.pm-map-label.label-bay {
+  top: 35%;
+  left: 7%;
+  font-size: 0.64rem;
+  transform: rotate(5deg);
+}
+
+.pm-map-label.label-river {
+  top: 52%;
+  left: 40%;
+  font-size: 0.62rem;
+  transform: rotate(-18deg);
+  color: #0369A1;
+  opacity: 0.55;
+  font-weight: 900;
+}
+
+.pm-map-label.label-island1 {
+  top: 27%;
+  right: 4%;
+  font-size: 0.64rem;
+}
+
+.pm-map-label.label-island2 {
+  bottom: 25%;
+  right: 7%;
+  font-size: 0.64rem;
 }
 
 /* ── Puerto de Partida & Barco Pirata ── */
