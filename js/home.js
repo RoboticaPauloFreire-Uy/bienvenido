@@ -370,15 +370,30 @@
       return;
     }
 
-    grid.innerHTML = lista.slice(0, visibles).map(function (n) {
-      return '<article class="hn-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
-        '<div class="hn-card-img"><img src="' + esc(n.imagen) + '" alt="" loading="lazy"></div>' +
-        '<div class="hn-card-body">' +
-          '<div class="hn-card-meta">' + catBadge(n.categoria) + '<span class="hn-card-grade">' + esc(nombreGrado(n.grado)) + '</span></div>' +
-          '<h3 class="hn-card-title">' + esc(n.titulo) + '</h3>' +
-          '<p class="hn-card-sub">' + esc(n.bajada) + '</p>' +
-          '<div class="hn-card-foot"><span><i class="far fa-calendar"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
-          '<span class="hn-card-read">Leer <i class="fas fa-arrow-right"></i></span></div>' +
+    grid.innerHTML = lista.slice(0, visibles).map(function (n, idx) {
+      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: '📰', color: '#8B1E1E' };
+      var numFormateado = (idx + 1 < 10 ? '0' : '') + (idx + 1);
+
+      return '<article class="hn-gazette-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
+        '<div class="gz-dogear" aria-hidden="true"></div>' +
+        '<div class="gz-card-header">' +
+          '<span class="gz-cat-badge" style="--cat-color:' + esc(cat.color || '#8B1E1E') + '">' +
+            cat.icono + ' ' + esc(cat.nombre) +
+          '</span>' +
+          '<span class="gz-ed-number">CRÓNICA Nº ' + numFormateado + '</span>' +
+        '</div>' +
+        '<div class="gz-photo-frame">' +
+          '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
+          '<div class="gz-photo-caption"><i class="fas fa-camera"></i> REGISTRO DEL AULA</div>' +
+        '</div>' +
+        '<div class="gz-card-body">' +
+          '<div class="gz-byline"><i class="fas fa-feather-alt"></i> Por alumnos de ' + esc(nombreGrado(n.grado)) + '</div>' +
+          '<h3 class="gz-card-title">' + esc(n.titulo) + '</h3>' +
+          '<p class="gz-card-sub">' + esc(n.bajada) + '</p>' +
+          '<div class="gz-card-foot">' +
+            '<span class="gz-date"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
+            '<span class="gz-read-link">Leer crónica <i class="fas fa-arrow-right"></i></span>' +
+          '</div>' +
         '</div>' +
       '</article>';
     }).join('');
