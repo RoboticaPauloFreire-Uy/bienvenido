@@ -262,17 +262,42 @@
     }
   }
 
-  /* ───────────── Avisos (ticker) ───────────── */
+  /* ───────────── Cable de Última Hora (ticker con noticias y avisos) ───────────── */
   function renderTicker() {
     var wrap = document.getElementById('hn-ticker');
     var track = document.getElementById('hn-ticker-track');
     if (!wrap || !track) return;
     var avisos = C.avisos || [];
-    if (!avisos.length) { wrap.style.display = 'none'; return; }
-    var items = avisos.map(function (a) { return '<span class="hn-ticker-item">' + esc(a) + '</span>'; }).join('');
-    // Se duplica para un desplazamiento continuo
-    track.innerHTML = items + items;
-    track.style.animationDuration = Math.max(20, avisos.length * 9) + 's';
+    if (!avisos.length && !noticias.length) { wrap.style.display = 'none'; return; }
+
+    var itemsHtml = [];
+
+    // 1. Titulares de las últimas noticias (haciendo clic se abre la nota directamente)
+    noticias.slice(0, 6).forEach(function (n) {
+      itemsHtml.push(
+        '<span class="hn-ticker-item np-ticker-news" data-noticia="' + esc(n.id) + '" role="button" tabindex="0" title="Leer: ' + esc(n.titulo) + '">' +
+          '<i class="fas fa-newspaper" style="color:#991B1B;"></i> ' +
+          '<strong>[' + esc(nombreGrado(n.grado)).toUpperCase() + ']</strong> ' +
+          esc(n.titulo) +
+        '</span>'
+      );
+    });
+
+    // 2. Avisos de último momento del taller
+    avisos.forEach(function (a) {
+      itemsHtml.push(
+        '<span class="hn-ticker-item np-ticker-aviso">' +
+          '<i class="fas fa-bolt" style="color:#D97706;"></i> ' +
+          esc(a) +
+        '</span>'
+      );
+    });
+
+    var htmlString = itemsHtml.join('');
+    // Se duplica para desplazamiento continuo infinito
+    track.innerHTML = htmlString + htmlString;
+    var duracion = Math.max(26, itemsHtml.length * 8.5);
+    track.style.animationDuration = duracion + 's';
   }
 
   /* ───────────── Destacada + secundarias (Tapa de Periódico) ───────────── */

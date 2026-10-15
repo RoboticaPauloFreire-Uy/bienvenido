@@ -314,6 +314,7 @@ html, body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 8px 14px;
+  z-index: 2;
 }
 .np-ticker-pulse {
   width: 8px;
@@ -322,19 +323,62 @@ html, body {
   background: #EF4444;
   animation: hnPulse 1.2s infinite;
 }
-.np-ticker-track {
-  font-family: 'Special Elite', monospace;
-  font-size: 0.85rem;
-  color: #1A1612;
+.hn-ticker-viewport {
+  overflow: hidden;
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+}
+.np-ticker-track,
+.hn-ticker-track {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 9px 0;
+  animation: hnMarquee 34s linear infinite;
+  will-change: transform;
+}
+.np-ticker:hover .np-ticker-track,
+.np-ticker:hover .hn-ticker-track {
+  animation-play-state: paused;
 }
 .np-ticker-track .hn-ticker-item {
+  font-family: 'Special Elite', 'Courier New', monospace;
   font-weight: 700;
+  font-size: 0.85rem;
+  color: #1A1612;
   padding: 0 24px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.np-ticker-track .hn-ticker-item.np-ticker-news {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.np-ticker-track .hn-ticker-item.np-ticker-news:hover {
+  color: #991B1B;
+  text-decoration: underline;
 }
 .np-ticker-track .hn-ticker-item::after {
   content: '◆';
   color: #991B1B;
+  position: absolute;
   right: -4px;
+  font-size: 0.65rem;
+}
+
+@keyframes hnMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes hnPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
 }
 
 /* ── Primera Plana: Grid de Noticias (Lead + Columna lateral) ── */
