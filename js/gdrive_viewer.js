@@ -2023,15 +2023,19 @@
             : 'img/pdf_preview_placeholder.png';
 
           var isImg = (item.type === 'image' || !isPdf);
+          var displayItemTitle = item.title || ('Misión en Tierra #' + (idx + 1));
+          if (/^ChatGPT Image/i.test(displayItemTitle)) {
+            displayItemTitle = 'Enigma Secreto en Tierra #' + (idx + 1);
+          }
           var clickAction = isImg
-            ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + item.title.replace(/'/g, "\\'") + '\', \'' + dlUrl + '\');'
+            ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + displayItemTitle.replace(/'/g, "\\'") + '\', \'' + dlUrl + '\');'
             : 'window.open(\'' + viewUrl + '\', \'_blank\');';
 
           return '<div class="grade-game-card ptb-card" data-act-idx="' + idx + '">' +
             '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
             '<div class="ggc-thumb-wrap" onclick="' + clickAction + '" title="Hacé clic para ver">' +
               (isImg
-                ? '<img src="' + imgThumb + '" alt="' + item.title.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">'
+                ? '<img src="' + imgThumb + '" alt="' + displayItemTitle.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">'
                 : '<div style="background:linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;">📄</div>'
               ) +
               '<div class="ggc-play-overlay">' +
@@ -2039,11 +2043,11 @@
                 '<span>' + (isImg ? '¡Ver Ficha!' : '¡Abrir PDF!') + '</span>' +
               '</div>' +
               '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-graduation-cap"></i> ' + student.gradeName + '</div>' +
-              '<div class="ggc-platform-badge pirate-plat-badge">' + (isPdf ? '📄 Ficha PDF' : '🖼️ Imagen') + '</div>' +
+              '<div class="ggc-platform-badge pirate-plat-badge">' + (isPdf ? '📄 Ficha PDF' : '🖼️ Pergamino') + '</div>' +
             '</div>' +
             '<div class="ggc-body">' +
               '<div class="ggc-top-row">' +
-                '<h3 class="ggc-title">' + (item.title || 'Misión en Tierra') + '</h3>' +
+                '<h3 class="ggc-title">' + displayItemTitle + '</h3>' +
               '</div>' +
               '<p class="ggc-desc">Reto y actividad de relación de conceptos creada para tu grado (' + student.gradeName + ').</p>' +
               '<div class="ggc-tags-row">' +
@@ -4422,38 +4426,74 @@
     var modal = document.getElementById('pdf-viewer-modal');
     if (!modal) {
       modal = document.createElement('div');
-      modal.id = 'pdf-viewer-modal'; modal.className = 'student-login-modal';
-      modal.innerHTML = '<div class="slm-content" style="max-width:850px;width:92vw;"><div class="slm-header" style="background:#DC2626;"><div class="slm-title" id="pvm-title" style="color:#FFF;"></div><button class="slm-close" onclick="document.getElementById(\'pdf-viewer-modal\').classList.remove(\'active\')">&times;</button></div><div class="slm-body" style="padding:16px;"><div style="margin-bottom:10px;font-weight:800;color:#1E293B;" id="pvm-subtitle"></div><div style="height:68vh;border-radius:12px;overflow:hidden;border:1.5px solid #CBD5E1;"><iframe id="pvm-iframe" src="" style="width:100%;height:100%;border:none;"></iframe></div></div></div>';
+      modal.id = 'pdf-viewer-modal';
+      modal.className = 'student-login-modal pirate-lightbox-overlay';
+      modal.innerHTML =
+        '<div class="slm-content ilm-content pirate-modal-frame" style="max-width:880px;width:94vw;">' +
+          '<div class="ptb-corner-bolt top-left"></div>' +
+          '<div class="ptb-corner-bolt top-right"></div>' +
+          '<div class="ptb-corner-bolt bottom-left"></div>' +
+          '<div class="ptb-corner-bolt bottom-right"></div>' +
+          '<div class="slm-header ilm-header">' +
+            '<div class="ilm-title-group">' +
+              '<span class="ilm-pirate-kicker"><i class="fas fa-compass"></i> ARCHIVO DE LA BITÁCORA · DOCUMENTO OFICIAL</span>' +
+              '<div class="slm-title" id="pvm-title"></div>' +
+            '</div>' +
+            '<div class="ilm-header-actions">' +
+              '<button type="button" class="slm-close ilm-pirate-close" onclick="document.getElementById(\'pdf-viewer-modal\').classList.remove(\'active\')" title="Cerrar pergamino">&times;</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="slm-body ilm-body" style="padding:20px;flex-direction:column;gap:12px;">' +
+            '<div style="width:100%;height:70vh;border-radius:12px;overflow:hidden;border:3px solid #C49A5A;box-shadow:0 14px 35px rgba(0,0,0,0.65);background:#FFFDF0;">' +
+              '<iframe id="pvm-iframe" src="" style="width:100%;height:100%;border:none;"></iframe>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       document.body.appendChild(modal);
       modal.onclick = function(e){ if (e.target===modal) modal.classList.remove('active'); };
     }
-    document.getElementById('pvm-title').innerHTML = '<i class="fas fa-file-pdf"></i> ' + title;
-    document.getElementById('pvm-subtitle').textContent = title;
+    document.getElementById('pvm-title').innerHTML = '<span class="ilm-scroll-badge">📜</span> ' + (title || 'Documento del Navío');
     document.getElementById('pvm-iframe').src = pdfUrl;
     modal.classList.add('active');
   }
 
   // ──────────────────────────────────────────────────
-  // LIGHTBOX IMAGEN / FICHA DIDÁCTICA
+  // LIGHTBOX IMAGEN / FICHA DIDÁCTICA (ESTILO PIRATA)
   // ──────────────────────────────────────────────────
   function openImageModal(imgUrl, title, downloadUrl) {
     if (window.sounds) window.sounds.playClick();
     var modal = document.getElementById('image-lightbox-modal');
+    if (modal && !modal.querySelector('.pirate-modal-frame')) {
+      modal.remove();
+      modal = null;
+    }
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'image-lightbox-modal';
-      modal.className = 'student-login-modal';
+      modal.className = 'student-login-modal pirate-lightbox-overlay';
       modal.innerHTML =
-        '<div class="slm-content ilm-content">' +
+        '<div class="slm-content ilm-content pirate-modal-frame">' +
+          '<div class="ptb-corner-bolt top-left"></div>' +
+          '<div class="ptb-corner-bolt top-right"></div>' +
+          '<div class="ptb-corner-bolt bottom-left"></div>' +
+          '<div class="ptb-corner-bolt bottom-right"></div>' +
           '<div class="slm-header ilm-header">' +
-            '<div class="slm-title" id="ilm-title"><i class="fas fa-clipboard-list"></i> Visor de Ficha</div>' +
+            '<div class="ilm-title-group">' +
+              '<span class="ilm-pirate-kicker"><i class="fas fa-skull-crossbones"></i> MESA DEL CAPITÁN · INSPECCIÓN DE PERGAMINO</span>' +
+              '<div class="slm-title" id="ilm-title"><span class="ilm-scroll-badge">📜</span> Visor de Ficha</div>' +
+            '</div>' +
             '<div class="ilm-header-actions">' +
-              '<a id="ilm-dl-btn" href="#" target="_blank" rel="noopener noreferrer" class="ilm-btn-action" title="Descargar"><i class="fas fa-download"></i> <span>Descargar</span></a>' +
-              '<button type="button" class="slm-close" id="ilm-close-btn" aria-label="Cerrar">&times;</button>' +
+              '<a id="ilm-dl-btn" href="#" target="_blank" rel="noopener noreferrer" class="ilm-btn-action" title="Guardar este pergamino en tu cofre"><i class="fas fa-coins"></i> <span>Descargar Pergamino</span></a>' +
+              '<button type="button" class="slm-close ilm-pirate-close" id="ilm-close-btn" aria-label="Cerrar" title="Cerrar">&times;</button>' +
             '</div>' +
           '</div>' +
           '<div class="slm-body ilm-body">' +
-            '<img id="ilm-img" src="" alt="Ficha" referrerpolicy="no-referrer">' +
+            '<div class="ilm-parchment-stage">' +
+              '<div class="ilm-stage-nail top-left" title="Clavado al tablero"></div>' +
+              '<div class="ilm-stage-nail top-right" title="Clavado al tablero"></div>' +
+              '<img id="ilm-img" src="" alt="Ficha" referrerpolicy="no-referrer">' +
+              '<div class="ilm-wax-stamp" title="Sello Real del Navío">☠️</div>' +
+            '</div>' +
           '</div>' +
         '</div>';
       document.body.appendChild(modal);
@@ -4471,15 +4511,20 @@
       });
     }
 
+    var cleanTitle = title || 'Pergamino de Misión';
+    if (/^ChatGPT Image/i.test(cleanTitle)) {
+      cleanTitle = 'Enigma Secreto de la Tripulación';
+    }
+
     var titleEl = document.getElementById('ilm-title');
     if (titleEl) {
-      titleEl.innerHTML = '<i class="fas fa-clipboard-list"></i> ' + (title || 'Visor de Ficha');
+      titleEl.innerHTML = '<span class="ilm-scroll-badge">📜</span> ' + cleanTitle;
     }
 
     var imgEl = document.getElementById('ilm-img');
     if (imgEl) {
       imgEl.src = imgUrl;
-      imgEl.alt = title || 'Ficha';
+      imgEl.alt = cleanTitle;
     }
 
     var dlBtn = document.getElementById('ilm-dl-btn');
