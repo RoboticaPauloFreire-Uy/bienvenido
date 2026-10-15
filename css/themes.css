@@ -357,7 +357,11 @@
 [data-theme="halloween"] .splash-shield {
   position: relative;
   z-index: 2;
-  box-shadow: 0 0 35px rgba(234, 88, 12, 0.75), 0 0 70px rgba(147, 51, 234, 0.5), 0 0 0 6px #F97316 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 0 25px rgba(234, 88, 12, 0.85)) drop-shadow(0 0 50px rgba(147, 51, 234, 0.6)) !important;
   animation: spookyShieldFloat 3s infinite ease-in-out !important;
 }
 
@@ -716,10 +720,13 @@
   100% { transform: translateY(6px) rotate(-6deg); }
 }
 
-/* Escudo del colegio con sello de imprenta circular */
+/* Escudo del colegio transparente con resplandor festivo */
 [data-theme="halloween"] .topbar-shield-logo {
-  border: 2px solid #FF9800 !important;
-  box-shadow: 0 0 12px rgba(255, 111, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 0 8px rgba(255, 111, 0, 0.75)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)) !important;
 }
 
 /* Tipografía de cabecera de periódico */

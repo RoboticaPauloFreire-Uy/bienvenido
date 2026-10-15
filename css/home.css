@@ -4189,7 +4189,9 @@ body.student-logged-in .site-footer {
 }
 
 .topbar-brand .topbar-shield-logo {
-  border: 2px solid #D2C7B3;
+  border: none;
+  background: transparent;
+  padding: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
