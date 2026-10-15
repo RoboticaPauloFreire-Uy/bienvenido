@@ -1985,7 +1985,7 @@
         '<div class="gdb-actividades-container">' +
           '<div class="gac-section-block">' +
             '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">🏠</span> Actividades para Resolver en Casa</h4>' +
+              '<h4><span class="gac-icon">📜</span> Misiones y Enigmas para Descifrar en Tierra</h4>' +
             '</div>' +
             '<div class="actividades-grid">' +
               gradeCardsHtml +
@@ -2004,18 +2004,18 @@
         '<div class="actividad-grid-card">' +
           '<div class="agc-thumb-container escape-bg" onclick="window.open(\'' + escapeRoomUrl + '\', \'_blank\');" title="Hacé click para entrar al Escape Room">' +
             '<span class="agc-icon-giant">🗝️</span>' +
-            '<span class="agc-zoom-badge" style="background:#BE185D;"><i class="fas fa-external-link-alt"></i> Entrar al Juego</span>' +
+            '<span class="agc-zoom-badge" style="background:#BE185D;"><i class="fas fa-external-link-alt"></i> Entrar al Desafío</span>' +
           '</div>' +
           '<div class="agc-card-content">' +
             '<div class="agc-card-badge-row">' +
-              '<span class="agc-card-badge" style="background:#FCE7F3;color:#BE185D;"><i class="fas fa-heart"></i> Familiar • Todas las edades</span>' +
-              '<span class="agc-card-tag">🗝️ Juego Interactivo</span>' +
+              '<span class="agc-card-badge" style="background:#FCE7F3;color:#BE185D;"><i class="fas fa-heart"></i> Travesía Familiar • Todas las edades</span>' +
+              '<span class="agc-card-tag">🗝️ Escape Room Interactivo</span>' +
             '</div>' +
-            '<h3 class="agc-card-title">Escape Rooms Nostálgico</h3>' +
-            '<p class="agc-card-desc">Resolvé enigmas y pistas nostálgicas en familia. Una experiencia colaborativa y divertida para todas las edades con acertijos, desafíos y mucha creatividad.</p>' +
+            '<h3 class="agc-card-title">Escape Room: Enigmas y Pistas Piratas</h3>' +
+            '<p class="agc-card-desc">Descifrá enigmas y pistas nostálgicas junto a tu tripulación familiar. Una aventura colaborativa con acertijos, desafíos y mucha creatividad.</p>' +
             '<div class="agc-card-actions">' +
               '<a href="' + escapeRoomUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-primary" style="background:#DB2777;">' +
-                '<i class="fas fa-play"></i> <span>Entrar al Escape Room</span>' +
+                '<i class="fas fa-play"></i> <span>Zarpar al Escape Room</span>' +
               '</a>' +
             '</div>' +
           '</div>' +
@@ -2025,7 +2025,7 @@
         '<div class="gdb-actividades-container">' +
           '<div class="gac-section-block">' +
             '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">👨‍👩‍👧</span> Actividades para Compartir en Familia</h4>' +
+              '<h4><span class="gac-icon">🏴‍☠️</span> Travesía y Escape Room en Familia</h4>' +
             '</div>' +
             '<div class="actividades-grid">' +
               escapeRoomCardHtml +
@@ -2046,9 +2046,9 @@
       if (currentCarouselIndex >= displayItems.length) currentCarouselIndex = Math.max(0, displayItems.length - 1);
 
       if (isLoadingDriveFiles && displayItems.length === 0) {
-        mainDisplayHtml = loadingHtml('Cargando tus dibujos de Google Drive...', 'Buscando creaciones guardadas en tu carpeta', '#16A34A');
+        mainDisplayHtml = loadingHtml('Abriendo el Cofre de Dibujos de Google Drive...', 'Buscando pergaminos y creaciones guardadas en tu cofre', '#D97706');
       } else if (!isLoadingDriveFiles && displayItems.length === 0) {
-        mainDisplayHtml = emptyHtml('🎨', 'Aún no hay dibujos', '¡Arrastrá tu primer dibujo abajo para guardarlo!');
+        mainDisplayHtml = emptyHtml('🎨', 'Cofre de Dibujos vacío', '¡Depositá tu primer pergamino o dibujo abajo para guardarlo!');
       } else {
         mainDisplayHtml = buildCarousel(displayItems);
       }
@@ -2060,20 +2060,20 @@
     // ──────────────────────────────────────────────────
     var canUpload = (activeFolderKey === 'dibujos') || (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch);
     var uploadAccept = activeFolderKey === 'dibujos' ? '.bmp,.png,.jpg,.jpeg,image/bmp,image/png,image/jpeg' : '.sb3,.sjr,.pjson,.sb';
-    var uploadBtnText = activeFolderKey === 'dibujos' ? '<i class="fas fa-plus-circle"></i> Subir dibujo' : '<i class="fas fa-plus-circle"></i> Subir Scratch Jr';
+    var uploadBtnText = activeFolderKey === 'dibujos' ? '<i class="fas fa-scroll"></i> Guardar Pergamino' : '<i class="fas fa-plus-circle"></i> Subir Scratch Jr';
     var uploadBtnClass = activeFolderKey === 'dibujos' ? 'gca-btn-upload' : 'gca-btn-upload scratch';
 
     if (canUpload) {
-      var dragTitle = activeFolderKey === 'dibujos' ? '¡Soltá tu dibujo aquí para guardarlo!' : '¡Soltá tu proyecto Scratch Jr aquí!';
+      var dragTitle = activeFolderKey === 'dibujos' ? '¡Soltá tu dibujo aquí para guardarlo en el cofre!' : '¡Soltá tu proyecto Scratch Jr aquí!';
       var dragHint = activeFolderKey === 'dibujos'
-        ? 'Formatos de dibujo permitidos: <strong>.png, .jpg, .bmp</strong>'
+        ? 'Formatos permitidos en el cofre: <strong>.png, .jpg, .bmp</strong>'
         : 'Formatos permitidos: <strong>.sb3, .sjr, .pjson, .sb</strong>';
 
       uploadZoneHtml =
         '<input type="file" id="gdz-file-input" class="gdz-input" accept="' + uploadAccept + '" style="display:none;">' +
         '<div class="gdb-drag-overlay" id="gdb-drag-overlay">' +
           '<div class="gdo-card">' +
-            '<div class="gdo-icon"><i class="fas fa-cloud-upload-alt"></i></div>' +
+            '<div class="gdo-icon"><i class="fas fa-gem"></i></div>' +
             '<h3>' + dragTitle + '</h3>' +
             '<p>' + dragHint + '</p>' +
           '</div>' +
@@ -2090,39 +2090,40 @@
     var totalMissions = adventureMissions.length;
     var progressPercent = totalMissions > 0 ? Math.min(100, Math.round((completedCount / totalMissions) * 100)) : 0;
     var studentLevel = Math.max(1, Math.floor(completedCount / 2) + 1);
+    var pirateRank = studentLevel >= 5 ? 'Capitán Corsario' : (studentLevel >= 3 ? 'Timonel Maker' : 'Grumete Explorador');
     var totalXp = completedCount * 100;
     var nextMission = adventureMissions.find(function(m){ return m.status !== 'completado'; }) || adventureMissions[0];
 
     // ──────────────────────────────────────────────────
-    // HTML COMPLETO DEL PANEL GAMER MODERNO
+    // HTML COMPLETO DEL PANEL GAMER PIRATA
     // ──────────────────────────────────────────────────
     container.innerHTML =
       '<section class="gdrive-dashboard-centered gamer-dashboard-container" id="student-drive-dashboard">' +
-        // 1. HERO HEADER: PERFIL DEL JUGADOR
+        // 1. HERO HEADER: PERFIL DEL CAPITÁN / JUGADOR
         '<div class="gamer-hero-card">' +
           '<div class="gh-main-row">' +
             '<div class="gh-player-profile">' +
               '<div class="gh-avatar-container">' +
                 '<span class="gh-avatar">' + (student.avatar || '👦') + '</span>' +
-                '<span class="gh-status-dot" title="Conectado al Taller"></span>' +
+                '<span class="gh-status-dot" title="A bordo del Navío Paulo Freire"></span>' +
               '</div>' +
               '<div class="gh-player-meta">' +
                 '<div class="gh-tag-row">' +
-                  '<span class="gh-badge grade"><i class="fas fa-graduation-cap"></i> ' + student.gradeName + '</span>' +
-                  '<span class="gh-badge level"><i class="fas fa-trophy"></i> Nivel ' + studentLevel + ' Maker</span>' +
+                  '<span class="gh-badge grade"><i class="fas fa-anchor"></i> Navío ' + student.gradeName + '</span>' +
+                  '<span class="gh-badge level"><i class="fas fa-skull-crossbones"></i> ' + pirateRank + ' · Nivel ' + studentLevel + '</span>' +
                 '</div>' +
-                '<h2 class="gh-player-name">¡Hola, ' + student.name.split(' ')[0] + '! 🚀</h2>' +
-                '<span class="gh-player-sub">Taller de Robótica & Programación · Colegio Paulo Freire</span>' +
+                '<h2 class="gh-player-name">¡A la mar, ' + student.name.split(' ')[0] + '! 🏴‍☠️</h2>' +
+                '<span class="gh-player-sub">Bitácora de Navegación Maker · Navío Paulo Freire</span>' +
               '</div>' +
             '</div>' +
 
             '<div class="gh-actions-group">' +
               (nextMission ?
-                '<button type="button" class="gh-btn-continue" id="gh-btn-continue-mission" title="Continuar tu aventura en el taller">' +
-                  '<div class="gbc-icon"><i class="fas fa-play"></i></div>' +
+                '<button type="button" class="gh-btn-continue" id="gh-btn-continue-mission" title="Zarpar a la siguiente misión">' +
+                  '<div class="gbc-icon"><i class="fas fa-compass"></i></div>' +
                   '<div class="gbc-text">' +
-                    '<span class="gbc-sub">Continuar Misión</span>' +
-                    '<strong class="gbc-title">' + (nextMission.level ? 'Misión ' + nextMission.level + ': ' : '') + nextMission.title + '</strong>' +
+                    '<span class="gbc-sub">Zarpar a la Misión</span>' +
+                    '<strong class="gbc-title">' + (nextMission.level ? 'Isla ' + nextMission.level + ': ' : '') + nextMission.title + '</strong>' +
                   '</div>' +
                   '<i class="fas fa-chevron-right gbc-arrow"></i>' +
                 '</button>' : '') +
@@ -2130,10 +2131,10 @@
               '<div class="gh-extra-links">' +
                 (driveTargetUrl ?
                   '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="Abrir carpeta en Google Drive">' +
-                    '<i class="fab fa-google-drive"></i> <span>Mi Drive</span>' +
+                    '<i class="fab fa-google-drive"></i> <span>Cofre Drive</span>' +
                   '</a>' : '') +
-                '<button type="button" class="gh-pill-link logout" onclick="if(window.openLoginModal) window.openLoginModal();" title="Cambiar usuario o cerrar sesión">' +
-                  '<i class="fas fa-user-circle"></i> <span>Mi Cuenta</span>' +
+                '<button type="button" class="gh-pill-link logout" onclick="if(window.openLoginModal) window.openLoginModal();" title="Cambiar grumete o cerrar sesión">' +
+                  '<i class="fas fa-user-shield"></i> <span>Mi Rol</span>' +
                 '</button>' +
               '</div>' +
             '</div>' +
@@ -2141,13 +2142,13 @@
 
           '<div class="gh-stats-row">' +
             '<div class="gh-xp-badge">' +
-              '<span class="gh-xp-spark">⚡</span>' +
-              '<span class="gh-xp-num">+' + totalXp + ' XP</span>' +
+              '<span class="gh-xp-spark">🪙</span>' +
+              '<span class="gh-xp-num">+' + totalXp + ' Doblones</span>' +
             '</div>' +
             '<div class="gh-progress-wrapper">' +
               '<div class="gh-progress-header">' +
-                '<span class="gh-ph-label"><i class="fas fa-flag-checkered"></i> Progreso de Aventuras</span>' +
-                '<span class="gh-ph-count"><strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> misiones completadas (' + progressPercent + '%)</span>' +
+                '<span class="gh-ph-label"><i class="fas fa-map-marked-alt"></i> Bitácora de Travesía</span>' +
+                '<span class="gh-ph-count"><strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> misiones conquistadas (' + progressPercent + '%)</span>' +
               '</div>' +
               '<div class="gh-progress-track">' +
                 '<div class="gh-progress-fill" style="width:' + progressPercent + '%;">' +
@@ -2158,64 +2159,65 @@
           '</div>' +
         '</div>' +
 
-        // 2. NAVEGACIÓN GAMER MODERNA (TABS TÁCTILES)
+        // 2. NAVEGACIÓN PIRATA (TABS TÁCTILES)
         '<div class="gamer-nav-bar" role="tablist" aria-label="Secciones del Tablero">' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyectos' ? 'active' : '') + '" data-folder="proyectos">' +
             '<span class="gnb-emoji">🗺️</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">Ruta de Aventuras</span>' +
+              '<span class="gnb-title">Mapa del Tesoro</span>' +
               '<span class="gnb-badge">' + badgeProyectos + ' misiones</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'juegos' ? 'active' : '') + '" data-folder="juegos">' +
-            '<span class="gnb-emoji">🎮</span>' +
+            '<span class="gnb-emoji">⚔️</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">Zona de Juegos</span>' +
+              '<span class="gnb-title">Desafíos Piratas</span>' +
               '<span class="gnb-badge">' + badgeJuegos + ' juegos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'dibujos' ? 'active' : '') + '" data-folder="dibujos">' +
             '<span class="gnb-emoji">🎨</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">Mis Dibujos</span>' +
-              '<span class="gnb-badge">' + badgeDibujos + ' dibujos</span>' +
+              '<span class="gnb-title">Cofre de Dibujos</span>' +
+              '<span class="gnb-badge">' + badgeDibujos + ' pergaminos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyecto' ? 'active' : '') + '" data-folder="proyecto">' +
             '<span class="gnb-emoji">💻</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">Mis Proyectos</span>' +
-              '<span class="gnb-badge">' + badgeProyecto + ' archivos</span>' +
+              '<span class="gnb-title">Cofre de Códigos</span>' +
+              '<span class="gnb-badge">' + badgeProyecto + ' inventos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'actividades' ? 'active' : '') + '" data-folder="actividades">' +
-            '<span class="gnb-emoji">🏠</span>' +
+            '<span class="gnb-emoji">📜</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">Actividades</span>' +
+              '<span class="gnb-title">Misiones en Tierra</span>' +
               '<span class="gnb-badge">' + badgeActividades + ' retos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'familiar' ? 'active' : '') + '" data-folder="familiar">' +
-            '<span class="gnb-emoji">👨‍👩‍👧</span>' +
+            '<span class="gnb-emoji">🏴‍☠️</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">En Familia</span>' +
-              '<span class="gnb-badge">Desafío</span>' +
+              '<span class="gnb-title">Travesía Familiar</span>' +
+              '<span class="gnb-badge">Escape Room</span>' +
             '</div>' +
           '</button>' +
         '</div>' +
 
-        // 3. CONTENEDOR PRINCIPAL A PANTALLA COMPLETA (SIN ÁRBOL DUPLICADO)
+        // 3. CONTENEDOR PRINCIPAL A PANTALLA COMPLETA
         '<div class="gamer-content-wrapper">' +
           '<main class="gdb-content-area gamer-fullwidth">' +
             '<div class="gca-folder-bar">' +
               '<div class="gca-fb-title">' +
                 '<i class="fas ' + currentFolder.icon + '"></i>' +
-                '<span>Contenido: <strong>' +
-                  (activeFolderKey === 'proyectos' ? 'Ruta de Aventuras (' + student.gradeName + ')' :
-                   activeFolderKey === 'juegos' ? 'Juegos de Programación (' + student.gradeName + ')' :
-                   activeFolderKey === 'proyecto'  ? 'Proyectos' :
-                   activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? 'Actividad de clase y hogar (' + student.gradeName + ')' : 'Actividades del Taller') :
-                   activeFolderKey === 'familiar' ? 'Actividad familiar (Escape Rooms Nostálgico)' : currentFolder.name) +
+                '<span>Bitácora: <strong>' +
+                  (activeFolderKey === 'proyectos' ? '🗺️ Mapa del Tesoro (' + student.gradeName + ')' :
+                   activeFolderKey === 'juegos' ? '⚔️ Desafíos Piratas y Algoritmos (' + student.gradeName + ')' :
+                   activeFolderKey === 'dibujos' ? '🎨 Cofre de Dibujos y Pergaminos' :
+                   activeFolderKey === 'proyecto'  ? '💻 Cofre de Invenciones y Códigos Maker' :
+                   activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? '📜 Misiones en Tierra y Hogar (' + student.gradeName + ')' : '📜 Misiones y Retos del Taller') :
+                   activeFolderKey === 'familiar' ? '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas' : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
@@ -2832,8 +2834,8 @@
               '<i class="fas fa-gamepad"></i> <span>Jugar en ' + platText + '</span>' +
             '</a>' +
             (linkedMission ?
-              '<button type="button" class="ggc-btn-mission" data-level="' + levelNum + '" title="Ver estación en la Ruta de Aventuras">' +
-                '<i class="fas fa-map-marked-alt"></i> <span>Ver en Ruta Maker</span>' +
+              '<button type="button" class="ggc-btn-mission" data-level="' + levelNum + '" title="Ver estación en el Mapa del Tesoro">' +
+                '<i class="fas fa-compass"></i> <span>Ver en Mapa Pirata</span>' +
               '</button>' : '') +
           '</div>' +
         '</div>' +
@@ -2844,8 +2846,8 @@
       '<div class="gac-section-block">' +
         '<div class="gac-block-header" style="border-bottom:2px solid #F1F5F9;padding-bottom:14px;margin-bottom:18px;">' +
           '<div>' +
-            '<h4 style="font-size:1.3rem;font-weight:900;color:#1E293B;margin:0 0 4px;"><span class="gac-icon">🎮</span> Juegos del Grado por Niveles — ' + student.gradeName + '</h4>' +
-            '<p style="font-size:0.88rem;color:#64748B;margin:0;">Juegos interactivos organizados por niveles pedagógicos para aprender a programar, ejercitar lateralidad y desarrollar el razonamiento computacional.</p>' +
+            '<h4 style="font-size:1.3rem;font-weight:900;color:#1E293B;margin:0 0 4px;"><span class="gac-icon">⚔️</span> Desafíos Piratas por Niveles — Navío ' + student.gradeName + '</h4>' +
+            '<p style="font-size:0.88rem;color:#64748B;margin:0;">Desafíos y videojuegos interactivos para ejercitar algoritmos, acumular doblones de oro y dominar el timón del pensamiento computacional.</p>' +
           '</div>' +
         '</div>' +
         '<div class="grade-games-grid">' +
