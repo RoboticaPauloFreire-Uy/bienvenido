@@ -2062,17 +2062,16 @@
       mainDisplayHtml = renderGradeGamesHtml(student, gradeGames);
       uploadZoneHtml = '';
 
-    // ═══ CARPETA: DIBUJOS (Carrusel) ═══
+    // ═══ CARPETA: DIBUJOS (La Mesa del Capitán) ═══
     } else {
-      displayItems = FOLDER_CONTENTS.dibujos.items.slice(0, 5);
-      if (currentCarouselIndex >= displayItems.length) currentCarouselIndex = Math.max(0, displayItems.length - 1);
+      displayItems = FOLDER_CONTENTS.dibujos.items || [];
 
       if (isLoadingDriveFiles && displayItems.length === 0) {
-        mainDisplayHtml = loadingHtml('Abriendo el Cofre de Dibujos de Google Drive...', 'Buscando pergaminos y creaciones guardadas en tu cofre', '#D97706');
+        mainDisplayHtml = loadingHtml('Abriendo el Cofre de Dibujos de Google Drive...', 'Buscando pergaminos y creaciones en la mesa del capitán...', '#D97706');
       } else if (!isLoadingDriveFiles && displayItems.length === 0) {
-        mainDisplayHtml = emptyHtml('🎨', 'Cofre de Dibujos vacío', '¡Depositá tu primer pergamino o dibujo abajo para guardarlo!');
+        mainDisplayHtml = emptyHtml('🎨', 'Cofre de Pergaminos vacío', '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!');
       } else {
-        mainDisplayHtml = buildCarousel(displayItems);
+        mainDisplayHtml = renderCaptainTableHtml(displayItems);
       }
     }
 
@@ -2236,7 +2235,7 @@
                 '<span>Bitácora: <strong>' +
                   (activeFolderKey === 'proyectos' ? '🗺️ Mapa del Tesoro (' + student.gradeName + ')' :
                    activeFolderKey === 'juegos' ? '⚔️ Desafíos Piratas y Algoritmos (' + student.gradeName + ')' :
-                   activeFolderKey === 'dibujos' ? '🎨 Cofre de Dibujos y Pergaminos' :
+                   activeFolderKey === 'dibujos' ? '🎨 La Mesa del Capitán: Dibujos y Pergaminos (' + student.gradeName + ')' :
                    activeFolderKey === 'proyecto'  ? '💻 Cofre de Invenciones y Códigos Maker' :
                    activeFolderKey === 'actividades' ? (FOLDER_CONTENTS.actividades.items.length > 0 ? '📜 Misiones en Tierra y Hogar (' + student.gradeName + ')' : '📜 Misiones y Retos del Taller') :
                    activeFolderKey === 'familiar' ? '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas' : currentFolder.name) +
@@ -2289,14 +2288,23 @@
       };
     });
 
-    // ── Carrusel (dibujos) ──
+    // ── La Mesa del Capitán (dibujos y pergaminos) ──
     if (activeFolderKey === 'dibujos') {
-      initCarouselControls(container, displayItems ? displayItems.length : 0);
-      container.querySelectorAll('.gdb-carousel-slide').forEach(function(slide){
-        slide.onclick = function(e){
-          if (e.target.closest('.gcs-download-btn')) return;
-          openImageModal(slide.dataset.imgUrl, slide.dataset.imgTitle);
-        };
+      container.querySelectorAll('.captain-scroll-card').forEach(function(card){
+        var imgUrl = card.dataset.imgUrl;
+        var title = card.dataset.imgTitle;
+        var dlUrl = card.dataset.dlUrl;
+
+        var viewBtn = card.querySelector('.csc-btn-view');
+        var thumbFrame = card.querySelector('.csc-thumb-frame');
+
+        function openBig(e){
+          e.stopPropagation();
+          openImageModal(imgUrl, title, dlUrl);
+        }
+
+        if (viewBtn) viewBtn.onclick = openBig;
+        if (thumbFrame) thumbFrame.onclick = openBig;
       });
       initDropzone(container, student, 'dibujo', '.bmp,.png,.jpg,.jpeg', containerId, false);
     }
@@ -4186,6 +4194,75 @@
       '</div>' +
     '</div>';
   }
+  // ──────────────────────────────────────────────────
+  // LA MESA DEL CAPITÁN — DIBUJOS Y PERGAMINOS (PIRATA)
+  // ──────────────────────────────────────────────────
+  function renderCaptainTableHtml(displayItems) {
+    if (!displayItems || displayItems.length === 0) {
+      return emptyHtml('🎨', 'Cofre de Pergaminos vacío', '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!');
+    }
+
+    var cardsHtml = displayItems.map(function(item, idx){
+      var imgSrc = getDrawingImageUrl(item);
+      var title  = item.title || item.name || ('Pergamino #' + (idx + 1));
+      var dlUrl  = getDownloadUrl(item);
+      var rotClass = 'csc-rot-' + (idx % 6);
+
+      return '<div class="captain-scroll-card ' + rotClass + '" data-img-url="' + imgSrc + '" data-img-title="' + title + '" data-dl-url="' + (dlUrl || '') + '">' +
+        '<div class="csc-wax-seal" title="Sellado con cera pirata">' +
+          '<div class="csc-wax-stamp"><i class="fas fa-anchor"></i></div>' +
+        '</div>' +
+        '<div class="csc-card-nail" title="Clavado a la mesa del capitán"></div>' +
+        '<div class="csc-thumb-frame">' +
+          '<img src="' + imgSrc + '" alt="' + title + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
+          '<div class="csc-view-overlay">' +
+            '<div class="csc-vo-icon"><i class="fas fa-search-plus"></i></div>' +
+            '<span>Examinar</span>' +
+          '</div>' +
+          '<span class="csc-ribbon-badge"><i class="fas fa-scroll"></i> Pergamino #' + (idx + 1) + '</span>' +
+        '</div>' +
+        '<div class="csc-body">' +
+          '<h4 class="csc-title" title="' + title + '">' + title + '</h4>' +
+          '<div class="csc-meta">' +
+            (item.date ? '<span class="csc-meta-item"><i class="fas fa-quill"></i> ' + item.date + '</span>' : '') +
+            (item.size ? '<span class="csc-meta-item"><i class="fas fa-coins"></i> ' + item.size + '</span>' : '') +
+          '</div>' +
+          '<div class="csc-actions">' +
+            '<button type="button" class="csc-btn-view" title="Examinar pergamino en tamaño completo">' +
+              '<i class="fas fa-eye"></i> <span>Examinar</span>' +
+            '</button>' +
+            (dlUrl && dlUrl !== '#' ?
+              '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="csc-btn-download" title="Descargar pergamino">' +
+                '<i class="fas fa-download"></i> <span>Guardar</span>' +
+              '</a>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="captain-table-board">' +
+      '<div class="ct-brass-corner ctb-tl"></div>' +
+      '<div class="ct-brass-corner ctb-tr"></div>' +
+      '<div class="ct-brass-corner ctb-bl"></div>' +
+      '<div class="ct-brass-corner ctb-br"></div>' +
+      '<div class="ct-table-header">' +
+        '<div class="ct-th-left">' +
+          '<div class="ct-th-icon">🗺️</div>' +
+          '<div class="ct-th-info">' +
+            '<h3>Mesa de Cartas y Pergaminos del Capitán</h3>' +
+            '<p>Tus láminas, dibujos e ilustraciones náuticas desplegadas sobre la mesa de navegación.</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ct-th-badge">' +
+          '<i class="fas fa-scroll"></i> ' + displayItems.length + ' Pergamino(s) en la Mesa' +
+        '</div>' +
+      '</div>' +
+      '<div class="captain-table-grid">' +
+        cardsHtml +
+      '</div>' +
+    '</div>';
+  }
+
   function buildCarousel(displayItems) {
     return '<div class="gdb-carousel-wrapper">' +
       '<div class="gdb-carousel-container">' +
