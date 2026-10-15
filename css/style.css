@@ -6074,18 +6074,18 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 /* ═════════════════════════════════════════════════════════════════
-   MAPA DEL TESORO PIRATA (MODO AVENTURA MAKER)
+   MAPA DEL TESORO PIRATA (MODO AVENTURA MAKER - FORMATO COMPACTO)
    ═════════════════════════════════════════════════════════════════ */
 .pirate-map-canvas {
   position: relative;
   width: 100%;
-  border-radius: 26px;
+  border-radius: 20px;
   background: radial-gradient(circle at 50% 18%, #FFFDF7 0%, #FBF3E2 40%, #F5E6C9 75%, #EAD4A8 100%);
-  border: 5px solid #8B4513;
+  border: 4px solid #8B4513;
   box-shadow: 
-    inset 0 0 70px rgba(120, 53, 15, 0.28),
-    0 12px 35px rgba(69, 26, 3, 0.22);
-  padding: 30px 24px 50px 24px;
+    inset 0 0 50px rgba(120, 53, 15, 0.22),
+    0 8px 25px rgba(69, 26, 3, 0.18);
+  padding: 18px 16px 32px 16px;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -6094,12 +6094,12 @@ button, input, select, textarea { font-family: inherit; }
 .pirate-map-canvas::before {
   content: '';
   position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  border: 1.5px dashed rgba(180, 83, 9, 0.35);
-  border-radius: 18px;
+  top: 7px;
+  left: 7px;
+  right: 7px;
+  bottom: 7px;
+  border: 1.5px dashed rgba(180, 83, 9, 0.3);
+  border-radius: 14px;
   pointer-events: none;
   z-index: 1;
 }
@@ -6107,16 +6107,16 @@ button, input, select, textarea { font-family: inherit; }
 /* Background Watermarks (Nautical chart elements) */
 .pirate-bg-compass-rose {
   position: absolute;
-  top: 40px;
-  right: 35px;
-  width: 160px;
-  height: 160px;
-  opacity: 0.12;
-  background-image: radial-gradient(circle, #78350F 2px, transparent 3px),
+  top: 25px;
+  right: 25px;
+  width: 110px;
+  height: 110px;
+  opacity: 0.10;
+  background-image: radial-gradient(circle, #78350F 1.5px, transparent 2px),
                     radial-gradient(circle, #78350F 1px, transparent 2px);
-  background-size: 20px 20px, 40px 40px;
+  background-size: 16px 16px, 32px 32px;
   border-radius: 50%;
-  border: 2px dashed #78350F;
+  border: 1.5px dashed #78350F;
   pointer-events: none;
   z-index: 0;
 }
@@ -6127,16 +6127,16 @@ button, input, select, textarea { font-family: inherit; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 80px;
-  opacity: 0.15;
+  font-size: 55px;
+  opacity: 0.14;
 }
 
 .pirate-bg-kraken {
   position: absolute;
-  bottom: 180px;
-  left: 20px;
-  font-size: 58px;
-  opacity: 0.14;
+  bottom: 120px;
+  left: 15px;
+  font-size: 38px;
+  opacity: 0.12;
   pointer-events: none;
   z-index: 0;
   transform: rotate(-15deg);
@@ -6145,9 +6145,9 @@ button, input, select, textarea { font-family: inherit; }
 .pirate-bg-sea-turtle {
   position: absolute;
   top: 45%;
-  right: 25px;
-  font-size: 42px;
-  opacity: 0.13;
+  right: 18px;
+  font-size: 30px;
+  opacity: 0.11;
   pointer-events: none;
   z-index: 0;
   transform: rotate(20deg);
@@ -6156,9 +6156,9 @@ button, input, select, textarea { font-family: inherit; }
 .pirate-bg-bottle {
   position: absolute;
   top: 60%;
-  left: 30px;
-  font-size: 38px;
-  opacity: 0.15;
+  left: 20px;
+  font-size: 26px;
+  opacity: 0.12;
   pointer-events: none;
   z-index: 0;
   transform: rotate(45deg);
@@ -6171,50 +6171,50 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 14px;
 }
 
 .pirate-port-sky {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: -10px;
+  gap: 12px;
+  margin-bottom: -6px;
 }
 
 .pirate-sun-icon {
-  font-size: 2.2rem;
-  filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.6));
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5));
   animation: pirateSunPulse 4s ease-in-out infinite alternate;
 }
 
 @keyframes pirateSunPulse {
-  0% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4)); }
-  100% { transform: scale(1.1); filter: drop-shadow(0 0 18px rgba(245, 158, 11, 0.8)); }
+  0% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.35)); }
+  100% { transform: scale(1.08); filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.65)); }
 }
 
 .pirate-seagull {
-  font-size: 1.4rem;
-  opacity: 0.75;
+  font-size: 1rem;
+  opacity: 0.7;
   animation: pirateGullFly 5s ease-in-out infinite alternate;
 }
 
 .pirate-seagull.s2 {
   animation-delay: -2.5s;
-  font-size: 1.1rem;
+  font-size: 0.85rem;
 }
 
 @keyframes pirateGullFly {
   0% { transform: translateY(0px) rotate(-3deg); }
-  100% { transform: translateY(-8px) rotate(4deg); }
+  100% { transform: translateY(-5px) rotate(4deg); }
 }
 
 .pirate-ship-stage {
   position: relative;
-  width: 280px;
+  width: 170px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px auto;
+  margin: 4px auto;
 }
 
 .pirate-ship-wrapper {
@@ -6225,7 +6225,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pirate-ship-wrapper:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .pirate-ship-bobbing {
@@ -6234,9 +6234,9 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 @keyframes pirateShipBob {
-  0% { transform: translateY(0px) rotate(-1.8deg); }
-  50% { transform: translateY(-9px) rotate(1.8deg); }
-  100% { transform: translateY(0px) rotate(-1.8deg); }
+  0% { transform: translateY(0px) rotate(-1.5deg); }
+  50% { transform: translateY(-6px) rotate(1.5deg); }
+  100% { transform: translateY(0px) rotate(-1.5deg); }
 }
 
 .pirate-flag-wave {
@@ -6252,8 +6252,8 @@ button, input, select, textarea { font-family: inherit; }
 
 .pirate-ocean-waves-wrap {
   width: 100%;
-  height: 38px;
-  margin-top: -30px;
+  height: 24px;
+  margin-top: -20px;
   position: relative;
   z-index: 3;
   overflow: hidden;
@@ -6278,32 +6278,32 @@ button, input, select, textarea { font-family: inherit; }
 
 @keyframes pirateWaveBack {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-25px); }
+  100% { transform: translateX(-20px); }
 }
 
 @keyframes pirateWaveFront {
   0% { transform: translateX(0); }
-  100% { transform: translateX(25px); }
+  100% { transform: translateX(20px); }
 }
 
 /* Puerto Banner */
 .pirate-port-banner {
   background: linear-gradient(135deg, #78350F 0%, #5C2C16 100%);
   color: #FFFDF5;
-  border: 2px solid #D97706;
-  border-radius: 16px;
-  padding: 12px 20px;
+  border: 1.5px solid #D97706;
+  border-radius: 12px;
+  padding: 8px 14px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 6px 18px rgba(92, 44, 22, 0.35);
-  max-width: 680px;
+  gap: 12px;
+  box-shadow: 0 4px 14px rgba(92, 44, 22, 0.28);
+  max-width: 520px;
   width: 100%;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .ppb-anchor, .ppb-compass {
-  font-size: 1.6rem;
+  font-size: 1.15rem;
   color: #FEF08A;
   flex-shrink: 0;
 }
@@ -6313,27 +6313,27 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .ppb-title {
-  margin: 0 0 3px 0;
-  font-size: 0.96rem;
+  margin: 0 0 2px 0;
+  font-size: 0.82rem;
   font-weight: 900;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: #FEF08A;
   text-transform: uppercase;
 }
 
 .ppb-sub {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   color: #FDE68A;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 /* ── Sendero Curvado (Curved Trail Connectors) ── */
 .pirate-trail-connector {
   position: relative;
   width: 100%;
-  height: 90px;
-  margin: -12px 0;
+  height: 48px;
+  margin: -6px 0;
   z-index: 2;
   pointer-events: none;
 }
@@ -6346,16 +6346,16 @@ button, input, select, textarea { font-family: inherit; }
 
 .pirate-trail-curve-svg .ptc-glow {
   fill: none;
-  stroke: rgba(253, 224, 71, 0.55);
-  stroke-width: 8;
+  stroke: rgba(253, 224, 71, 0.5);
+  stroke-width: 6;
   stroke-linecap: round;
 }
 
 .pirate-trail-curve-svg .ptc-dash {
   fill: none;
   stroke: #78350F;
-  stroke-width: 3.8;
-  stroke-dasharray: 10 8;
+  stroke-width: 2.8;
+  stroke-dasharray: 8 6;
   stroke-linecap: round;
   animation: pirateDashFlow 20s linear infinite;
 }
@@ -6369,17 +6369,17 @@ button, input, select, textarea { font-family: inherit; }
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #FFFDF5;
-  border: 2px solid #78350F;
+  border: 1.5px solid #78350F;
   color: #B45309;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
-  box-shadow: 0 2px 6px rgba(120, 53, 15, 0.25);
+  font-size: 0.58rem;
+  box-shadow: 0 2px 4px rgba(120, 53, 15, 0.2);
   pointer-events: auto;
 }
 
@@ -6392,7 +6392,7 @@ button, input, select, textarea { font-family: inherit; }
   position: relative;
   z-index: 3;
   width: 100%;
-  margin: 12px 0;
+  margin: 6px 0;
   display: flex;
   flex-direction: column;
 }
@@ -6402,12 +6402,12 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pirate-island-station.island-left .pirate-island-landmark {
-  margin-left: 5%;
+  margin-left: 6%;
   margin-right: auto;
 }
 
 .pirate-island-station.island-left .pirate-scroll-drawer {
-  margin-left: 5%;
+  margin-left: 6%;
   margin-right: auto;
 }
 
@@ -6416,12 +6416,12 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pirate-island-station.island-right .pirate-island-landmark {
-  margin-right: 5%;
+  margin-right: 6%;
   margin-left: auto;
 }
 
 .pirate-island-station.island-right .pirate-scroll-drawer {
-  margin-right: 5%;
+  margin-right: 6%;
   margin-left: auto;
 }
 
@@ -6429,29 +6429,29 @@ button, input, select, textarea { font-family: inherit; }
 .pirate-island-landmark {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 14px 20px;
-  border-radius: 22px;
-  background: rgba(255, 253, 245, 0.95);
-  border: 2.5px solid #B45309;
-  box-shadow: 0 8px 24px rgba(120, 53, 15, 0.16);
+  gap: 13px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: rgba(255, 253, 245, 0.96);
+  border: 2px solid #B45309;
+  box-shadow: 0 5px 16px rgba(120, 53, 15, 0.14);
   cursor: pointer;
-  transition: all 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
-  max-width: 530px;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 420px;
   width: 100%;
   box-sizing: border-box;
   user-select: none;
 }
 
 .pirate-island-landmark:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 14px 30px rgba(120, 53, 15, 0.26);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 22px rgba(120, 53, 15, 0.22);
   border-color: #D97706;
 }
 
 .pirate-island-landmark:focus-visible {
-  outline: 3px solid #D97706;
-  outline-offset: 3px;
+  outline: 2.5px solid #D97706;
+  outline-offset: 2px;
 }
 
 /* Medallón de la Isla con Imagen */
@@ -6461,12 +6461,12 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pirate-medallion-ring {
-  width: 105px;
-  height: 105px;
+  width: 74px;
+  height: 74px;
   border-radius: 50%;
   position: relative;
-  border: 4.5px double #D97706;
-  box-shadow: 0 6px 18px rgba(120, 53, 15, 0.3);
+  border: 3.5px double #D97706;
+  box-shadow: 0 4px 12px rgba(120, 53, 15, 0.25);
   background: #78350F;
   display: flex;
   align-items: center;
@@ -6475,23 +6475,23 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pirate-island-landmark:hover .pirate-medallion-ring {
-  transform: rotate(5deg) scale(1.05);
+  transform: rotate(5deg) scale(1.04);
 }
 
 .pirate-medallion-ring.activo {
   border-color: #F59E0B;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.55), 0 6px 18px rgba(120, 53, 15, 0.3);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.5), 0 4px 12px rgba(120, 53, 15, 0.25);
   animation: pirateActiveGlow 2.5s infinite ease-in-out;
 }
 
 @keyframes pirateActiveGlow {
-  0%, 100% { box-shadow: 0 0 14px rgba(245, 158, 11, 0.45); }
-  50% { box-shadow: 0 0 26px rgba(245, 158, 11, 0.85); }
+  0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 18px rgba(245, 158, 11, 0.75); }
 }
 
 .pirate-medallion-ring.completado {
   border-color: #10B981;
-  box-shadow: 0 0 18px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
 }
 
 /* Puntos cardinales alrededor del medallón */
@@ -6503,25 +6503,25 @@ button, input, select, textarea { font-family: inherit; }
 
 .pct-tick {
   position: absolute;
-  font-size: 0.55rem;
+  font-size: 0.46rem;
   font-weight: 900;
   color: #FEF08A;
   line-height: 1;
 }
 
-.pct-n { top: 2px; left: 50%; transform: translateX(-50%); }
-.pct-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
-.pct-e { right: 2px; top: 50%; transform: translateY(-50%); }
-.pct-o { left: 2px; top: 50%; transform: translateY(-50%); }
+.pct-n { top: 1.5px; left: 50%; transform: translateX(-50%); }
+.pct-s { bottom: 1.5px; left: 50%; transform: translateX(-50%); }
+.pct-e { right: 1.5px; top: 50%; transform: translateY(-50%); }
+.pct-o { left: 1.5px; top: 50%; transform: translateY(-50%); }
 
 .pirate-medallion-inner {
-  width: 88px;
-  height: 88px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   overflow: hidden;
   position: relative;
   background: #FFF;
-  border: 2px solid #FEF08A;
+  border: 1.5px solid #FEF08A;
 }
 
 .pirate-island-cover-img {
@@ -6532,7 +6532,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pirate-island-landmark:hover .pirate-island-cover-img {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .pirate-level-coin {
@@ -6542,47 +6542,47 @@ button, input, select, textarea { font-family: inherit; }
   transform: translateX(-50%);
   background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
   color: #FFFFFF;
-  font-size: 0.64rem;
+  font-size: 0.54rem;
   font-weight: 900;
-  padding: 1px 7px;
+  padding: 1px 5px;
   border-radius: 999px;
   border: 1px solid #FEF08A;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
   white-space: nowrap;
 }
 
 /* Sellos de estado en el medallón */
 .pirate-seal-badge {
   position: absolute;
-  bottom: -6px;
-  right: -6px;
-  font-size: 0.66rem;
+  bottom: -4px;
+  right: -4px;
+  font-size: 0.58rem;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 2px 6px;
   border-radius: 999px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.22);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   white-space: nowrap;
 }
 
 .pirate-seal-badge.completado {
   background: linear-gradient(135deg, #10B981, #047857);
   color: #FFFFFF;
-  border: 1.5px solid #A7F3D0;
+  border: 1px solid #A7F3D0;
 }
 
 .pirate-seal-badge.activo {
   background: linear-gradient(135deg, #F59E0B, #D97706);
   color: #FFFFFF;
-  border: 1.5px solid #FEF08A;
+  border: 1px solid #FEF08A;
 }
 
 .pirate-seal-badge.desafio {
   background: #475569;
   color: #F8FAFC;
-  border: 1.5px solid #94A3B8;
+  border: 1px solid #94A3B8;
 }
 
 /* Bloque de Información del Landmark */
@@ -6590,33 +6590,33 @@ button, input, select, textarea { font-family: inherit; }
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .pirate-tag-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .pirate-type-badge {
-  font-size: 0.7rem;
+  font-size: 0.64rem;
   font-weight: 800;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 999px;
   border-width: 1px;
   border-style: solid;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .pirate-status-pill {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 6px;
+  padding: 1px 5px;
+  border-radius: 5px;
 }
 
 .pirate-status-pill.completado { background: #DCFCE7; color: #15803D; }
@@ -6625,24 +6625,25 @@ button, input, select, textarea { font-family: inherit; }
 
 .pirate-island-title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 0.90rem;
   font-weight: 900;
   color: #451A03;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .pirate-landmark-touch-cta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.78rem;
+  gap: 4px;
+  font-size: 0.70rem;
   font-weight: 800;
   color: #B45309;
-  margin-top: 3px;
+  margin-top: 1px;
 }
 
 .ptp-arrow {
   transition: transform 0.3s ease;
+  font-size: 0.65rem;
 }
 
 .pirate-island-station.is-expanded .ptp-arrow {
@@ -6654,24 +6655,24 @@ button, input, select, textarea { font-family: inherit; }
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease, margin-top 0.3s ease;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin-top 0.25s ease;
   width: 100%;
-  max-width: 530px;
+  max-width: 420px;
   margin-top: 0;
   box-sizing: border-box;
 }
 
 .pirate-scroll-drawer.is-open {
-  max-height: 950px;
+  max-height: 900px;
   opacity: 1;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .pirate-scroll-wood-rod {
-  height: 10px;
+  height: 8px;
   background: linear-gradient(90deg, #3B1D0E 0%, #8B4513 50%, #3B1D0E 100%);
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
   position: relative;
 }
 
@@ -6679,107 +6680,107 @@ button, input, select, textarea { font-family: inherit; }
   content: '';
   position: absolute;
   top: -2px;
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
   background: #D97706;
-  border: 1.5px solid #FEF08A;
+  border: 1px solid #FEF08A;
 }
-.pirate-scroll-wood-rod::before { left: -4px; }
-.pirate-scroll-wood-rod::after { right: -4px; }
+.pirate-scroll-wood-rod::before { left: -3px; }
+.pirate-scroll-wood-rod::after { right: -3px; }
 
 .pirate-scroll-parchment {
   background: #FFFDF7;
-  border-left: 3.5px solid #8B4513;
-  border-right: 3.5px solid #8B4513;
-  padding: 18px 22px;
-  box-shadow: inset 0 0 25px rgba(180, 83, 9, 0.08), 0 8px 22px rgba(120, 53, 15, 0.14);
+  border-left: 2.5px solid #8B4513;
+  border-right: 2.5px solid #8B4513;
+  padding: 12px 16px;
+  box-shadow: inset 0 0 20px rgba(180, 83, 9, 0.06), 0 5px 16px rgba(120, 53, 15, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .pirate-scroll-top-seal {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 800;
   color: #78350F;
-  border-bottom: 1px dashed rgba(180, 83, 9, 0.35);
-  padding-bottom: 6px;
+  border-bottom: 1px dashed rgba(180, 83, 9, 0.3);
+  padding-bottom: 4px;
 }
 
 .pirate-scroll-title {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 0.98rem;
   font-weight: 900;
   color: #78350F;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 .pirate-scroll-narrative {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   color: #451A03;
-  line-height: 1.5;
+  line-height: 1.4;
   background: rgba(254, 243, 199, 0.35);
-  padding: 10px 14px;
-  border-radius: 10px;
-  border-left: 3px solid #D97706;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border-left: 2.5px solid #D97706;
 }
 
 .pirate-quote-icon {
   color: #B45309;
-  margin-right: 4px;
+  margin-right: 3px;
 }
 
 .pirate-scroll-box {
   background: #FFFFFF;
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: 10px;
+  padding: 8px 11px;
   border: 1px solid #E2E8F0;
-  font-size: 0.84rem;
+  font-size: 0.75rem;
 }
 
 .pirate-scroll-box.objective {
-  border-left: 3px solid #0284C7;
+  border-left: 2.5px solid #0284C7;
   background: #F0F9FF;
 }
 
 .pirate-scroll-box.benefits {
-  border-left: 3px solid #7C3AED;
+  border-left: 2.5px solid #7C3AED;
   background: #FAF5FF;
 }
 
 .psb-header {
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   color: #1E293B;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .psb-body {
   margin: 0;
   color: #334155;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 /* Botones de acción del pergamino */
 .pirate-scroll-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .pirate-btn-action {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.84rem;
+  gap: 5px;
+  font-size: 0.76rem;
   font-weight: 800;
-  padding: 8px 14px;
-  border-radius: 10px;
+  padding: 6px 11px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
@@ -6789,13 +6790,13 @@ button, input, select, textarea { font-family: inherit; }
 .pirate-btn-main {
   background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
   color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.35);
+  box-shadow: 0 3px 8px rgba(180, 83, 9, 0.3);
   border: 1px solid #FEF08A;
 }
 
 .pirate-btn-main:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(180, 83, 9, 0.5);
+  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.45);
 }
 
 .pirate-btn-sec {
@@ -6822,13 +6823,13 @@ button, input, select, textarea { font-family: inherit; }
 .pirate-btn-tool {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.84rem;
+  gap: 5px;
+  font-size: 0.76rem;
   font-weight: 800;
-  padding: 8px 14px;
-  border-radius: 10px;
+  padding: 6px 11px;
+  border-radius: 8px;
   text-decoration: none;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   transition: all 0.2s ease;
 }
 
@@ -6855,8 +6856,8 @@ button, input, select, textarea { font-family: inherit; }
   position: relative;
   z-index: 3;
   width: 100%;
-  max-width: 650px;
-  margin: 20px auto 10px auto;
+  max-width: 460px;
+  margin: 14px auto 6px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6867,40 +6868,39 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  margin-bottom: 12px;
+  gap: 2px;
+  margin-bottom: 8px;
 }
 
 .pirate-x-symbol {
-  font-size: 3.5rem;
+  font-size: 2.2rem;
   line-height: 1;
-  filter: drop-shadow(0 4px 10px rgba(220, 38, 38, 0.4));
+  filter: drop-shadow(0 3px 6px rgba(220, 38, 38, 0.35));
   animation: pirateXThrob 2s ease-in-out infinite alternate;
 }
 
 @keyframes pirateXThrob {
   0% { transform: scale(1); }
-  100% { transform: scale(1.12); }
+  100% { transform: scale(1.1); }
 }
 
 .pirate-x-title {
-  font-size: 1.05rem;
+  font-size: 0.82rem;
   font-weight: 900;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: #DC2626;
   text-transform: uppercase;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .pirate-chest-stage {
   position: relative;
   cursor: pointer;
-  padding: 10px;
+  padding: 6px;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .pirate-chest-stage:hover {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .pirate-chest-glow {
@@ -6908,49 +6908,49 @@ button, input, select, textarea { font-family: inherit; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 160px;
-  height: 160px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.55) 0%, transparent 70%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.5) 0%, transparent 70%);
   border-radius: 50%;
   animation: pirateGlowPulse 2.4s infinite ease-in-out;
   pointer-events: none;
 }
 
 @keyframes pirateGlowPulse {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-  50% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.65; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.95; }
 }
 
 .pirate-chest-visual {
   position: relative;
-  width: 120px;
-  height: 95px;
+  width: 86px;
+  height: 68px;
   margin: 0 auto;
 }
 
 .pc-chest-lid {
-  width: 110px;
-  height: 42px;
+  width: 80px;
+  height: 30px;
   margin: 0 auto;
   background: linear-gradient(180deg, #B45309 0%, #78350F 100%);
-  border-top-left-radius: 55px 35px;
-  border-top-right-radius: 55px 35px;
-  border: 3.5px solid #FDE047;
+  border-top-left-radius: 40px 24px;
+  border-top-right-radius: 40px 24px;
+  border: 2.5px solid #FDE047;
   border-bottom: none;
-  box-shadow: inset 0 6px 12px rgba(254, 240, 138, 0.4), 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: inset 0 4px 8px rgba(254, 240, 138, 0.4), 0 3px 6px rgba(0,0,0,0.25);
   position: relative;
   z-index: 2;
 }
 
 .pc-chest-base {
-  width: 110px;
-  height: 52px;
-  margin: -4px auto 0 auto;
+  width: 80px;
+  height: 38px;
+  margin: -3px auto 0 auto;
   background: linear-gradient(180deg, #78350F 0%, #451A03 100%);
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  border: 3.5px solid #FDE047;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 8px 18px rgba(0,0,0,0.3);
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+  border: 2.5px solid #FDE047;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.5), 0 5px 12px rgba(0,0,0,0.25);
   position: relative;
   z-index: 2;
   display: flex;
@@ -6960,69 +6960,69 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pc-chest-lock {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
   background: linear-gradient(135deg, #FDE047, #D97706);
-  border: 2px solid #FEF08A;
+  border: 1.5px solid #FEF08A;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.68rem;
+  font-size: 0.55rem;
   color: #78350F;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
 .pc-chest-coins {
-  font-size: 1.15rem;
-  margin-top: 2px;
+  font-size: 0.85rem;
+  margin-top: 1px;
   display: flex;
-  gap: 4px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  gap: 3px;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
 }
 
 .pirate-finish-card-body {
-  background: rgba(255, 253, 245, 0.95);
-  border: 2.5px solid #D97706;
-  border-radius: 20px;
-  padding: 18px 24px;
-  margin-top: 14px;
-  box-shadow: 0 10px 28px rgba(120, 53, 15, 0.2);
+  background: rgba(255, 253, 245, 0.96);
+  border: 2px solid #D97706;
+  border-radius: 16px;
+  padding: 12px 18px;
+  margin-top: 10px;
+  box-shadow: 0 6px 20px rgba(120, 53, 15, 0.16);
   width: 100%;
   box-sizing: border-box;
 }
 
 .pirate-finish-title {
-  margin: 0 0 6px 0;
-  font-size: 1.25rem;
+  margin: 0 0 4px 0;
+  font-size: 1.05rem;
   font-weight: 900;
   color: #78350F;
 }
 
 .pirate-finish-desc {
-  margin: 0 0 14px 0;
-  font-size: 0.88rem;
+  margin: 0 0 10px 0;
+  font-size: 0.78rem;
   color: #451A03;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .pirate-finish-stats-row {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .pirate-stat-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 10px;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 8px;
   background: #FFFDF5;
-  border: 1.5px solid #FDE68A;
-  font-size: 0.82rem;
+  border: 1px solid #FDE68A;
+  font-size: 0.74rem;
   color: #78350F;
 }
 
@@ -7034,29 +7034,29 @@ button, input, select, textarea { font-family: inherit; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  padding: 12px 20px;
-  border-radius: 14px;
+  padding: 9px 15px;
+  border-radius: 11px;
   background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
   color: #FFFFFF;
   font-weight: 900;
-  font-size: 1rem;
-  border: 1.5px solid #FEF08A;
+  font-size: 0.88rem;
+  border: 1px solid #FEF08A;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.45);
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .pirate-celebrate-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(217, 119, 6, 0.6);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.55);
 }
 
 /* ── Responsive Mobile Media Queries ── */
 @media (max-width: 768px) {
   .pirate-map-canvas {
-    padding: 20px 12px 35px 12px;
+    padding: 14px 10px 24px 10px;
   }
   .pirate-island-station.island-left .pirate-island-landmark,
   .pirate-island-station.island-right .pirate-island-landmark {
@@ -7071,17 +7071,18 @@ button, input, select, textarea { font-family: inherit; }
     max-width: 100%;
   }
   .pirate-medallion-ring {
-    width: 90px;
-    height: 90px;
+    width: 66px;
+    height: 66px;
   }
   .pirate-medallion-inner {
-    width: 74px;
-    height: 74px;
+    width: 52px;
+    height: 52px;
   }
   .pirate-port-banner {
     flex-direction: column;
     text-align: center;
-    gap: 8px;
+    gap: 6px;
+    padding: 6px 10px;
   }
   .ppb-anchor, .ppb-compass {
     display: none;

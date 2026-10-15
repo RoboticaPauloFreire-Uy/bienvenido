@@ -1105,7 +1105,7 @@
     if (!isGrid) {
       // ── MAPA DEL TESORO PIRATA CON BARCO Y SENDERO CURVADO ──
       var pirateShipSvg =
-        '<svg class="pirate-ship-svg" viewBox="0 0 260 210" width="230" height="185" xmlns="http://www.w3.org/2000/svg" aria-label="Galeón Paulo Freire">' +
+        '<svg class="pirate-ship-svg" viewBox="0 0 260 210" width="150" height="120" xmlns="http://www.w3.org/2000/svg" aria-label="Galeón Paulo Freire">' +
           '<defs>' +
             '<linearGradient id="shipWoodGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
               '<stop offset="0%" stop-color="#8B4513"/>' +
