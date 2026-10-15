@@ -87,6 +87,8 @@
   let isUploadingFile            = false;
   let currentCarouselIndex       = 0;
   let carouselAutoPlayTimer      = null;
+  let captainTablePage           = 1;
+  const CAPTAIN_TABLE_PAGE_SIZE  = 6;
   let isRoadmapGridMode          = false;
 
   function formatFileSize(bytes) {
@@ -2275,6 +2277,7 @@
         if (window.sounds) window.sounds.playClick();
         activeFolderKey = btn.dataset.folder;
         currentCarouselIndex = 0;
+        captainTablePage = 1;
         renderGDriveDashboard(containerId);
       };
     });
@@ -2306,6 +2309,20 @@
         if (viewBtn) viewBtn.onclick = openBig;
         if (thumbFrame) thumbFrame.onclick = openBig;
       });
+
+      // Manejador de paginación náutica pirata (6 pergaminos por pliego)
+      container.querySelectorAll('.captain-table-pagination button[data-page]').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          if (btn.disabled) return;
+          var targetPage = parseInt(btn.dataset.page, 10);
+          if (isNaN(targetPage) || targetPage < 1) return;
+          if (window.sounds) window.sounds.playClick();
+          captainTablePage = targetPage;
+          renderGDriveDashboard(containerId);
+        };
+      });
+
       initDropzone(container, student, 'dibujo', '.bmp,.png,.jpg,.jpeg', containerId, false);
     }
 
@@ -4197,16 +4214,25 @@
   // ──────────────────────────────────────────────────
   // LA MESA DEL CAPITÁN — DIBUJOS Y PERGAMINOS (PIRATA)
   // ──────────────────────────────────────────────────
-  function renderCaptainTableHtml(displayItems) {
-    if (!displayItems || displayItems.length === 0) {
+  function renderCaptainTableHtml(allItems) {
+    if (!allItems || allItems.length === 0) {
       return emptyHtml('🎨', 'Cofre de Pergaminos vacío', '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!');
     }
 
-    var cardsHtml = displayItems.map(function(item, idx){
+    var totalItems = allItems.length;
+    var totalPages = Math.ceil(totalItems / CAPTAIN_TABLE_PAGE_SIZE) || 1;
+    if (captainTablePage > totalPages) captainTablePage = totalPages;
+    if (captainTablePage < 1) captainTablePage = 1;
+
+    var startIdx = (captainTablePage - 1) * CAPTAIN_TABLE_PAGE_SIZE;
+    var pageItems = allItems.slice(startIdx, startIdx + CAPTAIN_TABLE_PAGE_SIZE);
+
+    var cardsHtml = pageItems.map(function(item, idx){
+      var realIdx = startIdx + idx;
       var imgSrc = getDrawingImageUrl(item);
-      var title  = item.title || item.name || ('Pergamino #' + (idx + 1));
+      var title  = item.title || item.name || ('Pergamino #' + (realIdx + 1));
       var dlUrl  = getDownloadUrl(item);
-      var rotClass = 'csc-rot-' + (idx % 6);
+      var rotClass = 'csc-rot-' + (realIdx % 6);
 
       return '<div class="captain-scroll-card ' + rotClass + '" data-img-url="' + imgSrc + '" data-img-title="' + title + '" data-dl-url="' + (dlUrl || '') + '">' +
         '<div class="csc-wax-seal" title="Sellado con cera pirata">' +
@@ -4219,7 +4245,7 @@
             '<div class="csc-vo-icon"><i class="fas fa-search-plus"></i></div>' +
             '<span>Examinar</span>' +
           '</div>' +
-          '<span class="csc-ribbon-badge"><i class="fas fa-scroll"></i> Pergamino #' + (idx + 1) + '</span>' +
+          '<span class="csc-ribbon-badge"><i class="fas fa-scroll"></i> Pergamino #' + (realIdx + 1) + '</span>' +
         '</div>' +
         '<div class="csc-body">' +
           '<h4 class="csc-title" title="' + title + '">' + title + '</h4>' +
@@ -4240,6 +4266,37 @@
       '</div>';
     }).join('');
 
+    // Paginación náutica pirata
+    var paginationHtml = '';
+    if (totalPages > 1) {
+      var pagesBtns = '';
+      for (var p = 1; p <= totalPages; p++) {
+        var isCurrent = (p === captainTablePage);
+        pagesBtns += '<button type="button" class="ctp-page-btn ' + (isCurrent ? 'active' : '') + '" data-page="' + p + '" title="Ir al pliego ' + p + '">' +
+          '<span>' + p + '</span>' +
+        '</button>';
+      }
+
+      paginationHtml =
+        '<div class="captain-table-pagination">' +
+          '<div class="ctp-nav-left">' +
+            '<button type="button" class="ctp-nav-btn ctp-prev" data-page="' + (captainTablePage - 1) + '" ' + (captainTablePage <= 1 ? 'disabled' : '') + ' title="Ver pliego anterior">' +
+              '<i class="fas fa-chevron-left"></i> <span>Anterior</span>' +
+            '</button>' +
+          '</div>' +
+          '<div class="ctp-pages-list">' +
+            pagesBtns +
+          '</div>' +
+          '<div class="ctp-nav-right">' +
+            '<button type="button" class="ctp-nav-btn ctp-next" data-page="' + (captainTablePage + 1) + '" ' + (captainTablePage >= totalPages ? 'disabled' : '') + ' title="Ver siguiente pliego">' +
+              '<span>Siguiente</span> <i class="fas fa-chevron-right"></i>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    var showingEnd = Math.min(startIdx + CAPTAIN_TABLE_PAGE_SIZE, totalItems);
+
     return '<div class="captain-table-board">' +
       '<div class="ct-brass-corner ctb-tl"></div>' +
       '<div class="ct-brass-corner ctb-tr"></div>' +
@@ -4250,16 +4307,17 @@
           '<div class="ct-th-icon">🗺️</div>' +
           '<div class="ct-th-info">' +
             '<h3>Mesa de Cartas y Pergaminos del Capitán</h3>' +
-            '<p>Tus láminas, dibujos e ilustraciones náuticas desplegadas sobre la mesa de navegación.</p>' +
+            '<p>Tus láminas e ilustraciones náuticas desplegadas (mostrando ' + (startIdx + 1) + ' a ' + showingEnd + ' de ' + totalItems + ').</p>' +
           '</div>' +
         '</div>' +
         '<div class="ct-th-badge">' +
-          '<i class="fas fa-scroll"></i> ' + displayItems.length + ' Pergamino(s) en la Mesa' +
+          '<i class="fas fa-scroll"></i> ' + totalItems + ' Pergamino(s) · Pliego ' + captainTablePage + '/' + totalPages +
         '</div>' +
       '</div>' +
       '<div class="captain-table-grid">' +
         cardsHtml +
       '</div>' +
+      paginationHtml +
     '</div>';
   }
 
