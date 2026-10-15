@@ -2792,7 +2792,8 @@
         return m.level === levelNum || (isCodeorg && m.type === 'codeorg');
       });
 
-      return '<div class="grade-game-card" data-game-level="' + levelNum + '">' +
+      return '<div class="grade-game-card ptb-card" data-game-level="' + levelNum + '">' +
+        '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
         '<div class="ggc-thumb-wrap" onclick="window.open(\'' + game.externalUrl + '\', \'_blank\')" title="Hacé clic para jugar a ' + game.title + '">' +
           '<img src="' + thumb + '" alt="' + game.title + '" class="ggc-thumb-img" onerror="this.src=\'img/angrybirds.png\'">' +
           '<div class="ggc-play-overlay">' +
@@ -2842,15 +2843,77 @@
       '</div>';
     }).join('');
 
-    return '<div class="gdb-actividades-container">' +
-      '<div class="gac-section-block">' +
-        '<div class="gac-block-header" style="border-bottom:2px solid #F1F5F9;padding-bottom:14px;margin-bottom:18px;">' +
-          '<div>' +
-            '<h4 style="font-size:1.3rem;font-weight:900;color:#1E293B;margin:0 0 4px;"><span class="gac-icon">⚔️</span> Desafíos Piratas por Niveles — Navío ' + student.gradeName + '</h4>' +
-            '<p style="font-size:0.88rem;color:#64748B;margin:0;">Desafíos y videojuegos interactivos para ejercitar algoritmos, acumular doblones de oro y dominar el timón del pensamiento computacional.</p>' +
+    var knifeSvg =
+      '<div class="ptb-knife-anchor">' +
+        '<svg class="ptb-knife-svg" viewBox="0 0 90 200" width="75" height="165" xmlns="http://www.w3.org/2000/svg">' +
+          '<defs>' +
+            '<linearGradient id="ptbBladeGrad" x1="0%" y1="0%" x2="100%" y2="0%">' +
+              '<stop offset="0%" stop-color="#E2E8F0"/>' +
+              '<stop offset="30%" stop-color="#FFFFFF"/>' +
+              '<stop offset="50%" stop-color="#94A3B8"/>' +
+              '<stop offset="70%" stop-color="#CBD5E1"/>' +
+              '<stop offset="100%" stop-color="#475569"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="ptbGoldHilt" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#FDE68A"/>' +
+              '<stop offset="40%" stop-color="#D97706"/>' +
+              '<stop offset="80%" stop-color="#92400E"/>' +
+              '<stop offset="100%" stop-color="#78350F"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="ptbLeatherGrip" x1="0%" y1="0%" x2="100%" y2="0%">' +
+              '<stop offset="0%" stop-color="#2D1810"/>' +
+              '<stop offset="35%" stop-color="#5C3317"/>' +
+              '<stop offset="70%" stop-color="#3B1E08"/>' +
+              '<stop offset="100%" stop-color="#1A0D07"/>' +
+            '</linearGradient>' +
+            '<filter id="ptbKnifeShadow" x="-30%" y="-20%" width="170%" height="170%">' +
+              '<feDropShadow dx="6" dy="10" stdDeviation="5" flood-color="rgba(0,0,0,0.65)"/>' +
+            '</filter>' +
+          '</defs>' +
+          '<g filter="url(#ptbKnifeShadow)" transform="rotate(-12 45 110)">' +
+            '<!-- POMMEL DE ORO Y CALAVERA -->' +
+            '<circle cx="45" cy="18" r="12" fill="url(#ptbGoldHilt)" stroke="#451A03" stroke-width="1.5"/>' +
+            '<circle cx="45" cy="18" r="7.5" fill="#F59E0B" opacity="0.85"/>' +
+            '<circle cx="42" cy="16" r="1.5" fill="#451A03"/>' +
+            '<circle cx="48" cy="16" r="1.5" fill="#451A03"/>' +
+            '<path d="M42 22 L48 22" stroke="#451A03" stroke-width="1.2"/>' +
+            '<!-- MANGO ENCUERADO CON ALAMBRE DE ORO -->' +
+            '<rect x="39" y="30" width="12" height="52" rx="3" fill="url(#ptbLeatherGrip)" stroke="#1A0D07" stroke-width="1.2"/>' +
+            '<line x1="39" y1="38" x2="51" y2="43" stroke="#F59E0B" stroke-width="2"/>' +
+            '<line x1="39" y1="48" x2="51" y2="53" stroke="#F59E0B" stroke-width="2"/>' +
+            '<line x1="39" y1="58" x2="51" y2="63" stroke="#F59E0B" stroke-width="2"/>' +
+            '<line x1="39" y1="68" x2="51" y2="73" stroke="#F59E0B" stroke-width="2"/>' +
+            '<!-- GAVILAN / GUARDA CURVA PIRATA -->' +
+            '<path d="M16 84 C28 88, 38 82, 45 82 C52 82, 62 88, 74 84 C78 82, 76 92, 66 91 C56 90, 48 88, 45 88 C42 88, 34 90, 24 91 C14 92, 12 82, 16 84 Z" fill="url(#ptbGoldHilt)" stroke="#451A03" stroke-width="1.4"/>' +
+            '<circle cx="45" cy="85" r="3.5" fill="#FEF3C7" stroke="#78350F" stroke-width="1"/>' +
+            '<!-- HOJA DE ACERO CLAVADA -->' +
+            '<path d="M37 90 L39 152 L45 175 L51 152 L53 90 Z" fill="url(#ptbBladeGrad)" stroke="#475569" stroke-width="1.2"/>' +
+            '<line x1="45" y1="90" x2="45" y2="168" stroke="#334155" stroke-width="1.4"/>' +
+            '<line x1="43.5" y1="92" x2="43.5" y2="164" stroke="#FFFFFF" stroke-width="1" opacity="0.85"/>' +
+            '<polygon points="40,154 45,175 50,154" fill="#0F172A" opacity="0.7"/>' +
+          '</g>' +
+        '</svg>' +
+        '<div class="ptb-knife-slash"></div>' +
+      '</div>';
+
+    return '<div class="gdb-actividades-container ptb-main-wrap">' +
+      '<div class="pirate-tavern-board">' +
+        '<div class="ptb-corner-bolt top-left"></div>' +
+        '<div class="ptb-corner-bolt top-right"></div>' +
+        '<div class="ptb-corner-bolt bottom-left"></div>' +
+        '<div class="ptb-corner-bolt bottom-right"></div>' +
+        '<div class="ptb-parchment-wrap">' +
+          knifeSvg +
+          '<div class="ptb-parchment-sheet">' +
+            '<div class="ptb-wax-seal" title="Sello Oficial del Navío Paulo Freire"><span>☠️</span></div>' +
+            '<div class="ptb-sheet-header">' +
+              '<span class="ptb-sheet-tag"><i class="fas fa-scroll"></i> TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS</span>' +
+              '<h3 class="ptb-sheet-title">⚔️ Desafíos Piratas por Niveles — Navío ' + student.gradeName + '</h3>' +
+              '<p class="ptb-sheet-sub">¡Atención tripulación! Seleccionen un desafío para zarpar, ejercitar algoritmos en alta mar y acumular doblones de oro para la bitácora.</p>' +
+            '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="grade-games-grid">' +
+        '<div class="grade-games-grid ptb-games-grid">' +
           cardsHtml +
         '</div>' +
       '</div>' +

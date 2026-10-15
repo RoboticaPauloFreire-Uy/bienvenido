@@ -13136,3 +13136,207 @@ body.student-logged-in #student-drive-dashboard-container {
   border-color: #B45309 !important;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   TABLERO PIRATA DE LA TABERNA CON CUCHILLO CLAVADO EN PERGAMINO
+   ══════════════════════════════════════════════════════════════ */
+.ptb-main-wrap {
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.pirate-tavern-board {
+  position: relative;
+  background: 
+    linear-gradient(180deg, rgba(20, 11, 6, 0.82) 0%, rgba(38, 20, 10, 0.88) 100%),
+    repeating-linear-gradient(
+      0deg,
+      #351B0D 0px,
+      #351B0D 58px,
+      #200F06 59px,
+      #130903 62px,
+      #422211 63px
+    );
+  border: 7px ridge #78350F;
+  border-radius: 26px;
+  padding: 34px 26px 36px;
+  box-shadow: 
+    0 18px 45px rgba(0, 0, 0, 0.55),
+    inset 0 0 65px rgba(0, 0, 0, 0.75),
+    inset 0 2px 4px rgba(251, 191, 36, 0.25);
+  overflow: visible;
+}
+
+/* Pernos / Remaches de hierro en las 4 esquinas del tablero */
+.ptb-corner-bolt {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #CBD5E1, #475569 55%, #0F172A);
+  border: 1.5px solid #0B1120;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  z-index: 4;
+}
+
+.ptb-corner-bolt.top-left { top: 12px; left: 12px; }
+.ptb-corner-bolt.top-right { top: 12px; right: 12px; }
+.ptb-corner-bolt.bottom-left { bottom: 12px; left: 12px; }
+.ptb-corner-bolt.bottom-right { bottom: 12px; right: 12px; }
+
+/* Contenedor del Pergamino y Cuchillo */
+.ptb-parchment-wrap {
+  position: relative;
+  max-width: 820px;
+  margin: 0 auto 34px auto;
+  padding-top: 55px; /* Espacio para el mango del cuchillo */
+}
+
+/* Cuchillo Pirata Clavado */
+.ptb-knife-anchor {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ptb-knife-svg {
+  filter: drop-shadow(4px 10px 12px rgba(0, 0, 0, 0.7));
+  animation: knifeEntrance 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes knifeEntrance {
+  0% { transform: translateY(-50px) scale(1.15); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Corte / Hendidura en el papel donde penetra la hoja */
+.ptb-knife-slash {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 7px;
+  background: #180B04;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.85), inset 0 2px 2px rgba(0, 0, 0, 0.95);
+  border-bottom: 1px solid #78350F;
+}
+
+/* Papel Pergamino del Edicto */
+.ptb-parchment-sheet {
+  background: linear-gradient(135deg, #FFFDF0 0%, #FAF0CC 45%, #F4E2AB 100%);
+  border: 2px solid #C49A5A;
+  border-radius: 14px;
+  padding: 26px 32px 22px;
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.45),
+    inset 0 0 50px rgba(180, 120, 50, 0.16);
+  position: relative;
+  transform: rotate(-0.5deg);
+  text-align: center;
+}
+
+/* Sello de Lacre Pirata */
+.ptb-wax-seal {
+  position: absolute;
+  right: 18px;
+  bottom: -14px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #DC2626, #991B1B 65%, #450A0A);
+  border: 2px solid #7F1D1D;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  transform: rotate(12deg);
+  z-index: 5;
+}
+
+.ptb-sheet-tag {
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #92400E;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.ptb-sheet-title {
+  font-size: 1.45rem;
+  font-weight: 950;
+  color: #3B1C0B;
+  margin: 0 0 6px 0;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.01em;
+}
+
+.ptb-sheet-sub {
+  font-size: 0.92rem;
+  color: #6C4425;
+  margin: 0 auto;
+  max-width: 680px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* Tarjetas de Juegos Clavadas al Tablero */
+.grade-game-card.ptb-card {
+  position: relative;
+  overflow: visible !important;
+  background: #FFFDF7 !important;
+  border: 2.5px solid #C49A5A !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.grade-game-card.ptb-card:hover {
+  transform: translateY(-5px) rotate(0.4deg) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45) !important;
+  border-color: #B45309 !important;
+}
+
+/* Tachuela / Clavo de hierro en cada tarjeta */
+.ptb-card-nail {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #CBD5E1, #475569 55%, #0F172A);
+  border: 1.5px solid #0B1120;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  z-index: 10;
+}
+
+@media (max-width: 640px) {
+  .pirate-tavern-board {
+    padding: 24px 14px 24px;
+    border-width: 5px;
+  }
+  .ptb-parchment-sheet {
+    padding: 20px 16px 18px;
+  }
+  .ptb-sheet-title {
+    font-size: 1.2rem;
+  }
+  .ptb-sheet-sub {
+    font-size: 0.82rem;
+  }
+}
+
+
