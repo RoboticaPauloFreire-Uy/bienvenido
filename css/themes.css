@@ -673,14 +673,15 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   BARRA SUPERIOR Y AMBIENTE EN TODA LA PÁGINA DURANTE HALLOWEEN
+   BARRA SUPERIOR (TOPBAR) — EDICIÓN ESPECIAL HALLOWEEN
+   Estilo Periódico Broadsheet Gótico & Evento Halloween
    ───────────────────────────────────────────────────────────── */
-/* Barra superior festiva Halloween */
+/* Barra superior festiva estilo diario de papel */
 [data-theme="halloween"] .topbar {
-  background: linear-gradient(135deg, #18032B 0%, #2A0845 50%, #C2410C 120%) !important;
-  border-bottom: 2.5px solid #FF6F00 !important;
-  box-shadow: 0 4px 20px rgba(255, 111, 0, 0.25) !important;
-  position: relative;
+  background: linear-gradient(180deg, #130420 0%, #1A062C 60%, #26083D 100%) !important;
+  border-bottom: 3.5px double #FF6F00 !important;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 111, 0, 0.35) !important;
+  position: fixed;
   overflow: visible !important;
 }
 
@@ -691,26 +692,140 @@
   right: 12px;
   bottom: -4px;
   font-size: 26px;
-  opacity: 0.7;
+  opacity: 0.85;
   pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(255, 111, 0, 0.4));
 }
 
 /* Arañita colgante que se hamaca en la barra superior */
 [data-theme="halloween"] .topbar::before {
   content: '🕷️';
   position: absolute;
-  top: 38px;
+  top: 36px;
   left: 28px;
-  font-size: 1.4rem;
+  font-size: 1.45rem;
   animation: topbarSpider 4s infinite ease-in-out alternate;
   z-index: 10;
   pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.8));
 }
 
 @keyframes topbarSpider {
   0%   { transform: translateY(0) rotate(-12deg); }
   50%  { transform: translateY(16px) rotate(12deg); }
   100% { transform: translateY(6px) rotate(-6deg); }
+}
+
+/* Escudo del colegio con sello de imprenta circular */
+[data-theme="halloween"] .topbar-shield-logo {
+  border: 2px solid #FF9800 !important;
+  box-shadow: 0 0 12px rgba(255, 111, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Tipografía de cabecera de periódico */
+[data-theme="halloween"] .topbar-school {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 900 !important;
+  font-size: 1.14rem !important;
+  letter-spacing: 0.04em !important;
+  color: #FFF8E1 !important;
+  text-shadow: 0 2px 8px rgba(255, 111, 0, 0.6), 1px 1px 2px rgba(0,0,0,0.8) !important;
+}
+
+[data-theme="halloween"] .topbar-sub {
+  font-family: 'Special Elite', monospace !important;
+  font-size: 0.74rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #FFB74D !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+/* Enlaces de secciones estilo folios de periódico */
+[data-theme="halloween"] .topbar-nav {
+  gap: 4px !important;
+}
+
+[data-theme="halloween"] .topbar-nav-link {
+  font-family: 'Special Elite', 'Courier New', monospace !important;
+  font-size: 0.8rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: #FFE0B2 !important;
+  border: 1px solid rgba(255, 111, 0, 0.15) !important;
+  border-radius: 2px !important;
+  padding: 6px 11px !important;
+  transition: all 0.18s ease !important;
+}
+
+[data-theme="halloween"] .topbar-nav-link:hover {
+  background: rgba(255, 111, 0, 0.22) !important;
+  color: #FFFFFF !important;
+  border-color: #FF9800 !important;
+  box-shadow: 0 2px 10px rgba(255, 111, 0, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+[data-theme="halloween"] .topbar-nav-link.active {
+  background: #FF6F00 !important;
+  color: #150522 !important;
+  border: 1.5px solid #FFB74D !important;
+  box-shadow: 2.5px 2.5px 0 rgba(0, 0, 0, 0.7), 0 0 14px rgba(255, 111, 0, 0.5) !important;
+  font-weight: 900 !important;
+}
+
+[data-theme="halloween"] .topbar-nav-link.active i {
+  color: #150522 !important;
+}
+
+/* Botón de ingreso de alumnos estilo credencial de prensa */
+[data-theme="halloween"] .topbar-student-pill {
+  font-family: 'Special Elite', monospace !important;
+  font-size: 0.78rem !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: rgba(255, 111, 0, 0.18) !important;
+  border: 1.5px dashed #FF9800 !important;
+  color: #FFE082 !important;
+  border-radius: 3px !important;
+  padding: 6px 12px !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="halloween"] .topbar-student-pill:hover {
+  background: #FF6F00 !important;
+  color: #150522 !important;
+  border-style: solid !important;
+  border-color: #FFB74D !important;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Año y edición */
+[data-theme="halloween"] .topbar-year {
+  font-family: 'Special Elite', monospace !important;
+  font-size: 0.76rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid rgba(255, 111, 0, 0.4) !important;
+  color: #FFB74D !important;
+  border-radius: 2px !important;
+  padding: 4px 8px !important;
+}
+
+[data-theme="halloween"] .topbar-mobile-btn {
+  border: 1.5px solid #FF9800 !important;
+  border-radius: 3px !important;
+  color: #FF9800 !important;
+  background: rgba(0, 0, 0, 0.35) !important;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -743,12 +858,12 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #18032B 0%, #3B0E5D 45%, #C2410C 100%);
-  border: 2px solid #FF6F00;
-  border-top: none;
+  background: linear-gradient(135deg, #150522 0%, #29083E 50%, #B43B06 100%) !important;
+  border: 2px solid #FF6F00 !important;
+  border-top: 1px solid #1A052B !important;
   padding: 5px 22px 7px;
-  border-radius: 0 0 16px 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 18px rgba(234, 88, 12, 0.45);
+  border-radius: 0 0 14px 14px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 111, 0, 0.5) !important;
   position: relative;
   user-select: none;
   pointer-events: auto;
@@ -780,14 +895,14 @@
 }
 
 [data-theme="halloween"] .ttr-text {
-  font-family: 'Nunito', 'Segoe UI', sans-serif;
-  font-size: 0.96rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-family: 'Special Elite', 'Nunito', sans-serif !important;
+  font-size: 0.94rem !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
   letter-spacing: 1.5px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #FED7AA 40%, #FB923C 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FED7AA 40%, #FB923C 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
   white-space: nowrap;
 }
@@ -841,6 +956,36 @@
   [data-theme="halloween"] .ttr-spider {
     display: none;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PORTADA DE PERIÓDICO (MASTHEAD) CON AMBIENTACIÓN DE HALLOWEEN
+   ───────────────────────────────────────────────────────────── */
+[data-theme="halloween"] .np-rubber-stamp {
+  border-color: #EA580C !important;
+  color: #EA580C !important;
+  box-shadow: inset 0 0 0 2px rgba(234, 88, 12, 0.25) !important;
+}
+
+[data-theme="halloween"] .np-lead-seal {
+  border-color: #EA580C !important;
+  color: #EA580C !important;
+  box-shadow: inset 0 0 0 2px #F8F4EA, inset 0 0 0 3px #EA580C !important;
+}
+
+[data-theme="halloween"] .np-lead-seal i {
+  color: #EA580C !important;
+}
+
+[data-theme="halloween"] .np-kicker-label,
+[data-theme="halloween"] .np-kicker,
+[data-theme="halloween"] .np-gz-kicker {
+  color: #C2410C !important;
+}
+
+[data-theme="halloween"] .np-ticker-track .hn-ticker-item::after {
+  content: '🎃';
+  font-size: 0.75rem;
 }
 
 /* Fantasmita simpático que saluda flotando en la esquina inferior de la pantalla */

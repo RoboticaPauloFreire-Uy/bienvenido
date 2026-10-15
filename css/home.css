@@ -4180,6 +4180,119 @@ body.student-logged-in .site-footer {
    Para todas las secciones del portal: Páginas 01 a 07
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ── Cabecera Superior del Portal (Topbar Broadsheet Newspaper) ── */
+.topbar {
+  border-bottom: 3.5px double #2B2520;
+  background: #1C1814;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s ease;
+}
+
+.topbar-brand .topbar-shield-logo {
+  border: 2px solid #D2C7B3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.topbar-school {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: 1.12rem;
+  letter-spacing: 0.03em;
+  color: #FDFBF7;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.topbar-sub {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #D2C7B3;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.topbar-nav {
+  gap: 4px;
+}
+
+.topbar-nav-link {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 11px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  color: #E6DFD3;
+  transition: all 0.18s ease;
+}
+
+.topbar-nav-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.topbar-nav-link.active {
+  background: #F8F4EA !important;
+  color: #1A1612 !important;
+  border: 1.5px solid #2B2520 !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45) !important;
+  font-weight: 900 !important;
+}
+
+.topbar-nav-link.active i {
+  color: #991B1B !important;
+}
+
+.topbar-student-pill {
+  font-family: 'Special Elite', monospace !important;
+  font-size: 0.78rem !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 3px !important;
+  padding: 6px 12px !important;
+  border: 1.5px dashed #D2C7B3 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #FDFBF7 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 1.5px 1.5px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.topbar-student-pill:hover {
+  background: #F8F4EA !important;
+  color: #1A1612 !important;
+  border-style: solid !important;
+  border-color: #2B2520 !important;
+  transform: translateY(-1px);
+}
+
+.topbar-year {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px 8px;
+  border-radius: 2px;
+  color: #CFC5B4;
+}
+
+.topbar-mobile-btn {
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #F8F4EA;
+}
+
 /* ── Encabezado de Página / Folio Superior de Periódico ── */
 .np-page-folio {
   display: flex;
