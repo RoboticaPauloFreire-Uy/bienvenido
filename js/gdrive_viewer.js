@@ -1205,8 +1205,7 @@
           '</div>' +
         '</div>';
 
-      var pirateIslandsHtml = missions.map(function(m, idx) {
-        var sideClass = (idx % 2 === 0) ? 'island-left' : 'island-right';
+      function buildPirateStationHtml(m, idx, sideClass) {
         var statusSeal = '';
         var statusBadgeClass = m.status;
         var statusLabel = '';
@@ -1221,40 +1220,6 @@
           statusSeal = '<div class="pirate-seal-badge desafio" title="Isla por descubrir"><i class="fas fa-lock"></i> Por Descubrir</div>';
         }
 
-        // Connector curvado desde el nodo anterior
-        var connectorHtml = '';
-        if (idx === 0) {
-          // Desde el puerto (centro) hacia la primera isla (izquierda)
-          connectorHtml =
-            '<div class="pirate-trail-connector connector-start">' +
-              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
-                '<path class="ptc-glow" d="M 50,0 C 50,35 28,30 28,65" />' +
-                '<path class="ptc-dash" d="M 50,0 C 50,35 28,30 28,65" />' +
-              '</svg>' +
-              '<div class="pirate-waypoint-marker wp-start" title="Rumbo a la Isla 1"><i class="fas fa-compass"></i></div>' +
-            '</div>';
-        } else if (idx % 2 === 1) {
-          // De izquierda a derecha
-          connectorHtml =
-            '<div class="pirate-trail-connector connector-left-to-right">' +
-              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
-                '<path class="ptc-glow" d="M 28,0 C 28,40 72,25 72,65" />' +
-                '<path class="ptc-dash" d="M 28,0 C 28,40 72,25 72,65" />' +
-              '</svg>' +
-              '<div class="pirate-waypoint-marker wp-mid" title="Travesía náutica"><i class="fas fa-anchor"></i></div>' +
-            '</div>';
-        } else {
-          // De derecha a izquierda
-          connectorHtml =
-            '<div class="pirate-trail-connector connector-right-to-left">' +
-              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
-                '<path class="ptc-glow" d="M 72,0 C 72,40 28,25 28,65" />' +
-                '<path class="ptc-dash" d="M 72,0 C 72,40 28,25 28,65" />' +
-              '</svg>' +
-              '<div class="pirate-waypoint-marker wp-mid" title="Travesía náutica"><i class="fas fa-water"></i></div>' +
-            '</div>';
-        }
-
         var isInitiallyOpen = (m.status === 'activo');
         var coverImgSrc = m.coverImage || (m.type === 'circuito' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png');
 
@@ -1267,101 +1232,155 @@
           toolBtnHtml = '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-game" title="Jugar"><i class="fas fa-gamepad"></i> Jugar Desafío</a>';
         }
 
-        return connectorHtml +
-          '<div class="pirate-island-station ' + sideClass + ' ' + statusBadgeClass + ' ' + (isInitiallyOpen ? 'is-expanded' : '') + '" data-mission-idx="' + idx + '" id="pirate-island-st-' + idx + '">' +
-            // Landmark interactivo de la Isla
-            '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="¡Tocá la isla para desplegar su pergamino de misión!">' +
-              '<div class="pirate-medallion-wrap">' +
-                '<div class="pirate-medallion-ring ' + statusBadgeClass + '">' +
-                  '<div class="pirate-compass-ticks">' +
-                    '<span class="pct-tick pct-n">N</span>' +
-                    '<span class="pct-tick pct-e">E</span>' +
-                    '<span class="pct-tick pct-s">S</span>' +
-                    '<span class="pct-tick pct-o">O</span>' +
-                  '</div>' +
-                  '<div class="pirate-medallion-inner">' +
-                    '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.src=\'img/scratchjr.png\'">' +
-                    '<div class="pirate-level-coin">' +
-                      '<span>🪙 L' + m.level + '</span>' +
-                    '</div>' +
+        return '<div class="pirate-island-station ' + sideClass + ' ' + statusBadgeClass + ' ' + (isInitiallyOpen ? 'is-expanded' : '') + '" data-mission-idx="' + idx + '" id="pirate-island-st-' + idx + '">' +
+          // Landmark interactivo de la Isla
+          '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="¡Tocá la isla para desplegar su pergamino de misión!">' +
+            '<div class="pirate-medallion-wrap">' +
+              '<div class="pirate-medallion-ring ' + statusBadgeClass + '">' +
+                '<div class="pirate-compass-ticks">' +
+                  '<span class="pct-tick pct-n">N</span>' +
+                  '<span class="pct-tick pct-e">E</span>' +
+                  '<span class="pct-tick pct-s">S</span>' +
+                  '<span class="pct-tick pct-o">O</span>' +
+                '</div>' +
+                '<div class="pirate-medallion-inner">' +
+                  '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.src=\'img/scratchjr.png\'">' +
+                  '<div class="pirate-level-coin">' +
+                    '<span>🪙 L' + m.level + '</span>' +
                   '</div>' +
                 '</div>' +
-                statusSeal +
               '</div>' +
-
-              '<div class="pirate-island-info-block">' +
-                '<div class="pirate-tag-row">' +
-                  '<span class="pirate-type-badge" style="background:' + m.color + '22;color:' + m.color + ';border-color:' + m.color + '55;">' +
-                    '<i class="fas ' + m.icon + '"></i> ' + m.badge +
-                  '</span>' +
-                  '<span class="pirate-status-pill ' + m.status + '">' + statusLabel + '</span>' +
-                '</div>' +
-                '<h4 class="pirate-island-title">🏝️ Isla ' + m.level + ': ' + m.title + '</h4>' +
-                '<div class="pirate-landmark-touch-cta">' +
-                  '<span class="ptp-text"><i class="fas fa-scroll"></i> ' + (isInitiallyOpen ? 'Ocultar pergamino' : 'Tocá la isla para ver pergamino') + '</span>' +
-                  '<span class="ptp-arrow"><i class="fas fa-chevron-down"></i></span>' +
-                '</div>' +
-              '</div>' +
+              statusSeal +
             '</div>' +
 
-            // Pergamino secreto desplegable con el contenido
-            '<div class="pirate-scroll-drawer ' + (isInitiallyOpen ? 'is-open' : '') + '">' +
-              '<div class="pirate-scroll-wood-rod top"></div>' +
-              '<div class="pirate-scroll-parchment">' +
-                '<div class="pirate-scroll-top-seal">' +
-                  '<span class="psts-stamp"><i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level + '</span>' +
-                  '<span class="psts-status ' + m.status + '">' + statusLabel + '</span>' +
-                '</div>' +
-                '<h4 class="pirate-scroll-title">' + m.title + '</h4>' +
-                '<div class="pirate-scroll-narrative">' +
-                  '<i class="fas fa-quote-left pirate-quote-icon"></i> ' + m.description +
-                '</div>' +
-                (m.objective ?
-                  '<div class="pirate-scroll-box objective">' +
-                    '<div class="psb-header"><i class="fas fa-bullseye"></i> <strong>Objetivo del Tesoro</strong></div>' +
-                    '<p class="psb-body">' + m.objective + '</p>' +
-                  '</div>' : '') +
-                (m.benefits ?
-                  '<div class="pirate-scroll-box benefits">' +
-                    '<div class="psb-header"><i class="fas fa-brain"></i> <strong>Poderes Piratas (Razonamiento y Lógica)</strong></div>' +
-                    '<p class="psb-body">' + m.benefits + '</p>' +
-                  '</div>' : '') +
-                '<div class="pirate-scroll-actions">' +
-                  '<button type="button" class="pirate-btn-action pirate-btn-main arm-btn-open-modal" data-mission-idx="' + idx + '" title="Abrir y comenzar la misión">' +
-                    '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!' +
-                  '</button>' +
-                  toolBtnHtml +
-                  '<button type="button" class="pirate-btn-action pirate-btn-sec arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Ver Modo Presentación">' +
-                    '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
-                  '</button>' +
-                  '<button type="button" class="pirate-btn-action pirate-btn-ghost arm-btn-open-pdf" data-mission-idx="' + idx + '" title="Ver Guía PDF">' +
-                    '<i class="fas fa-file-pdf"></i> Guía PDF' +
-                  '</button>' +
-                '</div>' +
+            '<div class="pirate-island-info-block">' +
+              '<div class="pirate-tag-row">' +
+                '<span class="pirate-type-badge" style="background:' + m.color + '22;color:' + m.color + ';border-color:' + m.color + '55;">' +
+                  '<i class="fas ' + m.icon + '"></i> ' + m.badge +
+                '</span>' +
+                '<span class="pirate-status-pill ' + m.status + '">' + statusLabel + '</span>' +
               '</div>' +
-              '<div class="pirate-scroll-wood-rod bottom"></div>' +
+              '<h4 class="pirate-island-title">🏝️ Isla ' + m.level + ': ' + m.title + '</h4>' +
+              '<div class="pirate-landmark-touch-cta">' +
+                '<span class="ptp-text"><i class="fas fa-scroll"></i> ' + (isInitiallyOpen ? 'Ocultar pergamino' : 'Tocá la isla para ver pergamino') + '</span>' +
+                '<span class="ptp-arrow"><i class="fas fa-chevron-down"></i></span>' +
+              '</div>' +
             '</div>' +
+          '</div>' +
+
+          // Pergamino secreto desplegable con el contenido
+          '<div class="pirate-scroll-drawer ' + (isInitiallyOpen ? 'is-open' : '') + '">' +
+            '<div class="pirate-scroll-wood-rod top"></div>' +
+            '<div class="pirate-scroll-parchment">' +
+              '<div class="pirate-scroll-top-seal">' +
+                '<span class="psts-stamp"><i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level + '</span>' +
+                '<span class="psts-status ' + m.status + '">' + statusLabel + '</span>' +
+              '</div>' +
+              '<h4 class="pirate-scroll-title">' + m.title + '</h4>' +
+              '<div class="pirate-scroll-narrative">' +
+                '<i class="fas fa-quote-left pirate-quote-icon"></i> ' + m.description +
+              '</div>' +
+              (m.objective ?
+                '<div class="pirate-scroll-box objective">' +
+                  '<div class="psb-header"><i class="fas fa-bullseye"></i> <strong>Objetivo del Tesoro</strong></div>' +
+                  '<p class="psb-body">' + m.objective + '</p>' +
+                '</div>' : '') +
+              (m.benefits ?
+                '<div class="pirate-scroll-box benefits">' +
+                  '<div class="psb-header"><i class="fas fa-brain"></i> <strong>Poderes Piratas (Razonamiento y Lógica)</strong></div>' +
+                  '<p class="psb-body">' + m.benefits + '</p>' +
+                '</div>' : '') +
+              '<div class="pirate-scroll-actions">' +
+                '<button type="button" class="pirate-btn-action pirate-btn-main arm-btn-open-modal" data-mission-idx="' + idx + '" title="Abrir y comenzar la misión">' +
+                  '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!' +
+                '</button>' +
+                toolBtnHtml +
+                '<button type="button" class="pirate-btn-action pirate-btn-sec arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Ver Modo Presentación">' +
+                  '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
+                '</button>' +
+                '<button type="button" class="pirate-btn-action pirate-btn-ghost arm-btn-open-pdf" data-mission-idx="' + idx + '" title="Ver Guía PDF">' +
+                  '<i class="fas fa-file-pdf"></i> Guía PDF' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pirate-scroll-wood-rod bottom"></div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      var pirateIslandsHtml = '';
+      for (var r = 0; r < missions.length; r += 2) {
+        var mLeft = missions[r];
+        var idxLeft = r;
+        var mRight = (r + 1 < missions.length) ? missions[r + 1] : null;
+        var idxRight = r + 1;
+
+        // Conector que llega a esta fila
+        var incomingConnectorHtml = '';
+        if (r === 0) {
+          // Desde el puerto (centro 50) hacia la Isla 1 (izquierda 25)
+          incomingConnectorHtml =
+            '<div class="pirate-trail-connector connector-start">' +
+              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 48" preserveAspectRatio="none">' +
+                '<path class="ptc-glow" d="M 50,0 C 50,26 25,22 25,48" />' +
+                '<path class="ptc-dash" d="M 50,0 C 50,26 25,22 25,48" />' +
+              '</svg>' +
+              '<div class="pirate-waypoint-marker wp-start" title="Rumbo a la Isla 1"><i class="fas fa-compass"></i></div>' +
+            '</div>';
+        } else {
+          // Curva desde la isla derecha de la fila previa (75) hacia la isla izquierda de esta fila (25)
+          incomingConnectorHtml =
+            '<div class="pirate-trail-connector connector-turn-down">' +
+              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 52" preserveAspectRatio="none">' +
+                '<path class="ptc-glow" d="M 75,0 C 75,32 25,20 25,52" />' +
+                '<path class="ptc-dash" d="M 75,0 C 75,32 25,20 25,52" />' +
+              '</svg>' +
+              '<div class="pirate-waypoint-marker wp-mid" title="Travesía náutica hacia la Isla ' + mLeft.level + '"><i class="fas fa-water"></i></div>' +
+            '</div>';
+        }
+
+        var leftStationHtml = buildPirateStationHtml(mLeft, idxLeft, 'island-left');
+        var rightStationHtml = '';
+        var bridgeConnectorHtml = '';
+
+        if (mRight) {
+          bridgeConnectorHtml =
+            '<div class="pirate-row-bridge">' +
+              '<svg class="pirate-bridge-svg" viewBox="0 0 160 50" preserveAspectRatio="none">' +
+                '<path class="ptc-glow" d="M 0,25 C 45,5 115,45 160,25" />' +
+                '<path class="ptc-dash" d="M 0,25 C 45,5 115,45 160,25" />' +
+              '</svg>' +
+              '<div class="pirate-waypoint-marker wp-bridge" title="Rumbo a la Isla ' + mRight.level + '"><i class="fas fa-anchor"></i></div>' +
+            '</div>';
+          rightStationHtml = buildPirateStationHtml(mRight, idxRight, 'island-right');
+        }
+
+        pirateIslandsHtml += incomingConnectorHtml +
+          '<div class="pirate-map-row' + (mRight ? ' has-pair' : ' single-left') + '">' +
+            leftStationHtml +
+            (mRight ? bridgeConnectorHtml + rightStationHtml : '') +
           '</div>';
-      }).join('');
+      }
 
       // Connector final hacia el Cofre del Tesoro (centro)
-      var lastSide = ((missions.length - 1) % 2 === 0) ? 'left' : 'right';
+      var lastIdx = missions.length - 1;
+      var lastSide = (lastIdx % 2 === 0) ? 'left' : 'right';
       var finishConnectorHtml = '';
       if (lastSide === 'left') {
         finishConnectorHtml =
           '<div class="pirate-trail-connector connector-to-finish">' +
-            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
-              '<path class="ptc-glow" d="M 28,0 C 28,35 50,30 50,65" />' +
-              '<path class="ptc-dash" d="M 28,0 C 28,35 50,30 50,65" />' +
+            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 48" preserveAspectRatio="none">' +
+              '<path class="ptc-glow" d="M 25,0 C 25,26 50,22 50,48" />' +
+              '<path class="ptc-dash" d="M 25,0 C 25,26 50,22 50,48" />' +
             '</svg>' +
             '<div class="pirate-waypoint-marker wp-finish" title="¡Cerca del tesoro!"><i class="fas fa-gem"></i></div>' +
           '</div>';
       } else {
         finishConnectorHtml =
           '<div class="pirate-trail-connector connector-to-finish">' +
-            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
-              '<path class="ptc-glow" d="M 72,0 C 72,35 50,30 50,65" />' +
-              '<path class="ptc-dash" d="M 72,0 C 72,35 50,30 50,65" />' +
+            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 48" preserveAspectRatio="none">' +
+              '<path class="ptc-glow" d="M 75,0 C 75,26 50,22 50,48" />' +
+              '<path class="ptc-dash" d="M 75,0 C 75,26 50,22 50,48" />' +
             '</svg>' +
             '<div class="pirate-waypoint-marker wp-finish" title="¡Cerca del tesoro!"><i class="fas fa-gem"></i></div>' +
           '</div>';
