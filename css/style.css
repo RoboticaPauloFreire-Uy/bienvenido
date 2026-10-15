@@ -12780,12 +12780,12 @@ body.student-logged-in #student-drive-dashboard-container {
   filter: blur(3px);
 }
 
-/* ── 2. Navegación Pirate Moderna (3 Arriba y 3 Abajo) ── */
+/* ── 2. Navegación Pirate Moderna (Pestañas Táctiles) ── */
 .gamer-nav-bar {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 20px 0;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin: 18px 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -12793,11 +12793,11 @@ body.student-logged-in #student-drive-dashboard-container {
 .gnb-tab {
   background: #FFFDF7;
   border: 2px solid #D4A373;
-  border-radius: 18px;
-  padding: 13px 16px;
+  border-radius: 16px;
+  padding: 10px 8px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   cursor: pointer;
   text-align: left;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -12805,6 +12805,7 @@ body.student-logged-in #student-drive-dashboard-container {
   font-family: inherit;
   min-width: 0;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .gnb-tab:hover {
@@ -12823,7 +12824,7 @@ body.student-logged-in #student-drive-dashboard-container {
 }
 
 .gnb-emoji {
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   line-height: 1;
   flex-shrink: 0;
 }
@@ -12837,13 +12838,13 @@ body.student-logged-in #student-drive-dashboard-container {
 }
 
 .gnb-title {
-  font-size: 0.95rem;
+  font-size: 0.84rem;
   font-weight: 900;
   color: #451A03;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .gnb-tab.active .gnb-title {
@@ -12851,12 +12852,12 @@ body.student-logged-in #student-drive-dashboard-container {
 }
 
 .gnb-badge {
-  font-size: 0.74rem;
+  font-size: 0.70rem;
   font-weight: 700;
   background: #FEF3C7;
   color: #78350F;
   border: 1px solid #FDE68A;
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 9999px;
   display: inline-block;
   width: fit-content;
@@ -12864,7 +12865,7 @@ body.student-logged-in #student-drive-dashboard-container {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 .gnb-tab.active .gnb-badge {
@@ -13002,6 +13003,13 @@ body.student-logged-in #student-drive-dashboard-container {
 }
 
 /* Adaptación Responsiva para Celulares y Tablets */
+@media (max-width: 1180px) {
+  .gamer-nav-bar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
 @media (max-width: 640px) {
   .gamer-dashboard-container {
     padding: 0 8px;
