@@ -625,12 +625,12 @@
     var headerHtml =
       '<div class="arm-toolbar-compact">' +
         '<div class="atc-left">' +
-          '<span class="atc-badge"><i class="fas fa-route"></i> RUTA MAKER 2026</span>' +
-          '<h3 class="atc-title">Sendero de Desafíos &bull; ' + student.gradeName + '</h3>' +
+          '<span class="atc-badge"><i class="fas fa-compass"></i> CARTA NÁUTICA MAKER 2026</span>' +
+          '<h3 class="atc-title">🗺️ Mapa del Tesoro &bull; ' + student.gradeName + '</h3>' +
         '</div>' +
         '<div class="arm-view-toggle">' +
-          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="Ver como Sendero de Niveles">' +
-            '<i class="fas fa-route"></i> <span>Mapa</span>' +
+          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="Ver como Mapa Pirata del Tesoro">' +
+            '<i class="fas fa-map-marked-alt"></i> <span>Mapa Pirata</span>' +
           '</button>' +
           '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Cuadrícula">' +
             '<i class="fas fa-th-large"></i> <span>Cuadrícula</span>' +
@@ -1103,86 +1103,326 @@
       '</div>';
 
     if (!isGrid) {
-      // ── Sendero de Niveles (Trail Mode) ──
-      bodyHtml = '<div class="arm-trail-path">' +
-        missions.map(function(m, idx) {
-          var sideClass = (idx % 2 === 0) ? 'station-left' : 'station-right';
-          var statusText = m.status === 'completado' ? '⭐ Completado' : (m.status === 'activo' ? '⚡ En Curso' : '🎯 Reto');
+      // ── MAPA DEL TESORO PIRATA CON BARCO Y SENDERO CURVADO ──
+      var pirateShipSvg =
+        '<svg class="pirate-ship-svg" viewBox="0 0 260 210" width="230" height="185" xmlns="http://www.w3.org/2000/svg" aria-label="Galeón Paulo Freire">' +
+          '<defs>' +
+            '<linearGradient id="shipWoodGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#8B4513"/>' +
+              '<stop offset="50%" stop-color="#5C2C16"/>' +
+              '<stop offset="100%" stop-color="#3B1D0E"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="sailGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#FFFDF5"/>' +
+              '<stop offset="100%" stop-color="#EEDBB7"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="goldTrimGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#FDE047"/>' +
+              '<stop offset="100%" stop-color="#D97706"/>' +
+            '</linearGradient>' +
+            '<filter id="shipShadow" x="-10%" y="-10%" width="130%" height="130%">' +
+              '<feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity="0.35"/>' +
+            '</filter>' +
+          '</defs>' +
+          '<g class="pirate-ship-bobbing" filter="url(#shipShadow)">' +
+            '<ellipse cx="130" cy="186" rx="85" ry="10" fill="rgba(14, 116, 144, 0.28)"/>' +
+            '<line x1="205" y1="125" x2="255" y2="100" stroke="#5C2C16" stroke-width="4" stroke-linecap="round"/>' +
+            '<line x1="200" y1="127" x2="245" y2="105" stroke="#D97706" stroke-width="1.5"/>' +
+            '<line x1="60" y1="125" x2="125" y2="35" stroke="#78350F" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.65"/>' +
+            '<line x1="190" y1="125" x2="125" y2="35" stroke="#78350F" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.65"/>' +
+            '<line x1="130" y1="125" x2="175" y2="55" stroke="#78350F" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.65"/>' +
+            '<line x1="240" y1="105" x2="175" y2="55" stroke="#78350F" stroke-width="1.5" opacity="0.5"/>' +
+            '<rect x="75" y="60" width="6" height="75" fill="#451A03" rx="2"/>' +
+            '<rect x="122" y="25" width="8" height="110" fill="#451A03" rx="3"/>' +
+            '<rect x="172" y="48" width="6" height="85" fill="#451A03" rx="2"/>' +
+            '<path d="M 116 40 L 136 40 L 133 50 L 119 50 Z" fill="#78350F" stroke="#3B1D0E" stroke-width="1.5"/>' +
+            '<line x1="116" y1="45" x2="136" y2="45" stroke="#D97706" stroke-width="1"/>' +
+            '<g class="pirate-flag-wave">' +
+              '<path d="M 126 22 L 96 16 C 102 22, 96 28, 100 32 L 126 30 Z" fill="#0F172A"/>' +
+              '<circle cx="111" cy="23" r="3.5" fill="#FFFFFF"/>' +
+              '<path d="M 108 25.5 L 114 25.5 L 113 28 L 109 28 Z" fill="#FFFFFF"/>' +
+              '<line x1="106" y1="21" x2="116" y2="27" stroke="#FFFFFF" stroke-width="1"/>' +
+              '<line x1="106" y1="27" x2="116" y2="21" stroke="#FFFFFF" stroke-width="1"/>' +
+            '</g>' +
+            '<path d="M 170 55 C 190 65, 192 90, 172 95 C 185 85, 185 70, 170 55 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="1.5"/>' +
+            '<path d="M 105 52 C 126 48, 142 48, 147 52 C 144 72, 110 72, 105 52 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="1.5"/>' +
+            '<path d="M 120 52 L 128 52 L 128 70 L 120 70 Z" fill="none" stroke="#DC2626" stroke-width="2"/>' +
+            '<path d="M 98 78 C 126 72, 150 72, 154 78 C 152 118, 102 118, 98 78 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="2"/>' +
+            '<path d="M 112 80 C 114 96, 114 105, 113 115" stroke="#DC2626" stroke-width="3" fill="none"/>' +
+            '<path d="M 138 80 C 137 96, 137 105, 138 115" stroke="#DC2626" stroke-width="3" fill="none"/>' +
+            '<circle cx="125" cy="97" r="7" fill="none" stroke="#1E293B" stroke-width="2"/>' +
+            '<circle cx="125" cy="97" r="3" fill="#D97706"/>' +
+            '<path d="M 58 70 C 74 65, 84 68, 80 82 C 70 95, 60 90, 58 70 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="1.5"/>' +
+            '<path d="M 46 128 C 48 165, 80 182, 130 182 C 185 182, 212 162, 222 135 C 226 128, 220 125, 208 125 L 48 125 C 42 125, 43 126, 46 128 Z" fill="url(#shipWoodGrad)" stroke="#3B1D0E" stroke-width="2.5"/>' +
+            '<path d="M 48 138 C 90 148, 170 148, 218 138" stroke="#3B1D0E" stroke-width="1.2" fill="none" opacity="0.6"/>' +
+            '<path d="M 54 150 C 95 162, 165 162, 210 150" stroke="#3B1D0E" stroke-width="1.2" fill="none" opacity="0.6"/>' +
+            '<path d="M 68 164 C 100 174, 155 174, 195 164" stroke="#3B1D0E" stroke-width="1.2" fill="none" opacity="0.6"/>' +
+            '<path d="M 44 126 L 216 126 L 214 130 L 46 130 Z" fill="url(#goldTrimGrad)"/>' +
+            '<circle cx="82" cy="144" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
+            '<circle cx="112" cy="146" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
+            '<circle cx="142" cy="146" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
+            '<circle cx="172" cy="144" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
+            '<g transform="translate(195, 142)">' +
+              '<circle cx="6" cy="4" r="3" fill="none" stroke="#64748B" stroke-width="1.5"/>' +
+              '<line x1="6" y1="7" x2="6" y2="20" stroke="#475569" stroke-width="2"/>' +
+              '<line x1="2" y1="10" x2="10" y2="10" stroke="#475569" stroke-width="1.5"/>' +
+              '<path d="M 1 17 C 3 22, 9 22, 11 17" fill="none" stroke="#475569" stroke-width="2"/>' +
+            '</g>' +
+            '<rect x="42" y="112" width="22" height="15" fill="#5C2C16" stroke="#3B1D0E" stroke-width="1.5"/>' +
+            '<rect x="46" y="116" width="5" height="7" fill="#FEF08A" stroke="#D97706" stroke-width="1"/>' +
+            '<rect x="54" y="116" width="5" height="7" fill="#FEF08A" stroke="#D97706" stroke-width="1"/>' +
+            '<circle cx="39" cy="114" r="3" fill="#FDE047" stroke="#D97706" stroke-width="1"/>' +
+          '</g>' +
+          '<path class="pirate-ship-front-wave" d="M 20 180 C 60 174, 90 186, 130 180 C 170 174, 200 186, 240 180 C 250 182, 250 195, 230 195 C 190 195, 70 195, 20 195 Z" fill="#0284C7" opacity="0.55"/>' +
+          '<path class="pirate-ship-foam" d="M 40 178 Q 70 184 100 178 Q 130 184 160 178 Q 190 184 220 178" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+        '</svg>';
 
-          return '<div class="arm-station ' + sideClass + '" data-mission-idx="' + idx + '">' +
-            '<div class="arm-node-column">' +
-              '<div class="arm-node-bubble ' + m.status + '" title="Nivel ' + m.level + ': ' + m.title.replace(/"/g, '&quot;') + '">' +
-                '<span class="arm-node-level">NIVEL</span>' +
-                '<span class="arm-node-num">' + m.level + '</span>' +
-                '<div class="arm-node-icon"><i class="fas ' + m.icon + '"></i></div>' +
+      var pirateStartPortHtml =
+        '<div class="pirate-start-port">' +
+          '<div class="pirate-port-sky">' +
+            '<span class="pirate-sun-icon">☀️</span>' +
+            '<span class="pirate-seagull s1">🕊️</span>' +
+            '<span class="pirate-seagull s2">🕊️</span>' +
+          '</div>' +
+          '<div class="pirate-ship-stage">' +
+            '<div class="pirate-ship-wrapper" title="Galeón Paulo Freire: ¡Listo para zarpar!">' +
+              pirateShipSvg +
+            '</div>' +
+            '<div class="pirate-ocean-waves-wrap">' +
+              '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
+                '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
+                '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
+              '</svg>' +
+            '</div>' +
+          '</div>' +
+          '<div class="pirate-port-banner">' +
+            '<div class="ppb-anchor"><i class="fas fa-anchor"></i></div>' +
+            '<div class="ppb-text">' +
+              '<h3 class="ppb-title">PUERTO DE ZARPE &bull; BAHÍA DE LOS CREADORES</h3>' +
+              '<p class="ppb-sub">El Galeón <strong>Paulo Freire</strong> inicia su travesía por el archipiélago de <strong>' + student.gradeName + '</strong>. Seguí el sendero curvado, tocá cada isla para abrir su pergamino y alcanzá el Gran Tesoro Maker.</p>' +
+            '</div>' +
+            '<div class="ppb-compass"><i class="fas fa-compass"></i></div>' +
+          '</div>' +
+        '</div>';
+
+      var pirateIslandsHtml = missions.map(function(m, idx) {
+        var sideClass = (idx % 2 === 0) ? 'island-left' : 'island-right';
+        var statusSeal = '';
+        var statusBadgeClass = m.status;
+        var statusLabel = '';
+        if (m.status === 'completado') {
+          statusLabel = 'Isla Conquistada';
+          statusSeal = '<div class="pirate-seal-badge completado" title="¡Isla superada!"><i class="fas fa-award"></i> Conquistada</div>';
+        } else if (m.status === 'activo') {
+          statusLabel = 'En Exploración';
+          statusSeal = '<div class="pirate-seal-badge activo" title="¡Isla actual en exploración!"><i class="fas fa-compass fa-spin-slow"></i> En Exploración</div>';
+        } else {
+          statusLabel = 'Isla Misteriosa';
+          statusSeal = '<div class="pirate-seal-badge desafio" title="Isla por descubrir"><i class="fas fa-lock"></i> Por Descubrir</div>';
+        }
+
+        // Connector curvado desde el nodo anterior
+        var connectorHtml = '';
+        if (idx === 0) {
+          // Desde el puerto (centro) hacia la primera isla (izquierda)
+          connectorHtml =
+            '<div class="pirate-trail-connector connector-start">' +
+              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
+                '<path class="ptc-glow" d="M 50,0 C 50,35 28,30 28,65" />' +
+                '<path class="ptc-dash" d="M 50,0 C 50,35 28,30 28,65" />' +
+              '</svg>' +
+              '<div class="pirate-waypoint-marker wp-start" title="Rumbo a la Isla 1"><i class="fas fa-compass"></i></div>' +
+            '</div>';
+        } else if (idx % 2 === 1) {
+          // De izquierda a derecha
+          connectorHtml =
+            '<div class="pirate-trail-connector connector-left-to-right">' +
+              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
+                '<path class="ptc-glow" d="M 28,0 C 28,40 72,25 72,65" />' +
+                '<path class="ptc-dash" d="M 28,0 C 28,40 72,25 72,65" />' +
+              '</svg>' +
+              '<div class="pirate-waypoint-marker wp-mid" title="Travesía náutica"><i class="fas fa-anchor"></i></div>' +
+            '</div>';
+        } else {
+          // De derecha a izquierda
+          connectorHtml =
+            '<div class="pirate-trail-connector connector-right-to-left">' +
+              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
+                '<path class="ptc-glow" d="M 72,0 C 72,40 28,25 28,65" />' +
+                '<path class="ptc-dash" d="M 72,0 C 72,40 28,25 28,65" />' +
+              '</svg>' +
+              '<div class="pirate-waypoint-marker wp-mid" title="Travesía náutica"><i class="fas fa-water"></i></div>' +
+            '</div>';
+        }
+
+        var isInitiallyOpen = (m.status === 'activo');
+        var coverImgSrc = m.coverImage || (m.type === 'circuito' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png');
+
+        var toolBtnHtml = '';
+        if (m.type === 'gemini_notebooks') {
+          toolBtnHtml = '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-notebook" title="Abrir NotebookLM"><i class="fas fa-brain"></i> Abrir NotebookLM</a>';
+        } else if (m.type === 'canva' || /canva/i.test(m.gameUrl || '')) {
+          toolBtnHtml = '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-canva" title="Abrir Canva"><i class="fas fa-palette"></i> Abrir Canva</a>';
+        } else if (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '')) {
+          toolBtnHtml = '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-game" title="Jugar"><i class="fas fa-gamepad"></i> Jugar Desafío</a>';
+        }
+
+        return connectorHtml +
+          '<div class="pirate-island-station ' + sideClass + ' ' + statusBadgeClass + ' ' + (isInitiallyOpen ? 'is-expanded' : '') + '" data-mission-idx="' + idx + '" id="pirate-island-st-' + idx + '">' +
+            // Landmark interactivo de la Isla
+            '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="¡Tocá la isla para desplegar su pergamino de misión!">' +
+              '<div class="pirate-medallion-wrap">' +
+                '<div class="pirate-medallion-ring ' + statusBadgeClass + '">' +
+                  '<div class="pirate-compass-ticks">' +
+                    '<span class="pct-tick pct-n">N</span>' +
+                    '<span class="pct-tick pct-e">E</span>' +
+                    '<span class="pct-tick pct-s">S</span>' +
+                    '<span class="pct-tick pct-o">O</span>' +
+                  '</div>' +
+                  '<div class="pirate-medallion-inner">' +
+                    '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.src=\'img/scratchjr.png\'">' +
+                    '<div class="pirate-level-coin">' +
+                      '<span>🪙 L' + m.level + '</span>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+                statusSeal +
+              '</div>' +
+
+              '<div class="pirate-island-info-block">' +
+                '<div class="pirate-tag-row">' +
+                  '<span class="pirate-type-badge" style="background:' + m.color + '22;color:' + m.color + ';border-color:' + m.color + '55;">' +
+                    '<i class="fas ' + m.icon + '"></i> ' + m.badge +
+                  '</span>' +
+                  '<span class="pirate-status-pill ' + m.status + '">' + statusLabel + '</span>' +
+                '</div>' +
+                '<h4 class="pirate-island-title">🏝️ Isla ' + m.level + ': ' + m.title + '</h4>' +
+                '<div class="pirate-landmark-touch-cta">' +
+                  '<span class="ptp-text"><i class="fas fa-scroll"></i> ' + (isInitiallyOpen ? 'Ocultar pergamino' : 'Tocá la isla para ver pergamino') + '</span>' +
+                  '<span class="ptp-arrow"><i class="fas fa-chevron-down"></i></span>' +
+                '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="arm-mission-card ' + m.status + '" data-mission-idx="' + idx + '">' +
-              '<div class="arm-mc-header">' +
-                '<span class="arm-mc-badge" style="background:' + m.color + '22;color:' + m.color + ';">' +
-                  m.badge +
-                '</span>' +
-                '<span class="arm-mc-status ' + m.status + '">' + statusText + '</span>' +
-              '</div>' +
-              (m.coverImage ?
-                '<div class="arm-mc-cover-wrap">' +
-                  '<img src="' + m.coverImage + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="arm-mc-cover-img" loading="lazy">' +
-                '</div>' : '') +
-              '<div class="arm-mc-body">' +
-                '<h4 class="arm-mc-title">' + m.title + '</h4>' +
-                '<p class="arm-mc-desc">' + m.description + '</p>' +
+
+            // Pergamino secreto desplegable con el contenido
+            '<div class="pirate-scroll-drawer ' + (isInitiallyOpen ? 'is-open' : '') + '">' +
+              '<div class="pirate-scroll-wood-rod top"></div>' +
+              '<div class="pirate-scroll-parchment">' +
+                '<div class="pirate-scroll-top-seal">' +
+                  '<span class="psts-stamp"><i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level + '</span>' +
+                  '<span class="psts-status ' + m.status + '">' + statusLabel + '</span>' +
+                '</div>' +
+                '<h4 class="pirate-scroll-title">' + m.title + '</h4>' +
+                '<div class="pirate-scroll-narrative">' +
+                  '<i class="fas fa-quote-left pirate-quote-icon"></i> ' + m.description +
+                '</div>' +
                 (m.objective ?
-                  '<div class="arm-concept-accordion arm-concept-objective" data-concept-type="objective">' +
-                    '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar el objetivo">' +
-                      '<span class="arm-ct-left"><i class="fas fa-bullseye"></i> <strong>Objetivo</strong></span>' +
-                      '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
-                    '</button>' +
-                    '<div class="arm-concept-drawer">' +
-                      '<div class="arm-concept-content">' +
-                        '<p>' + m.objective + '</p>' +
-                        '<div class="arm-concept-actions">' +
-                          '<button type="button" class="arm-concept-modal-btn" data-concept-type="objective" data-mission-idx="' + idx + '" title="Ampliar explicación pedagógica completa">' +
-                            '<i class="fas fa-expand-alt"></i> Ampliar' +
-                          '</button>' +
-                        '</div>' +
-                      '</div>' +
-                    '</div>' +
+                  '<div class="pirate-scroll-box objective">' +
+                    '<div class="psb-header"><i class="fas fa-bullseye"></i> <strong>Objetivo del Tesoro</strong></div>' +
+                    '<p class="psb-body">' + m.objective + '</p>' +
                   '</div>' : '') +
                 (m.benefits ?
-                  '<div class="arm-concept-accordion arm-concept-benefits" data-concept-type="benefits">' +
-                    '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar los beneficios">' +
-                      '<span class="arm-ct-left"><i class="fas fa-brain"></i> <strong>Beneficios</strong></span>' +
-                      '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
-                    '</button>' +
-                    '<div class="arm-concept-drawer">' +
-                      '<div class="arm-concept-content">' +
-                        '<p>' + m.benefits + '</p>' +
-                        '<div class="arm-concept-actions">' +
-                          '<button type="button" class="arm-concept-modal-btn" data-concept-type="benefits" data-mission-idx="' + idx + '" title="Ampliar beneficios de razonamiento completos">' +
-                            '<i class="fas fa-expand-alt"></i> Ampliar' +
-                          '</button>' +
-                        '</div>' +
-                      '</div>' +
-                    '</div>' +
+                  '<div class="pirate-scroll-box benefits">' +
+                    '<div class="psb-header"><i class="fas fa-brain"></i> <strong>Poderes Piratas (Razonamiento y Lógica)</strong></div>' +
+                    '<p class="psb-body">' + m.benefits + '</p>' +
                   '</div>' : '') +
+                '<div class="pirate-scroll-actions">' +
+                  '<button type="button" class="pirate-btn-action pirate-btn-main arm-btn-open-modal" data-mission-idx="' + idx + '" title="Abrir y comenzar la misión">' +
+                    '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!' +
+                  '</button>' +
+                  toolBtnHtml +
+                  '<button type="button" class="pirate-btn-action pirate-btn-sec arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Ver Modo Presentación">' +
+                    '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
+                  '</button>' +
+                  '<button type="button" class="pirate-btn-action pirate-btn-ghost arm-btn-open-pdf" data-mission-idx="' + idx + '" title="Ver Guía PDF">' +
+                    '<i class="fas fa-file-pdf"></i> Guía PDF' +
+                  '</button>' +
+                '</div>' +
               '</div>' +
-              '<div class="arm-mc-footer">' +
-                '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
-                  '<i class="fas fa-play"></i> Iniciar Misión' +
-                '</button>' +
-                (m.type === 'gemini_notebooks' ? '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;"><i class="fas fa-brain"></i> Abrir NotebookLM</a>' : (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Abrir Canva</a>' : (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : ''))) +
-                '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Abrir Modo Presentación">' +
-                  '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
-                '</button>' +
-                '<button type="button" class="arm-btn-ghost arm-btn-open-pdf" data-mission-idx="' + idx + '" title="Ver Guía PDF">' +
-                  '<i class="fas fa-file-pdf"></i> Guía PDF' +
-                '</button>' +
-              '</div>' +
+              '<div class="pirate-scroll-wood-rod bottom"></div>' +
             '</div>' +
           '</div>';
-        }).join('') +
-        finishHtml +
-      '</div>';
+      }).join('');
+
+      // Connector final hacia el Cofre del Tesoro (centro)
+      var lastSide = ((missions.length - 1) % 2 === 0) ? 'left' : 'right';
+      var finishConnectorHtml = '';
+      if (lastSide === 'left') {
+        finishConnectorHtml =
+          '<div class="pirate-trail-connector connector-to-finish">' +
+            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
+              '<path class="ptc-glow" d="M 28,0 C 28,35 50,30 50,65" />' +
+              '<path class="ptc-dash" d="M 28,0 C 28,35 50,30 50,65" />' +
+            '</svg>' +
+            '<div class="pirate-waypoint-marker wp-finish" title="¡Cerca del tesoro!"><i class="fas fa-gem"></i></div>' +
+          '</div>';
+      } else {
+        finishConnectorHtml =
+          '<div class="pirate-trail-connector connector-to-finish">' +
+            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 65" preserveAspectRatio="none">' +
+              '<path class="ptc-glow" d="M 72,0 C 72,35 50,30 50,65" />' +
+              '<path class="ptc-dash" d="M 72,0 C 72,35 50,30 50,65" />' +
+            '</svg>' +
+            '<div class="pirate-waypoint-marker wp-finish" title="¡Cerca del tesoro!"><i class="fas fa-gem"></i></div>' +
+          '</div>';
+      }
+
+      var pirateFinishHtml =
+        finishConnectorHtml +
+        '<div class="pirate-finish-station" id="pirate-finish-station">' +
+          '<div class="pirate-x-marks-spot">' +
+            '<div class="pirate-x-symbol">❌</div>' +
+            '<div class="pirate-x-title">¡X MARCA EL LUGAR DEL GRAN TESORO!</div>' +
+          '</div>' +
+          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.celebrateMetaArrival && window.celebrateMetaArrival();" title="¡Hacé click para abrir el Cofre del Tesoro y festejar!">' +
+            '<div class="pirate-chest-glow"></div>' +
+            '<div class="pirate-chest-visual">' +
+              '<div class="pc-chest-lid"></div>' +
+              '<div class="pc-chest-base">' +
+                '<div class="pc-chest-lock"><i class="fas fa-key"></i></div>' +
+                '<div class="pc-chest-coins">' +
+                  '<span>🪙</span><span>💎</span><span>👑</span><span>💎</span><span>🪙</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="pirate-finish-card-body">' +
+            '<h4 class="pirate-finish-title">🏆 ¡Llegada al Gran Tesoro Maker!</h4>' +
+            '<p class="pirate-finish-desc">' +
+              '¡Felicitaciones, Capitán Maker! Superaste con valentía y creatividad los desafíos de <strong>' + student.gradeName + '</strong>. Dominaste algoritmos, programación, robótica e inteligencia artificial. ¡El saber es el más valioso de los tesoros!' +
+            '</p>' +
+            '<div class="pirate-finish-stats-row">' +
+              '<div class="pirate-stat-pill">' +
+                '<i class="fas fa-trophy" style="color:#D97706;"></i>' +
+                '<span><strong>' + completedCount + ' de ' + missions.length + '</strong> islas conquistadas</span>' +
+              '</div>' +
+              '<div class="pirate-stat-pill">' +
+                '<i class="fas fa-coins" style="color:#F59E0B;"></i>' +
+                '<span><strong>+' + (completedCount * 100) + ' XP</strong> en doblones de oro</span>' +
+              '</div>' +
+              '<div class="pirate-stat-pill">' +
+                '<i class="fas fa-compass" style="color:#0284C7;"></i>' +
+                '<span><strong>Galeón Paulo Freire 2026</strong></span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pirate-finish-action-row">' +
+              '<button type="button" class="pirate-celebrate-btn" onclick="window.celebrateMetaArrival && window.celebrateMetaArrival();">' +
+                '<i class="fas fa-gem"></i> ¡Abrir Cofre del Tesoro y Festejar! 🎉🏴‍☠️' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      bodyHtml =
+        '<div class="pirate-map-canvas">' +
+          '<div class="pirate-bg-compass-rose" aria-hidden="true"></div>' +
+          '<div class="pirate-bg-kraken" aria-hidden="true">🐙</div>' +
+          '<div class="pirate-bg-sea-turtle" aria-hidden="true">🐢</div>' +
+          '<div class="pirate-bg-bottle" aria-hidden="true">🍾</div>' +
+          pirateStartPortHtml +
+          pirateIslandsHtml +
+          pirateFinishHtml +
+        '</div>';
     } else {
       // ── Cuadrícula (Grid Mode) ──
       bodyHtml = '<div class="arm-grid-view">' +
@@ -1942,7 +2182,33 @@
         };
       });
 
-      // Clic en estación o tarjeta (excluyendo botones, links y acordeones de objetivo/beneficios)
+      // Clic en isla pirata (Landmark): Despliega o repliega el pergamino con el contenido al hacer click
+      container.querySelectorAll('.pirate-island-landmark').forEach(function(landmark){
+        landmark.onclick = function(e){
+          if (e.target.closest('button') || e.target.closest('a')) return;
+          e.stopPropagation();
+          if (window.sounds && window.sounds.playPop) {
+            window.sounds.playPop();
+          } else if (window.sounds && window.sounds.playClick) {
+            window.sounds.playClick();
+          }
+          var station = landmark.closest('.pirate-island-station');
+          if (!station) return;
+          var drawer = station.querySelector('.pirate-scroll-drawer');
+          if (!drawer) return;
+          var isOpen = drawer.classList.toggle('is-open');
+          station.classList.toggle('is-expanded', isOpen);
+          landmark.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          var hintText = landmark.querySelector('.ptp-text');
+          if (hintText) {
+            hintText.innerHTML = isOpen
+              ? '<i class="fas fa-scroll"></i> Ocultar pergamino'
+              : '<i class="fas fa-scroll"></i> Tocá la isla para ver pergamino';
+          }
+        };
+      });
+
+      // Clic en estación o tarjeta de cuadrícula
       container.querySelectorAll('.arm-station, .arm-mission-card, .arm-grid-card').forEach(function(card){
         card.onclick = function(e){
           if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.arm-concept-accordion')) return;
