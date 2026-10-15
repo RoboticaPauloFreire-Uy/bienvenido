@@ -86,8 +86,10 @@ html, body {
   padding: 24px 28px 22px;
   position: relative;
   max-width: 1220px;
+  width: 100%;
   margin: 0 auto 34px auto;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* Timbre / Sello de tinta en esquina de periódico */
@@ -728,21 +730,26 @@ html, body {
 /* ── Sumario de Secciones / Guía del Lector (Accesos directos) ── */
 .np-home-shortcuts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin-top: 14px;
+  padding-top: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .np-shortcut-card {
   display: flex;
   align-items: center;
   gap: 12px;
   background: #FCF9F2;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border: 1.5px solid #2B2520;
   box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.14);
   text-decoration: none;
   color: #1A1612;
   position: relative;
+  min-width: 0;
+  box-sizing: border-box;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 .np-shortcut-card:hover {
@@ -762,15 +769,17 @@ html, body {
   letter-spacing: 0.06em;
   padding: 2px 7px;
   border: 1px solid #2B2520;
+  white-space: nowrap;
+  z-index: 1;
 }
 .np-sc-icon {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border: 1.5px solid #2B2520;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   flex-shrink: 0;
   border-radius: 3px;
 }
@@ -780,25 +789,31 @@ html, body {
   gap: 2px;
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 .np-sc-title {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 900;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: #14110E;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .np-sc-desc {
   font-family: 'Newsreader', Georgia, serif;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: #5A5043;
   line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 .np-sc-arrow {
   font-size: 0.82rem;
   color: #7A6F60;
+  flex-shrink: 0;
   transition: transform 0.15s ease, color 0.15s ease;
 }
 .np-shortcut-card:hover .np-sc-arrow {
@@ -870,6 +885,12 @@ html, body {
 }
 
 /* ── Responsive para el Periódico ── */
+@media (max-width: 1040px) {
+  .np-home-shortcuts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 860px) {
   .np-paper-sheet {
     padding: 16px 14px 18px;
@@ -907,12 +928,12 @@ html, body {
     border-bottom: 2px dashed #D4CBBB;
     padding-bottom: 20px;
   }
-  .np-home-shortcuts {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 600px) {
+  .np-home-shortcuts {
+    grid-template-columns: 1fr;
+  }
   .np-nameplate {
     grid-template-columns: 1fr;
     text-align: center;
@@ -927,9 +948,6 @@ html, body {
     font-size: 0.7rem;
     flex-direction: column;
     align-items: flex-start;
-  }
-  .np-home-shortcuts {
-    grid-template-columns: 1fr;
   }
   .np-colophon {
     flex-direction: column;
