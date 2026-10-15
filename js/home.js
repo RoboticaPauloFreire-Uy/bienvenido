@@ -246,17 +246,19 @@
   /* ───────────── Cabecera tipo diario ───────────── */
   function renderMasthead() {
     var el = document.getElementById('hn-masthead-date');
-    if (!el) return;
-    var d = new Date();
-    var txt = DIAS[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear();
-    el.textContent = txt.charAt(0).toUpperCase() + txt.slice(1);
+    if (el) {
+      var d = new Date();
+      var txt = DIAS[d.getDay()] + ', ' + d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear();
+      el.textContent = txt.charAt(0).toUpperCase() + txt.slice(1);
+    }
 
     var stats = document.getElementById('hn-masthead-stats');
     if (stats) {
       var activas = (C.actividades || []).filter(function (a) { var s = estadoActividad(a).clave; return s === 'nueva' || s === 'curso'; }).length;
       stats.innerHTML =
-        '<span><strong>' + noticias.length + '</strong> noticias</span>' +
-        '<span><strong>' + activas + '</strong> actividades activas</span>';
+        '<span class="np-stat-item"><i class="fas fa-newspaper"></i> <strong>' + noticias.length + '</strong> NOTICIAS</span>' +
+        '<span class="np-stat-sep">/</span>' +
+        '<span class="np-stat-item"><i class="fas fa-cogs"></i> <strong>' + activas + '</strong> RETOS ACTIVOS</span>';
     }
   }
 
@@ -273,49 +275,100 @@
     track.style.animationDuration = Math.max(20, avisos.length * 9) + 's';
   }
 
-  /* ───────────── Destacada + secundarias ───────────── */
+  /* ───────────── Destacada + secundarias (Tapa de Periódico) ───────────── */
   function renderDestacada() {
     var main = document.getElementById('hn-featured-main');
     var side = document.getElementById('hn-featured-side');
     if (!main || !side) return;
     if (!noticias.length) {
-      main.innerHTML = '<div class="hn-empty">Todavía no hay noticias publicadas.</div>';
+      main.innerHTML = '<div class="hn-empty">Todavía no hay crónicas publicadas en esta edición.</div>';
       side.innerHTML = '';
       return;
     }
-    // 1. Noticia Destacada (Portada Principal): la más reciente con estrella destacada, o la primera más reciente
+    // 1. Noticia Destacada (Gran Titular de Portada): la más reciente con estrella o la primera
     var dest = noticias.filter(function (n) { return n.destacada; })[0] || noticias[0];
+    var cat = CATEGORIAS[dest.categoria] || { nombre: dest.categoria, icono: 'fas fa-newspaper', color: '#8B0000' };
+
+    var primerTexto = '';
+    if (Array.isArray(dest.cuerpo) && dest.cuerpo.length > 0) {
+      primerTexto = dest.cuerpo[0];
+    } else if (dest.bajada) {
+      primerTexto = dest.bajada;
+    }
+    var textoLimpio = primerTexto.replace(/<[^>]*>?/gm, '').trim();
+    if (textoLimpio.length > 210) {
+      textoLimpio = textoLimpio.substring(0, 210) + '...';
+    }
 
     main.innerHTML =
-      '<article class="hn-hero" data-noticia="' + esc(dest.id) + '" tabindex="0" role="button" aria-label="Leer: ' + esc(dest.titulo) + '">' +
-        '<img class="hn-hero-img" src="' + esc(dest.imagen) + '" alt="" loading="eager">' +
-        '<div class="hn-hero-shade"></div>' +
-        '<div class="hn-hero-body">' +
-          '<div class="hn-hero-meta">' + catBadge(dest.categoria) +
-            '<span class="hn-hero-grade">' + esc(nombreGrado(dest.grado)) + '</span>' +
-            '<span class="hn-hero-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(dest.fecha)) + '</span>' +
+      '<article class="np-hero-article" data-noticia="' + esc(dest.id) + '" tabindex="0" role="button" aria-label="Leer: ' + esc(dest.titulo) + '">' +
+        '<div class="np-kicker-bar">' +
+          '<span class="np-kicker-label"><i class="fas fa-star"></i> CRÓNICA PRINCIPAL</span>' +
+          '<span class="np-kicker-dot">•</span>' +
+          '<span class="np-kicker-cat">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
+          '<span class="np-kicker-dot">•</span>' +
+          '<span class="np-kicker-grade"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(dest.grado)) + '</span>' +
+        '</div>' +
+        '<h2 class="np-hero-headline">' + esc(dest.titulo) + '</h2>' +
+        '<div class="np-hero-byline">' +
+          '<span class="np-byline-item"><i class="fas fa-pen-nib"></i> Por Redacción Alumnos Paulo Freire</span>' +
+          '<span class="np-byline-sep">|</span>' +
+          '<span class="np-byline-item"><i class="far fa-calendar-alt"></i> ' + esc(fechaLarga(dest.fecha) || fechaRelativa(dest.fecha)) + '</span>' +
+          '<span class="np-byline-sep">|</span>' +
+          '<span class="np-byline-item"><i class="far fa-clock"></i> Lectura 2 min</span>' +
+        '</div>' +
+        (dest.bajada ? '<div class="np-hero-deck">' + esc(dest.bajada) + '</div>' : '') +
+        '<div class="np-hero-media">' +
+          '<div class="np-photo-box">' +
+            '<img class="np-hero-img" src="' + esc(dest.imagen) + '" alt="' + esc(dest.titulo) + '" loading="eager">' +
           '</div>' +
-          '<h2 class="hn-hero-title">' + esc(dest.titulo) + '</h2>' +
-          '<p class="hn-hero-sub">' + esc(dest.bajada) + '</p>' +
-          '<span class="hn-hero-cta">Leer nota <i class="fas fa-arrow-right"></i></span>' +
+          '<div class="np-photo-caption">' +
+            '<strong>GRABADO OFICIAL:</strong> Momento cumbre de experimentación en los talleres del colegio. ' +
+            '<span class="np-caption-credit">— Archivo Periodístico Freire</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="np-hero-prose">' +
+          '<p class="np-dropcap-p">' + esc(textoLimpio) + '</p>' +
+        '</div>' +
+        '<div class="np-hero-footer">' +
+          '<span class="np-read-link">CONTINÚA LEYENDO LA NOTA COMPLETA <i class="fas fa-arrow-right"></i></span>' +
+          '<span class="np-page-ref">[ Véase en Pág. 02 ]</span>' +
         '</div>' +
       '</article>';
 
-    // 2. Columna lateral ("Lo último"): automáticamente las siguientes 3 noticias más recientes
+    // 2. Columna lateral (Despachos y crónicas breves del día)
     var otras = noticias.filter(function (n) { return n !== dest; }).slice(0, 3);
+    var romanos = ['I', 'II', 'III'];
 
     side.innerHTML =
-      '<div class="hn-side-title"><i class="fas fa-bolt"></i> Lo último</div>' +
-      otras.map(function (n) {
-        return '<article class="hn-side-item" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
-          '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
-          '<div class="hn-side-body">' +
-            catBadge(n.categoria) +
-            '<h3>' + esc(n.titulo) + '</h3>' +
-            '<span class="hn-side-date">' + esc(fechaRelativa(n.fecha)) + ' · ' + esc(nombreGrado(n.grado)) + '</span>' +
-          '</div>' +
-        '</article>';
-      }).join('');
+      '<div class="np-side-header">' +
+        '<div class="np-side-rule-top"></div>' +
+        '<h3 class="np-side-title"><i class="fas fa-feather-alt"></i> DESPACHOS DEL DÍA</h3>' +
+        '<div class="np-side-subtitle">NOVEDADES DESTACADAS DE OTROS GRADOS</div>' +
+        '<div class="np-side-rule-btm"></div>' +
+      '</div>' +
+      '<div class="np-side-list">' +
+        otras.map(function (n, idx) {
+          var nCat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper' };
+          return '<article class="np-side-article" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
+            '<div class="np-side-meta">' +
+              '<span class="np-side-badge">DESPACHO Nº ' + (romanos[idx] || (idx + 1)) + '</span>' +
+              '<span class="np-side-grade">' + esc(nombreGrado(n.grado)) + '</span>' +
+            '</div>' +
+            '<h4 class="np-side-headline">' + esc(n.titulo) + '</h4>' +
+            '<div class="np-side-columns">' +
+              '<div class="np-side-thumb-box">' +
+                '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
+              '</div>' +
+              '<p class="np-side-desc">' + esc(n.bajada || '') + '</p>' +
+            '</div>' +
+            '<div class="np-side-footer">' +
+              '<span class="np-side-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
+              '<span class="np-side-action">LEER DESPACHO ➔</span>' +
+            '</div>' +
+          '</article>';
+        }).join('') +
+      '</div>';
   }
 
   /* ───────────── Grilla de noticias ───────────── */

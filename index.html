@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=101">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=19">
+  <link rel="stylesheet" href="css/home.css?v=20">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -155,93 +155,168 @@
       <div id="student-drive-dashboard-container"></div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 1: INICIO (PORTADA)
+           VISTA 1: INICIO (TAPA DE PERIÓDICO DE PAPEL)
       ══════════════════════════════════════════ -->
       <div id="view-inicio" class="hn-view active">
-        <section id="inicio">
-          <div class="hn-masthead">
-            <div class="hn-mh-brand">
-              <img src="img/escudo_paulo_freire.png" alt="">
-              <div>
-                <h1 class="hn-mh-title">El Diario del Taller</h1>
-                <div class="hn-mh-tag">Robótica, programación y cultura maker · Sala de 5 a 6° Grado</div>
-              </div>
-            </div>
-            <div class="hn-mh-right">
-              <div class="hn-mh-date" id="hn-masthead-date"></div>
-              <div class="hn-mh-stats" id="hn-masthead-stats"></div>
-            </div>
+        <section id="inicio" class="np-paper-sheet">
+
+          <!-- Timbre / Sello de tinta en esquina de periódico -->
+          <div class="np-rubber-stamp" aria-hidden="true">
+            <span class="np-stamp-text">★ TALLER ★</span>
+            <span class="np-stamp-sub">COLEGIO<br>PAULO FREIRE</span>
+            <span class="np-stamp-year">2026</span>
           </div>
 
-          <div class="hn-ticker" id="hn-ticker" aria-label="Avisos">
-            <div class="hn-ticker-label"><span class="dot"></span><span class="txt">Último momento</span></div>
+          <!-- Cabecera de periódico tradicional (Masthead) -->
+          <header class="np-masthead">
+            <!-- Orejas superiores: metadatos editoriales -->
+            <div class="np-ear-bar">
+              <div class="np-ear-left">
+                <span class="np-ear-item"><i class="fas fa-feather-alt"></i> FUNDADO EN 2026</span>
+                <span class="np-ear-sep">|</span>
+                <span class="np-ear-item">EDICIÓN MATUTINA</span>
+                <span class="np-ear-sep">|</span>
+                <span class="np-ear-item">PRECIO: $0 (CURIOSIDAD)</span>
+              </div>
+              <div class="np-ear-right">
+                <span class="np-ear-item" id="hn-masthead-date"></span>
+                <span class="np-ear-sep">|</span>
+                <span class="np-ear-item">AÑO I — Nº 2026</span>
+                <span class="np-ear-sep">|</span>
+                <span class="np-ear-item np-weather"><i class="fas fa-sun"></i> 22°C · BUEN CLIMA</span>
+              </div>
+            </div>
+
+            <!-- Placa central con nombre del periódico (Nameplate) -->
+            <div class="np-nameplate">
+              <div class="np-crest-side left">
+                <img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" class="np-crest-img">
+              </div>
+              <div class="np-title-block">
+                <h1 class="np-main-title">El Diario del Taller</h1>
+                <p class="np-motto">« CIENCIA, ROBÓTICA, PROGRAMACIÓN Y CULTURA MAKER · SALA DE 5 A 6° GRADO »</p>
+              </div>
+              <div class="np-crest-side right" aria-hidden="true">
+                <div class="np-lead-seal">
+                  <i class="fas fa-robot"></i>
+                  <span>INVENTORES</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cinta de tirada y resumen -->
+            <div class="np-sub-bar">
+              <div class="np-sub-bar-left">
+                <span class="np-bullet">◆</span>
+                <span>ÓRGANO INFORMATIVO OFICIAL DE LOS LABORATORIOS ESCOLARES</span>
+                <span class="np-bullet">◆</span>
+              </div>
+              <div class="hn-mh-stats np-stats" id="hn-masthead-stats"></div>
+            </div>
+          </header>
+
+          <!-- Teletipo de Última Hora (Ticker) -->
+          <div class="hn-ticker np-ticker" id="hn-ticker" aria-label="Avisos de última hora">
+            <div class="hn-ticker-label np-ticker-label">
+              <span class="np-ticker-pulse"></span>
+              <span class="txt">CABLE DE ÚLTIMA HORA</span>
+            </div>
             <div class="hn-ticker-viewport">
-              <div class="hn-ticker-track" id="hn-ticker-track"></div>
+              <div class="hn-ticker-track np-ticker-track" id="hn-ticker-track"></div>
             </div>
           </div>
 
-          <!-- Noticia destacada + lo último -->
-          <div class="hn-featured">
-            <div id="hn-featured-main"></div>
-            <aside class="hn-featured-side" id="hn-featured-side"></aside>
+          <!-- Primera Plana: Gran Titular + Crónicas del día -->
+          <div class="hn-featured np-featured">
+            <div id="hn-featured-main" class="np-featured-main"></div>
+            <aside class="hn-featured-side np-featured-side" id="hn-featured-side"></aside>
           </div>
 
-          <!-- Bloque de accesos directos a las demás secciones -->
-          <div class="hn-home-shortcuts">
-            <a href="#noticias" class="hn-shortcut-card" onclick="window.switchView('noticias'); return false;">
-              <div class="hsc-icon"><i class="fas fa-newspaper"></i></div>
-              <div class="hsc-text">
-                <span class="hsc-title">Ver todas las Noticias</span>
-                <span class="hsc-desc">Proyectos, desafíos y novedades de los alumnos</span>
+          <!-- Separador con pliegue de periódico (Fold) -->
+          <div class="np-fold-divider" aria-hidden="true">
+            <span class="np-fold-line"></span>
+            <span class="np-fold-badge"><i class="fas fa-newspaper"></i> SUMARIO DE LA EDICIÓN — ÍNDICE DE SECCIONES</span>
+            <span class="np-fold-line"></span>
+          </div>
+
+          <!-- Bloque de accesos directos estilo Índice / Sumario de Páginas -->
+          <div class="hn-home-shortcuts np-home-shortcuts">
+            <a href="#noticias" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('noticias'); return false;">
+              <div class="np-sc-page">PÁG. 02</div>
+              <div class="hsc-icon np-sc-icon" style="background:#FFF0EB;color:#C0392B;"><i class="fas fa-newspaper"></i></div>
+              <div class="hsc-text np-sc-text">
+                <span class="hsc-title np-sc-title">Revista de Noticias</span>
+                <span class="hsc-desc np-sc-desc">Crónicas, notas de tapa y proyectos de los alumnos</span>
               </div>
-              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
 
-            <a href="#clase" class="hn-shortcut-card" onclick="window.switchView('clase'); return false;">
-              <div class="hsc-icon" style="background:#E3F2FD;color:#1565C0;"><i class="fas fa-chalkboard-teacher"></i></div>
-              <div class="hsc-text">
-                <span class="hsc-title">Clase</span>
-                <span class="hsc-desc">Proyectos y desafíos del taller</span>
+            <a href="#clase" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('clase'); return false;">
+              <div class="np-sc-page">PÁG. 03</div>
+              <div class="hsc-icon np-sc-icon" style="background:#EBF5FB;color:#2980B9;"><i class="fas fa-drafting-compass"></i></div>
+              <div class="hsc-text np-sc-text">
+                <span class="hsc-title np-sc-title">Mesa de Clase</span>
+                <span class="hsc-desc np-sc-desc">Planos de ingeniería, retos semanales y laboratorio</span>
               </div>
-              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
 
-            <a href="#casa" class="hn-shortcut-card" onclick="window.switchView('casa'); return false;">
-              <div class="hsc-icon" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-laptop-house"></i></div>
-              <div class="hsc-text">
-                <span class="hsc-title">Casa</span>
-                <span class="hsc-desc">Simuladores, retos y en familia</span>
+            <a href="#casa" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('casa'); return false;">
+              <div class="np-sc-page">PÁG. 04</div>
+              <div class="hsc-icon np-sc-icon" style="background:#FEF9E7;color:#D35400;"><i class="fas fa-tools"></i></div>
+              <div class="hsc-text np-sc-text">
+                <span class="hsc-title np-sc-title">Tablero en Casa</span>
+                <span class="hsc-desc np-sc-desc">Herramientas, simuladores interactivos y retos en familia</span>
               </div>
-              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
 
-            <a href="#juegos" class="hn-shortcut-card" onclick="window.switchView('juegos'); return false;">
-              <div class="hsc-icon" style="background:#F3E5F5;color:#6A1B9A;"><i class="fas fa-gamepad"></i></div>
-              <div class="hsc-text">
-                <span class="hsc-title">Juegos</span>
-                <span class="hsc-desc">Por grupo según nivel y edad</span>
+            <a href="#juegos" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('juegos'); return false;">
+              <div class="np-sc-page">PÁG. 05</div>
+              <div class="hsc-icon np-sc-icon" style="background:#F5EEF8;color:#8E44AD;"><i class="fas fa-gamepad"></i></div>
+              <div class="hsc-text np-sc-text">
+                <span class="hsc-title np-sc-title">Pasatiempos & Juegos</span>
+                <span class="hsc-desc np-sc-desc">Puzzles lógicos, acertijos y arcade de programación</span>
               </div>
-              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
 
-            <a href="#muro" class="hn-shortcut-card" onclick="window.switchView('muro'); return false;">
-              <div class="hsc-icon" style="background:#E0F7FA;color:#00838F;"><i class="fas fa-photo-video"></i></div>
-              <div class="hsc-text">
-                <span class="hsc-title">Muro</span>
-                <span class="hsc-desc">Videos y fotos de las clases</span>
+            <a href="#muro" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('muro'); return false;">
+              <div class="np-sc-page">PÁG. 06</div>
+              <div class="hsc-icon np-sc-icon" style="background:#E8F8F5;color:#16A085;"><i class="fas fa-camera-retro"></i></div>
+              <div class="hsc-text np-sc-text">
+                <span class="hsc-title np-sc-title">Fotoproyecciones (Muro)</span>
+                <span class="hsc-desc np-sc-desc">Galería visual de fotos y videos de las clases</span>
               </div>
-              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
 
-            <a href="#agenda" class="hn-shortcut-card" onclick="window.switchView('agenda'); return false;">
-              <div class="hsc-icon" style="background:#FFF3E0;color:#E65100;"><i class="fas fa-calendar-day"></i></div>
-              <div class="hsc-text">
-                <span class="hsc-title">Agenda y Fechas</span>
-                <span class="hsc-desc">Presentación de proyectos por grado</span>
+            <a href="#agenda" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('agenda'); return false;">
+              <div class="np-sc-page">PÁG. 07</div>
+              <div class="hsc-icon np-sc-icon" style="background:#FDEDEC;color:#C0392B;"><i class="fas fa-calendar-alt"></i></div>
+              <div class="hsc-text np-sc-text">
+                <span class="hsc-title np-sc-title">Agenda & Efemérides</span>
+                <span class="hsc-desc np-sc-desc">Calendario de entregas y fechas clave por grado</span>
               </div>
-              <div class="hsc-arrow"><i class="fas fa-arrow-right"></i></div>
+              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
             </a>
           </div>
+
+          <!-- Colofón y pie de imprenta del periódico -->
+          <footer class="np-colophon" aria-hidden="true">
+            <div class="np-barcode">
+              <span class="np-barcode-lines">||||| | |||| ||| || |||||| | ||| ||||</span>
+              <span class="np-barcode-num">ISSN 2026-PF-ROBOTICA</span>
+            </div>
+            <div class="np-colophon-text">
+              <strong>EL DIARIO DEL TALLER</strong> · Edición Escolar Registrada · Colegio Paulo Freire<br>
+              Publicación periódica realizada en el Taller de Robótica y Computación · Montevideo, Uruguay
+            </div>
+            <div class="np-page-number">
+              <span>PÁG. 1</span>
+              <small>PORTADA</small>
+            </div>
+          </footer>
         </section>
       </div>
 
@@ -644,7 +719,7 @@
   <script src="js/news.js?v=12"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=42"></script>
+  <script src="js/home.js?v=43"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>

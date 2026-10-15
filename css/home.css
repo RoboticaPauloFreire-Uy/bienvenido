@@ -6,7 +6,7 @@
  * =============================================================
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400;1,700&family=Special+Elite&family=UnifrakturMaguntia&display=swap');
 
 :root {
   --hn-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
@@ -64,271 +64,833 @@ html, body {
 .hn-empty span { display: block; font-size: 2rem; margin-bottom: 6px; }
 .hn-empty.small { padding: 22px 14px; }
 
-/* ─────────────── CABECERA TIPO DIARIO ─────────────── */
-.hn-masthead {
+/* ═════════════════════════════════════════════════════════════
+   TAPA DE PERIÓDICO DE PAPEL IMPRESO (PORTADA DE INICIO)
+   Estilo broadsheet tradicional, tinta negra, papel prensa
+   ═════════════════════════════════════════════════════════════ */
+
+/* ── Pliego de Papel Periódico ── */
+.np-paper-sheet {
+  background-color: #F8F4EA;
+  background-image:
+    radial-gradient(#E0D7C2 0.75px, transparent 0.75px),
+    linear-gradient(180deg, rgba(0,0,0,0.015) 0%, rgba(0,0,0,0) 100%);
+  background-size: 7px 7px, 100% 100%;
+  color: #1A1612;
+  border: 3px double #2B2520;
+  border-radius: 4px;
+  box-shadow:
+    0 4px 6px rgba(35, 25, 15, 0.04),
+    0 16px 40px rgba(35, 25, 15, 0.12),
+    inset 0 0 50px rgba(180, 160, 125, 0.14);
+  padding: 24px 28px 22px;
+  position: relative;
+  max-width: 1220px;
+  margin: 0 auto 34px auto;
+  box-sizing: border-box;
+}
+
+/* Timbre / Sello de tinta en esquina de periódico */
+.np-rubber-stamp {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  width: 86px;
+  height: 86px;
+  border: 2px dashed #991B1B;
+  border-radius: 50%;
+  color: #991B1B;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Special Elite', monospace;
+  transform: rotate(-11deg);
+  opacity: 0.85;
+  pointer-events: none;
+  user-select: none;
+  z-index: 4;
+  box-shadow: inset 0 0 0 2px rgba(153, 27, 27, 0.15);
+}
+.np-stamp-text {
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+.np-stamp-sub {
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 2px 0;
+  text-transform: uppercase;
+}
+.np-stamp-year {
+  font-size: 0.72rem;
+  font-weight: 900;
+  border-top: 1px solid #991B1B;
+  padding-top: 2px;
+}
+
+/* ── Cabecera / Masthead Tradicional ── */
+.np-masthead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+  position: relative;
+  overflow: visible;
+}
+
+/* Orejas Superiores (Ear Bar) */
+.np-ear-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  background: var(--hn-paper);
-  border-radius: 16px;
-  padding: 16px 22px;
-  box-shadow: var(--shadow-sm);
-  border-top: 5px solid var(--hn-green);
-  position: relative;
-  overflow: hidden;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  border-top: 1px solid #2B2520;
+  border-bottom: 1px solid #2B2520;
+  padding: 5px 4px;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: #3D352E;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
-.hn-masthead::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; top: 0;
-  height: 5px;
-  background: linear-gradient(90deg, var(--hn-green) 0 70%, var(--hn-yellow) 70% 100%);
-  transform: translateY(-5px);
+.np-ear-left, .np-ear-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-.hn-mh-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
-.hn-mh-brand img { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; }
-.hn-mh-title {
-  font-family: var(--hn-serif);
-  font-weight: 800;
-  font-size: clamp(1.45rem, 3vw, 2.1rem);
-  line-height: 1.05;
-  color: var(--hn-green-dark);
-  letter-spacing: -.01em;
+.np-ear-sep {
+  color: #9C9184;
 }
-.hn-mh-tag {
-  font-size: .82rem;
-  font-weight: 700;
-  color: var(--text-secondary, #606770);
-  margin-top: 3px;
+.np-ear-item i {
+  color: #2E7D32;
 }
-.hn-mh-right { text-align: right; flex-shrink: 0; }
-.hn-mh-date { font-weight: 800; font-size: .9rem; color: var(--hn-ink); }
-.hn-mh-stats { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; font-size: .78rem; color: var(--text-secondary, #606770); font-weight: 700; }
-.hn-mh-stats strong { color: var(--hn-green); font-size: .95rem; }
 
-/* ─────────────── TICKER DE AVISOS ─────────────── */
-.hn-ticker {
+/* Placa central con nombre del periódico (Nameplate) */
+.np-nameplate {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+  position: relative;
+}
+.np-crest-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.np-crest-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+.np-lead-seal {
+  width: 70px;
+  height: 70px;
+  border: 2px solid #2B2520;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: #2B2520;
+  text-align: center;
+  background: #F0EADB;
+  line-height: 1.1;
+  box-shadow: inset 0 0 0 2px #F8F4EA, inset 0 0 0 3px #2B2520;
+}
+.np-lead-seal i {
+  font-size: 1.25rem;
+  margin-bottom: 2px;
+  color: #1B5E20;
+}
+.np-title-block {
+  text-align: center;
+  min-width: 0;
+}
+.np-main-title {
+  font-family: 'UnifrakturMaguntia', 'Playfair Display', Georgia, serif;
+  font-weight: normal;
+  font-size: clamp(2.4rem, 6.2vw, 4.4rem);
+  line-height: 1.05;
+  color: #14110E;
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.06);
+}
+.np-motto {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(0.78rem, 1.4vw, 0.96rem);
+  color: #4A4237;
+  letter-spacing: 0.06em;
+  margin: 5px 0 0 0;
+  text-transform: uppercase;
+}
+
+/* Cinta de tirada y resumen */
+.np-sub-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  border-top: 3px double #2B2520;
+  border-bottom: 1px solid #2B2520;
+  padding: 6px 4px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  color: #2B2520;
+  background: rgba(0,0,0,0.02);
+}
+.np-sub-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.np-bullet {
+  font-size: 0.6rem;
+  color: #991B1B;
+}
+.np-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.78rem;
+}
+.np-stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.np-stat-item strong {
+  color: #1B5E20;
+  font-weight: 900;
+}
+.np-stat-sep {
+  color: #9C9184;
+}
+
+/* ── Teletipo de Última Hora (Ticker) ── */
+.np-ticker {
   display: flex;
   align-items: stretch;
-  margin-top: 12px;
-  background: var(--hn-green-dark);
-  color: #fff;
-  border-radius: 12px;
+  margin-top: 14px;
+  background: #EFE9D6;
+  border: 1.5px solid #2B2520;
+  border-radius: 0;
+  color: #1A1612;
   overflow: hidden;
-  box-shadow: var(--shadow-xs);
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.15);
 }
-.hn-ticker-label {
+.np-ticker-label {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--hn-yellow);
-  color: #3E2723;
+  background: #1E1914;
+  color: #F8F4EA;
+  font-family: 'Special Elite', monospace;
   font-weight: 900;
-  font-size: .74rem;
-  letter-spacing: .06em;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 10px 14px;
+  padding: 8px 14px;
 }
-.hn-ticker-label .dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #D32F2F;
-  animation: hnPulse 1.4s infinite;
+.np-ticker-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #EF4444;
+  animation: hnPulse 1.2s infinite;
 }
-.hn-ticker-viewport { overflow: hidden; flex: 1; position: relative; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
-.hn-ticker-track {
-  display: inline-flex;
-  white-space: nowrap;
-  padding: 10px 0;
-  animation: hnMarquee 36s linear infinite;
+.np-ticker-track {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.85rem;
+  color: #1A1612;
 }
-.hn-ticker:hover .hn-ticker-track { animation-play-state: paused; }
-.hn-ticker-item { font-weight: 700; font-size: .88rem; padding: 0 28px; position: relative; }
-.hn-ticker-item::after { content: '•'; position: absolute; right: -4px; color: var(--hn-yellow); }
+.np-ticker-track .hn-ticker-item {
+  font-weight: 700;
+  padding: 0 24px;
+}
+.np-ticker-track .hn-ticker-item::after {
+  content: '◆';
+  color: #991B1B;
+  right: -4px;
+}
 
-@keyframes hnMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@keyframes hnPulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-
-/* ─────────────── DESTACADA ─────────────── */
-.hn-featured {
+/* ── Primera Plana: Grid de Noticias (Lead + Columna lateral) ── */
+.np-featured {
   display: grid;
-  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
-  gap: 18px;
-  margin-top: 18px;
-}
-
-.hn-hero {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 20px;
   position: relative;
-  border-radius: 18px;
-  overflow: hidden;
-  min-height: 420px;
-  height: 100%;
+}
+.np-featured-main {
+  min-width: 0;
+  padding-right: 22px;
+  border-right: 1px solid #D4CBBB;
+}
+.np-featured-side {
+  min-width: 0;
+}
+
+/* Artículo Principal de Portada (Lead Article) */
+.np-hero-article {
+  background: transparent;
   cursor: pointer;
-  box-shadow: var(--shadow-md);
-  background: #263238;
-  isolation: isolate;
-}
-.hn-hero-img {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  transition: transform .6s ease;
-  z-index: -2;
-}
-.hn-hero:hover .hn-hero-img { transform: scale(1.04); }
-.hn-hero-shade {
-  position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 25%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.88) 100%);
-}
-.hn-hero-body {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 28px 30px;
-  color: #fff;
-}
-.hn-hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; font-size: .78rem; font-weight: 700; }
-.hn-hero-grade, .hn-hero-date {
-  background: rgba(255,255,255,.16);
-  backdrop-filter: blur(4px);
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-.hn-hero-title {
-  font-family: var(--hn-serif);
-  font-weight: 800;
-  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
-  line-height: 1.12;
-  margin-bottom: 10px;
-  text-shadow: 0 2px 12px rgba(0,0,0,.35);
-}
-.hn-hero-sub { font-size: 1rem; opacity: .92; max-width: 640px; line-height: 1.5; }
-.hn-hero-cta {
-  display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 16px;
-  background: var(--hn-yellow);
-  color: #3E2723;
-  font-weight: 900;
-  font-size: .88rem;
-  padding: 9px 18px;
-  border-radius: 999px;
-  transition: gap .2s ease;
-}
-.hn-hero:hover .hn-hero-cta { gap: 12px; }
-
-.hn-cat {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: var(--cat, #455A64);
-  color: #fff;
-  font-weight: 800;
-  font-size: .72rem;
-  padding: 4px 10px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-
-.hn-featured-side {
-  background: var(--hn-paper);
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
+  outline: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
-.hn-side-title {
-  font-family: var(--hn-serif);
-  font-weight: 800;
-  font-size: 1.15rem;
-  color: var(--hn-green-dark);
-  padding: 2px 4px 10px;
-  border-bottom: 2px solid var(--hn-line);
+.np-hero-article:focus-visible {
+  outline: 2px dashed #1B5E20;
+  outline-offset: 4px;
+}
+.np-kicker-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  color: #615647;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.np-kicker-label {
+  color: #991B1B;
+  font-weight: 900;
+}
+.np-kicker-dot {
+  color: #B5AA98;
+}
+.np-kicker-cat {
+  font-weight: 700;
+  color: #1E1914;
+}
+.np-kicker-grade {
+  background: #E8E1CE;
+  padding: 1px 7px;
+  border-radius: 2px;
+  border: 1px solid #D2C7B3;
+  color: #2B2520;
+}
+
+.np-hero-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+  line-height: 1.12;
+  color: #12100E;
+  margin: 6px 0 10px;
+  letter-spacing: -0.015em;
+  transition: color 0.2s ease;
+}
+.np-hero-article:hover .np-hero-headline {
+  color: #991B1B;
+}
+
+.np-hero-byline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.76rem;
+  color: #554C40;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #D4CBBB;
+}
+.np-byline-sep {
+  color: #B5AA98;
+}
+
+.np-hero-deck {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.08rem;
+  line-height: 1.45;
+  color: #3D352C;
+  margin-bottom: 14px;
+}
+
+/* Fotografía de Portada con marco de imprenta */
+.np-hero-media {
+  margin-bottom: 14px;
+}
+.np-photo-box {
+  border: 1px solid #2B2520;
+  background: #EAE3D2;
+  padding: 4px;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.12);
+  overflow: hidden;
+}
+.np-hero-img {
+  width: 100%;
+  height: clamp(230px, 32vw, 360px);
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.04) saturate(0.92);
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+.np-hero-article:hover .np-hero-img {
+  transform: scale(1.02);
+  filter: contrast(1.08) saturate(1.02);
+}
+.np-photo-caption {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.8rem;
+  color: #4A4237;
+  padding: 6px 4px 0;
+  line-height: 1.4;
+  border-bottom: 1px dashed #D4CBBB;
+  padding-bottom: 8px;
+}
+.np-caption-credit {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: #7A6F60;
+}
+
+/* Texto de cuerpo con letra capitular (Drop Cap) */
+.np-hero-prose {
+  margin-bottom: 14px;
+}
+.np-dropcap-p {
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: #25201A;
+  margin: 0;
+  text-align: justify;
+}
+.np-dropcap-p::first-letter {
+  float: left;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.4rem;
+  line-height: 0.82;
+  padding-top: 4px;
+  padding-right: 10px;
+  padding-bottom: 2px;
+  font-weight: 900;
+  color: #12100E;
+}
+
+/* Pie de lectura con estilo continuación periodística */
+.np-hero-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid #2B2520;
+  border-bottom: 1px solid #2B2520;
+  padding: 8px 4px;
+  margin-top: auto;
+}
+.np-read-link {
+  font-family: 'Special Elite', monospace;
+  font-weight: 900;
+  font-size: 0.82rem;
+  color: #1E1914;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+.np-hero-article:hover .np-read-link {
+  color: #991B1B;
+  gap: 12px;
+}
+.np-page-ref {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  color: #6B5F4E;
+}
+
+/* ── Columna Lateral: Despachos del Día ── */
+.np-side-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.np-side-rule-top {
+  border-top: 3px double #2B2520;
+  margin-bottom: 6px;
+}
+.np-side-title {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: #1E1914;
+  margin: 0;
+}
+.np-side-subtitle {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  color: #6B5F4E;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+.np-side-rule-btm {
+  border-bottom: 1px solid #2B2520;
+  margin-top: 6px;
+}
+
+.np-side-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.np-side-article {
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #D4CBBB;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.np-side-article:last-child {
+  border-bottom: none;
+}
+.np-side-article:hover {
+  background: rgba(0,0,0,0.02);
+}
+.np-side-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.7rem;
+  color: #736756;
   margin-bottom: 4px;
 }
-.hn-side-title i { color: var(--hn-yellow); }
-.hn-side-item {
+.np-side-badge {
+  font-weight: 900;
+  color: #991B1B;
+}
+.np-side-grade {
+  background: #EAE3D2;
+  padding: 1px 6px;
+  border-radius: 2px;
+  border: 1px solid #D6CCB8;
+  color: #2B2520;
+}
+.np-side-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #161310;
+  margin: 0 0 6px 0;
+  transition: color 0.15s ease;
+}
+.np-side-article:hover .np-side-headline {
+  color: #991B1B;
+}
+.np-side-columns {
   display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 12px;
-  padding: 10px 6px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background .2s ease;
-  border-bottom: 1px solid var(--hn-line);
+  grid-template-columns: 78px 1fr;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 6px;
 }
-.hn-side-item:last-child { border-bottom: 0; }
-.hn-side-item:hover { background: #F5F7F5; }
-.hn-side-item img { width: 96px; height: 80px; border-radius: 10px; object-fit: cover; background: #ECEFF1; }
-.hn-side-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; align-items: flex-start; }
-.hn-side-body h3 {
-  font-size: .92rem; font-weight: 800; line-height: 1.3; color: var(--hn-ink);
-  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+.np-side-thumb-box {
+  border: 1px solid #2B2520;
+  padding: 2px;
+  background: #EFE9D6;
 }
-.hn-side-date { font-size: .74rem; color: var(--text-secondary, #606770); font-weight: 600; }
+.np-side-thumb-box img {
+  width: 100%;
+  height: 62px;
+  object-fit: cover;
+  display: block;
+}
+.np-side-desc {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  color: #4A4237;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.np-side-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: #6B5F4E;
+}
+.np-side-action {
+  font-weight: 900;
+  color: #1B5E20;
+}
 
-/* ─────────────── ACCESOS DIRECTOS DE PORTADA ─────────────── */
-.hn-home-shortcuts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 22px;
-}
-@media (max-width: 760px) {
-  .hn-home-shortcuts { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 500px) {
-  .hn-home-shortcuts { grid-template-columns: 1fr; }
-}
-.hn-shortcut-card {
+/* ── Pliegue Central de Periódico (Fold Divider) ── */
+.np-fold-divider {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: var(--hn-paper);
-  padding: 16px 18px;
-  border-radius: 16px;
-  box-shadow: var(--shadow-sm);
+  margin: 28px 0 18px 0;
+  user-select: none;
+}
+.np-fold-line {
+  flex: 1;
+  border-top: 2px dashed #C8BFA9;
+}
+.np-fold-badge {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  color: #2B2520;
+  background: #ECE5D2;
+  border: 1.5px solid #2B2520;
+  padding: 5px 16px;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.15);
+  text-transform: uppercase;
+}
+.np-fold-badge i {
+  color: #991B1B;
+  margin-right: 4px;
+}
+
+/* ── Sumario de Secciones / Guía del Lector (Accesos directos) ── */
+.np-home-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+.np-shortcut-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FCF9F2;
+  padding: 14px 16px;
+  border: 1.5px solid #2B2520;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.14);
   text-decoration: none;
-  color: var(--hn-ink);
-  border: 1.5px solid var(--hn-line);
-  transition: all .2s ease;
+  color: #1A1612;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
-.hn-shortcut-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--hn-green);
+.np-shortcut-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 rgba(43, 37, 32, 0.22);
+  background: #FFFDF9;
 }
-.hsc-icon {
-  width: 48px; height: 48px;
-  border-radius: 14px;
-  background: #E3F2FD;
-  color: #1565C0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem;
+.np-sc-page {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: #1E1914;
+  color: #F8F4EA;
+  font-family: 'Special Elite', monospace;
+  font-weight: 900;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border: 1px solid #2B2520;
+}
+.np-sc-icon {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid #2B2520;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
   flex-shrink: 0;
+  border-radius: 3px;
 }
-.hsc-text {
-  display: flex; flex-direction: column; gap: 3px;
-  flex: 1; min-width: 0;
+.np-sc-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
 }
-.hsc-title {
-  font-weight: 800;
-  font-size: .96rem;
-  color: var(--hn-ink);
+.np-sc-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: #14110E;
 }
-.hsc-desc {
-  font-size: .78rem;
-  color: var(--text-secondary, #606770);
+.np-sc-desc {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.78rem;
+  color: #5A5043;
+  line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.hsc-arrow {
-  color: var(--text-muted, #90A4AE);
-  font-size: .9rem;
-  transition: transform .2s ease, color .2s ease;
+.np-sc-arrow {
+  font-size: 0.82rem;
+  color: #7A6F60;
+  transition: transform 0.15s ease, color 0.15s ease;
 }
-.hn-shortcut-card:hover .hsc-arrow {
-  transform: translateX(4px);
-  color: var(--hn-green);
+.np-shortcut-card:hover .np-sc-arrow {
+  transform: translateX(3px);
+  color: #991B1B;
+}
+
+/* ── Colofón y Pie de Imprenta (Colophon) ── */
+.np-colophon {
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 3px double #2B2520;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: #554C40;
+}
+.np-barcode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.np-barcode-lines {
+  font-family: monospace;
+  font-size: 1.15rem;
+  letter-spacing: -0.06em;
+  font-weight: 900;
+  color: #1E1914;
+  line-height: 0.8;
+}
+.np-barcode-num {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+.np-colophon-text {
+  text-align: center;
+  line-height: 1.35;
+  flex: 1;
+  min-width: 240px;
+}
+.np-colophon-text strong {
+  font-family: 'Cinzel', serif;
+  color: #1E1914;
+  letter-spacing: 0.04em;
+}
+.np-page-number {
+  border: 1.5px solid #2B2520;
+  padding: 4px 10px;
+  text-align: center;
+  background: #EFE9D6;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.np-page-number span {
+  font-weight: 900;
+  font-size: 0.86rem;
+  color: #1E1914;
+}
+.np-page-number small {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: #7A6F60;
+}
+
+/* ── Responsive para el Periódico ── */
+@media (max-width: 860px) {
+  .np-paper-sheet {
+    padding: 16px 14px 18px;
+    border-width: 2px;
+  }
+  .np-rubber-stamp {
+    width: 68px;
+    height: 68px;
+    top: 10px;
+    right: 10px;
+  }
+  .np-nameplate {
+    grid-template-columns: 50px 1fr 50px;
+    gap: 8px;
+  }
+  .np-crest-img {
+    width: 48px;
+    height: 48px;
+  }
+  .np-lead-seal {
+    width: 48px;
+    height: 48px;
+    font-size: 0.5rem;
+  }
+  .np-lead-seal i {
+    font-size: 0.95rem;
+  }
+  .np-featured {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .np-featured-main {
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 2px dashed #D4CBBB;
+    padding-bottom: 20px;
+  }
+  .np-home-shortcuts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .np-nameplate {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .np-crest-side.left {
+    margin-bottom: 4px;
+  }
+  .np-crest-side.right {
+    display: none;
+  }
+  .np-ear-bar {
+    font-size: 0.7rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .np-home-shortcuts {
+    grid-template-columns: 1fr;
+  }
+  .np-colophon {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 
 /* ─────────────── SECCIONES ─────────────── */
