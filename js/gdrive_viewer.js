@@ -2785,12 +2785,21 @@
       var thumb = game.thumbnail || 'img/angrybirds.png';
       var platText = (game.platform === 'codeorg') ? 'Code.org' : (game.platform === 'codejr' ? 'Scratch Jr' : 'Taller Maker');
       var isCodeorg = (game.platform === 'codeorg') || (game.externalUrl && game.externalUrl.includes('code.org'));
-      var themeColor = isCodeorg ? '#E11D48' : '#2563EB';
 
       // Verificar si hay misión de aventura vinculada
       var linkedMission = (adventureMissions || []).find(function(m){
         return m.level === levelNum || (isCodeorg && m.type === 'codeorg');
       });
+
+      // Texto reducido y aproximado
+      var shortDesc = game.description || '';
+      if (shortDesc.length > 110) {
+        shortDesc = shortDesc.substring(0, 105).trim() + '...';
+      }
+      var promptSnippet = game.benefits || 'Pensamiento lógico, secuencias y creatividad computacional guiada.';
+      if (promptSnippet.length > 120) {
+        promptSnippet = promptSnippet.substring(0, 115).trim() + '...';
+      }
 
       return '<div class="grade-game-card ptb-card" data-game-level="' + levelNum + '">' +
         '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
@@ -2800,43 +2809,36 @@
             '<div class="ggc-play-bubble"><i class="fas fa-play"></i></div>' +
             '<span>¡Jugar Ahora!</span>' +
           '</div>' +
-          '<div class="ggc-lvl-badge" style="background:' + themeColor + ';">NIVEL ' + levelNum + '</div>' +
-          '<div class="ggc-platform-badge">' + platText + '</div>' +
+          '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-skull-crossbones"></i> NIVEL ' + levelNum + '</div>' +
+          '<div class="ggc-platform-badge pirate-plat-badge"><i class="fas fa-anchor"></i> ' + platText + '</div>' +
         '</div>' +
         '<div class="ggc-body">' +
           '<div class="ggc-top-row">' +
             '<h3 class="ggc-title">' + game.title + '</h3>' +
-            (linkedMission && linkedMission.status === 'completado' ? '<span class="ggc-status-done"><i class="fas fa-check-circle"></i> ⭐ Completado</span>' : '') +
+            (linkedMission && linkedMission.status === 'completado' ? '<span class="ggc-status-done"><i class="fas fa-check-circle"></i> ⭐</span>' : '') +
           '</div>' +
-          '<p class="ggc-desc">' + game.description + '</p>' +
-          (game.benefits ?
-            '<div class="arm-concept-accordion arm-concept-benefits ggc-concept-accordion" data-concept="benefits">' +
-              '<button type="button" class="arm-concept-toggle-btn" aria-expanded="false" title="Tocar para agrandar o achicar el razonamiento pedagógico">' +
-                '<span class="arm-ct-left"><i class="fas fa-brain"></i> <strong>Razonamiento Pedagógico</strong></span>' +
-                '<span class="arm-ct-right"><span class="arm-ct-status">Agrandar</span> <i class="fas fa-chevron-down arm-ct-icon"></i></span>' +
-              '</button>' +
-              '<div class="arm-concept-drawer">' +
-                '<div class="arm-concept-content">' +
-                  '<p class="ggc-bb-text">' + game.benefits + '</p>' +
-                  '<div class="arm-concept-actions">' +
-                    '<button type="button" class="arm-concept-modal-btn" data-concept-type="benefits" data-game-level="' + levelNum + '" title="Ampliar razonamiento pedagógico completo">' +
-                      '<i class="fas fa-expand-alt"></i> Ampliar' +
-                    '</button>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' : '') +
+          '<p class="ggc-desc">' + shortDesc + '</p>' +
+          '<div class="ggc-prompt-box">' +
+            '<div class="gpb-header">' +
+              '<span class="gpb-tag"><i class="fas fa-lightbulb"></i> Prompt Pedagógico</span>' +
+              '<span class="gpb-hint">Guía didáctica</span>' +
+            '</div>' +
+            '<p class="gpb-text">' + promptSnippet + '</p>' +
+          '</div>' +
           (game.tags && game.tags.length > 0 ?
             '<div class="ggc-tags-row">' +
-              game.tags.map(function(t){ return '<span class="ggc-tag">#' + t + '</span>'; }).join('') +
+              game.tags.slice(0, 4).map(function(t){ return '<span class="ggc-tag">#' + t + '</span>'; }).join('') +
             '</div>' : '') +
           '<div class="ggc-actions">' +
-            '<a href="' + game.externalUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play" style="background:' + themeColor + ';">' +
-              '<i class="fas fa-gamepad"></i> <span>Jugar en ' + platText + '</span>' +
+            '<a href="' + game.externalUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec" title="Ejecutar desafío en ' + platText + '">' +
+              '<i class="fas fa-play"></i> <span>Ejecutar</span>' +
             '</a>' +
+            '<button type="button" class="ggc-btn-sugerencias arm-concept-modal-btn" data-concept-type="benefits" data-game-level="' + levelNum + '" title="Ver prompt pedagógico completo y sugerencias para el aula">' +
+              '<i class="fas fa-lightbulb"></i> <span>Dame sugerencias</span>' +
+            '</button>' +
             (linkedMission ?
               '<button type="button" class="ggc-btn-mission" data-level="' + levelNum + '" title="Ver estación en el Mapa del Tesoro">' +
-                '<i class="fas fa-compass"></i> <span>Ver en Mapa Pirata</span>' +
+                '<i class="fas fa-compass"></i>' +
               '</button>' : '') +
           '</div>' +
         '</div>' +
@@ -4827,6 +4829,21 @@
       '</div>';
     }).join('');
 
+    var promptQuestion = '';
+    if (isScratchJrVelocidad) {
+      promptQuestion = '¿Cómo podemos hacer que un personaje se desplace más rápido que otro en la pista? Probá alternar el bloque naranja de velocidad (lenta, media y rápida) y observá el tiempo que tarda cada uno en cruzar la pantalla.';
+    } else if (isScratchJrPerspectiva) {
+      promptQuestion = '¿Cómo logramos que un personaje parezca que viene caminando desde muy lejos en el sendero? Usá los bloques violetas de achicar en el horizonte y agrandá progresivamente su tamaño mientras avanza hacia nosotros.';
+    } else if (isFrozen) {
+      promptQuestion = '¿Cuántos grados debe girar Elsa para formar la esquina de un cuadrado? ¿Y cómo podemos usar el bloque Repetir para patinar 4 lados iguales sin escribir 4 veces la misma orden?';
+    } else if (isMinecraft) {
+      promptQuestion = '¿Qué secuencia exacta de pasos necesita Steve o Alex para talar el árbol sin caer al agua? Contá los casilleros antes de encastrar los bloques y usá Repetir cuando camine en línea recta.';
+    } else if (isAngryBirds) {
+      promptQuestion = 'Antes de arrastrar bloques, señalá con el dedo el camino del pájaro rojo: ¿cuántos pasos adelante debe dar y hacia dónde debe girar para alcanzar el cerdito sin chocar dinamita?';
+    } else {
+      promptQuestion = '¿Qué pasos ordenados debe seguir nuestro personaje para superar el reto? Identificá la meta, probá tu algoritmo y descubrí qué ocurre si cambiás alguna instrucción.';
+    }
+
     modal.innerHTML =
       '<div class="pcm-backdrop"></div>' +
       '<div class="pcm-card ' + categoryTheme + '" role="dialog" aria-modal="true">' +
@@ -4844,6 +4861,15 @@
           '<h3 class="pcm-title">' + title + '</h3>' +
         '</div>' +
         '<div class="pcm-body">' +
+          '<div class="pcm-prompt-section">' +
+            '<div class="pcm-ps-header">' +
+              '<div class="pcm-ps-badge"><i class="fas fa-lightbulb"></i> Prompt Pedagógico y Sugerencias de Aula</div>' +
+              '<button type="button" class="pcm-btn-copy-prompt" id="pcm-btn-copy-prompt" title="Copiar prompt al portapapeles">' +
+                '<i class="far fa-copy"></i> <span>Copiar Prompt</span>' +
+              '</button>' +
+            '</div>' +
+            '<p class="pcm-ps-text" id="pcm-prompt-text">"' + promptQuestion + '"</p>' +
+          '</div>' +
           '<div class="pcm-quote-box ' + categoryTheme + '">' +
             '<div class="pcm-qb-label">' +
               (isObjective ? '<i class="fas fa-bullseye"></i> <span>¿Cuál es el Objetivo Pedagógico?</span>' : '<i class="fas fa-brain"></i> <span>¿Cuáles son los Beneficios de Razonamiento?</span>') +
@@ -4859,7 +4885,7 @@
         '<div class="pcm-footer">' +
           (gameUrl ?
             '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="pcm-btn pcm-btn-game">' +
-              '<i class="fas fa-gamepad"></i> <span>Jugar en ' + platText + '</span>' +
+              '<i class="fas fa-play"></i> <span>Ejecutar Desafío</span>' +
             '</a>' : '') +
           (data.id ?
             '<button type="button" class="pcm-btn pcm-btn-launch" id="pcm-btn-launch-mission">' +
@@ -4887,6 +4913,23 @@
 
     var closeX = modal.querySelector('#pcm-btn-close-x');
     if (closeX) closeX.onclick = closeModal;
+
+    var copyBtn = modal.querySelector('#pcm-btn-copy-prompt');
+    if (copyBtn) {
+      copyBtn.onclick = function(){
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(promptQuestion).then(function(){
+            copyBtn.innerHTML = '<i class="fas fa-check" style="color:#16A34A;"></i> <span>¡Copiado!</span>';
+            setTimeout(function(){
+              copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copiar Prompt</span>';
+            }, 2000);
+          }).catch(function(){
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> <span>¡Listo!</span>';
+          });
+        }
+      };
+    }
 
     var closeAction = modal.querySelector('#pcm-btn-close-action');
     if (closeAction) closeAction.onclick = closeModal;
