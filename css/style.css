@@ -13622,6 +13622,49 @@ body.student-logged-in #student-drive-dashboard-container {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   PESTAÑAS PIRATAS PARA EL COFRE DE CÓDIGOS (Scratch Jr / MakeCode)
+   ───────────────────────────────────────────────────────────── */
+.proyecto-tabs.pirate-ptabs {
+  border-bottom: 2px dashed rgba(120, 53, 15, 0.45);
+  justify-content: center;
+  margin-top: 14px;
+  margin-bottom: 4px;
+  gap: 12px;
+  padding-bottom: 0;
+}
+
+.pirate-ptabs .ptab {
+  background: rgba(254, 243, 199, 0.7);
+  border: 2px solid #B45309;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  color: #78350F;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  padding: 8px 24px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.pirate-ptabs .ptab:hover {
+  background: #FEF3C7;
+  color: #451A03;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(69, 26, 3, 0.3);
+}
+
+.pirate-ptabs .ptab.active {
+  background: linear-gradient(180deg, #92400E 0%, #78350F 100%) !important;
+  color: #FEF3C7 !important;
+  border-color: #F59E0B !important;
+  border-bottom: none !important;
+  box-shadow: 0 4px 14px rgba(69, 26, 3, 0.45);
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    LA MESA DEL CAPITÁN — DIBUJOS Y PERGAMINOS (ESTILO PIRATA)
    ══════════════════════════════════════════════════════════════════════════ */

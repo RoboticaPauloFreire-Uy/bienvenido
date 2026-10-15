@@ -1655,6 +1655,95 @@
   }
 
   // ──────────────────────────────────────────────────
+  // HELPER: Cuchillo y Tablero Rústico Pirata de la Taberna
+  // ──────────────────────────────────────────────────
+  function getPirateKnifeSvg() {
+    return '<div class="ptb-knife-anchor">' +
+      '<svg class="ptb-knife-svg" viewBox="0 0 90 200" width="75" height="165" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs>' +
+          '<linearGradient id="ptbBladeGrad" x1="0%" y1="0%" x2="100%" y2="0%">' +
+            '<stop offset="0%" stop-color="#E2E8F0"/>' +
+            '<stop offset="30%" stop-color="#FFFFFF"/>' +
+            '<stop offset="50%" stop-color="#94A3B8"/>' +
+            '<stop offset="70%" stop-color="#CBD5E1"/>' +
+            '<stop offset="100%" stop-color="#475569"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="ptbGoldHilt" x1="0%" y1="0%" x2="100%" y2="100%">' +
+            '<stop offset="0%" stop-color="#FDE68A"/>' +
+            '<stop offset="40%" stop-color="#D97706"/>' +
+            '<stop offset="80%" stop-color="#92400E"/>' +
+            '<stop offset="100%" stop-color="#78350F"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="ptbLeatherGrip" x1="0%" y1="0%" x2="100%" y2="0%">' +
+            '<stop offset="0%" stop-color="#2D1810"/>' +
+            '<stop offset="35%" stop-color="#5C3317"/>' +
+            '<stop offset="70%" stop-color="#3B1E08"/>' +
+            '<stop offset="100%" stop-color="#1A0D07"/>' +
+          '</linearGradient>' +
+          '<filter id="ptbKnifeShadow" x="-30%" y="-20%" width="170%" height="170%">' +
+            '<feDropShadow dx="6" dy="10" stdDeviation="5" flood-color="rgba(0,0,0,0.65)"/>' +
+          '</filter>' +
+        '</defs>' +
+        '<g filter="url(#ptbKnifeShadow)" transform="rotate(-12 45 110)">' +
+          '<!-- POMMEL DE ORO Y CALAVERA -->' +
+          '<circle cx="45" cy="18" r="12" fill="url(#ptbGoldHilt)" stroke="#451A03" stroke-width="1.5"/>' +
+          '<circle cx="45" cy="18" r="7.5" fill="#F59E0B" opacity="0.85"/>' +
+          '<circle cx="42" cy="16" r="1.5" fill="#451A03"/>' +
+          '<circle cx="48" cy="16" r="1.5" fill="#451A03"/>' +
+          '<path d="M42 22 L48 22" stroke="#451A03" stroke-width="1.2"/>' +
+          '<!-- MANGO ENCUERADO CON ALAMBRE DE ORO -->' +
+          '<rect x="39" y="30" width="12" height="52" rx="3" fill="url(#ptbLeatherGrip)" stroke="#1A0D07" stroke-width="1.2"/>' +
+          '<line x1="39" y1="38" x2="51" y2="43" stroke="#F59E0B" stroke-width="2"/>' +
+          '<line x1="39" y1="48" x2="51" y2="53" stroke="#F59E0B" stroke-width="2"/>' +
+          '<line x1="39" y1="58" x2="51" y2="63" stroke="#F59E0B" stroke-width="2"/>' +
+          '<line x1="39" y1="68" x2="51" y2="73" stroke="#F59E0B" stroke-width="2"/>' +
+          '<!-- GAVILAN / GUARDA CURVA PIRATA -->' +
+          '<path d="M16 84 C28 88, 38 82, 45 82 C52 82, 62 88, 74 84 C78 82, 76 92, 66 91 C56 90, 48 88, 45 88 C42 88, 34 90, 24 91 C14 92, 12 82, 16 84 Z" fill="url(#ptbGoldHilt)" stroke="#451A03" stroke-width="1.4"/>' +
+          '<circle cx="45" cy="85" r="3.5" fill="#FEF3C7" stroke="#78350F" stroke-width="1"/>' +
+          '<!-- HOJA DE ACERO CLAVADA -->' +
+          '<path d="M37 90 L39 152 L45 175 L51 152 L53 90 Z" fill="url(#ptbBladeGrad)" stroke="#475569" stroke-width="1.2"/>' +
+          '<line x1="45" y1="90" x2="45" y2="168" stroke="#334155" stroke-width="1.4"/>' +
+          '<line x1="43.5" y1="92" x2="43.5" y2="164" stroke="#FFFFFF" stroke-width="1" opacity="0.85"/>' +
+          '<polygon points="40,154 45,175 50,154" fill="#0F172A" opacity="0.7"/>' +
+        '</g>' +
+      '</svg>' +
+      '<div class="ptb-knife-slash"></div>' +
+    '</div>';
+  }
+
+  function buildPirateTavernBoard(opts) {
+    opts = opts || {};
+    var sealIcon = opts.sealIcon || '☠️';
+    var tag = opts.tag || 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS';
+    var title = opts.title || '';
+    var sub = opts.sub || '';
+    var extraHeaderHtml = opts.extraHeaderHtml || '';
+    var contentHtml = opts.contentHtml || '';
+
+    return '<div class="gdb-actividades-container ptb-main-wrap">' +
+      '<div class="pirate-tavern-board">' +
+        '<div class="ptb-corner-bolt top-left"></div>' +
+        '<div class="ptb-corner-bolt top-right"></div>' +
+        '<div class="ptb-corner-bolt bottom-left"></div>' +
+        '<div class="ptb-corner-bolt bottom-right"></div>' +
+        '<div class="ptb-parchment-wrap">' +
+          getPirateKnifeSvg() +
+          '<div class="ptb-parchment-sheet">' +
+            '<div class="ptb-wax-seal" title="Sello Oficial del Navío Paulo Freire"><span>' + sealIcon + '</span></div>' +
+            '<div class="ptb-sheet-header">' +
+              '<span class="ptb-sheet-tag"><i class="fas fa-scroll"></i> ' + tag + '</span>' +
+              '<h3 class="ptb-sheet-title">' + title + '</h3>' +
+              (sub ? '<p class="ptb-sheet-sub">' + sub + '</p>' : '') +
+              extraHeaderHtml +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        contentHtml +
+      '</div>' +
+    '</div>';
+  }
+
+  // ──────────────────────────────────────────────────
   // RENDER PRINCIPAL
   // ──────────────────────────────────────────────────
   function renderGDriveDashboard(containerId) {
@@ -1736,47 +1825,66 @@
     if (activeFolderKey === 'proyectos') {
       mainDisplayHtml = renderAdventureRoadmapHtml(student, adventureMissions, isRoadmapGridMode);
 
-    // ═══ CARPETA: PROYECTO DEL ALUMNO (Scratch Jr + MakeCode) ═══
+    // ═══ CARPETA: PROYECTO DEL ALUMNO (Scratch Jr + MakeCode / Robótica) ═══
     } else if (activeFolderKey === 'proyecto') {
 
-      // Pestañas de navegación
+      // Pestañas de navegación con temática pirata
       var tabsHtml =
-        '<div class="proyecto-tabs">' +
+        '<div class="proyecto-tabs pirate-ptabs">' +
           (showScratch ?
-            '<button class="ptab ' + (proyectoSubTab==='scratch' ? 'active' : '') + '" data-subtab="scratch">' +
+            '<button type="button" class="ptab ' + (proyectoSubTab==='scratch' ? 'active' : '') + '" data-subtab="scratch">' +
               '<span class="ptab-icon">🐱</span> Scratch Jr' +
             '</button>' : '') +
-          '<button class="ptab ' + (proyectoSubTab==='makecode' ? 'active' : '') + '" data-subtab="makecode">' +
-            '<span class="ptab-icon">💻</span> MakeCode' +
+          '<button type="button" class="ptab ' + (proyectoSubTab==='makecode' ? 'active' : '') + '" data-subtab="makecode">' +
+            '<span class="ptab-icon">💻</span> MakeCode / Robótica' +
           '</button>' +
         '</div>';
+
+      var tabContent = '';
 
       // ── Pestaña SCRATCH JR ──
       if (proyectoSubTab === 'scratch') {
         var isLoading = isLoadingProyectoFiles && scratchItems.length === 0;
         if (isLoading) {
-          tabContent = loadingHtml('Cargando proyectos Scratch Jr...', 'Buscando en tu carpeta', '#EA580C');
+          tabContent = loadingHtml('Cargando proyectos Scratch Jr...', 'Buscando pergaminos en tu cofre del navío...', '#EA580C');
         } else if (scratchItems.length === 0) {
-          tabContent = emptyHtml('🐱', '¡Aún no hay proyectos Scratch Jr!', 'Subí tu archivo <strong>.sb3</strong> o <strong>.sjr</strong> desde abajo.');
+          tabContent = '<div class="gdb-empty-state"><div class="ges-icon">🐱</div><h4>¡Aún no hay proyectos Scratch Jr en el cofre!</h4><p>Subí tu archivo <strong>.sb3</strong> o <strong>.sjr</strong> arrastrándolo a la pantalla o con el botón superior.</p></div>';
         } else {
-          tabContent = '<div class="scratch-files-grid">' +
+          tabContent = '<div class="grade-games-grid ptb-games-grid">' +
             scratchItems.map(function(item, idx){
               var dlUrl = getDownloadUrl(item);
-              return '<div class="scratch-file-card">' +
-                '<div class="sfc-icon-wrap"><span class="sfc-icon">🐱</span><span class="sfc-num">#' + (idx+1) + '</span></div>' +
-                '<div class="sfc-body">' +
-                  '<h4 class="sfc-title">' + (item.title||item.name) + '</h4>' +
-                  '<div class="sfc-meta"><span><i class="far fa-clock"></i> ' + item.date + '</span><span><i class="fas fa-hdd"></i> ' + item.size + '</span></div>' +
+              return '<div class="grade-game-card ptb-card" data-scratch-idx="' + idx + '">' +
+                '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
+                '<div class="ggc-thumb-wrap" ' + (dlUrl && dlUrl !== '#' ? 'onclick="window.open(\'' + dlUrl + '\', \'_blank\')"' : '') + ' title="Descargar proyecto Scratch Jr">' +
+                  '<div style="background:linear-gradient(135deg, #FFEDD5 0%, #FED7AA 50%, #FDBA74 100%);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">' +
+                    '<span style="font-size:3.6rem;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.25));">🐱</span>' +
+                    '<span style="font-weight:900;font-size:0.82rem;color:#9A3412;letter-spacing:0.04em;">SCRATCH JR</span>' +
+                  '</div>' +
+                  '<div class="ggc-play-overlay">' +
+                    '<div class="ggc-play-bubble"><i class="fas fa-download"></i></div>' +
+                    '<span>¡Descargar Proyecto!</span>' +
+                  '</div>' +
+                  '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-cat"></i> Proyecto #' + (idx + 1) + '</div>' +
+                  '<div class="ggc-platform-badge pirate-plat-badge">🐱 .sjr / .sb3</div>' +
                 '</div>' +
-                '<div class="sfc-actions">' +
-                  (dlUrl && dlUrl !== '#'
-                    ? '<a class="sfc-btn-download" href="' + dlUrl + '" target="_blank" rel="noopener noreferrer"><i class="fas fa-download"></i> Descargar</a>'
-                    : '<span class="sfc-btn-disabled"><i class="fas fa-download"></i> Sin link</span>') +
+                '<div class="ggc-body">' +
+                  '<div class="ggc-top-row">' +
+                    '<h3 class="ggc-title">' + (item.title||item.name) + '</h3>' +
+                  '</div>' +
+                  '<p class="ggc-desc">Proyecto interactivo de bloques Scratch Jr para explorar algoritmos, personajes y animaciones en la tripulación.</p>' +
+                  '<div class="ggc-tags-row">' +
+                    '<span class="ggc-tag"><i class="far fa-clock"></i> ' + item.date + '</span>' +
+                    '<span class="ggc-tag"><i class="fas fa-hdd"></i> ' + item.size + '</span>' +
+                  '</div>' +
+                  '<div class="ggc-actions">' +
+                    (dlUrl && dlUrl !== '#'
+                      ? '<a class="ggc-btn-play pirate-btn-exec" href="' + dlUrl + '" target="_blank" rel="noopener noreferrer"><i class="fas fa-download"></i> <span>Descargar</span></a>'
+                      : '<span class="sfc-btn-disabled"><i class="fas fa-download"></i> Sin link</span>') +
+                  '</div>' +
                 '</div>' +
               '</div>';
             }).join('') + '</div>';
         }
-        // MakeCode y Scratch Jr no tienen caja estática permanente
 
       // ── Pestaña MAKECODE / PROYECTOS DEL GRADO ──
       } else {
@@ -1787,7 +1895,7 @@
         var displayProjects = [];
         var seenProjectIds = {};
 
-        // 1. Proyectos del Grado (Nivel 2 Arquero Mecánico con Servo/Joystick, Nivel 1 Canva IA, etc.)
+        // 1. Proyectos del Grado
         gradeProjects.forEach(function(p) {
           if (p && p.id && !seenProjectIds[p.id]) {
             seenProjectIds[p.id] = true;
@@ -1824,93 +1932,60 @@
           tabContent = '<div class="gdb-empty-state">' +
             '<div class="ges-icon">💻</div>' +
             '<h4>Biblioteca de Proyectos vacía</h4>' +
-            '<p>El docente todavía no agregó códigos para <strong>' + student.gradeName + '</strong>.<br>' +
+            '<p>El capitán todavía no agregó códigos para <strong>' + student.gradeName + '</strong>.<br>' +
             'Los proyectos se configuran en el archivo <code>js/data.js</code>.</p>' +
           '</div>';
         } else {
-          tabContent =
-            (!showScratch ?
-              '<div class="mklib-header-banner" style="background:linear-gradient(135deg, #0F172A 0%, #1E293B 100%);color:#FFF;padding:16px 20px;border-radius:14px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border:1px solid #334155;">' +
-                '<div>' +
-                  '<h3 style="margin:0 0 4px;font-size:1.22rem;font-weight:900;color:#38BDF8;display:flex;align-items:center;gap:8px;"><i class="fas fa-folder-open"></i> Proyectos Oficiales del Grado (' + student.gradeName + ')</h3>' +
-                  '<p style="margin:0;font-size:0.86rem;color:#94A3B8;">Proyectos interactivos de robótica física, micro:bit, control con joystick chico negro, servomotor SG90 y diseño con IA.</p>' +
-                '</div>' +
-                '<span style="background:rgba(56, 189, 248, 0.15);color:#38BDF8;padding:6px 14px;border-radius:999px;font-size:0.8rem;font-weight:800;border:1px solid rgba(56, 189, 248, 0.3);"><i class="fas fa-cubes"></i> ' + displayProjects.length + ' proyecto(s)</span>' +
-              '</div>' : '') +
-            '<div class="mklib-cards-grid">' +
+          tabContent = '<div class="grade-games-grid ptb-games-grid">' +
             displayProjects.map(function(proj, idx) {
               var isServo = (proj.id === 'g6-p2') || (/servo.*joystick|joystick.*servo/i.test(proj.title || ''));
               var isCanva = proj.type === 'canva' || /canva/i.test(proj.title || '');
               var isGemini = (proj.id === 'g6-p3') || (/gemini|notebooklm|materiales.*estudio/i.test(proj.title || ''));
               var coverImg = proj.coverImage || (isServo ? 'img/proyectos/servo_joystick_makecode_cover.svg' : (isCanva ? 'img/proyectos/canva_arquero_ia_cover.svg' : (isGemini ? 'img/proyectos/gemini_notebooks_cover.svg' : 'img/microbit.png')));
-              var themeColor = proj.color || (isServo ? '#0D9488' : (isCanva ? '#0284C7' : (isGemini ? '#4F46E5' : '#7C3AED')));
               var levelNum = proj.level || (idx + 1);
-              var badgeText = proj.badge || (isServo ? '🧤 Arquero, Joystick Chico Negro & Servo SG90' : (isCanva ? '🤖 Canva & Animación con IA' : (isGemini ? '🧠 Gemini & NotebookLM • IA Educativa' : '💻 MakeCode Micro:bit')));
-              var codeSnippet = proj.codeSnippet || (isServo ? 'let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})' : null);
+              var badgeText = proj.badge || (isServo ? 'Arquero & Servo SG90' : (isCanva ? 'Canva & IA' : (isGemini ? 'Gemini & NotebookLM' : 'MakeCode Micro:bit')));
+              var platformIcon = isGemini ? '🧠' : (isCanva ? '🎨' : '💻');
+              var platformLabel = isGemini ? 'NotebookLM' : (isCanva ? 'Canva IA' : 'MakeCode');
               var actionUrl = proj.makecodeUrl || proj.shareUrl || proj.externalUrl || proj.gameUrl || (isGemini ? 'https://notebooklm.google.com' : '#');
-              var actionLabel = isGemini ? 'Abrir NotebookLM' : (isCanva ? 'Abrir en Canva' : (proj.type === 'makecode' || proj.makecodeUrl ? 'Abrir en MakeCode' : 'Abrir Proyecto'));
+              var actionLabel = isGemini ? 'Abrir NotebookLM' : (isCanva ? 'Abrir en Canva' : (proj.type === 'makecode' || proj.makecodeUrl ? 'Abrir MakeCode' : 'Abrir Proyecto'));
 
-              var pillsHtml = '';
-              if (isServo) {
-                pillsHtml =
-                  '<span class="mklib-pill" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-gamepad"></i> Joystick Chico Negro (P1)</span>' +
-                  '<span class="mklib-pill" style="background:#E0E7FF;color:#4338CA;"><i class="fas fa-cogs"></i> Servo SG90 (P0)</span>' +
-                  '<span class="mklib-pill" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-calculator"></i> Math.map (0..1023 ➔ 0..180°)</span>';
-              } else if (isCanva) {
-                pillsHtml =
-                  '<span class="mklib-pill" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-camera"></i> Foto en Aula</span>' +
-                  '<span class="mklib-pill" style="background:#F3E8FF;color:#6B21A8;"><i class="fas fa-wand-magic-sparkles"></i> Quitafondos IA</span>' +
-                  '<span class="mklib-pill" style="background:#FEF3C7;color:#92400E;"><i class="fas fa-film"></i> Magic Animate</span>';
-              } else if (isGemini) {
-                pillsHtml =
-                  '<span class="mklib-pill" style="background:#EEF2FF;color:#4338CA;"><i class="fas fa-brain"></i> Grounding en Fuentes</span>' +
-                  '<span class="mklib-pill" style="background:#FDF2F8;color:#BE185D;"><i class="fas fa-microphone"></i> Audio Overview</span>' +
-                  '<span class="mklib-pill" style="background:#ECFEFF;color:#0E7490;"><i class="fas fa-video"></i> Guiones de Video</span>' +
-                  '<span class="mklib-pill" style="background:#ECFDF5;color:#047857;"><i class="fas fa-file-pdf"></i> Guía PDF Unificada</span>';
-              } else {
-                pillsHtml =
-                  '<span class="mklib-pill"><i class="fas fa-puzzle-piece"></i> Código</span>' +
-                  '<span class="mklib-pill"><i class="fas fa-gamepad"></i> Simulador</span>';
+              var rawDesc = proj.description || 'Proyecto interactivo de robótica y programación en MakeCode para Micro:bit.';
+              var shortDesc = rawDesc;
+              if (shortDesc.length > 120) {
+                shortDesc = shortDesc.substring(0, 115).trim() + '...';
               }
 
-              var codeSnippetHtml = '';
-              if (codeSnippet) {
-                var safeCode = codeSnippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-                codeSnippetHtml =
-                  '<div class="mklib-code-snippet-box">' +
-                    '<div class="mklib-code-header">' +
-                      '<span><i class="fas fa-code"></i> Código MakeCode / TypeScript</span>' +
-                      '<button type="button" class="btn-copy-mklib-code" data-code="' + safeCode + '" title="Copiar código al portapapeles">' +
-                        '<i class="far fa-copy"></i> Copiar Código' +
-                      '</button>' +
-                    '</div>' +
-                    '<pre class="mklib-code-pre"><code>' + safeCode + '</code></pre>' +
-                  '</div>';
-              }
-
-              return '<div class="mklib-card-item" data-project-id="' + (proj.id || ('p-' + idx)) + '" data-entry-idx="' + idx + '">' +
-                '<div class="mklib-ci-cover">' +
-                  '<img src="' + coverImg + '" alt="' + (proj.title || '').replace(/"/g, '&quot;') + '" class="mklib-cover-img" onerror="this.src=\'img/microbit.png\'">' +
-                  '<div class="mklib-cover-overlay"></div>' +
-                  '<span class="mklib-cover-badge" style="background:' + themeColor + ';">' +
-                    '<i class="fas ' + (proj.icon || 'fa-gamepad') + '"></i> NIVEL ' + levelNum + ' • ' + (isServo ? 'ROBÓTICA & MAKECODE' : (isCanva ? 'CANVA & IA' : (isGemini ? 'IA & NOTEBOOKLM' : 'MAKECODE'))) +
-                  '</span>' +
+              return '<div class="grade-game-card ptb-card mklib-card-item" data-project-id="' + (proj.id || ('p-' + idx)) + '" data-entry-idx="' + idx + '">' +
+                '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
+                '<div class="ggc-thumb-wrap mklib-btn-modal-trigger" title="Hacé clic para ver el proyecto completo">' +
+                  '<img src="' + coverImg + '" alt="' + (proj.title || '').replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'img/microbit.png\'">' +
+                  '<div class="ggc-play-overlay">' +
+                    '<div class="ggc-play-bubble"><i class="fas fa-chalkboard-teacher"></i></div>' +
+                    '<span>¡Ver Proyecto!</span>' +
+                  '</div>' +
+                  '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-layer-group"></i> Nivel ' + levelNum + '</div>' +
+                  '<div class="ggc-platform-badge pirate-plat-badge">' + platformIcon + ' ' + platformLabel + '</div>' +
                 '</div>' +
-                '<div class="mklib-ci-body">' +
-                  '<div style="font-size:0.75rem;font-weight:800;color:' + themeColor + ';text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">' + badgeText + '</div>' +
-                  '<h4 class="mklib-ci-title">' + (proj.title || '') + '</h4>' +
-                  '<p class="mklib-ci-desc">' + (proj.description || '') + '</p>' +
-                  '<div class="mklib-ci-pills">' + pillsHtml + '</div>' +
-                  codeSnippetHtml +
-                '</div>' +
-                '<div class="mklib-ci-footer">' +
-                  '<button type="button" class="mklib-btn-modal-trigger" style="background:linear-gradient(135deg, ' + themeColor + ', #1E293B);">' +
-                    '<i class="fas fa-chalkboard-teacher"></i> Ver Proyecto Completo' +
-                  '</button>' +
-                  (actionUrl && actionUrl !== '#' ?
-                    '<a class="mklib-btn-entrar-link" href="' + actionUrl + '" target="_blank" rel="noopener noreferrer" style="color:' + themeColor + ' !important;border-color:' + themeColor + '66;">' +
-                      '<i class="fas fa-external-link-alt"></i> ' + actionLabel +
-                    '</a>' : '') +
+                '<div class="ggc-body">' +
+                  '<div class="ggc-top-row">' +
+                    '<h3 class="ggc-title">' + (proj.title || '') + '</h3>' +
+                  '</div>' +
+                  '<p class="ggc-desc">' + shortDesc + '</p>' +
+                  '<div class="ggc-tags-row">' +
+                    '<span class="ggc-tag">#' + badgeText.replace(/[^\wáéíóúÁÉÍÓÚñÑ]/g, '') + '</span>' +
+                    (isServo ? '<span class="ggc-tag">#ServoSG90</span><span class="ggc-tag">#Joystick</span>' : '') +
+                    (isCanva ? '<span class="ggc-tag">#AnimaciónIA</span>' : '') +
+                    (isGemini ? '<span class="ggc-tag">#AudioOverview</span>' : '') +
+                  '</div>' +
+                  '<div class="ggc-actions">' +
+                    (actionUrl && actionUrl !== '#' ?
+                      '<a class="ggc-btn-play pirate-btn-exec mklib-btn-entrar-link" href="' + actionUrl + '" target="_blank" rel="noopener noreferrer" title="' + actionLabel + '">' +
+                        '<i class="fas fa-play"></i> <span>Ejecutar</span>' +
+                      '</a>' : '') +
+                    '<button type="button" class="ggc-btn-sugerencias mklib-btn-modal-trigger" title="Ver ficha pedagógica y proyecto completo">' +
+                      '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Ficha</span>' +
+                    '</button>' +
+                  '</div>' +
                 '</div>' +
               '</div>';
             }).join('') +
@@ -1920,7 +1995,14 @@
         uploadZoneHtml = '';
       }
 
-      mainDisplayHtml = tabsHtml + tabContent;
+      mainDisplayHtml = buildPirateTavernBoard({
+        sealIcon: '💻',
+        tag: 'TABLERO DE LA TABERNA · COFRE DE CÓDIGOS Y ROBÓTICA',
+        title: '💻 Cofre de Códigos y Robótica — Navío ' + student.gradeName,
+        sub: '¡Explorá los proyectos de MakeCode, micro:bit, sensores y Scratch Jr para programar las naves y artefactos de la tripulación!',
+        extraHeaderHtml: tabsHtml,
+        contentHtml: tabContent
+      });
 
     // ═══ CARPETA: ACTIVIDADES (Tu Grado + General) ═══
     } else if (activeFolderKey === 'actividades') {
@@ -1932,7 +2014,7 @@
       // 1. Actividad de su grado (Relacionar): Solo aparece si HAY archivos subidos para su grado
       var gradeCardsHtml = '';
       if (gradeFiles.length > 0) {
-        gradeCardsHtml = gradeFiles.map(function(item){
+        gradeCardsHtml = gradeFiles.map(function(item, idx){
           var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
           var dlUrl = item.downloadUrl || ('https://drive.google.com/uc?export=download&id=' + item.id);
           var viewUrl = item.id ? ('https://drive.google.com/file/d/' + item.id + '/view') : dlUrl;
@@ -1945,25 +2027,38 @@
             ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + item.title.replace(/'/g, "\\'") + '\', \'' + dlUrl + '\');'
             : 'window.open(\'' + viewUrl + '\', \'_blank\');';
 
-          return '<div class="actividad-grid-card">' +
-            '<div class="agc-thumb-container" onclick="' + clickAction + '" title="Hacé click para ver">' +
+          return '<div class="grade-game-card ptb-card" data-act-idx="' + idx + '">' +
+            '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
+            '<div class="ggc-thumb-wrap" onclick="' + clickAction + '" title="Hacé clic para ver">' +
               (isImg
-                ? '<img src="' + imgThumb + '" alt="' + item.title + '" class="agc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">' +
-                  '<span class="agc-zoom-badge"><i class="fas fa-search-plus"></i> Ver Ficha</span>'
-                : '<span class="agc-icon-giant">📄</span><span class="agc-zoom-badge"><i class="fas fa-eye"></i> Abrir PDF</span>') +
-            '</div>' +
-            '<div class="agc-card-content">' +
-              '<div class="agc-card-badge-row">' +
-                '<span class="agc-card-badge" style="background:' + (gradeInfo.themeColor || '#EA580C') + ';color:#ffffff;"><i class="fas fa-star"></i> ' + student.gradeName + '</span>' +
-                '<span class="agc-card-tag">' + (isPdf ? '📄 PDF' : '🖼️ Imagen') + '</span>' +
+                ? '<img src="' + imgThumb + '" alt="' + item.title.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">'
+                : '<div style="background:linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;">📄</div>'
+              ) +
+              '<div class="ggc-play-overlay">' +
+                '<div class="ggc-play-bubble"><i class="fas fa-search-plus"></i></div>' +
+                '<span>' + (isImg ? '¡Ver Ficha!' : '¡Abrir PDF!') + '</span>' +
               '</div>' +
-              '<h3 class="agc-card-title">' + item.title + '</h3>' +
-              '<p class="agc-card-desc">Reto y actividad de relación de conceptos creada para tu grado (' + student.gradeName + ').</p>' +
-              '<div class="agc-card-actions">' +
+              '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-graduation-cap"></i> ' + student.gradeName + '</div>' +
+              '<div class="ggc-platform-badge pirate-plat-badge">' + (isPdf ? '📄 Ficha PDF' : '🖼️ Imagen') + '</div>' +
+            '</div>' +
+            '<div class="ggc-body">' +
+              '<div class="ggc-top-row">' +
+                '<h3 class="ggc-title">' + (item.title || 'Misión en Tierra') + '</h3>' +
+              '</div>' +
+              '<p class="ggc-desc">Reto y actividad de relación de conceptos creada para tu grado (' + student.gradeName + ').</p>' +
+              '<div class="ggc-tags-row">' +
+                '<span class="ggc-tag">#MisiónEnTierra</span>' +
+                '<span class="ggc-tag">#Conceptos</span>' +
+                '<span class="ggc-tag">#' + (isPdf ? 'PDF' : 'Ficha') + '</span>' +
+              '</div>' +
+              '<div class="ggc-actions">' +
                 (isImg
-                  ? '<button type="button" class="btn-agc-primary" style="background:' + (gradeInfo.themeColor || '#EA580C') + ';" onclick="' + clickAction + '"><i class="fas fa-eye"></i> <span>Ver Ficha</span></button>'
-                  : '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-primary" style="background:' + (gradeInfo.themeColor || '#EA580C') + ';"><i class="fas fa-eye"></i> <span>Abrir PDF</span></a>') +
-                '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary"><i class="fas fa-download"></i> <span>Descargar</span></a>' +
+                  ? '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="' + clickAction + '"><i class="fas fa-eye"></i> <span>Ver Ficha</span></button>'
+                  : '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec"><i class="fas fa-eye"></i> <span>Abrir PDF</span></a>'
+                ) +
+                '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar archivo">' +
+                  '<i class="fas fa-download"></i> <span>Descargar</span>' +
+                '</a>' +
               '</div>' +
             '</div>' +
           '</div>';
@@ -1980,43 +2075,45 @@
       var generalImgUrl = 'https://lh3.googleusercontent.com/d/' + generalItem.id;
 
       var generalCardHtml =
-        '<div class="actividad-grid-card">' +
-          '<div class="agc-thumb-container" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');" title="Hacé click para ver la ficha completa">' +
-            '<img src="' + generalImgUrl + '" alt="' + generalItem.title + '" class="agc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
-            '<span class="agc-zoom-badge"><i class="fas fa-search-plus"></i> Ver Ficha</span>' +
-          '</div>' +
-          '<div class="agc-card-content">' +
-            '<div class="agc-card-badge-row">' +
-              '<span class="agc-card-badge"><i class="fas fa-boxes"></i> General • Todas las edades</span>' +
+        '<div class="grade-game-card ptb-card" data-act-type="general">' +
+          '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
+          '<div class="ggc-thumb-wrap" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');" title="Hacé clic para ver la ficha completa">' +
+            '<img src="' + generalImgUrl + '" alt="' + generalItem.title.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
+            '<div class="ggc-play-overlay">' +
+              '<div class="ggc-play-bubble"><i class="fas fa-boxes"></i></div>' +
+              '<span>¡Ver Inventario!</span>' +
             '</div>' +
-            '<h3 class="agc-card-title">' + generalItem.title + '</h3>' +
-            '<p class="agc-card-desc">Observar, clasificar, contar y relacionar las piezas, sensores, motores y herramientas del taller de robótica desde casa.</p>' +
-            '<div class="agc-card-actions">' +
-              '<button type="button" class="btn-agc-primary" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');">' +
+            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-boxes"></i> General</div>' +
+            '<div class="ggc-platform-badge pirate-plat-badge">📜 Inventario Maker</div>' +
+          '</div>' +
+          '<div class="ggc-body">' +
+            '<div class="ggc-top-row">' +
+              '<h3 class="ggc-title">' + generalItem.title + '</h3>' +
+            '</div>' +
+            '<p class="ggc-desc">Observar, clasificar, contar y relacionar las piezas, sensores, motores y herramientas del taller de robótica.</p>' +
+            '<div class="ggc-tags-row">' +
+              '<span class="ggc-tag">#Inventario</span>' +
+              '<span class="ggc-tag">#Sensores</span>' +
+              '<span class="ggc-tag">#Herramientas</span>' +
+            '</div>' +
+            '<div class="ggc-actions">' +
+              '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');">' +
                 '<i class="fas fa-eye"></i> <span>Ver Ficha</span>' +
               '</button>' +
-              '<a href="' + generalDlUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary">' +
+              '<a href="' + generalDlUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar inventario">' +
                 '<i class="fas fa-download"></i> <span>Descargar</span>' +
-              '</a>' +
-              '<a href="' + activitiesDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-secondary" style="color:#2563EB;">' +
-                '<i class="fab fa-google-drive"></i>' +
               '</a>' +
             '</div>' +
           '</div>' +
         '</div>';
 
-      mainDisplayHtml =
-        '<div class="gdb-actividades-container">' +
-          '<div class="gac-section-block">' +
-            '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">📜</span> Misiones y Enigmas para Descifrar en Tierra</h4>' +
-            '</div>' +
-            '<div class="actividades-grid">' +
-              gradeCardsHtml +
-              generalCardHtml +
-            '</div>' +
-          '</div>' +
-        '</div>';
+      mainDisplayHtml = buildPirateTavernBoard({
+        sealIcon: '📜',
+        tag: 'TABLERO DE LA TABERNA · MISIONES EN TIERRA FIRME',
+        title: '📜 Misiones y Enigmas para Descifrar en Tierra — Navío ' + student.gradeName,
+        sub: '¡Fichas, planos y desafíos físicos para imprimir, relacionar conceptos y resolver acertijos con lápiz y papel o en el taller maker!',
+        contentHtml: '<div class="grade-games-grid ptb-games-grid">' + gradeCardsHtml + generalCardHtml + '</div>'
+      });
 
       uploadZoneHtml = '';
 
@@ -2025,37 +2122,45 @@
       var escapeRoomUrl = 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html';
 
       var escapeRoomCardHtml =
-        '<div class="actividad-grid-card">' +
-          '<div class="agc-thumb-container escape-bg" onclick="window.open(\'' + escapeRoomUrl + '\', \'_blank\');" title="Hacé click para entrar al Escape Room">' +
-            '<span class="agc-icon-giant">🗝️</span>' +
-            '<span class="agc-zoom-badge" style="background:#BE185D;"><i class="fas fa-external-link-alt"></i> Entrar al Desafío</span>' +
-          '</div>' +
-          '<div class="agc-card-content">' +
-            '<div class="agc-card-badge-row">' +
-              '<span class="agc-card-badge" style="background:#FCE7F3;color:#BE185D;"><i class="fas fa-heart"></i> Travesía Familiar • Todas las edades</span>' +
-              '<span class="agc-card-tag">🗝️ Escape Room Interactivo</span>' +
+        '<div class="grade-game-card ptb-card" style="max-width: 480px; margin: 0 auto;">' +
+          '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
+          '<div class="ggc-thumb-wrap" onclick="window.open(\'' + escapeRoomUrl + '\', \'_blank\')" title="Hacé clic para ingresar al Escape Room" style="background: radial-gradient(circle at center, #312E81 0%, #1E1B4B 60%, #0F172A 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; min-height: 200px;">' +
+            '<div style="text-align:center; padding: 20px 10px;">' +
+              '<span style="font-size: 4.2rem; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.6));">🗝️</span>' +
+              '<div style="color: #FDE047; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.08em; text-shadow: 0 2px 4px rgba(0,0,0,0.8); margin-top: 6px;">Misterio & Nostalgia</div>' +
             '</div>' +
-            '<h3 class="agc-card-title">Escape Room: Enigmas y Pistas Piratas</h3>' +
-            '<p class="agc-card-desc">Descifrá enigmas y pistas nostálgicas junto a tu tripulación familiar. Una aventura colaborativa con acertijos, desafíos y mucha creatividad.</p>' +
-            '<div class="agc-card-actions">' +
-              '<a href="' + escapeRoomUrl + '" target="_blank" rel="noopener noreferrer" class="btn-agc-primary" style="background:#DB2777;">' +
-                '<i class="fas fa-play"></i> <span>Zarpar al Escape Room</span>' +
+            '<div class="ggc-play-overlay">' +
+              '<div class="ggc-play-bubble"><i class="fas fa-play"></i></div>' +
+              '<span>¡Zarpar al Escape Room!</span>' +
+            '</div>' +
+            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-users"></i> Travesía Familiar</div>' +
+            '<div class="ggc-platform-badge pirate-plat-badge">🗝️ Escape Room Interactivo</div>' +
+          '</div>' +
+          '<div class="ggc-body">' +
+            '<div class="ggc-top-row">' +
+              '<h3 class="ggc-title">Escape Room: Enigmas y Pistas Piratas</h3>' +
+            '</div>' +
+            '<p class="ggc-desc">Descifrá enigmas y pistas nostálgicas junto a tu tripulación familiar. Una aventura colaborativa con acertijos y mucha creatividad.</p>' +
+            '<div class="ggc-tags-row">' +
+              '<span class="ggc-tag">#Enigmas</span>' +
+              '<span class="ggc-tag">#Colaboración</span>' +
+              '<span class="ggc-tag">#EscapeRoom</span>' +
+            '</div>' +
+            '<div class="ggc-actions">' +
+              '<a href="' + escapeRoomUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec" title="Zarpar al Escape Room">' +
+                '<i class="fas fa-compass"></i> <span>Zarpar al Escape Room</span>' +
               '</a>' +
             '</div>' +
           '</div>' +
         '</div>';
 
-      mainDisplayHtml =
-        '<div class="gdb-actividades-container">' +
-          '<div class="gac-section-block">' +
-            '<div class="gac-block-header">' +
-              '<h4><span class="gac-icon">🏴‍☠️</span> Travesía y Escape Room en Familia</h4>' +
-            '</div>' +
-            '<div class="actividades-grid">' +
-              escapeRoomCardHtml +
-            '</div>' +
-          '</div>' +
-        '</div>';
+      mainDisplayHtml = buildPirateTavernBoard({
+        sealIcon: '🗝️',
+        tag: 'TABLERO DE LA TABERNA · TRAVESÍA Y MISTERIO EN FAMILIA',
+        title: '🗝️ Escape Room: Enigmas y Pistas Piratas',
+        sub: '¡Zarpá junto a tu tripulación familiar! Descifrá enigmas nostálgicos, acertijos interactivos y secretos ocultos para escapar con el botín.',
+        contentHtml: '<div class="grade-games-grid ptb-games-grid" style="grid-template-columns: minmax(300px, 480px); justify-content: center;">' + escapeRoomCardHtml + '</div>'
+      });
 
       uploadZoneHtml = '';
 
@@ -2842,81 +2947,13 @@
       '</div>';
     }).join('');
 
-    var knifeSvg =
-      '<div class="ptb-knife-anchor">' +
-        '<svg class="ptb-knife-svg" viewBox="0 0 90 200" width="75" height="165" xmlns="http://www.w3.org/2000/svg">' +
-          '<defs>' +
-            '<linearGradient id="ptbBladeGrad" x1="0%" y1="0%" x2="100%" y2="0%">' +
-              '<stop offset="0%" stop-color="#E2E8F0"/>' +
-              '<stop offset="30%" stop-color="#FFFFFF"/>' +
-              '<stop offset="50%" stop-color="#94A3B8"/>' +
-              '<stop offset="70%" stop-color="#CBD5E1"/>' +
-              '<stop offset="100%" stop-color="#475569"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="ptbGoldHilt" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#FDE68A"/>' +
-              '<stop offset="40%" stop-color="#D97706"/>' +
-              '<stop offset="80%" stop-color="#92400E"/>' +
-              '<stop offset="100%" stop-color="#78350F"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="ptbLeatherGrip" x1="0%" y1="0%" x2="100%" y2="0%">' +
-              '<stop offset="0%" stop-color="#2D1810"/>' +
-              '<stop offset="35%" stop-color="#5C3317"/>' +
-              '<stop offset="70%" stop-color="#3B1E08"/>' +
-              '<stop offset="100%" stop-color="#1A0D07"/>' +
-            '</linearGradient>' +
-            '<filter id="ptbKnifeShadow" x="-30%" y="-20%" width="170%" height="170%">' +
-              '<feDropShadow dx="6" dy="10" stdDeviation="5" flood-color="rgba(0,0,0,0.65)"/>' +
-            '</filter>' +
-          '</defs>' +
-          '<g filter="url(#ptbKnifeShadow)" transform="rotate(-12 45 110)">' +
-            '<!-- POMMEL DE ORO Y CALAVERA -->' +
-            '<circle cx="45" cy="18" r="12" fill="url(#ptbGoldHilt)" stroke="#451A03" stroke-width="1.5"/>' +
-            '<circle cx="45" cy="18" r="7.5" fill="#F59E0B" opacity="0.85"/>' +
-            '<circle cx="42" cy="16" r="1.5" fill="#451A03"/>' +
-            '<circle cx="48" cy="16" r="1.5" fill="#451A03"/>' +
-            '<path d="M42 22 L48 22" stroke="#451A03" stroke-width="1.2"/>' +
-            '<!-- MANGO ENCUERADO CON ALAMBRE DE ORO -->' +
-            '<rect x="39" y="30" width="12" height="52" rx="3" fill="url(#ptbLeatherGrip)" stroke="#1A0D07" stroke-width="1.2"/>' +
-            '<line x1="39" y1="38" x2="51" y2="43" stroke="#F59E0B" stroke-width="2"/>' +
-            '<line x1="39" y1="48" x2="51" y2="53" stroke="#F59E0B" stroke-width="2"/>' +
-            '<line x1="39" y1="58" x2="51" y2="63" stroke="#F59E0B" stroke-width="2"/>' +
-            '<line x1="39" y1="68" x2="51" y2="73" stroke="#F59E0B" stroke-width="2"/>' +
-            '<!-- GAVILAN / GUARDA CURVA PIRATA -->' +
-            '<path d="M16 84 C28 88, 38 82, 45 82 C52 82, 62 88, 74 84 C78 82, 76 92, 66 91 C56 90, 48 88, 45 88 C42 88, 34 90, 24 91 C14 92, 12 82, 16 84 Z" fill="url(#ptbGoldHilt)" stroke="#451A03" stroke-width="1.4"/>' +
-            '<circle cx="45" cy="85" r="3.5" fill="#FEF3C7" stroke="#78350F" stroke-width="1"/>' +
-            '<!-- HOJA DE ACERO CLAVADA -->' +
-            '<path d="M37 90 L39 152 L45 175 L51 152 L53 90 Z" fill="url(#ptbBladeGrad)" stroke="#475569" stroke-width="1.2"/>' +
-            '<line x1="45" y1="90" x2="45" y2="168" stroke="#334155" stroke-width="1.4"/>' +
-            '<line x1="43.5" y1="92" x2="43.5" y2="164" stroke="#FFFFFF" stroke-width="1" opacity="0.85"/>' +
-            '<polygon points="40,154 45,175 50,154" fill="#0F172A" opacity="0.7"/>' +
-          '</g>' +
-        '</svg>' +
-        '<div class="ptb-knife-slash"></div>' +
-      '</div>';
-
-    return '<div class="gdb-actividades-container ptb-main-wrap">' +
-      '<div class="pirate-tavern-board">' +
-        '<div class="ptb-corner-bolt top-left"></div>' +
-        '<div class="ptb-corner-bolt top-right"></div>' +
-        '<div class="ptb-corner-bolt bottom-left"></div>' +
-        '<div class="ptb-corner-bolt bottom-right"></div>' +
-        '<div class="ptb-parchment-wrap">' +
-          knifeSvg +
-          '<div class="ptb-parchment-sheet">' +
-            '<div class="ptb-wax-seal" title="Sello Oficial del Navío Paulo Freire"><span>☠️</span></div>' +
-            '<div class="ptb-sheet-header">' +
-              '<span class="ptb-sheet-tag"><i class="fas fa-scroll"></i> TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS</span>' +
-              '<h3 class="ptb-sheet-title">⚔️ Desafíos Piratas por Niveles — Navío ' + student.gradeName + '</h3>' +
-              '<p class="ptb-sheet-sub">¡Atención tripulación! Seleccionen un desafío para zarpar, ejercitar algoritmos en alta mar y acumular doblones de oro para la bitácora.</p>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="grade-games-grid ptb-games-grid">' +
-          cardsHtml +
-        '</div>' +
-      '</div>' +
-    '</div>';
+    return buildPirateTavernBoard({
+      sealIcon: '☠️',
+      tag: 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS',
+      title: '⚔️ Desafíos Piratas por Niveles — Navío ' + student.gradeName,
+      sub: '¡Atención tripulación! Seleccionen un desafío para zarpar, ejercitar algoritmos en alta mar y acumular doblones de oro para la bitácora.',
+      contentHtml: '<div class="grade-games-grid ptb-games-grid">' + cardsHtml + '</div>'
+    });
   }
 
   // ──────────────────────────────────────────────────
