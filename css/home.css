@@ -4175,7 +4175,1047 @@ body.student-logged-in .site-footer {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   ESTILO DIARIO DE PAPEL / GACETA ESCOLAR (BROADSHEET NEWSPAPER)
+   Para todas las secciones del portal: Páginas 01 a 07
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Encabezado de Página / Folio Superior de Periódico ── */
+.np-page-folio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  border-top: 1px solid #2B2520;
+  border-bottom: 3px double #2B2520;
+  padding: 6px 4px;
+  margin-bottom: 22px;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #3D352E;
+  background: rgba(43, 37, 32, 0.02);
+}
+.np-folio-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #1A1612;
+}
+.np-folio-left i {
+  color: #1B5E20;
+}
+.np-folio-center {
+  font-weight: 800;
+  color: #2B2520;
+  letter-spacing: 0.1em;
+}
+.np-folio-right {
+  font-weight: 900;
+  color: #991B1B;
+  background: #EFE9D6;
+  border: 1px solid #D2C7B3;
+  padding: 1px 8px;
+  border-radius: 2px;
+}
+
+/* ── Cabeceras de Sección con Tipografía Editorial ── */
+.np-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #D4CBBB;
+  padding-bottom: 14px;
+}
+.np-kicker {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #991B1B;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.np-section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: clamp(1.65rem, 3.2vw, 2.3rem);
+  line-height: 1.15;
+  color: #14110E;
+  margin: 2px 0 6px 0;
+  letter-spacing: -0.015em;
+}
+.np-section-sub {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 0.96rem;
+  color: #4A4237;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ── Barra de Filtros & Selectores Estilo Tipográfico ── */
+.np-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding: 10px 14px;
+  background: #EFE8D6;
+  border: 1px solid #2B2520;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.12);
+}
+.np-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.np-chips .hn-chip {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1.5px solid #2B2520;
+  background: #FDFBF7;
+  color: #2B2520;
+  padding: 6px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 1.5px 1.5px 0 rgba(43, 37, 32, 0.15);
+}
+.np-chips .hn-chip:hover {
+  background: #E5DEC9;
+  transform: translate(-1px, -1px);
+  box-shadow: 2.5px 2.5px 0 rgba(43, 37, 32, 0.25);
+}
+.np-chips .hn-chip.active {
+  background: #2B2520;
+  color: #F8F4EA;
+  border-color: #2B2520;
+  box-shadow: 2.5px 2.5px 0 rgba(43, 37, 32, 0.4);
+}
+
+.np-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.np-select {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1A1612;
+  background: #FDFBF7;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  padding: 7px 32px 7px 12px;
+  appearance: none;
+  cursor: pointer;
+  box-shadow: 1.5px 1.5px 0 rgba(43, 37, 32, 0.15);
+  transition: all 0.18s ease;
+}
+.np-select:focus {
+  outline: 2px dashed #1B5E20;
+  outline-offset: 2px;
+}
+.np-select-wrap::after {
+  content: '▼';
+  font-size: 0.62rem;
+  color: #2B2520;
+  position: absolute;
+  right: 11px;
+  pointer-events: none;
+}
+
+/* ── PÁGINA 02: NOTICIAS (GRILLA DE GACETA) ── */
+.np-gazette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 26px 22px;
+  margin-top: 14px;
+}
+.np-gazette-card {
+  background: #FDFBF7;
+  border: 1.5px solid #2B2520;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.12);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+.np-gazette-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 5px 6px 0 rgba(43, 37, 32, 0.2);
+  background: #FFFFFF;
+}
+.np-gazette-card:focus-visible {
+  outline: 2px dashed #991B1B;
+  outline-offset: 3px;
+}
+.np-gz-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed #D4CBBB;
+}
+.np-gz-kicker {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #991B1B;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.np-gz-grade {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: #EFE8D6;
+  border: 1px solid #D2C7B3;
+  color: #2B2520;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+.np-gz-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.25;
+  color: #14110E;
+  margin: 2px 0 10px 0;
+  letter-spacing: -0.01em;
+  transition: color 0.18s ease;
+}
+.np-gazette-card:hover .np-gz-title {
+  color: #991B1B;
+}
+.np-gz-photo-frame {
+  border: 1px solid #2B2520;
+  background: #EAE3D2;
+  padding: 3px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.np-gz-photo-frame img {
+  width: 100%;
+  height: 165px;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.04) saturate(0.92);
+  transition: transform 0.35s ease;
+}
+.np-gazette-card:hover .np-gz-photo-frame img {
+  transform: scale(1.03);
+}
+.np-gz-photo-caption {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  color: #554C40;
+  padding: 4px 4px 1px;
+}
+.np-gz-desc {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: #352E26;
+  margin: 0 0 14px 0;
+  text-align: justify;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.np-gz-foot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #2B2520;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  color: #6B5F4E;
+}
+.np-gz-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.np-gz-read-btn {
+  font-weight: 900;
+  color: #14110E;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+.np-gazette-card:hover .np-gz-read-btn {
+  color: #991B1B;
+  gap: 8px;
+}
+
+.np-more-btn {
+  display: block;
+  margin: 30px auto 10px auto;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #EFE8D6 !important;
+  color: #1A1612 !important;
+  border: 2px solid #2B2520 !important;
+  padding: 10px 24px !important;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.25);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.np-more-btn:hover {
+  background: #2B2520 !important;
+  color: #F8F4EA !important;
+  box-shadow: 5px 5px 0 rgba(43, 37, 32, 0.35);
+  transform: translate(-2px, -2px);
+}
+
+/* ── PÁGINA 03: CLASE (EXPEDIENTES & DESPACHOS DE LABORATORIO) ── */
+.np-clase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 26px 22px;
+  margin-top: 14px;
+}
+.np-clase-card {
+  background: #FDFBF7;
+  border: 2px solid #2B2520;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.16);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.np-clase-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 7px 0 rgba(43, 37, 32, 0.22);
+}
+.np-clase-card.es-mia {
+  box-shadow: 0 0 0 2.5px #1B5E20, 5px 5px 0 rgba(43, 37, 32, 0.2);
+}
+.np-clase-card.estado-finalizada {
+  opacity: 0.72;
+  filter: grayscale(0.4);
+}
+.np-clase-card.estado-finalizada:hover {
+  opacity: 0.95;
+  filter: none;
+}
+.np-clase-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.np-clase-exp {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #1A1612;
+  letter-spacing: 0.06em;
+}
+.np-clase-stamp {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  transform: rotate(3deg);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1.5px dashed #2B2520;
+  background: #FAF6EC;
+}
+.np-clase-stamp.stamp-nueva {
+  border-color: #B45309;
+  color: #92400E;
+  background: #FEF3C7;
+}
+.np-clase-stamp.stamp-curso {
+  border-color: #15803D;
+  color: #166534;
+  background: #DCFCE7;
+}
+.np-clase-stamp.stamp-proxima {
+  border-color: #4338CA;
+  color: #3730A3;
+  background: #EEF2FF;
+}
+.np-clase-stamp.stamp-finalizada {
+  border-color: #475569;
+  color: #334155;
+  background: #F1F5F9;
+}
+.np-clase-photo-wrap {
+  border: 1px solid #2B2520;
+  background: #EAE3D2;
+  padding: 3px;
+  margin-bottom: 12px;
+  height: 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.np-clase-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.np-clase-photo-icon {
+  font-size: 3rem;
+}
+.np-clase-photo-wrap.has-img .np-clase-photo-icon {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  font-size: 1.4rem;
+  background: #FDFBF7;
+  border: 1px solid #2B2520;
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.np-clase-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.25;
+  color: #14110E;
+  margin: 0 0 8px 0;
+}
+.np-clase-desc {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #352E26;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.np-clase-meta {
+  margin-top: auto;
+  border-top: 1px dashed #D4CBBB;
+  border-bottom: 1px dashed #D4CBBB;
+  padding: 8px 0;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  color: #554C40;
+}
+.np-clase-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.np-clase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.np-clase-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.15);
+}
+.np-clase-btn.primary {
+  background: #1B5E20;
+  color: #FFFFFF;
+  border-color: #1B5E20;
+}
+.np-clase-btn.primary:hover {
+  background: #2E7D32;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.3);
+  transform: translate(-1px, -1px);
+}
+.np-clase-btn.secondary {
+  background: #FAF6EC;
+  color: #1A1612;
+}
+.np-clase-btn.secondary:hover {
+  background: #2B2520;
+  color: #F8F4EA;
+  transform: translate(-1px, -1px);
+}
+
+/* ── PÁGINA 04: CASA (SUPLEMENTO DOMINICAL / RECORTES DIY) ── */
+.np-casa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 26px 22px;
+  margin-top: 14px;
+}
+.np-casa-card {
+  background: #FAF6EC;
+  border: 2px dashed #4A3E31;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 3px 3px 0 rgba(74, 62, 49, 0.12);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.np-casa-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 5px 6px 0 rgba(74, 62, 49, 0.22);
+}
+.np-casa-card.es-mia {
+  border-color: #9A3412;
+  box-shadow: 0 0 0 2px #EA580C, 5px 5px 0 rgba(74, 62, 49, 0.2);
+}
+.np-casa-card.estado-finalizada {
+  opacity: 0.7;
+  filter: grayscale(0.4);
+}
+.np-casa-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.np-casa-badge {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #9A3412;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.np-casa-stamp {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  transform: rotate(-3deg);
+  border: 1.5px dashed #9A3412;
+  color: #9A3412;
+  background: #FFEDD5;
+}
+.np-casa-photo-wrap {
+  border: 1px solid #4A3E31;
+  background: #EAE3D2;
+  padding: 3px;
+  margin-bottom: 12px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.np-casa-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.np-casa-photo-icon {
+  font-size: 2.8rem;
+}
+.np-casa-photo-wrap.has-img .np-casa-photo-icon {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  font-size: 1.3rem;
+  background: #FAF6EC;
+  border: 1px solid #4A3E31;
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.np-casa-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.22rem;
+  font-weight: 900;
+  line-height: 1.25;
+  color: #14110E;
+  margin: 0 0 8px 0;
+}
+.np-casa-desc {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #352E26;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.np-casa-box-receipt {
+  background: #EFE8D6;
+  border: 1px solid #D2C7B1;
+  padding: 8px 10px;
+  margin-top: auto;
+  margin-bottom: 12px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  color: #4A3F33;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.np-casa-box-receipt span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.np-casa-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.np-casa-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border: 1.5px solid #9A3412;
+  border-radius: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+  box-shadow: 2px 2px 0 rgba(154, 52, 18, 0.2);
+}
+.np-casa-btn.primary {
+  background: #C2410C;
+  color: #FFFFFF;
+}
+.np-casa-btn.primary:hover {
+  background: #EA580C;
+  box-shadow: 3px 3px 0 rgba(154, 52, 18, 0.35);
+  transform: translate(-1px, -1px);
+}
+.np-casa-btn.secondary {
+  background: #FAF6EC;
+  color: #9A3412;
+}
+.np-casa-btn.secondary:hover {
+  background: #9A3412;
+  color: #FAF6EC;
+  transform: translate(-1px, -1px);
+}
+
+/* ── PÁGINA 05: JUEGOS (PASATIEMPOS, PUZZLES & RECREO) ── */
+.np-grade-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 2px solid #2B2520;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+.np-grade-tab {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #FDFBF7;
+  color: #2B2520;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.12);
+  transition: all 0.18s ease;
+}
+.np-grade-tab:hover {
+  background: #EFE8D6;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.2);
+}
+.np-grade-tab.active {
+  background: #2B2520;
+  color: #F8F4EA;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.35);
+}
+
+.np-juegos-banner {
+  background: #EFE8D6;
+  border: 2px solid #2B2520;
+  padding: 14px 18px;
+  margin-bottom: 22px;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.np-games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+  gap: 24px;
+}
+.np-games-grid .game-card {
+  background: #FAF6EC;
+  border: 2px solid #2B2520;
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.np-games-grid .game-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 5px 6px 0 rgba(43, 37, 32, 0.22);
+}
+.np-games-grid .game-card-header {
+  border-bottom: 1.5px solid #2B2520;
+  background: #EAE3D2;
+}
+.np-games-grid .game-card-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.np-games-grid .game-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: 1.18rem;
+  color: #14110E;
+  margin: 0;
+}
+.np-games-grid .game-desc {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.9rem;
+  line-height: 1.48;
+  color: #352E26;
+  margin: 0;
+}
+.np-games-grid .game-play-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #2B2520;
+  color: #F8F4EA;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  padding: 8px 14px;
+  text-align: center;
+  text-decoration: none;
+  margin-top: auto;
+  transition: all 0.18s ease;
+}
+.np-games-grid .game-play-btn:hover {
+  background: #991B1B;
+  border-color: #991B1B;
+}
+
+/* ── PÁGINA 06: MURO (ARCHIVO GRÁFICO & FOTOPERIODISMO) ── */
+.np-muro-toolbar {
+  margin-bottom: 22px;
+  border-bottom: 1px solid #D4CBBB;
+  padding-bottom: 14px;
+}
+.np-tabs .hn-tab {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #FDFBF7;
+  color: #2B2520;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 1.5px 1.5px 0 rgba(43, 37, 32, 0.12);
+}
+.np-tabs .hn-tab:hover {
+  background: #EFE8D6;
+}
+.np-tabs .hn-tab.active {
+  background: #2B2520;
+  color: #F8F4EA;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.3);
+}
+
+.np-paper-sheet .hn-post-card {
+  background: #FDFBF7;
+  border: 2px solid #2B2520;
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.15);
+  margin-bottom: 24px;
+}
+.np-paper-sheet .hn-post-header {
+  border-bottom: 1px solid #D4CBBB;
+  background: rgba(43, 37, 32, 0.02);
+  padding: 12px 16px;
+}
+.np-paper-sheet .hn-post-author {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: #14110E;
+}
+.np-paper-sheet .hn-post-sub-row {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  color: #6B5F4E;
+}
+.np-paper-sheet .hn-post-text {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #25201A;
+}
+.np-paper-sheet .hn-post-footer {
+  border-top: 1px solid #D4CBBB;
+  background: #FAF6EC;
+  padding: 8px 14px;
+}
+
+/* ── PÁGINA 07: AGENDA (GACETA OFICIAL & DESPACHO) ── */
+.np-agenda-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 14px;
+}
+.np-agenda-box {
+  background: #FDFBF7;
+  border: 2px solid #2B2520;
+  padding: 18px 20px;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.14);
+}
+.np-box-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: #14110E;
+  border-bottom: 2px solid #2B2520;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.np-box-title i {
+  color: #991B1B;
+}
+.np-agenda-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.np-agenda-list .hn-ag-item {
+  border: 1px solid #D4CBBB;
+  background: #FAF6EC;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+.np-agenda-list .hn-ag-item:hover {
+  background: #FFFFFF;
+  border-color: #2B2520;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.12);
+}
+.np-agenda-list .hn-ag-date {
+  background: #2B2520;
+  color: #F8F4EA;
+  font-family: 'Special Elite', monospace;
+  border-radius: 2px;
+  padding: 4px 8px;
+  min-width: 48px;
+  text-align: center;
+}
+.np-agenda-list .hn-ag-date .d {
+  font-size: 1.1rem;
+  font-weight: 900;
+  display: block;
+  line-height: 1;
+}
+.np-agenda-list .hn-ag-date .m {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.np-agenda-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.np-login-box {
+  background: #EFE8D6;
+  border: 2px solid #2B2520;
+  padding: 18px 20px;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.14);
+}
+.np-login-box p {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.94rem;
+  line-height: 1.45;
+  color: #352E26;
+  margin: 0 0 14px 0;
+}
+.np-login-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #1B5E20;
+  color: #FFFFFF;
+  border: 2px solid #1B5E20;
+  padding: 10px 18px;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.2);
+  transition: all 0.2s ease;
+}
+.np-login-btn:hover {
+  background: #2E7D32;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.3);
+  transform: translate(-1px, -1px);
+}
+
+.np-quick-box {
+  background: #FDFBF7;
+  border: 1.5px solid #2B2520;
+  padding: 16px 18px;
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.12);
+}
+.np-quick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.np-quick a {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #1A1612;
+  text-decoration: none;
+  background: #FAF6EC;
+  border: 1px solid #D4CBBB;
+  padding: 8px 10px;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+}
+.np-quick a:hover {
+  background: #2B2520;
+  color: #F8F4EA;
+  border-color: #2B2520;
+}
+
+/* ── RESPONSIVE MEDIA QUERIES PARA EL DIARIO ── */
+@media (max-width: 900px) {
+  .np-agenda-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .np-page-folio {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px 2px;
+  }
+  .np-folio-center {
+    display: none;
+  }
+  .np-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .np-gazette-grid, .np-clase-grid, .np-casa-grid, .np-games-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hn-ticker-track { animation: none; }
-  .hn-card, .hn-act-card { animation: none; }
+  .hn-card, .hn-act-card, .np-gazette-card, .np-clase-card, .np-casa-card { animation: none; }
 }
+

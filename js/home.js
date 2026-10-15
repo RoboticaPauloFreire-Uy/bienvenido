@@ -449,41 +449,23 @@
     }
 
     grid.innerHTML = lista.slice(0, visibles).map(function (n, idx) {
-      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper', color: '#F59E0B' };
-      var catColor = cat.color || '#F59E0B';
+      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper', color: '#991B1B' };
       var numFormateado = (idx + 1 < 10 ? '0' : '') + (idx + 1);
 
-      // Stickers alternados de portada con estilo fanzine
-      var stickers = ['★ NOTA DE TAPA', '⚡ ¡EXCLUSIVO!', '🛠️ MAKER TIME', '🔥 PROYECTO TOP', '💡 GRAN INVENTO'];
-      var stickerText = stickers[idx % stickers.length];
-      var stickerClass = 'sticker-' + (idx % 3);
-
-      return '<article class="hn-fanzine-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button" style="--fz-accent:' + esc(catColor) + '">' +
-        '<div class="fz-spine" aria-hidden="true">' +
-          '<div class="fz-staple top"></div>' +
-          '<div class="fz-staple btm"></div>' +
+      return '<article class="np-gazette-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
+        '<div class="np-gz-head">' +
+          '<span class="np-gz-vol"><i class="fas fa-newspaper"></i> CRÓNICA Nº ' + numFormateado + '</span>' +
+          '<span class="np-gz-grade"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</span>' +
         '</div>' +
-        '<div class="fz-sticker ' + stickerClass + '">' +
-          '<span>' + stickerText + '</span>' +
+        '<h3 class="np-gz-title">' + esc(n.titulo) + '</h3>' +
+        '<div class="np-gz-photo-frame">' +
+          '<img src="' + esc(n.imagen) + '" alt="' + esc(n.titulo) + '" loading="lazy">' +
+          '<span class="np-gz-cat-tag">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
         '</div>' +
-        '<div class="fz-cover-content">' +
-          '<div class="fz-cover-header">' +
-            '<span class="fz-mag-brand"><i class="fas fa-bolt"></i> ROBOTICS MAG</span>' +
-            '<span class="fz-issue-num">ED. #' + numFormateado + '</span>' +
-          '</div>' +
-          '<div class="fz-photo-wrap">' +
-            '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
-            '<span class="fz-cat-badge">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
-          '</div>' +
-          '<div class="fz-cover-body">' +
-            '<div class="fz-grade-pill"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</div>' +
-            '<h3 class="fz-card-title">' + esc(n.titulo) + '</h3>' +
-            '<p class="fz-card-desc">' + esc(n.bajada) + '</p>' +
-            '<div class="fz-cover-foot">' +
-              '<span class="fz-date-tag"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
-              '<div class="fz-read-btn"><span>¡LEER!</span> <i class="fas fa-arrow-right"></i></div>' +
-            '</div>' +
-          '</div>' +
+        '<p class="np-gz-desc">' + esc(n.bajada) + '</p>' +
+        '<div class="np-gz-foot">' +
+          '<span class="np-gz-date"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
+          '<span class="np-gz-read-btn">LEER NOTA COMPLETA ➔</span>' +
         '</div>' +
       '</article>';
     }).join('');
@@ -629,95 +611,65 @@
         return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
       }).join('');
 
-      // ── CASO CASA: FICHAS COLGADAS EN TABLERO PEGBOARD MAKER (Opción A) ──
+      // ── CASO CASA: SUPLEMENTO DOMINICAL / EL TALLER EN CASA ──
       if (isCasa) {
         var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
         var isMaker = a.modalidad === 'maker' || !isJuego;
         var stampText = isMaker ? '★ MISIÓN MAKER' : '🎲 RETO FAMILIAR';
         var stampClass = isMaker ? 'stamp-maker' : 'stamp-juego';
-        var tagClass = isMaker ? 'tag-maker' : 'tag-juego';
         var tagIcon = isMaker ? 'fas fa-tools' : 'fas fa-dice';
-        var tagText = isMaker ? 'Manos a la obra' : 'Juego en Familia';
-        var matLabel = isMaker ? 'MATERIALES DE CASA:' : 'DISPOSITIVO / REQUISITO:';
+        var tagText = isMaker ? 'Bricolaje de Taller' : 'Juego en Familia';
+        var matLabel = isMaker ? 'MATERIALES DE CASA:' : 'REQUISITO:';
         var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o computadora (100% online, sin instalar nada)');
-        var cardClass = 'hn-peg-card ' + (isMaker ? 'peg-maker' : 'peg-juego') + ' estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
-        var cardColor = a.color || (isMaker ? '#D97706' : '#4F46E5');
+        var cardClass = 'np-casa-card ' + (isMaker ? 'np-maker' : 'np-juego') + ' estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
 
-        return '<article class="' + cardClass + '" style="--peg-accent:' + esc(cardColor) + '">' +
-          '<div class="peg-hook-hardware">' +
-            '<div class="peg-wall-hole"></div>' +
-            '<div class="peg-metal-hook"></div>' +
-            '<div class="peg-card-eyelet"><div class="peg-eyelet-hole"></div></div>' +
-          '</div>' +
-          '<div class="peg-stamp ' + stampClass + '">' +
-            '<span>' + stampText + '</span>' +
-          '</div>' +
-          '<div class="peg-card-header">' +
-            '<span class="peg-type-badge ' + tagClass + '"><i class="' + tagIcon + '"></i> ' + tagText + '</span>' +
-            '<span class="hn-act-state">' + esc(it.estado.texto) + '</span>' +
+        return '<article class="' + cardClass + '">' +
+          '<div class="np-casa-top">' +
+            '<span class="np-casa-badge"><i class="' + tagIcon + '"></i> ' + tagText + '</span>' +
+            '<span class="np-casa-stamp ' + stampClass + '">' + stampText + '</span>' +
           '</div>' +
           thumb +
-          '<div class="peg-card-body">' +
-            (it.mia ? '<span class="hn-act-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
-            '<h3 class="peg-card-title">' + esc(a.titulo) + '</h3>' +
-            '<p class="peg-card-desc">' + esc(a.descripcion) + '</p>' +
-            '<div class="peg-materials-slip">' +
-              '<div class="peg-slip-clip"><i class="fas fa-paperclip"></i></div>' +
-              '<div class="peg-slip-content">' +
-                '<span class="peg-slip-label">' + matLabel + '</span>' +
-                '<span class="peg-slip-text">' + esc(matText) + '</span>' +
-              '</div>' +
+          '<div class="np-casa-body">' +
+            (it.mia ? '<span class="np-casa-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
+            '<h3 class="np-casa-title">' + esc(a.titulo) + '</h3>' +
+            '<p class="np-casa-desc">' + esc(a.descripcion) + '</p>' +
+            '<div class="np-casa-box-receipt">' +
+              '<span class="np-receipt-lbl">' + matLabel + '</span> ' +
+              '<span class="np-receipt-txt">' + esc(matText) + '</span>' +
             '</div>' +
             chips +
-            '<div class="peg-card-footer">' +
+            '<div class="np-casa-meta">' +
               '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
               hasta + desdeProx +
             '</div>' +
-            (botones ? '<div class="peg-card-actions">' + botones + '</div>' : '') +
+            (botones ? '<div class="np-casa-actions">' + botones + '</div>' : '') +
           '</div>' +
         '</article>';
       }
 
-      // ── CASO CLASE: PLANO TÉCNICO & BLUEPRINT DE INGENIERÍA (Opción C) ──
-      var dwgId = (a.id || 'DWG').replace(/^act-/, '').toUpperCase();
-      var cardColor = a.color || '#38BDF8';
+      // ── CASO CLASE: EXPEDIENTE TÉCNICO DE LABORATORIO (Periódico) ──
+      var dwgId = (a.id || 'EXP').replace(/^act-/, '').toUpperCase();
       var stateClass = 'state-' + it.estado.clave;
-      var cardClass = 'hn-blueprint-card ' + stateClass + (it.mia ? ' es-mia' : '');
 
-      return '<article class="' + cardClass + '" style="--bp-color:' + esc(cardColor) + '">' +
-        '<div class="bp-corner top-left" aria-hidden="true"></div>' +
-        '<div class="bp-corner top-right" aria-hidden="true"></div>' +
-        '<div class="bp-corner btm-left" aria-hidden="true"></div>' +
-        '<div class="bp-corner btm-right" aria-hidden="true"></div>' +
-        '<div class="bp-scanline" aria-hidden="true"></div>' +
-        '<div class="bp-card-cartouche">' +
-          '<div class="bp-spec-id">' +
-            '<i class="fas fa-drafting-compass"></i>' +
-            '<span>PLANO Nº ' + esc(dwgId) + '</span>' +
-          '</div>' +
-          '<div class="bp-approval-stamp ' + stateClass + '">' +
-            '<span>' + esc(it.estado.texto) + '</span>' +
-          '</div>' +
+      return '<article class="np-clase-card ' + stateClass + (it.mia ? ' es-mia' : '') + '">' +
+        '<div class="np-clase-top">' +
+          '<span class="np-clase-exp"><i class="fas fa-file-alt"></i> EXPEDIENTE DE AULA Nº ' + esc(dwgId) + '</span>' +
+          '<span class="np-clase-stamp ' + stateClass + '">' + esc(it.estado.texto) + '</span>' +
         '</div>' +
-        '<div class="bp-cad-viewport">' +
+        '<div class="np-clase-photo-wrap">' +
           thumb +
-          '<span class="bp-viewport-tag">FIG. 01 // ESQUEMA</span>' +
+          '<span class="np-clase-fig-tag">GRABADO // ACTIVIDAD PRÁCTICA</span>' +
         '</div>' +
-        '<div class="bp-card-body">' +
-          (it.mia ? '<span class="bp-act-mine"><i class="fas fa-crosshairs"></i> ASIGNADO A TU GRADO</span>' : '') +
-          '<h3 class="bp-card-title">' + esc(a.titulo) + '</h3>' +
-          '<p class="bp-card-desc">' + esc(a.descripcion) + '</p>' +
+        '<div class="np-clase-body">' +
+          (it.mia ? '<span class="np-clase-mine"><i class="fas fa-bookmark"></i> ASIGNADO A TU GRADO</span>' : '') +
+          '<h3 class="np-clase-title">' + esc(a.titulo) + '</h3>' +
+          '<p class="np-clase-desc">' + esc(a.descripcion) + '</p>' +
           chips +
-          '<div class="bp-card-info">' +
+          '<div class="np-clase-meta">' +
             '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
             fechaPresentacion + hasta + desdeProx +
           '</div>' +
-          (botones ? '<div class="bp-card-actions">' + botones + '</div>' : '') +
-        '</div>' +
-        '<div class="bp-card-footer-strip" aria-hidden="true">' +
-          '<span class="bp-strip-box">ESC. 1:1</span>' +
-          '<span class="bp-strip-box">SISTEMA MÉTRICO</span>' +
-          '<span class="bp-strip-box flex-end">CTRL. TALLER ✓</span>' +
+          (botones ? '<div class="np-clase-actions">' + botones + '</div>' : '') +
         '</div>' +
       '</article>';
     }).join('');

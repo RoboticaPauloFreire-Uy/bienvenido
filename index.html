@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=101">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=22">
+  <link rel="stylesheet" href="css/home.css?v=23">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -321,243 +321,237 @@
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 2: NOTICIAS
+      <!-- ══════════════════════════════════════════
+           VISTA 2: NOTICIAS (PÁG. 02)
       ══════════════════════════════════════════ -->
       <div id="view-noticias" class="hn-view">
-        <section class="hn-section" id="noticias" style="margin-top:0;">
-          <div class="hn-section-head">
+        <section class="hn-section np-paper-sheet" id="noticias" style="margin-top:0;">
+          <div class="np-page-folio" aria-hidden="true">
+            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
+            <div class="np-folio-center">SECCIÓN II · CRÓNICAS & REPORTAJES DEL TALLER</div>
+            <div class="np-folio-right">PÁG. 02</div>
+          </div>
+
+          <div class="hn-section-head np-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-bolt"></i> Revista Maker & Fanzine</span>
-              <h2 class="hn-section-title">El Diario del Taller</h2>
-              <p class="hn-section-sub">Historias de inventores, crónicas de robótica y creaciones de todos los grados.</p>
+              <span class="hn-kicker np-kicker"><i class="fas fa-newspaper"></i> Gaceta Escolar & Proyectos</span>
+              <h2 class="hn-section-title np-section-title">Crónicas de Robótica & Código</h2>
+              <p class="hn-section-sub np-section-sub">Historias de inventores, crónicas de laboratorio y proyectos de todos los grados.</p>
             </div>
-            <div class="hn-controls">
+            <div class="hn-controls np-controls">
               <label class="sr-only" for="hn-news-grade">Filtrar noticias por grado</label>
-              <select id="hn-news-grade" class="hn-select hn-fanzine-select"></select>
+              <select id="hn-news-grade" class="hn-select np-select"></select>
             </div>
           </div>
 
-          <!-- Filtros con estilo stickers de revista -->
-          <div class="hn-chips hn-fanzine-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
+          <!-- Filtros con estilo sellos / pestañas periodísticas -->
+          <div class="hn-chips np-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
 
-          <!-- Contenedor Fanzine Maker / Revista de Taller -->
-          <div class="hn-fanzine-wrapper">
-            <div class="hn-fanzine-masthead">
-              <div class="hn-fz-badge-row">
-                <span class="hn-fz-sticker-pill">⚡ EDICIÓN ESPECIAL TALLER</span>
-                <span class="hn-fz-vol-tag">VOL. 26 // Nº 2026</span>
-                <span class="hn-fz-sticker-pill pink">★ 100% CREADO POR ALUMNOS</span>
-              </div>
-              <div class="hn-fz-title-row">
-                <span class="hn-fz-icon-sparkle">🚀</span>
-                <h3 class="hn-fz-brand-title">REVISTA ROBÓTICA & CÓDIGO</h3>
-                <span class="hn-fz-icon-sparkle">🤖</span>
-              </div>
-              <div class="hn-fz-bottom-strip">
-                <span>HISTORIAS DE TALLER</span>
-                <span class="hn-fz-dot">•</span>
-                <span>DESAFÍOS RESUELTOS</span>
-                <span class="hn-fz-dot">•</span>
-                <span>SALA DE 5 A 6° GRADO</span>
-              </div>
-            </div>
-
-            <div class="hn-news-grid hn-fanzine-grid" id="hn-news-grid"></div>
+          <!-- Contenedor Gaceta de Noticias -->
+          <div class="np-gazette-wrapper">
+            <div class="hn-news-grid np-gazette-grid" id="hn-news-grid"></div>
           </div>
 
-          <div class="hn-more-wrap">
-            <button type="button" class="hn-more hn-fanzine-more" id="hn-news-more" style="display:none;">
-              <i class="fas fa-book-open"></i> Ver más números de la revista
+          <div class="hn-more-wrap np-more-wrap">
+            <button type="button" class="hn-more np-more-btn" id="hn-news-more" style="display:none;">
+              <i class="fas fa-book-open"></i> Cargar más crónicas de la edición
             </button>
           </div>
         </section>
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 3: CLASE (EN EL AULA)
+           VISTA 3: CLASE (PÁG. 03)
       ══════════════════════════════════════════ -->
       <div id="view-clase" class="hn-view">
-        <section class="hn-section" id="clase" style="margin-top:0;">
-          <div class="hn-section-head">
+        <section class="hn-section np-paper-sheet" id="clase" style="margin-top:0;">
+          <div class="np-page-folio" aria-hidden="true">
+            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
+            <div class="np-folio-center">SECCIÓN III · CUADERNO DE AULA & LABORATORIO</div>
+            <div class="np-folio-right">PÁG. 03</div>
+          </div>
+
+          <div class="hn-section-head np-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-drafting-compass"></i> Ingeniería & Proyectos</span>
-              <h2 class="hn-section-title">Actividades en Clase</h2>
-              <p class="hn-section-sub">Planos de construcción, esquemas técnicos y proyectos de robótica desarrollados en el taller escolar.</p>
+              <span class="hn-kicker np-kicker"><i class="fas fa-drafting-compass"></i> Expedientes de Taller</span>
+              <h2 class="hn-section-title np-section-title">Actividades en Clase</h2>
+              <p class="hn-section-sub np-section-sub">Despachos técnicos, esquemas de construcción y retos prácticos desarrollados en el taller escolar.</p>
             </div>
-            <div class="hn-controls">
+            <div class="hn-controls np-controls">
               <label class="sr-only" for="hn-clase-grade">Filtrar por grado</label>
-              <select id="hn-clase-grade" class="hn-select"></select>
+              <select id="hn-clase-grade" class="hn-select np-select"></select>
             </div>
           </div>
 
-          <!-- Mesa de Taller & Planos Blueprint de Ingeniería (Opción C) -->
-          <div class="hn-blueprint-table">
-            <div class="hn-blueprint-header-bar">
-              <div class="hn-bp-corner-mark top-left" aria-hidden="true"></div>
-              <div class="hn-bp-corner-mark top-right" aria-hidden="true"></div>
-              <div class="hn-bp-scale-box">
-                <span class="hn-bp-scale-dot"></span>
-                <span class="hn-bp-scale-text">ESCALA 1:1 · TALLER PAULO FREIRE</span>
-              </div>
-              <div class="hn-bp-title-cartouche">
-                <i class="fas fa-drafting-compass"></i> PLANO DE PROYECTOS & ROBÓTICA // HOJA TÉCNICA
-              </div>
-              <div class="hn-bp-grid-coords">
-                <span>SEC: 03-A</span>
-                <span class="hn-bp-coord-sep">|</span>
-                <span>REV: 2026.2</span>
-              </div>
-            </div>
-            <div class="hn-act-grid hn-blueprint-grid" id="hn-act-grid-clase"></div>
+          <!-- Grilla de Actividades de Clase (Periódico) -->
+          <div class="np-act-wrapper">
+            <div class="hn-act-grid np-clase-grid" id="hn-act-grid-clase"></div>
           </div>
         </section>
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 4: CASA (DESDE EL HOGAR)
+           VISTA 4: CASA (PÁG. 04)
       ══════════════════════════════════════════ -->
       <div id="view-casa" class="hn-view">
-        <section class="hn-section" id="casa" style="margin-top:0;">
-          <div class="hn-section-head">
+        <section class="hn-section np-paper-sheet" id="casa" style="margin-top:0;">
+          <div class="np-page-folio" aria-hidden="true">
+            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
+            <div class="np-folio-center">SECCIÓN IV · SUPLEMENTO DOMINICAL HOGAR & FAMILIA</div>
+            <div class="np-folio-right">PÁG. 04</div>
+          </div>
+
+          <div class="hn-section-head np-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-tools"></i> Misiones en el hogar</span>
-              <h2 class="hn-section-title">Actividades en Casa</h2>
-              <p class="hn-section-sub">Desafíos prácticos de construcción maker con materiales de casa y juegos interactivos para compartir en familia.</p>
+              <span class="hn-kicker np-kicker"><i class="fas fa-tools"></i> Suplemento en el Hogar</span>
+              <h2 class="hn-section-title np-section-title">Actividades en Casa</h2>
+              <p class="hn-section-sub np-section-sub">Desafíos prácticos maker con elementos del hogar y juegos interactivos para compartir en familia.</p>
             </div>
-            <div class="hn-controls">
+            <div class="hn-controls np-controls">
               <label class="sr-only" for="hn-casa-grade">Filtrar por grado</label>
-              <select id="hn-casa-grade" class="hn-select"></select>
+              <select id="hn-casa-grade" class="hn-select np-select"></select>
             </div>
           </div>
 
-          <div class="hn-tabs hn-casa-filters" id="hn-casa-filters" role="toolbar" aria-label="Tipo de actividad en casa"></div>
+          <div class="hn-tabs np-casa-filters" id="hn-casa-filters" role="toolbar" aria-label="Tipo de actividad en casa"></div>
 
-          <!-- Tablero Perforado de Taller Maker (Pegboard) -->
-          <div class="hn-pegboard-wrapper">
-            <div class="hn-pegboard-header-bar">
-              <div class="hn-peg-screw"></div>
-              <div class="hn-peg-title-badge"><i class="fas fa-toolbox"></i> PANEL DE DESAFÍOS MAKER // EN CASA</div>
-              <div class="hn-peg-screw"></div>
-            </div>
-            <div class="hn-act-grid hn-pegboard-grid" id="hn-act-grid-casa"></div>
+          <!-- Grilla de Actividades en Casa (Periódico) -->
+          <div class="np-act-wrapper">
+            <div class="hn-act-grid np-casa-grid" id="hn-act-grid-casa"></div>
           </div>
         </section>
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 5: JUEGOS (POR GRUPO)
+           VISTA 5: JUEGOS (PÁG. 05)
       ══════════════════════════════════════════ -->
       <div id="view-juegos" class="hn-view">
-        <section class="hn-section" id="juegos" style="margin-top:0;">
-          <div class="hn-section-head">
+        <section class="hn-section np-paper-sheet" id="juegos" style="margin-top:0;">
+          <div class="np-page-folio" aria-hidden="true">
+            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
+            <div class="np-folio-center">SECCIÓN V · PASATIEMPOS, PUZZLES & RECREO</div>
+            <div class="np-folio-right">PÁG. 05</div>
+          </div>
+
+          <div class="hn-section-head np-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-gamepad"></i> Zona Gamer Educativa</span>
-              <h2 class="hn-section-title">Zona de Juegos</h2>
-              <p class="hn-section-sub">Desafíos, lógica y programación seleccionados para cada edad y grupo escolar.</p>
+              <span class="hn-kicker np-kicker"><i class="fas fa-gamepad"></i> Recreo Lógico</span>
+              <h2 class="hn-section-title np-section-title">Página de Pasatiempos & Juegos</h2>
+              <p class="hn-section-sub np-section-sub">Desafíos de lógica, acertijos y arcades de programación seleccionados para cada edad y grupo escolar.</p>
             </div>
           </div>
 
           <!-- Selector de grupos con pestañas visuales -->
-          <div class="hn-grade-tabs" id="hn-juegos-grade-tabs" role="tablist" aria-label="Grupos escolares"></div>
+          <div class="hn-grade-tabs np-grade-tabs" id="hn-juegos-grade-tabs" role="tablist" aria-label="Grupos escolares"></div>
 
           <!-- Banner dinámico del grupo seleccionado / alumno logueado -->
-          <div class="hn-juegos-banner" id="hn-juegos-banner"></div>
+          <div class="hn-juegos-banner np-juegos-banner" id="hn-juegos-banner"></div>
 
           <!-- Grilla de tarjetas de juegos -->
-          <div class="games-grid" id="hn-juegos-grid"></div>
+          <div class="games-grid np-games-grid" id="hn-juegos-grid"></div>
         </section>
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 6: MURO (TIPO RED SOCIAL / FEED)
+           VISTA 6: MURO (PÁG. 06)
       ══════════════════════════════════════════ -->
       <div id="view-muro" class="hn-view">
-        <section class="hn-section" id="muro" style="margin-top:0;">
-          <div class="hn-section-head">
+        <section class="hn-section np-paper-sheet" id="muro" style="margin-top:0;">
+          <div class="np-page-folio" aria-hidden="true">
+            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
+            <div class="np-folio-center">SECCIÓN VI · ARCHIVO GRÁFICO & FOTOPERIODISMO</div>
+            <div class="np-folio-right">PÁG. 06</div>
+          </div>
+
+          <div class="hn-section-head np-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-photo-video"></i> Muro del Taller</span>
-              <h2 class="hn-section-title">Muro de Actividades</h2>
-              <p class="hn-section-sub">Videos, fotos y registros en vivo de lo que construimos y programamos en clase.</p>
+              <span class="hn-kicker np-kicker"><i class="fas fa-camera-retro"></i> Fotoperiodismo Escolar</span>
+              <h2 class="hn-section-title np-section-title">Archivo Gráfico del Taller</h2>
+              <p class="hn-section-sub np-section-sub">Registros fotográficos, crónicas en video y capturas en directo de los inventos en el aula.</p>
             </div>
           </div>
 
           <!-- Filtros de Contenido del Muro -->
-          <div class="hn-muro-toolbar">
-            <div class="hn-tabs" id="hn-muro-media-filters" role="toolbar" aria-label="Filtrar por tipo de publicación">
+          <div class="hn-muro-toolbar np-muro-toolbar">
+            <div class="hn-tabs np-tabs" id="hn-muro-media-filters" role="toolbar" aria-label="Filtrar por tipo de publicación">
               <button type="button" class="hn-tab active" data-muro-media="todos">
-                <i class="fas fa-stream"></i> Todo el muro (<span id="hn-muro-count-todos">0</span>)
+                <i class="fas fa-stream"></i> Todo el archivo (<span id="hn-muro-count-todos">0</span>)
               </button>
               <button type="button" class="hn-tab" data-muro-media="video">
                 <i class="fas fa-play-circle"></i> Solo videos 🎬 (<span id="hn-muro-count-videos">0</span>)
               </button>
               <button type="button" class="hn-tab" data-muro-media="galeria">
-                <i class="fas fa-images"></i> Fotos y galerías 📷 (<span id="hn-muro-count-fotos">0</span>)
+                <i class="fas fa-images"></i> Fotografías 📷 (<span id="hn-muro-count-fotos">0</span>)
               </button>
             </div>
 
             <div class="hn-muro-grade-wrap">
               <label for="hn-muro-grade-select" class="sr-only">Filtrar por grupo</label>
-              <select id="hn-muro-grade-select" class="hn-select"></select>
+              <select id="hn-muro-grade-select" class="hn-select np-select"></select>
             </div>
           </div>
 
           <!-- Layout del Muro: Índice a la izquierda + Feed de publicaciones -->
-          <div class="hn-muro-layout">
+          <div class="hn-muro-layout np-muro-layout">
             <!-- Sidebar / Índice de Actividades (Izquierda) -->
-            <aside class="hn-muro-sidebar" id="hn-muro-sidebar">
-              <div class="hn-muro-index-card">
-                <div class="hn-muro-index-header">
-                  <div class="hn-muro-index-title">
-                    <i class="fas fa-list-ul"></i> Índice de Actividades
+            <aside class="hn-muro-sidebar np-muro-sidebar" id="hn-muro-sidebar">
+              <div class="hn-muro-index-card np-muro-index-card">
+                <div class="hn-muro-index-header np-muro-index-header">
+                  <div class="hn-muro-index-title np-muro-index-title">
+                    <i class="fas fa-list-ul"></i> Índice de Registros
                   </div>
-                  <span class="hn-muro-index-count" id="hn-muro-index-count">0</span>
+                  <span class="hn-muro-index-count np-muro-index-count" id="hn-muro-index-count">0</span>
                 </div>
-                <p class="hn-muro-index-sub">Acceso rápido a las publicaciones</p>
-                <div class="hn-muro-index-list" id="hn-muro-index-list">
-                  <!-- Se genera dinámicamente con JavaScript -->
-                </div>
+                <p class="hn-muro-index-sub np-muro-index-sub">Acceso rápido a las crónicas gráficas</p>
+                <div class="hn-muro-index-list" id="hn-muro-index-list"></div>
               </div>
             </aside>
 
             <!-- Contenedor del Feed de Actividades -->
-            <div class="hn-muro-feed-container">
-              <div class="hn-muro-feed" id="hn-muro-feed"></div>
+            <div class="hn-muro-feed-container np-muro-feed-container">
+              <div class="hn-muro-feed np-muro-feed" id="hn-muro-feed"></div>
             </div>
           </div>
         </section>
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 7: AGENDA
+           VISTA 7: AGENDA (PÁG. 07)
       ══════════════════════════════════════════ -->
       <div id="view-agenda" class="hn-view">
-        <section class="hn-section" id="agenda" style="margin-top:0;">
-          <div class="hn-section-head">
+        <section class="hn-section np-paper-sheet" id="agenda" style="margin-top:0;">
+          <div class="np-page-folio" aria-hidden="true">
+            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
+            <div class="np-folio-center">SECCIÓN VII · BOLETÍN OFICIAL & EFEMÉRIDES</div>
+            <div class="np-folio-right">PÁG. 07</div>
+          </div>
+
+          <div class="hn-section-head np-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-calendar-day"></i> Agenda</span>
-              <h2 class="hn-section-title">Presentaciones de Proyectos</h2>
-              <p class="hn-section-sub">Día de presentación de los proyectos de clase de cada grado en el taller escolar.</p>
+              <span class="hn-kicker np-kicker"><i class="fas fa-calendar-day"></i> Gaceta Oficial</span>
+              <h2 class="hn-section-title np-section-title">Calendario Oficial de Entregas</h2>
+              <p class="hn-section-sub np-section-sub">Fechas de presentación de proyectos por grado y efemérides del taller escolar.</p>
             </div>
           </div>
 
-          <div class="hn-agenda-full-layout">
-            <div class="hn-box hn-agenda-main-box">
-              <div class="hn-box-title"><i class="fas fa-calendar-alt"></i> Próximas Presentaciones de Proyectos en Clase</div>
-              <ul class="hn-agenda-list" id="hn-agenda-list"></ul>
+          <div class="hn-agenda-full-layout np-agenda-layout">
+            <div class="hn-box hn-agenda-main-box np-agenda-box">
+              <div class="hn-box-title np-box-title"><i class="fas fa-calendar-alt"></i> Convocatorias & Presentaciones en Clase</div>
+              <ul class="hn-agenda-list np-agenda-list" id="hn-agenda-list"></ul>
             </div>
 
-            <aside class="hn-agenda-side">
-              <div class="hn-box hn-login-box">
-                <div class="hn-box-title"><i class="fas fa-user-astronaut"></i> ¿Sos alumno?</div>
-                <p>Ingresá para ver tu carpeta de Drive con tus proyectos y las actividades de tu grado primero.</p>
-                <button type="button" class="hn-login-btn" onclick="if(window.openLoginModal) window.openLoginModal();">
+            <aside class="hn-agenda-side np-agenda-side">
+              <div class="hn-box hn-login-box np-login-box">
+                <div class="hn-box-title np-box-title"><i class="fas fa-user-astronaut"></i> Despacho del Alumno</div>
+                <p>Ingresá para acceder a tu carpeta oficial de Drive con tus proyectos calificados.</p>
+                <button type="button" class="hn-login-btn np-login-btn" onclick="if(window.openLoginModal) window.openLoginModal();">
                   <i class="fas fa-user-circle"></i> Ingreso Alumnos
                 </button>
               </div>
 
-              <div class="hn-box">
-                <div class="hn-box-title"><i class="fas fa-rocket"></i> Herramientas Virtuales</div>
-                <div class="hn-quick">
+              <div class="hn-box np-quick-box">
+                <div class="hn-box-title np-box-title"><i class="fas fa-rocket"></i> Herramientas de Redacción & Código</div>
+                <div class="hn-quick np-quick">
                   <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer"><span>⚡</span>MakeCode</a>
                   <a href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener noreferrer"><span>🐱</span>Scratch</a>
                   <a href="https://code.org/minecraft" target="_blank" rel="noopener noreferrer"><span>⛏️</span>Code.org</a>
@@ -719,7 +713,7 @@
   <script src="js/news.js?v=12"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=45"></script>
+  <script src="js/home.js?v=46"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
