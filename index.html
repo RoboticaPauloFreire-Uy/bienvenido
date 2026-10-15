@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=101">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=18">
+  <link rel="stylesheet" href="css/home.css?v=19">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -252,27 +252,47 @@
         <section class="hn-section" id="noticias" style="margin-top:0;">
           <div class="hn-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-bolt"></i> Tech News & Makers</span>
-              <h2 class="hn-section-title">Actualidad del Taller</h2>
-              <p class="hn-section-sub">Explorá los últimos avances, inventos y proyectos de programación de cada grado.</p>
+              <span class="hn-kicker"><i class="fas fa-bolt"></i> Revista Maker & Fanzine</span>
+              <h2 class="hn-section-title">El Diario del Taller</h2>
+              <p class="hn-section-sub">Historias de inventores, crónicas de robótica y creaciones de todos los grados.</p>
             </div>
             <div class="hn-controls">
               <label class="sr-only" for="hn-news-grade">Filtrar noticias por grado</label>
-              <select id="hn-news-grade" class="hn-select hn-tech-select"></select>
+              <select id="hn-news-grade" class="hn-select hn-fanzine-select"></select>
             </div>
           </div>
 
-          <!-- Filtros de categoría estilo píldoras modernas -->
-          <div class="hn-chips hn-tech-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
+          <!-- Filtros con estilo stickers de revista -->
+          <div class="hn-chips hn-fanzine-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
 
-          <!-- Contenedor Revista Digital / Feed Tecnológico -->
-          <div class="hn-tech-magazine-wrap">
-            <div class="hn-news-grid hn-tech-grid" id="hn-news-grid"></div>
+          <!-- Contenedor Fanzine Maker / Revista de Taller -->
+          <div class="hn-fanzine-wrapper">
+            <div class="hn-fanzine-masthead">
+              <div class="hn-fz-badge-row">
+                <span class="hn-fz-sticker-pill">⚡ EDICIÓN ESPECIAL TALLER</span>
+                <span class="hn-fz-vol-tag">VOL. 26 // Nº 2026</span>
+                <span class="hn-fz-sticker-pill pink">★ 100% CREADO POR ALUMNOS</span>
+              </div>
+              <div class="hn-fz-title-row">
+                <span class="hn-fz-icon-sparkle">🚀</span>
+                <h3 class="hn-fz-brand-title">REVISTA ROBÓTICA & CÓDIGO</h3>
+                <span class="hn-fz-icon-sparkle">🤖</span>
+              </div>
+              <div class="hn-fz-bottom-strip">
+                <span>HISTORIAS DE TALLER</span>
+                <span class="hn-fz-dot">•</span>
+                <span>DESAFÍOS RESUELTOS</span>
+                <span class="hn-fz-dot">•</span>
+                <span>SALA DE 5 A 6° GRADO</span>
+              </div>
+            </div>
+
+            <div class="hn-news-grid hn-fanzine-grid" id="hn-news-grid"></div>
           </div>
 
           <div class="hn-more-wrap">
-            <button type="button" class="hn-more hn-tech-more" id="hn-news-more" style="display:none;">
-              <i class="fas fa-arrow-down"></i> Cargar más historias
+            <button type="button" class="hn-more hn-fanzine-more" id="hn-news-more" style="display:none;">
+              <i class="fas fa-book-open"></i> Ver más números de la revista
             </button>
           </div>
         </section>
@@ -624,7 +644,7 @@
   <script src="js/news.js?v=12"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=41"></script>
+  <script src="js/home.js?v=42"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>

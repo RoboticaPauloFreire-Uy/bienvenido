@@ -370,37 +370,43 @@
       return;
     }
 
-    grid.innerHTML = lista.slice(0, visibles).map(function (n) {
-      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper', color: '#3B82F6' };
-      var catColor = cat.color || '#3B82F6';
-      var palabras = ((n.titulo || '') + ' ' + (n.bajada || '') + ' ' + (Array.isArray(n.cuerpo) ? n.cuerpo.join(' ') : '')).split(/\s+/).length;
-      var minutos = Math.max(1, Math.round(palabras / 120));
+    grid.innerHTML = lista.slice(0, visibles).map(function (n, idx) {
+      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper', color: '#F59E0B' };
+      var catColor = cat.color || '#F59E0B';
+      var numFormateado = (idx + 1 < 10 ? '0' : '') + (idx + 1);
 
-      return '<article class="hn-tech-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button" style="--tech-accent:' + esc(catColor) + '">' +
-        '<div class="tech-card-media">' +
-          '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
-          '<div class="tech-media-overlay"></div>' +
-          '<div class="tech-floating-badges">' +
-            '<span class="tech-cat-pill">' +
-              '<span class="tech-cat-dot"></span>' +
-              cat.icono + ' ' + esc(cat.nombre) +
-            '</span>' +
-            '<span class="tech-time-pill"><i class="far fa-clock"></i> ' + minutos + ' min</span>' +
+      // Stickers alternados de portada con estilo fanzine
+      var stickers = ['★ NOTA DE TAPA', '⚡ ¡EXCLUSIVO!', '🛠️ MAKER TIME', '🔥 PROYECTO TOP', '💡 GRAN INVENTO'];
+      var stickerText = stickers[idx % stickers.length];
+      var stickerClass = 'sticker-' + (idx % 3);
+
+      return '<article class="hn-fanzine-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button" style="--fz-accent:' + esc(catColor) + '">' +
+        '<div class="fz-spine" aria-hidden="true">' +
+          '<div class="fz-staple top"></div>' +
+          '<div class="fz-staple btm"></div>' +
+        '</div>' +
+        '<div class="fz-sticker ' + stickerClass + '">' +
+          '<span>' + stickerText + '</span>' +
+        '</div>' +
+        '<div class="fz-cover-content">' +
+          '<div class="fz-cover-header">' +
+            '<span class="fz-mag-brand"><i class="fas fa-bolt"></i> ROBOTICS MAG</span>' +
+            '<span class="fz-issue-num">ED. #' + numFormateado + '</span>' +
+          '</div>' +
+          '<div class="fz-photo-wrap">' +
+            '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
+            '<span class="fz-cat-badge">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
+          '</div>' +
+          '<div class="fz-cover-body">' +
+            '<div class="fz-grade-pill"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</div>' +
+            '<h3 class="fz-card-title">' + esc(n.titulo) + '</h3>' +
+            '<p class="fz-card-desc">' + esc(n.bajada) + '</p>' +
+            '<div class="fz-cover-foot">' +
+              '<span class="fz-date-tag"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
+              '<div class="fz-read-btn"><span>¡LEER!</span> <i class="fas fa-arrow-right"></i></div>' +
+            '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="tech-card-body">' +
-          '<div class="tech-meta-row">' +
-            '<span class="tech-grade-tag"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</span>' +
-            '<span class="tech-date-tag"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
-          '</div>' +
-          '<h3 class="tech-card-title">' + esc(n.titulo) + '</h3>' +
-          '<p class="tech-card-desc">' + esc(n.bajada) + '</p>' +
-          '<div class="tech-card-foot">' +
-            '<span class="tech-read-text">Leer historia</span>' +
-            '<div class="tech-arrow-btn" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="tech-card-progress" aria-hidden="true"></div>' +
       '</article>';
     }).join('');
 
