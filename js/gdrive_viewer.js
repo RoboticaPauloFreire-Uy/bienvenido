@@ -22,6 +22,34 @@
     return SCRATCH_GRADES.indexOf(gradeId) !== -1;
   }
 
+  function normalizarGradoKey(g) {
+    if (typeof window.normalizarGrado === 'function') return window.normalizarGrado(g);
+    if (!g) return 'todos';
+    var s = String(g).toLowerCase().trim();
+    if (s === 'todos' || s.indexOf('todo') !== -1) return 'todos';
+    if (s === 'sala5' || s.indexOf('sala') !== -1) return 'sala5';
+    if (s === 'grado1' || s === '1ro' || s.indexOf('1') !== -1) return 'grado1';
+    if (s === 'grado2' || s === '2do' || s.indexOf('2') !== -1) return 'grado2';
+    if (s === 'grado3' || s === '3ro' || s.indexOf('3') !== -1) return 'grado3';
+    if (s === 'grado4' || s === '4to' || s.indexOf('4') !== -1) return 'grado4';
+    if (s === 'grado5' || s === '5to' || s.indexOf('5') !== -1) return 'grado5';
+    if (s === 'grado6' || s === '6to' || s.indexOf('6') !== -1) return 'grado6';
+    return s;
+  }
+
+  function getStudentGradeGames(student) {
+    if (!student) return [];
+    var allGrades = (typeof window.getGradesConJuegos === 'function')
+      ? window.getGradesConJuegos()
+      : ((window.SCHOOL_DATA && window.SCHOOL_DATA.grades) ? window.SCHOOL_DATA.grades : ((window.COURSE_DATA && window.COURSE_DATA.grades) ? window.COURSE_DATA.grades : []));
+
+    var normTarget = normalizarGradoKey(student.gradeId);
+    var foundGrade = allGrades.find(function(g) {
+      return normalizarGradoKey(g.id) === normTarget;
+    });
+    return (foundGrade && Array.isArray(foundGrade.games)) ? foundGrade.games.slice() : [];
+  }
+
   // Extensiones por tipo
   var DIBUJO_EXTS   = ['.png', '.jpg', '.jpeg', '.bmp'];
   var SCRATCH_EXTS  = ['.sb3', '.sjr', '.pjson', '.sb'];
@@ -1652,14 +1680,8 @@
     // Misiones de la Ruta de Aventuras (Modo 3)
     var adventureMissions = getAdventureMissionsForStudent(student);
 
-    // Juegos del Grado (por niveles y beneficios de razonamiento)
-    var gradeObj = null;
-    if (window.SCHOOL_DATA && Array.isArray(window.SCHOOL_DATA.grades)) {
-      gradeObj = window.SCHOOL_DATA.grades.find(function(g){ return g.id === student.gradeId; });
-    } else if (window.COURSE_DATA && Array.isArray(window.COURSE_DATA.grades)) {
-      gradeObj = window.COURSE_DATA.grades.find(function(g){ return g.id === student.gradeId; });
-    }
-    var gradeGames = (gradeObj && Array.isArray(gradeObj.games)) ? gradeObj.games : [];
+    // Juegos del Grado (exactamente los mismos que la página pública según el grado)
+    var gradeGames = getStudentGradeGames(student);
     var badgeJuegos = gradeGames.length;
 
     // Badges y conteos
@@ -2035,9 +2057,9 @@
 
       uploadZoneHtml = '';
 
-    // ═══ CARPETA: JUEGOS DEL GRADO (POR NIVELES) ═══
+    // ═══ CARPETA: JUEGOS DEL GRADO (DESAFÍOS PIRATAS) ═══
     } else if (activeFolderKey === 'juegos') {
-      mainDisplayHtml = renderGradeGamesHtml(student, gradeGames, adventureMissions);
+      mainDisplayHtml = renderGradeGamesHtml(student, gradeGames);
       uploadZoneHtml = '';
 
     // ═══ CARPETA: DIBUJOS (Carrusel) ═══
@@ -2721,49 +2743,18 @@
 
     // ── Juegos del Grado (botón para saltar a la misión en Ruta Maker y clic para ampliar razonamiento) ──
     if (activeFolderKey === 'juegos') {
-      container.querySelectorAll('.ggc-btn-mission').forEach(function(btn){
-        btn.onclick = function(e){
-          e.stopPropagation();
-          if (window.sounds) window.sounds.playClick();
-          var lvl = parseInt(btn.dataset.level, 10);
-          activeFolderKey = 'proyectos';
-          renderGDriveDashboard(containerId);
-          setTimeout(function(){
-            var advM = getAdventureMissionsForStudent(student);
-            var targetM = advM.find(function(m){ return m.level === lvl; }) || advM[lvl - 1];
-            if (targetM) openAdventureProjectModal(targetM, 'presentacion');
-          }, 150);
-        };
-      });
-
-      // Clic para achicar o agrandar razonamiento pedagógico en juegos
-      container.querySelectorAll('.arm-concept-toggle-btn').forEach(function(btn){
-        btn.onclick = function(e){
-          e.stopPropagation();
-          e.preventDefault();
-          if (window.sounds && window.sounds.playClick) window.sounds.playClick();
-          var accordion = btn.closest('.arm-concept-accordion');
-          if (!accordion) return;
-          var isOpen = accordion.classList.toggle('is-open');
-          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-          var statusSpan = btn.querySelector('.arm-ct-status');
-          if (statusSpan) {
-            statusSpan.textContent = isOpen ? 'Achicar' : 'Agrandar';
-          }
-        };
-      });
-
-      // Clic para Ampliar en Detalle en juegos (Abre Modal Pedagógico)
+      // Clic para Dame sugerencias en juegos (Abre Modal Pedagógico)
       container.querySelectorAll('.arm-concept-modal-btn').forEach(function(btn){
         btn.onclick = function(e){
           e.stopPropagation();
           e.preventDefault();
           if (window.sounds && window.sounds.playClick) window.sounds.playClick();
-          var lvl = parseInt(btn.dataset.gameLevel, 10);
-          var dataObj = gradeGames.find(function(g){ return g.level === lvl; });
-          if (!dataObj && adventureMissions) {
-            dataObj = adventureMissions.find(function(m){ return m.level === lvl; });
+          var idx = parseInt(btn.dataset.gameIdx, 10);
+          var dataObj = (gradeGames && gradeGames[idx]) ? gradeGames[idx] : null;
+          if (!dataObj && btn.dataset.gameId && gradeGames) {
+            dataObj = gradeGames.find(function(g){ return g.id === btn.dataset.gameId; });
           }
+          if (!dataObj && gradeGames && gradeGames.length > 0) dataObj = gradeGames[0];
           if (dataObj) {
             openPedagogicalConceptModal('benefits', dataObj);
           }
@@ -2773,73 +2764,54 @@
   }
 
   // ──────────────────────────────────────────────────
-  // RENDER HTML DE JUEGOS DEL GRADO (POR NIVELES)
+  // RENDER HTML DE JUEGOS DEL GRADO (DESAFÍOS PIRATAS)
   // ──────────────────────────────────────────────────
-  function renderGradeGamesHtml(student, gradeGames, adventureMissions) {
+  function renderGradeGamesHtml(student, gradeGames) {
     if (!gradeGames || gradeGames.length === 0) {
-      return '<div class="gdb-empty-state"><div class="ges-icon">🎮</div><h4>Sin juegos asignados</h4><p>Pronto se agregarán juegos de programación para ' + student.gradeName + '.</p></div>';
+      return '<div class="gdb-empty-state"><div class="ges-icon">🎮</div><h4>Sin juegos asignados</h4><p>Pronto se agregarán juegos de programación para ' + (student ? student.gradeName : 'tu grado') + '.</p></div>';
     }
 
     var cardsHtml = gradeGames.map(function(game, idx) {
-      var levelNum = game.level || (idx + 1);
       var thumb = game.thumbnail || 'img/angrybirds.png';
-      var platText = (game.platform === 'codeorg') ? 'Code.org' : (game.platform === 'codejr' ? 'Scratch Jr' : 'Taller Maker');
-      var isCodeorg = (game.platform === 'codeorg') || (game.externalUrl && game.externalUrl.includes('code.org'));
+      var pm = (window.platformMeta && window.platformMeta(game.platform)) || { label: (game.platform === 'codeorg' ? 'Code.org' : (game.platform === 'codejr' ? 'Scratch Jr' : 'Taller Maker')), icon: '🎮' };
+      var gameUrl = (window.getGameUrl && window.getGameUrl(game)) || game.externalUrl || '#';
 
-      // Verificar si hay misión de aventura vinculada
-      var linkedMission = (adventureMissions || []).find(function(m){
-        return m.level === levelNum || (isCodeorg && m.type === 'codeorg');
-      });
-
-      // Texto reducido y aproximado
-      var shortDesc = game.description || '';
-      if (shortDesc.length > 110) {
-        shortDesc = shortDesc.substring(0, 105).trim() + '...';
-      }
-      var promptSnippet = game.benefits || 'Pensamiento lógico, secuencias y creatividad computacional guiada.';
-      if (promptSnippet.length > 120) {
-        promptSnippet = promptSnippet.substring(0, 115).trim() + '...';
+      // Limpiar cualquier prefijo de aventura histórico en la descripción
+      var rawDesc = (game.description || '').replace(/^¡?Nivel \d+ de la Ruta de Aventuras!?\s*:?\s*/i, '');
+      var shortDesc = rawDesc;
+      if (shortDesc.length > 120) {
+        shortDesc = shortDesc.substring(0, 115).trim() + '...';
       }
 
-      return '<div class="grade-game-card ptb-card" data-game-level="' + levelNum + '">' +
+      var gradeLabel = (student && student.gradeName) ? student.gradeName : 'Taller Freire';
+
+      return '<div class="grade-game-card ptb-card" data-game-idx="' + idx + '" data-game-id="' + (game.id || '') + '">' +
         '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
-        '<div class="ggc-thumb-wrap" onclick="window.open(\'' + game.externalUrl + '\', \'_blank\')" title="Hacé clic para jugar a ' + game.title + '">' +
-          '<img src="' + thumb + '" alt="' + game.title + '" class="ggc-thumb-img" onerror="this.src=\'img/angrybirds.png\'">' +
+        '<div class="ggc-thumb-wrap" onclick="window.open(\'' + gameUrl + '\', \'_blank\')" title="Hacé clic para jugar a ' + (game.title || 'este juego') + '">' +
+          '<img src="' + thumb + '" alt="' + (game.title || '') + '" class="ggc-thumb-img" onerror="this.src=\'img/angrybirds.png\'">' +
           '<div class="ggc-play-overlay">' +
             '<div class="ggc-play-bubble"><i class="fas fa-play"></i></div>' +
             '<span>¡Jugar Ahora!</span>' +
           '</div>' +
-          '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-skull-crossbones"></i> NIVEL ' + levelNum + '</div>' +
-          '<div class="ggc-platform-badge pirate-plat-badge"><i class="fas fa-anchor"></i> ' + platText + '</div>' +
+          '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-graduation-cap"></i> ' + gradeLabel + '</div>' +
+          '<div class="ggc-platform-badge pirate-plat-badge">' + pm.icon + ' ' + pm.label + '</div>' +
         '</div>' +
         '<div class="ggc-body">' +
           '<div class="ggc-top-row">' +
-            '<h3 class="ggc-title">' + game.title + '</h3>' +
-            (linkedMission && linkedMission.status === 'completado' ? '<span class="ggc-status-done"><i class="fas fa-check-circle"></i> ⭐</span>' : '') +
+            '<h3 class="ggc-title">' + (game.title || 'Desafío') + '</h3>' +
           '</div>' +
           '<p class="ggc-desc">' + shortDesc + '</p>' +
-          '<div class="ggc-prompt-box">' +
-            '<div class="gpb-header">' +
-              '<span class="gpb-tag"><i class="fas fa-lightbulb"></i> Prompt Pedagógico</span>' +
-              '<span class="gpb-hint">Guía didáctica</span>' +
-            '</div>' +
-            '<p class="gpb-text">' + promptSnippet + '</p>' +
-          '</div>' +
           (game.tags && game.tags.length > 0 ?
             '<div class="ggc-tags-row">' +
               game.tags.slice(0, 4).map(function(t){ return '<span class="ggc-tag">#' + t + '</span>'; }).join('') +
             '</div>' : '') +
           '<div class="ggc-actions">' +
-            '<a href="' + game.externalUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec" title="Ejecutar desafío en ' + platText + '">' +
+            '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec" title="Ejecutar desafío en ' + pm.label + '">' +
               '<i class="fas fa-play"></i> <span>Ejecutar</span>' +
             '</a>' +
-            '<button type="button" class="ggc-btn-sugerencias arm-concept-modal-btn" data-concept-type="benefits" data-game-level="' + levelNum + '" title="Ver prompt pedagógico completo y sugerencias para el aula">' +
+            '<button type="button" class="ggc-btn-sugerencias arm-concept-modal-btn" data-concept-type="benefits" data-game-idx="' + idx + '" data-game-id="' + (game.id || '') + '" title="Ver sugerencias pedagógicas y razonamiento">' +
               '<i class="fas fa-lightbulb"></i> <span>Dame sugerencias</span>' +
             '</button>' +
-            (linkedMission ?
-              '<button type="button" class="ggc-btn-mission" data-level="' + levelNum + '" title="Ver estación en el Mapa del Tesoro">' +
-                '<i class="fas fa-compass"></i>' +
-              '</button>' : '') +
           '</div>' +
         '</div>' +
       '</div>';
@@ -4572,9 +4544,9 @@
     var isElectronica = !isPaint && !isCodeorg && !isScratchJrVelocidad && !isScratchJrPerspectiva && (isDiaMadre || isMarcalibro || data.type === 'electronica' || (data.tags && data.tags.some(function(t){ return /electr[oó]nica|circuito|sombrero/i.test(t); })) || (!data.gameUrl && !data.makecodeUrl && data.materials && data.materials.some(function(m){ return /cobre|led|pila/i.test(m.title || ''); })));
 
     var title = data.title || 'Misión Educativa';
-    var levelText = data.level ? ('Nivel ' + data.level) : 'Taller Maker';
+    var levelText = isObjective ? (data.level ? ('Nivel ' + data.level) : 'Misión Maker') : (data.platform === 'codeorg' ? 'Code.org' : (data.platform === 'codejr' ? 'Scratch Jr' : ((window.platformMeta && window.platformMeta(data.platform)) ? window.platformMeta(data.platform).label : 'Desafío del Grado')));
     var mainText = isObjective ? (data.objective || data.description) : (data.benefits || data.description);
-    var gameUrl = isPaint ? null : (data.gameUrl || data.externalUrl || null);
+    var gameUrl = isPaint ? null : ((window.getGameUrl && window.getGameUrl(data)) || data.gameUrl || data.externalUrl || null);
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
     var gradeName = (student && student.gradeName) || (data.gradeName || 'Sala de 5 años');
 
@@ -4863,9 +4835,9 @@
         '<div class="pcm-body">' +
           '<div class="pcm-prompt-section">' +
             '<div class="pcm-ps-header">' +
-              '<div class="pcm-ps-badge"><i class="fas fa-lightbulb"></i> Prompt Pedagógico y Sugerencias de Aula</div>' +
-              '<button type="button" class="pcm-btn-copy-prompt" id="pcm-btn-copy-prompt" title="Copiar prompt al portapapeles">' +
-                '<i class="far fa-copy"></i> <span>Copiar Prompt</span>' +
+              '<div class="pcm-ps-badge"><i class="fas fa-lightbulb"></i> Preguntas Disparadoras y Sugerencias Didácticas</div>' +
+              '<button type="button" class="pcm-btn-copy-prompt" id="pcm-btn-copy-prompt" title="Copiar pregunta didáctica al portapapeles">' +
+                '<i class="far fa-copy"></i> <span>Copiar Pregunta</span>' +
               '</button>' +
             '</div>' +
             '<p class="pcm-ps-text" id="pcm-prompt-text">"' + promptQuestion + '"</p>' +
@@ -4887,7 +4859,7 @@
             '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="pcm-btn pcm-btn-game">' +
               '<i class="fas fa-play"></i> <span>Ejecutar Desafío</span>' +
             '</a>' : '') +
-          (data.id ?
+          (isObjective && data.id ?
             '<button type="button" class="pcm-btn pcm-btn-launch" id="pcm-btn-launch-mission">' +
               '<i class="fas fa-rocket"></i> <span>Abrir Misión</span>' +
             '</button>' : '') +
@@ -4920,9 +4892,9 @@
         if (window.sounds && window.sounds.playClick) window.sounds.playClick();
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(promptQuestion).then(function(){
-            copyBtn.innerHTML = '<i class="fas fa-check" style="color:#16A34A;"></i> <span>¡Copiado!</span>';
+            copyBtn.innerHTML = '<i class="fas fa-check" style="color:#16A34A;"></i> <span>¡Copiada!</span>';
             setTimeout(function(){
-              copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copiar Prompt</span>';
+              copyBtn.innerHTML = '<i class="far fa-copy"></i> <span>Copiar Pregunta</span>';
             }, 2000);
           }).catch(function(){
             copyBtn.innerHTML = '<i class="fas fa-check"></i> <span>¡Listo!</span>';

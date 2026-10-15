@@ -2041,6 +2041,8 @@
   window.showActividades = function (sec) { switchView(sec === 'casa' ? 'casa' : 'clase'); };
   window.showJuegos = function (gradeId) { switchView('juegos'); if (gradeId) seleccionarGrupoJuegos(gradeId); };
   window.seleccionarGrupoJuegos = seleccionarGrupoJuegos;
+  window.getGradesConJuegos = getGradesConJuegos;
+  window.normalizarGrado = normalizarGrado;
   window.compartirPost = compartirPost;
   window.copiarEnlacePost = copiarEnlacePost;
   window.resetMuroFilters = function () {
