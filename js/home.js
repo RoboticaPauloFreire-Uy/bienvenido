@@ -370,31 +370,37 @@
       return;
     }
 
-    grid.innerHTML = lista.slice(0, visibles).map(function (n, idx) {
-      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: '📰', color: '#8B1E1E' };
-      var numFormateado = (idx + 1 < 10 ? '0' : '') + (idx + 1);
+    grid.innerHTML = lista.slice(0, visibles).map(function (n) {
+      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper', color: '#3B82F6' };
+      var catColor = cat.color || '#3B82F6';
+      var palabras = ((n.titulo || '') + ' ' + (n.bajada || '') + ' ' + (Array.isArray(n.cuerpo) ? n.cuerpo.join(' ') : '')).split(/\s+/).length;
+      var minutos = Math.max(1, Math.round(palabras / 120));
 
-      return '<article class="hn-gazette-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
-        '<div class="gz-dogear" aria-hidden="true"></div>' +
-        '<div class="gz-card-header">' +
-          '<span class="gz-cat-badge" style="--cat-color:' + esc(cat.color || '#8B1E1E') + '">' +
-            cat.icono + ' ' + esc(cat.nombre) +
-          '</span>' +
-          '<span class="gz-ed-number">CRÓNICA Nº ' + numFormateado + '</span>' +
-        '</div>' +
-        '<div class="gz-photo-frame">' +
+      return '<article class="hn-tech-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button" style="--tech-accent:' + esc(catColor) + '">' +
+        '<div class="tech-card-media">' +
           '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
-          '<div class="gz-photo-caption"><i class="fas fa-camera"></i> REGISTRO DEL AULA</div>' +
-        '</div>' +
-        '<div class="gz-card-body">' +
-          '<div class="gz-byline"><i class="fas fa-feather-alt"></i> Por alumnos de ' + esc(nombreGrado(n.grado)) + '</div>' +
-          '<h3 class="gz-card-title">' + esc(n.titulo) + '</h3>' +
-          '<p class="gz-card-sub">' + esc(n.bajada) + '</p>' +
-          '<div class="gz-card-foot">' +
-            '<span class="gz-date"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
-            '<span class="gz-read-link">Leer crónica <i class="fas fa-arrow-right"></i></span>' +
+          '<div class="tech-media-overlay"></div>' +
+          '<div class="tech-floating-badges">' +
+            '<span class="tech-cat-pill">' +
+              '<span class="tech-cat-dot"></span>' +
+              cat.icono + ' ' + esc(cat.nombre) +
+            '</span>' +
+            '<span class="tech-time-pill"><i class="far fa-clock"></i> ' + minutos + ' min</span>' +
           '</div>' +
         '</div>' +
+        '<div class="tech-card-body">' +
+          '<div class="tech-meta-row">' +
+            '<span class="tech-grade-tag"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</span>' +
+            '<span class="tech-date-tag"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
+          '</div>' +
+          '<h3 class="tech-card-title">' + esc(n.titulo) + '</h3>' +
+          '<p class="tech-card-desc">' + esc(n.bajada) + '</p>' +
+          '<div class="tech-card-foot">' +
+            '<span class="tech-read-text">Leer historia</span>' +
+            '<div class="tech-arrow-btn" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tech-card-progress" aria-hidden="true"></div>' +
       '</article>';
     }).join('');
 

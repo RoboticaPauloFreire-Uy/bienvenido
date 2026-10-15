@@ -452,295 +452,192 @@ html, body {
 @keyframes hnFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* ─────────────────────────────────────────────────────────────
-   LA GAZETA DE PRENSA ESCOLAR / EL DIARIO DEL TALLER (OPCIÓN 1)
+   REVISTA DIGITAL TECNOLÓGICA (WIRED / THE VERGE) (OPCIÓN 3)
 ───────────────────────────────────────────────────────────── */
 
-/* Contenedor de Prensa / Papel de Diario */
-.hn-gazette-wrapper {
-  background-color: #F8F5EE;
-  background-image: 
-    radial-gradient(rgba(120, 110, 95, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(215, 205, 190, 0.35) 1px, transparent 1px);
-  background-size: 16px 16px, 100% 32px;
-  border-radius: 20px;
-  border: 4px double #C4B9A7;
-  box-shadow: 
-    inset 0 2px 14px rgba(60, 45, 30, 0.06),
-    0 12px 36px -6px rgba(60, 45, 30, 0.12);
-  padding: 24px 20px 32px;
+/* Contenedor de Revista Digital / Feed */
+.hn-tech-magazine-wrap {
+  position: relative;
   margin-top: 10px;
-  position: relative;
 }
 
-/* Cabecera / Masthead de la Gazeta */
-.hn-gazette-masthead-bar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 26px;
-  padding: 12px 16px;
-  background: #FFFDF9;
-  border: 2px solid #C4B9A7;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(60, 45, 30, 0.05);
-  gap: 8px;
-}
-
-.hn-gz-bar-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  font-family: 'SF Mono', Consolas, Monaco, monospace;
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #786F62;
-  letter-spacing: 0.05em;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #E8E1D5;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.hn-gz-pill {
-  background: #8B1E1E;
-  color: #FFFFFF;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-weight: 900;
-}
-
-.hn-gz-motto {
-  font-style: italic;
-  color: #5C5449;
-}
-
-.hn-gz-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  width: 100%;
-  padding: 4px 0;
-}
-
-.hn-gz-rule {
-  flex: 1;
-  height: 2px;
-  background: #231F1C;
-  position: relative;
-}
-
-.hn-gz-rule::after {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: #8C8275;
-}
-
-.hn-gz-main-title {
-  font-family: var(--hn-serif, 'Fraunces', Georgia, serif);
-  font-size: 1.35rem;
-  font-weight: 900;
-  color: #1C1917;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin: 0;
-  white-space: nowrap;
-}
-
-.hn-gz-bar-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  font-family: 'SF Mono', Consolas, Monaco, monospace;
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #8C8275;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding-top: 6px;
-  border-top: 1px solid #E8E1D5;
-  flex-wrap: wrap;
-}
-
-.hn-gz-sep {
-  color: #8B1E1E;
-  font-size: 0.75rem;
-}
-
-/* Grilla de la Gazeta */
-.hn-gazette-grid {
+/* Grilla de Revista Tecnológica */
+.hn-tech-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
-  gap: 28px 20px;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 28px 22px;
 }
 
-/* Ficha de Noticia / Artículo de Periódico */
-.hn-gazette-card {
-  background: #FFFDF9;
-  border-radius: 12px;
-  border: 1.5px solid #D6CEBE;
-  border-bottom: 3.5px solid #8B1E1E;
-  box-shadow: 0 6px 18px -4px rgba(60, 45, 30, 0.08);
+/* Tarjeta Tech Magazine */
+.hn-tech-card {
+  --tech-accent: #3B82F6;
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.28s ease, border-color 0.25s ease;
+  transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.32s ease, border-color 0.28s ease;
   animation: hnFadeUp 0.35s ease both;
 }
 
-.hn-gazette-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 32px -4px rgba(60, 45, 30, 0.16);
-  border-color: #8B1E1E;
+.hn-tech-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 22px 40px -8px rgba(15, 23, 42, 0.14), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  border-color: var(--tech-accent);
 }
 
-.hn-gazette-card:focus-visible {
-  outline: 3px solid #8B1E1E;
-  outline-offset: 2px;
+.hn-tech-card:focus-visible {
+  outline: 3px solid var(--tech-accent);
+  outline-offset: 3px;
 }
 
-/* Esquina de papel doblada 3D */
-.gz-dogear {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 24px;
-  height: 24px;
-  background: linear-gradient(135deg, transparent 50%, #C4B9A7 50%, #EDE6D8 100%);
-  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 5;
-  pointer-events: none;
-  transition: width 0.25s ease, height 0.25s ease;
-}
-
-.hn-gazette-card:hover .gz-dogear {
-  width: 30px;
-  height: 30px;
-  background: linear-gradient(135deg, transparent 50%, #A89B85 50%, #DDD5C5 100%);
-}
-
-/* Cabecera interna del artículo */
-.gz-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px 6px;
-  gap: 8px;
-}
-
-.gz-cat-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--cat-color, #8B1E1E) 12%, #FFFDF9);
-  color: var(--cat-color, #8B1E1E);
-  border: 1px solid color-mix(in srgb, var(--cat-color, #8B1E1E) 30%, transparent);
-}
-
-.gz-ed-number {
-  font-family: 'SF Mono', Consolas, Monaco, monospace;
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #8C8275;
-  letter-spacing: 0.06em;
-  margin-right: 18px; /* deja aire para el dog-ear */
-}
-
-/* Fotoperiodismo: marco fotográfico de prensa */
-.gz-photo-frame {
-  margin: 4px 12px 0;
-  border-radius: 8px;
-  border: 1px solid #D6CEBE;
-  background: #F0EAE1;
-  height: 140px;
-  overflow: hidden;
+/* Encabezado Multimedia / Hero de la Tarjeta */
+.tech-card-media {
   position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #0F172A;
 }
 
-.gz-photo-frame img {
+.tech-card-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease, filter 0.3s ease;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.4s ease;
 }
 
-.hn-gazette-card:hover .gz-photo-frame img {
-  transform: scale(1.05);
+.hn-tech-card:hover .tech-card-media img {
+  transform: scale(1.07);
 }
 
-.gz-photo-caption {
+/* Gradiente cinematográfico sobre la foto para destacar píldoras */
+.tech-media-overlay {
   position: absolute;
-  bottom: 4px;
-  left: 6px;
-  background: rgba(30, 25, 20, 0.78);
-  color: #F8F5EE;
-  font-family: 'SF Mono', Consolas, Monaco, monospace;
-  font-size: 0.58rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 3px;
-  letter-spacing: 0.05em;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, transparent 45%, rgba(15, 23, 42, 0.65) 100%);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Píldoras flotantes estilo glassmorphism */
+.tech-floating-badges {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 2;
   pointer-events: none;
 }
 
-/* Cuerpo de la crónica */
-.gz-card-body {
-  padding: 12px 16px 16px;
+.tech-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px 11px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.tech-cat-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tech-accent);
+  box-shadow: 0 0 8px var(--tech-accent);
+}
+
+.tech-time-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #F8FAFC;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+/* Cuerpo de la Tarjeta */
+.tech-card-body {
+  padding: 16px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   flex: 1;
 }
 
-.gz-byline {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: #786F62;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+.tech-meta-row {
   display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748B;
+  flex-wrap: wrap;
+}
+
+.tech-grade-tag {
+  color: #0F172A;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-weight: 800;
+  display: inline-flex;
   align-items: center;
   gap: 5px;
 }
 
-.gz-byline i {
-  color: #8B1E1E;
+.tech-grade-tag i {
+  color: var(--tech-accent);
 }
 
-.gz-card-title {
-  font-family: var(--hn-serif, 'Fraunces', Georgia, serif);
-  font-size: 1.15rem;
-  font-weight: 900;
-  line-height: 1.3;
-  color: #1C1917;
-  margin: 0;
-  transition: color 0.2s ease;
+.tech-date-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.hn-gazette-card:hover .gz-card-title {
-  color: #8B1E1E;
+.tech-card-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #0F172A;
+  margin: 2px 0 0;
+  letter-spacing: -0.015em;
+  transition: color 0.22s ease;
 }
 
-.gz-card-sub {
-  font-size: 0.86rem;
-  color: #575249;
-  line-height: 1.48;
+.hn-tech-card:hover .tech-card-title {
+  color: var(--tech-accent);
+}
+
+.tech-card-desc {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.55;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -749,84 +646,124 @@ html, body {
   overflow: hidden;
 }
 
-/* Pie del artículo */
-.gz-card-foot {
+/* Pie de lectura interactivo */
+.tech-card-foot {
   margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px dashed #D6CEBE;
+  padding-top: 14px;
+  border-top: 1px solid #F1F5F9;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #786F62;
 }
 
-.gz-read-link {
-  color: #8B1E1E;
-  font-weight: 900;
+.tech-read-text {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+  transition: color 0.22s ease;
+}
+
+.hn-tech-card:hover .tech-read-text {
+  color: var(--tech-accent);
+}
+
+.tech-arrow-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #0F172A;
   display: flex;
   align-items: center;
-  gap: 5px;
-  transition: transform 0.2s ease, color 0.2s ease;
+  justify-content: center;
+  font-size: 0.82rem;
+  transition: all 0.28s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.hn-gazette-card:hover .gz-read-link i {
-  transform: translateX(4px);
-}
-
-/* Chips / Filtros estilo etiquetas de prensa editorial */
-.hn-gazette-chips .hn-chip {
-  border: 1.5px solid #C4B9A7;
-  background: #FFFDF9;
-  color: #3E372E;
-  font-weight: 800;
-}
-
-.hn-gazette-chips .hn-chip:hover {
-  border-color: #8B1E1E;
-  color: #8B1E1E;
-}
-
-.hn-gazette-chips .hn-chip.active {
-  background: #8B1E1E;
-  border-color: #8B1E1E;
+.hn-tech-card:hover .tech-arrow-btn {
+  background: var(--tech-accent);
+  border-color: var(--tech-accent);
   color: #FFFFFF;
-  box-shadow: 0 3px 10px rgba(139, 30, 30, 0.25);
+  transform: translateX(4px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--tech-accent) 40%, transparent);
 }
 
-/* Botón Ver más estilo prensa */
-.hn-gazette-more {
-  border: 2px solid #8B1E1E !important;
-  color: #8B1E1E !important;
-  background: #FFFDF9 !important;
-  font-weight: 900 !important;
+/* Barra de progreso de lectura en borde inferior */
+.tech-card-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3.5px;
+  width: 0;
+  background: linear-gradient(90deg, var(--tech-accent) 0%, color-mix(in srgb, var(--tech-accent) 40%, #FFFFFF) 100%);
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.hn-gazette-more:hover {
-  background: #8B1E1E !important;
+.hn-tech-card:hover .tech-card-progress {
+  width: 100%;
+}
+
+/* Filtros de Categoría Modernos */
+.hn-tech-chips .hn-chip {
+  border: 1.5px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #334155;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.22s ease;
+}
+
+.hn-tech-chips .hn-chip:hover {
+  border-color: #2563EB;
+  color: #2563EB;
+  transform: translateY(-1px);
+}
+
+.hn-tech-chips .hn-chip.active {
+  background: #0F172A;
+  border-color: #0F172A;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+}
+
+/* Botón Cargar más Historias */
+.hn-tech-more {
+  border: 2px solid #0F172A !important;
+  color: #0F172A !important;
+  background: #FFFFFF !important;
+  font-weight: 800 !important;
+  padding: 10px 24px !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.hn-tech-more:hover {
+  background: #0F172A !important;
   color: #FFFFFF !important;
-  box-shadow: 0 4px 12px rgba(139, 30, 30, 0.25);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
+  transform: translateY(-2px);
 }
 
-/* Responsividad en dispositivos móviles */
+/* Selector moderno de grado */
+.hn-tech-select {
+  border: 1.5px solid #CBD5E1;
+  border-radius: 10px;
+  padding: 8px 36px 8px 14px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+/* Responsividad */
 @media (max-width: 640px) {
-  .hn-gazette-wrapper {
-    padding: 16px 12px 20px;
-    border-radius: 14px;
-    border-width: 3px;
-  }
-  .hn-gz-main-title {
-    font-size: 1.05rem;
-    white-space: normal;
-  }
-  .hn-gz-bar-top {
-    justify-content: center;
-    text-align: center;
-  }
-  .hn-gazette-grid {
+  .hn-tech-grid {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+  .tech-card-title {
+    font-size: 1.1rem;
   }
 }
 

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=101">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=17">
+  <link rel="stylesheet" href="css/home.css?v=18">
   <link rel="stylesheet" href="css/themes.css?v=3">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -252,46 +252,27 @@
         <section class="hn-section" id="noticias" style="margin-top:0;">
           <div class="hn-section-head">
             <div>
-              <span class="hn-kicker"><i class="fas fa-feather-alt"></i> Redacción & Crónicas</span>
-              <h2 class="hn-section-title">El Diario del Taller</h2>
-              <p class="hn-section-sub">Crónicas periodísticas, entrevistas y coberturas de los proyectos de robótica de todos los grados.</p>
+              <span class="hn-kicker"><i class="fas fa-bolt"></i> Tech News & Makers</span>
+              <h2 class="hn-section-title">Actualidad del Taller</h2>
+              <p class="hn-section-sub">Explorá los últimos avances, inventos y proyectos de programación de cada grado.</p>
             </div>
             <div class="hn-controls">
               <label class="sr-only" for="hn-news-grade">Filtrar noticias por grado</label>
-              <select id="hn-news-grade" class="hn-select hn-gazette-select"></select>
+              <select id="hn-news-grade" class="hn-select hn-tech-select"></select>
             </div>
           </div>
 
-          <div class="hn-chips hn-gazette-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
+          <!-- Filtros de categoría estilo píldoras modernas -->
+          <div class="hn-chips hn-tech-chips" id="hn-news-filters" role="toolbar" aria-label="Categorías"></div>
 
-          <!-- Portada de Prensa Editorial / Gazeta Escolar -->
-          <div class="hn-gazette-wrapper">
-            <div class="hn-gazette-masthead-bar">
-              <div class="hn-gz-bar-top">
-                <span class="hn-gz-pill"><i class="fas fa-newspaper"></i> EDICIÓN PERIÓDICA</span>
-                <span class="hn-gz-motto">«EL PERIÓDICO ESCOLAR DE CIENCIA, TECNOLOGÍA Y CULTURA MAKER»</span>
-                <span class="hn-gz-extra">AÑO 2026 · COLEGIO PAULO FREIRE</span>
-              </div>
-              <div class="hn-gz-title-row">
-                <div class="hn-gz-rule left" aria-hidden="true"></div>
-                <h3 class="hn-gz-main-title">CRÓNICAS Y NOTICIAS DEL TALLER</h3>
-                <div class="hn-gz-rule right" aria-hidden="true"></div>
-              </div>
-              <div class="hn-gz-bar-bottom">
-                <span>SECCIONES ESPECIALES</span>
-                <span class="hn-gz-sep">✦</span>
-                <span>DESDE SALA DE 5 HASTA 6° GRADO</span>
-                <span class="hn-gz-sep">✦</span>
-                <span>ARCHIVOS DE IMPRENTA</span>
-              </div>
-            </div>
-
-            <div class="hn-news-grid hn-gazette-grid" id="hn-news-grid"></div>
+          <!-- Contenedor Revista Digital / Feed Tecnológico -->
+          <div class="hn-tech-magazine-wrap">
+            <div class="hn-news-grid hn-tech-grid" id="hn-news-grid"></div>
           </div>
 
           <div class="hn-more-wrap">
-            <button type="button" class="hn-more hn-gazette-more" id="hn-news-more" style="display:none;">
-              <i class="fas fa-newspaper"></i> Desplegar más crónicas del archivo
+            <button type="button" class="hn-more hn-tech-more" id="hn-news-more" style="display:none;">
+              <i class="fas fa-arrow-down"></i> Cargar más historias
             </button>
           </div>
         </section>
@@ -643,7 +624,7 @@
   <script src="js/news.js?v=12"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=40"></script>
+  <script src="js/home.js?v=41"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
