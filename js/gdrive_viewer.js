@@ -1367,6 +1367,7 @@
           '</div>';
       }
 
+      var safeGradeName = (student.gradeName || '').replace(/'/g, "\\'");
       var pirateFinishHtml =
         finishConnectorHtml +
         '<div class="pirate-finish-station" id="pirate-finish-station">' +
@@ -1374,7 +1375,7 @@
             '<div class="pirate-x-symbol">❌</div>' +
             '<div class="pirate-x-title">¡X MARCA EL LUGAR DEL GRAN TESORO!</div>' +
           '</div>' +
-          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.celebrateMetaArrival && window.celebrateMetaArrival();" title="¡Hacé click para abrir el Cofre del Tesoro y festejar!">' +
+          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.openPirateTreasureModal && window.openPirateTreasureModal({ gradeName: \'' + safeGradeName + '\', completedCount: ' + completedCount + ', totalCount: ' + missions.length + ' });" title="¡Hacé click para abrir el Cofre del Tesoro y festejar!">' +
             '<div class="pirate-chest-glow"></div>' +
             '<div class="pirate-chest-visual">' +
               '<div class="pc-chest-lid"></div>' +
@@ -1385,30 +1386,8 @@
                 '</div>' +
               '</div>' +
             '</div>' +
-          '</div>' +
-          '<div class="pirate-finish-card-body">' +
-            '<h4 class="pirate-finish-title">🏆 ¡Llegada al Gran Tesoro Maker!</h4>' +
-            '<p class="pirate-finish-desc">' +
-              '¡Felicitaciones, Capitán Maker! Superaste con valentía y creatividad los desafíos de <strong>' + student.gradeName + '</strong>. Dominaste algoritmos, programación, robótica e inteligencia artificial. ¡El saber es el más valioso de los tesoros!' +
-            '</p>' +
-            '<div class="pirate-finish-stats-row">' +
-              '<div class="pirate-stat-pill">' +
-                '<i class="fas fa-trophy" style="color:#D97706;"></i>' +
-                '<span><strong>' + completedCount + ' de ' + missions.length + '</strong> islas conquistadas</span>' +
-              '</div>' +
-              '<div class="pirate-stat-pill">' +
-                '<i class="fas fa-coins" style="color:#F59E0B;"></i>' +
-                '<span><strong>+' + (completedCount * 100) + ' XP</strong> en doblones de oro</span>' +
-              '</div>' +
-              '<div class="pirate-stat-pill">' +
-                '<i class="fas fa-compass" style="color:#0284C7;"></i>' +
-                '<span><strong>Galeón Paulo Freire 2026</strong></span>' +
-              '</div>' +
-            '</div>' +
-            '<div class="pirate-finish-action-row">' +
-              '<button type="button" class="pirate-celebrate-btn" onclick="window.celebrateMetaArrival && window.celebrateMetaArrival();">' +
-                '<i class="fas fa-gem"></i> ¡Abrir Cofre del Tesoro y Festejar! 🎉🏴‍☠️' +
-              '</button>' +
+            '<div class="pirate-chest-touch-hint">' +
+              '<i class="fas fa-hand-pointer"></i> ¡Tocá el Cofre para abrir el Tesoro! ✨' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -8407,7 +8386,87 @@
     }, 4500);
   }
 
+  // Modal del Tesoro Pirata: aparece al hacer click en el cofre y desaparece automáticamente a los 5 segundos
+  function openPirateTreasureModal(info) {
+    if (typeof celebrateMetaArrival === 'function') {
+      celebrateMetaArrival();
+    }
+
+    var existing = document.getElementById('pirate-treasure-modal-overlay');
+    if (existing) {
+      if (existing._autoCloseTimer) clearTimeout(existing._autoCloseTimer);
+      existing.remove();
+    }
+
+    var gradeName = (info && info.gradeName) || 'este curso';
+    var completedCount = (info && info.completedCount) !== undefined ? info.completedCount : 0;
+    var totalCount = (info && info.totalCount) || 10;
+    var xpTotal = completedCount * 100;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'pirate-treasure-modal-overlay';
+    overlay.className = 'pirate-treasure-modal-overlay';
+    overlay.innerHTML =
+      '<div class="pirate-treasure-modal-dialog" role="dialog" aria-modal="true">' +
+        '<button type="button" class="pirate-tm-close-btn" aria-label="Cerrar modal">&times;</button>' +
+        '<div class="pirate-tm-chest-icon">' +
+          '<div class="pirate-tm-glow"></div>' +
+          '<span class="pirate-tm-coins">🪙 💎 👑 💎 🪙</span>' +
+        '</div>' +
+        '<h3 class="pirate-tm-title">🏆 ¡Llegada al Gran Tesoro Maker!</h3>' +
+        '<p class="pirate-tm-desc">' +
+          '¡Felicitaciones, Capitán Maker! Superaste con valentía y creatividad los desafíos de <strong>' + gradeName + '</strong>. Dominaste algoritmos, programación, robótica e inteligencia artificial. ¡El saber es el más valioso de los tesoros!' +
+        '</p>' +
+        '<div class="pirate-tm-stats-row">' +
+          '<div class="pirate-tm-stat-pill">' +
+            '<i class="fas fa-trophy" style="color:#D97706;"></i>' +
+            '<span><strong>' + completedCount + ' de ' + totalCount + '</strong> islas conquistadas</span>' +
+          '</div>' +
+          '<div class="pirate-tm-stat-pill">' +
+            '<i class="fas fa-coins" style="color:#F59E0B;"></i>' +
+            '<span><strong>+' + xpTotal + ' XP</strong> en doblones de oro</span>' +
+          '</div>' +
+          '<div class="pirate-tm-stat-pill">' +
+            '<i class="fas fa-compass" style="color:#0284C7;"></i>' +
+            '<span><strong>Galeón Paulo Freire 2026</strong></span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="pirate-tm-timer-bar-wrap">' +
+          '<div class="pirate-tm-timer-bar"></div>' +
+          '<span class="pirate-tm-timer-text">Se cerrará automáticamente en 5 segundos...</span>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    requestAnimationFrame(function() {
+      overlay.classList.add('is-visible');
+    });
+
+    function closeModal() {
+      if (!overlay || !overlay.parentNode) return;
+      if (overlay._autoCloseTimer) clearTimeout(overlay._autoCloseTimer);
+      overlay.classList.remove('is-visible');
+      overlay.classList.add('is-closing');
+      setTimeout(function() {
+        if (overlay && overlay.parentNode) overlay.remove();
+      }, 350);
+    }
+
+    var closeBtn = overlay.querySelector('.pirate-tm-close-btn');
+    if (closeBtn) closeBtn.onclick = closeModal;
+
+    overlay.onclick = function(e) {
+      if (e.target === overlay) closeModal();
+    };
+
+    overlay._autoCloseTimer = setTimeout(function() {
+      closeModal();
+    }, 5000);
+  }
+
   window.celebrateMetaArrival = celebrateMetaArrival;
+  window.openPirateTreasureModal = openPirateTreasureModal;
   window.renderGDriveDashboard = renderGDriveDashboard;
   window.renderGDriveExplorer  = renderGDriveDashboard;
   window.openAdventureProjectModal = openAdventureProjectModal;
