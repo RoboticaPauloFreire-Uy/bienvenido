@@ -1346,9 +1346,9 @@
         if (mRight) {
           bridgeConnectorHtml =
             '<div class="pirate-row-bridge">' +
-              '<svg class="pirate-bridge-svg" viewBox="0 0 160 50" preserveAspectRatio="none">' +
-                '<path class="ptc-glow" d="M 0,25 C 45,5 115,45 160,25" />' +
-                '<path class="ptc-dash" d="M 0,25 C 45,5 115,45 160,25" />' +
+              '<svg class="pirate-bridge-svg" viewBox="0 0 100 40" preserveAspectRatio="none">' +
+                '<path class="ptc-glow" d="M 0,20 C 35,5 65,35 100,20" />' +
+                '<path class="ptc-dash" d="M 0,20 C 35,5 65,35 100,20" />' +
               '</svg>' +
               '<div class="pirate-waypoint-marker wp-bridge" title="Rumbo a la Isla ' + mRight.level + '"><i class="fas fa-anchor"></i></div>' +
             '</div>';

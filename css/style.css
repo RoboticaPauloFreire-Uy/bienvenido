@@ -6400,7 +6400,7 @@ button, input, select, textarea { font-family: inherit; }
   position: relative;
   box-sizing: border-box;
   padding: 0 12px;
-  gap: 12px;
+  gap: 0;
 }
 
 .pirate-map-row.single-left {
@@ -6408,23 +6408,24 @@ button, input, select, textarea { font-family: inherit; }
   padding-left: 20px;
 }
 
-/* Puente conector horizontal entre islas de la misma fila */
+/* Puente conector horizontal entre islas de la misma fila (conecta de punta a punta) */
 .pirate-row-bridge {
-  flex: 1 1 80px;
-  min-width: 40px;
-  max-width: 160px;
-  height: 44px;
+  flex: 1 1 auto;
+  height: 48px;
   margin-top: 76px;
   position: relative;
-  z-index: 2;
+  z-index: 1;
   pointer-events: none;
   align-self: flex-start;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 .pirate-bridge-svg {
   width: 100%;
   height: 100%;
   overflow: visible;
+  display: block;
 }
 
 .pirate-bridge-svg .ptc-glow {
@@ -6454,31 +6455,33 @@ button, input, select, textarea { font-family: inherit; }
 
 .pirate-island-station.island-left {
   align-items: flex-start;
-  flex: 0 1 260px;
+  flex: 0 0 195px;
+  width: 195px;
 }
 
 .pirate-island-station.island-left .pirate-island-landmark {
-  margin: 0 auto 0 0;
+  margin: 0;
 }
 
 .pirate-island-station.island-left .pirate-scroll-drawer {
   margin: 0;
-  width: 100%;
+  width: 320px;
   max-width: 320px;
 }
 
 .pirate-island-station.island-right {
   align-items: flex-end;
-  flex: 0 1 260px;
+  flex: 0 0 195px;
+  width: 195px;
 }
 
 .pirate-island-station.island-right .pirate-island-landmark {
-  margin: 0 0 0 auto;
+  margin: 0;
 }
 
 .pirate-island-station.island-right .pirate-scroll-drawer {
   margin: 0;
-  width: 100%;
+  width: 320px;
   max-width: 320px;
 }
 
