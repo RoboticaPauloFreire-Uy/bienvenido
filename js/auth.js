@@ -124,7 +124,20 @@
     }
   }
 
-  // === MODAL DE LOGIN / CREDENCIAL PIRATA ===
+  // === TEMA POR GRUPO DE GRADOS ===
+  function getStudentThemeGroup(student) {
+    if (!student) return 'pirate';
+    var gId = (student.gradeId || '').toLowerCase();
+    var gName = (student.gradeName || '').toLowerCase();
+    if (gId === 'grado2' || gId === '2do' || gId === 'grado3' || gId === '3ero' ||
+        /2\s*°|2do|segundo|3\s*°|3ero|tercer/i.test(gName)) {
+      return 'space';
+    }
+    return 'pirate';
+  }
+  window.getStudentThemeGroup = getStudentThemeGroup;
+
+  // === MODAL DE LOGIN / CREDENCIAL PIRATA & ESPACIAL ===
   function getPirateBrassCornerSvg(pos) {
     return '<div class="pmf-brass-corner ' + pos + '" aria-hidden="true">' +
       '<svg viewBox="0 0 64 64" fill="none">' +
@@ -153,7 +166,7 @@
       modal.id = 'student-login-modal';
       modal.className = 'student-login-modal';
       modal.innerHTML =
-        '<div class="slm-content pirate-modal-frame">' +
+        '<div class="slm-content pirate-modal-frame" id="slm-content-frame">' +
           getPirateBrassCornerSvg('top-left') +
           getPirateBrassCornerSvg('top-right') +
           getPirateBrassCornerSvg('bottom-left') +
@@ -188,16 +201,19 @@
     var body   = document.getElementById('slm-body');
     var title  = document.getElementById('slm-modal-title');
     var kicker = document.getElementById('slm-modal-kicker');
+    var frame  = document.getElementById('slm-content-frame') || (body && body.closest('.slm-content'));
     if (!body) return;
 
     var student = getActiveStudent();
 
     if (student) {
-      // CREDENCIAL PIRATA DEL ALUMNO ACTIVO
-      var firstName = student.name.split(' ')[0];
-      if (kicker) kicker.innerHTML = '🏴‍☠️ Credencial Oficial de la Flota';
-      if (title) title.innerHTML = '<i class="fas fa-compass"></i> Bitácora de ' + firstName;
+      var themeGroup = getStudentThemeGroup(student);
+      var isSpace = (themeGroup === 'space');
+      if (frame) {
+        frame.classList.toggle('theme-space', isSpace);
+      }
 
+      var firstName = student.name.split(' ')[0];
       var missions = (typeof window.getAdventureMissionsForStudent === 'function')
         ? window.getAdventureMissionsForStudent(student)
         : [];
@@ -205,88 +221,174 @@
       var totalMissions = missions.length || 10;
       var progressPercent = Math.min(100, Math.round((completedCount / totalMissions) * 100));
       var studentLevel = Math.max(1, Math.floor(completedCount / 2) + 1);
-      var pirateRank = studentLevel >= 5 ? 'Capitán Corsario' : (studentLevel >= 3 ? 'Timonel Maker' : 'Grumete Explorador');
-      var totalDoblones = completedCount * 100;
-      var nextMission = missions.find(function(m) { return m.status !== 'completado'; }) || missions[missions.length - 1] || { level: 1, title: 'Isla del Desembarco' };
-
+      var totalPoints = completedCount * 100;
+      var nextMission = missions.find(function(m) { return m.status !== 'completado'; }) || missions[missions.length - 1] || { level: 1, title: isSpace ? 'Estación Orbital Alfa' : 'Isla del Desembarco' };
       var gId = (student.gradeId || '').toLowerCase();
-      var specialty = '🧭 Explorador de Algoritmos & Scratch Jr';
-      if (gId === 'grado3' || gId === 'grado4') {
-        specialty = '⚡ Artillero de Bloques & Micro:bit';
-      } else if (gId === 'grado5' || gId === 'grado6') {
-        specialty = '⚙️ Ingeniero Corsario de Robótica & IA';
+
+      if (isSpace) {
+        // ═══ GRUPO 2 (2° y 3° GRADO): CREDENCIAL DE ASTRONAUTA & EXPLORADOR GALÁCTICO ═══
+        if (kicker) kicker.innerHTML = '🚀 Comando Galáctico · Flota Estelar';
+        if (title) title.innerHTML = '<i class="fas fa-user-astronaut"></i> Bitácora Espacial de ' + firstName;
+
+        var spaceRank = studentLevel >= 5 ? 'Comandante Estelar' : (studentLevel >= 3 ? 'Piloto Interplanetario' : 'Cadete Espacial');
+        var spaceSpecialty = (gId === 'grado3' || gId === '3ero')
+          ? '🛸 Ingeniero de Órbita, Bloques & Micro:bit'
+          : '🛰️ Explorador de Algoritmos, Scratch & Circuitos';
+
+        body.innerHTML =
+          '<div class="slm-active-profile pirate-crew-card space-crew-card">' +
+            '<div class="pcc-top-banner">' +
+              '<div class="pcc-avatar-medallion">' +
+                '<span class="pcc-avatar-emoji">' + (student.avatar || '👨‍🚀') + '</span>' +
+                '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
+              '</div>' +
+              '<div class="pcc-identity">' +
+                '<span class="pcc-rank-badge">👨‍🚀 ' + spaceRank + '</span>' +
+                '<h3 class="slm-student-name">' + student.name + '</h3>' +
+                '<div class="pcc-ship-row">' +
+                  '<span class="slm-student-grade">🚀 Nave ' + (student.gradeName || '') + '</span>' +
+                  '<span class="pcc-specialty-tag">' + spaceSpecialty + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="pcc-stats-scroll">' +
+              '<div class="pcc-scroll-title"><i class="fas fa-satellite"></i> Hoja de Vuelo Interplanetario</div>' +
+              '<div class="pcc-stats-grid">' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🌟</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Energía Acumulada</span>' +
+                    '<strong class="pcc-stat-value">+' + totalPoints + ' Cristales</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🪐</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Planetas Explorados</span>' +
+                    '<strong class="pcc-stat-value">' + completedCount + ' de ' + totalMissions + ' Planetas</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🛸</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Rango Galáctico</span>' +
+                    '<strong class="pcc-stat-value">' + spaceRank + '</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">📡</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Órbita Actual</span>' +
+                    '<strong class="pcc-stat-value">Planeta ' + (nextMission.level || 1) + ': ' + (nextMission.title || 'En órbita') + '</strong>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="pcc-progress-section">' +
+                '<div class="pcc-progress-header">' +
+                  '<span>🌌 Travesía del Mapa Estelar</span>' +
+                  '<strong>' + progressPercent + '% Explorado</strong>' +
+                '</div>' +
+                '<div class="pcc-progress-track">' +
+                  '<div class="pcc-progress-fill" style="width:' + progressPercent + '%"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="slm-actions pcc-actions">' +
+              '<button class="pcc-btn-adventure" id="slm-go-adventure" type="button">' +
+                '<i class="fas fa-user-astronaut"></i> Ir a mi Estación' +
+              '</button>' +
+              '<button class="slm-btn-logout pcc-btn-logout" id="slm-logout-action" type="button">' +
+                '<i class="fas fa-rocket"></i> Regresar a Tierra' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      } else {
+        // ═══ GRUPO 1 (SALA 5 y 1° GRADO): CREDENCIAL PIRATA ═══
+        if (kicker) kicker.innerHTML = '🏴‍☠️ Credencial Oficial de la Flota';
+        if (title) title.innerHTML = '<i class="fas fa-compass"></i> Bitácora de ' + firstName;
+
+        var pirateRank = studentLevel >= 5 ? 'Capitán Corsario' : (studentLevel >= 3 ? 'Timonel Maker' : 'Grumete Explorador');
+        var specialty = '🧭 Explorador de Algoritmos & Scratch Jr';
+        if (gId === 'grado3' || gId === 'grado4') {
+          specialty = '⚡ Artillero de Bloques & Micro:bit';
+        } else if (gId === 'grado5' || gId === 'grado6') {
+          specialty = '⚙️ Ingeniero Corsario de Robótica & IA';
+        }
+
+        body.innerHTML =
+          '<div class="slm-active-profile pirate-crew-card">' +
+            '<div class="pcc-top-banner">' +
+              '<div class="pcc-avatar-medallion">' +
+                '<span class="pcc-avatar-emoji">' + (student.avatar || '🏴‍☠️') + '</span>' +
+                '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
+              '</div>' +
+              '<div class="pcc-identity">' +
+                '<span class="pcc-rank-badge">☠️ ' + pirateRank + '</span>' +
+                '<h3 class="slm-student-name">' + student.name + '</h3>' +
+                '<div class="pcc-ship-row">' +
+                  '<span class="slm-student-grade">⚓ Navío ' + (student.gradeName || '') + '</span>' +
+                  '<span class="pcc-specialty-tag">' + specialty + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="pcc-stats-scroll">' +
+              '<div class="pcc-scroll-title"><i class="fas fa-scroll"></i> Hoja de Servicio en Alta Mar</div>' +
+              '<div class="pcc-stats-grid">' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🪙</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Botín Acumulado</span>' +
+                    '<strong class="pcc-stat-value">+' + totalPoints + ' Doblones</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🏝️</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Islas Conquistadas</span>' +
+                    '<strong class="pcc-stat-value">' + completedCount + ' de ' + totalMissions + ' Islas</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">⚔️</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Rango en la Flota</span>' +
+                    '<strong class="pcc-stat-value">' + pirateRank + '</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🧭</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Rumbo Actual</span>' +
+                    '<strong class="pcc-stat-value">Isla ' + (nextMission.level || 1) + ': ' + (nextMission.title || 'En altamar') + '</strong>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="pcc-progress-section">' +
+                '<div class="pcc-progress-header">' +
+                  '<span>🗺️ Travesía del Mapa Pirata</span>' +
+                  '<strong>' + progressPercent + '% Completado</strong>' +
+                '</div>' +
+                '<div class="pcc-progress-track">' +
+                  '<div class="pcc-progress-fill" style="width:' + progressPercent + '%"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="slm-actions pcc-actions">' +
+              '<button class="pcc-btn-adventure" id="slm-go-adventure" type="button">' +
+                '<i class="fas fa-map-marked-alt"></i> Ir a mi Bitácora' +
+              '</button>' +
+              '<button class="slm-btn-logout pcc-btn-logout" id="slm-logout-action" type="button">' +
+                '<i class="fas fa-anchor"></i> Abandonar el Barco' +
+              '</button>' +
+            '</div>' +
+          '</div>';
       }
-
-      body.innerHTML =
-        '<div class="slm-active-profile pirate-crew-card">' +
-          '<div class="pcc-top-banner">' +
-            '<div class="pcc-avatar-medallion">' +
-              '<span class="pcc-avatar-emoji">' + (student.avatar || '🏴‍☠️') + '</span>' +
-              '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
-            '</div>' +
-            '<div class="pcc-identity">' +
-              '<span class="pcc-rank-badge">☠️ ' + pirateRank + '</span>' +
-              '<h3 class="slm-student-name">' + student.name + '</h3>' +
-              '<div class="pcc-ship-row">' +
-                '<span class="slm-student-grade">⚓ Navío ' + (student.gradeName || '') + '</span>' +
-                '<span class="pcc-specialty-tag">' + specialty + '</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="pcc-stats-scroll">' +
-            '<div class="pcc-scroll-title"><i class="fas fa-scroll"></i> Hoja de Servicio en Alta Mar</div>' +
-            '<div class="pcc-stats-grid">' +
-              '<div class="pcc-stat-box">' +
-                '<span class="pcc-stat-icon">🪙</span>' +
-                '<div class="pcc-stat-info">' +
-                  '<span class="pcc-stat-label">Botín Acumulado</span>' +
-                  '<strong class="pcc-stat-value">+' + totalDoblones + ' Doblones</strong>' +
-                '</div>' +
-              '</div>' +
-              '<div class="pcc-stat-box">' +
-                '<span class="pcc-stat-icon">🏝️</span>' +
-                '<div class="pcc-stat-info">' +
-                  '<span class="pcc-stat-label">Islas Conquistadas</span>' +
-                  '<strong class="pcc-stat-value">' + completedCount + ' de ' + totalMissions + ' Islas</strong>' +
-                '</div>' +
-              '</div>' +
-              '<div class="pcc-stat-box">' +
-                '<span class="pcc-stat-icon">⚔️</span>' +
-                '<div class="pcc-stat-info">' +
-                  '<span class="pcc-stat-label">Rango en la Flota</span>' +
-                  '<strong class="pcc-stat-value">' + pirateRank + '</strong>' +
-                '</div>' +
-              '</div>' +
-              '<div class="pcc-stat-box">' +
-                '<span class="pcc-stat-icon">🧭</span>' +
-                '<div class="pcc-stat-info">' +
-                  '<span class="pcc-stat-label">Rumbo Actual</span>' +
-                  '<strong class="pcc-stat-value">Isla ' + (nextMission.level || 1) + ': ' + (nextMission.title || 'En altamar') + '</strong>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="pcc-progress-section">' +
-              '<div class="pcc-progress-header">' +
-                '<span>🗺️ Travesía del Mapa Pirata</span>' +
-                '<strong>' + progressPercent + '% Completado</strong>' +
-              '</div>' +
-              '<div class="pcc-progress-track">' +
-                '<div class="pcc-progress-fill" style="width:' + progressPercent + '%"></div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="slm-actions pcc-actions">' +
-            '<button class="pcc-btn-adventure" id="slm-go-adventure" type="button">' +
-              '<i class="fas fa-map-marked-alt"></i> Ir a mi Bitácora' +
-            '</button>' +
-            '<button class="slm-btn-logout pcc-btn-logout" id="slm-logout-action" type="button">' +
-              '<i class="fas fa-anchor"></i> Abandonar el Barco' +
-            '</button>' +
-          '</div>' +
-        '</div>';
 
       document.getElementById('slm-logout-action').onclick = logoutStudent;
       var goAdvBtn = document.getElementById('slm-go-adventure');
@@ -300,8 +402,9 @@
 
     } else {
       // FORMULARIO DE LOGIN
-      if (kicker) kicker.innerHTML = '⚓ Cofradía Pirata · Taller STEAM';
-      if (title) title.innerHTML = '<i class="fas fa-skull-crossbones"></i> Abordaje de Tripulantes';
+      if (frame) frame.classList.remove('theme-space');
+      if (kicker) kicker.innerHTML = '⚓ Cofradía Pirata & Flota Estelar · Taller STEAM';
+      if (title) title.innerHTML = '<i class="fas fa-compass"></i> Ingreso al Taller';
       body.innerHTML =
         '<form id="classic-login-form" class="classic-login-form">' +
           '<p class="clf-intro">Ingresá tu nombre de tripulante y clave secreta para subir a bordo:</p>' +
