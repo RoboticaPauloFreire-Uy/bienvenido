@@ -129,14 +129,21 @@
     if (!student) return 'pirate';
     var gId = (student.gradeId || '').toLowerCase();
     var gName = (student.gradeName || '').toLowerCase();
-    if (gId === 'grado2' || gId === '2do' || gId === 'grado3' || gId === '3ero' ||
-        /2\s*°|2do|segundo|3\s*°|3ero|tercer/i.test(gName)) {
-      return 'space';
+    // Grupo 4: 6.° Grado (Egresados & Anuario Legendario)
+    if (gId === 'grado6' || gId === '6to' || /6\s*°|6to|sexto/i.test(gName)) {
+      return 'legacy';
     }
+    // Grupo 3: 4.° y 5.° Grado (Cyberpunk / Robots & IA)
     if (gId === 'grado4' || gId === '4to' || gId === 'grado5' || gId === '5to' ||
         /4\s*°|4to|cuarto|5\s*°|5to|quinto/i.test(gName)) {
       return 'cyber';
     }
+    // Grupo 2: 2.° y 3.° Grado (Astronautas & Espacio)
+    if (gId === 'grado2' || gId === '2do' || gId === 'grado3' || gId === '3ero' ||
+        /2\s*°|2do|segundo|3\s*°|3ero|tercer/i.test(gName)) {
+      return 'space';
+    }
+    // Grupo 1: Sala de 5 y 1.° Grado (Piratas)
     return 'pirate';
   }
   window.getStudentThemeGroup = getStudentThemeGroup;
@@ -212,11 +219,13 @@
 
     if (student) {
       var themeGroup = getStudentThemeGroup(student);
-      var isSpace = (themeGroup === 'space');
+      var isLegacy = (themeGroup === 'legacy');
       var isCyber = (themeGroup === 'cyber');
+      var isSpace = (themeGroup === 'space');
       if (frame) {
-        frame.classList.toggle('theme-space', isSpace);
+        frame.classList.toggle('theme-legacy', isLegacy);
         frame.classList.toggle('theme-cyber', isCyber);
+        frame.classList.toggle('theme-space', isSpace);
       }
 
       var firstName = student.name.split(' ')[0];
@@ -228,11 +237,91 @@
       var progressPercent = Math.min(100, Math.round((completedCount / totalMissions) * 100));
       var studentLevel = Math.max(1, Math.floor(completedCount / 2) + 1);
       var totalPoints = completedCount * 100;
-      var defaultMissionTitle = isCyber ? 'Nodo Central Alfa' : (isSpace ? 'Estación Orbital Alfa' : 'Isla del Desembarco');
+      var defaultMissionTitle = isLegacy
+        ? 'Cápsula del Tiempo & Diploma'
+        : (isCyber ? 'Nodo Central Alfa' : (isSpace ? 'Estación Orbital Alfa' : 'Isla del Desembarco'));
       var nextMission = missions.find(function(m) { return m.status !== 'completado'; }) || missions[missions.length - 1] || { level: 1, title: defaultMissionTitle };
       var gId = (student.gradeId || '').toLowerCase();
 
-      if (isCyber) {
+      if (isLegacy) {
+        // ═══ GRUPO 4 (6° GRADO): ANUARIO Y LIBRO DE RECUERDOS LEGENDARIO DE EGRESADOS ═══
+        if (kicker) kicker.innerHTML = '🎓 Anuario de Egresados · Generación Maker Paulo Freire';
+        if (title) title.innerHTML = '<i class="fas fa-graduation-cap"></i> Libro de Honor de ' + firstName;
+
+        var legacyRank = studentLevel >= 5 ? 'Leyenda Graduada Maker 🎓🏆' : (studentLevel >= 3 ? 'Maestro Egresado de Honor' : 'Pionero de 6.° Grado');
+        var legacySpecialty = '🎓 Proyecto Cumbre: Robótica Avanzada, Servomotores & Gemini IA';
+
+        body.innerHTML =
+          '<div class="slm-active-profile pirate-crew-card legacy-crew-card">' +
+            '<div class="pcc-top-banner">' +
+              '<div class="pcc-avatar-medallion">' +
+                '<span class="pcc-avatar-emoji">' + (student.avatar || '🎓') + '</span>' +
+                '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
+              '</div>' +
+              '<div class="pcc-identity">' +
+                '<span class="pcc-rank-badge">👑 ' + legacyRank + '</span>' +
+                '<h3 class="slm-student-name">' + student.name + '</h3>' +
+                '<div class="pcc-ship-row">' +
+                  '<span class="slm-student-grade">📜 Promoción ' + (student.gradeName || '6.° Grado') + '</span>' +
+                  '<span class="pcc-specialty-tag">' + legacySpecialty + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="pcc-stats-scroll">' +
+              '<div class="pcc-scroll-title"><i class="fas fa-award"></i> Registro Histórico del Egresado</div>' +
+              '<div class="pcc-stats-grid">' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">👑</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Laureles de Honor</span>' +
+                    '<strong class="pcc-stat-value">+' + totalPoints + ' Laureles</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">📜</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Hitos de Egreso</span>' +
+                    '<strong class="pcc-stat-value">' + completedCount + ' de ' + totalMissions + ' Hitos</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🎓</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Título Maker</span>' +
+                    '<strong class="pcc-stat-value">' + legacyRank + '</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🏆</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Proyecto Cumbre</span>' +
+                    '<strong class="pcc-stat-value">Hito ' + (nextMission.level || 1) + ': ' + (nextMission.title || 'Graduación') + '</strong>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="pcc-progress-section">' +
+                '<div class="pcc-progress-header">' +
+                  '<span>🎓 Camino a la Graduación y Diploma Maker</span>' +
+                  '<strong>' + progressPercent + '% Completado</strong>' +
+                '</div>' +
+                '<div class="pcc-progress-track">' +
+                  '<div class="pcc-progress-fill" style="width:' + progressPercent + '%"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="slm-actions pcc-actions">' +
+              '<button class="pcc-btn-adventure" id="slm-go-adventure" type="button">' +
+                '<i class="fas fa-scroll"></i> Abrir mi Anuario de Recuerdos' +
+              '</button>' +
+              '<button class="slm-btn-logout pcc-btn-logout" id="slm-logout-action" type="button">' +
+                '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      } else if (isCyber) {
         // ═══ GRUPO 3 (4° y 5° GRADO): CREDENCIAL CYBERPUNK · MAESTROS DE ROBOTS, CIRCUITOS & IA ═══
         if (kicker) kicker.innerHTML = '🤖 Red Neuronal Maker · División Cyber';
         if (title) title.innerHTML = '<i class="fas fa-microchip"></i> Terminal Cyber de ' + firstName;
@@ -489,8 +578,8 @@
 
     } else {
       // FORMULARIO DE LOGIN
-      if (frame) frame.classList.remove('theme-space');
-      if (kicker) kicker.innerHTML = '⚓ Cofradía Pirata & Flota Estelar · Taller STEAM';
+      if (frame) frame.classList.remove('theme-space', 'theme-cyber', 'theme-legacy');
+      if (kicker) kicker.innerHTML = '⚓ Taller STEAM · Cofradía, Flota, Cyber & Egresados';
       if (title) title.innerHTML = '<i class="fas fa-compass"></i> Ingreso al Taller';
       body.innerHTML =
         '<form id="classic-login-form" class="classic-login-form">' +

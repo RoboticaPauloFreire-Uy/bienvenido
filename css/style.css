@@ -16494,3 +16494,942 @@ body.student-logged-in #student-drive-dashboard-container {
   border-color: #6EE7B7 !important;
   outline-color: #10B981 !important;
 }
+
+/* ==========================================================================
+   GRUPO 4 (6.° GRADO): ANUARIO Y LIBRO DE RECUERDOS LEGENDARIO (.theme-legacy)
+   ========================================================================== */
+
+/* ── 1. Modal Perfil del Alumno / Credencial Anuario (.theme-legacy) ── */
+#student-login-modal .pirate-modal-frame.theme-legacy {
+  border-color: #B45309 !important;
+  outline-color: #F59E0B !important;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(245, 158, 11, 0.22) 0%, transparent 70%),
+    radial-gradient(circle at 85% 90%, rgba(30, 27, 75, 0.45) 0%, transparent 60%),
+    linear-gradient(180deg, #1E1B4B 0%, #0F172A 50%, #0B0F19 100%) !important;
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.95),
+    0 0 0 3px #F59E0B,
+    0 0 45px rgba(245, 158, 11, 0.35) !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-legacy .pmf-brass-corner svg path {
+  fill: #F59E0B !important;
+  stroke: #78350F !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-legacy .pmf-brass-corner svg circle {
+  fill: #FEF08A !important;
+  stroke: #451A03 !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-legacy .slm-pirate-header {
+  background: linear-gradient(90deg, #0B0F19 0%, #1E1B4B 50%, #0B0F19 100%) !important;
+  border-bottom-color: #F59E0B !important;
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.7),
+    inset 0 -1px 0 #FDE047 !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-legacy .slm-pirate-kicker {
+  color: #FDE047 !important;
+  font-family: Georgia, 'Times New Roman', serif !important;
+  letter-spacing: 0.12em !important;
+  font-weight: 700 !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-legacy #slm-title {
+  color: #FFFDF5 !important;
+  font-family: Georgia, 'Times New Roman', serif !important;
+  text-shadow: 0 0 14px rgba(245, 158, 11, 0.8), 0 2px 4px rgba(0,0,0,0.9) !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-legacy .slm-pirate-body {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.08) 0%, transparent 80%),
+    linear-gradient(180deg, #111827 0%, #0B0F19 100%) !important;
+}
+
+/* ── Tarjeta de Anuario de Egresados (.legacy-crew-card) ── */
+.legacy-crew-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #F1F5F9;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.legacy-crew-header {
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(245, 158, 11, 0.35);
+}
+
+.legacy-crew-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #FDE047;
+  font-family: Georgia, serif;
+  margin-bottom: 4px;
+}
+
+.legacy-crew-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #FFFDF5;
+  margin: 0;
+  font-family: Georgia, serif;
+  text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+}
+
+.legacy-crew-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.1);
+}
+
+.legacy-avatar-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #312E81 0%, #1E1B4B 100%);
+  border: 2px solid #F59E0B;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.legacy-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legacy-player-name {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0;
+  font-family: Georgia, serif;
+}
+
+.legacy-rank-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #FEF08A;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: 6px;
+  padding: 2px 8px;
+  width: fit-content;
+}
+
+.legacy-spec-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #E2E8F0;
+  background: rgba(49, 46, 129, 0.4);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  border-radius: 6px;
+  padding: 2px 8px;
+  width: fit-content;
+  font-family: Georgia, serif;
+}
+
+.legacy-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.legacy-stat-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.legacy-stat-card.laurel {
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+}
+
+.legacy-stat-lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94A3B8;
+  letter-spacing: 0.06em;
+}
+
+.legacy-stat-num {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #F8FAFC;
+}
+
+.legacy-stat-card.laurel .legacy-stat-num {
+  color: #FDE047;
+}
+
+.legacy-progress-box {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.legacy-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #FDE047;
+  margin-bottom: 6px;
+  font-family: Georgia, serif;
+}
+
+.legacy-progress-track {
+  height: 10px;
+  border-radius: 5px;
+  background: #020617;
+  overflow: hidden;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
+.legacy-progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #D97706 0%, #F59E0B 50%, #FDE047 100%);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.85);
+  transition: width 0.5s ease;
+}
+
+.legacy-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.legacy-btn-anuario {
+  flex: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #451A03;
+  background: linear-gradient(135deg, #FDE047 0%, #F59E0B 50%, #D97706 100%);
+  border: 1px solid #FEF08A;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: Georgia, serif;
+  letter-spacing: 0.04em;
+}
+
+.legacy-btn-anuario:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.65);
+  filter: brightness(1.1);
+}
+
+.legacy-btn-disconnect {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #FDA4AF;
+  background: rgba(225, 29, 72, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: system-ui, sans-serif;
+}
+
+.legacy-btn-disconnect:hover {
+  background: rgba(225, 29, 72, 0.3);
+  color: #FFF;
+}
+
+/* ── 2. Hero Card Egresados (.theme-legacy .gamer-hero-card) ── */
+.theme-legacy .gamer-hero-card,
+.gamer-hero-card.legacy-hero-card {
+  background:
+    radial-gradient(ellipse at 85% 20%, rgba(245, 158, 11, 0.22) 0%, transparent 55%),
+    radial-gradient(circle at 15% 90%, rgba(49, 46, 129, 0.45) 0%, transparent 60%),
+    linear-gradient(135deg, #1E1B4B 0%, #0F172A 50%, #0B0F19 100%) !important;
+  border: 2px solid #F59E0B !important;
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.88),
+    0 0 35px rgba(245, 158, 11, 0.3) !important;
+  border-radius: 18px !important;
+}
+
+.theme-legacy .gh-avatar-container {
+  border-color: #F59E0B !important;
+  background: radial-gradient(circle, #312E81 0%, #1E1B4B 100%) !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.7) !important;
+}
+
+.theme-legacy .gh-status-dot {
+  background: #FDE047 !important;
+  box-shadow: 0 0 10px #FDE047 !important;
+}
+
+.theme-legacy .gh-badge.grade {
+  background: rgba(49, 46, 129, 0.45) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  color: #FEF08A !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gh-badge.level {
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(253, 224, 71, 0.6) !important;
+  color: #FDE047 !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gh-player-name {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+  text-shadow: 0 0 12px rgba(245, 158, 11, 0.7) !important;
+}
+
+.theme-legacy .gh-player-sub {
+  color: #CBD5E1 !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gh-btn-continue {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FDE047 100%) !important;
+  border-color: #FEF08A !important;
+  color: #451A03 !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5) !important;
+}
+
+.theme-legacy .gh-btn-continue:hover {
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.7) !important;
+  filter: brightness(1.1) !important;
+}
+
+.theme-legacy .gbc-icon {
+  background: rgba(69, 26, 3, 0.5) !important;
+  color: #FFFDF5 !important;
+}
+
+.theme-legacy .gh-pill-link {
+  background: rgba(245, 158, 11, 0.16) !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  color: #FDE047 !important;
+}
+
+.theme-legacy .gh-pill-link:hover {
+  background: rgba(245, 158, 11, 0.3) !important;
+  color: #FFFFFF !important;
+}
+
+.theme-legacy .gh-stats-row {
+  border-top-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+.theme-legacy .gh-xp-badge {
+  background: rgba(245, 158, 11, 0.18) !important;
+  border-color: rgba(253, 224, 71, 0.55) !important;
+  color: #FDE047 !important;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.25) !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gh-progress-header {
+  color: #FDE047 !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gh-progress-track {
+  background: #0B0F19 !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+.theme-legacy .gh-progress-fill {
+  background: linear-gradient(90deg, #D97706 0%, #F59E0B 50%, #FDE047 100%) !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.85) !important;
+}
+
+/* ── 3. Barra de Navegación Egresados (.theme-legacy .gamer-nav-bar) ── */
+.theme-legacy .gnb-tab,
+.legacy-nav-bar .gnb-tab {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  box-shadow: inset 0 0 10px rgba(245, 158, 11, 0.05) !important;
+}
+
+.theme-legacy .gnb-tab:hover,
+.legacy-nav-bar .gnb-tab:hover {
+  border-color: #F59E0B !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.28) !important;
+}
+
+.theme-legacy .gnb-title,
+.legacy-nav-bar .gnb-title {
+  color: #F1F5F9 !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gnb-badge,
+.legacy-nav-bar .gnb-badge {
+  color: #FDE047 !important;
+}
+
+.theme-legacy .gnb-tab.active,
+.legacy-nav-bar .gnb-tab.active {
+  background: linear-gradient(135deg, rgba(49, 46, 129, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+  border-color: #FDE047 !important;
+  box-shadow:
+    0 6px 20px rgba(245, 158, 11, 0.4),
+    inset 0 0 14px rgba(253, 224, 71, 0.25) !important;
+}
+
+.theme-legacy .gnb-tab.active .gnb-title,
+.legacy-nav-bar .gnb-tab.active .gnb-title {
+  color: #FFFDF5 !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.7) !important;
+}
+
+.theme-legacy .gnb-tab.active .gnb-badge,
+.legacy-nav-bar .gnb-tab.active .gnb-badge {
+  color: #FEF08A !important;
+}
+
+/* ── 4. Contenedor de Contenido Egresados ── */
+.theme-legacy .gdb-content-area.gamer-fullwidth {
+  background: #0B0F19 !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.92) !important;
+  border-radius: 16px !important;
+}
+
+.theme-legacy .gca-folder-bar {
+  background: linear-gradient(90deg, #0B0F19 0%, #1E1B4B 50%, #0B0F19 100%) !important;
+  border-bottom-color: #F59E0B !important;
+}
+
+.theme-legacy .gca-fb-title {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gca-fb-title i {
+  color: #FDE047 !important;
+}
+
+.theme-legacy .gca-fb-count {
+  color: #FEF08A !important;
+  font-family: Georgia, serif !important;
+}
+
+.theme-legacy .gca-btn-upload {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%) !important;
+  border-color: #FEF08A !important;
+  color: #451A03 !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.45) !important;
+}
+
+.theme-legacy .gca-btn-upload:hover {
+  filter: brightness(1.1) !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.65) !important;
+}
+
+/* ── 5. Canvas del Camino del Egresado (.legacy-map-canvas) ── */
+.pirate-map-canvas.legacy-map-canvas {
+  background: #0B0F19 !important;
+  border: 2px solid #B45309 !important;
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(245, 158, 11, 0.25) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.pirate-start-port.legacy-start-port {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.25) 0%, transparent 60%),
+    linear-gradient(180deg, #1E1B4B 0%, #0F172A 60%, #0B0F19 100%) !important;
+  border-bottom: 2px solid #F59E0B !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75) !important;
+}
+
+.legacy-start-port .ppb-title {
+  color: #FDE047 !important;
+  font-family: Georgia, serif !important;
+  letter-spacing: 0.08em !important;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.7) !important;
+}
+
+.legacy-start-port .ppb-sub {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+}
+
+.legacy-start-port .ppb-anchor i,
+.legacy-start-port .ppb-compass i {
+  color: #FDE047 !important;
+  filter: drop-shadow(0 0 8px #F59E0B) !important;
+}
+
+/* Estación / Hito de Honor del Egresado (.legacy-landmark-station) */
+.pirate-island-station.legacy-landmark-station .pirate-medallion-ring {
+  background: radial-gradient(circle, #1E1B4B 30%, #0F172A 100%) !important;
+  border: 3px solid #F59E0B !important;
+  box-shadow:
+    0 0 22px rgba(245, 158, 11, 0.65),
+    inset 0 0 15px rgba(253, 224, 71, 0.35) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pct-tick {
+  color: #FDE047 !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-level-coin {
+  background: radial-gradient(circle at 35% 35%, #FEF08A 0%, #F59E0B 60%, #78350F 100%) !important;
+  border-color: #FFFBEB !important;
+  color: #451A03 !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.75) !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-island-info-block {
+  background: rgba(15, 23, 42, 0.94) !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.85),
+    0 0 16px rgba(245, 158, 11, 0.2) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-island-title {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-status-pill.completado {
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: #F59E0B !important;
+  color: #FDE047 !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-status-pill.activo {
+  background: rgba(253, 224, 71, 0.25) !important;
+  border-color: #FDE047 !important;
+  color: #FEF08A !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-status-pill.desafio {
+  background: rgba(148, 163, 184, 0.2) !important;
+  border-color: #94A3B8 !important;
+  color: #CBD5E1 !important;
+}
+
+/* Pergamino / Acta de Honor del Hito (.legacy-landmark-station .pirate-scroll-drawer) */
+.pirate-island-station.legacy-landmark-station .pirate-scroll-wood-rod {
+  background: linear-gradient(180deg, #B45309 0%, #F59E0B 50%, #78350F 100%) !important;
+  border-color: #FEF08A !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.55) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-scroll-parchment {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.12) 0%, transparent 70%),
+    linear-gradient(180deg, #FFFDF5 0%, #FEF9C3 50%, #FFFBEB 100%) !important;
+  border-left: 2px solid #F59E0B !important;
+  border-right: 2px solid #F59E0B !important;
+  color: #1E1B4B !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .psts-stamp {
+  color: #B45309 !important;
+  font-family: Georgia, serif !important;
+  letter-spacing: 0.08em !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-scroll-title {
+  color: #0F172A !important;
+  font-family: Georgia, serif !important;
+  text-shadow: none !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-scroll-narrative {
+  color: #334155 !important;
+  border-left-color: #F59E0B !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-quote-icon {
+  color: #F59E0B !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-scroll-box.objective {
+  background: rgba(254, 240, 138, 0.35) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-scroll-box.objective .psb-header {
+  color: #92400E !important;
+  font-family: Georgia, serif !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-scroll-box.benefits {
+  background: rgba(49, 46, 129, 0.12) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-scroll-box.benefits .psb-header {
+  color: #312E81 !important;
+  font-family: Georgia, serif !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-btn-main {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FDE047 100%) !important;
+  border-color: #FEF08A !important;
+  color: #451A03 !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.55) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-btn-main:hover {
+  filter: brightness(1.15) !important;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.75) !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-btn-sec {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  color: #FDE047 !important;
+  font-family: Georgia, serif !important;
+}
+
+.pirate-island-station.legacy-landmark-station .pirate-btn-ghost {
+  background: transparent !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  color: #475569 !important;
+}
+
+/* Estación Final Diploma de Graduación (.legacy-finish-station) */
+.legacy-finish-station {
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.25) 0%, transparent 70%),
+    linear-gradient(180deg, #1E1B4B 0%, #0B0F19 100%) !important;
+  border: 2px solid #F59E0B !important;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.95),
+    0 0 40px rgba(245, 158, 11, 0.45) !important;
+}
+
+.legacy-finish-station .arm-finish-title {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+  text-shadow: 0 0 14px rgba(245, 158, 11, 0.85) !important;
+}
+
+.legacy-finish-station .arm-finish-desc {
+  color: #CBD5E1 !important;
+  font-family: Georgia, serif !important;
+}
+
+.legacy-finish-station .arm-finish-stat-pill {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  color: #FEF08A !important;
+  font-family: Georgia, serif !important;
+}
+
+.legacy-finish-station .arm-finish-celebrate-btn {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FDE047 100%) !important;
+  border-color: #FEF08A !important;
+  color: #451A03 !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.65) !important;
+}
+
+/* ── 6. Tablero del Anuario / Libro de Honor (.pirate-tavern-board.legacy-annuary-board) ── */
+.ptb-main-wrap.legacy-board-wrap {
+  background: transparent !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board {
+  background:
+    radial-gradient(ellipse at 50% 10%, rgba(245, 158, 11, 0.18) 0%, transparent 60%),
+    linear-gradient(180deg, #1E1B4B 0%, #0F172A 60%, #0B0F19 100%) !important;
+  border: 2px solid #F59E0B !important;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.94),
+    0 0 35px rgba(245, 158, 11, 0.3) !important;
+  border-radius: 18px !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ptb-corner-bolt {
+  background: radial-gradient(circle, #FEF08A 0%, #F59E0B 60%, #78350F 100%) !important;
+  border-color: #FFFBEB !important;
+  box-shadow: 0 0 10px #F59E0B !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ptb-parchment-sheet {
+  background:
+    radial-gradient(circle at center, rgba(245, 158, 11, 0.08) 0%, transparent 75%),
+    linear-gradient(180deg, #1E1B4B 0%, #0B0F19 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ptb-wax-seal {
+  background: radial-gradient(circle at 35% 35%, #FDE047 0%, #F59E0B 60%, #78350F 100%) !important;
+  border-color: #FEF08A !important;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.75) !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ptb-sheet-tag {
+  color: #FDE047 !important;
+  font-family: Georgia, serif !important;
+  letter-spacing: 0.1em !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ptb-sheet-title {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+  text-shadow: 0 0 14px rgba(245, 158, 11, 0.65) !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ptb-sheet-sub {
+  color: #CBD5E1 !important;
+  font-family: Georgia, serif !important;
+}
+
+/* Tarjetas en el Tablero de Egresados */
+.pirate-tavern-board.legacy-annuary-board .ptb-card {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ptb-card:hover {
+  border-color: #FDE047 !important;
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.95),
+    0 0 22px rgba(245, 158, 11, 0.35) !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ggc-title {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ggc-desc {
+  color: #94A3B8 !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .pirate-btn-exec {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%) !important;
+  color: #451A03 !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+  border-color: #FEF08A !important;
+}
+
+.pirate-tavern-board.legacy-annuary-board .ggc-btn-sugerencias {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: #FDE047 !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  font-family: Georgia, serif !important;
+}
+
+/* ── 7. Álbum de Recuerdos (.captain-table-board.legacy-album-board) ── */
+.captain-table-board.legacy-album-board {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(245, 158, 11, 0.2) 0%, transparent 60%),
+    linear-gradient(180deg, #1E1B4B 0%, #0B0F19 100%) !important;
+  border: 2px solid #F59E0B !important;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(245, 158, 11, 0.35) !important;
+}
+
+.captain-table-board.legacy-album-board .ct-brass-corner {
+  background: radial-gradient(circle, #FEF08A 0%, #F59E0B 60%, #78350F 100%) !important;
+  border-color: #FFFBEB !important;
+  box-shadow: 0 0 10px #F59E0B !important;
+}
+
+.captain-table-board.legacy-album-board .ct-table-header h3 {
+  color: #FFFDF5 !important;
+  font-family: Georgia, serif !important;
+  text-shadow: 0 0 12px rgba(245, 158, 11, 0.7) !important;
+}
+
+.captain-table-board.legacy-album-board .ct-table-header p {
+  color: #CBD5E1 !important;
+  font-family: Georgia, serif !important;
+}
+
+.captain-table-board.legacy-album-board .ct-th-badge {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(253, 224, 71, 0.5) !important;
+  color: #FDE047 !important;
+  font-family: Georgia, serif !important;
+}
+
+.captain-table-board.legacy-album-board .captain-scroll-card {
+  background: #FFFDF5 !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.85) !important;
+  color: #1E1B4B !important;
+}
+
+.captain-table-board.legacy-album-board .captain-scroll-card:hover {
+  border-color: #F59E0B !important;
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.95),
+    0 0 24px rgba(245, 158, 11, 0.4) !important;
+}
+
+.captain-table-board.legacy-album-board .csc-title {
+  color: #0F172A !important;
+  font-family: Georgia, serif !important;
+}
+
+.captain-table-board.legacy-album-board .csc-meta-item {
+  color: #64748B !important;
+}
+
+.captain-table-board.legacy-album-board .csc-btn-view {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%) !important;
+  color: #451A03 !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+}
+
+.captain-table-board.legacy-album-board .csc-btn-download {
+  background: rgba(15, 23, 42, 0.9) !important;
+  color: #FDE047 !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+/* ── 8. Lightbox y Visor PDF de Honor (.pirate-modal-frame.theme-legacy) ── */
+.pirate-modal-frame.theme-legacy {
+  border-color: #B45309 !important;
+  outline-color: #F59E0B !important;
+  background: #0B0F19 !important;
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.95),
+    0 0 0 3px #F59E0B,
+    0 0 40px rgba(245, 158, 11, 0.4) !important;
+}
+
+.pirate-modal-frame.theme-legacy .pmf-brass-corner svg path {
+  fill: #F59E0B !important;
+  stroke: #78350F !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-header {
+  background: linear-gradient(90deg, #0B0F19 0%, #1E1B4B 50%, #0B0F19 100%) !important;
+  border-bottom-color: #F59E0B !important;
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.7),
+    inset 0 -1px 0 #FDE047 !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-pirate-kicker {
+  color: #FDE047 !important;
+  font-family: Georgia, serif !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-scroll-badge {
+  background: linear-gradient(135deg, #F59E0B, #D97706) !important;
+  border-color: #FEF08A !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-btn-action {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%) !important;
+  border-color: #FEF08A !important;
+  color: #451A03 !important;
+  font-family: Georgia, serif !important;
+  font-weight: 900 !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-body {
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.16) 0%, rgba(11, 15, 25, 0.95) 100%),
+    linear-gradient(180deg, #1E1B4B 0%, #0B0F19 100%) !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-scroll-rod {
+  background: linear-gradient(180deg, #B45309 0%, #F59E0B 35%, #78350F 100%) !important;
+  border-top-color: #FEF08A !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-scroll-rod .rod-finial,
+.pirate-modal-frame.theme-legacy .ilm-scroll-rod .rod-center-ring {
+  background: radial-gradient(circle at 35% 35%, #FEF08A 0%, #F59E0B 60%, #78350F 100%) !important;
+  border-color: #0B0F19 !important;
+  color: #FFFDF5 !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-parchment-mat {
+  background: radial-gradient(circle at center, #FFFDF5 35%, #FEF9C3 100%) !important;
+  border-left-color: #F59E0B !important;
+  border-right-color: #F59E0B !important;
+  outline-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-mat-corner {
+  color: #D97706 !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-img-inner-bezel {
+  background: linear-gradient(135deg, #B45309 0%, #F59E0B 50%, #1E1B4B 100%) !important;
+}
+
+.pirate-modal-frame.theme-legacy .ilm-wax-coin {
+  background: radial-gradient(circle at 35% 35%, #FEF08A 0%, #F59E0B 60%, #78350F 100%) !important;
+  border-color: #FFFBEB !important;
+  outline-color: #F59E0B !important;
+}

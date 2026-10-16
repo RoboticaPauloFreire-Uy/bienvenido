@@ -748,14 +748,24 @@
             /4\s*°|4to|cuarto|5\s*°|5to|quinto/i.test(gName));
   }
 
+  function isLegacyTheme(student) {
+    if (!student && window.getActiveStudent) student = window.getActiveStudent();
+    if (!student) return false;
+    if (window.getStudentThemeGroup) return window.getStudentThemeGroup(student) === 'legacy';
+    var gId = (student.gradeId || '').toLowerCase();
+    var gName = (student.gradeName || '').toLowerCase();
+    return (gId === 'grado6' || gId === '6to' || /6\s*°|6to|sexto/i.test(gName));
+  }
+
   // ──────────────────────────────────────────────────
   // RENDER HTML DE RUTA DE AVENTURAS (MODO 3)
   // ──────────────────────────────────────────────────
   function renderAdventureRoadmapHtml(student, missions, isGrid) {
-    var isSpace = isSpaceTheme(student);
+    var isLegacy = isLegacyTheme(student);
     var isCyber = isCyberTheme(student);
+    var isSpace = isSpaceTheme(student);
     if (!missions || missions.length === 0) {
-      return '<div class="gdb-empty-state"><div class="ges-icon">' + (isCyber ? '🔌' : (isSpace ? '🪐' : '🗺️')) + '</div><h4>Sin misiones aún</h4><p>Pronto se publicarán los desafíos para ' + student.gradeName + '.</p></div>';
+      return '<div class="gdb-empty-state"><div class="ges-icon">' + (isLegacy ? '🎓' : (isCyber ? '🔌' : (isSpace ? '🪐' : '🗺️'))) + '</div><h4>Sin misiones aún</h4><p>Pronto se publicarán los desafíos para ' + student.gradeName + '.</p></div>';
     }
 
     // Progreso del Taller: cuenta exactamente las misiones completadas
@@ -763,14 +773,14 @@
     var progressPercent = missions.length > 0 ? Math.min(100, Math.round((completedCount / missions.length) * 100)) : 0;
 
     var headerHtml =
-      '<div class="arm-toolbar-compact ' + (isCyber ? 'cyber-toolbar' : (isSpace ? 'space-toolbar' : '')) + '">' +
+      '<div class="arm-toolbar-compact ' + (isLegacy ? 'legacy-toolbar' : (isCyber ? 'cyber-toolbar' : (isSpace ? 'space-toolbar' : ''))) + '">' +
         '<div class="atc-left">' +
-          '<span class="atc-badge"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-compass')) + '"></i> ' + (isCyber ? 'RED NEURONAL MAKER 2026' : (isSpace ? 'CARTA ESTELAR MAKER 2026' : 'CARTA NÁUTICA MAKER 2026')) + '</span>' +
-          '<h3 class="atc-title">' + (isCyber ? '🔌 Circuito Central &bull; ' : (isSpace ? '🪐 Mapa Estelar &bull; ' : '🗺️ Mapa del Tesoro &bull; ')) + student.gradeName + '</h3>' +
+          '<span class="atc-badge"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-compass'))) + '"></i> ' + (isLegacy ? 'ANUARIO DE EGRESADOS 2026' : (isCyber ? 'RED NEURONAL MAKER 2026' : (isSpace ? 'CARTA ESTELAR MAKER 2026' : 'CARTA NÁUTICA MAKER 2026'))) + '</span>' +
+          '<h3 class="atc-title">' + (isLegacy ? '🎓 Camino del Egresado &bull; ' : (isCyber ? '🔌 Circuito Central &bull; ' : (isSpace ? '🪐 Mapa Estelar &bull; ' : '🗺️ Mapa del Tesoro &bull; '))) + student.gradeName + '</h3>' +
         '</div>' +
         '<div class="arm-view-toggle">' +
-          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="' + (isCyber ? 'Ver como Circuito de Nodos Cyber' : (isSpace ? 'Ver como Mapa Estelar Galáctico' : 'Ver como Mapa Pirata del Tesoro')) + '">' +
-            '<i class="fas ' + (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-map-marked-alt')) + '"></i> <span>' + (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa Pirata')) + '</span>' +
+          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="' + (isLegacy ? 'Ver como Camino del Egresado' : (isCyber ? 'Ver como Circuito de Nodos Cyber' : (isSpace ? 'Ver como Mapa Estelar Galáctico' : 'Ver como Mapa Pirata del Tesoro'))) + '">' +
+            '<i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-map-marked-alt'))) + '"></i> <span>' + (isLegacy ? 'Libro de Hitos' : (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa Pirata'))) + '</span>' +
           '</button>' +
           '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Cuadrícula">' +
             '<i class="fas fa-th-large"></i> <span>Cuadrícula</span>' +
@@ -1420,7 +1430,83 @@
           '<path class="pirate-ship-foam" d="M 30 178 L 70 178 L 80 170 L 110 184 L 130 172 L 150 184 L 180 170 L 190 178 L 230 178" stroke="#10B981" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
         '</svg>';
 
-      var pirateStartPortHtml = isCyber
+      var legacyGradArchSvg =
+        '<svg class="pirate-ship-svg legacy-arch-svg" viewBox="0 0 260 210" width="150" height="120" xmlns="http://www.w3.org/2000/svg" aria-label="Portal de Graduados Paulo Freire">' +
+          '<defs>' +
+            '<linearGradient id="legGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#FDE047"/>' +
+              '<stop offset="50%" stop-color="#F59E0B"/>' +
+              '<stop offset="100%" stop-color="#B45309"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="legCapGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#1E1B4B"/>' +
+              '<stop offset="60%" stop-color="#0F172A"/>' +
+              '<stop offset="100%" stop-color="#020617"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="legRibbonRed" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#EF4444"/>' +
+              '<stop offset="100%" stop-color="#991B1B"/>' +
+            '</linearGradient>' +
+            '<filter id="legGoldGlow" x="-20%" y="-20%" width="140%" height="140%">' +
+              '<feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(245,158,11,0.5)"/>' +
+            '</filter>' +
+          '</defs>' +
+          '<g class="pirate-ship-bobbing" filter="url(#legGoldGlow)">' +
+            '<!-- Base y sombra pedestal -->' +
+            '<ellipse cx="130" cy="184" rx="86" ry="12" fill="rgba(245, 158, 11, 0.28)"/>' +
+            '<rect x="65" y="162" width="130" height="18" rx="5" fill="#1E1B4B" stroke="url(#legGoldGrad)" stroke-width="2.5"/>' +
+            '<rect x="75" y="152" width="110" height="12" rx="3" fill="#312E81" stroke="url(#legGoldGrad)" stroke-width="1.8"/>' +
+            '<!-- Columnas y Arco de Triunfo con Laureles -->' +
+            '<path d="M 68 152 L 68 70 Q 130 20 192 70 L 192 152" fill="none" stroke="url(#legGoldGrad)" stroke-width="5" stroke-linecap="round"/>' +
+            '<path d="M 78 152 L 78 78 Q 130 38 182 78 L 182 152" fill="none" stroke="#FDE047" stroke-width="1.8" stroke-dasharray="5 3"/>' +
+            '<!-- Hojas de Laurel en el arco -->' +
+            '<circle cx="85" cy="62" r="5" fill="#F59E0B"/><circle cx="102" cy="46" r="5" fill="#FDE047"/><circle cx="130" cy="38" r="6" fill="#F59E0B"/><circle cx="158" cy="46" r="5" fill="#FDE047"/><circle cx="175" cy="62" r="5" fill="#F59E0B"/>' +
+            '<!-- Birrete de Graduación Central -->' +
+            '<polygon points="130,55 184,78 130,101 76,78" fill="url(#legCapGrad)" stroke="url(#legGoldGrad)" stroke-width="2.5"/>' +
+            '<rect x="108" y="94" width="44" height="24" rx="4" fill="url(#legCapGrad)" stroke="url(#legGoldGrad)" stroke-width="2"/>' +
+            '<!-- Borla Dorada -->' +
+            '<line x1="130" y1="78" x2="168" y2="92" stroke="#FDE047" stroke-width="2.2"/>' +
+            '<circle cx="168" cy="95" r="4.5" fill="#F59E0B"/>' +
+            '<line x1="168" y1="99" x2="170" y2="114" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>' +
+            '<!-- Rollo de Diploma de Honor con Lazo -->' +
+            '<rect x="90" y="128" width="80" height="18" rx="9" fill="#FFFDF5" stroke="#B45309" stroke-width="2"/>' +
+            '<line x1="94" y1="137" x2="166" y2="137" stroke="#FDE047" stroke-width="1.2"/>' +
+            '<rect x="122" y="125" width="16" height="24" rx="3" fill="url(#legRibbonRed)" stroke="#B45309" stroke-width="1"/>' +
+            '<polygon points="122,149 130,144 138,149 135,138 125,138" fill="url(#legRibbonRed)"/>' +
+            '<!-- Estrella Dorada de Excelencia -->' +
+            '<circle cx="130" cy="136" r="3.5" fill="#FDE047"/>' +
+          '</g>' +
+          '<path class="pirate-ship-foam" d="M 35 180 Q 80 172 130 180 Q 180 188 225 180" stroke="#F59E0B" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.8"/>' +
+        '</svg>';
+
+      var pirateStartPortHtml = isLegacy
+        ? '<div class="pirate-start-port legacy-start-port">' +
+            '<div class="pirate-port-sky">' +
+              '<span class="pirate-sun-icon">👑</span>' +
+              '<span class="pirate-seagull s1">🎓</span>' +
+              '<span class="pirate-seagull s2">✨</span>' +
+            '</div>' +
+            '<div class="pirate-ship-stage">' +
+              '<div class="pirate-ship-wrapper" title="Portal de Egresados: Generación Maker Paulo Freire">' +
+                legacyGradArchSvg +
+              '</div>' +
+              '<div class="pirate-ocean-waves-wrap">' +
+                '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
+                  '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
+                  '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
+                '</svg>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pirate-port-banner">' +
+              '<div class="ppb-anchor"><i class="fas fa-graduation-cap"></i></div>' +
+              '<div class="ppb-text">' +
+                '<h3 class="ppb-title">PORTAL DE EGRESADOS &bull; GENERACIÓN MAKER PAULO FREIRE</h3>' +
+                '<p class="ppb-sub">El Camino de <strong>6.° Grado</strong> reúne los proyectos cumbre de tu paso por la escuela: Inteligencia Artificial en Canva, Gemini NotebookLM y Robótica con Servomotores. Recorré cada hito de honor para sellar tu Libro de Recuerdos y desbloquear el Gran Diploma de Graduación.</p>' +
+              '</div>' +
+              '<div class="ppb-compass"><i class="fas fa-award"></i></div>' +
+            '</div>' +
+          '</div>'
+        : (isCyber
         ? '<div class="pirate-start-port cyber-start-port">' +
             '<div class="pirate-port-sky">' +
               '<span class="pirate-sun-icon">⚡</span>' +
@@ -1499,13 +1585,24 @@
                 '</div>' +
                 '<div class="ppb-compass"><i class="fas fa-compass"></i></div>' +
               '</div>' +
-            '</div>');
+            '</div>'));
 
       function buildPirateStationHtml(m, idx, sideClass) {
         var statusSeal = '';
         var statusBadgeClass = m.status;
         var statusLabel = '';
-        if (isCyber) {
+        if (isLegacy) {
+          if (m.status === 'completado') {
+            statusLabel = 'Hito Cumplido';
+            statusSeal = '<div class="pirate-seal-badge completado" title="¡Hito cumplido con honor!"><i class="fas fa-award"></i> Cumplido</div>';
+          } else if (m.status === 'activo') {
+            statusLabel = 'Hito en Curso';
+            statusSeal = '<div class="pirate-seal-badge activo" title="¡Hito cumbre en curso!"><i class="fas fa-graduation-cap"></i> En Curso</div>';
+          } else {
+            statusLabel = 'Hito de Honor';
+            statusSeal = '<div class="pirate-seal-badge desafio" title="Hito por desbloquear"><i class="fas fa-lock"></i> Por Desbloquear</div>';
+          }
+        } else if (isCyber) {
           if (m.status === 'completado') {
             statusLabel = 'Nodo Compilado';
             statusSeal = '<div class="pirate-seal-badge completado" title="¡Nodo compilado con éxito!"><i class="fas fa-check-double"></i> Compilado</div>';
@@ -1552,23 +1649,25 @@
           toolBtnHtml = '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-game" title="Jugar"><i class="fas fa-gamepad"></i> Jugar Desafío</a>';
         }
 
-        var stationTitleText = isCyber ? ('🔌 Nodo ' + m.level + ': ' + m.title) : (isSpace ? ('🪐 Planeta ' + m.level + ': ' + m.title) : ('🏝️ Isla ' + m.level + ': ' + m.title));
-        var ctaOpenText = isCyber ? 'Cerrar terminal' : (isSpace ? 'Ocultar transmisión' : 'Ocultar pergamino');
-        var ctaClosedText = isCyber ? 'Tocá el nodo para abrir terminal' : (isSpace ? 'Tocá el planeta para ver transmisión' : 'Tocá la isla para ver pergamino');
-        var ctaIconClass = isCyber ? 'fa-terminal' : (isSpace ? 'fa-satellite-dish' : 'fa-scroll');
-        var stampHtml = isCyber
-          ? '<i class="fas fa-terminal"></i> Terminal de Ingeniería &bull; Nodo #' + m.level
-          : (isSpace
-            ? '<i class="fas fa-satellite-dish"></i> Transmisión de Comando &bull; Planeta #' + m.level
-            : '<i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level);
-        var objHeaderHtml = isCyber ? 'Especificación Técnica del Nodo' : (isSpace ? 'Objetivo de la Misión Orbital' : 'Objetivo del Tesoro');
-        var benHeaderHtml = isCyber ? 'Upgrade de Ingeniería (Lógica, Robótica e IA)' : (isSpace ? 'Superpoderes de Astronauta (Razonamiento y Lógica)' : 'Poderes Piratas (Razonamiento y Lógica)');
-        var mainActionText = isCyber ? '<i class="fas fa-bolt"></i> ¡Ejecutar Nodo de Misión!' : (isSpace ? '<i class="fas fa-rocket"></i> ¡Iniciar Misión Planetaria!' : '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!');
-        var stationThemeClass = isCyber ? 'cyber-node-station ' : (isSpace ? 'space-planet-station ' : '');
+        var stationTitleText = isLegacy ? ('🎓 Hito ' + m.level + ': ' + m.title) : (isCyber ? ('🔌 Nodo ' + m.level + ': ' + m.title) : (isSpace ? ('🪐 Planeta ' + m.level + ': ' + m.title) : ('🏝️ Isla ' + m.level + ': ' + m.title)));
+        var ctaOpenText = isLegacy ? 'Cerrar hito' : (isCyber ? 'Cerrar terminal' : (isSpace ? 'Ocultar transmisión' : 'Ocultar pergamino'));
+        var ctaClosedText = isLegacy ? 'Tocá el hito para ver el registro' : (isCyber ? 'Tocá el nodo para abrir terminal' : (isSpace ? 'Tocá el planeta para ver transmisión' : 'Tocá la isla para ver pergamino'));
+        var ctaIconClass = isLegacy ? 'fa-scroll' : (isCyber ? 'fa-terminal' : (isSpace ? 'fa-satellite-dish' : 'fa-scroll'));
+        var stampHtml = isLegacy
+          ? '<i class="fas fa-award"></i> Registro del Egresado &bull; Hito #' + m.level
+          : (isCyber
+            ? '<i class="fas fa-terminal"></i> Terminal de Ingeniería &bull; Nodo #' + m.level
+            : (isSpace
+              ? '<i class="fas fa-satellite-dish"></i> Transmisión de Comando &bull; Planeta #' + m.level
+              : '<i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level));
+        var objHeaderHtml = isLegacy ? 'Objetivo Cumbre del Egresado' : (isCyber ? 'Especificación Técnica del Nodo' : (isSpace ? 'Objetivo de la Misión Orbital' : 'Objetivo del Tesoro'));
+        var benHeaderHtml = isLegacy ? 'Competencias Maker de Graduación' : (isCyber ? 'Upgrade de Ingeniería (Lógica, Robótica e IA)' : (isSpace ? 'Superpoderes de Astronauta (Razonamiento y Lógica)' : 'Poderes Piratas (Razonamiento y Lógica)'));
+        var mainActionText = isLegacy ? '<i class="fas fa-graduation-cap"></i> ¡Explorar Proyecto de Honor!' : (isCyber ? '<i class="fas fa-bolt"></i> ¡Ejecutar Nodo de Misión!' : (isSpace ? '<i class="fas fa-rocket"></i> ¡Iniciar Misión Planetaria!' : '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!'));
+        var stationThemeClass = isLegacy ? 'legacy-landmark-station ' : (isCyber ? 'cyber-node-station ' : (isSpace ? 'space-planet-station ' : ''));
 
         return '<div class="pirate-island-station ' + stationThemeClass + sideClass + ' ' + statusBadgeClass + ' ' + (isInitiallyOpen ? 'is-expanded' : '') + '" data-mission-idx="' + idx + '" id="pirate-island-st-' + idx + '">' +
-          // Landmark interactivo de la Isla / Planeta / Nodo Cyber
-          '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="' + (isCyber ? '¡Tocá el nodo para abrir su terminal!' : (isSpace ? '¡Tocá el planeta para abrir su transmisión!' : '¡Tocá la isla para desplegar su pergamino de misión!')) + '">' +
+          // Landmark interactivo de la Isla / Planeta / Nodo Cyber / Hito de Graduados
+          '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="' + (isLegacy ? '¡Tocá el hito para ver el registro de honor!' : (isCyber ? '¡Tocá el nodo para abrir su terminal!' : (isSpace ? '¡Tocá el planeta para abrir su transmisión!' : '¡Tocá la isla para desplegar su pergamino de misión!'))) + '">' +
             '<div class="pirate-medallion-wrap">' +
               '<div class="pirate-medallion-ring ' + statusBadgeClass + '">' +
                 '<div class="pirate-compass-ticks">' +
@@ -1580,7 +1679,7 @@
                 '<div class="pirate-medallion-inner">' +
                   '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.src=\'img/scratchjr.png\'">' +
                   '<div class="pirate-level-coin">' +
-                    '<span>' + (isCyber ? '⚡ N' : (isSpace ? '🌟 N' : '🪙 L')) + m.level + '</span>' +
+                    '<span>' + (isLegacy ? '👑 H' : (isCyber ? '⚡ N' : (isSpace ? '🌟 N' : '🪙 L'))) + m.level + '</span>' +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -1659,7 +1758,7 @@
                 '<path class="ptc-glow" d="M 50,0 C 50,26 25,22 25,48" />' +
                 '<path class="ptc-dash" d="M 50,0 C 50,26 25,22 25,48" />' +
               '</svg>' +
-              '<div class="pirate-waypoint-marker wp-start" title="' + (isCyber ? 'Bus de datos hacia Nodo 1' : (isSpace ? 'Órbita hacia Planeta 1' : 'Rumbo a la Isla 1')) + '"><i class="fas ' + (isCyber ? 'fa-bolt' : (isSpace ? 'fa-rocket' : 'fa-compass')) + '"></i></div>' +
+              '<div class="pirate-waypoint-marker wp-start" title="' + (isLegacy ? 'Camino de honor hacia Hito 1' : (isCyber ? 'Bus de datos hacia Nodo 1' : (isSpace ? 'Órbita hacia Planeta 1' : 'Rumbo a la Isla 1'))) + '"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-bolt' : (isSpace ? 'fa-rocket' : 'fa-compass'))) + '"></i></div>' +
             '</div>';
         } else {
           // Curva desde la isla derecha de la fila previa (75) hacia la isla izquierda de esta fila (25)
@@ -1669,7 +1768,7 @@
                 '<path class="ptc-glow" d="M 75,0 C 75,32 25,20 25,52" />' +
                 '<path class="ptc-dash" d="M 75,0 C 75,32 25,20 25,52" />' +
               '</svg>' +
-              '<div class="pirate-waypoint-marker wp-mid" title="' + (isCyber ? 'Enlace de fibra hacia Nodo ' : (isSpace ? 'Salto hiperespacial al Planeta ' : 'Travesía náutica hacia la Isla ')) + mLeft.level + '"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-water')) + '"></i></div>' +
+              '<div class="pirate-waypoint-marker wp-mid" title="' + (isLegacy ? 'Sendero de laureles hacia Hito ' : (isCyber ? 'Enlace de fibra hacia Nodo ' : (isSpace ? 'Salto hiperespacial al Planeta ' : 'Travesía náutica hacia la Isla '))) + mLeft.level + '"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-water'))) + '"></i></div>' +
             '</div>';
         }
 
@@ -1684,7 +1783,7 @@
                 '<path class="ptc-glow" d="M 0,20 C 35,5 65,35 100,20" />' +
                 '<path class="ptc-dash" d="M 0,20 C 35,5 65,35 100,20" />' +
               '</svg>' +
-              '<div class="pirate-waypoint-marker wp-bridge" title="' + (isCyber ? 'Puente lógico hacia Nodo ' : (isSpace ? 'Rumbo orbital al Planeta ' : 'Rumbo a la Isla ')) + mRight.level + '"><i class="fas ' + (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-anchor')) + '"></i></div>' +
+              '<div class="pirate-waypoint-marker wp-bridge" title="' + (isLegacy ? 'Paso de honor hacia Hito ' : (isCyber ? 'Puente lógico hacia Nodo ' : (isSpace ? 'Rumbo orbital al Planeta ' : 'Rumbo a la Isla '))) + mRight.level + '"><i class="fas ' + (isLegacy ? 'fa-scroll' : (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-anchor'))) + '"></i></div>' +
             '</div>';
           rightStationHtml = buildPirateStationHtml(mRight, idxRight, 'island-right');
         }
@@ -1696,7 +1795,7 @@
           '</div>';
       }
 
-      // Connector final hacia el Cofre del Tesoro / Núcleo Galáctico / Supercomputadora IA (centro)
+      // Connector final hacia el Cofre del Tesoro / Núcleo Galáctico / Supercomputadora IA / Diploma de Honor (centro)
       var lastIdx = missions.length - 1;
       var lastSide = (lastIdx % 2 === 0) ? 'left' : 'right';
       var finishConnectorHtml = '';
@@ -1707,7 +1806,7 @@
               '<path class="ptc-glow" d="M 25,0 C 25,26 50,22 50,48" />' +
               '<path class="ptc-dash" d="M 25,0 C 25,26 50,22 50,48" />' +
             '</svg>' +
-            '<div class="pirate-waypoint-marker wp-finish" title="' + (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!')) + '"><i class="fas ' + (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem')) + '"></i></div>' +
+            '<div class="pirate-waypoint-marker wp-finish" title="' + (isLegacy ? '¡Cerca del Diploma de Graduación!' : (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!'))) + '"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem'))) + '"></i></div>' +
           '</div>';
       } else {
         finishConnectorHtml =
@@ -1716,40 +1815,97 @@
               '<path class="ptc-glow" d="M 75,0 C 75,26 50,22 50,48" />' +
               '<path class="ptc-dash" d="M 75,0 C 75,26 50,22 50,48" />' +
             '</svg>' +
-            '<div class="pirate-waypoint-marker wp-finish" title="' + (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!')) + '"><i class="fas ' + (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem')) + '"></i></div>' +
+            '<div class="pirate-waypoint-marker wp-finish" title="' + (isLegacy ? '¡Cerca del Diploma de Graduación!' : (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!'))) + '"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem'))) + '"></i></div>' +
           '</div>';
       }
 
       var safeGradeName = (student.gradeName || '').replace(/'/g, "\\'");
       var pirateFinishHtml =
         finishConnectorHtml +
-        '<div class="pirate-finish-station ' + (isCyber ? 'cyber-finish-station' : (isSpace ? 'space-finish-station' : '')) + '" id="pirate-finish-station">' +
+        '<div class="pirate-finish-station ' + (isLegacy ? 'legacy-finish-station' : (isCyber ? 'cyber-finish-station' : (isSpace ? 'space-finish-station' : ''))) + '" id="pirate-finish-station">' +
           '<div class="pirate-x-marks-spot">' +
-            '<div class="pirate-x-symbol">' + (isCyber ? '🧠' : (isSpace ? '🌌' : '❌')) + '</div>' +
-            '<div class="pirate-x-title">' + (isCyber ? '¡SUPERCOMPUTADORA CENTRAL DE IA DESBLOQUEADA!' : (isSpace ? '¡NÚCLEO DE LA GALAXIA MAKER ALCANZADO!' : '¡X MARCA EL LUGAR DEL GRAN TESORO!')) + '</div>' +
+            '<div class="pirate-x-symbol">' + (isLegacy ? '🎓' : (isCyber ? '🧠' : (isSpace ? '🌌' : '❌'))) + '</div>' +
+            '<div class="pirate-x-title">' + (isLegacy ? '¡DIPLOMA DE HONOR Y GRADUACIÓN MAKER DESBLOQUEADO!' : (isCyber ? '¡SUPERCOMPUTADORA CENTRAL DE IA DESBLOQUEADA!' : (isSpace ? '¡NÚCLEO DE LA GALAXIA MAKER ALCANZADO!' : '¡X MARCA EL LUGAR DEL GRAN TESORO!'))) + '</div>' +
           '</div>' +
-          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.openPirateTreasureModal && window.openPirateTreasureModal({ gradeName: \'' + safeGradeName + '\', completedCount: ' + completedCount + ', totalCount: ' + missions.length + ' });" title="' + (isCyber ? '¡Hacé click para activar el Núcleo Cyber y festejar!' : (isSpace ? '¡Hacé click para abrir la Cápsula Galáctica y festejar!' : '¡Hacé click para abrir el Cofre del Tesoro y festejar!')) + '">' +
+          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.openPirateTreasureModal && window.openPirateTreasureModal({ gradeName: \'' + safeGradeName + '\', completedCount: ' + completedCount + ', totalCount: ' + missions.length + ' });" title="' + (isLegacy ? '¡Hacé click para abrir la Celebración de Graduación y Diploma!' : (isCyber ? '¡Hacé click para activar el Núcleo Cyber y festejar!' : (isSpace ? '¡Hacé click para abrir la Cápsula Galáctica y festejar!' : '¡Hacé click para abrir el Cofre del Tesoro y festejar!'))) + '">' +
             '<div class="pirate-chest-glow"></div>' +
             '<div class="pirate-chest-visual">' +
               '<div class="pc-chest-lid"></div>' +
               '<div class="pc-chest-base">' +
-                '<div class="pc-chest-lock"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-bolt' : 'fa-key')) + '"></i></div>' +
+                '<div class="pc-chest-lock"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-bolt' : 'fa-key'))) + '"></i></div>' +
                 '<div class="pc-chest-coins">' +
-                  (isCyber
-                    ? '<span>⚡</span><span>🤖</span><span>🧠</span><span>🔌</span><span>💎</span>'
-                    : (isSpace
-                      ? '<span>🌟</span><span>⚡</span><span>🪐</span><span>💎</span><span>🚀</span>'
-                      : '<span>🪙</span><span>💎</span><span>👑</span><span>💎</span><span>🪙</span>')) +
+                  (isLegacy
+                    ? '<span>🎓</span><span>🏆</span><span>👑</span><span>📜</span><span>⭐</span>'
+                    : (isCyber
+                      ? '<span>⚡</span><span>🤖</span><span>🧠</span><span>🔌</span><span>💎</span>'
+                      : (isSpace
+                        ? '<span>🌟</span><span>⚡</span><span>🪐</span><span>💎</span><span>🚀</span>'
+                        : '<span>🪙</span><span>💎</span><span>👑</span><span>💎</span><span>🪙</span>'))) +
                 '</div>' +
               '</div>' +
             '</div>' +
             '<div class="pirate-chest-touch-hint">' +
-              '<i class="fas fa-hand-pointer"></i> ' + (isCyber ? '¡Tocá el Núcleo para compilar la Recompensa Cyber! ⚡' : (isSpace ? '¡Tocá la Cápsula para abrir la Recompensa Estelar! ✨' : '¡Tocá el Cofre para abrir el Tesoro! ✨')) +
+              '<i class="fas fa-hand-pointer"></i> ' + (isLegacy ? '¡Tocá el Diploma y la Medalla para abrir la Celebración de Graduación! 🎓✨' : (isCyber ? '¡Tocá el Núcleo para compilar la Recompensa Cyber! ⚡' : (isSpace ? '¡Tocá la Cápsula para abrir la Recompensa Estelar! ✨' : '¡Tocá el Cofre para abrir el Tesoro! ✨'))) +
             '</div>' +
           '</div>' +
         '</div>';
 
-      var pirateMapBackgroundHtml = isCyber
+      var legacyMapBackgroundHtml =
+        '<div class="pirate-map-background legacy-map-background" aria-hidden="true">' +
+          '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
+            '<defs>' +
+              '<radialGradient id="legGlowGold" cx="50%" cy="50%" r="50%">' +
+                '<stop offset="0%" stop-color="#FDE047" stop-opacity="0.32"/>' +
+                '<stop offset="60%" stop-color="#F59E0B" stop-opacity="0.14"/>' +
+                '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
+              '</radialGradient>' +
+              '<radialGradient id="legGlowNavy" cx="50%" cy="50%" r="50%">' +
+                '<stop offset="0%" stop-color="#312E81" stop-opacity="0.45"/>' +
+                '<stop offset="70%" stop-color="#1E1B4B" stop-opacity="0.2"/>' +
+                '<stop offset="100%" stop-color="#0B0F19" stop-opacity="0"/>' +
+              '</radialGradient>' +
+              '<linearGradient id="legGoldRibbon" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                '<stop offset="0%" stop-color="#FDE047" stop-opacity="0.25"/>' +
+                '<stop offset="50%" stop-color="#F59E0B" stop-opacity="0.35"/>' +
+                '<stop offset="100%" stop-color="#B45309" stop-opacity="0.25"/>' +
+              '</linearGradient>' +
+            '</defs>' +
+            '<!-- Líneas doradas de honor y constelación de hitos -->' +
+            '<g stroke="rgba(245, 158, 11, 0.16)" stroke-width="1.2" stroke-dasharray="6,8" fill="none">' +
+              '<circle cx="500" cy="600" r="260" />' +
+              '<circle cx="500" cy="600" r="440" />' +
+              '<line x1="0" y1="250" x2="1000" y2="950" />' +
+              '<line x1="1000" y1="250" x2="0" y2="950" />' +
+            '</g>' +
+            '<!-- Halos dorados majestuosos -->' +
+            '<ellipse cx="500" cy="300" rx="300" ry="180" fill="url(#legGlowGold)" />' +
+            '<ellipse cx="500" cy="900" rx="320" ry="180" fill="url(#legGlowNavy)" />' +
+            '<ellipse cx="800" cy="600" rx="220" ry="150" fill="url(#legGlowGold)" />' +
+            '<ellipse cx="200" cy="600" rx="220" ry="150" fill="url(#legGlowGold)" />' +
+          '</svg>' +
+          '<!-- Decoraciones flotantes del anuario -->' +
+          '<div class="pm-deco pm-deco-compass" title="Birrete de Graduación">🎓</div>' +
+          '<div class="pm-deco pm-deco-kraken" title="Medalla de Honor">🎖️</div>' +
+          '<div class="pm-deco pm-deco-sea-dragon" title="Gran Trofeo Maker">🏆</div>' +
+          '<div class="pm-deco pm-deco-shipwreck" title="Diploma de Honor">📜</div>' +
+          '<div class="pm-deco pm-deco-palm1">✨</div>' +
+          '<div class="pm-deco pm-deco-palm2">👑</div>' +
+          '<div class="pm-deco pm-deco-palm3">🎓</div>' +
+          '<div class="pm-deco pm-deco-palm4">⭐</div>' +
+          '<div class="pm-deco pm-deco-treasure-cove" title="Libro de Recuerdos">📖</div>' +
+          '<div class="pm-deco pm-deco-bottle" title="Cápsula del Tiempo">⏳</div>' +
+          '<div class="pm-deco pm-deco-anchor" title="Sello de la Promoción">🏛️</div>' +
+          '<!-- Rótulos conmemorativos -->' +
+          '<div class="pm-map-label label-sea">CAMINO DE LOS EGRESADOS</div>' +
+          '<div class="pm-map-label label-bay">Pabellón Canva & IA</div>' +
+          '<div class="pm-map-label label-river">Alameda Robótica & Servomotores</div>' +
+          '<div class="pm-map-label label-island1">Espacio Gemini Notebook</div>' +
+          '<div class="pm-map-label label-island2">Salón del Diploma Maker</div>' +
+        '</div>';
+
+      var pirateMapBackgroundHtml = isLegacy
+        ? legacyMapBackgroundHtml
+        : (isCyber
         ? '<div class="pirate-map-background cyber-map-background" aria-hidden="true">' +
             '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
               '<defs>' +
@@ -1990,10 +2146,10 @@
               '<div class="pm-map-label label-river">Río Circuitos</div>' +
               '<div class="pm-map-label label-island1">Cayo Robótica</div>' +
               '<div class="pm-map-label label-island2">Isla Calavera</div>' +
-            '</div>');
+            '</div>'));
 
       bodyHtml =
-        '<div class="pirate-map-canvas ' + (isCyber ? 'cyber-map-canvas' : (isSpace ? 'space-map-canvas' : '')) + '">' +
+        '<div class="pirate-map-canvas ' + (isLegacy ? 'legacy-map-canvas' : (isCyber ? 'cyber-map-canvas' : (isSpace ? 'space-map-canvas' : ''))) + '">' +
           pirateMapBackgroundHtml +
           pirateStartPortHtml +
           pirateIslandsHtml +
@@ -2244,27 +2400,71 @@
     '</div>';
   }
 
+  function getLegacyLaurelSealSvg() {
+    return '<div class="ptb-knife-anchor legacy-laurel-anchor">' +
+      '<svg class="ptb-knife-svg legacy-laurel-svg" viewBox="0 0 90 200" width="75" height="165" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs>' +
+          '<linearGradient id="legGoldMedal" x1="0%" y1="0%" x2="100%" y2="100%">' +
+            '<stop offset="0%" stop-color="#FDE047"/>' +
+            '<stop offset="50%" stop-color="#F59E0B"/>' +
+            '<stop offset="100%" stop-color="#B45309"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="legRedRibbon" x1="0%" y1="0%" x2="100%" y2="100%">' +
+            '<stop offset="0%" stop-color="#DC2626"/>' +
+            '<stop offset="50%" stop-color="#B91C1C"/>' +
+            '<stop offset="100%" stop-color="#7F1D1D"/>' +
+          '</linearGradient>' +
+          '<filter id="legSealGlow" x="-30%" y="-20%" width="160%" height="160%">' +
+            '<feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="rgba(245,158,11,0.6)"/>' +
+          '</filter>' +
+        '</defs>' +
+        '<g filter="url(#legSealGlow)" transform="rotate(-6 45 105)">' +
+          '<!-- Lazo rojo superior con corte en V -->' +
+          '<path d="M 28 8 L 45 32 L 62 8 L 56 65 L 34 65 Z" fill="url(#legRedRibbon)" stroke="#7F1D1D" stroke-width="1.2"/>' +
+          '<line x1="45" y1="32" x2="45" y2="65" stroke="#FDE047" stroke-width="1.5"/>' +
+          '<!-- Medalla de Honor Dorada -->' +
+          '<circle cx="45" cy="80" r="28" fill="url(#legGoldMedal)" stroke="#78350F" stroke-width="2"/>' +
+          '<circle cx="45" cy="80" r="22" fill="#1E1B4B" stroke="#FDE047" stroke-width="1.8"/>' +
+          '<!-- Corona de laureles dorados -->' +
+          '<circle cx="34" cy="74" r="3" fill="#FDE047"/><circle cx="32" cy="82" r="3" fill="#F59E0B"/><circle cx="36" cy="90" r="3" fill="#FDE047"/>' +
+          '<circle cx="56" cy="74" r="3" fill="#FDE047"/><circle cx="58" cy="82" r="3" fill="#F59E0B"/><circle cx="54" cy="90" r="3" fill="#FDE047"/>' +
+          '<!-- Estrella central -->' +
+          '<polygon points="45,69 48,76 55,76 49,81 51,88 45,83 39,88 41,81 35,76 42,76" fill="#FDE047" stroke="#B45309" stroke-width="0.8"/>' +
+          '<!-- Cinta colgante con remache que fija el pergamino -->' +
+          '<path d="M38 108 L40 162 L45 182 L50 162 L52 108 Z" fill="url(#legRedRibbon)" stroke="#7F1D1D" stroke-width="1.2"/>' +
+          '<ellipse cx="45" cy="180" rx="10" ry="4" fill="#F59E0B" opacity="0.8"/>' +
+        '</g>' +
+      '</svg>' +
+      '<div class="ptb-knife-slash legacy-laurel-ring"></div>' +
+    '</div>';
+  }
+
   function buildPirateTavernBoard(opts) {
     opts = opts || {};
+    var isLegacy = isLegacyTheme();
     var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
-    var sealIcon = opts.sealIcon || (isCyber ? '🤖' : (isSpace ? '🚀' : '☠️'));
-    var defaultTag = isCyber
-      ? 'TERMINAL DE HARDWARE · ESQUEMAS Y PROTOCOLOS DE CONTROL'
-      : (isSpace ? 'CONSOLA DE COMANDO · TRANSMISIÓN DE LA FLOTA ESTELAR' : 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS');
+    var sealIcon = opts.sealIcon || (isLegacy ? '🎓' : (isCyber ? '🤖' : (isSpace ? '🚀' : '☠️')));
+    var defaultTag = isLegacy
+      ? 'LIBRO DE HONOR & RECUERDOS · PROYECTOS CUMBRE DE EGRESADOS'
+      : (isCyber
+        ? 'TERMINAL DE HARDWARE · ESQUEMAS Y PROTOCOLOS DE CONTROL'
+        : (isSpace ? 'CONSOLA DE COMANDO · TRANSMISIÓN DE LA FLOTA ESTELAR' : 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS'));
     var tag = opts.tag || defaultTag;
     var title = opts.title || '';
     var sub = opts.sub || '';
     var extraHeaderHtml = opts.extraHeaderHtml || '';
     var contentHtml = opts.contentHtml || '';
 
-    var boardWrapTheme = isCyber ? 'cyber-board-wrap' : (isSpace ? 'space-board-wrap' : '');
-    var boardTheme = isCyber ? 'cyber-circuit-board' : (isSpace ? 'space-command-board' : '');
-    var anchorSvg = isCyber ? getCyberChipConnectorSvg() : (isSpace ? getSpaceLaserAntennaSvg() : getPirateKnifeSvg());
-    var sealTitle = isCyber
-      ? 'Chip Microcontrolador Paulo Freire Core'
-      : (isSpace ? 'Sello Oficial de la Flota Estelar Paulo Freire' : 'Sello Oficial del Navío Paulo Freire');
-    var tagIconClass = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-scroll');
+    var boardWrapTheme = isLegacy ? 'legacy-board-wrap' : (isCyber ? 'cyber-board-wrap' : (isSpace ? 'space-board-wrap' : ''));
+    var boardTheme = isLegacy ? 'legacy-annuary-board' : (isCyber ? 'cyber-circuit-board' : (isSpace ? 'space-command-board' : ''));
+    var anchorSvg = isLegacy ? getLegacyLaurelSealSvg() : (isCyber ? getCyberChipConnectorSvg() : (isSpace ? getSpaceLaserAntennaSvg() : getPirateKnifeSvg()));
+    var sealTitle = isLegacy
+      ? 'Gran Medalla de Honor Paulo Freire · Promoción 6.° Grado'
+      : (isCyber
+        ? 'Chip Microcontrolador Paulo Freire Core'
+        : (isSpace ? 'Sello Oficial de la Flota Estelar Paulo Freire' : 'Sello Oficial del Navío Paulo Freire'));
+    var tagIconClass = isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-scroll'));
 
     return '<div class="gdb-actividades-container ptb-main-wrap ' + boardWrapTheme + '">' +
       '<div class="pirate-tavern-board ' + boardTheme + '">' +
@@ -2298,6 +2498,7 @@
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
     if (!student) { container.innerHTML = ''; return; }
 
+    var isLegacy = isLegacyTheme(student);
     var isCyber = isCyberTheme(student);
     var isSpace = isSpaceTheme(student);
 
@@ -2345,27 +2546,27 @@
     if (activeFolderKey === 'dibujos') {
       countText = isLoadingDriveFiles
         ? '<i class="fas fa-sync-alt fa-spin"></i> Conectando...'
-        : FOLDER_CONTENTS.dibujos.items.length + (isCyber ? ' render(s) cyber' : (isSpace ? ' holograma(s)' : ' dibujo(s)'));
+        : FOLDER_CONTENTS.dibujos.items.length + (isLegacy ? ' recuerdo(s) de honor' : (isCyber ? ' render(s) cyber' : (isSpace ? ' holograma(s)' : ' dibujo(s)')));
     } else if (activeFolderKey === 'proyectos') {
-      countText = adventureMissions.length + (isCyber ? ' nodos de circuito (' : (isSpace ? ' misiones planetarias (' : ' misiones de aventura (')) + student.gradeName + ')';
+      countText = adventureMissions.length + (isLegacy ? ' hitos del camino (' : (isCyber ? ' nodos de circuito (' : (isSpace ? ' misiones planetarias (' : ' misiones de aventura ('))) + student.gradeName + ')';
     } else if (activeFolderKey === 'juegos') {
-      countText = gradeGames.length + (isCyber ? ' desafíos arcade y lógica (' : ' juego(s) de programación y lógica (') + student.gradeName + ')';
+      countText = gradeGames.length + (isLegacy ? ' desafíos del torneo final (' : (isCyber ? ' desafíos arcade y lógica (' : ' juego(s) de programación y lógica (')) + student.gradeName + ')';
     } else if (activeFolderKey === 'proyecto') {
       if (isLoadingProyectoFiles) {
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Cargando...';
       } else {
-        countText = (proyectoSubTab === 'scratch' ? scratchItems.length + ' proyecto(s) Scratch Jr' : makecodeItems.length + (isCyber ? ' códigos MakeCode/Robótica' : ' proyecto(s) MakeCode'));
+        countText = (proyectoSubTab === 'scratch' ? scratchItems.length + ' proyecto(s) Scratch Jr' : makecodeItems.length + (isLegacy ? ' códigos y cápsulas de egresado' : (isCyber ? ' códigos MakeCode/Robótica' : ' proyecto(s) MakeCode')));
       }
     } else if (activeFolderKey === 'actividades') {
       if (isLoadingActividadesFiles) {
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Buscando actividades...';
       } else {
         countText = FOLDER_CONTENTS.actividades.items.length > 0
-          ? (FOLDER_CONTENTS.actividades.items.length + (isCyber ? ' esquemas técnicos de ' : ' reto(s) de ') + student.gradeName + ' + Inventario')
-          : (isCyber ? '1 diagrama (Inventario de taller)' : '1 actividad (Inventario de material)');
+          ? (FOLDER_CONTENTS.actividades.items.length + (isLegacy ? ' edictos de honor de ' : (isCyber ? ' esquemas técnicos de ' : ' reto(s) de ')) + student.gradeName + ' + Inventario')
+          : (isLegacy ? '1 documento (Inventario de egresados)' : (isCyber ? '1 diagrama (Inventario de taller)' : '1 actividad (Inventario de material)'));
       }
     } else if (activeFolderKey === 'familiar') {
-      countText = isCyber ? '1 experiencia hacker (Escape Room Cooperativo)' : '1 experiencia familiar (Escape Rooms Nostálgico)';
+      countText = isLegacy ? '1 tributo y despedida (Homenaje Familiar)' : (isCyber ? '1 experiencia hacker (Escape Room Cooperativo)' : '1 experiencia familiar (Escape Rooms Nostálgico)');
     }
 
     // ──────────────────────────────────────────────────
@@ -2555,20 +2756,26 @@
       }
 
       mainDisplayHtml = buildPirateTavernBoard({
-        sealIcon: isCyber ? '🧠' : (isSpace ? '🤖' : '💻'),
-        tag: isCyber
-          ? 'TERMINAL DE CÓDIGO · LABORATORIO DE ROBÓTICA Y ALGORITMOS'
-          : (isSpace ? 'CONSOLA DE COMANDO · LABORATORIO ESPACIAL DE CÓDIGOS Y ROBÓTICA' : 'TABLERO DE LA TABERNA · COFRE DE CÓDIGOS Y ROBÓTICA'),
-        title: isCyber
-          ? ('🧠 Núcleo de Código y Algoritmos — División ' + student.gradeName)
-          : (isSpace
-            ? ('🤖 Laboratorio Espacial de Códigos — Nave ' + student.gradeName)
-            : ('💻 Cofre de Códigos y Robótica — Navío ' + student.gradeName)),
-        sub: isCyber
-          ? '¡Explorá los algoritmos, circuitos con Micro:bit, servomotores y código interactivo de tu división tecnológica!'
-          : (isSpace
-            ? '¡Explorá los sistemas de MakeCode, micro:bit, sensores y Scratch Jr para programar los módulos y satélites de la Flota Estelar!'
-            : '¡Explorá los proyectos de MakeCode, micro:bit, sensores y Scratch Jr para programar las naves y artefactos de la tripulación!'),
+        sealIcon: isLegacy ? '🎓' : (isCyber ? '🧠' : (isSpace ? '🤖' : '💻')),
+        tag: isLegacy
+          ? 'CÁPSULA DEL TIEMPO · CÓDIGOS Y PROYECTOS CUMBRE DE EGRESADOS'
+          : (isCyber
+            ? 'TERMINAL DE CÓDIGO · LABORATORIO DE ROBÓTICA Y ALGORITMOS'
+            : (isSpace ? 'CONSOLA DE COMANDO · LABORATORIO ESPACIAL DE CÓDIGOS Y ROBÓTICA' : 'TABLERO DE LA TABERNA · COFRE DE CÓDIGOS Y ROBÓTICA')),
+        title: isLegacy
+          ? ('🎓 Cápsula de Códigos y Proyectos Cumbre — Egresados ' + student.gradeName)
+          : (isCyber
+            ? ('🧠 Núcleo de Código y Algoritmos — División ' + student.gradeName)
+            : (isSpace
+              ? ('🤖 Laboratorio Espacial de Códigos — Nave ' + student.gradeName)
+              : ('💻 Cofre de Códigos y Robótica — Navío ' + student.gradeName))),
+        sub: isLegacy
+          ? '¡Tus creaciones de programación, circuitos Micro:bit, robótica e Inteligencia Artificial que marcan el cierre de primaria!'
+          : (isCyber
+            ? '¡Explorá los algoritmos, circuitos con Micro:bit, servomotores y código interactivo de tu división tecnológica!'
+            : (isSpace
+              ? '¡Explorá los sistemas de MakeCode, micro:bit, sensores y Scratch Jr para programar los módulos y satélites de la Flota Estelar!'
+              : '¡Explorá los proyectos de MakeCode, micro:bit, sensores y Scratch Jr para programar las naves y artefactos de la tripulación!')),
         extraHeaderHtml: tabsHtml,
         contentHtml: tabContent
       });
@@ -2683,20 +2890,26 @@
         '</div>';
 
       mainDisplayHtml = buildPirateTavernBoard({
-        sealIcon: isCyber ? '⚡' : (isSpace ? '🛰️' : '📜'),
-        tag: isCyber
-          ? 'TERMINAL DE INGENIERÍA · BANCO DE TRABAJO ROBÓTICO'
-          : (isSpace ? 'CONSOLA DE COMANDO · MISIONES EN LA BASE LUNAR' : 'TABLERO DE LA TABERNA · MISIONES EN TIERRA FIRME'),
-        title: isCyber
-          ? ('⚡ Diagramas Técnicos y Hardware — División ' + student.gradeName)
-          : (isSpace
-            ? ('🛰️ Misiones y Planos de la Base Lunar — Nave ' + student.gradeName)
-            : ('📜 Misiones y Enigmas para Descifrar en Tierra — Navío ' + student.gradeName)),
-        sub: isCyber
-          ? '¡Diagramas de conexión, hojas de datos de sensores, servomotores y algoritmos para compilar y probar en el taller maker!'
-          : (isSpace
-            ? '¡Planos técnicos, fichas de sensores y desafíos para imprimir, relacionar conceptos y resolver en la estación espacial!'
-            : '¡Fichas, planos y desafíos físicos para imprimir, relacionar conceptos y resolver acertijos con lápiz y papel o en el taller maker!'),
+        sealIcon: isLegacy ? '📜' : (isCyber ? '⚡' : (isSpace ? '🛰️' : '📜')),
+        tag: isLegacy
+          ? 'ANUARIO DE EGRESADOS · EDICTOS Y DESAFÍOS DE HONOR'
+          : (isCyber
+            ? 'TERMINAL DE INGENIERÍA · BANCO DE TRABAJO ROBÓTICO'
+            : (isSpace ? 'CONSOLA DE COMANDO · MISIONES EN LA BASE LUNAR' : 'TABLERO DE LA TABERNA · MISIONES EN TIERRA FIRME')),
+        title: isLegacy
+          ? ('📜 Edictos y Desafíos de Honor — Egresados ' + student.gradeName)
+          : (isCyber
+            ? ('⚡ Diagramas Técnicos y Hardware — División ' + student.gradeName)
+            : (isSpace
+              ? ('🛰️ Misiones y Planos de la Base Lunar — Nave ' + student.gradeName)
+              : ('📜 Misiones y Enigmas para Descifrar en Tierra — Navío ' + student.gradeName))),
+        sub: isLegacy
+          ? '¡Edictos finales, proyectos integradores y desafíos de hardware e inventario para graduarte con la máxima distinción!'
+          : (isCyber
+            ? '¡Diagramas de conexión, hojas de datos de sensores, servomotores y algoritmos para compilar y probar en el taller maker!'
+            : (isSpace
+              ? '¡Planos técnicos, fichas de sensores y desafíos para imprimir, relacionar conceptos y resolver en la estación espacial!'
+              : '¡Fichas, planos y desafíos físicos para imprimir, relacionar conceptos y resolver acertijos con lápiz y papel o en el taller maker!')),
         contentHtml: '<div class="grade-games-grid ptb-games-grid">' + gradeCardsHtml + generalCardHtml + '</div>'
       });
 
@@ -2740,18 +2953,24 @@
         '</div>';
 
       mainDisplayHtml = buildPirateTavernBoard({
-        sealIcon: isCyber ? '🤖' : (isSpace ? '🚀' : '🗝️'),
-        tag: isCyber
-          ? 'TERMINAL DE CONTROL · HACKEO DE ENIGMAS EN FAMILIA'
-          : (isSpace ? 'CONSOLA DE COMANDO · ODISEA Y MISTERIO EN FAMILIA' : 'TABLERO DE LA TABERNA · TRAVESÍA Y MISTERIO EN FAMILIA'),
-        title: isCyber
-          ? '🤖 Escape Room: Hackeo de Enigmas y Algoritmos en Familia'
-          : (isSpace ? '🚀 Escape Room: Odisea y Enigmas en Familia' : '🗝️ Escape Room: Enigmas y Pistas Piratas'),
-        sub: isCyber
-          ? '¡Conectá a toda tu familia a la terminal! Resuelvan secuencias lógicas, descifren contraseñas secretas y hackeen el sistema para completar el desafío.'
-          : (isSpace
-            ? '¡Despegá junto a la tripulación de tu hogar! Descifrá enigmas nostálgicos, acertijos interactivos y códigos secretos para completar la misión.'
-            : '¡Zarpá junto a tu tripulación familiar! Descifrá enigmas nostálgicos, acertijos interactivos y secretos ocultos para escapar con el botín.'),
+        sealIcon: isLegacy ? '🎓' : (isCyber ? '🤖' : (isSpace ? '🚀' : '🗝️')),
+        tag: isLegacy
+          ? 'LIBRO DE RECUERDOS · HOMENAJE Y DESAFÍO EN FAMILIA'
+          : (isCyber
+            ? 'TERMINAL DE CONTROL · HACKEO DE ENIGMAS EN FAMILIA'
+            : (isSpace ? 'CONSOLA DE COMANDO · ODISEA Y MISTERIO EN FAMILIA' : 'TABLERO DE LA TABERNA · TRAVESÍA Y MISTERIO EN FAMILIA')),
+        title: isLegacy
+          ? '🎓 Escape Room: Desafío Legendario y Recuerdos en Familia'
+          : (isCyber
+            ? '🤖 Escape Room: Hackeo de Enigmas y Algoritmos en Familia'
+            : (isSpace ? '🚀 Escape Room: Odisea y Enigmas en Familia' : '🗝️ Escape Room: Enigmas y Pistas Piratas')),
+        sub: isLegacy
+          ? '¡Celebrá este gran cierre junto a tu familia! Resuelvan enigmas colaborativos, revivan memorias del camino y completen la misión de despedida.'
+          : (isCyber
+            ? '¡Conectá a toda tu familia a la terminal! Resuelvan secuencias lógicas, descifren contraseñas secretas y hackeen el sistema para completar el desafío.'
+            : (isSpace
+              ? '¡Despegá junto a la tripulación de tu hogar! Descifrá enigmas nostálgicos, acertijos interactivos y códigos secretos para completar la misión.'
+              : '¡Zarpá junto a tu tripulación familiar! Descifrá enigmas nostálgicos, acertijos interactivos y secretos ocultos para escapar con el botín.')),
         contentHtml: '<div class="grade-games-grid ptb-games-grid" style="grid-template-columns: minmax(300px, 480px); justify-content: center;">' + escapeRoomCardHtml + '</div>'
       });
 
@@ -2790,13 +3009,13 @@
     var canUpload = (activeFolderKey === 'dibujos') || (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch);
     var uploadAccept = activeFolderKey === 'dibujos' ? '.bmp,.png,.jpg,.jpeg,image/bmp,image/png,image/jpeg' : '.sb3,.sjr,.pjson,.sb';
     var uploadBtnText = activeFolderKey === 'dibujos'
-      ? (isCyber ? '<i class="fas fa-microchip"></i> Guardar Render' : (isSpace ? '<i class="fas fa-satellite-dish"></i> Guardar Holograma' : '<i class="fas fa-scroll"></i> Guardar Pergamino'))
+      ? (isLegacy ? '<i class="fas fa-graduation-cap"></i> Guardar Recuerdo' : (isCyber ? '<i class="fas fa-microchip"></i> Guardar Render' : (isSpace ? '<i class="fas fa-satellite-dish"></i> Guardar Holograma' : '<i class="fas fa-scroll"></i> Guardar Pergamino')))
       : '<i class="fas fa-plus-circle"></i> Subir Scratch Jr';
     var uploadBtnClass = activeFolderKey === 'dibujos' ? 'gca-btn-upload' : 'gca-btn-upload scratch';
 
     if (canUpload) {
       var dragTitle = activeFolderKey === 'dibujos'
-        ? (isCyber ? '¡Soltá tu render o esquema aquí para guardarlo en la terminal!' : (isSpace ? '¡Soltá tu dibujo aquí para guardarlo en la cápsula!' : '¡Soltá tu dibujo aquí para guardarlo en el cofre!'))
+        ? (isLegacy ? '¡Soltá tu foto, diploma o recuerdo aquí para guardarlo en tu anuario!' : (isCyber ? '¡Soltá tu render o esquema aquí para guardarlo en la terminal!' : (isSpace ? '¡Soltá tu dibujo aquí para guardarlo en la cápsula!' : '¡Soltá tu dibujo aquí para guardarlo en el cofre!')))
         : '¡Soltá tu proyecto Scratch Jr aquí!';
       var dragHint = activeFolderKey === 'dibujos'
         ? 'Formatos permitidos: <strong>.png, .jpg, .bmp</strong>'
@@ -2806,7 +3025,7 @@
         '<input type="file" id="gdz-file-input" class="gdz-input" accept="' + uploadAccept + '" style="display:none;">' +
         '<div class="gdb-drag-overlay" id="gdb-drag-overlay">' +
           '<div class="gdo-card">' +
-            '<div class="gdo-icon"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-gem')) + '"></i></div>' +
+            '<div class="gdo-icon"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-gem'))) + '"></i></div>' +
             '<h3>' + dragTitle + '</h3>' +
             '<p>' + dragHint + '</p>' +
           '</div>' +
@@ -2823,55 +3042,57 @@
     var totalMissions = adventureMissions.length;
     var progressPercent = totalMissions > 0 ? Math.min(100, Math.round((completedCount / totalMissions) * 100)) : 0;
     var studentLevel = Math.max(1, Math.floor(completedCount / 2) + 1);
-    var pirateRank = isCyber
-      ? (studentLevel >= 5 ? 'Maestro Cyber & IA' : (studentLevel >= 3 ? 'Arquitecto de Robots' : 'Operador de Circuitos'))
-      : (isSpace
-        ? (studentLevel >= 5 ? 'Comandante Estelar' : (studentLevel >= 3 ? 'Piloto Interplanetario' : 'Cadete Espacial'))
-        : (studentLevel >= 5 ? 'Capitán Corsario' : (studentLevel >= 3 ? 'Timonel Maker' : 'Grumete Explorador')));
+    var pirateRank = isLegacy
+      ? (studentLevel >= 5 ? 'Leyenda Graduada Maker 🎓🏆' : (studentLevel >= 3 ? 'Maestro Egresado de Honor' : 'Pionero de 6.° Grado'))
+      : (isCyber
+        ? (studentLevel >= 5 ? 'Maestro Cyber & IA' : (studentLevel >= 3 ? 'Arquitecto de Robots' : 'Operador de Circuitos'))
+        : (isSpace
+          ? (studentLevel >= 5 ? 'Comandante Estelar' : (studentLevel >= 3 ? 'Piloto Interplanetario' : 'Cadete Espacial'))
+          : (studentLevel >= 5 ? 'Capitán Corsario' : (studentLevel >= 3 ? 'Timonel Maker' : 'Grumete Explorador'))));
     var totalXp = completedCount * 100;
     var nextMission = adventureMissions.find(function(m){ return m.status !== 'completado'; }) || adventureMissions[0];
 
     // ──────────────────────────────────────────────────
-    // HTML COMPLETO DEL PANEL GAMER (PIRATA, ESPACIAL O CYBER)
+    // HTML COMPLETO DEL PANEL GAMER (PIRATA, ESPACIAL, CYBER O EGRESADOS)
     // ──────────────────────────────────────────────────
-    var dashboardThemeClass = isCyber ? 'theme-cyber' : (isSpace ? 'theme-space' : 'theme-pirate');
-    var heroCardClass = isCyber ? 'cyber-hero-card' : (isSpace ? 'space-hero-card' : '');
+    var dashboardThemeClass = isLegacy ? 'theme-legacy' : (isCyber ? 'theme-cyber' : (isSpace ? 'theme-space' : 'theme-pirate'));
+    var heroCardClass = isLegacy ? 'legacy-hero-card' : (isCyber ? 'cyber-hero-card' : (isSpace ? 'space-hero-card' : ''));
 
     container.innerHTML =
       '<section class="gdrive-dashboard-centered gamer-dashboard-container ' + dashboardThemeClass + '" id="student-drive-dashboard">' +
-        // 1. HERO HEADER: PERFIL DEL CAPITÁN / ASTRONAUTA / MAESTRO CYBER
+        // 1. HERO HEADER: PERFIL DEL CAPITÁN / ASTRONAUTA / MAESTRO CYBER / EGRESADO
         '<div class="gamer-hero-card ' + heroCardClass + '">' +
           '<div class="gh-main-row">' +
             '<div class="gh-player-profile">' +
               '<div class="gh-avatar-container">' +
-                '<span class="gh-avatar">' + (student.avatar || (isCyber ? '🤖' : (isSpace ? '👨‍🚀' : '👦'))) + '</span>' +
-                '<span class="gh-status-dot" title="' + (isCyber ? 'Conectado a la Red Neuronal Paulo Freire' : (isSpace ? 'En órbita en la Estación Espacial Paulo Freire' : 'A bordo del Navío Paulo Freire')) + '"></span>' +
+                '<span class="gh-avatar">' + (student.avatar || (isLegacy ? '🎓' : (isCyber ? '🤖' : (isSpace ? '👨‍🚀' : '👦')))) + '</span>' +
+                '<span class="gh-status-dot" title="' + (isLegacy ? 'Egresado de Honor de la Generación Maker Paulo Freire' : (isCyber ? 'Conectado a la Red Neuronal Paulo Freire' : (isSpace ? 'En órbita en la Estación Espacial Paulo Freire' : 'A bordo del Navío Paulo Freire'))) + '"></span>' +
               '</div>' +
               '<div class="gh-player-meta">' +
                 '<div class="gh-tag-row">' +
-                  '<span class="gh-badge grade"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-anchor')) + '"></i> ' + (isCyber ? 'División ' : (isSpace ? 'Nave ' : 'Navío ')) + student.gradeName + '</span>' +
-                  '<span class="gh-badge level"><i class="fas ' + (isCyber ? 'fa-robot' : (isSpace ? 'fa-user-astronaut' : 'fa-skull-crossbones')) + '"></i> ' + pirateRank + ' · Nivel ' + studentLevel + '</span>' +
+                  '<span class="gh-badge grade"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-anchor'))) + '"></i> ' + (isLegacy ? 'Promoción ' : (isCyber ? 'División ' : (isSpace ? 'Nave ' : 'Navío '))) + student.gradeName + '</span>' +
+                  '<span class="gh-badge level"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-robot' : (isSpace ? 'fa-user-astronaut' : 'fa-skull-crossbones'))) + '"></i> ' + pirateRank + ' · Nivel ' + studentLevel + '</span>' +
                 '</div>' +
-                '<h2 class="gh-player-name">' + (isCyber ? ('¡Sistema en línea, ' + student.name.split(' ')[0] + '! 🤖⚡') : (isSpace ? ('¡Despegamos, ' + student.name.split(' ')[0] + '! 🚀👨‍🚀') : ('¡A la mar, ' + student.name.split(' ')[0] + '! 🏴‍☠️'))) + '</h2>' +
-                '<span class="gh-player-sub">' + (isCyber ? 'Red de Robótica, Microcontroladores e IA · Laboratorio Paulo Freire' : (isSpace ? 'Bitácora de Exploración Galáctica · Estación Espacial Paulo Freire' : 'Bitácora de Navegación Maker · Navío Paulo Freire')) + '</span>' +
+                '<h2 class="gh-player-name">' + (isLegacy ? ('¡Honor y Gloria, ' + student.name.split(' ')[0] + '! 🎓✨') : (isCyber ? ('¡Sistema en línea, ' + student.name.split(' ')[0] + '! 🤖⚡') : (isSpace ? ('¡Despegamos, ' + student.name.split(' ')[0] + '! 🚀👨‍🚀') : ('¡A la mar, ' + student.name.split(' ')[0] + '! 🏴‍☠️')))) + '</h2>' +
+                '<span class="gh-player-sub">' + (isLegacy ? 'Libro de Recuerdos y Proyectos Cumbre · Generación Maker Paulo Freire' : (isCyber ? 'Red de Robótica, Microcontroladores e IA · Laboratorio Paulo Freire' : (isSpace ? 'Bitácora de Exploración Galáctica · Estación Espacial Paulo Freire' : 'Bitácora de Navegación Maker · Navío Paulo Freire'))) + '</span>' +
               '</div>' +
             '</div>' +
 
             '<div class="gh-actions-group">' +
               (nextMission ?
-                '<button type="button" class="gh-btn-continue" id="gh-btn-continue-mission" title="' + (isCyber ? 'Compilar siguiente nodo de circuito' : (isSpace ? 'Despegar a la siguiente misión planetaria' : 'Zarpar a la siguiente misión')) + '">' +
-                  '<div class="gbc-icon"><i class="fas ' + (isCyber ? 'fa-terminal' : (isSpace ? 'fa-satellite' : 'fa-compass')) + '"></i></div>' +
+                '<button type="button" class="gh-btn-continue" id="gh-btn-continue-mission" title="' + (isLegacy ? 'Explorar siguiente hito de honor' : (isCyber ? 'Compilar siguiente nodo de circuito' : (isSpace ? 'Despegar a la siguiente misión planetaria' : 'Zarpar a la siguiente misión'))) + '">' +
+                  '<div class="gbc-icon"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-terminal' : (isSpace ? 'fa-satellite' : 'fa-compass'))) + '"></i></div>' +
                   '<div class="gbc-text">' +
-                    '<span class="gbc-sub">' + (isCyber ? 'Compilar Nodo' : (isSpace ? 'Viajar al Planeta' : 'Zarpar a la Misión')) + '</span>' +
-                    '<strong class="gbc-title">' + (nextMission.level ? ((isCyber ? 'Nodo ' : (isSpace ? 'Planeta ' : 'Isla ')) + nextMission.level + ': ') : '') + nextMission.title + '</strong>' +
+                    '<span class="gbc-sub">' + (isLegacy ? 'Continuar Hito' : (isCyber ? 'Compilar Nodo' : (isSpace ? 'Viajar al Planeta' : 'Zarpar a la Misión'))) + '</span>' +
+                    '<strong class="gbc-title">' + (nextMission.level ? ((isLegacy ? 'Hito ' : (isCyber ? 'Nodo ' : (isSpace ? 'Planeta ' : 'Isla '))) + nextMission.level + ': ') : '') + nextMission.title + '</strong>' +
                   '</div>' +
                   '<i class="fas fa-chevron-right gbc-arrow"></i>' +
                 '</button>' : '') +
 
               (driveTargetUrl ?
                 '<div class="gh-extra-links">' +
-                  '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="' + (isCyber ? 'Abrir mi Terminal' : (isSpace ? 'Abrir mi Cápsula' : 'Abrir mi Cofre')) + '">' +
-                    '<i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-gem')) + '"></i> <span>' + (isCyber ? 'Terminal' : (isSpace ? 'Cápsula' : 'Cofre')) + '</span>' +
+                  '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="' + (isLegacy ? 'Abrir mi Anuario' : (isCyber ? 'Abrir mi Terminal' : (isSpace ? 'Abrir mi Cápsula' : 'Abrir mi Cofre'))) + '">' +
+                    '<i class="fas ' + (isLegacy ? 'fa-book' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-gem'))) + '"></i> <span>' + (isLegacy ? 'Anuario' : (isCyber ? 'Terminal' : (isSpace ? 'Cápsula' : 'Cofre'))) + '</span>' +
                   '</a>' +
                 '</div>' : '') +
             '</div>' +
@@ -2879,13 +3100,13 @@
 
           '<div class="gh-stats-row">' +
             '<div class="gh-xp-badge">' +
-              '<span class="gh-xp-spark">' + (isCyber ? '⚡' : (isSpace ? '🌟' : '🪙')) + '</span>' +
-              '<span class="gh-xp-num">+' + totalXp + (isCyber ? ' TeraWatts' : (isSpace ? ' Cristales' : ' Doblones')) + '</span>' +
+              '<span class="gh-xp-spark">' + (isLegacy ? '👑' : (isCyber ? '⚡' : (isSpace ? '🌟' : '🪙'))) + '</span>' +
+              '<span class="gh-xp-num">+' + totalXp + (isLegacy ? ' Laureles' : (isCyber ? ' TeraWatts' : (isSpace ? ' Cristales' : ' Doblones'))) + '</span>' +
             '</div>' +
             '<div class="gh-progress-wrapper">' +
               '<div class="gh-progress-header">' +
-                '<span class="gh-ph-label"><i class="fas ' + (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-satellite' : 'fa-map-marked-alt')) + '"></i> ' + (isCyber ? 'Sincronización de la Red Maker' : (isSpace ? 'Radar de Exploración Galáctica' : 'Bitácora de Travesía')) + '</span>' +
-                '<span class="gh-ph-count">' + (isCyber ? ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> nodos compilados (' + progressPercent + '%)') : ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> ' + (isSpace ? 'planetas explorados' : 'misiones conquistadas') + ' (' + progressPercent + '%)')) + '</span>' +
+                '<span class="gh-ph-label"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-satellite' : 'fa-map-marked-alt'))) + '"></i> ' + (isLegacy ? 'Camino a la Graduación y Diploma Maker' : (isCyber ? 'Sincronización de la Red Maker' : (isSpace ? 'Radar de Exploración Galáctica' : 'Bitácora de Travesía'))) + '</span>' +
+                '<span class="gh-ph-count">' + (isLegacy ? ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> hitos completados (' + progressPercent + '%)') : (isCyber ? ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> nodos compilados (' + progressPercent + '%)') : ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> ' + (isSpace ? 'planetas explorados' : 'misiones conquistadas') + ' (' + progressPercent + '%)'))) + '</span>' +
               '</div>' +
               '<div class="gh-progress-track">' +
                 '<div class="gh-progress-fill" style="width:' + progressPercent + '%;">' +
@@ -2896,47 +3117,47 @@
           '</div>' +
         '</div>' +
 
-        // 2. NAVEGACIÓN (TABS TÁCTILES PIRATAS, GALÁCTICAS O CYBER)
-        '<div class="gamer-nav-bar ' + (isCyber ? 'cyber-nav-bar' : (isSpace ? 'space-nav-bar' : '')) + '" role="tablist" aria-label="Secciones del Tablero">' +
+        // 2. NAVEGACIÓN (TABS TÁCTILES PIRATAS, GALÁCTICAS, CYBER O EGRESADOS)
+        '<div class="gamer-nav-bar ' + (isLegacy ? 'legacy-nav-bar' : (isCyber ? 'cyber-nav-bar' : (isSpace ? 'space-nav-bar' : ''))) + '" role="tablist" aria-label="Secciones del Tablero">' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyectos' ? 'active' : '') + '" data-folder="proyectos">' +
-            '<span class="gnb-emoji">' + (isCyber ? '🔌' : (isSpace ? '🪐' : '🗺️')) + '</span>' +
+            '<span class="gnb-emoji">' + (isLegacy ? '📜' : (isCyber ? '🔌' : (isSpace ? '🪐' : '🗺️'))) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa del Tesoro')) + '</span>' +
-              '<span class="gnb-badge">' + badgeProyectos + (isCyber ? ' nodos' : (isSpace ? ' planetas' : ' misiones')) + '</span>' +
+              '<span class="gnb-title">' + (isLegacy ? 'Camino del Egresado' : (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa del Tesoro'))) + '</span>' +
+              '<span class="gnb-badge">' + badgeProyectos + (isLegacy ? ' hitos' : (isCyber ? ' nodos' : (isSpace ? ' planetas' : ' misiones'))) + '</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'juegos' ? 'active' : '') + '" data-folder="juegos">' +
-            '<span class="gnb-emoji">' + (isCyber ? '🕹️' : (isSpace ? '🛸' : '⚔️')) + '</span>' +
+            '<span class="gnb-emoji">' + (isLegacy ? '🕹️' : (isCyber ? '🕹️' : (isSpace ? '🛸' : '⚔️'))) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isCyber ? 'Arcade Cyber' : (isSpace ? 'Misiones Galácticas' : 'Desafíos Piratas')) + '</span>' +
+              '<span class="gnb-title">' + (isLegacy ? 'Torneo de Despedida' : (isCyber ? 'Arcade Cyber' : (isSpace ? 'Misiones Galácticas' : 'Desafíos Piratas'))) + '</span>' +
               '<span class="gnb-badge">' + badgeJuegos + ' juegos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'dibujos' ? 'active' : '') + '" data-folder="dibujos">' +
-            '<span class="gnb-emoji">' + (isCyber ? '📟' : (isSpace ? '🌌' : '🎨')) + '</span>' +
+            '<span class="gnb-emoji">' + (isLegacy ? '🏆' : (isCyber ? '📟' : (isSpace ? '🌌' : '🎨'))) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isCyber ? 'Renders & Planos' : (isSpace ? 'Hologramas' : 'Cofre de Dibujos')) + '</span>' +
-              '<span class="gnb-badge">' + badgeDibujos + (isCyber ? ' renders' : (isSpace ? ' capturas' : ' pergaminos')) + '</span>' +
+              '<span class="gnb-title">' + (isLegacy ? 'Álbum de Recuerdos' : (isCyber ? 'Renders & Planos' : (isSpace ? 'Hologramas' : 'Cofre de Dibujos'))) + '</span>' +
+              '<span class="gnb-badge">' + badgeDibujos + (isLegacy ? ' recuerdos' : (isCyber ? ' renders' : (isSpace ? ' capturas' : ' pergaminos'))) + '</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyecto' ? 'active' : '') + '" data-folder="proyecto">' +
-            '<span class="gnb-emoji">' + (isCyber ? '🧠' : (isSpace ? '🤖' : '💻')) + '</span>' +
+            '<span class="gnb-emoji">' + (isLegacy ? '🎓' : (isCyber ? '🧠' : (isSpace ? '🤖' : '💻'))) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isCyber ? 'Núcleo de Código' : (isSpace ? 'Lab Espacial' : 'Cofre de Códigos')) + '</span>' +
+              '<span class="gnb-title">' + (isLegacy ? 'Cápsula de Códigos' : (isCyber ? 'Núcleo de Código' : (isSpace ? 'Lab Espacial' : 'Cofre de Códigos'))) + '</span>' +
               '<span class="gnb-badge">' + badgeProyecto + ' inventos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'actividades' ? 'active' : '') + '" data-folder="actividades">' +
-            '<span class="gnb-emoji">' + (isCyber ? '🛠️' : (isSpace ? '🛰️' : '📜')) + '</span>' +
+            '<span class="gnb-emoji">' + (isLegacy ? '📜' : (isCyber ? '🛠️' : (isSpace ? '🛰️' : '📜'))) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isCyber ? 'Hardware & Taller' : (isSpace ? 'Base Lunar' : 'Misiones en Tierra')) + '</span>' +
+              '<span class="gnb-title">' + (isLegacy ? 'Edictos & Desafíos' : (isCyber ? 'Hardware & Taller' : (isSpace ? 'Base Lunar' : 'Misiones en Tierra'))) + '</span>' +
               '<span class="gnb-badge">' + badgeActividades + ' retos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'familiar' ? 'active' : '') + '" data-folder="familiar">' +
-            '<span class="gnb-emoji">' + (isCyber ? '🔐' : (isSpace ? '🚀' : '🏴‍☠️')) + '</span>' +
+            '<span class="gnb-emoji">' + (isLegacy ? '🤝' : (isCyber ? '🔐' : (isSpace ? '🚀' : '🏴‍☠️'))) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isCyber ? 'Hackeo Familiar' : (isSpace ? 'Odisea Familiar' : 'Travesía Familiar')) + '</span>' +
+              '<span class="gnb-title">' + (isLegacy ? 'Homenaje Familiar' : (isCyber ? 'Hackeo Familiar' : (isSpace ? 'Odisea Familiar' : 'Travesía Familiar'))) + '</span>' +
               '<span class="gnb-badge">Escape Room</span>' +
             '</div>' +
           '</button>' +
@@ -2947,14 +3168,14 @@
           '<main class="gdb-content-area gamer-fullwidth">' +
             '<div class="gca-folder-bar">' +
               '<div class="gca-fb-title">' +
-                '<i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : currentFolder.icon)) + '"></i>' +
-                '<span>' + (isCyber ? 'Terminal: ' : (isSpace ? 'Transmisión: ' : 'Bitácora: ')) + '<strong>' +
-                  (activeFolderKey === 'proyectos' ? ((isCyber ? '🔌 Red de Nodos de Robótica e IA (' : (isSpace ? '🪐 Mapa Estelar Galáctico (' : '🗺️ Mapa del Tesoro (')) + student.gradeName + ')') :
-                   activeFolderKey === 'juegos' ? ((isCyber ? '🕹️ Arcade Cyber & Algoritmos de Programación (' : (isSpace ? '🛸 Simulador de Misiones Galácticas (' : '⚔️ Desafíos Piratas y Algoritmos (')) + student.gradeName + ')') :
-                   activeFolderKey === 'dibujos' ? ((isCyber ? '📟 Matriz de Renders, Esquemas y Diseños (' : (isSpace ? '🌌 Consola de Hologramas y Dibujos (' : '🎨 La Mesa del Capitán: Dibujos y Pergaminos (')) + student.gradeName + ')') :
-                   activeFolderKey === 'proyecto'  ? (isCyber ? '🧠 Núcleo de Código, Algoritmos y Robótica Micro:bit' : (isSpace ? '🤖 Laboratorio Espacial de Códigos y Robótica' : '💻 Cofre de Invenciones y Códigos Maker')) :
-                   activeFolderKey === 'actividades' ? (isCyber ? ('🛠️ Banco de Hardware y Planos de Conexión (' + student.gradeName + ')') : (isSpace ? ('🛰️ Base Lunar de Actividades (' + student.gradeName + ')') : (FOLDER_CONTENTS.actividades.items.length > 0 ? '📜 Misiones en Tierra y Hogar (' + student.gradeName + ')' : '📜 Misiones y Retos del Taller'))) :
-                   activeFolderKey === 'familiar' ? (isCyber ? '🔐 Hackeo Familiar: Escape Room de Algoritmos' : (isSpace ? '🚀 Odisea Familiar: Escape Room Interestelar' : '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas')) : currentFolder.name) +
+                '<i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : currentFolder.icon))) + '"></i>' +
+                '<span>' + (isLegacy ? 'Libro: ' : (isCyber ? 'Terminal: ' : (isSpace ? 'Transmisión: ' : 'Bitácora: '))) + '<strong>' +
+                  (activeFolderKey === 'proyectos' ? ((isLegacy ? '📜 Camino del Egresado · Proyectos Cumbre (' : (isCyber ? '🔌 Red de Nodos de Robótica e IA (' : (isSpace ? '🪐 Mapa Estelar Galáctico (' : '🗺️ Mapa del Tesoro ('))) + student.gradeName + ')') :
+                   activeFolderKey === 'juegos' ? ((isLegacy ? '🕹️ Torneo de Despedida: Juegos & Desafíos Finales (' : (isCyber ? '🕹️ Arcade Cyber & Algoritmos de Programación (' : (isSpace ? '🛸 Simulador de Misiones Galácticas (' : '⚔️ Desafíos Piratas y Algoritmos ('))) + student.gradeName + ')') :
+                   activeFolderKey === 'dibujos' ? ((isLegacy ? '🏆 Álbum de Recuerdos, Diplomas y Obras de Arte (' : (isCyber ? '📟 Matriz de Renders, Esquemas y Diseños (' : (isSpace ? '🌌 Consola de Hologramas y Dibujos (' : '🎨 La Mesa del Capitán: Dibujos y Pergaminos ('))) + student.gradeName + ')') :
+                   activeFolderKey === 'proyecto'  ? (isLegacy ? '🎓 Cápsula de Códigos, Robótica y Creaciones de Egreso' : (isCyber ? '🧠 Núcleo de Código, Algoritmos y Robótica Micro:bit' : (isSpace ? '🤖 Laboratorio Espacial de Códigos y Robótica' : '💻 Cofre de Invenciones y Códigos Maker'))) :
+                   activeFolderKey === 'actividades' ? (isLegacy ? ('📜 Edictos, Planos y Desafíos del Taller (' + student.gradeName + ')') : (isCyber ? ('🛠️ Banco de Hardware y Planos de Conexión (' + student.gradeName + ')') : (isSpace ? ('🛰️ Base Lunar de Actividades (' + student.gradeName + ')') : (FOLDER_CONTENTS.actividades.items.length > 0 ? '📜 Misiones en Tierra y Hogar (' + student.gradeName + ')' : '📜 Misiones y Retos del Taller')))) :
+                   activeFolderKey === 'familiar' ? (isLegacy ? '🤝 Homenaje Familiar: Escape Room de Graduación' : (isCyber ? '🔐 Hackeo Familiar: Escape Room de Algoritmos' : (isSpace ? '🚀 Odisea Familiar: Escape Room Interestelar' : '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas'))) : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
@@ -3506,9 +3727,11 @@
   // RENDER HTML DE JUEGOS DEL GRADO (DESAFÍOS PIRATAS / MISIONES GALÁCTICAS)
   // ──────────────────────────────────────────────────
   function renderGradeGamesHtml(student, gradeGames) {
+    var isLegacy = isLegacyTheme(student);
+    var isCyber = isCyberTheme(student);
     var isSpace = isSpaceTheme(student);
     if (!gradeGames || gradeGames.length === 0) {
-      return '<div class="gdb-empty-state"><div class="ges-icon">' + (isSpace ? '🛸' : '🎮') + '</div><h4>Sin juegos asignados</h4><p>Pronto se agregarán juegos de programación para ' + (student ? student.gradeName : 'tu grado') + '.</p></div>';
+      return '<div class="gdb-empty-state"><div class="ges-icon">' + (isLegacy ? '🎓' : (isCyber ? '🕹️' : (isSpace ? '🛸' : '🎮'))) + '</div><h4>Sin juegos asignados</h4><p>Pronto se agregarán juegos de programación para ' + (student ? student.gradeName : 'tu grado') + '.</p></div>';
     }
 
     var cardsHtml = gradeGames.map(function(game, idx) {
@@ -3526,14 +3749,14 @@
       var gradeLabel = (student && student.gradeName) ? student.gradeName : 'Taller Freire';
 
       return '<div class="grade-game-card ptb-card" data-game-idx="' + idx + '" data-game-id="' + (game.id || '') + '">' +
-        '<div class="ptb-card-nail" title="' + (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle') + '"></div>' +
+        '<div class="ptb-card-nail" title="' + (isLegacy ? 'Sellado en el Torneo de Despedida' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
         '<div class="ggc-thumb-wrap" onclick="window.open(\'' + gameUrl + '\', \'_blank\')" title="Hacé clic para jugar a ' + (game.title || 'este juego') + '">' +
           '<img src="' + thumb + '" alt="' + (game.title || '') + '" class="ggc-thumb-img" onerror="this.src=\'img/angrybirds.png\'">' +
           '<div class="ggc-play-overlay">' +
-            '<div class="ggc-play-bubble"><i class="fas ' + (isSpace ? 'fa-rocket' : 'fa-play') + '"></i></div>' +
-            '<span>' + (isSpace ? '¡Despegar Ahora!' : '¡Jugar Ahora!') + '</span>' +
+            '<div class="ggc-play-bubble"><i class="fas ' + (isLegacy ? 'fa-trophy' : (isSpace ? 'fa-rocket' : 'fa-play')) + '"></i></div>' +
+            '<span>' + (isLegacy ? '¡Jugar Desafío!' : (isSpace ? '¡Despegar Ahora!' : '¡Jugar Ahora!')) + '</span>' +
           '</div>' +
-          '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas ' + (isSpace ? 'fa-user-astronaut' : 'fa-graduation-cap') + '"></i> ' + gradeLabel + '</div>' +
+          '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isSpace ? 'fa-user-astronaut' : 'fa-graduation-cap')) + '"></i> ' + gradeLabel + '</div>' +
           '<div class="ggc-platform-badge pirate-plat-badge">' + pm.icon + ' ' + pm.label + '</div>' +
         '</div>' +
         '<div class="ggc-body">' +
@@ -3547,7 +3770,7 @@
             '</div>' : '') +
           '<div class="ggc-actions">' +
             '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec" title="Ejecutar desafío en ' + pm.label + '">' +
-              '<i class="fas ' + (isSpace ? 'fa-rocket' : 'fa-play') + '"></i> <span>' + (isSpace ? 'Despegar' : 'Ejecutar') + '</span>' +
+              '<i class="fas ' + (isLegacy ? 'fa-trophy' : (isSpace ? 'fa-rocket' : 'fa-play')) + '"></i> <span>' + (isLegacy ? 'Competir' : (isSpace ? 'Despegar' : 'Ejecutar')) + '</span>' +
             '</a>' +
             '<button type="button" class="ggc-btn-sugerencias arm-concept-modal-btn" data-concept-type="benefits" data-game-idx="' + idx + '" data-game-id="' + (game.id || '') + '" title="Ver sugerencias pedagógicas y razonamiento">' +
               '<i class="fas fa-lightbulb"></i> <span>Dame sugerencias</span>' +
@@ -3558,14 +3781,26 @@
     }).join('');
 
     return buildPirateTavernBoard({
-      sealIcon: isSpace ? '🛸' : '☠️',
-      tag: isSpace ? 'CONSOLA DE COMANDO · SIMULACIONES Y MISIONES GALÁCTICAS' : 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS',
-      title: isSpace
-        ? ('🛸 Misiones Galácticas por Niveles — Nave ' + student.gradeName)
-        : ('⚔️ Desafíos Piratas por Niveles — Navío ' + student.gradeName),
-      sub: isSpace
-        ? '¡Atención tripulación estelar! Seleccionen una misión para despegar, ejercitar algoritmos en órbita y acumular cristales de energía para su bitácora.'
-        : '¡Atención tripulación! Seleccionen un desafío para zarpar, ejercitar algoritmos en alta mar y acumular doblones de oro para la bitácora.',
+      sealIcon: isLegacy ? '🎓' : (isCyber ? '🕹️' : (isSpace ? '🛸' : '☠️')),
+      tag: isLegacy
+        ? 'TORNEO DE DESPEDIDA · JUEGOS Y DESAFÍOS DE EGRESADOS'
+        : (isCyber
+          ? 'ARCADE CYBER · PROTOCOLOS Y DESAFÍOS'
+          : (isSpace ? 'CONSOLA DE COMANDO · SIMULACIONES Y MISIONES GALÁCTICAS' : 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS')),
+      title: isLegacy
+        ? ('🏆 Torneo de Despedida por Niveles — Promoción ' + student.gradeName)
+        : (isCyber
+          ? ('🕹️ Arcade Cyber por Niveles — División ' + student.gradeName)
+          : (isSpace
+            ? ('🛸 Misiones Galácticas por Niveles — Nave ' + student.gradeName)
+            : ('⚔️ Desafíos Piratas por Niveles — Navío ' + student.gradeName))),
+      sub: isLegacy
+        ? '¡Atención egresados! Pongan a prueba toda su trayectoria en programación, superen los desafíos finales y coronen su Libro de Honor con nuevos Laureles.'
+        : (isCyber
+          ? '¡Atención makers de la red! Ejecuten los protocolos de juego, compilen algoritmos de nivel y acumulen TeraWatts de energía.'
+          : (isSpace
+            ? '¡Atención tripulación estelar! Seleccionen una misión para despegar, ejercitar algoritmos en órbita y acumular cristales de energía para su bitácora.'
+            : '¡Atención tripulación! Seleccionen un desafío para zarpar, ejercitar algoritmos en alta mar y acumular doblones de oro para la bitácora.')),
       contentHtml: '<div class="grade-games-grid ptb-games-grid">' + cardsHtml + '</div>'
     });
   }
@@ -4866,13 +5101,14 @@
   // LA MESA DEL CAPITÁN (PIRATA) / PROYECTOR DE HOLOGRAMAS (ESPACIAL)
   // ──────────────────────────────────────────────────
   function renderCaptainTableHtml(allItems) {
+    var isLegacy = isLegacyTheme();
     var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
     if (!allItems || allItems.length === 0) {
       return emptyHtml(
-        isCyber ? '📟' : (isSpace ? '🌌' : '🎨'),
-        isCyber ? 'Terminal de Renders vacía' : (isSpace ? 'Cápsula de Hologramas vacía' : 'Cofre de Pergaminos vacío'),
-        isCyber ? '¡Subí tu primer render 3D o esquema técnico abajo para compilarlo en la matriz!' : (isSpace ? '¡Subí tu primer dibujo o captura espacial abajo para proyectarlo en la consola!' : '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!')
+        isLegacy ? '🎓' : (isCyber ? '📟' : (isSpace ? '🌌' : '🎨')),
+        isLegacy ? 'Álbum de Recuerdos vacío' : (isCyber ? 'Terminal de Renders vacía' : (isSpace ? 'Cápsula de Hologramas vacía' : 'Cofre de Pergaminos vacío')),
+        isLegacy ? '¡Subí tu primera foto, diploma o recuerdo de honor abajo para atesorarlo en el anuario!' : (isCyber ? '¡Subí tu primer render 3D o esquema técnico abajo para compilarlo en la matriz!' : (isSpace ? '¡Subí tu primer dibujo o captura espacial abajo para proyectarlo en la consola!' : '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!'))
       );
     }
 
@@ -4887,16 +5123,16 @@
     var cardsHtml = pageItems.map(function(item, idx){
       var realIdx = startIdx + idx;
       var imgSrc = getDrawingImageUrl(item);
-      var title  = item.title || item.name || ((isCyber ? 'Render #' : (isSpace ? 'Holograma #' : 'Pergamino #')) + (realIdx + 1));
+      var title  = item.title || item.name || ((isLegacy ? 'Recuerdo #' : (isCyber ? 'Render #' : (isSpace ? 'Holograma #' : 'Pergamino #'))) + (realIdx + 1));
       var dlUrl  = getDownloadUrl(item);
       var rotClass = 'csc-rot-' + (realIdx % 6);
 
-      var sealTitle = isCyber ? 'Chip Criptográfico Paulo Freire' : (isSpace ? 'Sello de la Flota Estelar' : 'Sellado con cera pirata');
-      var sealIcon = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-anchor');
-      var nailTitle = isCyber ? 'Conector de bus digital' : (isSpace ? 'Anclado al proyector orbital' : 'Clavado a la mesa del capitán');
-      var ribbonPrefix = isCyber ? 'Render #' : (isSpace ? 'Holograma #' : 'Pergamino #');
-      var ribbonIcon = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-scroll');
-      var actionLabel = isCyber ? 'Examinar' : (isSpace ? 'Proyectar' : 'Examinar');
+      var sealTitle = isLegacy ? 'Sello Dorado de Honor Egresados Paulo Freire' : (isCyber ? 'Chip Criptográfico Paulo Freire' : (isSpace ? 'Sello de la Flota Estelar' : 'Sellado con cera pirata'));
+      var sealIcon = isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-anchor'));
+      var nailTitle = isLegacy ? 'Prendedor conmemorativo del anuario' : (isCyber ? 'Conector de bus digital' : (isSpace ? 'Anclado al proyector orbital' : 'Clavado a la mesa del capitán'));
+      var ribbonPrefix = isLegacy ? 'Recuerdo #' : (isCyber ? 'Render #' : (isSpace ? 'Holograma #' : 'Pergamino #'));
+      var ribbonIcon = isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-scroll'));
+      var actionLabel = isLegacy ? 'Contemplar' : (isCyber ? 'Examinar' : (isSpace ? 'Proyectar' : 'Examinar'));
 
       return '<div class="captain-scroll-card ' + rotClass + '" data-img-url="' + imgSrc + '" data-img-title="' + title + '" data-dl-url="' + (dlUrl || '') + '">' +
         '<div class="csc-wax-seal" title="' + sealTitle + '">' +
@@ -4914,11 +5150,11 @@
         '<div class="csc-body">' +
           '<h4 class="csc-title" title="' + title + '">' + title + '</h4>' +
           '<div class="csc-meta">' +
-            (item.date ? '<span class="csc-meta-item"><i class="fas ' + (isCyber ? 'fa-clock' : (isSpace ? 'fa-clock' : 'fa-quill')) + '"></i> ' + item.date + '</span>' : '') +
-            (item.size ? '<span class="csc-meta-item"><i class="fas ' + (isCyber ? 'fa-memory' : (isSpace ? 'fa-microchip' : 'fa-coins')) + '"></i> ' + item.size + '</span>' : '') +
+            (item.date ? '<span class="csc-meta-item"><i class="fas ' + (isLegacy ? 'fa-calendar-alt' : (isCyber ? 'fa-clock' : (isSpace ? 'fa-clock' : 'fa-quill'))) + '"></i> ' + item.date + '</span>' : '') +
+            (item.size ? '<span class="csc-meta-item"><i class="fas ' + (isLegacy ? 'fa-medal' : (isCyber ? 'fa-memory' : (isSpace ? 'fa-microchip' : 'fa-coins'))) + '"></i> ' + item.size + '</span>' : '') +
           '</div>' +
           '<div class="csc-actions">' +
-            '<button type="button" class="csc-btn-view" title="' + (isCyber ? 'Examinar render en pantalla completa' : (isSpace ? 'Proyectar holograma en tamaño completo' : 'Examinar pergamino en tamaño completo')) + '">' +
+            '<button type="button" class="csc-btn-view" title="' + (isLegacy ? 'Contemplar recuerdo en pantalla completa' : (isCyber ? 'Examinar render en pantalla completa' : (isSpace ? 'Proyectar holograma en tamaño completo' : 'Examinar pergamino en tamaño completo'))) + '">' +
               '<i class="fas fa-eye"></i> <span>' + actionLabel + '</span>' +
             '</button>' +
             (dlUrl && dlUrl !== '#' ?
@@ -4961,16 +5197,20 @@
 
     var showingEnd = Math.min(startIdx + CAPTAIN_TABLE_PAGE_SIZE, totalItems);
 
-    var boardTheme = isCyber ? 'cyber-blueprint-board' : (isSpace ? 'space-hologram-board' : '');
-    var headerIcon = isCyber ? '📟' : (isSpace ? '🌌' : '🗺️');
-    var headerTitle = isCyber
-      ? 'Matriz Digital de Renders y Planos Técnicos'
-      : (isSpace ? 'Consola de Hologramas y Capturas Espaciales' : 'Mesa de Cartas y Pergaminos del Capitán');
-    var headerDesc = isCyber
-      ? 'Tus creaciones digitales, modelados 3D y capturas de circuitos compilados'
-      : (isSpace ? 'Tus diseños y capturas espaciales proyectados en la consola' : 'Tus láminas e ilustraciones náuticas desplegadas');
-    var badgeUnit = isCyber ? ' Render(s) · Bloque ' : (isSpace ? ' Holograma(s) · Sector ' : ' Pergamino(s) · Pliego ');
-    var badgeIcon = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-scroll');
+    var boardTheme = isLegacy ? 'legacy-album-board' : (isCyber ? 'cyber-blueprint-board' : (isSpace ? 'space-hologram-board' : ''));
+    var headerIcon = isLegacy ? '🎓' : (isCyber ? '📟' : (isSpace ? '🌌' : '🗺️'));
+    var headerTitle = isLegacy
+      ? 'Álbum de Recuerdos y Diplomas de Egresados'
+      : (isCyber
+        ? 'Matriz Digital de Renders y Planos Técnicos'
+        : (isSpace ? 'Consola de Hologramas y Capturas Espaciales' : 'Mesa de Cartas y Pergaminos del Capitán'));
+    var headerDesc = isLegacy
+      ? 'Fotografías, diplomas de honor y memorias atesoradas de tu trayectoria maker'
+      : (isCyber
+        ? 'Tus creaciones digitales, modelados 3D y capturas de circuitos compilados'
+        : (isSpace ? 'Tus diseños y capturas espaciales proyectados en la consola' : 'Tus láminas e ilustraciones náuticas desplegadas'));
+    var badgeUnit = isLegacy ? ' Recuerdo(s) · Tomo ' : (isCyber ? ' Render(s) · Bloque ' : (isSpace ? ' Holograma(s) · Sector ' : ' Pergamino(s) · Pliego '));
+    var badgeIcon = isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-scroll'));
 
     return '<div class="captain-table-board ' + boardTheme + '">' +
       '<div class="ct-brass-corner ctb-tl"></div>' +
@@ -5084,6 +5324,7 @@
 
   function openPdfModal(pdfUrl, title) {
     if (window.sounds) window.sounds.playClick();
+    var isLegacy = isLegacyTheme();
     var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
     var modal = document.getElementById('pdf-viewer-modal');
@@ -5124,19 +5365,22 @@
     }
     var frameEl = modal.querySelector('.pirate-modal-frame');
     if (frameEl) {
-      frameEl.classList.toggle('theme-cyber', isCyber);
-      frameEl.classList.toggle('theme-space', !isCyber && isSpace);
+      frameEl.classList.toggle('theme-legacy', isLegacy);
+      frameEl.classList.toggle('theme-cyber', !isLegacy && isCyber);
+      frameEl.classList.toggle('theme-space', !isLegacy && !isCyber && isSpace);
     }
     var kickerEl = document.getElementById('pvm-kicker');
     if (kickerEl) {
-      kickerEl.innerHTML = isCyber
-        ? '<i class="fas fa-terminal"></i> TERMINAL DE CÓDIGO · MANUAL Y PLANOS TÉCNICOS'
-        : (isSpace
-          ? '<i class="fas fa-satellite-dish"></i> ARCHIVO DE LA FLOTA ESTELAR · MANUAL TÉCNICO'
-          : '<i class="fas fa-compass"></i> ARCHIVO DE LA BITÁCORA · DOCUMENTO OFICIAL');
+      kickerEl.innerHTML = isLegacy
+        ? '<i class="fas fa-graduation-cap"></i> ANUARIO DE EGRESADOS · DOCUMENTO DE HONOR'
+        : (isCyber
+          ? '<i class="fas fa-terminal"></i> TERMINAL DE CÓDIGO · MANUAL Y PLANOS TÉCNICOS'
+          : (isSpace
+            ? '<i class="fas fa-satellite-dish"></i> ARCHIVO DE LA FLOTA ESTELAR · MANUAL TÉCNICO'
+            : '<i class="fas fa-compass"></i> ARCHIVO DE LA BITÁCORA · DOCUMENTO OFICIAL'));
     }
-    var badgeIcon = isCyber ? '⚡' : (isSpace ? '🛰️' : '📜');
-    var defaultTitle = isCyber ? 'Manual Técnico de Robótica' : (isSpace ? 'Manual de la Estación' : 'Documento del Navío');
+    var badgeIcon = isLegacy ? '🎓' : (isCyber ? '⚡' : (isSpace ? '🛰️' : '📜'));
+    var defaultTitle = isLegacy ? 'Diploma y Documento de Honor' : (isCyber ? 'Manual Técnico de Robótica' : (isSpace ? 'Manual de la Estación' : 'Documento del Navío'));
     document.getElementById('pvm-title').innerHTML = '<span class="ilm-scroll-badge">' + badgeIcon + '</span> ' + (title || defaultTitle);
     document.getElementById('pvm-iframe').src = pdfUrl;
     modal.classList.add('active');
@@ -5147,6 +5391,7 @@
   // ──────────────────────────────────────────────────
   function openImageModal(imgUrl, title, downloadUrl) {
     if (window.sounds) window.sounds.playClick();
+    var isLegacy = isLegacyTheme();
     var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
     var modal = document.getElementById('image-lightbox-modal');
@@ -5216,35 +5461,38 @@
 
     var frameEl = modal.querySelector('.pirate-modal-frame');
     if (frameEl) {
-      frameEl.classList.toggle('theme-cyber', isCyber);
-      frameEl.classList.toggle('theme-space', !isCyber && isSpace);
+      frameEl.classList.toggle('theme-legacy', isLegacy);
+      frameEl.classList.toggle('theme-cyber', !isLegacy && isCyber);
+      frameEl.classList.toggle('theme-space', !isLegacy && !isCyber && isSpace);
     }
 
     var kickerEl = document.getElementById('ilm-kicker');
     if (kickerEl) {
-      kickerEl.innerHTML = isCyber
-        ? '<i class="fas fa-microchip"></i> MATRIZ DIGITAL · TERMINAL DE ESQUEMAS Y BLUEPRINTS'
-        : (isSpace
-          ? '<i class="fas fa-satellite-dish"></i> CONSOLA ESTELAR · PROYECCIÓN HOLOGRÁFICA'
-          : '<i class="fas fa-skull-crossbones"></i> MESA DEL CAPITÁN · INSPECCIÓN DE PERGAMINO');
+      kickerEl.innerHTML = isLegacy
+        ? '<i class="fas fa-award"></i> ANUARIO DE EGRESADOS · RECUERDO DE HONOR'
+        : (isCyber
+          ? '<i class="fas fa-microchip"></i> MATRIZ DIGITAL · TERMINAL DE ESQUEMAS Y BLUEPRINTS'
+          : (isSpace
+            ? '<i class="fas fa-satellite-dish"></i> CONSOLA ESTELAR · PROYECCIÓN HOLOGRÁFICA'
+            : '<i class="fas fa-skull-crossbones"></i> MESA DEL CAPITÁN · INSPECCIÓN DE PERGAMINO'));
     }
     var dlLabelEl = document.getElementById('ilm-dl-label');
     if (dlLabelEl) {
-      dlLabelEl.textContent = isCyber ? 'Guardar Render' : (isSpace ? 'Guardar Holograma' : 'Descargar Pergamino');
+      dlLabelEl.textContent = isLegacy ? 'Guardar Recuerdo' : (isCyber ? 'Guardar Render' : (isSpace ? 'Guardar Holograma' : 'Descargar Pergamino'));
     }
     var waxEmojiEl = document.getElementById('ilm-wax-emoji');
     if (waxEmojiEl) {
-      waxEmojiEl.textContent = isCyber ? '🤖' : (isSpace ? '🚀' : '☠️');
+      waxEmojiEl.textContent = isLegacy ? '🎓' : (isCyber ? '🤖' : (isSpace ? '🚀' : '☠️'));
     }
 
-    var cleanTitle = title || (isCyber ? 'Render y Esquema Cyber' : (isSpace ? 'Holograma de Misión' : 'Pergamino de Misión'));
+    var cleanTitle = title || (isLegacy ? 'Recuerdo de Honor' : (isCyber ? 'Render y Esquema Cyber' : (isSpace ? 'Holograma de Misión' : 'Pergamino de Misión')));
     if (/^ChatGPT Image/i.test(cleanTitle)) {
-      cleanTitle = isCyber ? 'Render Secreto de Circuito' : (isSpace ? 'Transmisión Secreta de la Flota' : 'Enigma Secreto de la Tripulación');
+      cleanTitle = isLegacy ? 'Recuerdo Especial de Egresados' : (isCyber ? 'Render Secreto de Circuito' : (isSpace ? 'Transmisión Secreta de la Flota' : 'Enigma Secreto de la Tripulación'));
     }
 
     var titleEl = document.getElementById('ilm-title');
     if (titleEl) {
-      titleEl.innerHTML = '<span class="ilm-scroll-badge">' + (isCyber ? '📟' : (isSpace ? '🌌' : '📜')) + '</span> ' + cleanTitle;
+      titleEl.innerHTML = '<span class="ilm-scroll-badge">' + (isLegacy ? '🎓' : (isCyber ? '📟' : (isSpace ? '🌌' : '📜'))) + '</span> ' + cleanTitle;
     }
 
     var imgEl = document.getElementById('ilm-img');
