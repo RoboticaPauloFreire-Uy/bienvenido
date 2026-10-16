@@ -105,11 +105,99 @@
     return item.url || '';
   }
 
+  function extractDriveId(str) {
+    if (!str || typeof str !== 'string') return '';
+    var m1 = str.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (m1 && m1[1]) return m1[1];
+    var m2 = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (m2 && m2[1]) return m2[1];
+    var m3 = str.match(/googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/);
+    if (m3 && m3[1]) return m3[1];
+    return '';
+  }
+
   function getDownloadUrl(item) {
-    if (item.downloadUrl) return item.downloadUrl;
-    if (item.id) return 'https://drive.google.com/uc?export=download&id=' + item.id;
+    if (!item) return '#';
+    var id = item.id || extractDriveId(item.downloadUrl) || extractDriveId(item.url);
+    if (id) {
+      return 'https://drive.usercontent.google.com/download?id=' + id + '&export=download';
+    }
+    if (item.downloadUrl && !/\/view(\?|$)/i.test(item.downloadUrl)) {
+      return item.downloadUrl;
+    }
     return item.url || '#';
   }
+
+  function downloadDriveFileDirect(urlOrId, fileName, e) {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+
+    var driveId = extractDriveId(urlOrId) || (/^[a-zA-Z0-9_-]{18,}$/.test(urlOrId || '') ? urlOrId : '');
+    var safeName = (fileName || 'pergamino_taller').replace(/[\\/:*?"<>|]+/g, '_').trim() || 'pergamino_taller';
+
+    // Si es un data: URL local
+    if (urlOrId && urlOrId.startsWith('data:')) {
+      var aData = document.createElement('a');
+      aData.href = urlOrId;
+      aData.download = /\.[a-z0-9]{2,4}$/i.test(safeName) ? safeName : (safeName + '.png');
+      document.body.appendChild(aData);
+      aData.click();
+      document.body.removeChild(aData);
+      return false;
+    }
+
+    var directAttachmentUrl = driveId
+      ? ('https://drive.usercontent.google.com/download?id=' + driveId + '&export=download')
+      : urlOrId;
+
+    if (!driveId) {
+      var aDirect = document.createElement('a');
+      aDirect.href = directAttachmentUrl;
+      aDirect.setAttribute('download', safeName);
+      document.body.appendChild(aDirect);
+      aDirect.click();
+      document.body.removeChild(aDirect);
+      return false;
+    }
+
+    // Descarga directa vía Fetch + Blob (CORS habilitado en drive.usercontent.google.com y lh3.googleusercontent.com)
+    fetch(directAttachmentUrl)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.blob();
+      })
+      .then(function(blob) {
+        var ext = '.png';
+        if (blob.type === 'image/jpeg') ext = '.jpg';
+        else if (blob.type === 'image/webp') ext = '.webp';
+        else if (blob.type === 'image/bmp') ext = '.bmp';
+        else if (blob.type === 'application/pdf') ext = '.pdf';
+        var finalName = /\.[a-z0-9]{2,4}$/i.test(safeName) ? safeName : (safeName + ext);
+        var blobUrl = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = finalName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 6000);
+      })
+      .catch(function() {
+        // Fallback inmediato: enlace con Content-Disposition: attachment (descarga directo sin abrir /view)
+        var aFallback = document.createElement('a');
+        aFallback.href = directAttachmentUrl;
+        aFallback.setAttribute('download', safeName);
+        document.body.appendChild(aFallback);
+        aFallback.click();
+        document.body.removeChild(aFallback);
+      });
+
+    return false;
+  }
+  window.downloadDriveFileDirect = downloadDriveFileDirect;
 
   // ──────────────────────────────────────────────────
   // FETCH: Dibujos (subfolder=dibujo)
@@ -2016,7 +2104,7 @@
       if (gradeFiles.length > 0) {
         gradeCardsHtml = gradeFiles.map(function(item, idx){
           var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
-          var dlUrl = item.downloadUrl || ('https://drive.google.com/uc?export=download&id=' + item.id);
+          var dlUrl = getDownloadUrl(item);
           var viewUrl = item.id ? ('https://drive.google.com/file/d/' + item.id + '/view') : dlUrl;
           var imgThumb = (item.type === 'image' || !isPdf)
             ? ('https://lh3.googleusercontent.com/d/' + item.id)
@@ -2027,8 +2115,9 @@
           if (/^ChatGPT Image/i.test(displayItemTitle)) {
             displayItemTitle = 'Enigma Secreto en Tierra #' + (idx + 1);
           }
+          var safeTitleJs = displayItemTitle.replace(/'/g, "\\'");
           var clickAction = isImg
-            ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + displayItemTitle.replace(/'/g, "\\'") + '\', \'' + dlUrl + '\');'
+            ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + safeTitleJs + '\', \'' + dlUrl + '\');'
             : 'window.open(\'' + viewUrl + '\', \'_blank\');';
 
           return '<div class="grade-game-card ptb-card" data-act-idx="' + idx + '">' +
@@ -2060,7 +2149,7 @@
                   ? '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="' + clickAction + '"><i class="fas fa-eye"></i> <span>Ver Ficha</span></button>'
                   : '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec"><i class="fas fa-eye"></i> <span>Abrir PDF</span></a>'
                 ) +
-                '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar archivo">' +
+                '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + safeTitleJs + '\', event);" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar archivo directamente a tu equipo">' +
                   '<i class="fas fa-download"></i> <span>Descargar</span>' +
                 '</a>' +
               '</div>' +
@@ -2075,13 +2164,14 @@
         title: 'Inventario del Taller Maker',
         url: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo'
       };
-      var generalDlUrl = 'https://drive.google.com/uc?export=download&id=' + generalItem.id;
+      var generalDlUrl = getDownloadUrl(generalItem);
       var generalImgUrl = 'https://lh3.googleusercontent.com/d/' + generalItem.id;
+      var safeGenTitleJs = generalItem.title.replace(/'/g, "\\'");
 
       var generalCardHtml =
         '<div class="grade-game-card ptb-card" data-act-type="general">' +
           '<div class="ptb-card-nail" title="Clavado con tachuela al muelle"></div>' +
-          '<div class="ggc-thumb-wrap" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');" title="Hacé clic para ver la ficha completa">' +
+          '<div class="ggc-thumb-wrap" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + safeGenTitleJs + '\', \'' + generalDlUrl + '\');" title="Hacé clic para ver la ficha completa">' +
             '<img src="' + generalImgUrl + '" alt="' + generalItem.title.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
             '<div class="ggc-play-overlay">' +
               '<div class="ggc-play-bubble"><i class="fas fa-boxes"></i></div>' +
@@ -2101,10 +2191,10 @@
               '<span class="ggc-tag">#Herramientas</span>' +
             '</div>' +
             '<div class="ggc-actions">' +
-              '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + generalItem.title.replace(/'/g, "\\'") + '\', \'' + generalDlUrl + '\');">' +
+              '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + safeGenTitleJs + '\', \'' + generalDlUrl + '\');">' +
                 '<i class="fas fa-eye"></i> <span>Ver Ficha</span>' +
               '</button>' +
-              '<a href="' + generalDlUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar inventario">' +
+              '<a href="' + generalDlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + generalDlUrl + '\', \'' + safeGenTitleJs + '\', event);" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar inventario directamente a tu equipo">' +
                 '<i class="fas fa-download"></i> <span>Descargar</span>' +
               '</a>' +
             '</div>' +
@@ -4299,7 +4389,7 @@
               '<i class="fas fa-eye"></i> <span>Examinar</span>' +
             '</button>' +
             (dlUrl && dlUrl !== '#' ?
-              '<a href="' + dlUrl + '" target="_blank" rel="noopener noreferrer" class="csc-btn-download" title="Descargar pergamino">' +
+              '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + title.replace(/'/g, "\\'") + '\', event);" class="csc-btn-download" title="Guardar pergamino directamente en tu equipo">' +
                 '<i class="fas fa-download"></i> <span>Guardar</span>' +
               '</a>' : '') +
           '</div>' +
@@ -4579,8 +4669,14 @@
 
     var dlBtn = document.getElementById('ilm-dl-btn');
     if (dlBtn) {
-      var dl = downloadUrl || (imgUrl.includes('10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo') ? 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo' : imgUrl);
+      var resolvedId = extractDriveId(downloadUrl) || extractDriveId(imgUrl);
+      var dl = resolvedId
+        ? ('https://drive.usercontent.google.com/download?id=' + resolvedId + '&export=download')
+        : (downloadUrl || imgUrl);
       dlBtn.href = dl;
+      dlBtn.onclick = function(e) {
+        return downloadDriveFileDirect(dl, cleanTitle, e);
+      };
       dlBtn.style.display = 'inline-flex';
     }
 
