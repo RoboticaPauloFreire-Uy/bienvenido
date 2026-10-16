@@ -17433,3 +17433,1041 @@ body.student-logged-in #student-drive-dashboard-container {
   border-color: #FFFBEB !important;
   outline-color: #F59E0B !important;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   PROYECTOS Y ACTIVIDADES DE CLASE — SELECTOR Y FICHA COMPLETA
+   ───────────────────────────────────────────────────────────── */
+
+.cpt-selector-container {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.cpt-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.cpt-sh-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cpt-sh-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.cpt-sh-text strong {
+  display: block;
+  font-size: 1.05rem;
+  color: #1E293B;
+  font-weight: 800;
+}
+
+.cpt-sh-text small {
+  display: block;
+  font-size: 0.82rem;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+.cpt-nav-arrows {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cpt-arrow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F8FAFC;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cpt-arrow-btn:hover:not(:disabled) {
+  background: #E2E8F0;
+  color: #0F172A;
+  transform: translateY(-1px);
+}
+
+.cpt-arrow-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cpt-counter-badge {
+  background: #0284C7;
+  color: #FFFFFF;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.cpt-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-behavior: smooth;
+}
+
+.cpt-pills-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.cpt-pills-row::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+.cpt-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  color: #334155;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cpt-pill-btn:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.cpt-pill-btn.active {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  color: #FFFFFF;
+  border-color: #1D4ED8;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transform: translateY(-2px);
+}
+
+.cpt-pill-btn.active .cpt-pill-name {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.cpt-pill-icon {
+  font-size: 1.1rem;
+}
+
+.cpt-pill-num {
+  font-weight: 800;
+}
+
+.cpt-pill-name {
+  color: #64748B;
+  font-weight: 600;
+  font-size: 0.82rem;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cpt-pill-tag {
+  background: #FEF08A;
+  color: #854D0E;
+  font-size: 0.72rem;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.cpt-pill-btn.active .cpt-pill-tag {
+  background: #FFFFFF;
+  color: #1D4ED8;
+}
+
+/* ── FICHA COMPLETA DEL PROYECTO (.class-project-full-card) ── */
+.class-project-full-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 26px;
+  border: 1.5px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  animation: cpfcFadeIn 0.3s ease-out;
+}
+
+@keyframes cpfcFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cpfc-header {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1.5px solid #F1F5F9;
+}
+
+.cpfc-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.cpfc-badge-class {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  border: 1px solid #BFDBFE;
+}
+
+.cpfc-badge-type {
+  background: #F0FDF4;
+  color: #15803D;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  border: 1px solid #BBF7D0;
+}
+
+.cpfc-badge-status-latest {
+  background: #FEF9C3;
+  color: #854D0E;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  border: 1px solid #FDE047;
+}
+
+.cpfc-badge-status-past {
+  background: #F1F5F9;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 9999px;
+}
+
+.cpfc-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 6px 0 10px 0;
+  line-height: 1.3;
+}
+
+.cpfc-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.cpfc-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Hero Grid (Cover + Info) */
+.cpfc-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 26px;
+}
+
+@media (max-width: 900px) {
+  .cpfc-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cpfc-cover-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0F172A;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  aspect-ratio: 16 / 10;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cpfc-cover-wrap:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+}
+
+.cpfc-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.cpfc-cover-wrap:hover .cpfc-cover-img {
+  transform: scale(1.05);
+}
+
+.cpfc-cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  backdrop-filter: blur(3px);
+  text-align: center;
+  padding: 16px;
+}
+
+.cpfc-cover-wrap:hover .cpfc-cover-overlay {
+  opacity: 1;
+}
+
+.cpfc-play-icon {
+  width: 50px;
+  height: 50px;
+  background: #2563EB;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.5);
+}
+
+.cpfc-cover-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #F8FAFC;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cpfc-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cpfc-desc-box,
+.cpfc-objective-box,
+.cpfc-benefits-box {
+  background: #F8FAFC;
+  border-radius: 12px;
+  padding: 14px 18px;
+  border-left: 4px solid #3B82F6;
+}
+
+.cpfc-objective-box {
+  border-left-color: #10B981;
+}
+
+.cpfc-benefits-box {
+  border-left-color: #8B5CF6;
+}
+
+.cpfc-desc-box h4,
+.cpfc-objective-box h4,
+.cpfc-benefits-box h4 {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cpfc-desc-box p,
+.cpfc-objective-box p,
+.cpfc-benefits-box p {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.cpfc-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.cpfc-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s ease;
+}
+
+.cpfc-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+}
+
+.cpfc-btn-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #EF4444;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.cpfc-btn-pdf:hover {
+  background: #DC2626;
+  transform: translateY(-2px);
+}
+
+.cpfc-btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.cpfc-btn-download:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+  transform: translateY(-2px);
+}
+
+.cpfc-btn-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #10B981;
+  color: #FFFFFF;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.cpfc-btn-code:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+/* Sections (Steps & Materials) */
+.cpfc-section {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1.5px solid #F1F5F9;
+}
+
+.cpfc-section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Steps Grid */
+.cpfc-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.cpfc-step-card {
+  display: flex;
+  gap: 14px;
+  background: #F8FAFC;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #E2E8F0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cpfc-step-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.cpfc-step-num {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: #2563EB;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
+}
+
+.cpfc-step-content {
+  flex: 1;
+}
+
+.cpfc-step-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 4px 0;
+}
+
+.cpfc-step-desc {
+  font-size: 0.84rem;
+  color: #475569;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.cpfc-step-tip {
+  margin-top: 8px;
+  background: #FEF9C3;
+  color: #854D0E;
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border-left: 3px solid #EAB308;
+}
+
+/* Materials Grid */
+.cpfc-materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.cpfc-material-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #F8FAFC;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid #E2E8F0;
+}
+
+.cpfc-mat-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background: #EEF2FF;
+  color: #4F46E5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.cpfc-mat-info strong {
+  display: block;
+  font-size: 0.84rem;
+  color: #1E293B;
+  font-weight: 800;
+}
+
+.cpfc-mat-info span {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+/* Drive Section */
+.cpfc-drive-section {
+  margin-top: 28px;
+}
+
+.cpfc-drive-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   THEME VARIATIONS FOR CLASS PROJECTS SELECTOR & CARDS
+   ───────────────────────────────────────────────────────────── */
+
+/* Cyber Theme (4° y 5° Grado) */
+.gamer-dashboard-container.theme-cyber .cpt-selector-container {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: #06B6D4;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-sh-text strong {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-sh-text small {
+  color: #94A3B8;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-arrow-btn {
+  background: #1E293B;
+  color: #E2E8F0;
+  border-color: #334155;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-arrow-btn:hover:not(:disabled) {
+  background: #06B6D4;
+  color: #0F172A;
+  border-color: #06B6D4;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-counter-badge {
+  background: #06B6D4;
+  color: #0F172A;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-pill-btn {
+  background: #1E293B;
+  color: #E2E8F0;
+  border-color: #334155;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-pill-btn:hover {
+  background: #334155;
+  border-color: #06B6D4;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-pill-btn.active {
+  background: linear-gradient(135deg, #06B6D4 0%, #0284C7 100%);
+  color: #0F172A;
+  border-color: #38BDF8;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.45);
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-pill-btn.active .cpt-pill-name {
+  color: #0F172A;
+  font-weight: 700;
+}
+
+.gamer-dashboard-container.theme-cyber .cpt-pill-name {
+  color: #94A3B8;
+}
+
+.gamer-dashboard-container.theme-cyber .class-project-full-card {
+  background: #0F172A;
+  border-color: #1E293B;
+  color: #F8FAFC;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-header {
+  border-bottom-color: #1E293B;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-title {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-meta {
+  color: #94A3B8;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-desc-box,
+.gamer-dashboard-container.theme-cyber .cpfc-objective-box,
+.gamer-dashboard-container.theme-cyber .cpfc-benefits-box {
+  background: #1E293B;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-desc-box h4,
+.gamer-dashboard-container.theme-cyber .cpfc-objective-box h4,
+.gamer-dashboard-container.theme-cyber .cpfc-benefits-box h4 {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-desc-box p,
+.gamer-dashboard-container.theme-cyber .cpfc-objective-box p,
+.gamer-dashboard-container.theme-cyber .cpfc-benefits-box p {
+  color: #CBD5E1;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-section {
+  border-top-color: #1E293B;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-section-title,
+.gamer-dashboard-container.theme-cyber .cpfc-drive-title {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-step-card,
+.gamer-dashboard-container.theme-cyber .cpfc-material-chip {
+  background: #1E293B;
+  border-color: #334155;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-step-title,
+.gamer-dashboard-container.theme-cyber .cpfc-mat-info strong {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-step-desc,
+.gamer-dashboard-container.theme-cyber .cpfc-mat-info span {
+  color: #94A3B8;
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-btn-primary {
+  background: linear-gradient(135deg, #06B6D4 0%, #0284C7 100%);
+  color: #0F172A;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+}
+
+.gamer-dashboard-container.theme-cyber .cpfc-btn-download {
+  background: #1E293B;
+  color: #E2E8F0;
+  border-color: #334155;
+}
+
+/* Space Theme (2° y 3° Grado) */
+.gamer-dashboard-container.theme-space .cpt-selector-container {
+  background: rgba(15, 23, 42, 0.92);
+  border-color: #8B5CF6;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+}
+
+.gamer-dashboard-container.theme-space .cpt-sh-text strong {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-space .cpt-sh-text small {
+  color: #C4B5FD;
+}
+
+.gamer-dashboard-container.theme-space .cpt-counter-badge {
+  background: #8B5CF6;
+  color: #FFFFFF;
+}
+
+.gamer-dashboard-container.theme-space .cpt-arrow-btn {
+  background: #1E293B;
+  color: #E2E8F0;
+  border-color: #4C1D95;
+}
+
+.gamer-dashboard-container.theme-space .cpt-arrow-btn:hover:not(:disabled) {
+  background: #8B5CF6;
+  color: #FFFFFF;
+}
+
+.gamer-dashboard-container.theme-space .cpt-pill-btn {
+  background: #1E293B;
+  color: #E2E8F0;
+  border-color: #334155;
+}
+
+.gamer-dashboard-container.theme-space .cpt-pill-btn:hover {
+  background: #2E1065;
+  border-color: #8B5CF6;
+}
+
+.gamer-dashboard-container.theme-space .cpt-pill-btn.active {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  color: #FFFFFF;
+  border-color: #A78BFA;
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.45);
+}
+
+.gamer-dashboard-container.theme-space .class-project-full-card {
+  background: #0F172A;
+  border-color: #2E1065;
+  color: #F8FAFC;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.gamer-dashboard-container.theme-space .cpfc-header {
+  border-bottom-color: #1E293B;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-title {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-desc-box,
+.gamer-dashboard-container.theme-space .cpfc-objective-box,
+.gamer-dashboard-container.theme-space .cpfc-benefits-box {
+  background: #1E293B;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-desc-box h4,
+.gamer-dashboard-container.theme-space .cpfc-objective-box h4,
+.gamer-dashboard-container.theme-space .cpfc-benefits-box h4 {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-desc-box p,
+.gamer-dashboard-container.theme-space .cpfc-objective-box p,
+.gamer-dashboard-container.theme-space .cpfc-benefits-box p {
+  color: #DDD6FE;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-section {
+  border-top-color: #1E293B;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-section-title,
+.gamer-dashboard-container.theme-space .cpfc-drive-title {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-step-card,
+.gamer-dashboard-container.theme-space .cpfc-material-chip {
+  background: #1E293B;
+  border-color: #334155;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-step-title,
+.gamer-dashboard-container.theme-space .cpfc-mat-info strong {
+  color: #F8FAFC;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-step-desc,
+.gamer-dashboard-container.theme-space .cpfc-mat-info span {
+  color: #C4B5FD;
+}
+
+.gamer-dashboard-container.theme-space .cpfc-btn-primary {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+}
+
+.gamer-dashboard-container.theme-space .cpfc-btn-download {
+  background: #1E293B;
+  color: #E2E8F0;
+  border-color: #334155;
+}
+
+/* Legacy Theme (6° Grado - Egresados) */
+.gamer-dashboard-container.theme-legacy .cpt-selector-container {
+  background: rgba(11, 15, 25, 0.95);
+  border-color: #F59E0B;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.2);
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-sh-text strong {
+  color: #FEF08A;
+  font-family: Georgia, serif;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-sh-text small {
+  color: #CBD5E1;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-counter-badge {
+  background: linear-gradient(135deg, #D97706, #F59E0B);
+  color: #451A03;
+  font-weight: 900;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-arrow-btn {
+  background: #1E1B4B;
+  color: #FEF08A;
+  border-color: #78350F;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-arrow-btn:hover:not(:disabled) {
+  background: #D97706;
+  color: #FFFDF5;
+  border-color: #FEF08A;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-pill-btn {
+  background: #1E1B4B;
+  color: #FEF08A;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-pill-btn:hover {
+  background: #312E81;
+  border-color: #F59E0B;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-pill-btn.active {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  color: #451A03;
+  border-color: #FEF08A;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.5);
+  font-weight: 900;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-pill-btn.active .cpt-pill-name {
+  color: #451A03;
+  font-weight: 800;
+}
+
+.gamer-dashboard-container.theme-legacy .cpt-pill-name {
+  color: #CBD5E1;
+}
+
+.gamer-dashboard-container.theme-legacy .class-project-full-card {
+  background: #0B0F19;
+  border-color: #B45309;
+  color: #FFFDF5;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7);
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-header {
+  border-bottom-color: rgba(245, 158, 11, 0.25);
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-title {
+  color: #FEF08A;
+  font-family: Georgia, serif;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-meta {
+  color: #CBD5E1;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-desc-box,
+.gamer-dashboard-container.theme-legacy .cpfc-objective-box,
+.gamer-dashboard-container.theme-legacy .cpfc-benefits-box {
+  background: #111827;
+  border-left-color: #F59E0B;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-desc-box h4,
+.gamer-dashboard-container.theme-legacy .cpfc-objective-box h4,
+.gamer-dashboard-container.theme-legacy .cpfc-benefits-box h4 {
+  color: #FEF08A;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-desc-box p,
+.gamer-dashboard-container.theme-legacy .cpfc-objective-box p,
+.gamer-dashboard-container.theme-legacy .cpfc-benefits-box p {
+  color: #E2E8F0;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-section {
+  border-top-color: rgba(245, 158, 11, 0.25);
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-section-title,
+.gamer-dashboard-container.theme-legacy .cpfc-drive-title {
+  color: #FEF08A;
+  font-family: Georgia, serif;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-step-card,
+.gamer-dashboard-container.theme-legacy .cpfc-material-chip {
+  background: #111827;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-step-title,
+.gamer-dashboard-container.theme-legacy .cpfc-mat-info strong {
+  color: #FEF08A;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-step-desc,
+.gamer-dashboard-container.theme-legacy .cpfc-mat-info span {
+  color: #CBD5E1;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-step-num {
+  background: linear-gradient(135deg, #D97706, #F59E0B);
+  color: #451A03;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-btn-primary {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  color: #451A03;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+  font-weight: 900;
+}
+
+.gamer-dashboard-container.theme-legacy .cpfc-btn-download {
+  background: #111827;
+  color: #FEF08A;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+

@@ -90,6 +90,8 @@
   let captainTablePage           = 1;
   const CAPTAIN_TABLE_PAGE_SIZE  = 6;
   let isRoadmapGridMode          = false;
+  let selectedClassProjectIdx    = null; // null => auto-selecciona el último proyecto de clase al ingresar
+  let lastSelectedGradeId        = null;
 
   function formatFileSize(bytes) {
     if (!bytes || bytes <= 0) return '—';
@@ -2530,11 +2532,47 @@
       return isScratchFile(f.name) || isMakecodeFile(f.name) || f.type==='scratch' || f.type==='makecode' || f.type==='circuito' || f.type==='electronica' || /\.(bmp|png|jpe?g|webp|mp4|mov)$/i.test(f.name);
     });
 
+    // ── Proyectos de Clase (Actividades del Taller según currículo real) ──
+    var gradeObj = (window.SCHOOL_DATA && Array.isArray(window.SCHOOL_DATA.grades))
+      ? window.SCHOOL_DATA.grades.find(function(g){ return g.id === student.gradeId; })
+      : null;
+    var rawGradeProjects = (gradeObj && Array.isArray(gradeObj.projects)) ? gradeObj.projects : [];
+    var classProjects = [];
+    var seenProjKeys = {};
+    rawGradeProjects.forEach(function(p, pIdx){
+      var key = p.id || (p.title || ('p-' + pIdx));
+      if (!seenProjKeys[key]) {
+        seenProjKeys[key] = true;
+        classProjects.push(p);
+      }
+    });
+
+    if (Array.isArray(adventureMissions)) {
+      adventureMissions.forEach(function(m, mIdx){
+        var key = m.id || (m.title || ('m-' + mIdx));
+        var already = classProjects.some(function(gp){
+          return gp.id === m.id || (gp.title && m.title && gp.title.trim().toLowerCase() === m.title.trim().toLowerCase());
+        });
+        if (!already) {
+          seenProjKeys[key] = true;
+          classProjects.push(m);
+        }
+      });
+    }
+
+    // Auto-selección: al ingresar por primera vez es siempre el último proyecto dado en clase
+    if (lastSelectedGradeId !== student.gradeId) {
+      lastSelectedGradeId = student.gradeId;
+      selectedClassProjectIdx = null;
+    }
+    if (selectedClassProjectIdx === null || selectedClassProjectIdx < 0 || selectedClassProjectIdx >= classProjects.length) {
+      selectedClassProjectIdx = Math.max(0, classProjects.length - 1);
+    }
+
     var badgeDibujos     = isLoadingDriveFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.dibujos.items.length;
     var badgeProyectos   = adventureMissions.length;
     var badgeProyecto    = isLoadingProyectoFiles ? '<i class="fas fa-spinner fa-spin"></i>' : validProyectoFiles.length;
-    var totalActividades = FOLDER_CONTENTS.actividades.items.length + (FOLDER_CONTENTS.actividades.generalItems.length > 0 ? FOLDER_CONTENTS.actividades.generalItems.length : 1);
-    var badgeActividades = isLoadingActividadesFiles ? '<i class="fas fa-spinner fa-spin"></i>' : totalActividades;
+    var badgeActividades = classProjects.length || (FOLDER_CONTENTS.actividades.items.length + (FOLDER_CONTENTS.actividades.generalItems.length > 0 ? FOLDER_CONTENTS.actividades.generalItems.length : 1));
     var badgeFamiliar    = 1;
 
     // ── Filtros por subtab ──
@@ -2558,13 +2596,9 @@
         countText = (proyectoSubTab === 'scratch' ? scratchItems.length + ' proyecto(s) Scratch Jr' : makecodeItems.length + (isLegacy ? ' códigos y cápsulas de egresado' : (isCyber ? ' códigos MakeCode/Robótica' : ' proyecto(s) MakeCode')));
       }
     } else if (activeFolderKey === 'actividades') {
-      if (isLoadingActividadesFiles) {
-        countText = '<i class="fas fa-sync-alt fa-spin"></i> Buscando actividades...';
-      } else {
-        countText = FOLDER_CONTENTS.actividades.items.length > 0
-          ? (FOLDER_CONTENTS.actividades.items.length + (isLegacy ? ' edictos de honor de ' : (isCyber ? ' esquemas técnicos de ' : ' reto(s) de ')) + student.gradeName + ' + Inventario')
-          : (isLegacy ? '1 documento (Inventario de egresados)' : (isCyber ? '1 diagrama (Inventario de taller)' : '1 actividad (Inventario de material)'));
-      }
+      var actTotal = classProjects.length || 1;
+      var actCur = (selectedClassProjectIdx !== null ? selectedClassProjectIdx + 1 : actTotal);
+      countText = 'Clase / Proyecto #' + actCur + ' de ' + actTotal + ' (' + student.gradeName + ')';
     } else if (activeFolderKey === 'familiar') {
       countText = isLegacy ? '1 tributo y despedida (Homenaje Familiar)' : (isCyber ? '1 experiencia hacker (Escape Room Cooperativo)' : '1 experiencia familiar (Escape Rooms Nostálgico)');
     }
@@ -2780,137 +2814,265 @@
         contentHtml: tabContent
       });
 
-    // ═══ CARPETA: ACTIVIDADES (Tu Grado + General) ═══
+    // ═══ CARPETA: ACTIVIDADES DE CLASE (PROYECTOS DADOS EN EL TALLER) ═══
     } else if (activeFolderKey === 'actividades') {
-      var gradeInfo = GRADE_ACTIVITIES_INFO[student.gradeId] || GRADE_ACTIVITIES_INFO['sala5'];
+      var currentProj = (classProjects && classProjects[selectedClassProjectIdx]) ? classProjects[selectedClassProjectIdx] : (classProjects && classProjects[0]) || null;
       var gradeFiles = FOLDER_CONTENTS.actividades.items || [];
       var generalFiles = FOLDER_CONTENTS.actividades.generalItems || [];
-      var activitiesDriveUrl = 'https://drive.google.com/drive/folders/1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK?usp=sharing';
 
-      // 1. Actividad de su grado (Relacionar): Solo aparece si HAY archivos subidos para su grado
-      var gradeCardsHtml = '';
-      if (gradeFiles.length > 0) {
-        gradeCardsHtml = gradeFiles.map(function(item, idx){
-          var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
-          var dlUrl = getDownloadUrl(item);
-          var viewUrl = item.id ? ('https://drive.google.com/file/d/' + item.id + '/view') : dlUrl;
-          var imgThumb = (item.type === 'image' || !isPdf)
-            ? ('https://lh3.googleusercontent.com/d/' + item.id)
-            : 'img/pdf_preview_placeholder.png';
+      // Barra selectora de número de clase/proyecto
+      var selectorPillsHtml = classProjects.map(function(proj, idx){
+        var isCur = (idx === selectedClassProjectIdx);
+        var isLast = (idx === classProjects.length - 1);
+        var badgeIcon = proj.type === 'electronica' ? '⚡' : (proj.type === 'paint' ? '🎨' : (proj.type === 'makecode' ? '💻' : (proj.type === 'scratch' ? '🐱' : (proj.type === 'canva' ? '🎨' : (proj.id === 'g6-p3' ? '🧠' : '🚀')))));
+        var shortTitle = proj.title || ('Clase #' + (idx + 1));
+        if (shortTitle.length > 28) shortTitle = shortTitle.substring(0, 26).trim() + '...';
 
-          var isImg = (item.type === 'image' || !isPdf);
-          var displayItemTitle = item.title || ((isCyber ? 'Diagrama Técnico #' : (isSpace ? 'Misión en Base Lunar #' : 'Misión en Tierra #')) + (idx + 1));
-          if (/^ChatGPT Image/i.test(displayItemTitle)) {
-            displayItemTitle = (isCyber ? 'Esquema de Circuito #' : (isSpace ? 'Transmisión Secreta Lunar #' : 'Enigma Secreto en Tierra #')) + (idx + 1);
-          }
-          var safeTitleJs = displayItemTitle.replace(/'/g, "\\'");
-          var clickAction = isImg
-            ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + safeTitleJs + '\', \'' + dlUrl + '\');'
-            : 'window.open(\'' + viewUrl + '\', \'_blank\');';
+        return '<button type="button" class="cpt-pill-btn ' + (isCur ? 'active' : '') + (isLast ? ' is-latest' : '') + '" data-class-idx="' + idx + '" title="' + (proj.title || '').replace(/"/g, '&quot;') + '">' +
+          '<span class="cpt-pill-icon">' + badgeIcon + '</span>' +
+          '<span class="cpt-pill-num">Clase #' + (idx + 1) + '</span>' +
+          '<span class="cpt-pill-name">' + shortTitle + '</span>' +
+          (isLast ? '<span class="cpt-pill-tag">⭐ Última</span>' : '') +
+        '</button>';
+      }).join('');
 
-          return '<div class="grade-game-card ptb-card" data-act-idx="' + idx + '">' +
-            '<div class="ptb-card-nail" title="' + (isCyber ? 'Conectado a la terminal' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
-            '<div class="ggc-thumb-wrap" onclick="' + clickAction + '" title="Hacé clic para ver">' +
-              (isImg
-                ? '<img src="' + imgThumb + '" alt="' + displayItemTitle.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">'
-                : '<div style="background:linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;">📄</div>'
-              ) +
-              '<div class="ggc-play-overlay">' +
-                '<div class="ggc-play-bubble"><i class="fas fa-search-plus"></i></div>' +
-                '<span>' + (isImg ? '¡Ver Ficha!' : '¡Abrir PDF!') + '</span>' +
-              '</div>' +
-              '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas ' + (isCyber ? 'fa-microchip' : 'fa-graduation-cap') + '"></i> ' + student.gradeName + '</div>' +
-              '<div class="ggc-platform-badge pirate-plat-badge">' + (isPdf ? '📄 Ficha PDF' : (isCyber ? '⚡ Esquema Técnico' : (isSpace ? '📡 Plano Lunar' : '🖼️ Pergamino'))) + '</div>' +
-            '</div>' +
-            '<div class="ggc-body">' +
-              '<div class="ggc-top-row">' +
-                '<h3 class="ggc-title">' + displayItemTitle + '</h3>' +
-              '</div>' +
-              '<p class="ggc-desc">' + (isCyber ? 'Ficha técnica y diagrama de conexión de hardware para ' : 'Reto y actividad de relación de conceptos creada para tu grado (') + student.gradeName + (isCyber ? '.' : ').') + '</p>' +
-              '<div class="ggc-tags-row">' +
-                '<span class="ggc-tag">' + (isCyber ? '#Hardware' : (isSpace ? '#BaseLunar' : '#MisiónEnTierra')) + '</span>' +
-                '<span class="ggc-tag">#Conceptos</span>' +
-                '<span class="ggc-tag">#' + (isPdf ? 'PDF' : 'Ficha') + '</span>' +
-              '</div>' +
-              '<div class="ggc-actions">' +
-                (isImg
-                  ? '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="' + clickAction + '"><i class="fas fa-eye"></i> <span>Ver Ficha</span></button>'
-                  : '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec"><i class="fas fa-eye"></i> <span>Abrir PDF</span></a>'
-                ) +
-                '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + safeTitleJs + '\', event);" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar archivo directamente a tu equipo">' +
-                  '<i class="fas fa-download"></i> <span>Descargar</span>' +
-                '</a>' +
+      var classSelectorBarHtml =
+        '<div class="cpt-selector-container">' +
+          '<div class="cpt-selector-header">' +
+            '<div class="cpt-sh-left">' +
+              '<span class="cpt-sh-icon">🎯</span>' +
+              '<div class="cpt-sh-text">' +
+                '<strong>Proyectos de Clase dados en el Taller (' + student.gradeName + ')</strong>' +
+                '<small>Elegí el número para ver el proyecto trabajado (al ingresar carga por defecto la última clase dada):</small>' +
               '</div>' +
             '</div>' +
-          '</div>';
-        }).join('');
-      }
-
-      // 2. Actividad General (Inventario del taller)
-      var generalItem = (generalFiles && generalFiles[0]) || {
-        id: '10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo',
-        title: 'Inventario del Taller Maker',
-        url: 'https://lh3.googleusercontent.com/d/10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo'
-      };
-      var generalDlUrl = getDownloadUrl(generalItem);
-      var generalImgUrl = 'https://lh3.googleusercontent.com/d/' + generalItem.id;
-      var safeGenTitleJs = generalItem.title.replace(/'/g, "\\'");
-
-      var generalCardHtml =
-        '<div class="grade-game-card ptb-card" data-act-type="general">' +
-          '<div class="ptb-card-nail" title="' + (isCyber ? 'Conectado a la terminal' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
-          '<div class="ggc-thumb-wrap" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + safeGenTitleJs + '\', \'' + generalDlUrl + '\');" title="Hacé clic para ver la ficha completa">' +
-            '<img src="' + generalImgUrl + '" alt="' + generalItem.title.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
-            '<div class="ggc-play-overlay">' +
-              '<div class="ggc-play-bubble"><i class="fas fa-boxes"></i></div>' +
-              '<span>¡Ver Inventario!</span>' +
-            '</div>' +
-            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-boxes"></i> ' + (isCyber ? 'Componentes' : 'General') + '</div>' +
-            '<div class="ggc-platform-badge pirate-plat-badge">' + (isCyber ? '⚡ Inventario de Circuitos' : (isSpace ? '🛰️ Inventario Espacial' : '📜 Inventario Maker')) + '</div>' +
+            (classProjects.length > 1 ?
+              '<div class="cpt-nav-arrows">' +
+                '<button type="button" class="cpt-arrow-btn cpt-prev" data-class-idx="' + (selectedClassProjectIdx - 1) + '" ' + (selectedClassProjectIdx <= 0 ? 'disabled' : '') + ' title="Ver clase anterior">' +
+                  '<i class="fas fa-chevron-left"></i> Anterior' +
+                '</button>' +
+                '<span class="cpt-counter-badge">' + (selectedClassProjectIdx + 1) + ' de ' + classProjects.length + '</span>' +
+                '<button type="button" class="cpt-arrow-btn cpt-next" data-class-idx="' + (selectedClassProjectIdx + 1) + '" ' + (selectedClassProjectIdx >= classProjects.length - 1 ? 'disabled' : '') + ' title="Ver siguiente clase">' +
+                  'Siguiente <i class="fas fa-chevron-right"></i>' +
+                '</button>' +
+              '</div>' : '') +
           '</div>' +
-          '<div class="ggc-body">' +
-            '<div class="ggc-top-row">' +
-              '<h3 class="ggc-title">' + generalItem.title + '</h3>' +
-            '</div>' +
-            '<p class="ggc-desc">' + (isCyber ? 'Clasificar, conectar y relacionar piezas, servomotores, microcontroladores Micro:bit y sensores del taller maker.' : 'Observar, clasificar, contar y relacionar las piezas, sensores, motores y herramientas del taller de robótica.') + '</p>' +
-            '<div class="ggc-tags-row">' +
-              '<span class="ggc-tag">#Inventario</span>' +
-              '<span class="ggc-tag">#Sensores</span>' +
-              '<span class="ggc-tag">#Herramientas</span>' +
-            '</div>' +
-            '<div class="ggc-actions">' +
-              '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + safeGenTitleJs + '\', \'' + generalDlUrl + '\');">' +
-                '<i class="fas fa-eye"></i> <span>Ver Ficha</span>' +
-              '</button>' +
-              '<a href="' + generalDlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + generalDlUrl + '\', \'' + safeGenTitleJs + '\', event);" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar inventario directamente a tu equipo">' +
-                '<i class="fas fa-download"></i> <span>Descargar</span>' +
-              '</a>' +
-            '</div>' +
+          '<div class="cpt-pills-row">' +
+            selectorPillsHtml +
           '</div>' +
         '</div>';
 
+      // ── Ficha Completa del Proyecto Seleccionado ──
+      var currentProjHtml = '';
+      if (currentProj) {
+        var isServo = (currentProj.id === 'g6-p2') || (/servo.*joystick|joystick.*servo/i.test(currentProj.title || ''));
+        var isCanva = currentProj.type === 'canva' || /canva/i.test(currentProj.title || '');
+        var isGemini = (currentProj.id === 'g6-p3') || (/gemini|notebooklm|materiales.*estudio/i.test(currentProj.title || ''));
+        var coverImg = currentProj.coverImage || (isServo ? 'img/proyectos/servo_joystick_makecode_cover.svg' : (isCanva ? 'img/proyectos/canva_arquero_ia_cover.svg' : (isGemini ? 'img/proyectos/gemini_notebooks_cover.svg' : (currentProj.gallery && currentProj.gallery[0]) || (currentProj.type === 'makecode' || currentProj.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png'))));
+        var safeTitleJs = (currentProj.title || 'Proyecto de Clase').replace(/'/g, "\\'");
+        var pdfUrl = currentProj.pdfUrl || currentProj.downloadPdfUrl || null;
+        var codeUrl = currentProj.makecodeUrl || (currentProj.scratchId ? ('https://scratch.mit.edu/projects/' + currentProj.scratchId) : (currentProj.gameUrl || currentProj.externalUrl || (isGemini ? 'https://notebooklm.google.com' : null)));
+        var codeLabel = currentProj.makecodeUrl ? 'Abrir en MakeCode' : (currentProj.scratchId ? 'Abrir en Scratch' : (isGemini ? 'Abrir NotebookLM' : (isCanva ? 'Abrir en Canva' : 'Abrir Proyecto')));
+        var isLast = (selectedClassProjectIdx === classProjects.length - 1);
+        var projTypeBadge = currentProj.badge || (currentProj.type === 'electronica' ? '⚡ Circuito Electrónico' : (currentProj.type === 'paint' ? '🎨 Arte Digital & Paint' : (currentProj.type === 'makecode' ? '💻 MakeCode Micro:bit' : (currentProj.type === 'scratch' ? '🐱 Scratch Jr' : (isGemini ? '🧠 Gemini & NotebookLM' : (isCanva ? '🎨 Canva & Animación IA' : '🚀 Proyecto Maker'))))));
+
+        // Pasos de clase
+        var instructionsList = currentProj.instructions || currentProj.steps || [];
+        var instructionsHtml = '';
+        if (Array.isArray(instructionsList) && instructionsList.length > 0) {
+          var stepsCards = instructionsList.map(function(s, sIdx){
+            var stNum = s.step || (sIdx + 1);
+            var stTitle = s.title || ('Paso ' + stNum);
+            var stDesc = s.desc || s.description || (typeof s === 'string' ? s : '');
+            var stTip = s.tip || null;
+            return '<div class="cpfc-step-card">' +
+              '<div class="cpfc-step-num">' + stNum + '</div>' +
+              '<div class="cpfc-step-content">' +
+                '<h5 class="cpfc-step-title">' + stTitle + '</h5>' +
+                '<p class="cpfc-step-desc">' + stDesc + '</p>' +
+                (stTip ? '<div class="cpfc-step-tip">💡 <strong>Tip Maker:</strong> ' + stTip + '</div>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+          instructionsHtml =
+            '<div class="cpfc-section cpfc-steps-section">' +
+              '<h3 class="cpfc-section-title"><i class="fas fa-list-ol"></i> Guía Paso a Paso de la Clase:</h3>' +
+              '<div class="cpfc-steps-grid">' +
+                stepsCards +
+              '</div>' +
+            '</div>';
+        }
+
+        // Materiales
+        var materialsList = currentProj.materials || [];
+        var materialsHtml = '';
+        if (Array.isArray(materialsList) && materialsList.length > 0) {
+          var matChips = materialsList.map(function(m){
+            var mTitle = m.title || (typeof m === 'string' ? m : 'Componente');
+            var mDesc = m.description || '';
+            var mIcon = m.icon || 'fa-tools';
+            return '<div class="cpfc-material-chip">' +
+              '<div class="cpfc-mat-icon"><i class="fas ' + mIcon + '"></i></div>' +
+              '<div class="cpfc-mat-info">' +
+                '<strong>' + mTitle + '</strong>' +
+                (mDesc ? '<span>' + mDesc + '</span>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+          materialsHtml =
+            '<div class="cpfc-section cpfc-materials-section">' +
+              '<h3 class="cpfc-section-title"><i class="fas fa-toolbox"></i> Materiales y Herramientas del Taller Utilizados:</h3>' +
+              '<div class="cpfc-materials-grid">' +
+                matChips +
+              '</div>' +
+            '</div>';
+        }
+
+        // Recursos adicionales Google Drive
+        var gradeCardsHtml = '';
+        if (gradeFiles.length > 0) {
+          gradeCardsHtml = gradeFiles.map(function(item, idx){
+            var isPdf = item.type === 'pdf' || (item.name && item.name.toLowerCase().endsWith('.pdf'));
+            var dlUrl = getDownloadUrl(item);
+            var viewUrl = item.id ? ('https://drive.google.com/file/d/' + item.id + '/view') : dlUrl;
+            var imgThumb = (item.type === 'image' || !isPdf)
+              ? ('https://lh3.googleusercontent.com/d/' + item.id)
+              : 'img/pdf_preview_placeholder.png';
+            var isImg = (item.type === 'image' || !isPdf);
+            var displayItemTitle = item.title || ((isLegacy ? 'Recuerdo de Honor #' : (isCyber ? 'Diagrama Técnico #' : (isSpace ? 'Misión en Base Lunar #' : 'Misión en Tierra #'))) + (idx + 1));
+            var safeTitle = displayItemTitle.replace(/'/g, "\\'");
+            var clickAction = isImg
+              ? 'if(window.openImageModal) window.openImageModal(\'' + imgThumb + '\', \'' + safeTitle + '\', \'' + dlUrl + '\');'
+              : 'window.open(\'' + viewUrl + '\', \'_blank\');';
+
+            return '<div class="grade-game-card ptb-card" data-act-idx="' + idx + '">' +
+              '<div class="ptb-card-nail" title="Documento del Taller"></div>' +
+              '<div class="ggc-thumb-wrap" onclick="' + clickAction + '" title="Hacé clic para ver">' +
+                (isImg
+                  ? '<img src="' + imgThumb + '" alt="' + displayItemTitle.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">'
+                  : '<div style="background:linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;">📄</div>'
+                ) +
+                '<div class="ggc-play-overlay">' +
+                  '<div class="ggc-play-bubble"><i class="fas fa-search-plus"></i></div>' +
+                  '<span>' + (isImg ? '¡Ver Ficha!' : '¡Abrir PDF!') + '</span>' +
+                '</div>' +
+                '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas ' + (isCyber ? 'fa-microchip' : 'fa-graduation-cap') + '"></i> ' + student.gradeName + '</div>' +
+                '<div class="ggc-platform-badge pirate-plat-badge">' + (isPdf ? '📄 Ficha PDF' : '⚡ Documento') + '</div>' +
+              '</div>' +
+              '<div class="ggc-body">' +
+                '<div class="ggc-top-row">' +
+                  '<h3 class="ggc-title">' + displayItemTitle + '</h3>' +
+                '</div>' +
+                '<p class="ggc-desc">Material complementario subido a Google Drive para ' + student.gradeName + '.</p>' +
+                '<div class="ggc-actions">' +
+                  (isImg
+                    ? '<button type="button" class="ggc-btn-play pirate-btn-exec" onclick="' + clickAction + '"><i class="fas fa-eye"></i> <span>Ver Ficha</span></button>'
+                    : '<a href="' + viewUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec"><i class="fas fa-eye"></i> <span>Abrir PDF</span></a>'
+                  ) +
+                  '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + safeTitle + '\', event);" class="ggc-btn-sugerencias" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Descargar">' +
+                    '<i class="fas fa-download"></i> <span>Descargar</span>' +
+                  '</a>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+
+        var extraDriveFilesHtml = '';
+        if (gradeCardsHtml) {
+          extraDriveFilesHtml =
+            '<div class="cpfc-section cpfc-drive-section">' +
+              '<h4 class="cpfc-drive-title"><i class="fab fa-google-drive"></i> Materiales y Fichas Complementarias en Google Drive (' + student.gradeName + ')</h4>' +
+              '<div class="grade-games-grid ptb-games-grid" style="margin-top:14px;">' +
+                gradeCardsHtml +
+              '</div>' +
+            '</div>';
+        }
+
+        currentProjHtml =
+          '<div class="class-project-full-card">' +
+            '<div class="cpfc-header">' +
+              '<div class="cpfc-badge-group">' +
+                '<span class="cpfc-badge-class"><i class="fas fa-chalkboard-teacher"></i> Clase / Proyecto #' + (selectedClassProjectIdx + 1) + '</span>' +
+                '<span class="cpfc-badge-type">' + projTypeBadge + '</span>' +
+                (isLast ? '<span class="cpfc-badge-status-latest"><i class="fas fa-star"></i> Última Clase / Proyecto Actual</span>' : '<span class="cpfc-badge-status-past"><i class="fas fa-history"></i> Clase Anterior</span>') +
+              '</div>' +
+              '<h2 class="cpfc-title">' + currentProj.title + '</h2>' +
+              '<div class="cpfc-meta">' +
+                '<span><i class="fas fa-user-tie"></i> ' + (currentProj.author || 'Taller Maker Paulo Freire') + '</span>' +
+                '<span><i class="fas fa-graduation-cap"></i> ' + student.gradeName + '</span>' +
+                (currentProj.date ? '<span><i class="far fa-clock"></i> ' + currentProj.date + '</span>' : '') +
+              '</div>' +
+            '</div>' +
+
+            '<div class="cpfc-hero-grid">' +
+              '<div class="cpfc-cover-wrap btn-open-class-project" data-class-idx="' + selectedClassProjectIdx + '" title="Hacé clic para abrir la Ficha Interactiva Completa">' +
+                '<img src="' + coverImg + '" alt="' + (currentProj.title || '').replace(/"/g, '&quot;') + '" class="cpfc-cover-img" onerror="this.src=\'img/microbit.png\'">' +
+                '<div class="cpfc-cover-overlay">' +
+                  '<div class="cpfc-play-icon"><i class="fas fa-expand-arrows-alt"></i></div>' +
+                  '<span>¡Explorar Ficha y Proyecto Completo!</span>' +
+                '</div>' +
+                '<div class="cpfc-cover-badge"><i class="fas fa-layer-group"></i> Nivel ' + (currentProj.level || (selectedClassProjectIdx + 1)) + '</div>' +
+              '</div>' +
+
+              '<div class="cpfc-info-col">' +
+                '<div class="cpfc-desc-box">' +
+                  '<h4><i class="fas fa-info-circle"></i> ¿De qué trata este proyecto?</h4>' +
+                  '<p>' + (currentProj.description || 'Proyecto interactivo del taller maker.') + '</p>' +
+                '</div>' +
+
+                (currentProj.objective ?
+                  '<div class="cpfc-objective-box">' +
+                    '<h4><i class="fas fa-bullseye"></i> Objetivo de Aprendizaje</h4>' +
+                    '<p>' + currentProj.objective + '</p>' +
+                  '</div>' : '') +
+
+                (currentProj.benefits ?
+                  '<div class="cpfc-benefits-box">' +
+                    '<h4><i class="fas fa-brain"></i> Habilidades y Pensamiento Computacional</h4>' +
+                    '<p>' + currentProj.benefits + '</p>' +
+                  '</div>' : '') +
+
+                '<div class="cpfc-actions">' +
+                  '<button type="button" class="cpfc-btn-primary btn-open-class-project" data-class-idx="' + selectedClassProjectIdx + '" title="Abrir presentación interactiva, simulador y paso a paso">' +
+                    '<i class="fas fa-chalkboard-teacher"></i> <span>Abrir Guía Interactiva Completa</span>' +
+                  '</button>' +
+                  (pdfUrl ?
+                    '<button type="button" class="cpfc-btn-pdf" onclick="openPdfModal(\'' + pdfUrl + '\', \'' + safeTitleJs + '\')" title="Ver guía PDF oficial de la clase">' +
+                      '<i class="fas fa-file-pdf"></i> <span>Ver PDF</span>' +
+                    '</button>' +
+                    '<a href="' + pdfUrl + '" onclick="return window.downloadDriveFileDirect(\'' + pdfUrl + '\', \'' + safeTitleJs + '\', event);" class="cpfc-btn-download" title="Descargar PDF">' +
+                      '<i class="fas fa-download"></i> <span>Descargar PDF</span>' +
+                    '</a>' : '') +
+                  (codeUrl && codeUrl !== '#' ?
+                    '<a href="' + codeUrl + '" target="_blank" rel="noopener noreferrer" class="cpfc-btn-code" title="' + codeLabel + '">' +
+                      '<i class="fas fa-code"></i> <span>' + codeLabel + '</span>' +
+                    '</a>' : '') +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            instructionsHtml +
+            materialsHtml +
+            extraDriveFilesHtml +
+          '</div>';
+      } else {
+        currentProjHtml = '<div class="gdb-empty-state"><div class="ges-icon">📚</div><h4>No hay proyectos registrados para este grado</h4><p>Pronto se cargarán proyectos en el currículo de ' + student.gradeName + '.</p></div>';
+      }
+
       mainDisplayHtml = buildPirateTavernBoard({
-        sealIcon: isLegacy ? '📜' : (isCyber ? '⚡' : (isSpace ? '🛰️' : '📜')),
+        sealIcon: isLegacy ? '🎓' : (isCyber ? '⚡' : (isSpace ? '🛰️' : '📜')),
         tag: isLegacy
-          ? 'ANUARIO DE EGRESADOS · EDICTOS Y DESAFÍOS DE HONOR'
+          ? 'PROYECTOS CUMBRE DE CLASE · ANUARIO DE EGRESADOS'
           : (isCyber
-            ? 'TERMINAL DE INGENIERÍA · BANCO DE TRABAJO ROBÓTICO'
-            : (isSpace ? 'CONSOLA DE COMANDO · MISIONES EN LA BASE LUNAR' : 'TABLERO DE LA TABERNA · MISIONES EN TIERRA FIRME')),
-        title: isLegacy
-          ? ('📜 Edictos y Desafíos de Honor — Egresados ' + student.gradeName)
-          : (isCyber
-            ? ('⚡ Diagramas Técnicos y Hardware — División ' + student.gradeName)
-            : (isSpace
-              ? ('🛰️ Misiones y Planos de la Base Lunar — Nave ' + student.gradeName)
-              : ('📜 Misiones y Enigmas para Descifrar en Tierra — Navío ' + student.gradeName))),
-        sub: isLegacy
-          ? '¡Edictos finales, proyectos integradores y desafíos de hardware e inventario para graduarte con la máxima distinción!'
-          : (isCyber
-            ? '¡Diagramas de conexión, hojas de datos de sensores, servomotores y algoritmos para compilar y probar en el taller maker!'
-            : (isSpace
-              ? '¡Planos técnicos, fichas de sensores y desafíos para imprimir, relacionar conceptos y resolver en la estación espacial!'
-              : '¡Fichas, planos y desafíos físicos para imprimir, relacionar conceptos y resolver acertijos con lápiz y papel o en el taller maker!')),
-        contentHtml: '<div class="grade-games-grid ptb-games-grid">' + gradeCardsHtml + generalCardHtml + '</div>'
+            ? 'TERMINAL DE INGENIERÍA · PROYECTOS DE CLASE'
+            : (isSpace ? 'CONSOLA DE MISIONES · PROYECTOS DE CLASE' : 'PROYECTOS DEL TALLER · ACTIVIDADES DE CLASE')),
+        title: 'Clase #' + (selectedClassProjectIdx + 1) + ': ' + (currentProj ? currentProj.title : 'Proyecto de Clase'),
+        sub: 'Elegí el número de clase para ver su proyecto y materiales. Al ingresar se carga por defecto la última clase dada en el taller (' + student.gradeName + ').',
+        extraHeaderHtml: classSelectorBarHtml,
+        contentHtml: currentProjHtml
       });
 
       uploadZoneHtml = '';
@@ -3148,10 +3310,10 @@
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'actividades' ? 'active' : '') + '" data-folder="actividades">' +
-            '<span class="gnb-emoji">' + (isLegacy ? '📜' : (isCyber ? '🛠️' : (isSpace ? '🛰️' : '📜'))) + '</span>' +
+            '<span class="gnb-emoji">' + (isLegacy ? '📜' : (isCyber ? '⚡' : (isSpace ? '🛰️' : '🏫'))) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isLegacy ? 'Edictos & Desafíos' : (isCyber ? 'Hardware & Taller' : (isSpace ? 'Base Lunar' : 'Misiones en Tierra'))) + '</span>' +
-              '<span class="gnb-badge">' + badgeActividades + ' retos</span>' +
+              '<span class="gnb-title">Proyectos de Clase</span>' +
+              '<span class="gnb-badge">' + badgeActividades + ' clases</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'familiar' ? 'active' : '') + '" data-folder="familiar">' +
@@ -3174,7 +3336,7 @@
                    activeFolderKey === 'juegos' ? ((isLegacy ? '🕹️ Torneo de Despedida: Juegos & Desafíos Finales (' : (isCyber ? '🕹️ Arcade Cyber & Algoritmos de Programación (' : (isSpace ? '🛸 Simulador de Misiones Galácticas (' : '⚔️ Desafíos Piratas y Algoritmos ('))) + student.gradeName + ')') :
                    activeFolderKey === 'dibujos' ? ((isLegacy ? '🏆 Álbum de Recuerdos, Diplomas y Obras de Arte (' : (isCyber ? '📟 Matriz de Renders, Esquemas y Diseños (' : (isSpace ? '🌌 Consola de Hologramas y Dibujos (' : '🎨 La Mesa del Capitán: Dibujos y Pergaminos ('))) + student.gradeName + ')') :
                    activeFolderKey === 'proyecto'  ? (isLegacy ? '🎓 Cápsula de Códigos, Robótica y Creaciones de Egreso' : (isCyber ? '🧠 Núcleo de Código, Algoritmos y Robótica Micro:bit' : (isSpace ? '🤖 Laboratorio Espacial de Códigos y Robótica' : '💻 Cofre de Invenciones y Códigos Maker'))) :
-                   activeFolderKey === 'actividades' ? (isLegacy ? ('📜 Edictos, Planos y Desafíos del Taller (' + student.gradeName + ')') : (isCyber ? ('🛠️ Banco de Hardware y Planos de Conexión (' + student.gradeName + ')') : (isSpace ? ('🛰️ Base Lunar de Actividades (' + student.gradeName + ')') : (FOLDER_CONTENTS.actividades.items.length > 0 ? '📜 Misiones en Tierra y Hogar (' + student.gradeName + ')' : '📜 Misiones y Retos del Taller')))) :
+                   activeFolderKey === 'actividades' ? (isLegacy ? ('📜 Proyectos y Clases Cumbre (' + student.gradeName + ')') : (isCyber ? ('⚡ Proyectos y Clases de Robótica (' + student.gradeName + ')') : (isSpace ? ('🛰️ Proyectos y Clases Galácticas (' + student.gradeName + ')') : ('🏫 Proyectos y Actividades de Clase (' + student.gradeName + ')')))) :
                    activeFolderKey === 'familiar' ? (isLegacy ? '🤝 Homenaje Familiar: Escape Room de Graduación' : (isCyber ? '🔐 Hackeo Familiar: Escape Room de Algoritmos' : (isSpace ? '🚀 Odisea Familiar: Escape Room Interestelar' : '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas'))) : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
@@ -3689,8 +3851,49 @@
       btn.onclick = function(e){ e.stopPropagation(); openPdfModal(btn.dataset.pdfUrl, btn.dataset.pdfTitle); };
     });
 
-    // ── Actividades (zoom imagen y lightbox) ──
+    // ── Actividades / Proyectos de Clase ──
     if (activeFolderKey === 'actividades') {
+      // 1. Selector de número de clase (pills de clase)
+      container.querySelectorAll('.cpt-pill-btn[data-class-idx]').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          var idx = parseInt(btn.dataset.classIdx, 10);
+          if (!isNaN(idx) && idx >= 0 && idx < classProjects.length) {
+            selectedClassProjectIdx = idx;
+            if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+            renderGDriveDashboard(containerId);
+          }
+        };
+      });
+
+      // 2. Botones de navegación Anterior / Siguiente
+      container.querySelectorAll('.cpt-arrow-btn[data-class-idx]').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          if (btn.disabled) return;
+          var idx = parseInt(btn.dataset.classIdx, 10);
+          if (!isNaN(idx) && idx >= 0 && idx < classProjects.length) {
+            selectedClassProjectIdx = idx;
+            if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+            renderGDriveDashboard(containerId);
+          }
+        };
+      });
+
+      // 3. Abrir Guía Interactiva Completa (modal pedagógico y presentación de aventura)
+      container.querySelectorAll('.btn-open-class-project').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          var idx = parseInt(btn.dataset.classIdx, 10);
+          var proj = (classProjects && classProjects[idx]) ? classProjects[idx] : ((classProjects && classProjects[selectedClassProjectIdx]) || null);
+          if (proj) {
+            if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+            openAdventureProjectModal(proj, 'presentacion');
+          }
+        };
+      });
+
+      // 4. Zoom de fotos y lightbox de Drive
       container.querySelectorAll('.agtc-thumb-wrap, .agtc-btn-view').forEach(function(btn){
         btn.onclick = function(e){
           e.stopPropagation();
