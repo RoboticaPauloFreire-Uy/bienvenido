@@ -738,13 +738,24 @@
             /2\s*°|2do|segundo|3\s*°|3ero|tercer/i.test(gName));
   }
 
+  function isCyberTheme(student) {
+    if (!student && window.getActiveStudent) student = window.getActiveStudent();
+    if (!student) return false;
+    if (window.getStudentThemeGroup) return window.getStudentThemeGroup(student) === 'cyber';
+    var gId = (student.gradeId || '').toLowerCase();
+    var gName = (student.gradeName || '').toLowerCase();
+    return (gId === 'grado4' || gId === '4to' || gId === 'grado5' || gId === '5to' ||
+            /4\s*°|4to|cuarto|5\s*°|5to|quinto/i.test(gName));
+  }
+
   // ──────────────────────────────────────────────────
   // RENDER HTML DE RUTA DE AVENTURAS (MODO 3)
   // ──────────────────────────────────────────────────
   function renderAdventureRoadmapHtml(student, missions, isGrid) {
     var isSpace = isSpaceTheme(student);
+    var isCyber = isCyberTheme(student);
     if (!missions || missions.length === 0) {
-      return '<div class="gdb-empty-state"><div class="ges-icon">' + (isSpace ? '🪐' : '🗺️') + '</div><h4>Sin misiones aún</h4><p>Pronto se publicarán los desafíos para ' + student.gradeName + '.</p></div>';
+      return '<div class="gdb-empty-state"><div class="ges-icon">' + (isCyber ? '🔌' : (isSpace ? '🪐' : '🗺️')) + '</div><h4>Sin misiones aún</h4><p>Pronto se publicarán los desafíos para ' + student.gradeName + '.</p></div>';
     }
 
     // Progreso del Taller: cuenta exactamente las misiones completadas
@@ -752,14 +763,14 @@
     var progressPercent = missions.length > 0 ? Math.min(100, Math.round((completedCount / missions.length) * 100)) : 0;
 
     var headerHtml =
-      '<div class="arm-toolbar-compact ' + (isSpace ? 'space-toolbar' : '') + '">' +
+      '<div class="arm-toolbar-compact ' + (isCyber ? 'cyber-toolbar' : (isSpace ? 'space-toolbar' : '')) + '">' +
         '<div class="atc-left">' +
-          '<span class="atc-badge"><i class="fas ' + (isSpace ? 'fa-satellite' : 'fa-compass') + '"></i> ' + (isSpace ? 'CARTA ESTELAR MAKER 2026' : 'CARTA NÁUTICA MAKER 2026') + '</span>' +
-          '<h3 class="atc-title">' + (isSpace ? '🪐 Mapa Estelar &bull; ' : '🗺️ Mapa del Tesoro &bull; ') + student.gradeName + '</h3>' +
+          '<span class="atc-badge"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-compass')) + '"></i> ' + (isCyber ? 'RED NEURONAL MAKER 2026' : (isSpace ? 'CARTA ESTELAR MAKER 2026' : 'CARTA NÁUTICA MAKER 2026')) + '</span>' +
+          '<h3 class="atc-title">' + (isCyber ? '🔌 Circuito Central &bull; ' : (isSpace ? '🪐 Mapa Estelar &bull; ' : '🗺️ Mapa del Tesoro &bull; ')) + student.gradeName + '</h3>' +
         '</div>' +
         '<div class="arm-view-toggle">' +
-          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="' + (isSpace ? 'Ver como Mapa Estelar Galáctico' : 'Ver como Mapa Pirata del Tesoro') + '">' +
-            '<i class="fas ' + (isSpace ? 'fa-user-astronaut' : 'fa-map-marked-alt') + '"></i> <span>' + (isSpace ? 'Mapa Estelar' : 'Mapa Pirata') + '</span>' +
+          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="' + (isCyber ? 'Ver como Circuito de Nodos Cyber' : (isSpace ? 'Ver como Mapa Estelar Galáctico' : 'Ver como Mapa Pirata del Tesoro')) + '">' +
+            '<i class="fas ' + (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-map-marked-alt')) + '"></i> <span>' + (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa Pirata')) + '</span>' +
           '</button>' +
           '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Cuadrícula">' +
             '<i class="fas fa-th-large"></i> <span>Cuadrícula</span>' +
@@ -1354,16 +1365,71 @@
           '<path class="pirate-ship-foam" d="M 35 178 Q 75 170 115 178 Q 155 186 195 178 Q 220 172 240 178" stroke="#38BDF8" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.8"/>' +
         '</svg>';
 
-      var pirateStartPortHtml = isSpace
-        ? '<div class="pirate-start-port space-start-port">' +
+      var cyberCoreBotSvg =
+        '<svg class="pirate-ship-svg cyber-bot-svg" viewBox="0 0 260 210" width="150" height="120" xmlns="http://www.w3.org/2000/svg" aria-label="Núcleo Robótico Cyber Paulo Freire">' +
+          '<defs>' +
+            '<linearGradient id="cyChassisGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#1E293B"/>' +
+              '<stop offset="55%" stop-color="#0F172A"/>' +
+              '<stop offset="100%" stop-color="#020617"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="cyNeonGreen" x1="0%" y1="0%" x2="100%" y2="0%">' +
+              '<stop offset="0%" stop-color="#10B981"/>' +
+              '<stop offset="50%" stop-color="#34D399"/>' +
+              '<stop offset="100%" stop-color="#059669"/>' +
+            '</linearGradient>' +
+            '<linearGradient id="cyMagentaGlow" x1="0%" y1="0%" x2="100%" y2="100%">' +
+              '<stop offset="0%" stop-color="#EC4899"/>' +
+              '<stop offset="100%" stop-color="#8B5CF6"/>' +
+            '</linearGradient>' +
+          '</defs>' +
+          '<g class="pirate-ship-bobbing">' +
+            '<!-- Plataforma magnética de circuito -->' +
+            '<ellipse cx="130" cy="182" rx="88" ry="12" fill="rgba(16, 185, 129, 0.28)"/>' +
+            '<ellipse cx="130" cy="182" rx="64" ry="7" fill="none" stroke="#34D399" stroke-width="1.8" stroke-dasharray="6 4"/>' +
+            '<!-- Antenas receptoras de IA -->' +
+            '<line x1="95" y1="52" x2="80" y2="22" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>' +
+            '<circle cx="80" cy="20" r="5" fill="#34D399"/>' +
+            '<line x1="165" y1="52" x2="180" y2="22" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>' +
+            '<circle cx="180" cy="20" r="5" fill="#F472B6"/>' +
+            '<!-- Brazos robóticos articulados laterales -->' +
+            '<path d="M 68 106 L 38 92 L 30 118 L 54 132" fill="none" stroke="#10B981" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>' +
+            '<circle cx="38" cy="92" r="5" fill="#FACC15" stroke="#0F172A" stroke-width="1.5"/>' +
+            '<path d="M 192 106 L 222 92 L 230 118 L 206 132" fill="none" stroke="#EC4899" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>' +
+            '<circle cx="222" cy="92" r="5" fill="#FACC15" stroke="#0F172A" stroke-width="1.5"/>' +
+            '<!-- Chasis Central de Procesador / Robot -->' +
+            '<rect x="68" y="48" width="124" height="108" rx="22" fill="url(#cyChassisGrad)" stroke="#10B981" stroke-width="3"/>' +
+            '<!-- Visor Digital LED del Robot -->' +
+            '<rect x="82" y="62" width="96" height="36" rx="10" fill="#020617" stroke="#34D399" stroke-width="2"/>' +
+            '<circle cx="108" cy="80" r="8" fill="#10B981"/>' +
+            '<circle cx="106" cy="78" r="2.5" fill="#ECFDF5"/>' +
+            '<circle cx="152" cy="80" r="8" fill="#10B981"/>' +
+            '<circle cx="150" cy="78" r="2.5" fill="#ECFDF5"/>' +
+            '<path d="M 122 86 Q 130 92 138 86" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round"/>' +
+            '<!-- Matriz Micro:bit / Núcleo Cuántico en el pecho -->' +
+            '<rect x="92" y="108" width="76" height="36" rx="6" fill="#090D1E" stroke="url(#cyMagentaGlow)" stroke-width="2"/>' +
+            '<circle cx="106" cy="120" r="3" fill="#F43F5E"/><circle cx="118" cy="120" r="3" fill="#34D399"/><circle cx="130" cy="120" r="3" fill="#FACC15"/><circle cx="142" cy="120" r="3" fill="#34D399"/><circle cx="154" cy="120" r="3" fill="#F43F5E"/>' +
+            '<circle cx="106" cy="132" r="3" fill="#34D399"/><circle cx="118" cy="132" r="3" fill="#EC4899"/><circle cx="130" cy="132" r="3" fill="#34D399"/><circle cx="142" cy="132" r="3" fill="#EC4899"/><circle cx="154" cy="132" r="3" fill="#34D399"/>' +
+            '<!-- Pines dorados inferiores tipo Microchip -->' +
+            '<rect x="88" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
+            '<rect x="106" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
+            '<rect x="126" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
+            '<rect x="146" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
+            '<rect x="164" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
+          '</g>' +
+          '<path class="pirate-ship-foam" d="M 30 178 L 70 178 L 80 170 L 110 184 L 130 172 L 150 184 L 180 170 L 190 178 L 230 178" stroke="#10B981" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+        '</svg>';
+
+      var pirateStartPortHtml = isCyber
+        ? '<div class="pirate-start-port cyber-start-port">' +
             '<div class="pirate-port-sky">' +
-              '<span class="pirate-sun-icon">🪐</span>' +
-              '<span class="pirate-seagull s1">🛰️</span>' +
-              '<span class="pirate-seagull s2">✨</span>' +
+              '<span class="pirate-sun-icon">⚡</span>' +
+              '<span class="pirate-seagull s1">🤖</span>' +
+              '<span class="pirate-seagull s2">🧠</span>' +
             '</div>' +
             '<div class="pirate-ship-stage">' +
-              '<div class="pirate-ship-wrapper" title="Nave Exploradora Paulo Freire: ¡Lista para el despegue!">' +
-                spaceShuttleSvg +
+              '<div class="pirate-ship-wrapper" title="Núcleo Robótico Paulo Freire: ¡Sistema en línea!">' +
+                cyberCoreBotSvg +
               '</div>' +
               '<div class="pirate-ocean-waves-wrap">' +
                 '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
@@ -1373,46 +1439,84 @@
               '</div>' +
             '</div>' +
             '<div class="pirate-port-banner">' +
-              '<div class="ppb-anchor"><i class="fas fa-rocket"></i></div>' +
+              '<div class="ppb-anchor"><i class="fas fa-microchip"></i></div>' +
               '<div class="ppb-text">' +
-                '<h3 class="ppb-title">BASE DE LANZAMIENTO &bull; ESTACIÓN ESPACIAL PAULO FREIRE</h3>' +
-                '<p class="ppb-sub">La Nave Exploradora <strong>Paulo Freire</strong> inicia su misión orbital por la galaxia de <strong>' + student.gradeName + '</strong>. Seguí la ruta de constelaciones, tocá cada planeta para abrir su transmisión holográfica y alcanzá el Núcleo Galáctico Maker.</p>' +
+                '<h3 class="ppb-title">SERVIDOR CENTRAL &bull; LABORATORIO DE ROBÓTICA E IA PAULO FREIRE</h3>' +
+                '<p class="ppb-sub">El Núcleo Robótico <strong>Paulo Freire</strong> inicia la compilación en la placa madre de <strong>' + student.gradeName + '</strong>. Seguí las pistas de cobre y fibra óptica, tocá cada nodo para abrir su terminal de código y desbloqueá la Supercomputadora Central de IA.</p>' +
               '</div>' +
-              '<div class="ppb-compass"><i class="fas fa-satellite"></i></div>' +
+              '<div class="ppb-compass"><i class="fas fa-network-wired"></i></div>' +
             '</div>' +
           '</div>'
-        : '<div class="pirate-start-port">' +
-            '<div class="pirate-port-sky">' +
-              '<span class="pirate-sun-icon">☀️</span>' +
-              '<span class="pirate-seagull s1">🕊️</span>' +
-              '<span class="pirate-seagull s2">🕊️</span>' +
-            '</div>' +
-            '<div class="pirate-ship-stage">' +
-              '<div class="pirate-ship-wrapper" title="Galeón Paulo Freire: ¡Listo para zarpar!">' +
-                pirateShipSvg +
+        : (isSpace
+          ? '<div class="pirate-start-port space-start-port">' +
+              '<div class="pirate-port-sky">' +
+                '<span class="pirate-sun-icon">🪐</span>' +
+                '<span class="pirate-seagull s1">🛰️</span>' +
+                '<span class="pirate-seagull s2">✨</span>' +
               '</div>' +
-              '<div class="pirate-ocean-waves-wrap">' +
-                '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
-                  '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
-                  '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
-                '</svg>' +
+              '<div class="pirate-ship-stage">' +
+                '<div class="pirate-ship-wrapper" title="Nave Exploradora Paulo Freire: ¡Lista para el despegue!">' +
+                  spaceShuttleSvg +
+                '</div>' +
+                '<div class="pirate-ocean-waves-wrap">' +
+                  '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
+                    '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
+                    '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
+                  '</svg>' +
+                '</div>' +
               '</div>' +
-            '</div>' +
-            '<div class="pirate-port-banner">' +
-              '<div class="ppb-anchor"><i class="fas fa-anchor"></i></div>' +
-              '<div class="ppb-text">' +
-                '<h3 class="ppb-title">PUERTO DE ZARPE &bull; BAHÍA DE LOS CREADORES</h3>' +
-                '<p class="ppb-sub">El Galeón <strong>Paulo Freire</strong> inicia su travesía por el archipiélago de <strong>' + student.gradeName + '</strong>. Seguí el sendero curvado, tocá cada isla para abrir su pergamino y alcanzá el Gran Tesoro Maker.</p>' +
+              '<div class="pirate-port-banner">' +
+                '<div class="ppb-anchor"><i class="fas fa-rocket"></i></div>' +
+                '<div class="ppb-text">' +
+                  '<h3 class="ppb-title">BASE DE LANZAMIENTO &bull; ESTACIÓN ESPACIAL PAULO FREIRE</h3>' +
+                  '<p class="ppb-sub">La Nave Exploradora <strong>Paulo Freire</strong> inicia su misión orbital por la galaxia de <strong>' + student.gradeName + '</strong>. Seguí la ruta de constelaciones, tocá cada planeta para abrir su transmisión holográfica y alcanzá el Núcleo Galáctico Maker.</p>' +
+                '</div>' +
+                '<div class="ppb-compass"><i class="fas fa-satellite"></i></div>' +
               '</div>' +
-              '<div class="ppb-compass"><i class="fas fa-compass"></i></div>' +
-            '</div>' +
-          '</div>';
+            '</div>'
+          : '<div class="pirate-start-port">' +
+              '<div class="pirate-port-sky">' +
+                '<span class="pirate-sun-icon">☀️</span>' +
+                '<span class="pirate-seagull s1">🕊️</span>' +
+                '<span class="pirate-seagull s2">🕊️</span>' +
+              '</div>' +
+              '<div class="pirate-ship-stage">' +
+                '<div class="pirate-ship-wrapper" title="Galeón Paulo Freire: ¡Listo para zarpar!">' +
+                  pirateShipSvg +
+                '</div>' +
+                '<div class="pirate-ocean-waves-wrap">' +
+                  '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
+                    '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
+                    '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
+                  '</svg>' +
+                '</div>' +
+              '</div>' +
+              '<div class="pirate-port-banner">' +
+                '<div class="ppb-anchor"><i class="fas fa-anchor"></i></div>' +
+                '<div class="ppb-text">' +
+                  '<h3 class="ppb-title">PUERTO DE ZARPE &bull; BAHÍA DE LOS CREADORES</h3>' +
+                  '<p class="ppb-sub">El Galeón <strong>Paulo Freire</strong> inicia su travesía por el archipiélago de <strong>' + student.gradeName + '</strong>. Seguí el sendero curvado, tocá cada isla para abrir su pergamino y alcanzá el Gran Tesoro Maker.</p>' +
+                '</div>' +
+                '<div class="ppb-compass"><i class="fas fa-compass"></i></div>' +
+              '</div>' +
+            '</div>');
 
       function buildPirateStationHtml(m, idx, sideClass) {
         var statusSeal = '';
         var statusBadgeClass = m.status;
         var statusLabel = '';
-        if (isSpace) {
+        if (isCyber) {
+          if (m.status === 'completado') {
+            statusLabel = 'Nodo Compilado';
+            statusSeal = '<div class="pirate-seal-badge completado" title="¡Nodo compilado con éxito!"><i class="fas fa-check-double"></i> Compilado</div>';
+          } else if (m.status === 'activo') {
+            statusLabel = 'En Compilación';
+            statusSeal = '<div class="pirate-seal-badge activo" title="¡Nodo activo en compilación!"><i class="fas fa-bolt"></i> En Línea</div>';
+          } else {
+            statusLabel = 'Nodo Encriptado';
+            statusSeal = '<div class="pirate-seal-badge desafio" title="Nodo por desencriptar"><i class="fas fa-lock"></i> Encriptado</div>';
+          }
+        } else if (isSpace) {
           if (m.status === 'completado') {
             statusLabel = 'Planeta Explorado';
             statusSeal = '<div class="pirate-seal-badge completado" title="¡Planeta explorado!"><i class="fas fa-satellite"></i> Explorado</div>';
@@ -1448,20 +1552,23 @@
           toolBtnHtml = '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-game" title="Jugar"><i class="fas fa-gamepad"></i> Jugar Desafío</a>';
         }
 
-        var stationTitleText = isSpace ? ('🪐 Planeta ' + m.level + ': ' + m.title) : ('🏝️ Isla ' + m.level + ': ' + m.title);
-        var ctaOpenText = isSpace ? 'Ocultar transmisión' : 'Ocultar pergamino';
-        var ctaClosedText = isSpace ? 'Tocá el planeta para ver transmisión' : 'Tocá la isla para ver pergamino';
-        var ctaIconClass = isSpace ? 'fa-satellite-dish' : 'fa-scroll';
-        var stampHtml = isSpace
-          ? '<i class="fas fa-satellite-dish"></i> Transmisión de Comando &bull; Planeta #' + m.level
-          : '<i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level;
-        var objHeaderHtml = isSpace ? 'Objetivo de la Misión Orbital' : 'Objetivo del Tesoro';
-        var benHeaderHtml = isSpace ? 'Superpoderes de Astronauta (Razonamiento y Lógica)' : 'Poderes Piratas (Razonamiento y Lógica)';
-        var mainActionText = isSpace ? '<i class="fas fa-rocket"></i> ¡Iniciar Misión Planetaria!' : '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!';
+        var stationTitleText = isCyber ? ('🔌 Nodo ' + m.level + ': ' + m.title) : (isSpace ? ('🪐 Planeta ' + m.level + ': ' + m.title) : ('🏝️ Isla ' + m.level + ': ' + m.title));
+        var ctaOpenText = isCyber ? 'Cerrar terminal' : (isSpace ? 'Ocultar transmisión' : 'Ocultar pergamino');
+        var ctaClosedText = isCyber ? 'Tocá el nodo para abrir terminal' : (isSpace ? 'Tocá el planeta para ver transmisión' : 'Tocá la isla para ver pergamino');
+        var ctaIconClass = isCyber ? 'fa-terminal' : (isSpace ? 'fa-satellite-dish' : 'fa-scroll');
+        var stampHtml = isCyber
+          ? '<i class="fas fa-terminal"></i> Terminal de Ingeniería &bull; Nodo #' + m.level
+          : (isSpace
+            ? '<i class="fas fa-satellite-dish"></i> Transmisión de Comando &bull; Planeta #' + m.level
+            : '<i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level);
+        var objHeaderHtml = isCyber ? 'Especificación Técnica del Nodo' : (isSpace ? 'Objetivo de la Misión Orbital' : 'Objetivo del Tesoro');
+        var benHeaderHtml = isCyber ? 'Upgrade de Ingeniería (Lógica, Robótica e IA)' : (isSpace ? 'Superpoderes de Astronauta (Razonamiento y Lógica)' : 'Poderes Piratas (Razonamiento y Lógica)');
+        var mainActionText = isCyber ? '<i class="fas fa-bolt"></i> ¡Ejecutar Nodo de Misión!' : (isSpace ? '<i class="fas fa-rocket"></i> ¡Iniciar Misión Planetaria!' : '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!');
+        var stationThemeClass = isCyber ? 'cyber-node-station ' : (isSpace ? 'space-planet-station ' : '');
 
-        return '<div class="pirate-island-station ' + (isSpace ? 'space-planet-station ' : '') + sideClass + ' ' + statusBadgeClass + ' ' + (isInitiallyOpen ? 'is-expanded' : '') + '" data-mission-idx="' + idx + '" id="pirate-island-st-' + idx + '">' +
-          // Landmark interactivo de la Isla / Planeta
-          '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="' + (isSpace ? '¡Tocá el planeta para abrir su transmisión!' : '¡Tocá la isla para desplegar su pergamino de misión!') + '">' +
+        return '<div class="pirate-island-station ' + stationThemeClass + sideClass + ' ' + statusBadgeClass + ' ' + (isInitiallyOpen ? 'is-expanded' : '') + '" data-mission-idx="' + idx + '" id="pirate-island-st-' + idx + '">' +
+          // Landmark interactivo de la Isla / Planeta / Nodo Cyber
+          '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="' + (isCyber ? '¡Tocá el nodo para abrir su terminal!' : (isSpace ? '¡Tocá el planeta para abrir su transmisión!' : '¡Tocá la isla para desplegar su pergamino de misión!')) + '">' +
             '<div class="pirate-medallion-wrap">' +
               '<div class="pirate-medallion-ring ' + statusBadgeClass + '">' +
                 '<div class="pirate-compass-ticks">' +
@@ -1473,7 +1580,7 @@
                 '<div class="pirate-medallion-inner">' +
                   '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.src=\'img/scratchjr.png\'">' +
                   '<div class="pirate-level-coin">' +
-                    '<span>' + (isSpace ? '🌟 N' : '🪙 L') + m.level + '</span>' +
+                    '<span>' + (isCyber ? '⚡ N' : (isSpace ? '🌟 N' : '🪙 L')) + m.level + '</span>' +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -1495,7 +1602,7 @@
             '</div>' +
           '</div>' +
 
-          // Pergamino / Transmisión Holográfica desplegable con el contenido
+          // Pergamino / Transmisión Holográfica / Terminal Cyber desplegable
           '<div class="pirate-scroll-drawer ' + (isInitiallyOpen ? 'is-open' : '') + '">' +
             '<div class="pirate-scroll-wood-rod top"></div>' +
             '<div class="pirate-scroll-parchment">' +
@@ -1552,7 +1659,7 @@
                 '<path class="ptc-glow" d="M 50,0 C 50,26 25,22 25,48" />' +
                 '<path class="ptc-dash" d="M 50,0 C 50,26 25,22 25,48" />' +
               '</svg>' +
-              '<div class="pirate-waypoint-marker wp-start" title="' + (isSpace ? 'Órbita hacia Planeta 1' : 'Rumbo a la Isla 1') + '"><i class="fas ' + (isSpace ? 'fa-rocket' : 'fa-compass') + '"></i></div>' +
+              '<div class="pirate-waypoint-marker wp-start" title="' + (isCyber ? 'Bus de datos hacia Nodo 1' : (isSpace ? 'Órbita hacia Planeta 1' : 'Rumbo a la Isla 1')) + '"><i class="fas ' + (isCyber ? 'fa-bolt' : (isSpace ? 'fa-rocket' : 'fa-compass')) + '"></i></div>' +
             '</div>';
         } else {
           // Curva desde la isla derecha de la fila previa (75) hacia la isla izquierda de esta fila (25)
@@ -1562,7 +1669,7 @@
                 '<path class="ptc-glow" d="M 75,0 C 75,32 25,20 25,52" />' +
                 '<path class="ptc-dash" d="M 75,0 C 75,32 25,20 25,52" />' +
               '</svg>' +
-              '<div class="pirate-waypoint-marker wp-mid" title="' + (isSpace ? 'Salto hiperespacial al Planeta ' : 'Travesía náutica hacia la Isla ') + mLeft.level + '"><i class="fas ' + (isSpace ? 'fa-satellite' : 'fa-water') + '"></i></div>' +
+              '<div class="pirate-waypoint-marker wp-mid" title="' + (isCyber ? 'Enlace de fibra hacia Nodo ' : (isSpace ? 'Salto hiperespacial al Planeta ' : 'Travesía náutica hacia la Isla ')) + mLeft.level + '"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-water')) + '"></i></div>' +
             '</div>';
         }
 
@@ -1577,7 +1684,7 @@
                 '<path class="ptc-glow" d="M 0,20 C 35,5 65,35 100,20" />' +
                 '<path class="ptc-dash" d="M 0,20 C 35,5 65,35 100,20" />' +
               '</svg>' +
-              '<div class="pirate-waypoint-marker wp-bridge" title="' + (isSpace ? 'Rumbo orbital al Planeta ' : 'Rumbo a la Isla ') + mRight.level + '"><i class="fas ' + (isSpace ? 'fa-user-astronaut' : 'fa-anchor') + '"></i></div>' +
+              '<div class="pirate-waypoint-marker wp-bridge" title="' + (isCyber ? 'Puente lógico hacia Nodo ' : (isSpace ? 'Rumbo orbital al Planeta ' : 'Rumbo a la Isla ')) + mRight.level + '"><i class="fas ' + (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-anchor')) + '"></i></div>' +
             '</div>';
           rightStationHtml = buildPirateStationHtml(mRight, idxRight, 'island-right');
         }
@@ -1589,7 +1696,7 @@
           '</div>';
       }
 
-      // Connector final hacia el Cofre del Tesoro / Núcleo Galáctico (centro)
+      // Connector final hacia el Cofre del Tesoro / Núcleo Galáctico / Supercomputadora IA (centro)
       var lastIdx = missions.length - 1;
       var lastSide = (lastIdx % 2 === 0) ? 'left' : 'right';
       var finishConnectorHtml = '';
@@ -1600,7 +1707,7 @@
               '<path class="ptc-glow" d="M 25,0 C 25,26 50,22 50,48" />' +
               '<path class="ptc-dash" d="M 25,0 C 25,26 50,22 50,48" />' +
             '</svg>' +
-            '<div class="pirate-waypoint-marker wp-finish" title="' + (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!') + '"><i class="fas ' + (isSpace ? 'fa-star' : 'fa-gem') + '"></i></div>' +
+            '<div class="pirate-waypoint-marker wp-finish" title="' + (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!')) + '"><i class="fas ' + (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem')) + '"></i></div>' +
           '</div>';
       } else {
         finishConnectorHtml =
@@ -1609,216 +1716,284 @@
               '<path class="ptc-glow" d="M 75,0 C 75,26 50,22 50,48" />' +
               '<path class="ptc-dash" d="M 75,0 C 75,26 50,22 50,48" />' +
             '</svg>' +
-            '<div class="pirate-waypoint-marker wp-finish" title="' + (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!') + '"><i class="fas ' + (isSpace ? 'fa-star' : 'fa-gem') + '"></i></div>' +
+            '<div class="pirate-waypoint-marker wp-finish" title="' + (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!')) + '"><i class="fas ' + (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem')) + '"></i></div>' +
           '</div>';
       }
 
       var safeGradeName = (student.gradeName || '').replace(/'/g, "\\'");
       var pirateFinishHtml =
         finishConnectorHtml +
-        '<div class="pirate-finish-station ' + (isSpace ? 'space-finish-station' : '') + '" id="pirate-finish-station">' +
+        '<div class="pirate-finish-station ' + (isCyber ? 'cyber-finish-station' : (isSpace ? 'space-finish-station' : '')) + '" id="pirate-finish-station">' +
           '<div class="pirate-x-marks-spot">' +
-            '<div class="pirate-x-symbol">' + (isSpace ? '🌌' : '❌') + '</div>' +
-            '<div class="pirate-x-title">' + (isSpace ? '¡NÚCLEO DE LA GALAXIA MAKER ALCANZADO!' : '¡X MARCA EL LUGAR DEL GRAN TESORO!') + '</div>' +
+            '<div class="pirate-x-symbol">' + (isCyber ? '🧠' : (isSpace ? '🌌' : '❌')) + '</div>' +
+            '<div class="pirate-x-title">' + (isCyber ? '¡SUPERCOMPUTADORA CENTRAL DE IA DESBLOQUEADA!' : (isSpace ? '¡NÚCLEO DE LA GALAXIA MAKER ALCANZADO!' : '¡X MARCA EL LUGAR DEL GRAN TESORO!')) + '</div>' +
           '</div>' +
-          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.openPirateTreasureModal && window.openPirateTreasureModal({ gradeName: \'' + safeGradeName + '\', completedCount: ' + completedCount + ', totalCount: ' + missions.length + ' });" title="' + (isSpace ? '¡Hacé click para abrir la Cápsula Galáctica y festejar!' : '¡Hacé click para abrir el Cofre del Tesoro y festejar!') + '">' +
+          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.openPirateTreasureModal && window.openPirateTreasureModal({ gradeName: \'' + safeGradeName + '\', completedCount: ' + completedCount + ', totalCount: ' + missions.length + ' });" title="' + (isCyber ? '¡Hacé click para activar el Núcleo Cyber y festejar!' : (isSpace ? '¡Hacé click para abrir la Cápsula Galáctica y festejar!' : '¡Hacé click para abrir el Cofre del Tesoro y festejar!')) + '">' +
             '<div class="pirate-chest-glow"></div>' +
             '<div class="pirate-chest-visual">' +
               '<div class="pc-chest-lid"></div>' +
               '<div class="pc-chest-base">' +
-                '<div class="pc-chest-lock"><i class="fas ' + (isSpace ? 'fa-bolt' : 'fa-key') + '"></i></div>' +
+                '<div class="pc-chest-lock"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-bolt' : 'fa-key')) + '"></i></div>' +
                 '<div class="pc-chest-coins">' +
-                  (isSpace
-                    ? '<span>🌟</span><span>⚡</span><span>🪐</span><span>💎</span><span>🚀</span>'
-                    : '<span>🪙</span><span>💎</span><span>👑</span><span>💎</span><span>🪙</span>') +
+                  (isCyber
+                    ? '<span>⚡</span><span>🤖</span><span>🧠</span><span>🔌</span><span>💎</span>'
+                    : (isSpace
+                      ? '<span>🌟</span><span>⚡</span><span>🪐</span><span>💎</span><span>🚀</span>'
+                      : '<span>🪙</span><span>💎</span><span>👑</span><span>💎</span><span>🪙</span>')) +
                 '</div>' +
               '</div>' +
             '</div>' +
             '<div class="pirate-chest-touch-hint">' +
-              '<i class="fas fa-hand-pointer"></i> ' + (isSpace ? '¡Tocá la Cápsula para abrir la Recompensa Estelar! ✨' : '¡Tocá el Cofre para abrir el Tesoro! ✨') +
+              '<i class="fas fa-hand-pointer"></i> ' + (isCyber ? '¡Tocá el Núcleo para compilar la Recompensa Cyber! ⚡' : (isSpace ? '¡Tocá la Cápsula para abrir la Recompensa Estelar! ✨' : '¡Tocá el Cofre para abrir el Tesoro! ✨')) +
             '</div>' +
           '</div>' +
         '</div>';
 
-      var pirateMapBackgroundHtml = isSpace
-        ? '<div class="pirate-map-background space-map-background" aria-hidden="true">' +
+      var pirateMapBackgroundHtml = isCyber
+        ? '<div class="pirate-map-background cyber-map-background" aria-hidden="true">' +
             '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
               '<defs>' +
-                '<radialGradient id="spNebulaCyan" cx="50%" cy="50%" r="50%">' +
-                  '<stop offset="0%" stop-color="#22D3EE" stop-opacity="0.32"/>' +
-                  '<stop offset="60%" stop-color="#0284C7" stop-opacity="0.14"/>' +
-                  '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
+                '<radialGradient id="cyGlowEmerald" cx="50%" cy="50%" r="50%">' +
+                  '<stop offset="0%" stop-color="#10B981" stop-opacity="0.28"/>' +
+                  '<stop offset="60%" stop-color="#059669" stop-opacity="0.12"/>' +
+                  '<stop offset="100%" stop-color="#020617" stop-opacity="0"/>' +
                 '</radialGradient>' +
-                '<radialGradient id="spNebulaPurple" cx="50%" cy="50%" r="50%">' +
-                  '<stop offset="0%" stop-color="#A855F7" stop-opacity="0.32"/>' +
-                  '<stop offset="60%" stop-color="#6366F1" stop-opacity="0.14"/>' +
-                  '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
+                '<radialGradient id="cyGlowMagenta" cx="50%" cy="50%" r="50%">' +
+                  '<stop offset="0%" stop-color="#EC4899" stop-opacity="0.26"/>' +
+                  '<stop offset="60%" stop-color="#8B5CF6" stop-opacity="0.12"/>' +
+                  '<stop offset="100%" stop-color="#020617" stop-opacity="0"/>' +
                 '</radialGradient>' +
-                '<linearGradient id="spMilkyWay" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                  '<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.18"/>' +
-                  '<stop offset="50%" stop-color="#818CF8" stop-opacity="0.26"/>' +
-                  '<stop offset="100%" stop-color="#C084FC" stop-opacity="0.18"/>' +
+                '<linearGradient id="cyDataBus" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                  '<stop offset="0%" stop-color="#10B981" stop-opacity="0.22"/>' +
+                  '<stop offset="50%" stop-color="#06B6D4" stop-opacity="0.28"/>' +
+                  '<stop offset="100%" stop-color="#EC4899" stop-opacity="0.22"/>' +
                 '</linearGradient>' +
               '</defs>' +
-              '<!-- Anillos de radar estelar y coordenadas galácticas -->' +
-              '<g stroke="rgba(56, 189, 248, 0.14)" stroke-width="1" stroke-dasharray="6,8" fill="none">' +
-                '<circle cx="500" cy="600" r="240" />' +
-                '<circle cx="500" cy="600" r="420" />' +
-                '<line x1="0" y1="300" x2="1000" y2="900" />' +
-                '<line x1="1000" y1="250" x2="0" y2="850" />' +
+              '<!-- Grilla de Placa Madre (PCB) -->' +
+              '<g stroke="rgba(16, 185, 129, 0.12)" stroke-width="1" fill="none">' +
+                '<line x1="0" y1="200" x2="1000" y2="200" />' +
+                '<line x1="0" y1="450" x2="1000" y2="450" />' +
+                '<line x1="0" y1="700" x2="1000" y2="700" />' +
+                '<line x1="0" y1="950" x2="1000" y2="950" />' +
+                '<line x1="200" y1="0" x2="200" y2="1200" />' +
+                '<line x1="500" y1="0" x2="500" y2="1200" />' +
+                '<line x1="800" y1="0" x2="800" y2="1200" />' +
               '</g>' +
-              '<!-- Nebulosas cósmicas -->' +
-              '<ellipse cx="820" cy="160" rx="220" ry="140" fill="url(#spNebulaCyan)" />' +
-              '<ellipse cx="160" cy="480" rx="240" ry="150" fill="url(#spNebulaPurple)" />' +
-              '<ellipse cx="840" cy="700" rx="210" ry="150" fill="url(#spNebulaPurple)" />' +
-              '<ellipse cx="180" cy="960" rx="220" ry="140" fill="url(#spNebulaCyan)" />' +
-              '<!-- Corriente de la Vía Láctea -->' +
-              '<path d="M 1000,320 C 820,360 720,440 580,520 C 420,600 280,680 340,860 C 400,1000 500,1100 520,1200 L 460,1200 C 430,1080 330,980 270,840 C 210,660 360,560 520,480 C 680,400 780,320 1000,270 Z" fill="url(#spMilkyWay)" />' +
-              '<!-- Constelaciones conectadas -->' +
-              '<g stroke="rgba(125, 211, 252, 0.35)" stroke-width="1.5" fill="#FEF08A">' +
-                '<polyline points="720,80 780,55 850,90 890,60" fill="none"/>' +
-                '<circle cx="720" cy="80" r="3.5"/><circle cx="780" cy="55" r="4"/><circle cx="850" cy="90" r="3.5"/><circle cx="890" cy="60" r="4.5"/>' +
-                '<polyline points="80,390 140,360 200,400 170,460" fill="none"/>' +
-                '<circle cx="80" cy="390" r="4"/><circle cx="140" cy="360" r="3.5"/><circle cx="200" cy="400" r="4.5"/><circle cx="170" cy="460" r="3.5"/>' +
-                '<polyline points="780,620 840,590 910,630 880,700" fill="none"/>' +
-                '<circle cx="780" cy="620" r="3.5"/><circle cx="840" cy="590" r="4.5"/><circle cx="910" cy="630" r="3.5"/><circle cx="880" cy="700" r="4"/>' +
+              '<!-- Halos de energía de procesadores -->' +
+              '<ellipse cx="820" cy="180" rx="220" ry="140" fill="url(#cyGlowEmerald)" />' +
+              '<ellipse cx="160" cy="480" rx="230" ry="150" fill="url(#cyGlowMagenta)" />' +
+              '<ellipse cx="840" cy="720" rx="220" ry="150" fill="url(#cyGlowEmerald)" />' +
+              '<ellipse cx="180" cy="960" rx="220" ry="140" fill="url(#cyGlowMagenta)" />' +
+              '<!-- Bus Principal de Fibra Óptica -->' +
+              '<path d="M 1000,300 L 760,300 L 620,440 L 380,440 L 260,560 L 260,760 L 440,940 L 440,1200 L 510,1200 L 510,910 L 330,730 L 330,590 L 420,500 L 660,500 L 800,360 L 1000,360 Z" fill="url(#cyDataBus)" stroke="rgba(52, 211, 153, 0.4)" stroke-width="1.5" />' +
+              '<!-- Pistas de Cobre y Nodos de Soldadura PCB -->' +
+              '<g stroke="rgba(52, 211, 153, 0.42)" stroke-width="2" fill="#0F172A">' +
+                '<polyline points="680,70 760,70 810,120 920,120" fill="none"/>' +
+                '<circle cx="680" cy="70" r="5" stroke="#10B981"/><circle cx="920" cy="120" r="5" stroke="#10B981"/>' +
+                '<polyline points="60,360 150,360 210,420 290,420" fill="none" stroke="rgba(236, 72, 153, 0.45)"/>' +
+                '<circle cx="60" cy="360" r="5" stroke="#EC4899"/><circle cx="290" cy="420" r="5" stroke="#EC4899"/>' +
+                '<polyline points="720,610 810,610 860,660 950,660" fill="none"/>' +
+                '<circle cx="720" cy="610" r="5" stroke="#10B981"/><circle cx="950" cy="660" r="5" stroke="#10B981"/>' +
+                '<polyline points="70,880 160,880 220,940 310,940" fill="none" stroke="rgba(250, 204, 21, 0.45)"/>' +
+                '<circle cx="70" cy="880" r="5" stroke="#FACC15"/><circle cx="310" cy="940" r="5" stroke="#FACC15"/>' +
               '</g>' +
             '</svg>' +
-            '<div class="pm-deco pm-deco-compass" title="Radar Galáctico">🛰️</div>' +
-            '<div class="pm-deco pm-deco-kraken" title="Nave Nodriza">🛸</div>' +
-            '<div class="pm-deco pm-deco-sea-dragon" title="Cometa Halley">☄️</div>' +
-            '<div class="pm-deco pm-deco-shipwreck" title="Telescopio Espacial">🔭</div>' +
-            '<div class="pm-deco pm-deco-palm1">✨</div>' +
-            '<div class="pm-deco pm-deco-palm2">🌟</div>' +
-            '<div class="pm-deco pm-deco-palm3">🪐</div>' +
-            '<div class="pm-deco pm-deco-palm4">✨</div>' +
-            '<div class="pm-deco pm-deco-treasure-cove" title="Base Lunar">🌕</div>' +
-            '<div class="pm-deco pm-deco-bottle" title="Sonda Voyager">📡</div>' +
-            '<div class="pm-deco pm-deco-anchor" title="Astronauta en EVA">👨‍🚀</div>' +
-            '<div class="pm-map-label label-sea">GALAXIA DE LAS IDEAS</div>' +
-            '<div class="pm-map-label label-bay">Nebulosa del Código</div>' +
-            '<div class="pm-map-label label-river">Vía Láctea Maker</div>' +
-            '<div class="pm-map-label label-island1">Sector Robótica</div>' +
-            '<div class="pm-map-label label-island2">Órbita Alfa</div>' +
+            '<div class="pm-deco pm-deco-compass" title="Microprocesador Central">🔌</div>' +
+            '<div class="pm-deco pm-deco-kraken" title="Brazo Robótico Industrial">🦾</div>' +
+            '<div class="pm-deco pm-deco-sea-dragon" title="Red Neuronal IA">🧠</div>' +
+            '<div class="pm-deco pm-deco-shipwreck" title="Placa Micro:bit">📟</div>' +
+            '<div class="pm-deco pm-deco-palm1">⚡</div>' +
+            '<div class="pm-deco pm-deco-palm2">🔋</div>' +
+            '<div class="pm-deco pm-deco-palm3">🤖</div>' +
+            '<div class="pm-deco pm-deco-palm4">⚡</div>' +
+            '<div class="pm-deco pm-deco-treasure-cove" title="Servidor Cuántico">🖥️</div>' +
+            '<div class="pm-deco pm-deco-bottle" title="Sensor Ultrasónico">📡</div>' +
+            '<div class="pm-deco pm-deco-anchor" title="Engranaje Mecatrónico">⚙️</div>' +
+            '<div class="pm-map-label label-sea">PLACA MADRE DE LAS IDEAS</div>' +
+            '<div class="pm-map-label label-bay">Bus de Datos IA</div>' +
+            '<div class="pm-map-label label-river">Circuito Micro:bit</div>' +
+            '<div class="pm-map-label label-island1">Sector Sensores</div>' +
+            '<div class="pm-map-label label-island2">Núcleo Robótico</div>' +
           '</div>'
-        : '<div class="pirate-map-background" aria-hidden="true">' +
-            '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
-              '<defs>' +
-                '<linearGradient id="pmRiverGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                  '<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.36"/>' +
-                  '<stop offset="50%" stop-color="#0284C7" stop-opacity="0.45"/>' +
-                  '<stop offset="100%" stop-color="#0369A1" stop-opacity="0.42"/>' +
-                '</linearGradient>' +
-                '<radialGradient id="pmLagoonGrad" cx="50%" cy="50%" r="50%">' +
-                  '<stop offset="0%" stop-color="#67E8F9" stop-opacity="0.45"/>' +
-                  '<stop offset="70%" stop-color="#38BDF8" stop-opacity="0.25"/>' +
-                  '<stop offset="100%" stop-color="#0284C7" stop-opacity="0.05"/>' +
-                '</radialGradient>' +
-                '<linearGradient id="pmIslandSand1" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                  '<stop offset="0%" stop-color="#FEF08A" stop-opacity="0.75"/>' +
-                  '<stop offset="40%" stop-color="#86EFAC" stop-opacity="0.55"/>' +
-                  '<stop offset="70%" stop-color="#BBF7D0" stop-opacity="0.55"/>' +
-                  '<stop offset="100%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
-                '</linearGradient>' +
-                '<linearGradient id="pmIslandSand2" x1="100%" y1="0%" x2="0%" y2="100%">' +
-                  '<stop offset="0%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
-                  '<stop offset="45%" stop-color="#A7F3D0" stop-opacity="0.55"/>' +
-                  '<stop offset="100%" stop-color="#FEF08A" stop-opacity="0.70"/>' +
-                '</linearGradient>' +
-              '</defs>' +
+        : (isSpace
+          ? '<div class="pirate-map-background space-map-background" aria-hidden="true">' +
+              '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
+                '<defs>' +
+                  '<radialGradient id="spNebulaCyan" cx="50%" cy="50%" r="50%">' +
+                    '<stop offset="0%" stop-color="#22D3EE" stop-opacity="0.32"/>' +
+                    '<stop offset="60%" stop-color="#0284C7" stop-opacity="0.14"/>' +
+                    '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
+                  '</radialGradient>' +
+                  '<radialGradient id="spNebulaPurple" cx="50%" cy="50%" r="50%">' +
+                    '<stop offset="0%" stop-color="#A855F7" stop-opacity="0.32"/>' +
+                    '<stop offset="60%" stop-color="#6366F1" stop-opacity="0.14"/>' +
+                    '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
+                  '</radialGradient>' +
+                  '<linearGradient id="spMilkyWay" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                    '<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.18"/>' +
+                    '<stop offset="50%" stop-color="#818CF8" stop-opacity="0.26"/>' +
+                    '<stop offset="100%" stop-color="#C084FC" stop-opacity="0.18"/>' +
+                  '</linearGradient>' +
+                '</defs>' +
+                '<!-- Anillos de radar estelar y coordenadas galácticas -->' +
+                '<g stroke="rgba(56, 189, 248, 0.14)" stroke-width="1" stroke-dasharray="6,8" fill="none">' +
+                  '<circle cx="500" cy="600" r="240" />' +
+                  '<circle cx="500" cy="600" r="420" />' +
+                  '<line x1="0" y1="300" x2="1000" y2="900" />' +
+                  '<line x1="1000" y1="250" x2="0" y2="850" />' +
+                '</g>' +
+                '<!-- Nebulosas cósmicas -->' +
+                '<ellipse cx="820" cy="160" rx="220" ry="140" fill="url(#spNebulaCyan)" />' +
+                '<ellipse cx="160" cy="480" rx="240" ry="150" fill="url(#spNebulaPurple)" />' +
+                '<ellipse cx="840" cy="700" rx="210" ry="150" fill="url(#spNebulaPurple)" />' +
+                '<ellipse cx="180" cy="960" rx="220" ry="140" fill="url(#spNebulaCyan)" />' +
+                '<!-- Corriente de la Vía Láctea -->' +
+                '<path d="M 1000,320 C 820,360 720,440 580,520 C 420,600 280,680 340,860 C 400,1000 500,1100 520,1200 L 460,1200 C 430,1080 330,980 270,840 C 210,660 360,560 520,480 C 680,400 780,320 1000,270 Z" fill="url(#spMilkyWay)" />' +
+                '<!-- Constelaciones conectadas -->' +
+                '<g stroke="rgba(125, 211, 252, 0.35)" stroke-width="1.5" fill="#FEF08A">' +
+                  '<polyline points="720,80 780,55 850,90 890,60" fill="none"/>' +
+                  '<circle cx="720" cy="80" r="3.5"/><circle cx="780" cy="55" r="4"/><circle cx="850" cy="90" r="3.5"/><circle cx="890" cy="60" r="4.5"/>' +
+                  '<polyline points="80,390 140,360 200,400 170,460" fill="none"/>' +
+                  '<circle cx="80" cy="390" r="4"/><circle cx="140" cy="360" r="3.5"/><circle cx="200" cy="400" r="4.5"/><circle cx="170" cy="460" r="3.5"/>' +
+                  '<polyline points="780,620 840,590 910,630 880,700" fill="none"/>' +
+                  '<circle cx="780" cy="620" r="3.5"/><circle cx="840" cy="590" r="4.5"/><circle cx="910" cy="630" r="3.5"/><circle cx="880" cy="700" r="4"/>' +
+                '</g>' +
+              '</svg>' +
+              '<div class="pm-deco pm-deco-compass" title="Radar Galáctico">🛰️</div>' +
+              '<div class="pm-deco pm-deco-kraken" title="Nave Nodriza">🛸</div>' +
+              '<div class="pm-deco pm-deco-sea-dragon" title="Cometa Halley">☄️</div>' +
+              '<div class="pm-deco pm-deco-shipwreck" title="Telescopio Espacial">🔭</div>' +
+              '<div class="pm-deco pm-deco-palm1">✨</div>' +
+              '<div class="pm-deco pm-deco-palm2">🌟</div>' +
+              '<div class="pm-deco pm-deco-palm3">🪐</div>' +
+              '<div class="pm-deco pm-deco-palm4">✨</div>' +
+              '<div class="pm-deco pm-deco-treasure-cove" title="Base Lunar">🌕</div>' +
+              '<div class="pm-deco pm-deco-bottle" title="Sonda Voyager">📡</div>' +
+              '<div class="pm-deco pm-deco-anchor" title="Astronauta en EVA">👨‍🚀</div>' +
+              '<div class="pm-map-label label-sea">GALAXIA DE LAS IDEAS</div>' +
+              '<div class="pm-map-label label-bay">Nebulosa del Código</div>' +
+              '<div class="pm-map-label label-river">Vía Láctea Maker</div>' +
+              '<div class="pm-map-label label-island1">Sector Robótica</div>' +
+              '<div class="pm-map-label label-island2">Órbita Alfa</div>' +
+            '</div>'
+          : '<div class="pirate-map-background" aria-hidden="true">' +
+              '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
+                '<defs>' +
+                  '<linearGradient id="pmRiverGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                    '<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.36"/>' +
+                    '<stop offset="50%" stop-color="#0284C7" stop-opacity="0.45"/>' +
+                    '<stop offset="100%" stop-color="#0369A1" stop-opacity="0.42"/>' +
+                  '</linearGradient>' +
+                  '<radialGradient id="pmLagoonGrad" cx="50%" cy="50%" r="50%">' +
+                    '<stop offset="0%" stop-color="#67E8F9" stop-opacity="0.45"/>' +
+                    '<stop offset="70%" stop-color="#38BDF8" stop-opacity="0.25"/>' +
+                    '<stop offset="100%" stop-color="#0284C7" stop-opacity="0.05"/>' +
+                  '</radialGradient>' +
+                  '<linearGradient id="pmIslandSand1" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                    '<stop offset="0%" stop-color="#FEF08A" stop-opacity="0.75"/>' +
+                    '<stop offset="40%" stop-color="#86EFAC" stop-opacity="0.55"/>' +
+                    '<stop offset="70%" stop-color="#BBF7D0" stop-opacity="0.55"/>' +
+                    '<stop offset="100%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
+                  '</linearGradient>' +
+                  '<linearGradient id="pmIslandSand2" x1="100%" y1="0%" x2="0%" y2="100%">' +
+                    '<stop offset="0%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
+                    '<stop offset="45%" stop-color="#A7F3D0" stop-opacity="0.55"/>' +
+                    '<stop offset="100%" stop-color="#FEF08A" stop-opacity="0.70"/>' +
+                  '</linearGradient>' +
+                '</defs>' +
 
-              // Líneas de Rumbo Náuticas de Navegación
-              '<g class="pm-rhumb-lines" stroke="rgba(180, 83, 9, 0.12)" stroke-width="1" stroke-dasharray="4,6">' +
-                '<line x1="880" y1="120" x2="0" y2="1000" />' +
-                '<line x1="880" y1="120" x2="200" y2="1200" />' +
-                '<line x1="880" y1="120" x2="0" y2="500" />' +
-                '<line x1="880" y1="120" x2="500" y2="1200" />' +
-                '<line x1="120" y1="950" x2="1000" y2="200" />' +
-                '<line x1="120" y1="950" x2="800" y2="0" />' +
-                '<line x1="120" y1="950" x2="1000" y2="600" />' +
-                '<line x1="120" y1="950" x2="400" y2="0" />' +
-              '</g>' +
+                // Líneas de Rumbo Náuticas de Navegación
+                '<g class="pm-rhumb-lines" stroke="rgba(180, 83, 9, 0.12)" stroke-width="1" stroke-dasharray="4,6">' +
+                  '<line x1="880" y1="120" x2="0" y2="1000" />' +
+                  '<line x1="880" y1="120" x2="200" y2="1200" />' +
+                  '<line x1="880" y1="120" x2="0" y2="500" />' +
+                  '<line x1="880" y1="120" x2="500" y2="1200" />' +
+                  '<line x1="120" y1="950" x2="1000" y2="200" />' +
+                  '<line x1="120" y1="950" x2="800" y2="0" />' +
+                  '<line x1="120" y1="950" x2="1000" y2="600" />' +
+                  '<line x1="120" y1="950" x2="400" y2="0" />' +
+                '</g>' +
 
-              // Isla 1: Cayo Noreste
-              '<path d="M 680,20 C 720,15 820,30 900,15 C 980,0 1020,40 1000,140 C 980,220 890,260 820,240 C 750,220 700,200 660,150 C 620,100 640,25 680,20 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-              '<path d="M 690,30 C 730,25 820,38 890,25 C 960,12 1000,50 990,135 C 970,210 885,245 820,230 C 755,210 710,190 670,145 C 635,100 655,35 690,30 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
+                // Isla 1: Cayo Noreste
+                '<path d="M 680,20 C 720,15 820,30 900,15 C 980,0 1020,40 1000,140 C 980,220 890,260 820,240 C 750,220 700,200 660,150 C 620,100 640,25 680,20 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+                '<path d="M 690,30 C 730,25 820,38 890,25 C 960,12 1000,50 990,135 C 970,210 885,245 820,230 C 755,210 710,190 670,145 C 635,100 655,35 690,30 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
 
-              // Isla 2: Cayo de los Arrecifes con Laguna Interior
-              '<path d="M 20,340 C 90,320 180,330 230,380 C 280,430 270,520 220,570 C 170,620 80,630 20,590 C -20,550 -10,480 0,420 C 10,380 -10,350 20,340 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-              '<path d="M 30,350 C 95,335 175,342 220,390 C 265,435 255,510 210,555 C 165,600 85,615 30,580 C -10,540 0,480 10,425 C 18,385 0,360 30,350 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
-              '<path d="M 70,430 C 110,410 150,430 160,470 C 170,510 130,540 90,535 C 60,530 45,500 50,465 C 55,445 60,435 70,430 Z" fill="url(#pmLagoonGrad)" stroke="rgba(2, 132, 199, 0.4)" stroke-width="1.2" />' +
+                // Isla 2: Cayo de los Arrecifes con Laguna Interior
+                '<path d="M 20,340 C 90,320 180,330 230,380 C 280,430 270,520 220,570 C 170,620 80,630 20,590 C -20,550 -10,480 0,420 C 10,380 -10,350 20,340 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+                '<path d="M 30,350 C 95,335 175,342 220,390 C 265,435 255,510 210,555 C 165,600 85,615 30,580 C -10,540 0,480 10,425 C 18,385 0,360 30,350 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
+                '<path d="M 70,430 C 110,410 150,430 160,470 C 170,510 130,540 90,535 C 60,530 45,500 50,465 C 55,445 60,435 70,430 Z" fill="url(#pmLagoonGrad)" stroke="rgba(2, 132, 199, 0.4)" stroke-width="1.2" />' +
 
-              // Isla 3: Península Montañosa Sureste
-              '<path d="M 760,540 C 830,520 920,530 970,580 C 1020,630 1000,720 960,780 C 920,840 820,870 760,840 C 700,810 680,750 690,680 C 700,610 710,555 760,540 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-              '<path d="M 770,550 C 835,532 915,540 960,588 C 1005,635 985,712 950,768 C 912,825 820,855 765,828 C 710,800 692,745 700,680 C 710,615 722,565 770,550 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
+                // Isla 3: Península Montañosa Sureste
+                '<path d="M 760,540 C 830,520 920,530 970,580 C 1020,630 1000,720 960,780 C 920,840 820,870 760,840 C 700,810 680,750 690,680 C 700,610 710,555 760,540 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+                '<path d="M 770,550 C 835,532 915,540 960,588 C 1005,635 985,712 950,768 C 912,825 820,855 765,828 C 710,800 692,745 700,680 C 710,615 722,565 770,550 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
 
-              // Isla 4: Atolón del Tesoro
-              '<path d="M 80,820 C 150,800 240,830 260,900 C 280,970 230,1050 160,1080 C 90,1110 20,1080 0,1020 C -20,960 10,890 40,850 C 55,830 65,825 80,820 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-              '<path d="M 90,830 C 155,812 230,840 248,905 C 265,968 220,1038 155,1065 C 92,1092 30,1065 12,1012 C -5,958 20,895 50,860 C 62,842 75,835 90,830 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
+                // Isla 4: Atolón del Tesoro
+                '<path d="M 80,820 C 150,800 240,830 260,900 C 280,970 230,1050 160,1080 C 90,1110 20,1080 0,1020 C -20,960 10,890 40,850 C 55,830 65,825 80,820 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
+                '<path d="M 90,830 C 155,812 230,840 248,905 C 265,968 220,1038 155,1065 C 92,1092 30,1065 12,1012 C -5,958 20,895 50,860 C 62,842 75,835 90,830 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
 
-              // Río Serpentino Principal que atraviesa el mapa
-              '<path d="M 1000,320 C 860,340 780,390 710,430 C 640,470 590,520 540,530 C 490,540 440,510 390,530 C 330,560 300,620 280,690 C 260,760 290,820 340,870 C 390,920 440,960 480,1020 C 520,1080 500,1150 490,1200 L 535,1200 C 550,1140 570,1070 525,1005 C 480,945 425,905 385,860 C 345,815 315,765 330,705 C 345,645 375,595 425,570 C 475,545 525,575 575,565 C 625,550 675,505 745,465 C 815,425 885,385 1000,370 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.6" />' +
-              '<path d="M 980,345 C 850,365 770,410 725,450 C 655,490 605,535 555,545 C 505,555 455,530 405,550 C 350,578 315,635 305,695 C 295,755 315,815 360,865 C 405,912 455,950 500,1015 C 535,1065 525,1135 512,1190" fill="none" stroke="rgba(255, 255, 255, 0.65)" stroke-width="2" stroke-dasharray="10,8" />' +
+                // Río Serpentino Principal que atraviesa el mapa
+                '<path d="M 1000,320 C 860,340 780,390 710,430 C 640,470 590,520 540,530 C 490,540 440,510 390,530 C 330,560 300,620 280,690 C 260,760 290,820 340,870 C 390,920 440,960 480,1020 C 520,1080 500,1150 490,1200 L 535,1200 C 550,1140 570,1070 525,1005 C 480,945 425,905 385,860 C 345,815 315,765 330,705 C 345,645 375,595 425,570 C 475,545 525,575 575,565 C 625,550 675,505 745,465 C 815,425 885,385 1000,370 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.6" />' +
+                '<path d="M 980,345 C 850,365 770,410 725,450 C 655,490 605,535 555,545 C 505,555 455,530 405,550 C 350,578 315,635 305,695 C 295,755 315,815 360,865 C 405,912 455,950 500,1015 C 535,1065 525,1135 512,1190" fill="none" stroke="rgba(255, 255, 255, 0.65)" stroke-width="2" stroke-dasharray="10,8" />' +
 
-              // Afluente del río (brazo izquierdo)
-              '<path d="M 0,210 C 80,225 150,260 210,295 C 265,330 310,355 350,390 L 335,410 C 295,375 250,350 195,315 C 140,280 70,250 0,235 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.2" />' +
+                // Afluente del río (brazo izquierdo)
+                '<path d="M 0,210 C 80,225 150,260 210,295 C 265,330 310,355 350,390 L 335,410 C 295,375 250,350 195,315 C 140,280 70,250 0,235 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.2" />' +
 
-              // Ondas de agua marina
-              '<g stroke="rgba(2, 132, 199, 0.35)" stroke-width="1.4" fill="none" stroke-linecap="round">' +
-                '<path d="M 320,110 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
-                '<path d="M 380,125 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
-                '<path d="M 120,680 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
-                '<path d="M 820,440 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
-                '<path d="M 620,920 c 10,-4 20,-4 30,0 c 10,4 20,4 30,0" />' +
-              '</g>' +
+                // Ondas de agua marina
+                '<g stroke="rgba(2, 132, 199, 0.35)" stroke-width="1.4" fill="none" stroke-linecap="round">' +
+                  '<path d="M 320,110 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
+                  '<path d="M 380,125 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
+                  '<path d="M 120,680 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
+                  '<path d="M 820,440 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
+                  '<path d="M 620,920 c 10,-4 20,-4 30,0 c 10,4 20,4 30,0" />' +
+                '</g>' +
 
-              // Cordilleras / Montañas
-              '<g fill="#FDE68A" stroke="#78350F" stroke-width="1.4" stroke-linejoin="round">' +
-                '<polygon points="760,110 780,75 800,110" />' +
-                '<polygon points="790,115 815,70 840,115" />' +
-                '<polygon points="830,120 850,85 870,120" />' +
-                '<polygon points="810,680 835,635 860,680" />' +
-                '<polygon points="850,685 875,640 900,685" />' +
-                '<polygon points="890,690 910,655 930,690" />' +
-              '</g>' +
+                // Cordilleras / Montañas
+                '<g fill="#FDE68A" stroke="#78350F" stroke-width="1.4" stroke-linejoin="round">' +
+                  '<polygon points="760,110 780,75 800,110" />' +
+                  '<polygon points="790,115 815,70 840,115" />' +
+                  '<polygon points="830,120 850,85 870,120" />' +
+                  '<polygon points="810,680 835,635 860,680" />' +
+                  '<polygon points="850,685 875,640 900,685" />' +
+                  '<polygon points="890,690 910,655 930,690" />' +
+                '</g>' +
 
-              // Profundidades náuticas (Soundings)
-              '<g font-family="Georgia, serif" font-size="11" font-weight="bold" fill="rgba(120, 53, 15, 0.35)" font-style="italic">' +
-                '<text x="450" y="80">14</text>' +
-                '<text x="610" y="240">8</text>' +
-                '<text x="180" y="230">12</text>' +
-                '<text x="490" y="420">18</text>' +
-                '<text x="660" y="600">9</text>' +
-                '<text x="210" y="740">22</text>' +
-                '<text x="620" y="860">15</text>' +
-                '<text x="400" y="1120">7</text>' +
-                '<text x="710" y="1150">16</text>' +
-              '</g>' +
-            '</svg>' +
+                // Profundidades náuticas (Soundings)
+                '<g font-family="Georgia, serif" font-size="11" font-weight="bold" fill="rgba(120, 53, 15, 0.35)" font-style="italic">' +
+                  '<text x="450" y="80">14</text>' +
+                  '<text x="610" y="240">8</text>' +
+                  '<text x="180" y="230">12</text>' +
+                  '<text x="490" y="420">18</text>' +
+                  '<text x="660" y="600">9</text>' +
+                  '<text x="210" y="740">22</text>' +
+                  '<text x="620" y="860">15</text>' +
+                  '<text x="400" y="1120">7</text>' +
+                  '<text x="710" y="1150">16</text>' +
+                '</g>' +
+              '</svg>' +
 
-            // Elementos decorativos náuticos flotantes
-            '<div class="pm-deco pm-deco-compass" title="Rosa de los Vientos">🧭</div>' +
-            '<div class="pm-deco pm-deco-kraken" title="Monstruo Marino Kraken">🐙</div>' +
-            '<div class="pm-deco pm-deco-sea-dragon" title="Serpiente Marina">🐉</div>' +
-            '<div class="pm-deco pm-deco-shipwreck" title="Naufragio del Galeón">⛵</div>' +
-            '<div class="pm-deco pm-deco-palm1">🌴</div>' +
-            '<div class="pm-deco pm-deco-palm2">🌴</div>' +
-            '<div class="pm-deco pm-deco-palm3">🌴</div>' +
-            '<div class="pm-deco pm-deco-palm4">🌴</div>' +
-            '<div class="pm-deco pm-deco-treasure-cove" title="Cala de Piratas">🏝️</div>' +
-            '<div class="pm-deco pm-deco-bottle" title="Mensaje en Botella">🍾</div>' +
-            '<div class="pm-deco pm-deco-anchor" title="Fondeadero Real">⚓</div>' +
+              // Elementos decorativos náuticos flotantes
+              '<div class="pm-deco pm-deco-compass" title="Rosa de los Vientos">🧭</div>' +
+              '<div class="pm-deco pm-deco-kraken" title="Monstruo Marino Kraken">🐙</div>' +
+              '<div class="pm-deco pm-deco-sea-dragon" title="Serpiente Marina">🐉</div>' +
+              '<div class="pm-deco pm-deco-shipwreck" title="Naufragio del Galeón">⛵</div>' +
+              '<div class="pm-deco pm-deco-palm1">🌴</div>' +
+              '<div class="pm-deco pm-deco-palm2">🌴</div>' +
+              '<div class="pm-deco pm-deco-palm3">🌴</div>' +
+              '<div class="pm-deco pm-deco-palm4">🌴</div>' +
+              '<div class="pm-deco pm-deco-treasure-cove" title="Cala de Piratas">🏝️</div>' +
+              '<div class="pm-deco pm-deco-bottle" title="Mensaje en Botella">🍾</div>' +
+              '<div class="pm-deco pm-deco-anchor" title="Fondeadero Real">⚓</div>' +
 
-            // Rótulos cartográficos antiguos
-            '<div class="pm-map-label label-sea">MAR DE LAS IDEAS</div>' +
-            '<div class="pm-map-label label-bay">Bahía del Código</div>' +
-            '<div class="pm-map-label label-river">Río Circuitos</div>' +
-            '<div class="pm-map-label label-island1">Cayo Robótica</div>' +
-            '<div class="pm-map-label label-island2">Isla Calavera</div>' +
-          '</div>';
+              // Rótulos cartográficos antiguos
+              '<div class="pm-map-label label-sea">MAR DE LAS IDEAS</div>' +
+              '<div class="pm-map-label label-bay">Bahía del Código</div>' +
+              '<div class="pm-map-label label-river">Río Circuitos</div>' +
+              '<div class="pm-map-label label-island1">Cayo Robótica</div>' +
+              '<div class="pm-map-label label-island2">Isla Calavera</div>' +
+            '</div>');
 
       bodyHtml =
-        '<div class="pirate-map-canvas ' + (isSpace ? 'space-map-canvas' : '') + '">' +
+        '<div class="pirate-map-canvas ' + (isCyber ? 'cyber-map-canvas' : (isSpace ? 'space-map-canvas' : '')) + '">' +
           pirateMapBackgroundHtml +
           pirateStartPortHtml +
           pirateIslandsHtml +
@@ -2012,28 +2187,97 @@
     '</div>';
   }
 
+  function getCyberChipConnectorSvg() {
+    return '<div class="ptb-knife-anchor cyber-chip-anchor">' +
+      '<svg class="ptb-knife-svg cyber-chip-svg" viewBox="0 0 90 200" width="75" height="165" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs>' +
+          '<linearGradient id="cyChipBody" x1="0%" y1="0%" x2="100%" y2="100%">' +
+            '<stop offset="0%" stop-color="#1E293B"/>' +
+            '<stop offset="50%" stop-color="#0F172A"/>' +
+            '<stop offset="100%" stop-color="#020617"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="cyGoldPins" x1="0%" y1="0%" x2="100%" y2="0%">' +
+            '<stop offset="0%" stop-color="#FDE047"/>' +
+            '<stop offset="50%" stop-color="#EAB308"/>' +
+            '<stop offset="100%" stop-color="#CA8A04"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="cyLaserTrack" x1="0%" y1="0%" x2="100%" y2="0%">' +
+            '<stop offset="0%" stop-color="#10B981"/>' +
+            '<stop offset="50%" stop-color="#34D399"/>' +
+            '<stop offset="100%" stop-color="#065F46"/>' +
+          '</linearGradient>' +
+          '<filter id="cyNeonPulse" x="-40%" y="-20%" width="180%" height="180%">' +
+            '<feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="rgba(16,185,129,0.75)"/>' +
+          '</filter>' +
+        '</defs>' +
+        '<g filter="url(#cyNeonPulse)" transform="rotate(-8 45 110)">' +
+          '<!-- Conector Superior / LED RGB -->' +
+          '<rect x="33" y="10" width="24" height="16" rx="4" fill="#020617" stroke="#10B981" stroke-width="2"/>' +
+          '<circle cx="45" cy="18" r="4.5" fill="#34D399"/>' +
+          '<circle cx="43" cy="16" r="1.5" fill="#FFFFFF"/>' +
+          '<!-- Cuerpo del Microprocesador / Chip QFP -->' +
+          '<rect x="25" y="28" width="40" height="58" rx="6" fill="url(#cyChipBody)" stroke="#10B981" stroke-width="1.8"/>' +
+          '<!-- Pines Dorados Laterales -->' +
+          '<rect x="18" y="34" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="18" y="44" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="18" y="54" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="18" y="64" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="18" y="74" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="65" y="34" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="65" y="44" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="65" y="54" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="65" y="64" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<rect x="65" y="74" width="7" height="4" rx="1" fill="url(#cyGoldPins)"/>' +
+          '<!-- Núcleo de Silicio y Pistas Neón -->' +
+          '<rect x="31" y="36" width="28" height="42" rx="4" fill="#090D1E" stroke="#EC4899" stroke-width="1.2"/>' +
+          '<path d="M 37 44 L 45 44 L 45 56 L 53 56" fill="none" stroke="#10B981" stroke-width="1.6" stroke-linecap="round"/>' +
+          '<circle cx="37" cy="44" r="1.5" fill="#34D399"/>' +
+          '<circle cx="53" cy="56" r="1.5" fill="#EC4899"/>' +
+          '<path d="M 37 68 L 47 68 L 51 64" fill="none" stroke="#FACC15" stroke-width="1.6" stroke-linecap="round"/>' +
+          '<circle cx="37" cy="68" r="1.5" fill="#FDE047"/>' +
+          '<!-- Pin de Fijación / Bus de Cobre de Inserción -->' +
+          '<path d="M38 88 L40 156 L45 178 L50 156 L52 88 Z" fill="url(#cyLaserTrack)" stroke="#10B981" stroke-width="1.2"/>' +
+          '<ellipse cx="45" cy="176" rx="11" ry="4" fill="#10B981" opacity="0.8"/>' +
+        '</g>' +
+      '</svg>' +
+      '<div class="ptb-knife-slash cyber-chip-ring"></div>' +
+    '</div>';
+  }
+
   function buildPirateTavernBoard(opts) {
     opts = opts || {};
+    var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
-    var sealIcon = opts.sealIcon || (isSpace ? '🚀' : '☠️');
-    var tag = opts.tag || (isSpace ? 'CONSOLA DE COMANDO · TRANSMISIÓN DE LA FLOTA ESTELAR' : 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS');
+    var sealIcon = opts.sealIcon || (isCyber ? '🤖' : (isSpace ? '🚀' : '☠️'));
+    var defaultTag = isCyber
+      ? 'TERMINAL DE HARDWARE · ESQUEMAS Y PROTOCOLOS DE CONTROL'
+      : (isSpace ? 'CONSOLA DE COMANDO · TRANSMISIÓN DE LA FLOTA ESTELAR' : 'TABLERO DE LA TABERNA · EDICTO DE RECOMPENSAS');
+    var tag = opts.tag || defaultTag;
     var title = opts.title || '';
     var sub = opts.sub || '';
     var extraHeaderHtml = opts.extraHeaderHtml || '';
     var contentHtml = opts.contentHtml || '';
 
-    return '<div class="gdb-actividades-container ptb-main-wrap ' + (isSpace ? 'space-board-wrap' : '') + '">' +
-      '<div class="pirate-tavern-board ' + (isSpace ? 'space-command-board' : '') + '">' +
+    var boardWrapTheme = isCyber ? 'cyber-board-wrap' : (isSpace ? 'space-board-wrap' : '');
+    var boardTheme = isCyber ? 'cyber-circuit-board' : (isSpace ? 'space-command-board' : '');
+    var anchorSvg = isCyber ? getCyberChipConnectorSvg() : (isSpace ? getSpaceLaserAntennaSvg() : getPirateKnifeSvg());
+    var sealTitle = isCyber
+      ? 'Chip Microcontrolador Paulo Freire Core'
+      : (isSpace ? 'Sello Oficial de la Flota Estelar Paulo Freire' : 'Sello Oficial del Navío Paulo Freire');
+    var tagIconClass = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-scroll');
+
+    return '<div class="gdb-actividades-container ptb-main-wrap ' + boardWrapTheme + '">' +
+      '<div class="pirate-tavern-board ' + boardTheme + '">' +
         '<div class="ptb-corner-bolt top-left"></div>' +
         '<div class="ptb-corner-bolt top-right"></div>' +
         '<div class="ptb-corner-bolt bottom-left"></div>' +
         '<div class="ptb-corner-bolt bottom-right"></div>' +
         '<div class="ptb-parchment-wrap">' +
-          (isSpace ? getSpaceLaserAntennaSvg() : getPirateKnifeSvg()) +
+          anchorSvg +
           '<div class="ptb-parchment-sheet">' +
-            '<div class="ptb-wax-seal" title="' + (isSpace ? 'Sello Oficial de la Flota Estelar Paulo Freire' : 'Sello Oficial del Navío Paulo Freire') + '"><span>' + sealIcon + '</span></div>' +
+            '<div class="ptb-wax-seal" title="' + sealTitle + '"><span>' + sealIcon + '</span></div>' +
             '<div class="ptb-sheet-header">' +
-              '<span class="ptb-sheet-tag"><i class="fas ' + (isSpace ? 'fa-satellite-dish' : 'fa-scroll') + '"></i> ' + tag + '</span>' +
+              '<span class="ptb-sheet-tag"><i class="fas ' + tagIconClass + '"></i> ' + tag + '</span>' +
               '<h3 class="ptb-sheet-title">' + title + '</h3>' +
               (sub ? '<p class="ptb-sheet-sub">' + sub + '</p>' : '') +
               extraHeaderHtml +
@@ -2054,6 +2298,7 @@
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
     if (!student) { container.innerHTML = ''; return; }
 
+    var isCyber = isCyberTheme(student);
     var isSpace = isSpaceTheme(student);
 
     // Disparar fetches
@@ -2097,25 +2342,30 @@
 
     // countText barra
     var countText = '';
-    if (activeFolderKey === 'dibujos')   countText = isLoadingDriveFiles ? '<i class="fas fa-sync-alt fa-spin"></i> Conectando...' : FOLDER_CONTENTS.dibujos.items.length + (isSpace ? ' holograma(s)' : ' dibujo(s)');
-    else if (activeFolderKey === 'proyectos') countText = adventureMissions.length + (isSpace ? ' misiones planetarias (' : ' misiones de aventura (') + student.gradeName + ')';
-    else if (activeFolderKey === 'juegos') countText = gradeGames.length + ' juego(s) de programación y lógica (' + student.gradeName + ')';
-    else if (activeFolderKey === 'proyecto') {
+    if (activeFolderKey === 'dibujos') {
+      countText = isLoadingDriveFiles
+        ? '<i class="fas fa-sync-alt fa-spin"></i> Conectando...'
+        : FOLDER_CONTENTS.dibujos.items.length + (isCyber ? ' render(s) cyber' : (isSpace ? ' holograma(s)' : ' dibujo(s)'));
+    } else if (activeFolderKey === 'proyectos') {
+      countText = adventureMissions.length + (isCyber ? ' nodos de circuito (' : (isSpace ? ' misiones planetarias (' : ' misiones de aventura (')) + student.gradeName + ')';
+    } else if (activeFolderKey === 'juegos') {
+      countText = gradeGames.length + (isCyber ? ' desafíos arcade y lógica (' : ' juego(s) de programación y lógica (') + student.gradeName + ')';
+    } else if (activeFolderKey === 'proyecto') {
       if (isLoadingProyectoFiles) {
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Cargando...';
       } else {
-        countText = (proyectoSubTab === 'scratch' ? scratchItems.length + ' proyecto(s) Scratch Jr' : makecodeItems.length + ' proyecto(s) MakeCode');
+        countText = (proyectoSubTab === 'scratch' ? scratchItems.length + ' proyecto(s) Scratch Jr' : makecodeItems.length + (isCyber ? ' códigos MakeCode/Robótica' : ' proyecto(s) MakeCode'));
       }
     } else if (activeFolderKey === 'actividades') {
       if (isLoadingActividadesFiles) {
         countText = '<i class="fas fa-sync-alt fa-spin"></i> Buscando actividades...';
       } else {
         countText = FOLDER_CONTENTS.actividades.items.length > 0
-          ? (FOLDER_CONTENTS.actividades.items.length + ' reto(s) de ' + student.gradeName + ' + Inventario')
-          : '1 actividad (Inventario de material)';
+          ? (FOLDER_CONTENTS.actividades.items.length + (isCyber ? ' esquemas técnicos de ' : ' reto(s) de ') + student.gradeName + ' + Inventario')
+          : (isCyber ? '1 diagrama (Inventario de taller)' : '1 actividad (Inventario de material)');
       }
     } else if (activeFolderKey === 'familiar') {
-      countText = '1 experiencia familiar (Escape Rooms Nostálgico)';
+      countText = isCyber ? '1 experiencia hacker (Escape Room Cooperativo)' : '1 experiencia familiar (Escape Rooms Nostálgico)';
     }
 
     // ──────────────────────────────────────────────────
@@ -2149,15 +2399,21 @@
       if (proyectoSubTab === 'scratch') {
         var isLoading = isLoadingProyectoFiles && scratchItems.length === 0;
         if (isLoading) {
-          tabContent = loadingHtml('Cargando proyectos Scratch Jr...', isSpace ? 'Escaneando archivos en la cápsula de tu nave...' : 'Buscando pergaminos en tu cofre del navío...', isSpace ? '#0284C7' : '#EA580C');
+          tabContent = loadingHtml(
+            'Cargando proyectos Scratch Jr...',
+            isCyber ? 'Escaneando memorias y archivos en la terminal...' : (isSpace ? 'Escaneando archivos en la cápsula de tu nave...' : 'Buscando pergaminos en tu cofre del navío...'),
+            isCyber ? '#10B981' : (isSpace ? '#0284C7' : '#EA580C')
+          );
         } else if (scratchItems.length === 0) {
-          tabContent = '<div class="gdb-empty-state"><div class="ges-icon">🐱</div><h4>' + (isSpace ? '¡Aún no hay proyectos Scratch Jr en la cápsula!' : '¡Aún no hay proyectos Scratch Jr en el cofre!') + '</h4><p>Subí tu archivo <strong>.sb3</strong> o <strong>.sjr</strong> arrastrándolo a la pantalla o con el botón superior.</p></div>';
+          tabContent = '<div class="gdb-empty-state"><div class="ges-icon">🐱</div><h4>' +
+            (isCyber ? '¡Aún no hay archivos de código en la terminal!' : (isSpace ? '¡Aún no hay proyectos Scratch Jr en la cápsula!' : '¡Aún no hay proyectos Scratch Jr en el cofre!')) +
+            '</h4><p>Subí tu archivo <strong>.sb3</strong> o <strong>.sjr</strong> arrastrándolo a la pantalla o con el botón superior.</p></div>';
         } else {
           tabContent = '<div class="grade-games-grid ptb-games-grid">' +
             scratchItems.map(function(item, idx){
               var dlUrl = getDownloadUrl(item);
               return '<div class="grade-game-card ptb-card" data-scratch-idx="' + idx + '">' +
-                '<div class="ptb-card-nail" title="' + (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle') + '"></div>' +
+                '<div class="ptb-card-nail" title="' + (isCyber ? 'Conectado a la terminal' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
                 '<div class="ggc-thumb-wrap" ' + (dlUrl && dlUrl !== '#' ? 'onclick="window.open(\'' + dlUrl + '\', \'_blank\')"' : '') + ' title="Descargar proyecto Scratch Jr">' +
                   '<div style="background:linear-gradient(135deg, #FFEDD5 0%, #FED7AA 50%, #FDBA74 100%);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">' +
                     '<span style="font-size:3.6rem;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.25));">🐱</span>' +
@@ -2235,7 +2491,7 @@
           tabContent = '<div class="gdb-empty-state">' +
             '<div class="ges-icon">💻</div>' +
             '<h4>Biblioteca de Proyectos vacía</h4>' +
-            '<p>' + (isSpace ? 'El comandante todavía no agregó códigos para ' : 'El capitán todavía no agregó códigos para ') + '<strong>' + student.gradeName + '</strong>.<br>' +
+            '<p>' + (isCyber ? 'El equipo de ingeniería todavía no agregó códigos para ' : (isSpace ? 'El comandante todavía no agregó códigos para ' : 'El capitán todavía no agregó códigos para ')) + '<strong>' + student.gradeName + '</strong>.<br>' +
             'Los proyectos se configuran en el archivo <code>js/data.js</code>.</p>' +
           '</div>';
         } else {
@@ -2259,7 +2515,7 @@
               }
 
               return '<div class="grade-game-card ptb-card mklib-card-item" data-project-id="' + (proj.id || ('p-' + idx)) + '" data-entry-idx="' + idx + '">' +
-                '<div class="ptb-card-nail" title="' + (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle') + '"></div>' +
+                '<div class="ptb-card-nail" title="' + (isCyber ? 'Conectado a la terminal' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
                 '<div class="ggc-thumb-wrap mklib-btn-modal-trigger" title="Hacé clic para ver el proyecto completo">' +
                   '<img src="' + coverImg + '" alt="' + (proj.title || '').replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'img/microbit.png\'">' +
                   '<div class="ggc-play-overlay">' +
@@ -2299,12 +2555,20 @@
       }
 
       mainDisplayHtml = buildPirateTavernBoard({
-        sealIcon: isSpace ? '🤖' : '💻',
-        tag: isSpace ? 'CONSOLA DE COMANDO · LABORATORIO ESPACIAL DE CÓDIGOS Y ROBÓTICA' : 'TABLERO DE LA TABERNA · COFRE DE CÓDIGOS Y ROBÓTICA',
-        title: isSpace ? ('🤖 Laboratorio Espacial de Códigos — Nave ' + student.gradeName) : ('💻 Cofre de Códigos y Robótica — Navío ' + student.gradeName),
-        sub: isSpace
-          ? '¡Explorá los sistemas de MakeCode, micro:bit, sensores y Scratch Jr para programar los módulos y satélites de la Flota Estelar!'
-          : '¡Explorá los proyectos de MakeCode, micro:bit, sensores y Scratch Jr para programar las naves y artefactos de la tripulación!',
+        sealIcon: isCyber ? '🧠' : (isSpace ? '🤖' : '💻'),
+        tag: isCyber
+          ? 'TERMINAL DE CÓDIGO · LABORATORIO DE ROBÓTICA Y ALGORITMOS'
+          : (isSpace ? 'CONSOLA DE COMANDO · LABORATORIO ESPACIAL DE CÓDIGOS Y ROBÓTICA' : 'TABLERO DE LA TABERNA · COFRE DE CÓDIGOS Y ROBÓTICA'),
+        title: isCyber
+          ? ('🧠 Núcleo de Código y Algoritmos — División ' + student.gradeName)
+          : (isSpace
+            ? ('🤖 Laboratorio Espacial de Códigos — Nave ' + student.gradeName)
+            : ('💻 Cofre de Códigos y Robótica — Navío ' + student.gradeName)),
+        sub: isCyber
+          ? '¡Explorá los algoritmos, circuitos con Micro:bit, servomotores y código interactivo de tu división tecnológica!'
+          : (isSpace
+            ? '¡Explorá los sistemas de MakeCode, micro:bit, sensores y Scratch Jr para programar los módulos y satélites de la Flota Estelar!'
+            : '¡Explorá los proyectos de MakeCode, micro:bit, sensores y Scratch Jr para programar las naves y artefactos de la tripulación!'),
         extraHeaderHtml: tabsHtml,
         contentHtml: tabContent
       });
@@ -2328,9 +2592,9 @@
             : 'img/pdf_preview_placeholder.png';
 
           var isImg = (item.type === 'image' || !isPdf);
-          var displayItemTitle = item.title || ((isSpace ? 'Misión en Base Lunar #' : 'Misión en Tierra #') + (idx + 1));
+          var displayItemTitle = item.title || ((isCyber ? 'Diagrama Técnico #' : (isSpace ? 'Misión en Base Lunar #' : 'Misión en Tierra #')) + (idx + 1));
           if (/^ChatGPT Image/i.test(displayItemTitle)) {
-            displayItemTitle = (isSpace ? 'Transmisión Secreta Lunar #' : 'Enigma Secreto en Tierra #') + (idx + 1);
+            displayItemTitle = (isCyber ? 'Esquema de Circuito #' : (isSpace ? 'Transmisión Secreta Lunar #' : 'Enigma Secreto en Tierra #')) + (idx + 1);
           }
           var safeTitleJs = displayItemTitle.replace(/'/g, "\\'");
           var clickAction = isImg
@@ -2338,7 +2602,7 @@
             : 'window.open(\'' + viewUrl + '\', \'_blank\');';
 
           return '<div class="grade-game-card ptb-card" data-act-idx="' + idx + '">' +
-            '<div class="ptb-card-nail" title="' + (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle') + '"></div>' +
+            '<div class="ptb-card-nail" title="' + (isCyber ? 'Conectado a la terminal' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
             '<div class="ggc-thumb-wrap" onclick="' + clickAction + '" title="Hacé clic para ver">' +
               (isImg
                 ? '<img src="' + imgThumb + '" alt="' + displayItemTitle.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80\'">'
@@ -2348,16 +2612,16 @@
                 '<div class="ggc-play-bubble"><i class="fas fa-search-plus"></i></div>' +
                 '<span>' + (isImg ? '¡Ver Ficha!' : '¡Abrir PDF!') + '</span>' +
               '</div>' +
-              '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-graduation-cap"></i> ' + student.gradeName + '</div>' +
-              '<div class="ggc-platform-badge pirate-plat-badge">' + (isPdf ? '📄 Ficha PDF' : (isSpace ? '📡 Plano Lunar' : '🖼️ Pergamino')) + '</div>' +
+              '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas ' + (isCyber ? 'fa-microchip' : 'fa-graduation-cap') + '"></i> ' + student.gradeName + '</div>' +
+              '<div class="ggc-platform-badge pirate-plat-badge">' + (isPdf ? '📄 Ficha PDF' : (isCyber ? '⚡ Esquema Técnico' : (isSpace ? '📡 Plano Lunar' : '🖼️ Pergamino'))) + '</div>' +
             '</div>' +
             '<div class="ggc-body">' +
               '<div class="ggc-top-row">' +
                 '<h3 class="ggc-title">' + displayItemTitle + '</h3>' +
               '</div>' +
-              '<p class="ggc-desc">Reto y actividad de relación de conceptos creada para tu grado (' + student.gradeName + ').</p>' +
+              '<p class="ggc-desc">' + (isCyber ? 'Ficha técnica y diagrama de conexión de hardware para ' : 'Reto y actividad de relación de conceptos creada para tu grado (') + student.gradeName + (isCyber ? '.' : ').') + '</p>' +
               '<div class="ggc-tags-row">' +
-                '<span class="ggc-tag">' + (isSpace ? '#BaseLunar' : '#MisiónEnTierra') + '</span>' +
+                '<span class="ggc-tag">' + (isCyber ? '#Hardware' : (isSpace ? '#BaseLunar' : '#MisiónEnTierra')) + '</span>' +
                 '<span class="ggc-tag">#Conceptos</span>' +
                 '<span class="ggc-tag">#' + (isPdf ? 'PDF' : 'Ficha') + '</span>' +
               '</div>' +
@@ -2387,21 +2651,21 @@
 
       var generalCardHtml =
         '<div class="grade-game-card ptb-card" data-act-type="general">' +
-          '<div class="ptb-card-nail" title="' + (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle') + '"></div>' +
+          '<div class="ptb-card-nail" title="' + (isCyber ? 'Conectado a la terminal' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
           '<div class="ggc-thumb-wrap" onclick="if(window.openImageModal) window.openImageModal(\'' + generalImgUrl + '\', \'' + safeGenTitleJs + '\', \'' + generalDlUrl + '\');" title="Hacé clic para ver la ficha completa">' +
             '<img src="' + generalImgUrl + '" alt="' + generalItem.title.replace(/"/g, '&quot;') + '" class="ggc-thumb-img" onerror="this.src=\'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80\'">' +
             '<div class="ggc-play-overlay">' +
               '<div class="ggc-play-bubble"><i class="fas fa-boxes"></i></div>' +
               '<span>¡Ver Inventario!</span>' +
             '</div>' +
-            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-boxes"></i> General</div>' +
-            '<div class="ggc-platform-badge pirate-plat-badge">' + (isSpace ? '🛰️ Inventario Espacial' : '📜 Inventario Maker') + '</div>' +
+            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-boxes"></i> ' + (isCyber ? 'Componentes' : 'General') + '</div>' +
+            '<div class="ggc-platform-badge pirate-plat-badge">' + (isCyber ? '⚡ Inventario de Circuitos' : (isSpace ? '🛰️ Inventario Espacial' : '📜 Inventario Maker')) + '</div>' +
           '</div>' +
           '<div class="ggc-body">' +
             '<div class="ggc-top-row">' +
               '<h3 class="ggc-title">' + generalItem.title + '</h3>' +
             '</div>' +
-            '<p class="ggc-desc">Observar, clasificar, contar y relacionar las piezas, sensores, motores y herramientas del taller de robótica.</p>' +
+            '<p class="ggc-desc">' + (isCyber ? 'Clasificar, conectar y relacionar piezas, servomotores, microcontroladores Micro:bit y sensores del taller maker.' : 'Observar, clasificar, contar y relacionar las piezas, sensores, motores y herramientas del taller de robótica.') + '</p>' +
             '<div class="ggc-tags-row">' +
               '<span class="ggc-tag">#Inventario</span>' +
               '<span class="ggc-tag">#Sensores</span>' +
@@ -2419,14 +2683,20 @@
         '</div>';
 
       mainDisplayHtml = buildPirateTavernBoard({
-        sealIcon: isSpace ? '🛰️' : '📜',
-        tag: isSpace ? 'CONSOLA DE COMANDO · MISIONES EN LA BASE LUNAR' : 'TABLERO DE LA TABERNA · MISIONES EN TIERRA FIRME',
-        title: isSpace
-          ? ('🛰️ Misiones y Planos de la Base Lunar — Nave ' + student.gradeName)
-          : ('📜 Misiones y Enigmas para Descifrar en Tierra — Navío ' + student.gradeName),
-        sub: isSpace
-          ? '¡Planos técnicos, fichas de sensores y desafíos para imprimir, relacionar conceptos y resolver en la estación espacial!'
-          : '¡Fichas, planos y desafíos físicos para imprimir, relacionar conceptos y resolver acertijos con lápiz y papel o en el taller maker!',
+        sealIcon: isCyber ? '⚡' : (isSpace ? '🛰️' : '📜'),
+        tag: isCyber
+          ? 'TERMINAL DE INGENIERÍA · BANCO DE TRABAJO ROBÓTICO'
+          : (isSpace ? 'CONSOLA DE COMANDO · MISIONES EN LA BASE LUNAR' : 'TABLERO DE LA TABERNA · MISIONES EN TIERRA FIRME'),
+        title: isCyber
+          ? ('⚡ Diagramas Técnicos y Hardware — División ' + student.gradeName)
+          : (isSpace
+            ? ('🛰️ Misiones y Planos de la Base Lunar — Nave ' + student.gradeName)
+            : ('📜 Misiones y Enigmas para Descifrar en Tierra — Navío ' + student.gradeName)),
+        sub: isCyber
+          ? '¡Diagramas de conexión, hojas de datos de sensores, servomotores y algoritmos para compilar y probar en el taller maker!'
+          : (isSpace
+            ? '¡Planos técnicos, fichas de sensores y desafíos para imprimir, relacionar conceptos y resolver en la estación espacial!'
+            : '¡Fichas, planos y desafíos físicos para imprimir, relacionar conceptos y resolver acertijos con lápiz y papel o en el taller maker!'),
         contentHtml: '<div class="grade-games-grid ptb-games-grid">' + gradeCardsHtml + generalCardHtml + '</div>'
       });
 
@@ -2438,24 +2708,24 @@
 
       var escapeRoomCardHtml =
         '<div class="grade-game-card ptb-card" style="max-width: 480px; margin: 0 auto;">' +
-          '<div class="ptb-card-nail" title="' + (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle') + '"></div>' +
-          '<div class="ggc-thumb-wrap" onclick="window.open(\'' + escapeRoomUrl + '\', \'_blank\')" title="Hacé clic para ingresar al Escape Room" style="background: radial-gradient(circle at center, #312E81 0%, #1E1B4B 60%, #0F172A 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; min-height: 200px;">' +
+          '<div class="ptb-card-nail" title="' + (isCyber ? 'Conectado a la terminal' : (isSpace ? 'Anclado a la consola orbital' : 'Clavado con tachuela al muelle')) + '"></div>' +
+          '<div class="ggc-thumb-wrap" onclick="window.open(\'' + escapeRoomUrl + '\', \'_blank\')" title="Hacé clic para ingresar al Escape Room" style="background: ' + (isCyber ? 'radial-gradient(circle at center, #064E3B 0%, #022C22 60%, #020617 100%)' : 'radial-gradient(circle at center, #312E81 0%, #1E1B4B 60%, #0F172A 100%)') + '; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height: 200px;">' +
             '<div style="text-align:center; padding: 20px 10px;">' +
-              '<span style="font-size: 4.2rem; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.6));">' + (isSpace ? '🚀' : '🗝️') + '</span>' +
-              '<div style="color: #38BDF8; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.08em; text-shadow: 0 2px 4px rgba(0,0,0,0.8); margin-top: 6px;">' + (isSpace ? 'Odisea & Misterio Estelar' : 'Misterio & Nostalgia') + '</div>' +
+              '<span style="font-size: 4.2rem; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.6));">' + (isCyber ? '🤖' : (isSpace ? '🚀' : '🗝️')) + '</span>' +
+              '<div style="color: ' + (isCyber ? '#34D399' : '#38BDF8') + '; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.08em; text-shadow: 0 2px 4px rgba(0,0,0,0.8); margin-top: 6px;">' + (isCyber ? 'Hackeo & Enigmas Maker' : (isSpace ? 'Odisea & Misterio Estelar' : 'Misterio & Nostalgia')) + '</div>' +
             '</div>' +
             '<div class="ggc-play-overlay">' +
               '<div class="ggc-play-bubble"><i class="fas fa-play"></i></div>' +
-              '<span>' + (isSpace ? '¡Despegar al Escape Room!' : '¡Zarpar al Escape Room!') + '</span>' +
+              '<span>' + (isCyber ? '¡Hackear Escape Room!' : (isSpace ? '¡Despegar al Escape Room!' : '¡Zarpar al Escape Room!')) + '</span>' +
             '</div>' +
-            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-users"></i> ' + (isSpace ? 'Odisea Familiar' : 'Travesía Familiar') + '</div>' +
-            '<div class="ggc-platform-badge pirate-plat-badge">🗝️ Escape Room Interactivo</div>' +
+            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-users"></i> ' + (isCyber ? 'Hackeo Familiar' : (isSpace ? 'Odisea Familiar' : 'Travesía Familiar')) + '</div>' +
+            '<div class="ggc-platform-badge pirate-plat-badge">' + (isCyber ? '🤖 Escape Room Interactivo' : '🗝️ Escape Room Interactivo') + '</div>' +
           '</div>' +
           '<div class="ggc-body">' +
             '<div class="ggc-top-row">' +
-              '<h3 class="ggc-title">' + (isSpace ? 'Escape Room: Odisea y Enigmas Galácticos' : 'Escape Room: Enigmas y Pistas Piratas') + '</h3>' +
+              '<h3 class="ggc-title">' + (isCyber ? 'Escape Room: Hackeo de Enigmas y Algoritmos' : (isSpace ? 'Escape Room: Odisea y Enigmas Galácticos' : 'Escape Room: Enigmas y Pistas Piratas')) + '</h3>' +
             '</div>' +
-            '<p class="ggc-desc">' + (isSpace ? 'Descifrá códigos espaciales y pistas nostálgicas junto a la tripulación de tu familia en una misión colaborativa.' : 'Descifrá enigmas y pistas nostálgicas junto a tu tripulación familiar. Una aventura colaborativa con acertijos y mucha creatividad.') + '</p>' +
+            '<p class="ggc-desc">' + (isCyber ? 'Descifrá contraseñas, secuencias binarias y pistas nostálgicas en una terminal interactiva junto a tu familia.' : (isSpace ? 'Descifrá códigos espaciales y pistas nostálgicas junto a la tripulación de tu familia en una misión colaborativa.' : 'Descifrá enigmas y pistas nostálgicas junto a tu tripulación familiar. Una aventura colaborativa con acertijos y mucha creatividad.')) + '</p>' +
             '<div class="ggc-tags-row">' +
               '<span class="ggc-tag">#Enigmas</span>' +
               '<span class="ggc-tag">#Colaboración</span>' +
@@ -2463,44 +2733,50 @@
             '</div>' +
             '<div class="ggc-actions">' +
               '<a href="' + escapeRoomUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec" title="Abrir Escape Room">' +
-                '<i class="fas ' + (isSpace ? 'fa-rocket' : 'fa-compass') + '"></i> <span>' + (isSpace ? 'Despegar al Escape Room' : 'Zarpar al Escape Room') + '</span>' +
+                '<i class="fas ' + (isCyber ? 'fa-terminal' : (isSpace ? 'fa-rocket' : 'fa-compass')) + '"></i> <span>' + (isCyber ? 'Hackear Escape Room' : (isSpace ? 'Despegar al Escape Room' : 'Zarpar al Escape Room')) + '</span>' +
               '</a>' +
             '</div>' +
           '</div>' +
         '</div>';
 
       mainDisplayHtml = buildPirateTavernBoard({
-        sealIcon: isSpace ? '🚀' : '🗝️',
-        tag: isSpace ? 'CONSOLA DE COMANDO · ODISEA Y MISTERIO EN FAMILIA' : 'TABLERO DE LA TABERNA · TRAVESÍA Y MISTERIO EN FAMILIA',
-        title: isSpace ? '🚀 Escape Room: Odisea y Enigmas en Familia' : '🗝️ Escape Room: Enigmas y Pistas Piratas',
-        sub: isSpace
-          ? '¡Despegá junto a la tripulación de tu hogar! Descifrá enigmas nostálgicos, acertijos interactivos y códigos secretos para completar la misión.'
-          : '¡Zarpá junto a tu tripulación familiar! Descifrá enigmas nostálgicos, acertijos interactivos y secretos ocultos para escapar con el botín.',
+        sealIcon: isCyber ? '🤖' : (isSpace ? '🚀' : '🗝️'),
+        tag: isCyber
+          ? 'TERMINAL DE CONTROL · HACKEO DE ENIGMAS EN FAMILIA'
+          : (isSpace ? 'CONSOLA DE COMANDO · ODISEA Y MISTERIO EN FAMILIA' : 'TABLERO DE LA TABERNA · TRAVESÍA Y MISTERIO EN FAMILIA'),
+        title: isCyber
+          ? '🤖 Escape Room: Hackeo de Enigmas y Algoritmos en Familia'
+          : (isSpace ? '🚀 Escape Room: Odisea y Enigmas en Familia' : '🗝️ Escape Room: Enigmas y Pistas Piratas'),
+        sub: isCyber
+          ? '¡Conectá a toda tu familia a la terminal! Resuelvan secuencias lógicas, descifren contraseñas secretas y hackeen el sistema para completar el desafío.'
+          : (isSpace
+            ? '¡Despegá junto a la tripulación de tu hogar! Descifrá enigmas nostálgicos, acertijos interactivos y códigos secretos para completar la misión.'
+            : '¡Zarpá junto a tu tripulación familiar! Descifrá enigmas nostálgicos, acertijos interactivos y secretos ocultos para escapar con el botín.'),
         contentHtml: '<div class="grade-games-grid ptb-games-grid" style="grid-template-columns: minmax(300px, 480px); justify-content: center;">' + escapeRoomCardHtml + '</div>'
       });
 
       uploadZoneHtml = '';
 
-    // ═══ CARPETA: JUEGOS DEL GRADO (DESAFÍOS PIRATAS / MISIONES GALÁCTICAS) ═══
+    // ═══ CARPETA: JUEGOS DEL GRADO (DESAFÍOS PIRATAS / MISIONES GALÁCTICAS / ARCADE CYBER) ═══
     } else if (activeFolderKey === 'juegos') {
       mainDisplayHtml = renderGradeGamesHtml(student, gradeGames);
       uploadZoneHtml = '';
 
-    // ═══ CARPETA: DIBUJOS (La Mesa del Capitán / Galería Holográfica) ═══
+    // ═══ CARPETA: DIBUJOS (La Mesa del Capitán / Galería Holográfica / Matriz Cyber) ═══
     } else {
       displayItems = FOLDER_CONTENTS.dibujos.items || [];
 
       if (isLoadingDriveFiles && displayItems.length === 0) {
         mainDisplayHtml = loadingHtml(
-          isSpace ? 'Abriendo la Cápsula de Hologramas y Dibujos...' : 'Abriendo el Cofre de Dibujos...',
-          isSpace ? 'Escaneando capturas y creaciones en la consola estelar...' : 'Buscando pergaminos y creaciones en la mesa del capitán...',
-          isSpace ? '#0284C7' : '#D97706'
+          isCyber ? 'Compilando Matriz de Renders y Diseños...' : (isSpace ? 'Abriendo la Cápsula de Hologramas y Dibujos...' : 'Abriendo el Cofre de Dibujos...'),
+          isCyber ? 'Cargando esquemas técnicos y creaciones digitales en la terminal...' : (isSpace ? 'Escaneando capturas y creaciones en la consola estelar...' : 'Buscando pergaminos y creaciones en la mesa del capitán...'),
+          isCyber ? '#10B981' : (isSpace ? '#0284C7' : '#D97706')
         );
       } else if (!isLoadingDriveFiles && displayItems.length === 0) {
         mainDisplayHtml = emptyHtml(
-          isSpace ? '🌌' : '🎨',
-          isSpace ? 'Cápsula de Hologramas vacía' : 'Cofre de Pergaminos vacío',
-          isSpace ? '¡Subí tu primer dibujo o captura espacial abajo para proyectarlo en la consola!' : '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!'
+          isCyber ? '📟' : (isSpace ? '🌌' : '🎨'),
+          isCyber ? 'Terminal de Renders vacía' : (isSpace ? 'Cápsula de Hologramas vacía' : 'Cofre de Pergaminos vacío'),
+          isCyber ? '¡Subí tu primer render 3D o esquema técnico abajo para compilarlo en la matriz!' : (isSpace ? '¡Subí tu primer dibujo o captura espacial abajo para proyectarlo en la consola!' : '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!')
         );
       } else {
         mainDisplayHtml = renderCaptainTableHtml(displayItems);
@@ -2514,13 +2790,13 @@
     var canUpload = (activeFolderKey === 'dibujos') || (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch);
     var uploadAccept = activeFolderKey === 'dibujos' ? '.bmp,.png,.jpg,.jpeg,image/bmp,image/png,image/jpeg' : '.sb3,.sjr,.pjson,.sb';
     var uploadBtnText = activeFolderKey === 'dibujos'
-      ? (isSpace ? '<i class="fas fa-satellite-dish"></i> Guardar Holograma' : '<i class="fas fa-scroll"></i> Guardar Pergamino')
+      ? (isCyber ? '<i class="fas fa-microchip"></i> Guardar Render' : (isSpace ? '<i class="fas fa-satellite-dish"></i> Guardar Holograma' : '<i class="fas fa-scroll"></i> Guardar Pergamino'))
       : '<i class="fas fa-plus-circle"></i> Subir Scratch Jr';
     var uploadBtnClass = activeFolderKey === 'dibujos' ? 'gca-btn-upload' : 'gca-btn-upload scratch';
 
     if (canUpload) {
       var dragTitle = activeFolderKey === 'dibujos'
-        ? (isSpace ? '¡Soltá tu dibujo aquí para guardarlo en la cápsula!' : '¡Soltá tu dibujo aquí para guardarlo en el cofre!')
+        ? (isCyber ? '¡Soltá tu render o esquema aquí para guardarlo en la terminal!' : (isSpace ? '¡Soltá tu dibujo aquí para guardarlo en la cápsula!' : '¡Soltá tu dibujo aquí para guardarlo en el cofre!'))
         : '¡Soltá tu proyecto Scratch Jr aquí!';
       var dragHint = activeFolderKey === 'dibujos'
         ? 'Formatos permitidos: <strong>.png, .jpg, .bmp</strong>'
@@ -2530,7 +2806,7 @@
         '<input type="file" id="gdz-file-input" class="gdz-input" accept="' + uploadAccept + '" style="display:none;">' +
         '<div class="gdb-drag-overlay" id="gdb-drag-overlay">' +
           '<div class="gdo-card">' +
-            '<div class="gdo-icon"><i class="fas ' + (isSpace ? 'fa-rocket' : 'fa-gem') + '"></i></div>' +
+            '<div class="gdo-icon"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-gem')) + '"></i></div>' +
             '<h3>' + dragTitle + '</h3>' +
             '<p>' + dragHint + '</p>' +
           '</div>' +
@@ -2547,50 +2823,55 @@
     var totalMissions = adventureMissions.length;
     var progressPercent = totalMissions > 0 ? Math.min(100, Math.round((completedCount / totalMissions) * 100)) : 0;
     var studentLevel = Math.max(1, Math.floor(completedCount / 2) + 1);
-    var pirateRank = isSpace
-      ? (studentLevel >= 5 ? 'Comandante Estelar' : (studentLevel >= 3 ? 'Piloto Interplanetario' : 'Cadete Espacial'))
-      : (studentLevel >= 5 ? 'Capitán Corsario' : (studentLevel >= 3 ? 'Timonel Maker' : 'Grumete Explorador'));
+    var pirateRank = isCyber
+      ? (studentLevel >= 5 ? 'Maestro Cyber & IA' : (studentLevel >= 3 ? 'Arquitecto de Robots' : 'Operador de Circuitos'))
+      : (isSpace
+        ? (studentLevel >= 5 ? 'Comandante Estelar' : (studentLevel >= 3 ? 'Piloto Interplanetario' : 'Cadete Espacial'))
+        : (studentLevel >= 5 ? 'Capitán Corsario' : (studentLevel >= 3 ? 'Timonel Maker' : 'Grumete Explorador')));
     var totalXp = completedCount * 100;
     var nextMission = adventureMissions.find(function(m){ return m.status !== 'completado'; }) || adventureMissions[0];
 
     // ──────────────────────────────────────────────────
-    // HTML COMPLETO DEL PANEL GAMER (PIRATA O ESPACIAL)
+    // HTML COMPLETO DEL PANEL GAMER (PIRATA, ESPACIAL O CYBER)
     // ──────────────────────────────────────────────────
+    var dashboardThemeClass = isCyber ? 'theme-cyber' : (isSpace ? 'theme-space' : 'theme-pirate');
+    var heroCardClass = isCyber ? 'cyber-hero-card' : (isSpace ? 'space-hero-card' : '');
+
     container.innerHTML =
-      '<section class="gdrive-dashboard-centered gamer-dashboard-container ' + (isSpace ? 'theme-space' : 'theme-pirate') + '" id="student-drive-dashboard">' +
-        // 1. HERO HEADER: PERFIL DEL CAPITÁN / ASTRONAUTA
-        '<div class="gamer-hero-card ' + (isSpace ? 'space-hero-card' : '') + '">' +
+      '<section class="gdrive-dashboard-centered gamer-dashboard-container ' + dashboardThemeClass + '" id="student-drive-dashboard">' +
+        // 1. HERO HEADER: PERFIL DEL CAPITÁN / ASTRONAUTA / MAESTRO CYBER
+        '<div class="gamer-hero-card ' + heroCardClass + '">' +
           '<div class="gh-main-row">' +
             '<div class="gh-player-profile">' +
               '<div class="gh-avatar-container">' +
-                '<span class="gh-avatar">' + (student.avatar || (isSpace ? '👨‍🚀' : '👦')) + '</span>' +
-                '<span class="gh-status-dot" title="' + (isSpace ? 'En órbita en la Estación Espacial Paulo Freire' : 'A bordo del Navío Paulo Freire') + '"></span>' +
+                '<span class="gh-avatar">' + (student.avatar || (isCyber ? '🤖' : (isSpace ? '👨‍🚀' : '👦'))) + '</span>' +
+                '<span class="gh-status-dot" title="' + (isCyber ? 'Conectado a la Red Neuronal Paulo Freire' : (isSpace ? 'En órbita en la Estación Espacial Paulo Freire' : 'A bordo del Navío Paulo Freire')) + '"></span>' +
               '</div>' +
               '<div class="gh-player-meta">' +
                 '<div class="gh-tag-row">' +
-                  '<span class="gh-badge grade"><i class="fas ' + (isSpace ? 'fa-rocket' : 'fa-anchor') + '"></i> ' + (isSpace ? 'Nave ' : 'Navío ') + student.gradeName + '</span>' +
-                  '<span class="gh-badge level"><i class="fas ' + (isSpace ? 'fa-user-astronaut' : 'fa-skull-crossbones') + '"></i> ' + pirateRank + ' · Nivel ' + studentLevel + '</span>' +
+                  '<span class="gh-badge grade"><i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-anchor')) + '"></i> ' + (isCyber ? 'División ' : (isSpace ? 'Nave ' : 'Navío ')) + student.gradeName + '</span>' +
+                  '<span class="gh-badge level"><i class="fas ' + (isCyber ? 'fa-robot' : (isSpace ? 'fa-user-astronaut' : 'fa-skull-crossbones')) + '"></i> ' + pirateRank + ' · Nivel ' + studentLevel + '</span>' +
                 '</div>' +
-                '<h2 class="gh-player-name">' + (isSpace ? ('¡Despegamos, ' + student.name.split(' ')[0] + '! 🚀👨‍🚀') : ('¡A la mar, ' + student.name.split(' ')[0] + '! 🏴‍☠️')) + '</h2>' +
-                '<span class="gh-player-sub">' + (isSpace ? 'Bitácora de Exploración Galáctica · Estación Espacial Paulo Freire' : 'Bitácora de Navegación Maker · Navío Paulo Freire') + '</span>' +
+                '<h2 class="gh-player-name">' + (isCyber ? ('¡Sistema en línea, ' + student.name.split(' ')[0] + '! 🤖⚡') : (isSpace ? ('¡Despegamos, ' + student.name.split(' ')[0] + '! 🚀👨‍🚀') : ('¡A la mar, ' + student.name.split(' ')[0] + '! 🏴‍☠️'))) + '</h2>' +
+                '<span class="gh-player-sub">' + (isCyber ? 'Red de Robótica, Microcontroladores e IA · Laboratorio Paulo Freire' : (isSpace ? 'Bitácora de Exploración Galáctica · Estación Espacial Paulo Freire' : 'Bitácora de Navegación Maker · Navío Paulo Freire')) + '</span>' +
               '</div>' +
             '</div>' +
 
             '<div class="gh-actions-group">' +
               (nextMission ?
-                '<button type="button" class="gh-btn-continue" id="gh-btn-continue-mission" title="' + (isSpace ? 'Despegar a la siguiente misión planetaria' : 'Zarpar a la siguiente misión') + '">' +
-                  '<div class="gbc-icon"><i class="fas ' + (isSpace ? 'fa-satellite' : 'fa-compass') + '"></i></div>' +
+                '<button type="button" class="gh-btn-continue" id="gh-btn-continue-mission" title="' + (isCyber ? 'Compilar siguiente nodo de circuito' : (isSpace ? 'Despegar a la siguiente misión planetaria' : 'Zarpar a la siguiente misión')) + '">' +
+                  '<div class="gbc-icon"><i class="fas ' + (isCyber ? 'fa-terminal' : (isSpace ? 'fa-satellite' : 'fa-compass')) + '"></i></div>' +
                   '<div class="gbc-text">' +
-                    '<span class="gbc-sub">' + (isSpace ? 'Viajar al Planeta' : 'Zarpar a la Misión') + '</span>' +
-                    '<strong class="gbc-title">' + (nextMission.level ? ((isSpace ? 'Planeta ' : 'Isla ') + nextMission.level + ': ') : '') + nextMission.title + '</strong>' +
+                    '<span class="gbc-sub">' + (isCyber ? 'Compilar Nodo' : (isSpace ? 'Viajar al Planeta' : 'Zarpar a la Misión')) + '</span>' +
+                    '<strong class="gbc-title">' + (nextMission.level ? ((isCyber ? 'Nodo ' : (isSpace ? 'Planeta ' : 'Isla ')) + nextMission.level + ': ') : '') + nextMission.title + '</strong>' +
                   '</div>' +
                   '<i class="fas fa-chevron-right gbc-arrow"></i>' +
                 '</button>' : '') +
 
               (driveTargetUrl ?
                 '<div class="gh-extra-links">' +
-                  '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="' + (isSpace ? 'Abrir mi Cápsula' : 'Abrir mi Cofre') + '">' +
-                    '<i class="fas ' + (isSpace ? 'fa-satellite-dish' : 'fa-gem') + '"></i> <span>' + (isSpace ? 'Cápsula' : 'Cofre') + '</span>' +
+                  '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="' + (isCyber ? 'Abrir mi Terminal' : (isSpace ? 'Abrir mi Cápsula' : 'Abrir mi Cofre')) + '">' +
+                    '<i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-gem')) + '"></i> <span>' + (isCyber ? 'Terminal' : (isSpace ? 'Cápsula' : 'Cofre')) + '</span>' +
                   '</a>' +
                 '</div>' : '') +
             '</div>' +
@@ -2598,13 +2879,13 @@
 
           '<div class="gh-stats-row">' +
             '<div class="gh-xp-badge">' +
-              '<span class="gh-xp-spark">' + (isSpace ? '🌟' : '🪙') + '</span>' +
-              '<span class="gh-xp-num">+' + totalXp + (isSpace ? ' Cristales' : ' Doblones') + '</span>' +
+              '<span class="gh-xp-spark">' + (isCyber ? '⚡' : (isSpace ? '🌟' : '🪙')) + '</span>' +
+              '<span class="gh-xp-num">+' + totalXp + (isCyber ? ' TeraWatts' : (isSpace ? ' Cristales' : ' Doblones')) + '</span>' +
             '</div>' +
             '<div class="gh-progress-wrapper">' +
               '<div class="gh-progress-header">' +
-                '<span class="gh-ph-label"><i class="fas ' + (isSpace ? 'fa-satellite' : 'fa-map-marked-alt') + '"></i> ' + (isSpace ? 'Radar de Exploración Galáctica' : 'Bitácora de Travesía') + '</span>' +
-                '<span class="gh-ph-count"><strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> ' + (isSpace ? 'planetas explorados' : 'misiones conquistadas') + ' (' + progressPercent + '%)</span>' +
+                '<span class="gh-ph-label"><i class="fas ' + (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-satellite' : 'fa-map-marked-alt')) + '"></i> ' + (isCyber ? 'Sincronización de la Red Maker' : (isSpace ? 'Radar de Exploración Galáctica' : 'Bitácora de Travesía')) + '</span>' +
+                '<span class="gh-ph-count">' + (isCyber ? ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> nodos compilados (' + progressPercent + '%)') : ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> ' + (isSpace ? 'planetas explorados' : 'misiones conquistadas') + ' (' + progressPercent + '%)')) + '</span>' +
               '</div>' +
               '<div class="gh-progress-track">' +
                 '<div class="gh-progress-fill" style="width:' + progressPercent + '%;">' +
@@ -2615,47 +2896,47 @@
           '</div>' +
         '</div>' +
 
-        // 2. NAVEGACIÓN (TABS TÁCTILES PIRATAS O GALÁCTICAS)
-        '<div class="gamer-nav-bar ' + (isSpace ? 'space-nav-bar' : '') + '" role="tablist" aria-label="Secciones del Tablero">' +
+        // 2. NAVEGACIÓN (TABS TÁCTILES PIRATAS, GALÁCTICAS O CYBER)
+        '<div class="gamer-nav-bar ' + (isCyber ? 'cyber-nav-bar' : (isSpace ? 'space-nav-bar' : '')) + '" role="tablist" aria-label="Secciones del Tablero">' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyectos' ? 'active' : '') + '" data-folder="proyectos">' +
-            '<span class="gnb-emoji">' + (isSpace ? '🪐' : '🗺️') + '</span>' +
+            '<span class="gnb-emoji">' + (isCyber ? '🔌' : (isSpace ? '🪐' : '🗺️')) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isSpace ? 'Mapa Estelar' : 'Mapa del Tesoro') + '</span>' +
-              '<span class="gnb-badge">' + badgeProyectos + (isSpace ? ' planetas' : ' misiones') + '</span>' +
+              '<span class="gnb-title">' + (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa del Tesoro')) + '</span>' +
+              '<span class="gnb-badge">' + badgeProyectos + (isCyber ? ' nodos' : (isSpace ? ' planetas' : ' misiones')) + '</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'juegos' ? 'active' : '') + '" data-folder="juegos">' +
-            '<span class="gnb-emoji">' + (isSpace ? '🛸' : '⚔️') + '</span>' +
+            '<span class="gnb-emoji">' + (isCyber ? '🕹️' : (isSpace ? '🛸' : '⚔️')) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isSpace ? 'Misiones Galácticas' : 'Desafíos Piratas') + '</span>' +
+              '<span class="gnb-title">' + (isCyber ? 'Arcade Cyber' : (isSpace ? 'Misiones Galácticas' : 'Desafíos Piratas')) + '</span>' +
               '<span class="gnb-badge">' + badgeJuegos + ' juegos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'dibujos' ? 'active' : '') + '" data-folder="dibujos">' +
-            '<span class="gnb-emoji">' + (isSpace ? '🌌' : '🎨') + '</span>' +
+            '<span class="gnb-emoji">' + (isCyber ? '📟' : (isSpace ? '🌌' : '🎨')) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isSpace ? 'Hologramas' : 'Cofre de Dibujos') + '</span>' +
-              '<span class="gnb-badge">' + badgeDibujos + (isSpace ? ' capturas' : ' pergaminos') + '</span>' +
+              '<span class="gnb-title">' + (isCyber ? 'Renders & Planos' : (isSpace ? 'Hologramas' : 'Cofre de Dibujos')) + '</span>' +
+              '<span class="gnb-badge">' + badgeDibujos + (isCyber ? ' renders' : (isSpace ? ' capturas' : ' pergaminos')) + '</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyecto' ? 'active' : '') + '" data-folder="proyecto">' +
-            '<span class="gnb-emoji">' + (isSpace ? '🤖' : '💻') + '</span>' +
+            '<span class="gnb-emoji">' + (isCyber ? '🧠' : (isSpace ? '🤖' : '💻')) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isSpace ? 'Lab Espacial' : 'Cofre de Códigos') + '</span>' +
+              '<span class="gnb-title">' + (isCyber ? 'Núcleo de Código' : (isSpace ? 'Lab Espacial' : 'Cofre de Códigos')) + '</span>' +
               '<span class="gnb-badge">' + badgeProyecto + ' inventos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'actividades' ? 'active' : '') + '" data-folder="actividades">' +
-            '<span class="gnb-emoji">' + (isSpace ? '🛰️' : '📜') + '</span>' +
+            '<span class="gnb-emoji">' + (isCyber ? '🛠️' : (isSpace ? '🛰️' : '📜')) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isSpace ? 'Base Lunar' : 'Misiones en Tierra') + '</span>' +
+              '<span class="gnb-title">' + (isCyber ? 'Hardware & Taller' : (isSpace ? 'Base Lunar' : 'Misiones en Tierra')) + '</span>' +
               '<span class="gnb-badge">' + badgeActividades + ' retos</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'familiar' ? 'active' : '') + '" data-folder="familiar">' +
-            '<span class="gnb-emoji">' + (isSpace ? '🚀' : '🏴‍☠️') + '</span>' +
+            '<span class="gnb-emoji">' + (isCyber ? '🔐' : (isSpace ? '🚀' : '🏴‍☠️')) + '</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isSpace ? 'Odisea Familiar' : 'Travesía Familiar') + '</span>' +
+              '<span class="gnb-title">' + (isCyber ? 'Hackeo Familiar' : (isSpace ? 'Odisea Familiar' : 'Travesía Familiar')) + '</span>' +
               '<span class="gnb-badge">Escape Room</span>' +
             '</div>' +
           '</button>' +
@@ -2666,14 +2947,14 @@
           '<main class="gdb-content-area gamer-fullwidth">' +
             '<div class="gca-folder-bar">' +
               '<div class="gca-fb-title">' +
-                '<i class="fas ' + (isSpace ? 'fa-satellite' : currentFolder.icon) + '"></i>' +
-                '<span>' + (isSpace ? 'Transmisión: ' : 'Bitácora: ') + '<strong>' +
-                  (activeFolderKey === 'proyectos' ? ((isSpace ? '🪐 Mapa Estelar Galáctico (' : '🗺️ Mapa del Tesoro (') + student.gradeName + ')') :
-                   activeFolderKey === 'juegos' ? ((isSpace ? '🛸 Simulador de Misiones Galácticas (' : '⚔️ Desafíos Piratas y Algoritmos (') + student.gradeName + ')') :
-                   activeFolderKey === 'dibujos' ? ((isSpace ? '🌌 Consola de Hologramas y Dibujos (' : '🎨 La Mesa del Capitán: Dibujos y Pergaminos (') + student.gradeName + ')') :
-                   activeFolderKey === 'proyecto'  ? (isSpace ? '🤖 Laboratorio Espacial de Códigos y Robótica' : '💻 Cofre de Invenciones y Códigos Maker') :
-                   activeFolderKey === 'actividades' ? (isSpace ? ('🛰️ Base Lunar de Actividades (' + student.gradeName + ')') : (FOLDER_CONTENTS.actividades.items.length > 0 ? '📜 Misiones en Tierra y Hogar (' + student.gradeName + ')' : '📜 Misiones y Retos del Taller')) :
-                   activeFolderKey === 'familiar' ? (isSpace ? '🚀 Odisea Familiar: Escape Room Interestelar' : '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas') : currentFolder.name) +
+                '<i class="fas ' + (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : currentFolder.icon)) + '"></i>' +
+                '<span>' + (isCyber ? 'Terminal: ' : (isSpace ? 'Transmisión: ' : 'Bitácora: ')) + '<strong>' +
+                  (activeFolderKey === 'proyectos' ? ((isCyber ? '🔌 Red de Nodos de Robótica e IA (' : (isSpace ? '🪐 Mapa Estelar Galáctico (' : '🗺️ Mapa del Tesoro (')) + student.gradeName + ')') :
+                   activeFolderKey === 'juegos' ? ((isCyber ? '🕹️ Arcade Cyber & Algoritmos de Programación (' : (isSpace ? '🛸 Simulador de Misiones Galácticas (' : '⚔️ Desafíos Piratas y Algoritmos (')) + student.gradeName + ')') :
+                   activeFolderKey === 'dibujos' ? ((isCyber ? '📟 Matriz de Renders, Esquemas y Diseños (' : (isSpace ? '🌌 Consola de Hologramas y Dibujos (' : '🎨 La Mesa del Capitán: Dibujos y Pergaminos (')) + student.gradeName + ')') :
+                   activeFolderKey === 'proyecto'  ? (isCyber ? '🧠 Núcleo de Código, Algoritmos y Robótica Micro:bit' : (isSpace ? '🤖 Laboratorio Espacial de Códigos y Robótica' : '💻 Cofre de Invenciones y Códigos Maker')) :
+                   activeFolderKey === 'actividades' ? (isCyber ? ('🛠️ Banco de Hardware y Planos de Conexión (' + student.gradeName + ')') : (isSpace ? ('🛰️ Base Lunar de Actividades (' + student.gradeName + ')') : (FOLDER_CONTENTS.actividades.items.length > 0 ? '📜 Misiones en Tierra y Hogar (' + student.gradeName + ')' : '📜 Misiones y Retos del Taller'))) :
+                   activeFolderKey === 'familiar' ? (isCyber ? '🔐 Hackeo Familiar: Escape Room de Algoritmos' : (isSpace ? '🚀 Odisea Familiar: Escape Room Interestelar' : '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas')) : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
@@ -4585,12 +4866,13 @@
   // LA MESA DEL CAPITÁN (PIRATA) / PROYECTOR DE HOLOGRAMAS (ESPACIAL)
   // ──────────────────────────────────────────────────
   function renderCaptainTableHtml(allItems) {
+    var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
     if (!allItems || allItems.length === 0) {
       return emptyHtml(
-        isSpace ? '🌌' : '🎨',
-        isSpace ? 'Cápsula de Hologramas vacía' : 'Cofre de Pergaminos vacío',
-        isSpace ? '¡Subí tu primer dibujo o captura espacial abajo para proyectarlo en la consola!' : '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!'
+        isCyber ? '📟' : (isSpace ? '🌌' : '🎨'),
+        isCyber ? 'Terminal de Renders vacía' : (isSpace ? 'Cápsula de Hologramas vacía' : 'Cofre de Pergaminos vacío'),
+        isCyber ? '¡Subí tu primer render 3D o esquema técnico abajo para compilarlo en la matriz!' : (isSpace ? '¡Subí tu primer dibujo o captura espacial abajo para proyectarlo en la consola!' : '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!')
       );
     }
 
@@ -4605,32 +4887,39 @@
     var cardsHtml = pageItems.map(function(item, idx){
       var realIdx = startIdx + idx;
       var imgSrc = getDrawingImageUrl(item);
-      var title  = item.title || item.name || ((isSpace ? 'Holograma #' : 'Pergamino #') + (realIdx + 1));
+      var title  = item.title || item.name || ((isCyber ? 'Render #' : (isSpace ? 'Holograma #' : 'Pergamino #')) + (realIdx + 1));
       var dlUrl  = getDownloadUrl(item);
       var rotClass = 'csc-rot-' + (realIdx % 6);
 
+      var sealTitle = isCyber ? 'Chip Criptográfico Paulo Freire' : (isSpace ? 'Sello de la Flota Estelar' : 'Sellado con cera pirata');
+      var sealIcon = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite-dish' : 'fa-anchor');
+      var nailTitle = isCyber ? 'Conector de bus digital' : (isSpace ? 'Anclado al proyector orbital' : 'Clavado a la mesa del capitán');
+      var ribbonPrefix = isCyber ? 'Render #' : (isSpace ? 'Holograma #' : 'Pergamino #');
+      var ribbonIcon = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-scroll');
+      var actionLabel = isCyber ? 'Examinar' : (isSpace ? 'Proyectar' : 'Examinar');
+
       return '<div class="captain-scroll-card ' + rotClass + '" data-img-url="' + imgSrc + '" data-img-title="' + title + '" data-dl-url="' + (dlUrl || '') + '">' +
-        '<div class="csc-wax-seal" title="' + (isSpace ? 'Sello de la Flota Estelar' : 'Sellado con cera pirata') + '">' +
-          '<div class="csc-wax-stamp"><i class="fas ' + (isSpace ? 'fa-satellite-dish' : 'fa-anchor') + '"></i></div>' +
+        '<div class="csc-wax-seal" title="' + sealTitle + '">' +
+          '<div class="csc-wax-stamp"><i class="fas ' + sealIcon + '"></i></div>' +
         '</div>' +
-        '<div class="csc-card-nail" title="' + (isSpace ? 'Anclado al proyector orbital' : 'Clavado a la mesa del capitán') + '"></div>' +
+        '<div class="csc-card-nail" title="' + nailTitle + '"></div>' +
         '<div class="csc-thumb-frame">' +
           '<img src="' + imgSrc + '" alt="' + title + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
           '<div class="csc-view-overlay">' +
             '<div class="csc-vo-icon"><i class="fas fa-search-plus"></i></div>' +
-            '<span>' + (isSpace ? 'Proyectar' : 'Examinar') + '</span>' +
+            '<span>' + actionLabel + '</span>' +
           '</div>' +
-          '<span class="csc-ribbon-badge"><i class="fas ' + (isSpace ? 'fa-satellite' : 'fa-scroll') + '"></i> ' + (isSpace ? 'Holograma #' : 'Pergamino #') + (realIdx + 1) + '</span>' +
+          '<span class="csc-ribbon-badge"><i class="fas ' + ribbonIcon + '"></i> ' + ribbonPrefix + (realIdx + 1) + '</span>' +
         '</div>' +
         '<div class="csc-body">' +
           '<h4 class="csc-title" title="' + title + '">' + title + '</h4>' +
           '<div class="csc-meta">' +
-            (item.date ? '<span class="csc-meta-item"><i class="fas ' + (isSpace ? 'fa-clock' : 'fa-quill') + '"></i> ' + item.date + '</span>' : '') +
-            (item.size ? '<span class="csc-meta-item"><i class="fas ' + (isSpace ? 'fa-microchip' : 'fa-coins') + '"></i> ' + item.size + '</span>' : '') +
+            (item.date ? '<span class="csc-meta-item"><i class="fas ' + (isCyber ? 'fa-clock' : (isSpace ? 'fa-clock' : 'fa-quill')) + '"></i> ' + item.date + '</span>' : '') +
+            (item.size ? '<span class="csc-meta-item"><i class="fas ' + (isCyber ? 'fa-memory' : (isSpace ? 'fa-microchip' : 'fa-coins')) + '"></i> ' + item.size + '</span>' : '') +
           '</div>' +
           '<div class="csc-actions">' +
-            '<button type="button" class="csc-btn-view" title="' + (isSpace ? 'Proyectar holograma en tamaño completo' : 'Examinar pergamino en tamaño completo') + '">' +
-              '<i class="fas fa-eye"></i> <span>' + (isSpace ? 'Proyectar' : 'Examinar') + '</span>' +
+            '<button type="button" class="csc-btn-view" title="' + (isCyber ? 'Examinar render en pantalla completa' : (isSpace ? 'Proyectar holograma en tamaño completo' : 'Examinar pergamino en tamaño completo')) + '">' +
+              '<i class="fas fa-eye"></i> <span>' + actionLabel + '</span>' +
             '</button>' +
             (dlUrl && dlUrl !== '#' ?
               '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + title.replace(/'/g, "\\'") + '\', event);" class="csc-btn-download" title="Guardar directamente en tu equipo">' +
@@ -4641,7 +4930,7 @@
       '</div>';
     }).join('');
 
-    // Paginación náutica pirata / galáctica
+    // Paginación náutica pirata / galáctica / cyber
     var paginationHtml = '';
     if (totalPages > 1) {
       var pagesBtns = '';
@@ -4672,21 +4961,32 @@
 
     var showingEnd = Math.min(startIdx + CAPTAIN_TABLE_PAGE_SIZE, totalItems);
 
-    return '<div class="captain-table-board ' + (isSpace ? 'space-hologram-board' : '') + '">' +
+    var boardTheme = isCyber ? 'cyber-blueprint-board' : (isSpace ? 'space-hologram-board' : '');
+    var headerIcon = isCyber ? '📟' : (isSpace ? '🌌' : '🗺️');
+    var headerTitle = isCyber
+      ? 'Matriz Digital de Renders y Planos Técnicos'
+      : (isSpace ? 'Consola de Hologramas y Capturas Espaciales' : 'Mesa de Cartas y Pergaminos del Capitán');
+    var headerDesc = isCyber
+      ? 'Tus creaciones digitales, modelados 3D y capturas de circuitos compilados'
+      : (isSpace ? 'Tus diseños y capturas espaciales proyectados en la consola' : 'Tus láminas e ilustraciones náuticas desplegadas');
+    var badgeUnit = isCyber ? ' Render(s) · Bloque ' : (isSpace ? ' Holograma(s) · Sector ' : ' Pergamino(s) · Pliego ');
+    var badgeIcon = isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-scroll');
+
+    return '<div class="captain-table-board ' + boardTheme + '">' +
       '<div class="ct-brass-corner ctb-tl"></div>' +
       '<div class="ct-brass-corner ctb-tr"></div>' +
       '<div class="ct-brass-corner ctb-bl"></div>' +
       '<div class="ct-brass-corner ctb-br"></div>' +
       '<div class="ct-table-header">' +
         '<div class="ct-th-left">' +
-          '<div class="ct-th-icon">' + (isSpace ? '🌌' : '🗺️') + '</div>' +
+          '<div class="ct-th-icon">' + headerIcon + '</div>' +
           '<div class="ct-th-info">' +
-            '<h3>' + (isSpace ? 'Consola de Hologramas y Capturas Espaciales' : 'Mesa de Cartas y Pergaminos del Capitán') + '</h3>' +
-            '<p>' + (isSpace ? 'Tus diseños y capturas espaciales proyectados en la consola' : 'Tus láminas e ilustraciones náuticas desplegadas') + ' (mostrando ' + (startIdx + 1) + ' a ' + showingEnd + ' de ' + totalItems + ').</p>' +
+            '<h3>' + headerTitle + '</h3>' +
+            '<p>' + headerDesc + ' (mostrando ' + (startIdx + 1) + ' a ' + showingEnd + ' de ' + totalItems + ').</p>' +
           '</div>' +
         '</div>' +
         '<div class="ct-th-badge">' +
-          '<i class="fas ' + (isSpace ? 'fa-satellite' : 'fa-scroll') + '"></i> ' + totalItems + (isSpace ? ' Holograma(s) · Sector ' : ' Pergamino(s) · Pliego ') + captainTablePage + '/' + totalPages +
+          '<i class="fas ' + badgeIcon + '"></i> ' + totalItems + badgeUnit + captainTablePage + '/' + totalPages +
         '</div>' +
       '</div>' +
       '<div class="captain-table-grid">' +
@@ -4784,6 +5084,7 @@
 
   function openPdfModal(pdfUrl, title) {
     if (window.sounds) window.sounds.playClick();
+    var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
     var modal = document.getElementById('pdf-viewer-modal');
     if (modal && !modal.querySelector('.pmf-brass-corner')) {
@@ -4822,23 +5123,31 @@
       modal.onclick = function(e){ if (e.target===modal) modal.classList.remove('active'); };
     }
     var frameEl = modal.querySelector('.pirate-modal-frame');
-    if (frameEl) frameEl.classList.toggle('theme-space', isSpace);
+    if (frameEl) {
+      frameEl.classList.toggle('theme-cyber', isCyber);
+      frameEl.classList.toggle('theme-space', !isCyber && isSpace);
+    }
     var kickerEl = document.getElementById('pvm-kicker');
     if (kickerEl) {
-      kickerEl.innerHTML = isSpace
-        ? '<i class="fas fa-satellite-dish"></i> ARCHIVO DE LA FLOTA ESTELAR · MANUAL TÉCNICO'
-        : '<i class="fas fa-compass"></i> ARCHIVO DE LA BITÁCORA · DOCUMENTO OFICIAL';
+      kickerEl.innerHTML = isCyber
+        ? '<i class="fas fa-terminal"></i> TERMINAL DE CÓDIGO · MANUAL Y PLANOS TÉCNICOS'
+        : (isSpace
+          ? '<i class="fas fa-satellite-dish"></i> ARCHIVO DE LA FLOTA ESTELAR · MANUAL TÉCNICO'
+          : '<i class="fas fa-compass"></i> ARCHIVO DE LA BITÁCORA · DOCUMENTO OFICIAL');
     }
-    document.getElementById('pvm-title').innerHTML = '<span class="ilm-scroll-badge">' + (isSpace ? '🛰️' : '📜') + '</span> ' + (title || (isSpace ? 'Manual de la Estación' : 'Documento del Navío'));
+    var badgeIcon = isCyber ? '⚡' : (isSpace ? '🛰️' : '📜');
+    var defaultTitle = isCyber ? 'Manual Técnico de Robótica' : (isSpace ? 'Manual de la Estación' : 'Documento del Navío');
+    document.getElementById('pvm-title').innerHTML = '<span class="ilm-scroll-badge">' + badgeIcon + '</span> ' + (title || defaultTitle);
     document.getElementById('pvm-iframe').src = pdfUrl;
     modal.classList.add('active');
   }
 
   // ──────────────────────────────────────────────────
-  // LIGHTBOX IMAGEN / FICHA DIDÁCTICA (PIRATA / ESPACIAL)
+  // LIGHTBOX IMAGEN / FICHA DIDÁCTICA (PIRATA / ESPACIAL / CYBER)
   // ──────────────────────────────────────────────────
   function openImageModal(imgUrl, title, downloadUrl) {
     if (window.sounds) window.sounds.playClick();
+    var isCyber = isCyberTheme();
     var isSpace = isSpaceTheme();
     var modal = document.getElementById('image-lightbox-modal');
     if (modal && !modal.querySelector('.pmf-brass-corner')) {
@@ -4906,31 +5215,36 @@
     }
 
     var frameEl = modal.querySelector('.pirate-modal-frame');
-    if (frameEl) frameEl.classList.toggle('theme-space', isSpace);
+    if (frameEl) {
+      frameEl.classList.toggle('theme-cyber', isCyber);
+      frameEl.classList.toggle('theme-space', !isCyber && isSpace);
+    }
 
     var kickerEl = document.getElementById('ilm-kicker');
     if (kickerEl) {
-      kickerEl.innerHTML = isSpace
-        ? '<i class="fas fa-satellite-dish"></i> CONSOLA ESTELAR · PROYECCIÓN HOLOGRÁFICA'
-        : '<i class="fas fa-skull-crossbones"></i> MESA DEL CAPITÁN · INSPECCIÓN DE PERGAMINO';
+      kickerEl.innerHTML = isCyber
+        ? '<i class="fas fa-microchip"></i> MATRIZ DIGITAL · TERMINAL DE ESQUEMAS Y BLUEPRINTS'
+        : (isSpace
+          ? '<i class="fas fa-satellite-dish"></i> CONSOLA ESTELAR · PROYECCIÓN HOLOGRÁFICA'
+          : '<i class="fas fa-skull-crossbones"></i> MESA DEL CAPITÁN · INSPECCIÓN DE PERGAMINO');
     }
     var dlLabelEl = document.getElementById('ilm-dl-label');
     if (dlLabelEl) {
-      dlLabelEl.textContent = isSpace ? 'Guardar Holograma' : 'Descargar Pergamino';
+      dlLabelEl.textContent = isCyber ? 'Guardar Render' : (isSpace ? 'Guardar Holograma' : 'Descargar Pergamino');
     }
     var waxEmojiEl = document.getElementById('ilm-wax-emoji');
     if (waxEmojiEl) {
-      waxEmojiEl.textContent = isSpace ? '🚀' : '☠️';
+      waxEmojiEl.textContent = isCyber ? '🤖' : (isSpace ? '🚀' : '☠️');
     }
 
-    var cleanTitle = title || (isSpace ? 'Holograma de Misión' : 'Pergamino de Misión');
+    var cleanTitle = title || (isCyber ? 'Render y Esquema Cyber' : (isSpace ? 'Holograma de Misión' : 'Pergamino de Misión'));
     if (/^ChatGPT Image/i.test(cleanTitle)) {
-      cleanTitle = isSpace ? 'Transmisión Secreta de la Flota' : 'Enigma Secreto de la Tripulación';
+      cleanTitle = isCyber ? 'Render Secreto de Circuito' : (isSpace ? 'Transmisión Secreta de la Flota' : 'Enigma Secreto de la Tripulación');
     }
 
     var titleEl = document.getElementById('ilm-title');
     if (titleEl) {
-      titleEl.innerHTML = '<span class="ilm-scroll-badge">' + (isSpace ? '🌌' : '📜') + '</span> ' + cleanTitle;
+      titleEl.innerHTML = '<span class="ilm-scroll-badge">' + (isCyber ? '📟' : (isSpace ? '🌌' : '📜')) + '</span> ' + cleanTitle;
     }
 
     var imgEl = document.getElementById('ilm-img');

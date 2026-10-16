@@ -15580,3 +15580,917 @@ body.student-logged-in #student-drive-dashboard-container {
   border-color: #A5F3FC !important;
   outline-color: #0284C7 !important;
 }
+
+/* ==========================================================================
+   GRUPO 3 (4.° Y 5.° GRADO): MAESTROS DE ROBOTS, CIRCUITOS & IA (.theme-cyber)
+   ========================================================================== */
+
+/* ── 1. Modal Perfil del Alumno / Terminal Cyber (.theme-cyber) ── */
+#student-login-modal .pirate-modal-frame.theme-cyber {
+  border-color: #064E3B !important;
+  outline-color: #10B981 !important;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.22) 0%, transparent 70%),
+    radial-gradient(circle at 85% 90%, rgba(236, 72, 153, 0.18) 0%, transparent 60%),
+    linear-gradient(180deg, #0B132B 0%, #060B18 50%, #030712 100%) !important;
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.95),
+    0 0 0 3px #10B981,
+    0 0 40px rgba(16, 185, 129, 0.4) !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-cyber .pmf-brass-corner svg path {
+  fill: #10B981 !important;
+  stroke: #064E3B !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-cyber .pmf-brass-corner svg circle {
+  fill: #34D399 !important;
+  stroke: #022C22 !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-cyber .slm-pirate-header {
+  background: linear-gradient(90deg, #030712 0%, #064E3B 50%, #030712 100%) !important;
+  border-bottom-color: #10B981 !important;
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.7),
+    inset 0 -1px 0 #34D399 !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-cyber .slm-pirate-kicker {
+  color: #34D399 !important;
+  font-family: 'Consolas', 'Courier New', monospace !important;
+  letter-spacing: 0.12em !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-cyber #slm-title {
+  color: #ECFDF5 !important;
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 2px 4px rgba(0,0,0,0.9) !important;
+}
+
+#student-login-modal .pirate-modal-frame.theme-cyber .slm-pirate-body {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 80%),
+    linear-gradient(180deg, #070D1F 0%, #020617 100%) !important;
+}
+
+/* ── Tarjeta de Tripulación Cyber (.cyber-crew-card) ── */
+.cyber-crew-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #E2E8F0;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.cyber-crew-header {
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(16, 185, 129, 0.35);
+}
+
+.cyber-crew-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #34D399;
+  font-family: 'Consolas', monospace;
+  margin-bottom: 4px;
+}
+
+.cyber-crew-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #F8FAFC;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.6);
+}
+
+.cyber-crew-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.08);
+}
+
+.cyber-avatar-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #065F46 0%, #022C22 100%);
+  border: 2px solid #10B981;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.cyber-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cyber-player-name {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.cyber-rank-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #FACC15;
+  background: rgba(250, 204, 21, 0.15);
+  border: 1px solid rgba(250, 204, 21, 0.4);
+  border-radius: 6px;
+  padding: 2px 8px;
+  width: fit-content;
+}
+
+.cyber-spec-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #EC4899;
+  background: rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(236, 72, 153, 0.35);
+  border-radius: 6px;
+  padding: 2px 8px;
+  width: fit-content;
+  font-family: 'Consolas', monospace;
+}
+
+.cyber-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.cyber-stat-card {
+  background: rgba(11, 19, 43, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cyber-stat-card.energy {
+  border-color: rgba(250, 204, 21, 0.5);
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.15);
+}
+
+.cyber-stat-lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94A3B8;
+  letter-spacing: 0.05em;
+}
+
+.cyber-stat-num {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #F8FAFC;
+  font-family: 'Consolas', monospace;
+}
+
+.cyber-stat-card.energy .cyber-stat-num {
+  color: #FACC15;
+}
+
+.cyber-progress-box {
+  background: rgba(11, 19, 43, 0.9);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.cyber-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #34D399;
+  margin-bottom: 6px;
+  font-family: 'Consolas', monospace;
+}
+
+.cyber-progress-track {
+  height: 10px;
+  border-radius: 5px;
+  background: #020617;
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.cyber-progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #059669 0%, #10B981 50%, #34D399 100%);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.8);
+  transition: width 0.5s ease;
+}
+
+.cyber-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.cyber-btn-terminal {
+  flex: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #022C22;
+  background: linear-gradient(135deg, #34D399 0%, #10B981 50%, #059669 100%);
+  border: 1px solid #6EE7B7;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Consolas', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cyber-btn-terminal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.6);
+  filter: brightness(1.1);
+}
+
+.cyber-btn-disconnect {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #FDA4AF;
+  background: rgba(225, 29, 72, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Consolas', monospace;
+}
+
+.cyber-btn-disconnect:hover {
+  background: rgba(225, 29, 72, 0.3);
+  color: #FFF;
+}
+
+/* ── 2. Hero Card Cyber (.theme-cyber .gamer-hero-card) ── */
+.theme-cyber .gamer-hero-card,
+.gamer-hero-card.cyber-hero-card {
+  background:
+    radial-gradient(ellipse at 85% 20%, rgba(236, 72, 153, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 15% 90%, rgba(16, 185, 129, 0.25) 0%, transparent 60%),
+    linear-gradient(135deg, #090E20 0%, #060B18 50%, #020617 100%) !important;
+  border: 2px solid #10B981 !important;
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.85),
+    0 0 30px rgba(16, 185, 129, 0.3) !important;
+  border-radius: 18px !important;
+}
+
+.theme-cyber .gh-avatar-container {
+  border-color: #10B981 !important;
+  background: radial-gradient(circle, #065F46 0%, #022C22 100%) !important;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.7) !important;
+}
+
+.theme-cyber .gh-status-dot {
+  background: #34D399 !important;
+  box-shadow: 0 0 10px #34D399 !important;
+}
+
+.theme-cyber .gh-badge.grade {
+  background: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(52, 211, 153, 0.45) !important;
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.theme-cyber .gh-badge.level {
+  background: rgba(250, 204, 21, 0.16) !important;
+  border-color: rgba(250, 204, 21, 0.45) !important;
+  color: #FACC15 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.theme-cyber .gh-player-name {
+  color: #F8FAFC !important;
+  text-shadow: 0 0 12px rgba(52, 211, 153, 0.6) !important;
+}
+
+.theme-cyber .gh-player-sub {
+  color: #94A3B8 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.theme-cyber .gh-btn-continue {
+  background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%) !important;
+  border-color: #6EE7B7 !important;
+  color: #022C22 !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45) !important;
+}
+
+.theme-cyber .gh-btn-continue:hover {
+  box-shadow: 0 10px 28px rgba(16, 185, 129, 0.65) !important;
+  filter: brightness(1.1) !important;
+}
+
+.theme-cyber .gbc-icon {
+  background: rgba(2, 44, 34, 0.6) !important;
+  color: #ECFDF5 !important;
+}
+
+.theme-cyber .gh-pill-link {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(52, 211, 153, 0.4) !important;
+  color: #34D399 !important;
+}
+
+.theme-cyber .gh-pill-link:hover {
+  background: rgba(16, 185, 129, 0.3) !important;
+  color: #FFFFFF !important;
+}
+
+.theme-cyber .gh-stats-row {
+  border-top-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.theme-cyber .gh-xp-badge {
+  background: rgba(250, 204, 21, 0.15) !important;
+  border-color: rgba(250, 204, 21, 0.5) !important;
+  color: #FACC15 !important;
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.2) !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.theme-cyber .gh-progress-header {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.theme-cyber .gh-progress-track {
+  background: #020617 !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+.theme-cyber .gh-progress-fill {
+  background: linear-gradient(90deg, #059669 0%, #10B981 50%, #34D399 100%) !important;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.8) !important;
+}
+
+/* ── 3. Barra de Navegación Cyber (.theme-cyber .gamer-nav-bar) ── */
+.theme-cyber .gnb-tab,
+.cyber-nav-bar .gnb-tab {
+  background: rgba(11, 19, 43, 0.85) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.05) !important;
+}
+
+.theme-cyber .gnb-tab:hover,
+.cyber-nav-bar .gnb-tab:hover {
+  border-color: #10B981 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25) !important;
+}
+
+.theme-cyber .gnb-title,
+.cyber-nav-bar .gnb-title {
+  color: #E2E8F0 !important;
+}
+
+.theme-cyber .gnb-badge,
+.cyber-nav-bar .gnb-badge {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.theme-cyber .gnb-tab.active,
+.cyber-nav-bar .gnb-tab.active {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.9) 0%, rgba(2, 44, 34, 0.95) 100%) !important;
+  border-color: #34D399 !important;
+  box-shadow:
+    0 6px 20px rgba(16, 185, 129, 0.35),
+    inset 0 0 12px rgba(52, 211, 153, 0.2) !important;
+}
+
+.theme-cyber .gnb-tab.active .gnb-title,
+.cyber-nav-bar .gnb-tab.active .gnb-title {
+  color: #FFFFFF !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.6) !important;
+}
+
+.theme-cyber .gnb-tab.active .gnb-badge,
+.cyber-nav-bar .gnb-tab.active .gnb-badge {
+  color: #FACC15 !important;
+}
+
+/* ── 4. Contenedor de Contenido Cyber ── */
+.theme-cyber .gdb-content-area.gamer-fullwidth {
+  background: #020617 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9) !important;
+  border-radius: 16px !important;
+}
+
+.theme-cyber .gca-folder-bar {
+  background: linear-gradient(90deg, #090E20 0%, #064E3B 50%, #090E20 100%) !important;
+  border-bottom-color: #10B981 !important;
+}
+
+.theme-cyber .gca-fb-title {
+  color: #F8FAFC !important;
+}
+
+.theme-cyber .gca-fb-title i {
+  color: #34D399 !important;
+}
+
+.theme-cyber .gca-fb-count {
+  color: #A7F3D0 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.theme-cyber .gca-btn-upload {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  border-color: #6EE7B7 !important;
+  color: #022C22 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important;
+}
+
+.theme-cyber .gca-btn-upload:hover {
+  filter: brightness(1.1) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* ── 5. Circuito Central / PCB Map Canvas (.cyber-map-canvas) ── */
+.pirate-map-canvas.cyber-map-canvas {
+  background: #030712 !important;
+  border: 2px solid #065F46 !important;
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.95),
+    0 0 30px rgba(16, 185, 129, 0.2) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.pirate-start-port.cyber-start-port {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.25) 0%, transparent 60%),
+    linear-gradient(180deg, #090E20 0%, #06281E 60%, #020617 100%) !important;
+  border-bottom: 2px solid #10B981 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+}
+
+.cyber-start-port .ppb-title {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+  letter-spacing: 0.08em !important;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.6) !important;
+}
+
+.cyber-start-port .ppb-sub {
+  color: #E2E8F0 !important;
+}
+
+.cyber-start-port .ppb-anchor i,
+.cyber-start-port .ppb-compass i {
+  color: #34D399 !important;
+  filter: drop-shadow(0 0 8px #34D399) !important;
+}
+
+/* Estación / Nodo Cyber (.cyber-node-station) */
+.pirate-island-station.cyber-node-station .pirate-medallion-ring {
+  background: radial-gradient(circle, #0F172A 30%, #064E3B 100%) !important;
+  border: 3px solid #10B981 !important;
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.6),
+    inset 0 0 15px rgba(52, 211, 153, 0.3) !important;
+}
+
+.pirate-island-station.cyber-node-station .pct-tick {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-level-coin {
+  background: radial-gradient(circle at 35% 35%, #FACC15 0%, #CA8A04 60%, #713F12 100%) !important;
+  border-color: #FEF08A !important;
+  color: #422006 !important;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.7) !important;
+  font-family: 'Consolas', monospace !important;
+  font-weight: 900 !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-island-info-block {
+  background: rgba(9, 14, 32, 0.92) !important;
+  border: 1px solid rgba(16, 185, 129, 0.45) !important;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.8),
+    0 0 15px rgba(16, 185, 129, 0.15) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-island-title {
+  color: #F8FAFC !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.4) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-status-pill.completado {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10B981 !important;
+  color: #34D399 !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-status-pill.activo {
+  background: rgba(250, 204, 21, 0.2) !important;
+  border-color: #FACC15 !important;
+  color: #FACC15 !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-status-pill.desafio {
+  background: rgba(148, 163, 184, 0.2) !important;
+  border-color: #94A3B8 !important;
+  color: #CBD5E1 !important;
+}
+
+/* Gaveta / Terminal de Código del Nodo (.cyber-node-station .pirate-scroll-drawer) */
+.pirate-island-station.cyber-node-station .pirate-scroll-wood-rod {
+  background: linear-gradient(180deg, #059669 0%, #10B981 50%, #064E3B 100%) !important;
+  border-color: #34D399 !important;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.5) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-scroll-parchment {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12) 0%, transparent 70%),
+    linear-gradient(180deg, #0A1128 0%, #060B18 50%, #020617 100%) !important;
+  border-left: 2px solid #10B981 !important;
+  border-right: 2px solid #10B981 !important;
+  color: #E2E8F0 !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9) !important;
+}
+
+.pirate-island-station.cyber-node-station .psts-stamp {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+  letter-spacing: 0.08em !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-scroll-title {
+  color: #FFFFFF !important;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.5) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-scroll-narrative {
+  color: #CBD5E1 !important;
+  border-left-color: #10B981 !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-quote-icon {
+  color: #34D399 !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-scroll-box.objective {
+  background: rgba(6, 78, 59, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-scroll-box.objective .psb-header {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-scroll-box.benefits {
+  background: rgba(139, 92, 246, 0.15) !important;
+  border-color: rgba(168, 85, 247, 0.4) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-scroll-box.benefits .psb-header {
+  color: #C084FC !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-btn-main {
+  background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%) !important;
+  border-color: #6EE7B7 !important;
+  color: #022C22 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-btn-main:hover {
+  filter: brightness(1.15) !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.7) !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-btn-sec {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  color: #34D399 !important;
+}
+
+.pirate-island-station.cyber-node-station .pirate-btn-ghost {
+  background: transparent !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  color: #CBD5E1 !important;
+}
+
+/* Estación Final Supercomputadora IA (.cyber-finish-station) */
+.cyber-finish-station {
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.2) 0%, transparent 70%),
+    linear-gradient(180deg, #06281E 0%, #030712 100%) !important;
+  border: 2px solid #10B981 !important;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(16, 185, 129, 0.4) !important;
+}
+
+.cyber-finish-station .arm-finish-title {
+  color: #ECFDF5 !important;
+  text-shadow: 0 0 12px rgba(52, 211, 153, 0.8) !important;
+}
+
+.cyber-finish-station .arm-finish-desc {
+  color: #CBD5E1 !important;
+}
+
+.cyber-finish-station .arm-finish-stat-pill {
+  background: rgba(11, 19, 43, 0.9) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  color: #A7F3D0 !important;
+}
+
+.cyber-finish-station .arm-finish-celebrate-btn {
+  background: linear-gradient(135deg, #059669 0%, #10B981 50%, #FACC15 100%) !important;
+  border-color: #FEF08A !important;
+  color: #022C22 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* ── 6. Tablero de Circuitos (.pirate-tavern-board.cyber-circuit-board) ── */
+.ptb-main-wrap.cyber-board-wrap {
+  background: transparent !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board {
+  background:
+    radial-gradient(ellipse at 50% 10%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
+    linear-gradient(180deg, #0B132B 0%, #060B18 60%, #020617 100%) !important;
+  border: 2px solid #10B981 !important;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.92),
+    0 0 30px rgba(16, 185, 129, 0.25) !important;
+  border-radius: 18px !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ptb-corner-bolt {
+  background: radial-gradient(circle, #34D399 0%, #059669 60%, #022C22 100%) !important;
+  border-color: #6EE7B7 !important;
+  box-shadow: 0 0 8px #34D399 !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ptb-parchment-sheet {
+  background:
+    radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 75%),
+    linear-gradient(180deg, #090E20 0%, #030712 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ptb-wax-seal {
+  background: radial-gradient(circle at 35% 35%, #10B981 0%, #059669 60%, #022C22 100%) !important;
+  border-color: #6EE7B7 !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.7) !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ptb-sheet-tag {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+  letter-spacing: 0.1em !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ptb-sheet-title {
+  color: #FFFFFF !important;
+  text-shadow: 0 0 12px rgba(52, 211, 153, 0.6) !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ptb-sheet-sub {
+  color: #CBD5E1 !important;
+}
+
+/* Tarjetas en el Tablero de Circuitos */
+.pirate-tavern-board.cyber-circuit-board .ptb-card {
+  background: rgba(11, 19, 43, 0.9) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.75) !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ptb-card:hover {
+  border-color: #34D399 !important;
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.9),
+    0 0 20px rgba(16, 185, 129, 0.3) !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ggc-title {
+  color: #F8FAFC !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ggc-desc {
+  color: #94A3B8 !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .pirate-btn-exec {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  color: #022C22 !important;
+  font-weight: 900 !important;
+  border-color: #6EE7B7 !important;
+}
+
+.pirate-tavern-board.cyber-circuit-board .ggc-btn-sugerencias {
+  background: rgba(15, 23, 42, 0.8) !important;
+  color: #34D399 !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+/* ── 7. Matriz Digital de Renders (.captain-table-board.cyber-blueprint-board) ── */
+.captain-table-board.cyber-blueprint-board {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.18) 0%, transparent 60%),
+    linear-gradient(180deg, #090E20 0%, #030712 100%) !important;
+  border: 2px solid #10B981 !important;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.94),
+    0 0 35px rgba(16, 185, 129, 0.3) !important;
+}
+
+.captain-table-board.cyber-blueprint-board .ct-brass-corner {
+  background: radial-gradient(circle, #34D399 0%, #059669 60%, #022C22 100%) !important;
+  border-color: #6EE7B7 !important;
+  box-shadow: 0 0 10px #34D399 !important;
+}
+
+.captain-table-board.cyber-blueprint-board .ct-table-header h3 {
+  color: #F8FAFC !important;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.6) !important;
+}
+
+.captain-table-board.cyber-blueprint-board .ct-table-header p {
+  color: #CBD5E1 !important;
+}
+
+.captain-table-board.cyber-blueprint-board .ct-th-badge {
+  background: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(52, 211, 153, 0.45) !important;
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.captain-table-board.cyber-blueprint-board .captain-scroll-card {
+  background: rgba(11, 19, 43, 0.95) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+.captain-table-board.cyber-blueprint-board .captain-scroll-card:hover {
+  border-color: #34D399 !important;
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.95),
+    0 0 22px rgba(16, 185, 129, 0.35) !important;
+}
+
+.captain-table-board.cyber-blueprint-board .csc-title {
+  color: #F8FAFC !important;
+}
+
+.captain-table-board.cyber-blueprint-board .csc-meta-item {
+  color: #94A3B8 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.captain-table-board.cyber-blueprint-board .csc-btn-view {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  color: #022C22 !important;
+  font-weight: 900 !important;
+}
+
+.captain-table-board.cyber-blueprint-board .csc-btn-download {
+  background: rgba(15, 23, 42, 0.8) !important;
+  color: #34D399 !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+/* ── 8. Lightbox y Visor PDF Cyber (.pirate-modal-frame.theme-cyber) ── */
+.pirate-modal-frame.theme-cyber {
+  border-color: #064E3B !important;
+  outline-color: #10B981 !important;
+  background: #030712 !important;
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.95),
+    0 0 0 3px #10B981,
+    0 0 35px rgba(16, 185, 129, 0.35) !important;
+}
+
+.pirate-modal-frame.theme-cyber .pmf-brass-corner svg path {
+  fill: #10B981 !important;
+  stroke: #064E3B !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-header {
+  background: linear-gradient(90deg, #030712 0%, #064E3B 50%, #030712 100%) !important;
+  border-bottom-color: #10B981 !important;
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.7),
+    inset 0 -1px 0 #34D399 !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-pirate-kicker {
+  color: #34D399 !important;
+  font-family: 'Consolas', monospace !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-scroll-badge {
+  background: linear-gradient(135deg, #10B981, #059669) !important;
+  border-color: #6EE7B7 !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-btn-action {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  border-color: #6EE7B7 !important;
+  color: #022C22 !important;
+  font-weight: 900 !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-body {
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.15) 0%, rgba(3, 7, 18, 0.95) 100%),
+    linear-gradient(180deg, #090E20 0%, #020617 100%) !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-scroll-rod {
+  background: linear-gradient(180deg, #059669 0%, #10B981 35%, #064E3B 100%) !important;
+  border-top-color: #6EE7B7 !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-scroll-rod .rod-finial,
+.pirate-modal-frame.theme-cyber .ilm-scroll-rod .rod-center-ring {
+  background: radial-gradient(circle at 35% 35%, #34D399 0%, #059669 60%, #022C22 100%) !important;
+  border-color: #020617 !important;
+  color: #ECFDF5 !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-parchment-mat {
+  background: radial-gradient(circle at center, #0B132B 35%, #030712 100%) !important;
+  border-left-color: #10B981 !important;
+  border-right-color: #10B981 !important;
+  outline-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-mat-corner {
+  color: #10B981 !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-img-inner-bezel {
+  background: linear-gradient(135deg, #059669 0%, #10B981 50%, #EC4899 100%) !important;
+}
+
+.pirate-modal-frame.theme-cyber .ilm-wax-coin {
+  background: radial-gradient(circle at 35% 35%, #10B981 0%, #059669 60%, #022C22 100%) !important;
+  border-color: #6EE7B7 !important;
+  outline-color: #10B981 !important;
+}

@@ -133,11 +133,15 @@
         /2\s*°|2do|segundo|3\s*°|3ero|tercer/i.test(gName)) {
       return 'space';
     }
+    if (gId === 'grado4' || gId === '4to' || gId === 'grado5' || gId === '5to' ||
+        /4\s*°|4to|cuarto|5\s*°|5to|quinto/i.test(gName)) {
+      return 'cyber';
+    }
     return 'pirate';
   }
   window.getStudentThemeGroup = getStudentThemeGroup;
 
-  // === MODAL DE LOGIN / CREDENCIAL PIRATA & ESPACIAL ===
+  // === MODAL DE LOGIN / CREDENCIAL PIRATA, ESPACIAL & CYBER ===
   function getPirateBrassCornerSvg(pos) {
     return '<div class="pmf-brass-corner ' + pos + '" aria-hidden="true">' +
       '<svg viewBox="0 0 64 64" fill="none">' +
@@ -209,8 +213,10 @@
     if (student) {
       var themeGroup = getStudentThemeGroup(student);
       var isSpace = (themeGroup === 'space');
+      var isCyber = (themeGroup === 'cyber');
       if (frame) {
         frame.classList.toggle('theme-space', isSpace);
+        frame.classList.toggle('theme-cyber', isCyber);
       }
 
       var firstName = student.name.split(' ')[0];
@@ -222,10 +228,91 @@
       var progressPercent = Math.min(100, Math.round((completedCount / totalMissions) * 100));
       var studentLevel = Math.max(1, Math.floor(completedCount / 2) + 1);
       var totalPoints = completedCount * 100;
-      var nextMission = missions.find(function(m) { return m.status !== 'completado'; }) || missions[missions.length - 1] || { level: 1, title: isSpace ? 'Estación Orbital Alfa' : 'Isla del Desembarco' };
+      var defaultMissionTitle = isCyber ? 'Nodo Central Alfa' : (isSpace ? 'Estación Orbital Alfa' : 'Isla del Desembarco');
+      var nextMission = missions.find(function(m) { return m.status !== 'completado'; }) || missions[missions.length - 1] || { level: 1, title: defaultMissionTitle };
       var gId = (student.gradeId || '').toLowerCase();
 
-      if (isSpace) {
+      if (isCyber) {
+        // ═══ GRUPO 3 (4° y 5° GRADO): CREDENCIAL CYBERPUNK · MAESTROS DE ROBOTS, CIRCUITOS & IA ═══
+        if (kicker) kicker.innerHTML = '🤖 Red Neuronal Maker · División Cyber';
+        if (title) title.innerHTML = '<i class="fas fa-microchip"></i> Terminal Cyber de ' + firstName;
+
+        var cyberRank = studentLevel >= 5 ? 'Maestro Cyber & IA' : (studentLevel >= 3 ? 'Arquitecto de Robots' : 'Operador de Circuitos');
+        var cyberSpecialty = (gId === 'grado5' || gId === '5to')
+          ? '🧠 Ingeniero de IA, Sensores & Servomotores'
+          : '⚡ Programador de Micro:bit, Circuitos & Lógica';
+
+        body.innerHTML =
+          '<div class="slm-active-profile pirate-crew-card cyber-crew-card">' +
+            '<div class="pcc-top-banner">' +
+              '<div class="pcc-avatar-medallion">' +
+                '<span class="pcc-avatar-emoji">' + (student.avatar || '🤖') + '</span>' +
+                '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
+              '</div>' +
+              '<div class="pcc-identity">' +
+                '<span class="pcc-rank-badge">⚡ ' + cyberRank + '</span>' +
+                '<h3 class="slm-student-name">' + student.name + '</h3>' +
+                '<div class="pcc-ship-row">' +
+                  '<span class="slm-student-grade">🔌 Lab ' + (student.gradeName || '') + '</span>' +
+                  '<span class="pcc-specialty-tag">' + cyberSpecialty + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="pcc-stats-scroll">' +
+              '<div class="pcc-scroll-title"><i class="fas fa-network-wired"></i> Registro de Procesamiento y Sistemas</div>' +
+              '<div class="pcc-stats-grid">' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">⚡</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Energía de Red</span>' +
+                    '<strong class="pcc-stat-value">+' + totalPoints + ' TeraWatts</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🔌</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Nodos Compilados</span>' +
+                    '<strong class="pcc-stat-value">' + completedCount + ' de ' + totalMissions + ' Nodos</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">🤖</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Rango Cyber</span>' +
+                    '<strong class="pcc-stat-value">' + cyberRank + '</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="pcc-stat-box">' +
+                  '<span class="pcc-stat-icon">📟</span>' +
+                  '<div class="pcc-stat-info">' +
+                    '<span class="pcc-stat-label">Nodo Activo</span>' +
+                    '<strong class="pcc-stat-value">Nodo ' + (nextMission.level || 1) + ': ' + (nextMission.title || 'En línea') + '</strong>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="pcc-progress-section">' +
+                '<div class="pcc-progress-header">' +
+                  '<span>🧠 Sincronización de la Red Maker</span>' +
+                  '<strong>' + progressPercent + '% Compilado</strong>' +
+                '</div>' +
+                '<div class="pcc-progress-track">' +
+                  '<div class="pcc-progress-fill" style="width:' + progressPercent + '%"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="slm-actions pcc-actions">' +
+              '<button class="pcc-btn-adventure" id="slm-go-adventure" type="button">' +
+                '<i class="fas fa-terminal"></i> Conectar a mi Terminal' +
+              '</button>' +
+              '<button class="slm-btn-logout pcc-btn-logout" id="slm-logout-action" type="button">' +
+                '<i class="fas fa-power-off"></i> Desconectar Sistema' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      } else if (isSpace) {
         // ═══ GRUPO 2 (2° y 3° GRADO): CREDENCIAL DE ASTRONAUTA & EXPLORADOR GALÁCTICO ═══
         if (kicker) kicker.innerHTML = '🚀 Comando Galáctico · Flota Estelar';
         if (title) title.innerHTML = '<i class="fas fa-user-astronaut"></i> Bitácora Espacial de ' + firstName;
