@@ -4421,19 +4421,47 @@
   // ──────────────────────────────────────────────────
   // VISOR PDF
   // ──────────────────────────────────────────────────
+  function getPirateFrameCornersHtml() {
+    var cornerSvg =
+      '<svg viewBox="0 0 64 64" width="44" height="44" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs>' +
+          '<linearGradient id="pmfBrassGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+            '<stop offset="0%" stop-color="#FEF08A"/>' +
+            '<stop offset="35%" stop-color="#F59E0B"/>' +
+            '<stop offset="70%" stop-color="#B45309"/>' +
+            '<stop offset="100%" stop-color="#78350F"/>' +
+          '</linearGradient>' +
+        '</defs>' +
+        '<path d="M2 2 L58 2 L48 14 L22 14 C16 14 14 16 14 22 L14 48 L2 58 Z" fill="url(#pmfBrassGrad)" stroke="#451A03" stroke-width="2"/>' +
+        '<path d="M6 6 L44 6 L38 10 L10 10 L10 38 L6 44 Z" fill="#FDE68A" opacity="0.45"/>' +
+        '<circle cx="9" cy="9" r="3.2" fill="#451A03" stroke="#FDE68A" stroke-width="1"/>' +
+        '<circle cx="42" cy="8" r="2.5" fill="#451A03" stroke="#FDE68A" stroke-width="0.8"/>' +
+        '<circle cx="8" cy="42" r="2.5" fill="#451A03" stroke="#FDE68A" stroke-width="0.8"/>' +
+        '<circle cx="22" cy="8" r="2" fill="#78350F"/>' +
+        '<circle cx="8" cy="22" r="2" fill="#78350F"/>' +
+      '</svg>';
+    return (
+      '<div class="pmf-brass-corner top-left">' + cornerSvg + '</div>' +
+      '<div class="pmf-brass-corner top-right">' + cornerSvg + '</div>' +
+      '<div class="pmf-brass-corner bottom-left">' + cornerSvg + '</div>' +
+      '<div class="pmf-brass-corner bottom-right">' + cornerSvg + '</div>'
+    );
+  }
+
   function openPdfModal(pdfUrl, title) {
     if (window.sounds) window.sounds.playClick();
     var modal = document.getElementById('pdf-viewer-modal');
+    if (modal && !modal.querySelector('.pmf-brass-corner')) {
+      modal.remove();
+      modal = null;
+    }
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'pdf-viewer-modal';
       modal.className = 'student-login-modal pirate-lightbox-overlay';
       modal.innerHTML =
-        '<div class="slm-content ilm-content pirate-modal-frame" style="max-width:880px;width:94vw;">' +
-          '<div class="ptb-corner-bolt top-left"></div>' +
-          '<div class="ptb-corner-bolt top-right"></div>' +
-          '<div class="ptb-corner-bolt bottom-left"></div>' +
-          '<div class="ptb-corner-bolt bottom-right"></div>' +
+        '<div class="slm-content ilm-content pirate-modal-frame" style="max-width:900px;width:94vw;">' +
+          getPirateFrameCornersHtml() +
           '<div class="slm-header ilm-header">' +
             '<div class="ilm-title-group">' +
               '<span class="ilm-pirate-kicker"><i class="fas fa-compass"></i> ARCHIVO DE LA BITÁCORA · DOCUMENTO OFICIAL</span>' +
@@ -4443,9 +4471,15 @@
               '<button type="button" class="slm-close ilm-pirate-close" onclick="document.getElementById(\'pdf-viewer-modal\').classList.remove(\'active\')" title="Cerrar pergamino">&times;</button>' +
             '</div>' +
           '</div>' +
-          '<div class="slm-body ilm-body" style="padding:20px;flex-direction:column;gap:12px;">' +
-            '<div style="width:100%;height:70vh;border-radius:12px;overflow:hidden;border:3px solid #C49A5A;box-shadow:0 14px 35px rgba(0,0,0,0.65);background:#FFFDF0;">' +
-              '<iframe id="pvm-iframe" src="" style="width:100%;height:100%;border:none;"></iframe>' +
+          '<div class="slm-body ilm-body" style="padding:22px;flex-direction:column;gap:12px;">' +
+            '<div class="ilm-parchment-stage" style="width:100%;">' +
+              '<div class="ilm-scroll-rod top"><span class="rod-finial left"></span><span class="rod-center-ring"></span><span class="rod-finial right"></span></div>' +
+              '<div class="ilm-parchment-mat" style="width:100%;padding:10px;">' +
+                '<div style="width:100%;height:68vh;border-radius:8px;overflow:hidden;border:2px solid #8B5A2B;background:#FFFDF0;">' +
+                  '<iframe id="pvm-iframe" src="" style="width:100%;height:100%;border:none;"></iframe>' +
+                '</div>' +
+              '</div>' +
+              '<div class="ilm-scroll-rod bottom"><span class="rod-finial left"></span><span class="rod-center-ring"></span><span class="rod-finial right"></span></div>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -4463,7 +4497,7 @@
   function openImageModal(imgUrl, title, downloadUrl) {
     if (window.sounds) window.sounds.playClick();
     var modal = document.getElementById('image-lightbox-modal');
-    if (modal && !modal.querySelector('.pirate-modal-frame')) {
+    if (modal && !modal.querySelector('.pmf-brass-corner')) {
       modal.remove();
       modal = null;
     }
@@ -4473,10 +4507,7 @@
       modal.className = 'student-login-modal pirate-lightbox-overlay';
       modal.innerHTML =
         '<div class="slm-content ilm-content pirate-modal-frame">' +
-          '<div class="ptb-corner-bolt top-left"></div>' +
-          '<div class="ptb-corner-bolt top-right"></div>' +
-          '<div class="ptb-corner-bolt bottom-left"></div>' +
-          '<div class="ptb-corner-bolt bottom-right"></div>' +
+          getPirateFrameCornersHtml() +
           '<div class="slm-header ilm-header">' +
             '<div class="ilm-title-group">' +
               '<span class="ilm-pirate-kicker"><i class="fas fa-skull-crossbones"></i> MESA DEL CAPITÁN · INSPECCIÓN DE PERGAMINO</span>' +
@@ -4489,10 +4520,29 @@
           '</div>' +
           '<div class="slm-body ilm-body">' +
             '<div class="ilm-parchment-stage">' +
-              '<div class="ilm-stage-nail top-left" title="Clavado al tablero"></div>' +
-              '<div class="ilm-stage-nail top-right" title="Clavado al tablero"></div>' +
-              '<img id="ilm-img" src="" alt="Ficha" referrerpolicy="no-referrer">' +
-              '<div class="ilm-wax-stamp" title="Sello Real del Navío">☠️</div>' +
+              '<div class="ilm-scroll-rod top">' +
+                '<span class="rod-finial left"></span>' +
+                '<span class="rod-center-ring"><i class="fas fa-compass"></i></span>' +
+                '<span class="rod-finial right"></span>' +
+              '</div>' +
+              '<div class="ilm-parchment-mat">' +
+                '<span class="ilm-mat-corner tl">✥</span>' +
+                '<span class="ilm-mat-corner tr">✥</span>' +
+                '<span class="ilm-mat-corner bl">✥</span>' +
+                '<span class="ilm-mat-corner br">✥</span>' +
+                '<div class="ilm-img-inner-bezel">' +
+                  '<img id="ilm-img" src="" alt="Ficha" referrerpolicy="no-referrer">' +
+                '</div>' +
+                '<div class="ilm-wax-stamp" title="Sello Real del Navío Paulo Freire">' +
+                  '<div class="ilm-wax-ribbons"></div>' +
+                  '<div class="ilm-wax-coin"><span>☠️</span></div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="ilm-scroll-rod bottom">' +
+                '<span class="rod-finial left"></span>' +
+                '<span class="rod-center-ring"></span>' +
+                '<span class="rod-finial right"></span>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>';

@@ -10504,17 +10504,49 @@ body.student-logged-in #student-drive-dashboard-container {
   max-width: 960px;
   width: 95vw;
   max-height: 94vh;
-  border-radius: 22px;
-  border: 6px ridge #78350F;
+  border-radius: 16px;
+  border: 8px solid #3A1B0A;
+  outline: 2px solid #D97706;
+  outline-offset: -6px;
   box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.85),
-    0 0 0 2px rgba(245, 158, 11, 0.4),
-    inset 0 0 40px rgba(0, 0, 0, 0.75);
+    0 35px 90px rgba(0, 0, 0, 0.92),
+    0 0 0 3px #78350F,
+    0 0 35px rgba(245, 158, 11, 0.22),
+    inset 0 0 45px rgba(0, 0, 0, 0.8);
   background: #1E0E05;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
   animation: zoomInLight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* cantoneras de bronce forjado en las 4 esquinas del modal */
+.pmf-brass-corner {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  z-index: 25;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.75));
+}
+.pmf-brass-corner.top-left {
+  top: -6px;
+  left: -6px;
+}
+.pmf-brass-corner.top-right {
+  top: -6px;
+  right: -6px;
+  transform: scaleX(-1);
+}
+.pmf-brass-corner.bottom-left {
+  bottom: -6px;
+  left: -6px;
+  transform: scaleY(-1);
+}
+.pmf-brass-corner.bottom-right {
+  bottom: -6px;
+  right: -6px;
+  transform: scale(-1, -1);
 }
 
 @keyframes zoomInLight {
@@ -10525,16 +10557,24 @@ body.student-logged-in #student-drive-dashboard-container {
 #image-lightbox-modal .ilm-header,
 #pdf-viewer-modal .ilm-header {
   background:
-    linear-gradient(135deg, #2D1507 0%, #451A03 50%, #230F04 100%);
+    linear-gradient(180deg, rgba(251, 191, 36, 0.08) 0%, transparent 100%),
+    repeating-linear-gradient(
+      90deg,
+      #2A1306 0px,
+      #2A1306 80px,
+      #1E0D04 81px,
+      #341809 82px
+    );
   color: #FEF3C7;
-  padding: 14px 28px;
+  padding: 14px 30px;
+  border-radius: 8px 8px 0 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
   flex-shrink: 0;
   border-bottom: 3px solid #D97706;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65), inset 0 -1px 0 #FEF08A;
   position: relative;
   z-index: 3;
 }
@@ -10646,9 +10686,10 @@ body.student-logged-in #student-drive-dashboard-container {
 
 #image-lightbox-modal .ilm-body,
 #pdf-viewer-modal .ilm-body {
-  padding: 24px;
+  padding: 22px 32px;
+  border-radius: 0 0 8px 8px;
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.12) 0%, rgba(10, 5, 2, 0.65) 100%),
+    radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.15) 0%, rgba(10, 5, 2, 0.72) 100%),
     repeating-linear-gradient(
       0deg,
       #2B1509 0px,
@@ -10663,69 +10704,156 @@ body.student-logged-in #student-drive-dashboard-container {
   overflow: auto;
   flex: 1;
   min-height: 240px;
-  box-shadow: inset 0 0 55px rgba(0, 0, 0, 0.85);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
 }
 
+/* ── Escenario de Pergamino Real con Varillas Torneadas de Madera y Oro ── */
 .ilm-parchment-stage {
   position: relative;
   display: inline-flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
-  padding: 12px;
-  background: linear-gradient(135deg, #FFFDF0 0%, #F5E6C4 50%, #EBD29E 100%);
-  border: 3px solid #B45309;
-  border-radius: 14px;
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(254, 243, 199, 0.4),
-    inset 0 0 28px rgba(146, 64, 14, 0.25);
   max-width: 100%;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.85));
 }
 
-.ilm-stage-nail {
-  position: absolute;
-  top: 8px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #FDE68A, #B45309 60%, #451A03);
-  border: 1.5px solid #290F02;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.75);
-  z-index: 4;
-}
-
-.ilm-stage-nail.top-left { left: 10px; }
-.ilm-stage-nail.top-right { right: 10px; }
-
-.ilm-wax-stamp {
-  position: absolute;
-  right: -12px;
-  bottom: -12px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #DC2626, #991B1B 65%, #450A0A);
-  border: 2px solid #7F1D1D;
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.75), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+.ilm-scroll-rod {
+  position: relative;
+  height: 18px;
+  margin: 0 -14px;
+  background: linear-gradient(180deg, #6B3410 0%, #9A4B1A 28%, #4A220B 72%, #241005 100%);
+  border-top: 1.5px solid #D97706;
+  border-bottom: 2px solid #1A0B03;
+  border-radius: 999px;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
-  transform: rotate(12deg);
-  z-index: 5;
+  z-index: 6;
+}
+
+.ilm-scroll-rod .rod-finial {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FEF08A 0%, #F59E0B 45%, #B45309 80%, #451A03 100%);
+  border: 2px solid #451A03;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.75), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+.ilm-scroll-rod .rod-finial.left {
+  left: -10px;
+}
+
+.ilm-scroll-rod .rod-finial.right {
+  right: -10px;
+}
+
+.ilm-scroll-rod .rod-center-ring {
+  width: 44px;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #FDE68A 0%, #D97706 50%, #78350F 100%);
+  border: 1.5px solid #451A03;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #451A03;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.ilm-parchment-mat {
+  position: relative;
+  padding: 18px 20px;
+  background:
+    radial-gradient(circle at center, #FFFDF5 35%, #F6E6C2 78%, #E2C38B 100%);
+  border-left: 4px solid #8B5A2B;
+  border-right: 4px solid #8B5A2B;
+  box-shadow:
+    inset 0 0 42px rgba(120, 53, 15, 0.38),
+    inset 0 0 0 2px rgba(180, 83, 9, 0.3);
+  outline: 1.5px dashed rgba(146, 64, 14, 0.55);
+  outline-offset: -9px;
+}
+
+/* Ornamentos cartográficos en las 4 esquinas del pergamino */
+.ilm-mat-corner {
+  position: absolute;
+  color: #92400E;
+  font-size: 0.95rem;
+  line-height: 1;
+  opacity: 0.75;
   pointer-events: none;
+  z-index: 4;
+}
+.ilm-mat-corner.tl { top: 7px; left: 9px; }
+.ilm-mat-corner.tr { top: 7px; right: 9px; }
+.ilm-mat-corner.bl { bottom: 7px; left: 9px; }
+.ilm-mat-corner.br { bottom: 7px; right: 9px; }
+
+/* Bisel interior dorado/bronce alrededor de la lámina */
+.ilm-img-inner-bezel {
+  position: relative;
+  padding: 5px;
+  background: linear-gradient(135deg, #78350F 0%, #D97706 50%, #451A03 100%);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(41, 15, 2, 0.55);
+}
+
+/* Sello de lacre real con cintas */
+.ilm-wax-stamp {
+  position: absolute;
+  right: 6px;
+  bottom: -14px;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ilm-wax-ribbons {
+  position: absolute;
+  bottom: -10px;
+  width: 28px;
+  height: 22px;
+  background:
+    linear-gradient(155deg, #991B1B 0%, #DC2626 100%);
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 70% 78%, 50% 100%, 30% 78%, 0% 100%);
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.6));
+}
+
+.ilm-wax-coin {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #EF4444 0%, #B91C1C 58%, #450A0A 100%);
+  border: 2.5px dashed #FCA5A5;
+  outline: 3px solid #7F1D1D;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.75), inset 0 2px 4px rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  transform: rotate(10deg);
 }
 
 #image-lightbox-modal #ilm-img {
   max-width: 100%;
-  max-height: calc(94vh - 155px);
+  max-height: calc(94vh - 205px);
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 8px;
-  border: 1.5px solid rgba(120, 53, 15, 0.45);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  border-radius: 5px;
+  border: 1.5px solid #FEF3C7;
   display: block;
+  background: #180B04;
 }
 
 @media (max-width: 640px) {
@@ -10741,10 +10869,18 @@ body.student-logged-in #student-drive-dashboard-container {
     display: none;
   }
   #image-lightbox-modal .ilm-body {
-    padding: 12px;
+    padding: 14px 18px;
   }
-  .ilm-parchment-stage {
-    padding: 7px;
+  .ilm-parchment-mat {
+    padding: 10px;
+  }
+  .ilm-scroll-rod {
+    height: 14px;
+    margin: 0 -8px;
+  }
+  .ilm-scroll-rod .rod-finial {
+    width: 18px;
+    height: 18px;
   }
 }
 
