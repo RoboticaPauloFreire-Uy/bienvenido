@@ -154,10 +154,10 @@
       modal.className = 'student-login-modal';
       modal.innerHTML =
         '<div class="slm-content pirate-modal-frame">' +
-          getPirateBrassCornerSvg('tl') +
-          getPirateBrassCornerSvg('tr') +
-          getPirateBrassCornerSvg('bl') +
-          getPirateBrassCornerSvg('br') +
+          getPirateBrassCornerSvg('top-left') +
+          getPirateBrassCornerSvg('top-right') +
+          getPirateBrassCornerSvg('bottom-left') +
+          getPirateBrassCornerSvg('bottom-right') +
           '<div class="slm-header">' +
             '<div class="slm-header-left">' +
               '<span class="slm-pirate-kicker" id="slm-modal-kicker">⚓ Cofradía Pirata · Taller STEAM</span>' +

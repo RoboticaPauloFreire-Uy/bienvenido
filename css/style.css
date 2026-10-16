@@ -3909,8 +3909,8 @@ button, input, select, textarea { font-family: inherit; }
     ),
     linear-gradient(180deg, #3e200d 0%, #261206 50%, #180b03 100%);
   width: 100%;
-  max-width: 600px;
-  max-height: 92vh;
+  max-width: 620px;
+  max-height: 96vh;
   border-radius: 18px;
   border: 4px solid #b45309;
   outline: 2px solid #fde047;
@@ -3931,7 +3931,7 @@ button, input, select, textarea { font-family: inherit; }
     radial-gradient(circle at calc(100% - 18px) 50%, #fbbf24 3px, #78350f 4px, transparent 5px),
     linear-gradient(180deg, #451a03 0%, #290f02 100%);
   color: #fef3c7;
-  padding: 16px 28px;
+  padding: 12px 26px;
   border-radius: 14px 14px 0 0;
   border-bottom: 3px solid #d97706;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
@@ -3939,16 +3939,17 @@ button, input, select, textarea { font-family: inherit; }
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .slm-header-left {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .slm-pirate-kicker {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1.4px;
@@ -3958,13 +3959,13 @@ button, input, select, textarea { font-family: inherit; }
 
 .slm-title {
   font-family: 'Cinzel', 'Georgia', serif;
-  font-size: 1.28rem;
+  font-size: 1.18rem;
   font-weight: 900;
   color: #fef08a;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .slm-title i {
@@ -3972,13 +3973,13 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .slm-close {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #ef4444, #991b1b 70%, #450a0a 100%);
   border: 2px solid #fde047;
   color: #fef08a;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 900;
   line-height: 1;
   cursor: pointer;
@@ -3987,6 +3988,7 @@ button, input, select, textarea { font-family: inherit; }
   justify-content: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.4);
   transition: transform 0.2s ease, filter 0.2s ease;
+  flex-shrink: 0;
 }
 
 .slm-close:hover {
@@ -3995,11 +3997,12 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .slm-body {
-  padding: 22px 24px 24px;
+  padding: 14px 16px;
+  overflow-x: hidden;
   overflow-y: auto;
   background:
     radial-gradient(circle at 50% 35%, rgba(255, 251, 235, 0.96) 0%, rgba(245, 222, 179, 0.94) 70%, rgba(218, 180, 120, 0.95) 100%);
-  margin: 10px 12px 12px;
+  margin: 8px 10px 10px;
   border-radius: 12px;
   border: 2px solid #92400e;
   box-shadow:
@@ -4011,35 +4014,37 @@ button, input, select, textarea { font-family: inherit; }
 .pirate-crew-card {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 11px;
   text-align: left;
-  padding: 4px 2px;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .pcc-top-banner {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   background: linear-gradient(135deg, #2e1505 0%, #451a03 60%, #1f0d03 100%);
-  border: 2.5px solid #d97706;
-  border-radius: 14px;
-  padding: 16px 18px;
+  border: 2px solid #d97706;
+  border-radius: 12px;
+  padding: 11px 14px;
   box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.45),
+    0 6px 14px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(254, 240, 138, 0.3);
   position: relative;
 }
 
 .pcc-avatar-medallion {
   position: relative;
-  width: 78px;
-  height: 78px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #fef08a 0%, #f59e0b 55%, #78350f 100%);
-  border: 3px solid #fde047;
+  border: 2.5px solid #fde047;
   box-shadow:
-    0 0 0 3px #451a03,
-    0 6px 14px rgba(0, 0, 0, 0.6);
+    0 0 0 2px #451a03,
+    0 4px 10px rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4047,32 +4052,32 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .pcc-avatar-emoji {
-  font-size: 2.75rem;
+  font-size: 2.25rem;
   line-height: 1;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
 }
 
 .pcc-level-pill {
   position: absolute;
-  bottom: -6px;
+  bottom: -5px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
   color: #fef08a;
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 900;
-  letter-spacing: 0.8px;
-  padding: 2px 9px;
+  letter-spacing: 0.6px;
+  padding: 1px 8px;
   border-radius: 999px;
   border: 1.5px solid #fde047;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
   white-space: nowrap;
 }
 
 .pcc-identity {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
   min-width: 0;
   flex: 1;
 }
@@ -4081,21 +4086,21 @@ button, input, select, textarea { font-family: inherit; }
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
-  gap: 6px;
+  gap: 5px;
   background: rgba(245, 158, 11, 0.2);
   border: 1px solid #f59e0b;
   color: #fde047;
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 3px 10px;
+  letter-spacing: 0.8px;
+  padding: 2px 8px;
   border-radius: 999px;
 }
 
 .pirate-crew-card .slm-student-name {
   font-family: 'Cinzel', 'Georgia', serif;
-  font-size: 1.45rem;
+  font-size: 1.22rem;
   font-weight: 900;
   color: #fffbeb;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
@@ -4107,29 +4112,29 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-top: 2px;
 }
 
 .pirate-crew-card .slm-student-grade {
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #fed7aa;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(251, 191, 36, 0.4);
-  padding: 3px 10px;
-  border-radius: 8px;
+  padding: 2px 8px;
+  border-radius: 6px;
   margin: 0;
 }
 
 .pcc-specialty-tag {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: #fef08a;
   background: rgba(180, 83, 9, 0.45);
   border: 1px solid rgba(253, 224, 71, 0.35);
-  padding: 3px 10px;
-  border-radius: 8px;
+  padding: 2px 8px;
+  border-radius: 6px;
 }
 
 /* ── PERGAMINO DE ESTADÍSTICAS PIRATAS ── */
@@ -4138,23 +4143,25 @@ button, input, select, textarea { font-family: inherit; }
     linear-gradient(180deg, rgba(255, 251, 235, 0.75) 0%, rgba(254, 243, 199, 0.55) 100%);
   border: 2px dashed #b45309;
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 10px 12px;
   box-shadow: inset 0 2px 10px rgba(120, 53, 15, 0.12);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .pcc-scroll-title {
   font-family: 'Cinzel', 'Georgia', serif;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: #78350f;
-  margin-bottom: 12px;
-  padding-bottom: 6px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
   border-bottom: 1.5px solid rgba(180, 83, 9, 0.3);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .pcc-scroll-title i {
@@ -4163,24 +4170,27 @@ button, input, select, textarea { font-family: inherit; }
 
 .pcc-stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 .pcc-stat-box {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  min-width: 0;
   background: #fffbeb;
   border: 1.5px solid #d97706;
-  border-radius: 10px;
-  padding: 10px 12px;
-  box-shadow: 0 3px 6px rgba(120, 53, 15, 0.1);
+  border-radius: 9px;
+  padding: 7px 10px;
+  box-shadow: 0 2px 5px rgba(120, 53, 15, 0.08);
+  box-sizing: border-box;
 }
 
 .pcc-stat-icon {
-  font-size: 1.55rem;
+  font-size: 1.35rem;
   line-height: 1;
   flex-shrink: 0;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
@@ -4190,18 +4200,19 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   flex-direction: column;
   min-width: 0;
+  flex: 1;
 }
 
 .pcc-stat-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   color: #92400e;
 }
 
 .pcc-stat-value {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 900;
   color: #451a03;
   white-space: nowrap;
@@ -4213,18 +4224,18 @@ button, input, select, textarea { font-family: inherit; }
 .pcc-progress-section {
   background: rgba(120, 53, 15, 0.08);
   border: 1px solid rgba(180, 83, 9, 0.3);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 9px;
+  padding: 7px 10px;
 }
 
 .pcc-progress-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #78350f;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .pcc-progress-header strong {
@@ -4234,7 +4245,7 @@ button, input, select, textarea { font-family: inherit; }
 
 .pcc-progress-track {
   width: 100%;
-  height: 12px;
+  height: 10px;
   background: #3e200d;
   border-radius: 999px;
   border: 1.5px solid #78350f;
@@ -4255,7 +4266,7 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -4268,12 +4279,12 @@ button, input, select, textarea { font-family: inherit; }
   background: linear-gradient(180deg, #fbbf24 0%, #d97706 60%, #92400e 100%);
   color: #290f02;
   border: 2px solid #fef08a;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 900;
-  padding: 11px 18px;
+  padding: 9px 16px;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.6);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
@@ -4291,12 +4302,12 @@ button, input, select, textarea { font-family: inherit; }
   background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 65%, #450a0a 100%);
   color: #fef08a;
   border: 2px solid #f87171;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 900;
-  padding: 11px 18px;
+  padding: 9px 16px;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
