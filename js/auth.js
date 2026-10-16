@@ -66,8 +66,8 @@
       if (classroomsHdr) classroomsHdr.style.display = 'none';
       if (classroomsGrid) classroomsGrid.style.display = 'none';
 
-      // Mostrar Mi Carpeta Drive
-      driveLinks.forEach(function(el) { el.style.display = 'inline-flex'; });
+      // Ocultar Mi Carpeta Drive en la barra superior
+      driveLinks.forEach(function(el) { el.style.display = 'none'; });
 
       // Botón muestra avatar + nombre
       if (btn) {

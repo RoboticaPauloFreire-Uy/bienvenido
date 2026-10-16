@@ -2350,15 +2350,12 @@
                   '<i class="fas fa-chevron-right gbc-arrow"></i>' +
                 '</button>' : '') +
 
-              '<div class="gh-extra-links">' +
-                (driveTargetUrl ?
-                  '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="Abrir carpeta en Google Drive">' +
-                    '<i class="fab fa-google-drive"></i> <span>Cofre Drive</span>' +
-                  '</a>' : '') +
-                '<button type="button" class="gh-pill-link logout" onclick="if(window.openLoginModal) window.openLoginModal();" title="Cambiar grumete o cerrar sesión">' +
-                  '<i class="fas fa-user-shield"></i> <span>Mi Rol</span>' +
-                '</button>' +
-              '</div>' +
+              (driveTargetUrl ?
+                '<div class="gh-extra-links">' +
+                  '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="gh-pill-link" title="Abrir mi Cofre">' +
+                    '<i class="fas fa-gem"></i> <span>Cofre</span>' +
+                  '</a>' +
+                '</div>' : '') +
             '</div>' +
           '</div>' +
 
