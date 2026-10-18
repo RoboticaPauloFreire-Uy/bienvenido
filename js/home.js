@@ -561,6 +561,220 @@
     renderGridActividades('hn-act-grid-casa', casa, '🏠', 'No hay desafíos en casa para este filtro.');
   }
 
+  /* ───────────── Modal Estilo Periódico (Actividades de Clase) ───────────── */
+  function formatearGradosActividad(grados) {
+    if (!grados) return 'Todos los grados';
+    var gr = Array.isArray(grados) ? grados : [grados];
+    if (!gr.length || gr.indexOf('todos') > -1) return 'Todos los grados';
+    return gr.map(nombreGrado).join(' · ');
+  }
+
+  function abrirModalClasePeriodico(act, meta) {
+    if (!act) return;
+    var modalEl = document.getElementById('clase-periodico-modal');
+    if (!modalEl) return;
+
+    var dwgId = (act.id || 'EXP').replace(/^act-/, '').toUpperCase();
+    var issueIdEl = document.getElementById('cpm-issue-id');
+    if (issueIdEl) issueIdEl.textContent = dwgId;
+
+    var headlineEl = document.getElementById('cpm-headline');
+    if (headlineEl) headlineEl.textContent = act.titulo || 'Expediente de Clase';
+
+    var subheadlineEl = document.getElementById('cpm-subheadline');
+    if (subheadlineEl) {
+      if (act.subtitulo) {
+        subheadlineEl.textContent = act.subtitulo;
+        subheadlineEl.style.display = 'block';
+      } else {
+        subheadlineEl.textContent = 'Expediente pedagógico y crónica del taller tecnológico y experimental.';
+        subheadlineEl.style.display = 'block';
+      }
+    }
+
+    var stampEl = document.getElementById('cpm-stamp');
+    if (stampEl) {
+      stampEl.textContent = (meta && meta.estado && meta.estado.texto) ? meta.estado.texto : 'EXPEDIENTE DE AULA';
+    }
+
+    var datelineEl = document.getElementById('cpm-dateline');
+    if (datelineEl) {
+      var fTxt = act.desde ? act.desde : 'TALLER ACTIVO';
+      datelineEl.innerHTML = '<i class="far fa-calendar-alt"></i> ' + esc(fTxt) + ' // COLEGIO PAULO FREIRE';
+    }
+
+    var grTxt = formatearGradosActividad(act.grados || act.grado);
+    var gradePillEl = document.getElementById('cpm-grade-pill');
+    if (gradePillEl) {
+      gradePillEl.innerHTML = '<i class="fas fa-graduation-cap"></i> ' + esc(grTxt);
+    }
+
+    var stateBadgeEl = document.getElementById('cpm-state-badge');
+    if (stateBadgeEl) {
+      var stClave = (meta && meta.estado && meta.estado.clave) || 'curso';
+      var stTexto = (meta && meta.estado && meta.estado.texto) || 'EN CURSO';
+      stateBadgeEl.className = 'cpm-state-badge state-' + stClave;
+      stateBadgeEl.textContent = stTexto;
+    }
+
+    // Ficha técnica en recuadro lateral
+    var boxGrades = document.getElementById('cpm-box-grades');
+    if (boxGrades) boxGrades.textContent = grTxt;
+    var boxDate = document.getElementById('cpm-box-date');
+    if (boxDate) boxDate.textContent = act.desde || 'En desarrollo';
+    var boxStatus = document.getElementById('cpm-box-status');
+    if (boxStatus) boxStatus.textContent = (meta && meta.estado && meta.estado.texto) || 'En curso';
+
+    // Imagen principal de portada
+    var mainFrame = document.getElementById('cpm-main-photo-frame');
+    var mainImg = document.getElementById('cpm-main-img');
+    var captionText = document.getElementById('cpm-photo-caption-text');
+    if (act.imagen) {
+      if (mainImg) {
+        mainImg.src = act.imagen;
+        mainImg.alt = act.titulo || 'Proyecto de clase';
+        mainImg.onerror = function() {
+          this.onerror = null;
+          this.src = 'img/escudo_paulo_freire.png';
+        };
+      }
+      if (captionText) {
+        captionText.textContent = 'Fotografía principal del proyecto «' + (act.titulo || '') + '». Clic para ampliar en pantalla completa.';
+      }
+      if (mainFrame) {
+        mainFrame.style.display = 'block';
+        mainFrame.onclick = function() {
+          if (window.openImageModal) window.openImageModal(act.imagen, act.titulo);
+          else window.open(act.imagen, '_blank');
+        };
+      }
+    } else {
+      if (mainFrame) mainFrame.style.display = 'none';
+    }
+
+    // Galería adicional de fotos
+    var galeriaWrapper = document.getElementById('cpm-gallery-wrapper');
+    var galleryGrid = document.getElementById('cpm-gallery-grid');
+    var galleryCount = document.getElementById('cpm-gallery-count');
+    var galeriaList = Array.isArray(act.galeria) ? act.galeria.filter(Boolean) : [];
+
+    if (galeriaList.length > 0) {
+      if (galleryCount) galleryCount.textContent = galeriaList.length;
+      if (galleryGrid) {
+        galleryGrid.innerHTML = galeriaList.map(function(url, pIdx) {
+          return '<div class="cpm-thumb-item" data-photo-url="' + esc(url) + '" data-photo-idx="' + (pIdx + 1) + '" role="button" tabindex="0" title="Foto ' + (pIdx + 1) + ' - Clic para ampliar">' +
+            '<img src="' + esc(url) + '" alt="Foto ' + (pIdx + 1) + '" class="cpm-thumb-img" loading="lazy" onerror="this.onerror=null; this.src=\'img/escudo_paulo_freire.png\';">' +
+            '<span class="cpm-thumb-badge"><i class="fas fa-camera"></i> ' + (pIdx + 1) + '</span>' +
+          '</div>';
+        }).join('');
+
+        galleryGrid.querySelectorAll('.cpm-thumb-item').forEach(function(item) {
+          item.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var pUrl = item.dataset.photoUrl;
+            var pNum = item.dataset.photoIdx;
+            var tDesc = (act.titulo || 'Proyecto') + ' (Foto ' + pNum + ' de ' + galeriaList.length + ')';
+            if (window.openImageModal) window.openImageModal(pUrl, tDesc);
+            else window.open(pUrl, '_blank');
+          });
+        });
+      }
+      if (galeriaWrapper) galeriaWrapper.style.display = 'block';
+    } else {
+      if (galeriaWrapper) galeriaWrapper.style.display = 'none';
+      if (galleryGrid) galleryGrid.innerHTML = '';
+    }
+
+    // Cuerpo de texto periodístico con letra capital
+    var bodyContent = document.getElementById('cpm-body-content');
+    if (bodyContent) {
+      var rawDesc = (act.descripcion || '').trim();
+      var paragraphs = rawDesc ? rawDesc.split(/\n\s*\n/).map(function(p) { return p.trim(); }).filter(Boolean) : ['Sin descripción detallada.'];
+      bodyContent.innerHTML = paragraphs.map(function(p) {
+        return '<p>' + esc(p) + '</p>';
+      }).join('');
+    }
+
+    // Botones de acción / enlaces adicionales
+    var actionButtons = document.getElementById('cpm-action-buttons');
+    if (actionButtons) {
+      if (act.botones && act.botones.length > 0) {
+        actionButtons.style.display = 'flex';
+        actionButtons.innerHTML = act.botones.map(function(b) {
+          var icon = b.icono ? '<i class="' + esc(b.icono) + '"></i> ' : '<i class="fas fa-external-link-alt"></i> ';
+          var url = b.url || '#';
+          var isExt = /^https?:/i.test(url);
+          return '<a href="' + esc(url) + '"' + (isExt ? ' target="_blank" rel="noopener noreferrer"' : '') + ' class="cpm-action-btn primary">' + icon + esc(b.texto) + '</a>';
+        }).join('');
+      } else {
+        actionButtons.style.display = 'none';
+        actionButtons.innerHTML = '';
+      }
+    }
+
+    // Desplegar modal
+    modalEl.style.display = 'flex';
+    requestAnimationFrame(function() {
+      modalEl.classList.add('open');
+    });
+    modalEl.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    var scrollBody = modalEl.querySelector('.cpm-scroll-body');
+    if (scrollBody) scrollBody.scrollTop = 0;
+
+    var closeBtn = document.getElementById('cpm-close-btn');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function cerrarModalClasePeriodico() {
+    var modalEl = document.getElementById('clase-periodico-modal');
+    if (!modalEl) return;
+    modalEl.classList.remove('open');
+    modalEl.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function initClasePeriodicoModal() {
+    var closeTop = document.getElementById('cpm-close-btn');
+    if (closeTop) closeTop.addEventListener('click', cerrarModalClasePeriodico);
+
+    var closeFoot = document.getElementById('cpm-foot-close-btn');
+    if (closeFoot) closeFoot.addEventListener('click', cerrarModalClasePeriodico);
+
+    var overlay = document.getElementById('clase-periodico-modal');
+    if (overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) cerrarModalClasePeriodico();
+      });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var cpm = document.getElementById('clase-periodico-modal');
+        if (cpm && cpm.classList.contains('open') && !document.querySelector('#image-lightbox-modal.active')) {
+          cerrarModalClasePeriodico();
+        }
+      }
+    });
+  }
+
+  window.abrirModalClasePeriodico = abrirModalClasePeriodico;
+  window.cerrarModalClasePeriodico = cerrarModalClasePeriodico;
+  window.abrirModalClasePorIndice = function(idx) {
+    var list = window._ULTIMA_LISTA_CLASE || [];
+    var item = list[+idx];
+    if (item && item.a) {
+      abrirModalClasePeriodico(item.a, item);
+    } else {
+      var todas = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
+      var deClase = todas.filter(function(x) { return (x.tipo === 'clase' || !x.tipo); });
+      var act = deClase[+idx] || todas[+idx];
+      if (act) abrirModalClasePeriodico(act, { a: act, estado: estadoActividad(act) });
+    }
+  };
+  window.abrirModalClasePeriodicoPorIndice = window.abrirModalClasePorIndice;
+
   function renderGridActividades(gridId, actividades, emoji, vacio) {
     var grid = document.getElementById(gridId);
     if (!grid) return;
@@ -577,6 +791,10 @@
       if (x.mia !== y.mia) return x.mia ? -1 : 1;
       return (parseFecha(y.a.desde) || 0) - (parseFecha(x.a.desde) || 0);
     });
+
+    if (gridId === 'hn-act-grid-clase') {
+      window._ULTIMA_LISTA_CLASE = lista;
+    }
 
     if (!lista.length) {
       grid.innerHTML = '<div class="hn-empty"><span>' + emoji + '</span>' + esc(vacio) + '</div>';
@@ -651,37 +869,58 @@
       var dwgId = (a.id || 'EXP').replace(/^act-/, '').toUpperCase();
       var stateClass = 'state-' + it.estado.clave;
 
-      return '<article class="np-clase-card ' + stateClass + (it.mia ? ' es-mia' : '') + '">' +
+      var accionesClase = (botones ? '<div class="np-clase-actions">' + botones + '</div>' : '');
+
+      return '<article class="np-clase-card ' + stateClass + (it.mia ? ' es-mia' : '') + '" data-act-idx="' + idx + '" role="button" tabindex="0" onclick="window.abrirModalClasePorIndice(' + idx + ');" title="Clic para abrir expediente estilo periódico">' +
         '<div class="np-clase-top">' +
           '<span class="np-clase-exp"><i class="fas fa-file-alt"></i> EXPEDIENTE DE AULA Nº ' + esc(dwgId) + '</span>' +
           '<span class="np-clase-stamp ' + stateClass + '">' + esc(it.estado.texto) + '</span>' +
         '</div>' +
-        '<div class="np-clase-photo-wrap">' +
+        '<div class="np-clase-photo-wrap' + (a.imagen ? ' has-img' : '') + '">' +
           thumb +
           '<span class="np-clase-fig-tag">GRABADO // ACTIVIDAD PRÁCTICA</span>' +
         '</div>' +
         '<div class="np-clase-body">' +
           (it.mia ? '<span class="np-clase-mine"><i class="fas fa-bookmark"></i> ASIGNADO A TU GRADO</span>' : '') +
           '<h3 class="np-clase-title">' + esc(a.titulo) + '</h3>' +
+          (a.subtitulo ? '<p class="np-clase-subtitulo" style="font-family:\'Newsreader\',serif; font-style:italic; font-size:0.88rem; color:#5A4E44; margin:0 0 8px 0; line-height:1.35;">' + esc(a.subtitulo) + '</p>' : '') +
           '<p class="np-clase-desc">' + esc(a.descripcion) + '</p>' +
           chips +
           '<div class="np-clase-meta">' +
             '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
             fechaPresentacion + hasta + desdeProx +
           '</div>' +
-          (botones ? '<div class="np-clase-actions">' + botones + '</div>' : '') +
+          accionesClase +
+          '<div class="np-clase-foot">' +
+            '<button type="button" class="np-clase-read-btn" onclick="event.stopPropagation(); window.abrirModalClasePorIndice(' + idx + ');">' +
+              '<i class="fas fa-newspaper"></i> VER EXPEDIENTE COMPLETO <i class="fas fa-arrow-right"></i>' +
+            '</button>' +
+          '</div>' +
         '</div>' +
       '</article>';
     }).join('');
 
-    // Botones que abren la ficha en el visor de imágenes
+    // Botones que abren la ficha en el visor de imágenes (para botones con imagenModal)
     grid.querySelectorAll('button.hn-act-btn[data-act]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
         var it = lista[+btn.dataset.act];
         var b = it && it.a.botones[+btn.dataset.btn];
         if (!b) return;
         if (window.openImageModal) window.openImageModal(b.imagenModal, it.a.titulo, b.descarga);
         else window.open(b.imagenModal, '_blank', 'noopener');
+      });
+    });
+
+    // Accesibilidad por teclado (Enter / Espacio)
+    grid.querySelectorAll('.np-clase-card').forEach(function (card) {
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (e.target.closest('a') || e.target.closest('button')) return;
+          e.preventDefault();
+          var actIdx = +card.dataset.actIdx;
+          if (window.abrirModalClasePorIndice) window.abrirModalClasePorIndice(actIdx);
+        }
       });
     });
   }
@@ -1692,6 +1931,7 @@
     renderMuro();
     renderAgenda();
     initReader();
+    initClasePeriodicoModal();
     initNav();
 
     var more = document.getElementById('hn-news-more');
@@ -1740,6 +1980,7 @@
             remoteClase.push({
               id: doc.id,
               titulo: d.titulo || '',
+              subtitulo: d.subtitulo || '',
               tipo: 'clase',
               grados: d.grados || [d.grado || 'todos'],
               grado: d.grado || 'todos',
@@ -1747,6 +1988,7 @@
               icono: d.icono || '🤖',
               color: d.color || '#2E7D32',
               imagen: d.imagen || '',
+              galeria: d.galeria || [],
               desde: d.desde || '',
               hasta: d.hasta || '',
               botones: d.botones || []
@@ -1769,11 +2011,19 @@
           }));
 
           C.actividades = currentOtras.concat(mergedClase);
+          window.CLASE_ACTIVITIES_CACHE = mergedClase;
+          if (window.HOME_CONTENT) {
+            window.HOME_CONTENT.actividades = C.actividades;
+          }
 
           renderFiltrosActividades();
           renderActividades();
           renderMasthead();
           renderAgenda();
+
+          if (typeof window.renderGDriveDashboard === 'function' && document.getElementById('student-drive-dashboard-container')) {
+            window.renderGDriveDashboard('student-drive-dashboard-container');
+          }
         }, function (err) {
           console.warn('Sync clase activities notice:', err);
         });

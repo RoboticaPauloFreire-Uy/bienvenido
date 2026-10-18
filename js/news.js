@@ -278,17 +278,24 @@ window.HOME_CONTENT = {
     {
       id: 'act-guitarra',
       titulo: 'Guitarra musical de cartón',
-      descripcion: 'Diseñamos el cuerpo en cartón corrugado, sumamos cinta conductora y programamos notas musicales en la micro:bit.',
+      subtitulo: 'Los alumnos construyen su propio instrumento electroacústico y programan acordes interactivos con micro:bit.',
+      descripcion: 'Diseñamos el cuerpo en cartón corrugado, sumamos cinta conductora y programamos notas musicales en la micro:bit.\n\nEn este proyecto de clase, los chicos experimentan con la conductividad eléctrica y los sintetizadores sonoros, aprendiendo nociones fundamentales de acústica y lógica computacional.',
       tipo: 'clase',
       grados: ['grado3'],
       icono: '🎸',
       color: '#00838F',
+      imagen: 'img/proyectos/varita_magica_cover.png',
+      galeria: [
+        'img/proyectos/varita_magica_cover.png',
+        'img/proyectos/varita_magica_circuito.png'
+      ],
       desde: '2026-10-30'
     },
     {
       id: 'act-cuento-scratch',
       titulo: 'Cuento interactivo en Scratch',
-      descripcion: 'Escribimos el guion, diseñamos escenarios y programamos personajes que reaccionan al hacer click.',
+      subtitulo: 'Narrativa digital ramificada y animación de personajes con programación por bloques.',
+      descripcion: 'Escribimos el guion, diseñamos escenarios y programamos personajes que reaccionan al hacer click.\n\nCada estudiante crea decisiones interactivas para que el lector pueda elegir su propio camino en la historia.',
       tipo: 'clase',
       grados: ['grado2'],
       icono: '📖',
@@ -301,33 +308,49 @@ window.HOME_CONTENT = {
     {
       id: 'act-semaforo',
       titulo: 'Semáforo inteligente',
-      descripcion: 'Estructura de cartón, LEDs de colores y micro:bit para programar la secuencia rojo-amarillo-verde con temporizadores.',
+      subtitulo: 'Modelado urbano, ingeniería de circuitos viales y temporización con microcontroladores.',
+      descripcion: 'Estructura de cartón, LEDs de colores y micro:bit para programar la secuencia rojo-amarillo-verde con temporizadores.\n\nLos estudiantes aplican conceptos de seguridad vial, diagramas de flujo y bucles condicionales para simular una esquina transitada.',
       tipo: 'clase',
       grados: ['grado4'],
       icono: '🚦',
       color: '#EF6C00',
+      imagen: 'img/proyectos/dia_madre_tarjeta_3d_cover.png',
+      galeria: [
+        'img/proyectos/dia_madre_tarjeta_3d_cover.png',
+        'img/proyectos/dia_madre_circuito_plantilla.png'
+      ],
       desde: '2026-10-03'
     },
     {
       id: 'act-servo-joystick',
       titulo: 'Servomotor con joystick',
-      descripcion: 'Conectamos un servomotor y un joystick a la micro:bit y programamos en MakeCode el movimiento del brazo robótico.',
+      subtitulo: 'Programación en MakeCode de potenciómetros analógicos y servomotores de precisión.',
+      descripcion: 'Conectamos un servomotor y un joystick a la micro:bit y programamos en MakeCode el movimiento del brazo robótico.\n\nLos chicos exploran la conversión analógica-digital y el mapeo angular de 0° a 180° para controlar el arquero mecánico en el taller.',
       tipo: 'clase',
       grados: ['grado5'],
       icono: '🕹️',
       color: '#2E7D32',
       imagen: 'img/proyectos/servo_joystick_makecode_cover.svg',
+      galeria: [
+        'img/proyectos/servo_joystick_makecode_cover.svg',
+        'img/proyectos/canva_arquero_ia_cover.svg'
+      ],
       desde: '2026-10-24'
     },
     {
       id: 'act-arquero-ia',
       titulo: 'El arquero con IA en Canva',
-      descripcion: 'Foto en el aula, quitafondos con IA y Magic Animate para convertirnos en arqueros animados.',
+      subtitulo: 'Composición gráfica, segmentación neuronal de siluetas y animación Magic Animate.',
+      descripcion: 'Foto en el aula, quitafondos con IA y Magic Animate para convertirnos en arqueros animados.\n\nLos estudiantes aprenden sobre modelos de visión artificial y sintetizan animaciones dinámicas para sus proyectos digitales.',
       tipo: 'clase',
       grados: ['grado6'],
       icono: '🧤',
       color: '#C2185B',
       imagen: 'img/proyectos/canva_arquero_ia_cover.svg',
+      galeria: [
+        'img/proyectos/canva_arquero_ia_cover.svg',
+        'img/proyectos/servo_joystick_makecode_cover.svg'
+      ],
       desde: '2026-10-17',
       botones: [
         { texto: 'Abrir Canva', url: 'https://www.canva.com/', icono: 'fas fa-external-link-alt', principal: true }
@@ -336,12 +359,18 @@ window.HOME_CONTENT = {
     {
       id: 'act-banderas-paint',
       titulo: 'Banderas del Mundial en Paint',
-      descripcion: 'Usamos formas, rellenos y colores en Paint para recrear banderas y armar una cancha de fútbol digital.',
+      subtitulo: 'Geometría computacional, paletas RGB y diseño vectorial en Microsoft Paint.',
+      descripcion: 'Usamos formas, rellenos y colores en Paint para recrear banderas y armar una cancha de fútbol digital.\n\nUna propuesta donde los alumnos ejercitan la motricidad fina, simetrías de polígonos y coordenadas en el plano digital.',
       tipo: 'clase',
       grados: ['grado2'],
       icono: '🎨',
       color: '#6A1B9A',
       imagen: 'img/proyectos/banderas_mundial_paint_cover.png',
+      galeria: [
+        'img/proyectos/banderas_mundial_paint_cover.png',
+        'img/proyectos/banderas_mundial_paint_guia.png',
+        'img/proyectos/cancha_futbol_paint_cover.png'
+      ],
       desde: '2026-10-10'
     },
     {

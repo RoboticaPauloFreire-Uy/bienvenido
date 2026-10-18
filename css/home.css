@@ -4632,10 +4632,16 @@ body.student-logged-in .site-footer {
   flex-direction: column;
   position: relative;
   transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: pointer;
+  user-select: text;
 }
 .np-clase-card:hover {
   transform: translateY(-3px);
   box-shadow: 6px 7px 0 rgba(43, 37, 32, 0.22);
+}
+.np-clase-card:focus-visible {
+  outline: 3px solid #1B5E20;
+  outline-offset: 2px;
 }
 .np-clase-card.es-mia {
   box-shadow: 0 0 0 2.5px #1B5E20, 5px 5px 0 rgba(43, 37, 32, 0.2);
@@ -4807,6 +4813,47 @@ body.student-logged-in .site-footer {
   background: #2B2520;
   color: #F8F4EA;
   transform: translate(-1px, -1px);
+}
+
+.np-clase-foot {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1.5px solid #2B2520;
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+}
+
+.np-clase-read-btn {
+  width: 100%;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 10px 14px;
+  background: #1B5E20;
+  color: #FFFFFF;
+  border: 2px solid #2B2520;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 3px 3px 0 #2B2520;
+  transition: all 0.16s ease;
+  user-select: none;
+}
+
+.np-clase-read-btn:hover {
+  background: #2E7D32;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #2B2520;
+}
+
+.np-clase-read-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #2B2520;
 }
 
 /* ── PÁGINA 04: CASA (SUPLEMENTO DOMINICAL / RECORTES DIY) ── */
@@ -5333,4 +5380,594 @@ body.student-logged-in .site-footer {
   .hn-ticker-track { animation: none; }
   .hn-card, .hn-act-card, .np-gazette-card, .np-clase-card, .np-casa-card { animation: none; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   MODAL ESTILO PERIÓDICO: EXPEDIENTE Y CRÓNICA DE CLASE
+───────────────────────────────────────────────────────────── */
+.cpm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background: rgba(22, 17, 13, 0.85);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+.cpm-overlay.open {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: flex !important;
+}
+
+.cpm-dialog {
+  width: 100%;
+  max-width: 900px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  animation: cpmPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cpmPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cpm-sheet {
+  background: #FAF6EC;
+  color: #1E1A17;
+  border: 3px double #2B2520;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45), 8px 8px 0 rgba(43, 37, 32, 0.3);
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Barra superior de expediente */
+.cpm-topbar {
+  background: #2B2520;
+  color: #FAF6EC;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  user-select: none;
+  border-bottom: 1px solid #181411;
+}
+
+.cpm-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cpm-press-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #FBBF24;
+  font-weight: 800;
+}
+
+.cpm-issue-tag {
+  color: #D6D3D1;
+  font-size: 0.74rem;
+}
+
+.cpm-issue-tag strong {
+  color: #FAF6EC;
+}
+
+.cpm-close-btn {
+  background: #FAF6EC;
+  color: #2B2520;
+  border: 1.5px solid #2B2520;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.cpm-close-btn:hover {
+  background: #DC2626;
+  color: #FFFFFF;
+  border-color: #DC2626;
+  transform: rotate(90deg);
+}
+
+/* Cabecera periodística / Masthead */
+.cpm-masthead {
+  padding: 14px 22px 8px;
+  background: #FAF6EC;
+  text-align: center;
+  border-bottom: 1px solid #E2D9C8;
+  user-select: none;
+}
+
+.cpm-masthead-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #16120F;
+  margin: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.cpm-masthead-slogan {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.70rem;
+  letter-spacing: 0.14em;
+  color: #5D5248;
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+  font-weight: 700;
+}
+
+.cpm-masthead-rule-double {
+  border-top: 3px double #2B2520;
+  margin: 7px 0 5px;
+}
+
+.cpm-masthead-rule-single {
+  border-top: 1px solid #2B2520;
+  margin: 5px 0 0;
+}
+
+.cpm-masthead-dateline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.75rem;
+  color: #443B33;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.cpm-dateline-sep {
+  color: #A89F91;
+}
+
+.cpm-state-badge {
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #166534;
+  padding: 1px 7px;
+  border-radius: 2px;
+  font-size: 0.70rem;
+  letter-spacing: 0.04em;
+}
+
+.cpm-state-badge.state-finalizada {
+  background: #F1F5F9;
+  color: #475569;
+  border-color: #64748B;
+}
+
+.cpm-state-badge.state-proxima {
+  background: #EEF2FF;
+  color: #3730A3;
+  border-color: #4338CA;
+}
+
+/* Área scrolleable del periódico */
+.cpm-scroll-body {
+  padding: 18px 24px 24px;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hero: Sello, Titular y Subtítulo */
+.cpm-hero-section {
+  margin-bottom: 16px;
+}
+
+.cpm-stamp-wrap {
+  margin-bottom: 6px;
+}
+
+.cpm-stamp {
+  display: inline-block;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 3px 9px;
+  border: 2px dashed #991B1B;
+  color: #991B1B;
+  background: #FEE2E2;
+  transform: rotate(-2.5deg);
+  box-shadow: 2px 2px 0 rgba(153, 27, 27, 0.18);
+}
+
+.cpm-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.5rem, 3.4vw, 2.25rem);
+  font-weight: 900;
+  line-height: 1.18;
+  color: #14100D;
+  margin: 6px 0 8px;
+  border-bottom: 2px solid #2B2520;
+  padding-bottom: 8px;
+}
+
+.cpm-subheadline {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: clamp(1.02rem, 1.8vw, 1.22rem);
+  font-style: italic;
+  line-height: 1.45;
+  color: #483E36;
+  margin: 0 0 14px;
+}
+
+/* Sección de Fotos y Medios */
+.cpm-media-section {
+  margin-bottom: 18px;
+}
+
+.cpm-main-photo-frame {
+  border: 1px solid #2B2520;
+  background: #FFFFFF;
+  padding: 6px;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.14);
+  margin-bottom: 16px;
+  cursor: zoom-in;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cpm-main-photo-frame:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(43, 37, 32, 0.22);
+}
+
+.cpm-photo-img {
+  width: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid #E7E0D0;
+}
+
+.cpm-photo-overlay-hint {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(43, 37, 32, 0.88);
+  color: #FAF6EC;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  padding: 4px 9px;
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0.9;
+  letter-spacing: 0.04em;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.cpm-photo-caption {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-size: 0.86rem;
+  color: #584D43;
+  margin-top: 6px;
+  padding: 2px 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Galería de fotos adicionales */
+.cpm-gallery-wrapper {
+  margin-bottom: 18px;
+  background: #F3EEDF;
+  border: 1.5px dashed #C8BCAC;
+  padding: 12px 14px;
+  border-radius: 4px;
+}
+
+.cpm-gallery-header {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.80rem;
+  font-weight: 800;
+  color: #383028;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cpm-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.cpm-thumb-item {
+  aspect-ratio: 4/3;
+  border: 1px solid #2B2520;
+  background: #FFFFFF;
+  padding: 3px;
+  cursor: zoom-in;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.12);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cpm-thumb-item:hover {
+  transform: scale(1.04);
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.2);
+}
+
+.cpm-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cpm-thumb-badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: rgba(43, 37, 32, 0.82);
+  color: #FAF6EC;
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Layout de dos columnas: Cuerpo de noticia + Dossier lateral */
+.cpm-article-layout {
+  display: grid;
+  grid-template-columns: 1fr 270px;
+  gap: 22px;
+  align-items: start;
+}
+
+.cpm-article-text {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.04rem;
+  line-height: 1.68;
+  color: #241F1A;
+  text-align: justify;
+}
+
+/* Letra capital periodística */
+.cpm-body-content p {
+  margin: 0 0 14px;
+}
+
+.cpm-dropcap,
+.cpm-body-content p:first-of-type::first-letter {
+  float: left;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.4rem;
+  line-height: 0.82;
+  padding-top: 4px;
+  padding-right: 9px;
+  padding-bottom: 2px;
+  font-weight: 900;
+  color: #14100D;
+  text-transform: uppercase;
+}
+
+/* Dossier lateral */
+.cpm-sidebar-dossier {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cpm-dossier-card {
+  border: 2px solid #2B2520;
+  background: #F4EEDF;
+  padding: 14px 16px;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.16);
+}
+
+.cpm-dossier-title {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #1B1714;
+  border-bottom: 2px solid #2B2520;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpm-dossier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.cpm-dossier-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-bottom: 1px dashed #D5CBB9;
+  padding-bottom: 7px;
+}
+
+.cpm-dossier-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.cpm-dossier-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.70rem;
+  text-transform: uppercase;
+  color: #6A5F54;
+  letter-spacing: 0.03em;
+}
+
+.cpm-dossier-val {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #16120E;
+}
+
+.cpm-action-buttons {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1.5px dashed #2B2520;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cpm-action-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.2);
+}
+
+.cpm-action-btn.primary {
+  background: #1B5E20;
+  color: #FFFFFF;
+  border-color: #1B5E20;
+}
+
+.cpm-action-btn.primary:hover {
+  background: #2E7D32;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.3);
+}
+
+.cpm-action-btn.secondary {
+  background: #FAF6EC;
+  color: #2B2520;
+}
+
+.cpm-action-btn.secondary:hover {
+  background: #2B2520;
+  color: #FAF6EC;
+  transform: translate(-1px, -1px);
+}
+
+/* Pie de página del modal */
+.cpm-footer {
+  background: #EFE9D9;
+  border-top: 2px solid #2B2520;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  color: #554A40;
+  flex-wrap: wrap;
+  gap: 10px;
+  user-select: none;
+}
+
+.cpm-foot-close-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: #2B2520;
+  color: #FAF6EC;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.cpm-foot-close-btn:hover {
+  background: #181411;
+  color: #FBBF24;
+}
+
+/* Responsive para celulares y tablets */
+@media (max-width: 768px) {
+  .cpm-overlay {
+    padding: 8px;
+  }
+  .cpm-dialog {
+    max-height: 96vh;
+  }
+  .cpm-sheet {
+    max-height: 96vh;
+  }
+  .cpm-masthead {
+    padding: 10px 14px 6px;
+  }
+  .cpm-scroll-body {
+    padding: 14px 14px 18px;
+  }
+  .cpm-article-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .cpm-article-text {
+    text-align: left;
+  }
+  .cpm-footer {
+    padding: 8px 14px;
+  }
+  .cpm-footer-text {
+    font-size: 0.68rem;
+  }
+}
+
 

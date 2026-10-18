@@ -92,8 +92,34 @@ async function authenticateStudentAsync(userOrName, pass) {
     const cached = localStorage.getItem('pf_active_student_data');
     if (cached) {
       const student = JSON.parse(cached);
-      if (student && student.username === cleanUser && student.password === cleanPass) {
+      if (student && (student.username === cleanUser || student.id === cleanUser) && student.password === cleanPass) {
         return [student];
+      }
+    }
+  } catch (e) {}
+
+  // Respaldo contra alumnos creados en el panel de administración (localStorage)
+  try {
+    const guardados = localStorage.getItem('pf_alumnos_nuevos_2026');
+    if (guardados) {
+      const nuevos = JSON.parse(guardados);
+      const matchNuevo = nuevos.find(n => (n.username === cleanUser || n.id === cleanUser) && n.password === cleanPass);
+      if (matchNuevo) {
+        STUDENTS_CACHE[matchNuevo.id] = matchNuevo;
+        return [matchNuevo];
+      }
+    }
+  } catch (e) {}
+
+  // Respaldo contra alumnos_robotica_2026.json local
+  try {
+    const resp = await fetch('alumnos_robotica_2026.json');
+    if (resp.ok) {
+      const localStudents = await resp.json();
+      const found = localStudents.filter(s => (s.username === cleanUser || s.id === cleanUser) && s.password === cleanPass);
+      if (found.length > 0) {
+        found.forEach(s => { STUDENTS_CACHE[s.id] = s; });
+        return found;
       }
     }
   } catch (e) {}

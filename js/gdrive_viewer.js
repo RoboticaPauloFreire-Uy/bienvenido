@@ -535,8 +535,72 @@
   }
 
   // ──────────────────────────────────────────────────
+  // ACTIVIDADES DE CLASE REMOTAS (Firestore clase_activities)
+  // ──────────────────────────────────────────────────
+  function getClaseActivitiesForStudent(student) {
+    if (!student) return [];
+    var stGrade = student.gradeId || '';
+
+    var rawList = [];
+    if (window.CLASE_ACTIVITIES_CACHE && Array.isArray(window.CLASE_ACTIVITIES_CACHE)) {
+      rawList = rawList.concat(window.CLASE_ACTIVITIES_CACHE);
+    }
+    if (window.HOME_CONTENT && Array.isArray(window.HOME_CONTENT.actividades)) {
+      window.HOME_CONTENT.actividades.forEach(function (act) {
+        if (!rawList.some(function (r) { return r.id === act.id; })) {
+          rawList.push(act);
+        }
+      });
+    }
+
+    return rawList.filter(function (act) {
+      if (!act || act.deleted) return false;
+      var isClase = (act.tipo === 'clase' || act.tipo === 'taller');
+      if (!isClase) return false;
+
+      var grs = act.grados || (act.grado ? [act.grado] : ['todos']);
+      if (!Array.isArray(grs)) grs = [grs];
+
+      return grs.indexOf('todos') !== -1 ||
+             grs.indexOf(stGrade) !== -1 ||
+             act.grado === 'todos' ||
+             act.grado === stGrade;
+    });
+  }
+
+  function listenToClaseActivitiesForDriveViewer() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('clase_activities').onSnapshot(function (snapshot) {
+          if (!snapshot) return;
+          var list = [];
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            if (d && !d.deleted) {
+              var item = Object.assign({}, d, { id: doc.id });
+              list.push(item);
+            }
+          });
+          window.CLASE_ACTIVITIES_CACHE = list;
+          var activeSt = window.getActiveStudent ? window.getActiveStudent() : null;
+          if (activeSt && document.getElementById('student-drive-dashboard-container')) {
+            renderGDriveDashboard('student-drive-dashboard-container');
+          }
+        }, function (err) {
+          console.warn('gdrive_viewer clase_activities listener notice:', err);
+        });
+      } else {
+        setTimeout(listenToClaseActivitiesForDriveViewer, 1000);
+      }
+    } catch (e) {
+      console.warn('listenToClaseActivitiesForDriveViewer error:', e);
+    }
+  }
+  listenToClaseActivitiesForDriveViewer();
+
+  // ──────────────────────────────────────────────────
   // AGREGADOR DE MISIONES / RUTA DE AVENTURAS (MODO 3)
-  // Combina proyectos del currículo, MakeCode y guías de Drive
+  // Combina proyectos del currículo, MakeCode, actividades de clase y guías de Drive
   // ──────────────────────────────────────────────────
   function getAdventureMissionsForStudent(student) {
     if (!student) return [];
@@ -645,7 +709,63 @@
       }
     });
 
-    // 3. Vincular Guías PDF de Google Drive (FOLDER_CONTENTS.proyectos.items) a los proyectos existentes
+    // 3. Actividades de Clase (clase_activities desde Firestore o HOME_CONTENT)
+    var remoteClase = getClaseActivitiesForStudent(student);
+    remoteClase.forEach(function(act) {
+      var already = missions.some(function(it){
+        return it.id === act.id || (it.title && act.titulo && it.title.trim().toLowerCase() === act.titulo.trim().toLowerCase());
+      });
+      if (already) return;
+
+      var primaryBtn = (act.botones && act.botones.find(function(b){ return b.principal; })) || (act.botones && act.botones[0]) || null;
+      var primaryUrl = primaryBtn ? primaryBtn.url : '';
+      var isMk = !!act.makecodeUrl || (primaryUrl && /makecode\.microbit\.org/i.test(primaryUrl));
+      var isScratch = (primaryUrl && /scratch\.mit\.edu|codejr\.org/i.test(primaryUrl));
+      var isGame = (primaryUrl && /code\.org|toxicode|compute-it/i.test(primaryUrl));
+
+      var missionType = isMk ? 'makecode' : (isScratch ? 'scratch' : (isGame ? 'game' : 'clase'));
+      var icon = act.icono || 'fa-chalkboard-teacher';
+      if (typeof icon === 'string' && icon.indexOf('fa-') === -1) {
+        icon = 'fa-chalkboard-teacher';
+      }
+
+      missions.push({
+        id: act.id,
+        level: levelCount++,
+        title: act.titulo || 'Actividad de Clase',
+        subtitle: act.desde ? ('Actividad de Clase • ' + act.desde) : (student.gradeName || 'Actividad de Clase'),
+        description: act.descripcion || 'Desafío y actividad de clase en el taller de robótica.',
+        objective: act.objetivo || act.descripcion || 'Completar el proyecto propuesto por el docente.',
+        benefits: act.benefits || act.beneficios || 'Desarrolla el pensamiento computacional, la creatividad maker y la resolución práctica de problemas.',
+        gameUrl: primaryUrl || null,
+        externalUrl: primaryUrl || null,
+        projectFileUrl: null,
+        platform: isMk ? 'makecode' : (isScratch ? 'scratch' : null),
+        type: missionType,
+        tipo: 'clase',
+        badge: '🛠️ Actividad de Clase',
+        icon: icon,
+        color: act.color || '#15803D',
+        stars: 3,
+        status: isMissionCompleted(student, act.id) ? 'completado' : 'desafio',
+        coverImage: act.imagen || 'img/bienvenida_taller.jpg',
+        gallery: act.imagen ? [act.imagen] : [],
+        pdfUrl: act.pdfUrl || null,
+        downloadPdfUrl: act.pdfUrl || null,
+        makecodeUrl: isMk ? primaryUrl : (act.makecodeUrl || null),
+        scratchId: null,
+        materials: act.materiales || [
+          { title: 'Materiales del Taller', description: 'Equipos, herramientas y recursos proporcionados en clase' },
+          { title: 'Computadora / Tablet', description: 'Para programar y documentar el proyecto' }
+        ],
+        instructions: act.instrucciones || null,
+        schematic: null,
+        gradeName: student.gradeName,
+        botones: act.botones || []
+      });
+    });
+
+    // 4. Vincular Guías PDF de Google Drive (FOLDER_CONTENTS.proyectos.items) a los proyectos existentes
     // (NO creamos misiones extra/duplicadas en la ruta de aventuras)
     var drivePdfs = (FOLDER_CONTENTS.proyectos && FOLDER_CONTENTS.proyectos.items) || [];
     drivePdfs.forEach(function(pdf) {
@@ -1643,12 +1763,18 @@
         var coverImgSrc = m.coverImage || (m.type === 'circuito' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png');
 
         var toolBtnHtml = '';
-        if (m.type === 'gemini_notebooks') {
+        if (m.botones && m.botones.length > 0) {
+          toolBtnHtml = m.botones.map(function(b) {
+            return '<a href="' + b.url + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool" title="' + (b.texto || 'Abrir Actividad').replace(/"/g, '&quot;') + '"><i class="' + (b.icono || 'fas fa-external-link-alt') + '"></i> ' + (b.texto || 'Abrir Actividad') + '</a>';
+          }).join('');
+        } else if (m.type === 'gemini_notebooks') {
           toolBtnHtml = '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-notebook" title="Abrir NotebookLM"><i class="fas fa-brain"></i> Abrir NotebookLM</a>';
         } else if (m.type === 'canva' || /canva/i.test(m.gameUrl || '')) {
           toolBtnHtml = '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-canva" title="Abrir Canva"><i class="fas fa-palette"></i> Abrir Canva</a>';
         } else if (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '')) {
           toolBtnHtml = '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-game" title="Jugar"><i class="fas fa-gamepad"></i> Jugar Desafío</a>';
+        } else if (m.externalUrl && m.type !== 'paint') {
+          toolBtnHtml = '<a href="' + m.externalUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool" title="Abrir Enlace"><i class="fas fa-external-link-alt"></i> Abrir Actividad</a>';
         }
 
         var stationTitleText = isLegacy ? ('🎓 Hito ' + m.level + ': ' + m.title) : (isCyber ? ('🔌 Nodo ' + m.level + ': ' + m.title) : (isSpace ? ('🪐 Planeta ' + m.level + ': ' + m.title) : ('🏝️ Isla ' + m.level + ': ' + m.title)));
@@ -2215,7 +2341,11 @@
               '<button type="button" class="arm-btn-primary arm-btn-open-modal" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-play"></i> Iniciar' +
               '</button>' +
-              (m.type === 'gemini_notebooks' ? '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;"><i class="fas fa-brain"></i> NotebookLM</a>' : (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Canva</a>' : (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : ''))) +
+              (m.botones && m.botones.length > 0 ?
+                m.botones.map(function(b){
+                  return '<a href="' + b.url + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#15803D;border-color:#86EFAC;"><i class="' + (b.icono || 'fas fa-external-link-alt') + '"></i> ' + (b.texto || 'Abrir') + '</a>';
+                }).join('') :
+                (m.type === 'gemini_notebooks' ? '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;"><i class="fas fa-brain"></i> NotebookLM</a>' : (m.type === 'canva' || /canva/i.test(m.gameUrl || '') ? '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;"><i class="fas fa-palette"></i> Canva</a>' : (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '') ? '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#E11D48;border-color:#FDA4AF;"><i class="fas fa-gamepad"></i> Jugar</a>' : (m.externalUrl && m.type !== 'paint' ? '<a href="' + m.externalUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#15803D;border-color:#86EFAC;"><i class="fas fa-external-link-alt"></i> Abrir</a>' : ''))))) +
               '<button type="button" class="arm-btn-secondary arm-btn-open-presentation" data-mission-idx="' + idx + '">' +
                 '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
               '</button>' +
@@ -4464,6 +4594,40 @@
     '</div>';
   }
 
+  function renderClaseActivitySolutionHtml(mission) {
+    if (!mission) return '';
+    var btns = (mission.botones && Array.isArray(mission.botones)) ? mission.botones : [];
+    return '<div class="apm-sol-canva-wrap" style="padding:18px 24px;overflow-y:auto;height:100%;">' +
+      '<div style="display:flex;align-items:center;gap:14px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:16px 20px;margin-bottom:18px;">' +
+        '<div style="width:48px;height:48px;border-radius:12px;background:' + (mission.color || '#15803D') + ';color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;"><i class="' + (mission.icon || 'fas fa-chalkboard-teacher') + '"></i></div>' +
+        '<div style="flex:1;">' +
+          '<h4 style="margin:0 0 4px;font-size:1.1rem;font-weight:900;color:#14532D;">Guía y Recursos: ' + (mission.title || 'Actividad de Clase') + '</h4>' +
+          '<p style="margin:0;font-size:0.86rem;color:#166534;">Actividad oficial del Taller de Robótica y Programación • Colegio Paulo Freire</p>' +
+        '</div>' +
+      '</div>' +
+      '<div style="background:#FFFFFF;border-left:4px solid ' + (mission.color || '#15803D') + ';padding:16px 20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);margin-bottom:16px;">' +
+        '<h5 style="margin:0 0 8px;font-size:0.95rem;font-weight:800;color:#0F172A;"><i class="fas fa-bullseye" style="color:' + (mission.color || '#15803D') + ';"></i> Consigna y Propósito</h5>' +
+        '<p style="font-size:0.9rem;line-height:1.6;color:#334155;margin:0 0 10px;">' + (mission.description || '') + '</p>' +
+        (mission.objective ? '<div style="background:#F8FAFC;padding:10px 14px;border-radius:8px;border:1px solid #E2E8F0;font-size:0.85rem;color:#475569;"><strong>Objetivo:</strong> ' + mission.objective + '</div>' : '') +
+      '</div>' +
+      (btns.length > 0 ?
+        '<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px 20px;margin-bottom:16px;">' +
+          '<h5 style="margin:0 0 12px;font-size:0.9rem;font-weight:800;color:#0F172A;"><i class="fas fa-external-link-alt" style="color:' + (mission.color || '#15803D') + ';"></i> Enlaces y Plataformas de Trabajo:</h5>' +
+          '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+            btns.map(function(b){
+              return '<a href="' + b.url + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:' + (mission.color || '#15803D') + ';font-size:0.88rem;padding:9px 18px;text-decoration:none;"><i class="' + (b.icono || 'fas fa-external-link-alt') + '"></i> ' + (b.texto || 'Abrir Plataforma') + '</a>';
+            }).join('') +
+          '</div>' +
+        '</div>' : '') +
+      (mission.pdfUrl ?
+        '<div style="text-align:center;margin-top:20px;">' +
+          '<a href="' + mission.pdfUrl + '" target="_blank" class="arm-btn-primary apm-goto-pdf-btn" style="background:#15803D;border-color:#166534;padding:9px 20px;text-decoration:none;">' +
+            '<i class="fas fa-file-pdf"></i> Ver Guía Didáctica en PDF' +
+          '</a>' +
+        '</div>' : '') +
+    '</div>';
+  }
+
   function renderMarcalibroOrigamiSolutionHtml(mission) {
     return '<div class="apm-sol-electro-wrap">' +
       '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #B45309 0%, #F59E0B 100%);">' +
@@ -6356,8 +6520,9 @@
     var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (mission.id === 's5-p9' || mission.id === 's5-g1' || mission.id === 'g1-p9' || mission.id === 'g1-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
     var isServoJoystick = (mission.id === 'g6-p2') || (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
     var isCanva = !isServoJoystick && (mission.type === 'canva' || (mission.tags && mission.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(mission.title || '')));
-    var isGeminiNotebooks = (mission.id === 'g6-p3') || (/gemini|notebooklm|notebooks.*ia|materiales.*estudio/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /notebooklm|gemini|materiales de estudio/i.test(t); }));
-    var isGame = !isPaint && !isCanva && !isGeminiNotebooks && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
+    var isClaseActivity = (mission.tipo === 'clase' || mission.type === 'clase' || (mission.badge && mission.badge.includes('Actividad de Clase')));
+    var isGeminiNotebooks = !isClaseActivity && ((mission.id === 'g6-p3') || (/gemini|notebooklm|notebooks.*ia|materiales.*estudio/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /notebooklm|gemini|materiales de estudio/i.test(t); })));
+    var isGame = !isClaseActivity && !isPaint && !isCanva && !isGeminiNotebooks && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
     var activeTab = initialTab || 'presentacion';
     if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
       activeTab = 'presentacion';
@@ -6366,9 +6531,9 @@
     }
     var currentSlide = 0;
     var totalSlides = 4;
-    var isMakecode = !isGame && !isPaint && !isCanva && !isGeminiNotebooks && (isServoJoystick || !!mission.makecodeUrl || mission.type === 'makecode' || mission.platform === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-    var isElectronica = !isGame && !isPaint && !isCanva && !isGeminiNotebooks && !isMakecode && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
-    var isScratch = !isGame && !isElectronica && !isMakecode && !isPaint && !isCanva && !isGeminiNotebooks && (mission.type === 'scratch' || mission.type === 'codejr' || mission.platform === 'codejr' || mission.platform === 'scratch' || !!mission.scratchId || !!mission.projectFileUrl || hasScratchJr(student ? student.gradeId : ''));
+    var isMakecode = !isClaseActivity && !isGame && !isPaint && !isCanva && !isGeminiNotebooks && (isServoJoystick || !!mission.makecodeUrl || mission.type === 'makecode' || mission.platform === 'makecode' || (mission.tags && mission.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+    var isElectronica = !isClaseActivity && !isGame && !isPaint && !isCanva && !isGeminiNotebooks && !isMakecode && (isDiaMadre || isMarcalibro || mission.type === 'electronica' || (mission.tags && mission.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!mission.makecodeUrl && !mission.scratchId && mission.materials && mission.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+    var isScratch = !isClaseActivity && !isGame && !isElectronica && !isMakecode && !isPaint && !isCanva && !isGeminiNotebooks && (mission.type === 'scratch' || mission.type === 'codejr' || mission.platform === 'codejr' || mission.platform === 'scratch' || !!mission.scratchId || !!mission.projectFileUrl || hasScratchJr(student ? student.gradeId : ''));
     var hasPdf = !!mission.pdfUrl || !!mission.downloadPdfUrl;
 
     var storageKey = 'entrega_' + (student ? student.id : 'anon') + '_' + mission.id;
@@ -6610,6 +6775,11 @@
                           '<span class="apm-skill-pill"><i class="fas fa-shapes"></i> Figuras Geométricas</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-mouse-pointer"></i> Precisión con Mouse</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-futbol"></i> Cancha de Fútbol</span>' :
+                         isClaseActivity ?
+                          '<span class="apm-skill-pill" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-chalkboard-teacher"></i> Actividad en el Aula</span>' +
+                          '<span class="apm-skill-pill" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-users"></i> Trabajo Colaborativo</span>' +
+                          '<span class="apm-skill-pill" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-lightbulb"></i> Creatividad Maker</span>' +
+                          '<span class="apm-skill-pill" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-robot"></i> Pensamiento Computacional</span>' :
                          isElectronica ?
                           '<span class="apm-skill-pill"><i class="fas fa-bolt"></i> Circuito Físico</span>' +
                           '<span class="apm-skill-pill"><i class="fas fa-battery-full"></i> Polaridad y Energía</span>' +
@@ -7355,6 +7525,51 @@
                         '</button>' +
                       '</div>' +
                     '</div>' :
+                   isClaseActivity ?
+                    '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
+                      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                        '<div>' +
+                          '<h3 style="font-size:1.2rem;font-weight:900;color:#1E293B;margin:0 0 2px;"><i class="fas fa-chalkboard-teacher" style="color:#15803D;"></i> Consigna y Recursos de la Actividad</h3>' +
+                          '<p style="font-size:0.82rem;color:#64748B;margin:0;">Actividad oficial desarrollada en el Taller de Robótica y Programación</p>' +
+                        '</div>' +
+                        (mission.botones && mission.botones.length > 0 ?
+                          '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+                            mission.botones.map(function(b){
+                              return '<a href="' + b.url + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#15803D;border-color:#166534;font-size:0.84rem;padding:7px 16px;text-decoration:none;"><i class="' + (b.icono || 'fas fa-external-link-alt') + '"></i> ' + (b.texto || 'Abrir Herramienta') + '</a>';
+                            }).join('') +
+                          '</div>' : '') +
+                      '</div>' +
+                      '<div class="codeorg-challenge-hero-card" style="border-left:4px solid ' + (mission.color || '#15803D') + ';">' +
+                        (mission.coverImage ?
+                          '<div class="chc-left">' +
+                            '<img src="' + mission.coverImage + '" alt="' + (mission.title || '').replace(/"/g, '&quot;') + '" class="chc-img" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
+                          '</div>' : '') +
+                        '<div class="chc-right">' +
+                          '<span class="chc-tag" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-chalkboard-teacher"></i> ' + (mission.badge || '🛠️ Actividad de Clase') + '</span>' +
+                          '<h4>' + mission.title + '</h4>' +
+                          '<p style="font-size:0.92rem;line-height:1.6;color:#334155;">' + mission.description + '</p>' +
+                          (mission.botones && mission.botones.length > 0 ?
+                            '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">' +
+                              mission.botones.map(function(b){
+                                return '<a href="' + b.url + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:' + (mission.color || '#15803D') + ';font-size:0.92rem;padding:9px 20px;text-decoration:none;"><i class="' + (b.icono || 'fas fa-external-link-alt') + '"></i> ' + (b.texto || 'Abrir Herramienta en Vivo') + '</a>';
+                              }).join('') +
+                            '</div>' : (mission.gameUrl ?
+                            '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">' +
+                              '<a href="' + mission.gameUrl + '" target="_blank" rel="noopener noreferrer" class="arm-btn-primary" style="background:#15803D;font-size:0.92rem;padding:9px 20px;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Actividad</a>' +
+                            '</div>' : '')) +
+                        '</div>' +
+                      '</div>' +
+                      (mission.objective ?
+                        '<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:12px 16px;">' +
+                          '<h5 style="margin:0 0 4px;color:#0F172A;font-weight:800;font-size:0.88rem;"><i class="fas fa-bullseye" style="color:#15803D;"></i> ¿Qué buscamos lograr?</h5>' +
+                          '<p style="margin:0;color:#475569;font-size:0.84rem;line-height:1.5;">' + mission.objective + '</p>' +
+                        '</div>' : '') +
+                      '<div style="text-align:right;margin-top:8px;">' +
+                        '<button type="button" class="arm-btn-primary apm-next-btn-internal" style="background:#15803D;border-color:#166534;">' +
+                          '¡Ver Misión Cumplida y Consejos! <i class="fas fa-arrow-right"></i>' +
+                        '</button>' +
+                      '</div>' +
+                    '</div>' :
                    isScratchJrVelocidad ?
                     '<div style="height:100%;display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;">' +
                       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
@@ -7713,9 +7928,9 @@
                 '<div class="apm-slide-page" data-slide-idx="3">' +
                   '<div style="max-width:850px;margin:0 auto;">' +
                     '<div class="apm-win-banner">' +
-                      '<div class="apm-win-trophy">' + (isGeminiNotebooks ? '🧠' : (isServoJoystick ? '🧤' : (isCanva ? '🧤' : (isMarcalibro ? '📖' : (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆')))))))))))) + '</div>' +
-                      '<h3 class="apm-win-title">' + (isGeminiNotebooks ? '¡Materiales de Estudio con IA Generados con Éxito!' : (isServoJoystick ? '¡El Arquero Mecánico Construido y Programado con Éxito!' : (isCanva ? '¡Arquero con Inteligencia Artificial Creado con Éxito en Canva!' : (isMarcalibro ? '¡Marca-Libros Origami de Tom Sawyer Terminado!' : (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!')))))))))))) + '</h3>' +
-                      '<p class="apm-win-sub">' + (isGeminiNotebooks ? '¡Anclaste tus apuntes y libros en NotebookLM (Grounding con fuentes verificadas), generaste podcasts con 2 locutores sintéticos (Audio Overview), guiones de video en 3 actos, diapositivas jerárquicas y autoevaluaciones con citas directas! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isServoJoystick ? '¡Conectaste el joystick chico negro en Pin P1, programaste el servomotor SG90 en Pin P0, dominaste el bloque de ajuste de intervalo matemático (Math.map de 0..1023 a 0..180°) y pusiste al arquero a atajar penales en el arco físico en tiempo real! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isCanva ? '¡Te sacaste la foto en el aula, aislaste tu cabeza con la IA de Canva, la montaste sobre la imagen de un arquero reemplazando su foto y la transformaste en una animación de atajada épica en video MP4 o GIF! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMarcalibro ? '¡Plegaste tu marca-libros esquinero con papel glacé y le diste luz al sombrero de Tom Sawyer con un circuito y LED chato! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!')))))))))))) + '</p>' +
+                      '<div class="apm-win-trophy">' + (isClaseActivity ? '🛠️' : (isGeminiNotebooks ? '🧠' : (isServoJoystick ? '🧤' : (isCanva ? '🧤' : (isMarcalibro ? '📖' : (isScratchJrPerspectiva ? '🐱' : (isScratchJrVelocidad ? '🐱' : (isMinecraft ? '⛏️' : (isFrozen ? '❄️' : (isPaintBanderas ? '🇺🇾' : (isPaint ? '⚽' : (isDiaMadre ? '💖' : (isAngryBirds ? '🐦' : '🏆'))))))))))))) + '</div>' +
+                      '<h3 class="apm-win-title">' + (isClaseActivity ? '¡Actividad de Clase Completada con Éxito!' : (isGeminiNotebooks ? '¡Materiales de Estudio con IA Generados con Éxito!' : (isServoJoystick ? '¡El Arquero Mecánico Construido y Programado con Éxito!' : (isCanva ? '¡Arquero con Inteligencia Artificial Creado con Éxito en Canva!' : (isMarcalibro ? '¡Marca-Libros Origami de Tom Sawyer Terminado!' : (isScratchJrPerspectiva ? '¡Misión de Escenarios y Perspectiva en Scratch Jr Superada!' : (isScratchJrVelocidad ? '¡Misión de Escenarios y Velocidades en Scratch Jr Superada!' : (isMinecraft ? '¡Desafío de Programación en Minecraft Superado!' : (isFrozen ? '¡Patinaje Geométrico Completado con Ana y Elsa!' : (isPaintBanderas ? '¡Banderas del Mundial Creadas con Éxito en Paint!' : (isPaint ? '¡Cancha de Fútbol Completada en Paint!' : (isDiaMadre ? '¡Tarjeta Pop-Up 3D del Día de la Madre Terminada con Éxito!' : (isAngryBirds ? '¡Desafío Angry Birds Superado!' : '¡Misión Cumplida en el Nivel ' + mission.level + '!'))))))))))))) + '</h3>' +
+                      '<p class="apm-win-sub">' + (isClaseActivity ? '¡Superaste el reto propuesto en <strong>' + mission.title + '</strong>! Tu esfuerzo y dedicación impulsan el progreso de tu grado. Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isGeminiNotebooks ? '¡Anclaste tus apuntes y libros en NotebookLM (Grounding con fuentes verificadas), generaste podcasts con 2 locutores sintéticos (Audio Overview), guiones de video en 3 actos, diapositivas jerárquicas y autoevaluaciones con citas directas! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isServoJoystick ? '¡Conectaste el joystick chico negro en Pin P1, programaste el servomotor SG90 en Pin P0, dominaste el bloque de ajuste de intervalo matemático (Math.map de 0..1023 a 0..180°) y pusiste al arquero a atajar penales en el arco físico en tiempo real! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isCanva ? '¡Te sacaste la foto en el aula, aislaste tu cabeza con la IA de Canva, la montaste sobre la imagen de un arquero reemplazando su foto y la transformaste en una animación de atajada épica en video MP4 o GIF! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMarcalibro ? '¡Plegaste tu marca-libros esquinero con papel glacé y le diste luz al sombrero de Tom Sawyer con un circuito y LED chato! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrPerspectiva ? '¡Aprendiste a crear profundidad 3D en Scratch Jr cambiando la perspectiva de las figuras con los bloques de apariencia! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isScratchJrVelocidad ? '¡Aprendiste a explorar el ambiente de Scratch Jr y a dominar las velocidades lenta, media y rápida con el bloque naranja! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isMinecraft ? '¡Aprendiste a programar a Steve y Alex con bloques y bucles secuenciales en la adaptación de Code.org! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isFrozen ? '¡Dominaste los ángulos, las figuras geométricas y la programación sobre el hielo! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaintBanderas ? '¡Combinaste figuras geométricas, proporciones y colores para diseñar las banderas del mundial en Paint! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isPaint ? '¡Dominaste el mouse, los colores y las figuras geométricas para crear tu propio estadio digital! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isDiaMadre ? '¡Creaste un corazón 3D con tu foto y un circuito con luz LED que enciende al tocar el escudo del Colegio Paulo Freire! Sumaste <strong>+100 XP</strong> al progreso del taller.' : (isAngryBirds ? 'Aprendiste las bases de la programación y el razonamiento lógico en Code.org. ¡Sumaste <strong>+100 XP</strong> al progreso del taller!' : 'Superaste el recorrido de <strong>' + mission.title + '</strong>. ¡Sumaste <strong>+100 XP</strong> al progreso de tu grado!'))))))))))))) + '</p>' +
                     '</div>' +
 
                     '<h4 style="font-size:1rem;font-weight:900;color:#1E293B;margin:0 0 12px;"><i class="fas fa-rocket"></i> Desafíos Extra para tu Invento:</h4>' +
@@ -7798,11 +8013,11 @@
                           '<i class="fas fa-undo"></i> Repasar Presentación' +
                         '</button>'
                       :
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isGeminiNotebooks ? '#4F46E5' : (isMarcalibro ? '#D97706' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981')))))))) + ';border-color:' + (isGeminiNotebooks ? '#4338CA' : (isMarcalibro ? '#B45309' : (isScratchJrPerspectiva ? '#6D28D9' : (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669')))))))) + ';font-size:0.9rem;padding:9px 18px;">' +
-                          (isGeminiNotebooks ? '<i class="fas fa-brain"></i> Entregar Materiales de Estudio' : (isMarcalibro ? '<i class="fas fa-camera"></i> Subir Foto de Mi Marca-Libros' : (isScratchJrPerspectiva ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación'))))))) +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-entrega" style="background:' + (isClaseActivity ? '#15803D' : (isGeminiNotebooks ? '#4F46E5' : (isMarcalibro ? '#D97706' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#10B981'))))))))) + ';border-color:' + (isClaseActivity ? '#166534' : (isGeminiNotebooks ? '#4338CA' : (isMarcalibro ? '#B45309' : (isScratchJrPerspectiva ? '#6D28D9' : (isScratchJrVelocidad ? '#C2410C' : (isDiaMadre ? '#BE123C' : (isPaintBanderas ? '#1D4ED8' : (isPaint ? '#15803D' : (isElectronica ? '#B45309' : '#059669'))))))))) + ';font-size:0.9rem;padding:9px 18px;">' +
+                          (isClaseActivity ? '<i class="fas fa-check-circle"></i> Entregar Actividad de Clase' : (isGeminiNotebooks ? '<i class="fas fa-brain"></i> Entregar Materiales de Estudio' : (isMarcalibro ? '<i class="fas fa-camera"></i> Subir Foto de Mi Marca-Libros' : (isScratchJrPerspectiva ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isScratchJrVelocidad ? '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Proyecto (.sjr)' : (isDiaMadre ? '<i class="fas fa-camera"></i> Subir Foto de Mi Tarjeta 3D' : (isPaint ? '<i class="fas fa-palette"></i> Subir Mi Dibujo de Paint' : (isElectronica ? '<i class="fas fa-camera"></i> Subir Foto de Mi Circuito' : '<i class="fas fa-cloud-upload-alt"></i> Subir Mi Creación')))))))) +
                         '</button>' +
-                        '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:#7C3AED;border-color:#6D28D9;font-size:0.9rem;padding:9px 18px;">' +
-                          (isGeminiNotebooks ? '<i class="fas fa-laptop-code"></i> Ver Espacio de Trabajo NotebookLM' : (isMarcalibro ? '<i class="fas fa-book-open"></i> Ver Guía de Doblado y Circuito' : (isScratchJrPerspectiva ? '<i class="fas fa-search-plus"></i> Ver Esquema de Perspectiva' : (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial'))))))) +
+                        '<button type="button" class="arm-btn-primary apm-slide4-goto-solucion" style="background:' + (isClaseActivity ? '#15803D;border-color:#166534;' : '#7C3AED;border-color:#6D28D9;') + 'font-size:0.9rem;padding:9px 18px;">' +
+                          (isClaseActivity ? '<i class="fas fa-chalkboard-teacher"></i> Ver Consigna y Recursos' : (isGeminiNotebooks ? '<i class="fas fa-laptop-code"></i> Ver Espacio de Trabajo NotebookLM' : (isMarcalibro ? '<i class="fas fa-book-open"></i> Ver Guía de Doblado y Circuito' : (isScratchJrPerspectiva ? '<i class="fas fa-search-plus"></i> Ver Esquema de Perspectiva' : (isScratchJrVelocidad ? '<i class="fas fa-tachometer-alt"></i> Ver Esquema de Velocidades' : (isDiaMadre ? '<i class="fas fa-heart"></i> Ver Esquema del Corazón y Escudo' : (isPaint ? '<i class="fas fa-shapes"></i> Ver Guía de Figuras' : (isElectronica ? '<i class="fas fa-lightbulb"></i> Ver Esquema Oficial' : '<i class="fas fa-lightbulb"></i> Ver Solución Oficial')))))))) +
                         '</button>' +
                         (isGeminiNotebooks ?
                           '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="arm-btn-primary" style="background:#EC4899;border-color:#BE185D;font-size:0.9rem;padding:9px 18px;text-decoration:none;"><i class="fas fa-file-pdf"></i> Descargar Guía Completa PDF</a>' :
@@ -7842,7 +8057,10 @@
             '<div class="apm-delivery-pane-wrap">' +
               '<div class="apm-deliv-format-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#F8FAFC;border-radius:12px;margin-bottom:14px;border:1.5px solid #E2E8F0;flex-wrap:wrap;">' +
                 '<span style="font-size:0.84rem;font-weight:800;color:#334155;"><i class="fas fa-sliders-h" style="color:#6366F1;"></i> Formato de Entrega:</span>' +
-                '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+                  (isClaseActivity ?
+                    '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-clase" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;background:#15803D;color:#FFF;box-shadow:0 2px 6px rgba(21,128,61,0.3);">' +
+                      '<i class="fas fa-chalkboard-teacher"></i> Entrega de Actividad' +
+                    '</button>' : '') +
                   (isCodeorg ?
                     '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-codeorg" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;' + (isMinecraft ? 'background:#059669;color:#FFF;box-shadow:0 2px 6px rgba(5,150,105,0.3);' : (isFrozen ? 'background:#0284C7;color:#FFF;box-shadow:0 2px 6px rgba(2,132,199,0.3);' : 'background:#E11D48;color:#FFF;box-shadow:0 2px 6px rgba(225,29,72,0.3);')) + '">' +
                       (isMinecraft ? '<i class="fas fa-cube"></i> Desafío Minecraft' : (isFrozen ? '<i class="fas fa-snowflake"></i> Desafío Frozen' : '<i class="fas fa-gamepad"></i> Desafío Code.org')) +
@@ -7867,6 +8085,49 @@
                     '<button type="button" class="apm-deliv-switch-btn active" id="apm-switch-to-gemini" style="padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:800;cursor:pointer;border:none;background:#4F46E5;color:#FFF;box-shadow:0 2px 6px rgba(79,70,229,0.3);">' +
                       '<i class="fas fa-brain"></i> Entrega IA & NotebookLM' +
                     '</button>' : '') +
+                '</div>' +
+              '</div>' +
+
+              // SUB-PANEL ACTIVIDAD DE CLASE
+              '<div id="apm-clase-delivery-section" style="' + (isClaseActivity ? 'display:block;' : 'display:none;') + '">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #14532D 0%, #15803D 50%, #16A34A 100%);">' +
+                  '<div class="apm-dh-icon"><i class="fas fa-chalkboard-teacher"></i></div>' +
+                  '<div>' +
+                    '<h4>Entrega de Actividad: ' + (mission.title || 'Actividad de Clase') + '</h4>' +
+                    '<p>Podés registrar tu entrega compartiendo el enlace a tu trabajo, subiendo una captura/foto o validando la actividad con un clic para sumar tus <strong>+100 XP</strong>.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  '<div class="apm-delivery-input-group">' +
+                    '<div class="apm-delivery-input-wrap">' +
+                      '<i class="fas fa-link apm-delivery-link-icon"></i>' +
+                      '<input type="url" id="apm-clase-student-url" class="apm-delivery-url-input" placeholder="https://... pegá el enlace a tu proyecto, captura o trabajo" value="' + (savedMakecodeUrl || '') + '">' +
+                    '</div>' +
+                    '<button type="button" id="apm-clase-save-link-btn" class="apm-delivery-submit-btn" style="background:#15803D;"><i class="fas fa-paper-plane"></i> Guardar Enlace (+100 XP)</button>' +
+                  '</div>' +
+                  (mission.botones && mission.botones.length > 0 ?
+                    '<div class="apm-delivery-actions-row">' +
+                      mission.botones.map(function(b){
+                        return '<a href="' + b.url + '" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#15803D;"><i class="' + (b.icono || 'fas fa-external-link-alt') + '"></i> ' + (b.texto || 'Abrir Plataforma') + '</a>';
+                      }).join('') +
+                    '</div>' : '') +
+                  '<div class="apm-scratch-dropzone" id="apm-clase-dropzone" style="margin-top:16px;border-color:#86EFAC;background:#F0FDF4;">' +
+                    '<div class="apm-sd-icon" style="color:#15803D;background:#DCFCE7;"><i class="fas fa-cloud-upload-alt"></i></div>' +
+                    '<h4 style="color:#14532D;">Arrastrá tu captura, foto o archivo aquí</h4>' +
+                    '<p style="color:#166534;">Subí tu imagen (.png, .jpg), proyecto o documento para guardarlo en tu Google Drive</p>' +
+                    '<input type="file" id="apm-clase-file-input" style="display:none;" accept="image/*,.png,.jpg,.jpeg,.pdf,.sb3,.sjr,.txt,.doc,.docx">' +
+                    '<button type="button" id="apm-clase-browse-btn" class="apm-delivery-submit-btn" style="background:#15803D;"><i class="fas fa-folder-open"></i> Seleccionar Archivo o Foto</button>' +
+                  '</div>' +
+                  '<div style="text-align:center;margin-top:18px;padding:16px;background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:12px;">' +
+                    '<p style="margin:0 0 10px;font-size:0.86rem;color:#475569;">¿Ya realizaste la actividad en clase o en la plataforma indicada por el docente?</p>' +
+                    '<button type="button" id="apm-btn-complete-clase" class="apm-delivery-submit-btn" style="background:linear-gradient(135deg, #15803D 0%, #16A34A 100%);font-size:0.95rem;padding:10px 24px;box-shadow:0 4px 12px rgba(21,128,61,0.3);">' +
+                      '<i class="fas fa-check-circle"></i> Marcar Actividad de Clase Completada (+100 XP)' +
+                    '</button>' +
+                  '</div>' +
+                  '<div id="apm-clase-delivery-status" style="margin-top:14px;">' +
+                    (savedFileName || savedMakecodeUrl || isAlreadyCompleted ?
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Actividad Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">' + (savedFileName ? 'Archivo entregado: <strong>' + savedFileName + '</strong>' : (savedMakecodeUrl ? 'Enlace registrado: <strong>' + savedMakecodeUrl + '</strong>' : '¡Actividad validada con éxito!')) + ' (' + (savedFileDate || 'Guardado') + ') en tu Google Drive.</span></div></div>' : '') +
+                  '</div>' +
                 '</div>' +
               '</div>' +
 
@@ -8140,7 +8401,9 @@
 
           // ── PANEL 3: SOLUCIÓN OFICIAL ──
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
-            (isMarcalibro ?
+            (isClaseActivity ?
+              renderClaseActivitySolutionHtml(mission) :
+             isMarcalibro ?
               renderMarcalibroOrigamiSolutionHtml(mission) :
              isScratchJrPerspectiva ?
               renderScratchJrPerspectivaSolutionHtml(mission) :
@@ -8738,13 +9001,14 @@
       };
     }
 
-    // ── CONTROLADORES DE PESTAÑA: MI ENTREGA (CODE.ORG, PAINT, ELECTRÓNICA, SCRATCH, MAKECODE) ──
+    var switchToClase = modal.querySelector('#apm-switch-to-clase');
     var switchToCodeorg = modal.querySelector('#apm-switch-to-codeorg');
     var switchToPaint = modal.querySelector('#apm-switch-to-paint');
     var switchToElectro = modal.querySelector('#apm-switch-to-electro');
     var switchToScratch = modal.querySelector('#apm-switch-to-scratch');
     var switchToMk = modal.querySelector('#apm-switch-to-mk');
     var switchToGemini = modal.querySelector('#apm-switch-to-gemini');
+    var secClase = modal.querySelector('#apm-clase-delivery-section');
     var secCodeorg = modal.querySelector('#apm-codeorg-delivery-section');
     var secPaint = modal.querySelector('#apm-paint-delivery-section');
     var secElectro = modal.querySelector('#apm-electro-delivery-section');
@@ -8753,6 +9017,7 @@
     var secGemini = modal.querySelector('#apm-gemini-delivery-section');
 
     function setDeliveryMode(mode) {
+      if (secClase) secClase.style.display = (mode === 'clase' ? 'block' : 'none');
       if (secCodeorg) secCodeorg.style.display = (mode === 'codeorg' ? 'block' : 'none');
       if (secPaint) secPaint.style.display = (mode === 'paint' ? 'block' : 'none');
       if (secElectro) secElectro.style.display = (mode === 'electro' ? 'block' : 'none');
@@ -8760,6 +9025,11 @@
       if (secMk) secMk.style.display = (mode === 'mk' ? 'block' : 'none');
       if (secGemini) secGemini.style.display = (mode === 'gemini' ? 'block' : 'none');
 
+      if (switchToClase) {
+        switchToClase.style.background = (mode === 'clase' ? '#15803D' : '#E2E8F0');
+        switchToClase.style.color = (mode === 'clase' ? '#FFF' : '#475569');
+        switchToClase.style.boxShadow = (mode === 'clase' ? '0 2px 6px rgba(21,128,61,0.3)' : 'none');
+      }
       if (switchToCodeorg) {
         switchToCodeorg.style.background = (mode === 'codeorg' ? (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : '#E11D48')) : '#E2E8F0');
         switchToCodeorg.style.color = (mode === 'codeorg' ? '#FFF' : '#475569');
@@ -8792,6 +9062,7 @@
       }
     }
 
+    if (switchToClase) switchToClase.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('clase'); };
     if (switchToCodeorg) switchToCodeorg.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('codeorg'); };
     if (switchToPaint) switchToPaint.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('paint'); };
     if (switchToElectro) switchToElectro.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('electro'); };
@@ -8800,7 +9071,154 @@
     if (switchToGemini) switchToGemini.onclick = function(){ if (window.sounds) window.sounds.playClick(); setDeliveryMode('gemini'); };
 
     // Establecer modo de entrega inicial
-    setDeliveryMode(isGeminiNotebooks ? 'gemini' : (isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch')))));
+    setDeliveryMode(isClaseActivity ? 'clase' : (isGeminiNotebooks ? 'gemini' : (isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'))))));
+
+    // --- Subida / Completar Actividad de Clase con 1-Click ---
+    var btnCompleteClase = modal.querySelector('#apm-btn-complete-clase');
+    if (btnCompleteClase) {
+      btnCompleteClase.onclick = function() {
+        if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+        else if (window.sounds) window.sounds.playClick();
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          type: 'clase',
+          date: nowStr,
+          completed: true,
+          missionId: mission.id,
+          missionTitle: mission.title,
+          fileName: 'Actividad de Clase (Completada)'
+        };
+        markMissionCompleted(student, mission.id, submissionData);
+        var stContainer = modal.querySelector('#apm-clase-delivery-status');
+        if (stContainer) {
+          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Actividad Completada con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Se registró tu entrega de ' + mission.title + ' (' + nowStr + '). ¡Puntos y avance sumados!</span></div></div>';
+        }
+        var topBadge = modal.querySelector('#apm-header-status-badge');
+        if (topBadge) {
+          topBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+        alert('🎉 ¡Felicitaciones! Completaste la actividad: ' + mission.title + '.\nSumaste +100 XP al taller de robótica.');
+      };
+    }
+
+    // --- Guardar Link de Actividad de Clase ---
+    var claseSaveLinkBtn = modal.querySelector('#apm-clase-save-link-btn');
+    var claseUrlInput = modal.querySelector('#apm-clase-student-url');
+    if (claseSaveLinkBtn && claseUrlInput) {
+      claseSaveLinkBtn.onclick = function() {
+        var rawUrl = (claseUrlInput.value || '').trim();
+        if (!rawUrl) {
+          alert('Por favor ingresá un enlace a tu entrega o proyecto.');
+          return;
+        }
+        if (window.sounds) window.sounds.playSuccess();
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          makecodeUrl: rawUrl,
+          date: nowStr,
+          type: 'clase',
+          completed: true,
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+        markMissionCompleted(student, mission.id, submissionData);
+        var topBadge = modal.querySelector('#apm-header-status-badge');
+        if (topBadge) {
+          topBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+        var stContainer = modal.querySelector('#apm-clase-delivery-status');
+        if (stContainer) {
+          stContainer.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;margin-top:10px;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Enlace Guardado con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Enlace registrado: ' + rawUrl + ' (' + nowStr + '). ¡Puntos y avance sumados!</span></div></div>';
+        }
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+        alert('🎉 ¡Felicitaciones! Guardaste tu enlace para la actividad: ' + mission.title + '.\nSumaste +100 XP.');
+      };
+    }
+
+    // --- Subir Archivo/Foto para Actividad de Clase ---
+    var claseDropzone = modal.querySelector('#apm-clase-dropzone');
+    var claseFileInput = modal.querySelector('#apm-clase-file-input');
+    var claseBrowseBtn = modal.querySelector('#apm-clase-browse-btn');
+    var claseStatusEl = modal.querySelector('#apm-clase-delivery-status');
+
+    if (claseBrowseBtn && claseFileInput) {
+      claseBrowseBtn.onclick = function() { claseFileInput.click(); };
+    }
+    if (claseFileInput) {
+      claseFileInput.onchange = function(ev) {
+        if (ev.target.files && ev.target.files[0]) processClaseUpload(ev.target.files[0]);
+      };
+    }
+    if (claseDropzone) {
+      claseDropzone.ondragover = function(ev) { ev.preventDefault(); claseDropzone.classList.add('dragover'); };
+      claseDropzone.ondragleave = function(ev) { ev.preventDefault(); claseDropzone.classList.remove('dragover'); };
+      claseDropzone.ondrop = function(ev) {
+        ev.preventDefault();
+        claseDropzone.classList.remove('dragover');
+        if (ev.dataTransfer.files && ev.dataTransfer.files[0]) {
+          processClaseUpload(ev.dataTransfer.files[0]);
+        }
+      };
+    }
+    function processClaseUpload(file) {
+      if (!file) return;
+      if (window.sounds) window.sounds.playSuccess();
+      var sz = formatFileSize(file.size);
+      if (claseStatusEl) {
+        claseStatusEl.innerHTML = '<div class="apm-status-badge warning"><i class="fas fa-sync-alt fa-spin"></i> Guardando <strong>' + file.name + '</strong> (' + sz + ')...</div>';
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var b64 = ev.target.result.split(',')[1];
+        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        if (hook && student) {
+          var iframe = document.getElementById('gdrive_silent_upload_iframe');
+          if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+          }
+          var form = document.createElement('form');
+          form.target = 'gdrive_silent_upload_iframe';
+          form.method = 'POST';
+          form.action = hook;
+          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyectos' };
+          for (var k in fields) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = k;
+            inp.value = fields[k];
+            form.appendChild(inp);
+          }
+          document.body.appendChild(form);
+          form.submit();
+          setTimeout(function(){ form.remove(); }, 2500);
+        }
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          fileName: file.name,
+          fileSize: sz,
+          date: nowStr,
+          type: 'clase',
+          completed: true,
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+        markMissionCompleted(student, mission.id, submissionData);
+        var topBadge = modal.querySelector('#apm-header-status-badge');
+        if (topBadge) {
+          topBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+        if (claseStatusEl) {
+          claseStatusEl.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Archivo Entregado con Éxito! ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Archivo: <strong>' + file.name + '</strong> (' + sz + ' • ' + nowStr + ') guardado en tu Google Drive.</span></div></div>';
+        }
+        if (typeof refreshDashboard === 'function') refreshDashboard();
+        alert('🎉 ¡Felicitaciones! Subiste tu archivo para la actividad: ' + mission.title + '.\nSumaste +100 XP.');
+      };
+      reader.readAsDataURL(file);
+    }
 
     // --- Subida / Completar Misión Code.org (Angry Birds / Frozen / Minecraft) con 1-Click ---
     var btnCompleteCodeorg = modal.querySelector('#apm-btn-complete-codeorg');

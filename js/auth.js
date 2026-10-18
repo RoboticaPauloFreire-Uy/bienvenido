@@ -597,12 +597,15 @@
             '<input type="password" id="clf-pass" placeholder="Tu contraseña" required autocomplete="current-password">' +
           '</div>' +
           '<div class="clf-demo-hint">' +
-            '<i class="fas fa-key"></i> <strong>Usuario:</strong> <code>agustin</code> | <strong>Clave:</strong> <code>5anos</code>' +
+            '<i class="fas fa-key"></i> <strong>Usuario:</strong> 3 letras nombre + 3 apellido (ej: <code>agumor</code>) | <strong>Clave:</strong> PIN de 4 dígitos' +
           '</div>' +
           '<button type="submit" class="clf-submit-btn">' +
             '<span>Iniciar Sesión</span>' +
             '<i class="fas fa-sign-in-alt"></i>' +
           '</button>' +
+          '<div style="text-align:center;margin-top:14px;">' +
+            '<a href="admin.html" style="font-size:0.8rem;color:#78909C;text-decoration:none;"><i class="fas fa-user-shield"></i> Panel Docente / Gestión de Credenciales</a>' +
+          '</div>' +
         '</form>';
 
       var form  = document.getElementById('classic-login-form');

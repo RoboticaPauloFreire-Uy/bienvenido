@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>El Diario del Taller — Colegio Paulo Freire</title>
-  <meta name="description" content="Noticias, actividades y agenda del Taller de Robótica y Programación del Colegio Paulo Freire. Sala de 5 a 6° Grado.">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=128">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=25">
+  <link rel="stylesheet" href="css/home.css?v=28">
   <link rel="stylesheet" href="css/themes.css?v=5">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -115,10 +117,18 @@
           <i class="fas fa-calendar-day"></i>
           <span>Agenda</span>
         </a>
+        <a href="admin.html" class="topbar-nav-link" style="color:#0284c7; font-weight:700;" title="Panel Administrativo de Alumnos">
+          <i class="fas fa-user-shield"></i>
+          <span>Administración</span>
+        </a>
       </nav>
 
-      <!-- Right Side (Student Login + Year + Mobile Hamburger) -->
+      <!-- Right Side (Student Login + Admin + Year + Mobile Hamburger) -->
       <div class="topbar-right">
+        <a href="admin.html" class="topbar-student-pill" style="background:#0284c7; color:white; text-decoration:none;" title="Panel de Administración de Alumnos">
+          <i class="fas fa-users-cog"></i>
+          <span>Admin</span>
+        </a>
         <button id="student-login-btn" class="topbar-student-pill logged-out" onclick="if(window.openLoginModal) window.openLoginModal()">
           <i class="fas fa-id-badge"></i>
           <span>Ingreso Alumnos</span>
@@ -579,6 +589,9 @@
         <a href="https://www.youtube.com/@FreireBotCPF" target="_blank" rel="noopener noreferrer" class="footer-icon-circle btn-youtube" aria-label="Canal oficial de YouTube @FreireBotCPF" title="YouTube: @FreireBotCPF">
           <i class="fab fa-youtube"></i>
         </a>
+        <a href="admin.html" class="footer-icon-circle" aria-label="Panel Administrativo de Alumnos" title="Panel Docente / Gestión de Alumnos" style="background:#1565C0;color:white;">
+          <i class="fas fa-user-shield"></i>
+        </a>
       </div>
     </div>
   </footer>
@@ -652,6 +665,123 @@
   </div>
 
   <!-- ══════════════════════════════════════════════
+       MODAL ESTILO PERIÓDICO / EXPEDIENTE DE CLASE
+  ══════════════════════════════════════════════ -->
+  <div id="clase-periodico-modal" class="cpm-overlay" role="dialog" aria-modal="true" aria-labelledby="cpm-headline" aria-hidden="true">
+    <div class="cpm-dialog" role="document">
+      <article class="cpm-sheet">
+        <!-- Barra de herramientas superior -->
+        <div class="cpm-topbar">
+          <div class="cpm-topbar-left">
+            <span class="cpm-press-badge"><i class="fas fa-newspaper"></i> GACETA TÉCNICA ESCOLAR</span>
+            <span class="cpm-issue-tag">EXPEDIENTE Nº <strong id="cpm-issue-id">EXP-01</strong></span>
+          </div>
+          <button type="button" class="cpm-close-btn" id="cpm-close-btn" aria-label="Cerrar expediente" title="Cerrar expediente (Esc)">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Cabecera / Masthead estilo periódico -->
+        <header class="cpm-masthead">
+          <div class="cpm-masthead-titles">
+            <h1 class="cpm-masthead-name">EL MONITOR ESCOLAR</h1>
+            <span class="cpm-masthead-slogan">CRÓNICA DE CIENCIA, TECNOLOGÍA, INFORMÁTICA Y ROBÓTICA</span>
+          </div>
+          <div class="cpm-masthead-rule-double"></div>
+          <div class="cpm-masthead-dateline">
+            <span id="cpm-dateline"><i class="far fa-calendar-alt"></i> TALLER ESCOLAR // PAULO FREIRE</span>
+            <span class="cpm-dateline-sep">//</span>
+            <span id="cpm-grade-pill"><i class="fas fa-graduation-cap"></i> TODOS LOS GRADOS</span>
+            <span class="cpm-dateline-sep">//</span>
+            <span id="cpm-state-badge" class="cpm-state-badge">EN CURSO</span>
+          </div>
+          <div class="cpm-masthead-rule-single"></div>
+        </header>
+
+        <!-- Contenedor scrolleable del contenido -->
+        <div class="cpm-scroll-body">
+          <!-- Hero: Sello, Titular y Subtítulo / Bajada -->
+          <div class="cpm-hero-section">
+            <div class="cpm-stamp-wrap">
+              <span class="cpm-stamp" id="cpm-stamp">EXPEDIENTE DE AULA</span>
+            </div>
+            <h2 id="cpm-headline" class="cpm-headline">Titular de la Actividad</h2>
+            <p id="cpm-subheadline" class="cpm-subheadline">Subtítulo o bajada periodística del proyecto</p>
+          </div>
+
+          <!-- Portada Principal y Galería de Fotos -->
+          <div id="cpm-media-section" class="cpm-media-section">
+            <!-- Portada Principal -->
+            <div id="cpm-main-photo-frame" class="cpm-main-photo-frame" role="button" tabindex="0" title="Clic para ampliar foto en alta resolución">
+              <img id="cpm-main-img" src="" alt="Fotografía del proyecto" class="cpm-photo-img">
+              <div class="cpm-photo-overlay-hint">
+                <i class="fas fa-search-plus"></i> Clic para ampliar
+              </div>
+              <div class="cpm-photo-caption">
+                <i class="fas fa-camera"></i> <span id="cpm-photo-caption-text">Fotografía oficial del proyecto de laboratorio. Clic para ampliar en pantalla completa.</span>
+              </div>
+            </div>
+
+            <!-- Galería de fotos adicionales -->
+            <div id="cpm-gallery-wrapper" class="cpm-gallery-wrapper" style="display:none;">
+              <div class="cpm-gallery-header">
+                <i class="fas fa-images"></i> <span>ARCHIVO FOTOGRÁFICO Y REGISTRO VISUAL (<span id="cpm-gallery-count">0</span>)</span>
+              </div>
+              <div id="cpm-gallery-grid" class="cpm-gallery-grid"></div>
+            </div>
+          </div>
+
+          <!-- Contenido y Ficha Técnica -->
+          <div class="cpm-article-layout">
+            <!-- Columna de texto principal -->
+            <div class="cpm-article-text">
+              <div id="cpm-body-content" class="cpm-body-content">
+                <!-- Se inyecta la descripción con letra capital drop cap -->
+              </div>
+            </div>
+
+            <!-- Columna lateral: Ficha técnica / Expediente -->
+            <aside class="cpm-sidebar-dossier">
+              <div class="cpm-dossier-card">
+                <div class="cpm-dossier-title">
+                  <i class="fas fa-clipboard-check"></i> DATOS DEL EXPEDIENTE
+                </div>
+                <div class="cpm-dossier-list">
+                  <div class="cpm-dossier-item">
+                    <span class="cpm-dossier-label"><i class="fas fa-users"></i> Destinatarios</span>
+                    <span class="cpm-dossier-val" id="cpm-box-grades">Todos los grados</span>
+                  </div>
+                  <div class="cpm-dossier-item">
+                    <span class="cpm-dossier-label"><i class="far fa-calendar-alt"></i> Presentación</span>
+                    <span class="cpm-dossier-val" id="cpm-box-date">-</span>
+                  </div>
+                  <div class="cpm-dossier-item">
+                    <span class="cpm-dossier-label"><i class="fas fa-flag"></i> Estado Actual</span>
+                    <span class="cpm-dossier-val" id="cpm-box-status">En curso</span>
+                  </div>
+                </div>
+
+                <!-- Botones de Enlace / Acciones interactivas -->
+                <div id="cpm-action-buttons" class="cpm-action-buttons" style="display:none;"></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- Pie de página de periódico -->
+        <footer class="cpm-footer">
+          <div class="cpm-footer-text">
+            <span>© ESCUELA PAULO FREIRE // TALLER DE INFORMÁTICA Y ROBÓTICA EDUCATIVA</span>
+          </div>
+          <button type="button" class="cpm-foot-close-btn" id="cpm-foot-close-btn">
+            <i class="fas fa-times"></i> Cerrar Expediente
+          </button>
+        </footer>
+      </article>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
        MODAL UNIVERSAL
   ══════════════════════════════════════════════ -->
   <div id="game-modal" class="game-modal" role="dialog" aria-modal="true">
@@ -692,7 +822,7 @@
   <script src="js/firebase-config.js?v=95"></script>
   <script src="js/data.js?v=95"></script>
   <script src="js/students.js?v=98"></script>
-  <script src="js/gdrive_viewer.js?v=118"></script>
+  <script src="js/gdrive_viewer.js?v=119"></script>
   <script src="js/auth.js?v=104"></script>
   <script src="js/audio.js?v=95"></script>
   <script src="js/games/neon_runner.js"></script>
@@ -705,10 +835,10 @@
   <!-- Motor de temas festivos (Halloween, Día del Niño, Día de la Madre, Navidad, etc.) -->
   <script src="js/theme.js?v=2"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
-  <script src="js/news.js?v=12"></script>
+  <script src="js/news.js?v=15"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=47"></script>
+  <script src="js/home.js?v=52"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
