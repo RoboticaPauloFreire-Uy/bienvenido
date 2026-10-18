@@ -1,0 +1,89 @@
+/* =============================================================
+   MOBILE.CSS — Ajustes responsive finales (se carga al último)
+   Cubre celulares chicos (320px) hasta tablets y pantallas grandes
+   ============================================================= */
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { max-width: 100%; overflow-x: hidden; }
+img, video, iframe, canvas, svg { max-width: 100%; }
+img, video { height: auto; }
+table { max-width: 100%; }
+pre, code { white-space: pre-wrap; word-break: break-word; }
+h1, h2, h3, p, a, li { overflow-wrap: anywhere; }
+
+/* ---------- Tablets y celulares ---------- */
+@media (max-width: 860px) {
+  .topbar-inner { gap: 8px; flex-wrap: nowrap; }
+  .topbar-brand { min-width: 0; flex: 1 1 auto; }
+  .topbar-name { min-width: 0; }
+  .topbar-school, .topbar-sub {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  }
+  .topbar-right {
+    flex: 0 0 auto; gap: 6px; display: flex; align-items: center; margin-left: auto;
+  }
+  .topbar-year { display: none !important; }
+  .topbar-theme-pill { display: none !important; }
+}
+
+/* ---------- Celulares ---------- */
+@media (max-width: 640px) {
+  /* Botones de la barra superior compactos: solo ícono */
+  .topbar-right .topbar-student-pill {
+    padding: 8px 10px; min-width: 38px; min-height: 38px;
+    justify-content: center; font-size: 0;
+  }
+  .topbar-right .topbar-student-pill i { font-size: 1rem; margin: 0; }
+  .topbar-right .topbar-student-pill span { display: none; }
+  .topbar-mobile-btn { flex: 0 0 auto; min-width: 40px; min-height: 40px; }
+  .topbar-shield-logo { max-width: 38px; max-height: 38px; }
+  .topbar-school { font-size: 0.78rem; letter-spacing: 0; }
+  .topbar-sub { font-size: 0.62rem; }
+
+  /* Objetivos táctiles cómodos */
+  button, .btn, .btn-primary, .btn-secondary, a.topbar-nav-link { min-height: 40px; }
+  input, select, textarea { font-size: 16px !important; } /* evita zoom automático en iOS */
+
+  /* Grillas principales a una columna */
+  .games-grid, .classrooms-grid { grid-template-columns: minmax(0, 1fr) !important; }
+
+  /* Modal de ingreso a pantalla casi completa */
+  .student-login-modal .slm-content {
+    width: 96vw !important; max-width: 96vw !important; max-height: 92vh; overflow-y: auto;
+  }
+}
+
+/* ---------- Celulares muy chicos ---------- */
+@media (max-width: 380px) {
+  .topbar-school { font-size: 0.85rem; }
+  .topbar-sub { display: none; }
+  body { font-size: 15px; }
+}
+
+/* ---------- Pantallas muy grandes ---------- */
+@media (min-width: 1600px) {
+  html { font-size: 17px; }
+}
+
+/* ---------- Barra de navegación inferior (solo celulares) ---------- */
+#mobile-bottom-nav { display: none; }
+@media (max-width: 860px) {
+  #mobile-bottom-nav {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 900;
+    background: #1C1814; border-top: 3px double #D2C7B3;
+    padding: 4px 2px calc(4px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 16px rgba(0,0,0,.35);
+  }
+  #mobile-bottom-nav a {
+    flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center;
+    gap: 2px; padding: 6px 2px; color: #E6DFD3; text-decoration: none;
+    font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .02em;
+    border-radius: 6px; -webkit-tap-highlight-color: transparent;
+  }
+  #mobile-bottom-nav a i { font-size: 1.15rem; }
+  #mobile-bottom-nav a.active { color: #FBC02D; background: rgba(251,192,45,.12); }
+  body { padding-bottom: 72px; }
+  /* El menú desplegable queda por encima del cartel de tema */
+  .topbar-nav { z-index: 950 !important; }
+  .topbar-theme-ribbon { z-index: 1 !important; }
+}
