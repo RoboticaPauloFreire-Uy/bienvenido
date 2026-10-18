@@ -4796,6 +4796,412 @@ button, input, select, textarea { font-family: inherit; }
   box-shadow: 0 7px 18px rgba(0, 0, 0, 0.45);
 }
 
+/* ───────────────────────────────────────────────────────────
+   TECLADO DE CAJA FUERTE / BÓVEDA PARA PIN DE 4 DÍGITOS
+─────────────────────────────────────────────────────────── */
+.vault-safe-box {
+  position: relative;
+  background: linear-gradient(150deg, #2b2520 0%, #1e1915 50%, #14100d 100%);
+  border: 3px solid #854d0e;
+  outline: 2px solid #ca8a04;
+  outline-offset: -4px;
+  border-radius: 16px;
+  padding: 14px 14px 16px;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.12),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.8),
+    0 10px 25px rgba(0, 0, 0, 0.55);
+  margin-top: 4px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+/* Remaches metálicos en las esquinas */
+.vault-rivet {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fef08a 0%, #ca8a04 60%, #713f12 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+.vault-rivet.top-left { top: 7px; left: 7px; }
+.vault-rivet.top-right { top: 7px; right: 7px; }
+.vault-rivet.bottom-left { bottom: 7px; left: 7px; }
+.vault-rivet.bottom-right { bottom: 7px; right: 7px; }
+
+/* Encabezado de la caja fuerte */
+.vault-safe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.vault-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #fef08a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.vault-shield-icon {
+  color: #eab308;
+  font-size: 0.95rem;
+}
+
+.vault-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vault-status-indicator .vault-led-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: all 0.25s ease;
+}
+
+.vault-status-indicator.locked {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.vault-status-indicator.locked .vault-led-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.vault-status-indicator.ready {
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(20, 83, 45, 0.4);
+}
+.vault-status-indicator.ready .vault-led-dot {
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e, 0 0 4px #86efac;
+}
+
+.vault-status-indicator.error {
+  color: #fecaca;
+  border-color: #ef4444;
+  background: rgba(127, 29, 29, 0.6);
+  animation: vaultLedBlink 0.3s ease infinite alternate;
+}
+.vault-status-indicator.error .vault-led-dot {
+  background: #dc2626;
+  box-shadow: 0 0 10px #dc2626;
+}
+
+@keyframes vaultLedBlink {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+/* Pantalla / Display digital de 4 ranuras */
+.vault-screen {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #181512 0%, #0d0a08 100%);
+  border: 2px solid #574838;
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.85),
+    inset 0 0 15px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+}
+
+.vault-screen-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
+  border-radius: 10px 10px 0 0;
+  pointer-events: none;
+}
+
+.vault-slots-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.vault-slot {
+  width: 44px;
+  height: 50px;
+  background: linear-gradient(180deg, #13100d 0%, #201a15 100%);
+  border: 2px solid #52473b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.65rem;
+  font-weight: 900;
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #78716c;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.9),
+    0 1px 2px rgba(255, 255, 255, 0.05);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  user-select: none;
+}
+
+.vault-slot::before {
+  content: '–';
+  font-size: 1.1rem;
+  color: #44403c;
+  transition: opacity 0.15s ease;
+}
+
+.vault-slot.filled::before {
+  display: none;
+}
+
+.vault-slot.filled {
+  border-color: #f59e0b;
+  background: linear-gradient(180deg, #241c14 0%, #15110d 100%);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.9),
+    0 0 12px rgba(245, 158, 11, 0.35);
+  transform: translateY(-1px);
+}
+
+.vault-slot .vault-slot-char {
+  color: #fbbf24;
+  text-shadow: 0 0 10px #f59e0b, 0 0 2px #fff;
+  line-height: 1;
+  display: inline-block;
+  animation: vaultDigitPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.vault-slot.revealed .vault-slot-char {
+  color: #38bdf8;
+  text-shadow: 0 0 10px #0284c7, 0 0 2px #fff;
+  font-size: 1.55rem;
+}
+
+@keyframes vaultDigitPop {
+  0% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.25); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.vault-eye-btn {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1.5px solid #78716c;
+  color: #d6d3d1;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.vault-eye-btn:hover {
+  color: #fbbf24;
+  border-color: #fbbf24;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.vault-eye-btn.active {
+  color: #38bdf8;
+  border-color: #38bdf8;
+  background: rgba(2, 132, 199, 0.2);
+}
+
+.vault-hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Barra de subtítulo / feedback */
+.vault-instruction-bar {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #d6d3d1;
+  margin-bottom: 10px;
+  padding: 0 4px;
+  min-height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.vault-instruction-bar i {
+  color: #f59e0b;
+}
+
+/* Grilla del Teclado de la Caja Fuerte */
+.vault-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 275px;
+  margin: 0 auto;
+}
+
+.vault-key {
+  appearance: none;
+  -webkit-appearance: none;
+  background: linear-gradient(180deg, #443e38 0%, #2f2924 50%, #1f1b17 100%);
+  border: 2px solid #6b5f54;
+  border-bottom: 4px solid #14110e;
+  border-radius: 11px;
+  padding: 8px 4px;
+  min-height: 48px;
+  color: #f5f5f4;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.5),
+    inset 0 1px 2px rgba(255, 255, 255, 0.22);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vault-key:hover {
+  background: linear-gradient(180deg, #534c45 0%, #3a332d 50%, #25201b 100%);
+  border-color: #d97706;
+  color: #fff;
+}
+
+.vault-key:active,
+.vault-key.keyboard-pressed {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.7),
+    inset 0 2px 6px rgba(0, 0, 0, 0.85);
+  background: #14110e !important;
+  color: #fbbf24 !important;
+  border-color: #f59e0b !important;
+}
+
+.vault-key .vk-num {
+  font-size: 1.32rem;
+  font-weight: 800;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1;
+}
+
+.vault-key .vk-sub {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #a8a29e;
+  letter-spacing: 1px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* Botones de acción del teclado (Borrar y Atrás) */
+.vault-key-action {
+  background: linear-gradient(180deg, #362f29 0%, #25201b 50%, #171310 100%);
+  border-color: #574b40;
+}
+
+.vault-key-action .vk-action-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.vault-key-action .vk-action-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.vault-key-clear {
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+.vault-key-clear:hover {
+  background: linear-gradient(180deg, #451a1a 0%, #2d1010 100%);
+  border-color: #ef4444;
+  color: #fee2e2;
+}
+
+.vault-key-backspace {
+  color: #fde047;
+  border-color: #854d0e;
+}
+.vault-key-backspace:hover {
+  background: linear-gradient(180deg, #452b12 0%, #291807 100%);
+  border-color: #eab308;
+  color: #fef08a;
+}
+
+/* Animación de error / denegado (temblor mecánico de caja fuerte) */
+.vault-safe-box.vault-shake {
+  animation: vaultShakeAnim 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.6), inset 0 0 15px rgba(220, 38, 38, 0.4) !important;
+}
+
+@keyframes vaultShakeAnim {
+  10%, 90% { transform: translate3d(-3px, 0, 0); }
+  20%, 80% { transform: translate3d(5px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+@media (max-width: 420px) {
+  .vault-slot {
+    width: 38px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+  .vault-key {
+    min-height: 44px;
+    padding: 6px 2px;
+  }
+  .vault-key .vk-num {
+    font-size: 1.2rem;
+  }
+}
+
+
 .nav-drive-link {
   display: inline-flex;
   align-items: center;
