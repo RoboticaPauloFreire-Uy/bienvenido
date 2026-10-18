@@ -108,6 +108,14 @@
     // Escapar caracteres peligrosos
     var safe = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+    // Bloques de código multilínea ```lenguaje ... ```
+    var codeBlocks = [];
+    safe = safe.replace(/```([a-zA-Z0-9_\-\.]*)\r?\n([\s\S]*?)```/g, function (match, lang, code) {
+      var ph = '___CODEBLOCK_' + codeBlocks.length + '___';
+      codeBlocks.push('<pre class="hn-code-block"><code' + (lang ? ' class="language-' + lang + '"' : '') + '>' + code.trim() + '</code></pre>');
+      return '\n\n' + ph + '\n\n';
+    });
+
     // Títulos Markdown
     safe = safe.replace(/^### (.*$)/gim, '<h4>$1</h4>');
     safe = safe.replace(/^## (.*$)/gim, '<h3>$1</h3>');
@@ -138,6 +146,17 @@
         if (inUl) { html.push('</ul>'); inUl = false; }
         if (inOl) { html.push('</ol>'); inOl = false; }
         continue;
+      }
+
+      // Restaurar bloques de código
+      if (l.indexOf('___CODEBLOCK_') === 0) {
+        if (inUl) { html.push('</ul>'); inUl = false; }
+        if (inOl) { html.push('</ol>'); inOl = false; }
+        var cbIdx = parseInt(l.replace('___CODEBLOCK_', '').replace('___', ''), 10);
+        if (!isNaN(cbIdx) && codeBlocks[cbIdx]) {
+          html.push(codeBlocks[cbIdx]);
+          continue;
+        }
       }
 
       // Viñetas: - item o * item o • item
@@ -1564,6 +1583,56 @@
     }, 2200);
   };
 
+  function renderPostMediaHtml(p) {
+    if (!p) return '';
+    if (p.tipoMedia === 'video' && p.video) {
+      var isYt = (p.video.tipo === 'youtube') || (p.video.url && p.video.url.indexOf('youtu') !== -1);
+      if (isYt) {
+        var embedSrc = toYouTubeEmbed(p.video.url);
+        var watchUrl = getYouTubeWatchUrl(p.video.url);
+        return '<div class="hn-post-media">' +
+          '<div class="hn-video-responsive">' +
+            '<iframe src="' + esc(embedSrc) + '" title="' + esc((p.texto || '').slice(0, 50)) + '" ' +
+            'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+            'referrerpolicy="strict-origin-when-cross-origin" ' +
+            'allowfullscreen></iframe>' +
+          '</div>' +
+          (watchUrl ? '<div style="padding:8px 12px; background:#F8FAFC; border-top:1px solid #E2E8F0; display:flex; justify-content:flex-end;">' +
+            '<a href="' + esc(watchUrl) + '" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem; font-weight:700; color:#DC2626; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">' +
+              '<i class="fab fa-youtube"></i> Ver en YouTube <i class="fas fa-external-link-alt" style="font-size:0.7rem;"></i>' +
+            '</a>' +
+          '</div>' : '') +
+        '</div>';
+      } else if (p.video.url) {
+        return '<div class="hn-post-media">' +
+          '<video class="hn-video-player" controls preload="metadata"' + (p.video.poster ? ' poster="' + esc(p.video.poster) + '"' : '') + '>' +
+            '<source src="' + esc(p.video.url) + '" type="video/mp4">' +
+            'Tu navegador no soporta reproducción de video.' +
+          '</video>' +
+        '</div>';
+      }
+    } else if (p.fotos && p.fotos.length > 1) {
+      var numCols = Math.min(p.fotos.length, 3);
+      return '<div class="hn-post-media">' +
+        '<div class="hn-post-gallery cols-' + numCols + '">' +
+          p.fotos.map(function (f, idx) {
+            return '<div class="gallery-item" data-photo="' + esc(f) + '" data-post-title="' + esc(p.autor) + '" role="button" tabindex="0" title="Ver foto en tamaño completo">' +
+              '<img src="' + esc(f) + '" alt="Foto ' + (idx + 1) + ' de ' + esc(p.autor) + '" loading="lazy">' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    } else if ((p.fotos && p.fotos.length === 1) || p.imagen) {
+      var singleImg = (p.fotos && p.fotos[0]) || p.imagen;
+      return '<div class="hn-post-media">' +
+        '<div class="hn-post-photo-single" data-photo="' + esc(singleImg) + '" data-post-title="' + esc(p.autor) + '" role="button" tabindex="0" title="Ver foto en tamaño completo">' +
+          '<img src="' + esc(singleImg) + '" alt="' + esc(p.autor) + '" loading="lazy">' +
+        '</div>' +
+      '</div>';
+    }
+    return '';
+  }
+
   function renderMuro() {
     var cont = document.getElementById('hn-muro-feed');
     if (!cont) return;
@@ -1630,56 +1699,7 @@
       }
 
       // Multimedia
-      var mediaHtml = '';
-      if (p.tipoMedia === 'video' && p.video) {
-        var isYt = (p.video.tipo === 'youtube') || (p.video.url && p.video.url.indexOf('youtu') !== -1);
-        if (isYt) {
-          var embedSrc = toYouTubeEmbed(p.video.url);
-          var watchUrl = getYouTubeWatchUrl(p.video.url);
-          mediaHtml =
-            '<div class="hn-post-media">' +
-              '<div class="hn-video-responsive">' +
-                '<iframe src="' + esc(embedSrc) + '" title="' + esc((p.texto || '').slice(0, 50)) + '" ' +
-                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-                'referrerpolicy="strict-origin-when-cross-origin" ' +
-                'allowfullscreen></iframe>' +
-              '</div>' +
-              (watchUrl ? '<div style="padding:8px 12px; background:#F8FAFC; border-top:1px solid #E2E8F0; display:flex; justify-content:flex-end;">' +
-                '<a href="' + esc(watchUrl) + '" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem; font-weight:700; color:#DC2626; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">' +
-                  '<i class="fab fa-youtube"></i> Ver en YouTube <i class="fas fa-external-link-alt" style="font-size:0.7rem;"></i>' +
-                '</a>' +
-              '</div>' : '') +
-            '</div>';
-        } else if (p.video.url) {
-          mediaHtml =
-            '<div class="hn-post-media">' +
-              '<video class="hn-video-player" controls preload="metadata"' + (p.video.poster ? ' poster="' + esc(p.video.poster) + '"' : '') + '>' +
-                '<source src="' + esc(p.video.url) + '" type="video/mp4">' +
-                'Tu navegador no soporta reproducción de video.' +
-              '</video>' +
-            '</div>';
-        }
-      } else if (p.fotos && p.fotos.length > 1) {
-        var numCols = Math.min(p.fotos.length, 3);
-        mediaHtml =
-          '<div class="hn-post-media">' +
-            '<div class="hn-post-gallery cols-' + numCols + '">' +
-              p.fotos.map(function (f, idx) {
-                return '<div class="gallery-item" data-photo="' + esc(f) + '" data-post-title="' + esc(p.autor) + '" role="button" tabindex="0" title="Ver foto en tamaño completo">' +
-                  '<img src="' + esc(f) + '" alt="Foto ' + (idx + 1) + ' de ' + esc(p.autor) + '" loading="lazy">' +
-                '</div>';
-              }).join('') +
-            '</div>' +
-          '</div>';
-      } else if ((p.fotos && p.fotos.length === 1) || p.imagen) {
-        var singleImg = (p.fotos && p.fotos[0]) || p.imagen;
-        mediaHtml =
-          '<div class="hn-post-media">' +
-            '<div class="hn-post-photo-single" data-photo="' + esc(singleImg) + '" data-post-title="' + esc(p.autor) + '" role="button" tabindex="0" title="Ver foto en tamaño completo">' +
-              '<img src="' + esc(singleImg) + '" alt="' + esc(p.autor) + '" loading="lazy">' +
-            '</div>' +
-          '</div>';
-      }
+      var mediaHtml = renderPostMediaHtml(p);
 
       var tagsHtml = (p.tags && p.tags.length)
         ? '<div class="hn-post-tags">' + p.tags.map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>'
@@ -1705,6 +1725,9 @@
             '</div>' +
           '</div>' +
           '<div class="hn-post-top-action">' +
+            '<button type="button" class="hn-post-opt-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')" title="Ver crónica ampliada en formato periódico">' +
+              '<i class="fas fa-expand-alt"></i>' +
+            '</button>' +
             '<button type="button" class="hn-post-opt-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace de esta publicación">' +
               '<i class="fas fa-link"></i>' +
             '</button>' +
@@ -1713,8 +1736,8 @@
         '<div class="hn-post-body">' +
           '<div class="hn-post-text-wrap">' +
             '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
-            '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="display:none;" title="Expandir publicación">' +
-              '<span>Ver más</span> <i class="fas fa-chevron-down"></i>' +
+            '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="display:none;" title="Ampliar texto de la publicación">' +
+              '<span><i class="fas fa-book-open"></i> Ver más (ampliar crónica)</span> <i class="fas fa-chevron-down"></i>' +
             '</button>' +
           '</div>' +
           tagsHtml +
@@ -1722,11 +1745,14 @@
         mediaHtml +
         '<footer class="hn-post-footer">' +
           '<div class="hn-post-actions-bar">' +
+            '<button type="button" class="hn-post-action-btn hn-post-expand-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')" title="Abrir crónica ampliada en modal de periódico">' +
+              '<i class="fas fa-newspaper"></i> <span>Vista ampliada</span>' +
+            '</button>' +
             '<button type="button" class="hn-post-action-btn hn-post-share-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')" title="Compartir actividad">' +
               '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
             '</button>' +
             '<button type="button" class="hn-post-action-btn hn-post-copy-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace al portapapeles">' +
-              '<i class="fas fa-link"></i> <span>Copiar enlace</span>' +
+              '<i class="fas fa-link"></i> <span>Copiar</span>' +
             '</button>' +
             '<a class="hn-post-action-btn hn-post-wsp-btn" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '" title="Compartir por WhatsApp">' +
               '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
@@ -1736,7 +1762,7 @@
       '</article>';
     }).join('');
 
-    // Detectar posts largos (más de aprox. 9-10 líneas) y activar el botón "Ver más"
+    // Detectar posts largos (más de 10 líneas de código/texto) y activar el botón "Ver más"
     checkCollapsiblePosts(cont);
 
     // Renderizar el índice lateral de actividades
@@ -1771,11 +1797,11 @@
         var textEl = wrap.querySelector('.hn-post-text');
         var btn = wrap.querySelector('.hn-post-readmore');
         if (!textEl || !btn) return;
-        // Si el contenido supera ~240px (aprox. 9-10 líneas), colapsar con "Ver más"
-        if (textEl.scrollHeight > 245) {
+        // Si el contenido supera 10 líneas de código/texto (~255px), colapsar con botón amplio "Ver más"
+        if (textEl.scrollHeight > 255) {
           wrap.classList.add('is-collapsed');
           btn.style.display = 'inline-flex';
-          btn.innerHTML = '<span>Ver más</span> <i class="fas fa-chevron-down"></i>';
+          btn.innerHTML = '<span><i class="fas fa-book-open"></i> Ver más (ampliar crónica)</span> <i class="fas fa-chevron-down"></i>';
         } else {
           wrap.classList.remove('is-collapsed');
           btn.style.display = 'none';
@@ -1791,14 +1817,136 @@
     if (isCollapsed) {
       wrap.classList.remove('is-collapsed');
       wrap.classList.add('is-expanded');
-      btn.innerHTML = '<span>Ver menos</span> <i class="fas fa-chevron-up"></i>';
+      btn.innerHTML = '<span><i class="fas fa-chevron-up"></i> Ver menos (plegar crónica)</span>';
     } else {
       wrap.classList.add('is-collapsed');
       wrap.classList.remove('is-expanded');
-      btn.innerHTML = '<span>Ver más</span> <i class="fas fa-chevron-down"></i>';
+      btn.innerHTML = '<span><i class="fas fa-book-open"></i> Ver más (ampliar crónica)</span> <i class="fas fa-chevron-down"></i>';
       wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   };
+
+  /* ───────────── Modal Publicación Muro en Vista Ampliada ───────────── */
+  window.abrirModalPostMuro = function(id) {
+    var allPosts = (C.muro || []);
+    var p = allPosts.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    var modal = document.getElementById('muro-ampliado-modal');
+    if (!modal) return;
+
+    var avatarEl = document.getElementById('mam-avatar');
+    var authorEl = document.getElementById('mam-author');
+    var badgeEl = document.getElementById('mam-badge');
+    var dateEl = document.getElementById('mam-date');
+    var gradeEl = document.getElementById('mam-grade');
+    var mediaEl = document.getElementById('mam-media');
+    var textEl = document.getElementById('mam-text');
+    var tagsEl = document.getElementById('mam-tags');
+    var actionsEl = document.getElementById('mam-actions');
+
+    if (avatarEl) {
+      avatarEl.src = esc(p.avatar || 'img/escudo_paulo_freire.png');
+      avatarEl.alt = esc(p.autor || '');
+    }
+    if (authorEl) authorEl.textContent = p.autor || '';
+    if (badgeEl) {
+      badgeEl.textContent = p.etiqueta || '';
+      badgeEl.style.display = p.etiqueta ? 'inline-block' : 'none';
+    }
+    if (dateEl) dateEl.innerHTML = '<i class="far fa-clock"></i> ' + esc(fechaRelativa(p.fecha));
+    if (gradeEl) {
+      var grDisplay = '';
+      if (p.etiquetaGrado && p.etiquetaGrado !== 'todos') {
+        grDisplay = p.etiquetaGrado;
+      } else if (p.grados && p.grados.length) {
+        if (p.grados.indexOf('todos') !== -1) grDisplay = 'Todo el Colegio';
+        else grDisplay = p.grados.map(nombreGrado).join(' · ');
+      } else {
+        grDisplay = nombreGrado(p.grado);
+      }
+      gradeEl.textContent = grDisplay;
+    }
+
+    if (mediaEl) {
+      var mediaHtml = renderPostMediaHtml(p);
+      mediaEl.innerHTML = mediaHtml;
+      mediaEl.style.display = mediaHtml ? 'block' : 'none';
+
+      // Event listener para fotos en modal
+      mediaEl.querySelectorAll('[data-photo]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var src = el.dataset.photo;
+          var title = el.dataset.postTitle || 'Actividad en clase';
+          if (window.openImageModal) window.openImageModal(src, title);
+        });
+      });
+    }
+
+    if (textEl) {
+      textEl.innerHTML = formatMarkdown(p.texto);
+    }
+
+    if (tagsEl) {
+      tagsEl.innerHTML = (p.tags && p.tags.length > 0)
+        ? p.tags.map(function(t) { return '<span class="hn-tag">#' + esc(t) + '</span>'; }).join('')
+        : '';
+    }
+
+    if (actionsEl) {
+      var postUrl = getPostUrl(p.id);
+      var shareText = p.autor + ': ' + (p.texto || '').substring(0, 110) + '...\n' + postUrl;
+      actionsEl.innerHTML =
+        '<button type="button" class="hn-post-action-btn hn-post-share-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')" title="Compartir actividad">' +
+          '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
+        '</button>' +
+        '<button type="button" class="hn-post-action-btn hn-post-copy-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace al portapapeles">' +
+          '<i class="fas fa-link"></i> <span>Copiar</span>' +
+        '</button>' +
+        '<a class="hn-post-action-btn hn-post-wsp-btn" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '" title="Compartir por WhatsApp">' +
+          '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
+        '</a>';
+    }
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.cerrarModalPostMuro = function() {
+    var modal = document.getElementById('muro-ampliado-modal');
+    if (!modal) return;
+    // Detener videos o audios
+    var vids = modal.querySelectorAll('video, audio');
+    vids.forEach(function(v) { try { v.pause(); } catch(e){} });
+    // Detener iframes de YouTube recargando src
+    var iframes = modal.querySelectorAll('iframe');
+    iframes.forEach(function(f) { try { var s = f.src; f.src = s; } catch(e){} });
+
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  function initMuroAmpliadoModal() {
+    var closeBtn = document.getElementById('mam-close-btn');
+    if (closeBtn) closeBtn.addEventListener('click', window.cerrarModalPostMuro);
+
+    var overlay = document.getElementById('muro-ampliado-modal');
+    if (overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) window.cerrarModalPostMuro();
+      });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var mam = document.getElementById('muro-ampliado-modal');
+        if (mam && mam.classList.contains('open') && !document.querySelector('#image-lightbox-modal.active')) {
+          window.cerrarModalPostMuro();
+        }
+      }
+    });
+  }
 
   /* ───────────── Lector de noticias (modal) ───────────── */
   var reader, readerBody, lastFocus;
@@ -2073,6 +2221,7 @@
     renderAgenda();
     initReader();
     initClasePeriodicoModal();
+    initMuroAmpliadoModal();
     initNav();
 
     var more = document.getElementById('hn-news-more');

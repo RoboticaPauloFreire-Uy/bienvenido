@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=128">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=30">
+  <link rel="stylesheet" href="css/home.css?v=31">
   <link rel="stylesheet" href="css/themes.css?v=5">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -772,6 +772,51 @@
     </div>
   </div>
 
+  <div id="muro-ampliado-modal" class="cpm-overlay" role="dialog" aria-modal="true" aria-labelledby="mam-author" aria-hidden="true">
+    <div class="cpm-dialog" role="document">
+      <article class="cpm-sheet">
+        <!-- Barra de herramientas superior -->
+        <div class="cpm-topbar">
+          <div class="cpm-topbar-left">
+            <span class="cpm-press-badge"><i class="fas fa-camera-retro"></i> ARCHIVO FOTOGRÁFICO & CRÓNICA DE AULA</span>
+            <span class="cpm-issue-tag">REGISTRO DEL TALLER</span>
+          </div>
+          <button type="button" class="cpm-close-btn" id="mam-close-btn" aria-label="Cerrar vista ampliada" title="Cerrar (Esc)">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="cpm-scroll-body">
+          <header class="hn-post-header" style="background:#FAF6EC; padding:12px 14px; border:1px solid #D4CBBB; border-radius:2px; margin-bottom:16px;">
+            <div class="hn-post-avatar-wrap">
+              <img id="mam-avatar" class="hn-post-avatar" src="" alt="">
+            </div>
+            <div class="hn-post-meta">
+              <div class="hn-post-author-row">
+                <span id="mam-author" class="hn-post-author" style="font-size:1.12rem;"></span>
+                <span class="hn-post-verified" title="Publicación verificada"><i class="fas fa-check-circle"></i></span>
+                <span id="mam-badge" class="hn-post-tag-badge"></span>
+              </div>
+              <div class="hn-post-sub-row">
+                <span id="mam-date" class="hn-post-date"><i class="far fa-clock"></i></span>
+                <span class="hn-post-dot">·</span>
+                <span id="mam-grade" class="hn-post-grade"></span>
+              </div>
+            </div>
+          </header>
+
+          <div id="mam-media" class="hn-post-media" style="margin-bottom:16px; border:1px solid #2B2520;"></div>
+          <div id="mam-text" class="hn-post-text" style="font-size:1.02rem; line-height:1.7;"></div>
+          <div id="mam-tags" class="hn-post-tags" style="margin-top:14px;"></div>
+        </div>
+
+        <footer class="cpm-footer">
+          <div id="mam-actions" class="hn-post-actions-bar" style="width:100%; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;"></div>
+        </footer>
+      </article>
+    </div>
+  </div>
+
   <!-- ══════════════════════════════════════════════
        MODAL UNIVERSAL
   ══════════════════════════════════════════════ -->
@@ -826,10 +871,10 @@
   <!-- Motor de temas festivos (Halloween, Día del Niño, Día de la Madre, Navidad, etc.) -->
   <script src="js/theme.js?v=2"></script>
   <!-- Contenido editable de la portada (noticias, actividades, agenda) -->
-  <script src="js/news.js?v=15"></script>
+  <script src="js/news.js?v=16"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=54"></script>
+  <script src="js/home.js?v=56"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>

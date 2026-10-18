@@ -398,7 +398,7 @@ window.HOME_CONTENT = {
       fecha: '2026-10-09',
       grado: 'grado4',
       etiqueta: '🏫 Actividad en clase',
-      texto: '¡Así probamos hoy en el aula los semáforos inteligentes! 🚦🤖 Los chicos de 4° Grado conectaron los LEDs a la placa micro:bit, montaron la maqueta de cartón y programaron la secuencia de tránsito. En este video pueden ver cómo reacciona el semáforo en tiempo real ante el paso de los autos. ¡Gran trabajo en equipo!',
+      texto: '¡Así probamos hoy en el aula los semáforos inteligentes! 🚦🤖 Los chicos de 4° Grado conectaron los LEDs a la placa micro:bit, montaron la maqueta de cartón y programaron la secuencia de tránsito en MicroPython:\n\n```python\nfrom microbit import *\nimport time\n\n# Pines conectados a la maqueta de semáforo\nLED_ROJO = pin0\nLED_AMARILLO = pin1\nLED_VERDE = pin2\n\nwhile True:\n    # Fase 1: Paso vehicular habilitado\n    LED_VERDE.write_digital(1)\n    time.sleep(4)\n    LED_VERDE.write_digital(0)\n    \n    # Fase 2: Precaución / cambio de luz\n    LED_AMARILLO.write_digital(1)\n    time.sleep(1.5)\n    LED_AMARILLO.write_digital(0)\n    \n    # Fase 3: Detención y cruce peatonal seguro\n    LED_ROJO.write_digital(1)\n    display.show(Image.NO)\n    time.sleep(4)\n    LED_ROJO.write_digital(0)\n```\n\nEn este video pueden ver cómo reacciona el semáforo en tiempo real ante el paso de los autos. ¡Gran trabajo en equipo y lógica de programación!',
       tipoMedia: 'video',
       video: {
         tipo: 'youtube',
@@ -415,7 +415,7 @@ window.HOME_CONTENT = {
       fecha: '2026-10-07',
       grado: 'grado5',
       etiqueta: '🦾 Manos en la masa',
-      texto: '¡Controlando servomotores con Joystick analógico! 🎮🕹️ Los alumnos de 5° Grado construyeron pinzas mecánicas con cartón reciclado y las articularon con servomotores SG90. Miren cómo responden con precisión milimétrica a cada movimiento de la palanca. ¡Cada clase son más autónomos y creativos!',
+      texto: '¡Controlando servomotores con Joystick analógico! 🎮🕹️ Los alumnos de 5° Grado construyeron pinzas mecánicas con cartón reciclado y las articularon con servomotores SG90 y placa de expansión:\n\n```python\nfrom microbit import *\n\ndef mapear_angulo(val_analogico):\n    # Convierte rango del joystick 0-1023 a 0-180 grados\n    return int((val_analogico / 1023.0) * 180)\n\nwhile True:\n    eje_x = pin1.read_analog()\n    angulo = mapear_angulo(eje_x)\n    \n    # Configuración de pulso PWM a 50Hz para servo SG90\n    pin2.set_analog_period(20)\n    pulso_us = 500 + int((angulo / 180.0) * 1900)\n    pin2.write_analog(int(pulso_us * 1023 / 20000))\n    sleep(20)\n```\n\nMiren cómo responden con precisión milimétrica a cada movimiento de la palanca. ¡Cada clase son más autónomos y creativos!',
       tipoMedia: 'video',
       video: {
         tipo: 'youtube',
