@@ -4896,6 +4896,152 @@ body.student-logged-in .site-footer {
   box-shadow: 1px 1px 0 #2B2520;
 }
 
+/* ── BARRA DE PAGINACIÓN DE EXPEDIENTES (PERIÓDICO) ── */
+.np-pagination {
+  margin-top: 24px;
+  padding: 12px 18px;
+  background: #EFE8D6;
+  border: 2px solid #2B2520;
+  border-radius: 2px;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.np-pag-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.82rem;
+  color: #352E26;
+}
+
+.np-pag-info strong {
+  color: #14110E;
+}
+
+.np-pag-order-tag {
+  background: #FAF6EC;
+  border: 1px solid #2B2520;
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #1B5E20;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.np-pag-page-indicator {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #5A4E44;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.np-pag-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.np-pag-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.80rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #FAF6EC;
+  color: #1A1612;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  padding: 6px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.2);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.np-pag-btn:hover:not([disabled]) {
+  background: #2B2520;
+  color: #FAF6EC;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.3);
+}
+
+.np-pag-btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  background: #EAE3D2;
+  color: #7A6F62;
+}
+
+.np-pag-numbers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.np-pag-num {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.85rem;
+  font-weight: 900;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #FAF6EC;
+  color: #2B2520;
+  border: 1.5px solid #2B2520;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.2);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.np-pag-num:hover:not(.active) {
+  background: #E0D6C2;
+  transform: translate(-1px, -1px);
+}
+
+.np-pag-num.active {
+  background: #1B5E20;
+  color: #FFFFFF;
+  border-color: #1B5E20;
+  box-shadow: 2px 2px 0 rgba(27, 94, 32, 0.35);
+  transform: translate(1px, 1px);
+}
+
+@media (max-width: 640px) {
+  .np-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .np-pag-info {
+    justify-content: center;
+  }
+  .np-pag-controls {
+    justify-content: center;
+  }
+}
+
 /* ── PÁGINA 04: CASA (SUPLEMENTO DOMINICAL / RECORTES DIY) ── */
 .np-casa-grid {
   display: grid;

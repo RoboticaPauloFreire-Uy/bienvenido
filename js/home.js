@@ -498,6 +498,85 @@
   var seccionAct = 'clase';      // sección visible
   var filtroCasa = 'todas';      // dentro de "En casa": todas | casa | familia
   var filtroGradoAct = 'todos';
+  var POR_PAGINA_ACT = 6;
+  var paginasAct = {
+    'hn-act-grid-clase': 1,
+    'hn-act-grid-casa': 1
+  };
+
+  function obtenerFechaActividad(act) {
+    if (!act) return 0;
+    var d = parseFecha(act.desde) || parseFecha(act.hasta) || parseFecha(act.fecha) || parseFecha(act.creado);
+    return d ? d.getTime() : 0;
+  }
+
+  function renderControlesPaginacionActividades(pagEl, gridId, totalItems, porPagina, curPage, totalPaginas) {
+    if (!pagEl) return;
+    if (totalItems === 0) {
+      pagEl.style.display = 'none';
+      pagEl.innerHTML = '';
+      return;
+    }
+
+    pagEl.style.display = 'flex';
+    var startNum = (curPage - 1) * porPagina + 1;
+    var endNum = Math.min(curPage * porPagina, totalItems);
+
+    var html = [];
+    html.push('<div class="np-pag-info">');
+    html.push('<span><i class="far fa-newspaper"></i> Mostrando <strong>' + startNum + '–' + endNum + '</strong> de <strong>' + totalItems + '</strong> expedientes</span>');
+    html.push('<span class="np-pag-order-tag"><i class="fas fa-sort-amount-down"></i> Más nuevo a más viejo</span>');
+    html.push('</div>');
+
+    if (totalPaginas <= 1) {
+      html.push('<div class="np-pag-page-indicator"><i class="fas fa-check-circle"></i> PÁGINA 1 DE 1 · HASTA 6 POR PÁGINA</div>');
+      pagEl.innerHTML = html.join('');
+      return;
+    }
+
+    html.push('<div class="np-pag-controls">');
+
+    // Botón Anterior
+    var prevDisabled = curPage <= 1 ? ' disabled aria-disabled="true"' : '';
+    html.push('<button type="button" class="np-pag-btn np-pag-arrow"' + prevDisabled + ' data-grid="' + gridId + '" data-page="' + (curPage - 1) + '" title="Página anterior">');
+    html.push('<i class="fas fa-arrow-left"></i> Anterior');
+    html.push('</button>');
+
+    // Botones numéricos
+    html.push('<div class="np-pag-numbers">');
+    for (var p = 1; p <= totalPaginas; p++) {
+      var isAct = p === curPage;
+      html.push('<button type="button" class="np-pag-num' + (isAct ? ' active' : '') + '" data-grid="' + gridId + '" data-page="' + p + '"' + (isAct ? ' aria-current="page"' : '') + '>');
+      html.push(p);
+      html.push('</button>');
+    }
+    html.push('</div>');
+
+    // Botón Siguiente
+    var nextDisabled = curPage >= totalPaginas ? ' disabled aria-disabled="true"' : '';
+    html.push('<button type="button" class="np-pag-btn np-pag-arrow"' + nextDisabled + ' data-grid="' + gridId + '" data-page="' + (curPage + 1) + '" title="Página siguiente">');
+    html.push('Siguiente <i class="fas fa-arrow-right"></i>');
+    html.push('</button>');
+
+    html.push('</div>');
+
+    pagEl.innerHTML = html.join('');
+
+    pagEl.querySelectorAll('button[data-page]:not([disabled])').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var targetPage = parseInt(btn.dataset.page, 10);
+        if (targetPage && targetPage !== curPage) {
+          paginasAct[gridId] = targetPage;
+          renderActividades();
+          var targetGrid = document.getElementById(gridId);
+          if (targetGrid) {
+            targetGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+  }
 
   function estadoActividad(a) {
     var h = hoy();
@@ -539,6 +618,7 @@
       cont.querySelectorAll('.hn-tab').forEach(function (b) {
         b.addEventListener('click', function () {
           filtroCasa = b.dataset.casa;
+          paginasAct['hn-act-grid-casa'] = 1;
           renderFiltrosActividades();
           renderActividades();
         });
@@ -558,6 +638,8 @@
             var other = document.getElementById(otherId);
             if (other) other.value = filtroGradoAct;
           });
+          paginasAct['hn-act-grid-clase'] = 1;
+          paginasAct['hn-act-grid-casa'] = 1;
           renderActividades();
         });
       }
@@ -801,15 +883,26 @@
     var st = alumno();
     var miGrado = st && st.gradeId;
     var isCasa = gridId === 'hn-act-grid-casa';
+    var pagContainerId = isCasa ? 'hn-act-pag-casa' : 'hn-act-pag-clase';
+    var pagEl = document.getElementById(pagContainerId);
 
+    // ── ORDENAMIENTO ESTRICTO: FECHA MÁS NUEVO A MÁS VIEJO ──
     var lista = actividades.map(function (a) {
       var gr = a.grados || ['todos'];
       return { a: a, estado: estadoActividad(a), mia: !!(miGrado && gr.indexOf(miGrado) > -1) };
     }).sort(function (x, y) {
+      // 1. Cronológico descendente (más nuevo a más viejo)
+      var fX = obtenerFechaActividad(x.a);
+      var fY = obtenerFechaActividad(y.a);
+      if (fY !== fX) return fY - fX;
+
+      // 2. Si tienen la misma fecha: priorizar actividades del propio grado
+      if (x.mia !== y.mia) return x.mia ? -1 : 1;
+
+      // 3. Desempate secundario por estado o ID
       var ex = ORDEN_ESTADO[x.estado.clave] - ORDEN_ESTADO[y.estado.clave];
       if (ex) return ex;
-      if (x.mia !== y.mia) return x.mia ? -1 : 1;
-      return (parseFecha(y.a.desde) || 0) - (parseFecha(x.a.desde) || 0);
+      return String(y.a.id || '').localeCompare(String(x.a.id || ''));
     });
 
     if (gridId === 'hn-act-grid-clase') {
@@ -818,10 +911,26 @@
 
     if (!lista.length) {
       grid.innerHTML = '<div class="hn-empty"><span>' + emoji + '</span>' + esc(vacio) + '</div>';
+      if (pagEl) {
+        pagEl.style.display = 'none';
+        pagEl.innerHTML = '';
+      }
       return;
     }
 
-    grid.innerHTML = lista.map(function (it, idx) {
+    // ── PAGINACIÓN: HASTA 6 ELEMENTOS POR PÁGINA ──
+    var totalItems = lista.length;
+    var totalPaginas = Math.ceil(totalItems / POR_PAGINA_ACT) || 1;
+    if (!paginasAct[gridId] || paginasAct[gridId] < 1) paginasAct[gridId] = 1;
+    if (paginasAct[gridId] > totalPaginas) paginasAct[gridId] = totalPaginas;
+
+    var curPage = paginasAct[gridId];
+    var startIdx = (curPage - 1) * POR_PAGINA_ACT;
+    var endIdx = Math.min(startIdx + POR_PAGINA_ACT, totalItems);
+    var itemsPagina = lista.slice(startIdx, endIdx);
+
+    grid.innerHTML = itemsPagina.map(function (it, pageIdx) {
+      var idx = startIdx + pageIdx;
       var a = it.a;
       var gr = a.grados || ['todos'];
       var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
@@ -952,6 +1061,9 @@
         }
       });
     });
+
+    // Renderizar controles de paginación
+    renderControlesPaginacionActividades(pagEl, gridId, totalItems, POR_PAGINA_ACT, curPage, totalPaginas);
   }
 
   /* ───────────── Juegos por Grupo ───────────── */

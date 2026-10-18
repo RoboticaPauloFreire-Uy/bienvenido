@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=128">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=29">
+  <link rel="stylesheet" href="css/home.css?v=30">
   <link rel="stylesheet" href="css/themes.css?v=5">
   <!-- Inicialización inmediata de tema para evitar destello -->
   <script>
@@ -383,6 +383,7 @@
           <!-- Grilla de Actividades de Clase (Periódico) -->
           <div class="np-act-wrapper">
             <div class="hn-act-grid np-clase-grid" id="hn-act-grid-clase"></div>
+            <div class="np-pagination" id="hn-act-pag-clase" style="display:none;"></div>
           </div>
         </section>
       </div>
@@ -415,6 +416,7 @@
           <!-- Grilla de Actividades en Casa (Periódico) -->
           <div class="np-act-wrapper">
             <div class="hn-act-grid np-casa-grid" id="hn-act-grid-casa"></div>
+            <div class="np-pagination" id="hn-act-pag-casa" style="display:none;"></div>
           </div>
         </section>
       </div>
@@ -827,7 +829,7 @@
   <script src="js/news.js?v=15"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=53"></script>
+  <script src="js/home.js?v=54"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
