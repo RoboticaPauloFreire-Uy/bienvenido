@@ -9,7 +9,8 @@ img, video, iframe, canvas, svg { max-width: 100%; }
 img, video { height: auto; }
 table { max-width: 100%; }
 pre, code { white-space: pre-wrap; word-break: break-word; }
-h1, h2, h3, p, a, li { overflow-wrap: anywhere; }
+h1, h2, h3, p { overflow-wrap: break-word; }
+.topbar-nav-link, .topbar-nav-link span, .topbar-school, .topbar-sub { overflow-wrap: normal; word-break: normal; white-space: nowrap; }
 
 /* ---------- Tablets y celulares ---------- */
 @media (max-width: 860px) {
@@ -87,3 +88,6 @@ h1, h2, h3, p, a, li { overflow-wrap: anywhere; }
   .topbar-nav { z-index: 950 !important; }
   .topbar-theme-ribbon { z-index: 1 !important; }
 }
+
+/* Menú de escritorio: nunca partir palabras */
+@media (min-width: 861px) { .topbar-nav { flex-wrap: nowrap; } .topbar-nav-link { white-space: nowrap; } }
