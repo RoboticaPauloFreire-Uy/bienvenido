@@ -178,6 +178,25 @@
     return html.join('');
   }
 
+  function stripMarkdown(raw) {
+    if (!raw) return '';
+    var s = String(raw).trim();
+    if (!s) return '';
+    return s
+      .replace(/!\[([^\]]*)\]\([^)]*\)/g, '')
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+      .replace(/#{1,6}\s+/g, '')
+      .replace(/(\*\*|__)(.*?)\1/g, '$2')
+      .replace(/(\*|_)(.*?)\1/g, '$2')
+      .replace(/~~(.*?)~~/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/^\s*[-*•+]\s+/gm, '')
+      .replace(/^\s*\d+[\.\)]\s+/gm, '')
+      .replace(/^\s*>\s+/gm, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function parseFecha(s) {
     if (!s) return null;
     if (s instanceof Date) return isNaN(s.getTime()) ? null : s;
@@ -685,14 +704,15 @@
       if (galleryGrid) galleryGrid.innerHTML = '';
     }
 
-    // Cuerpo de texto periodístico con letra capital
+    // Cuerpo de texto periodístico con letra capital y soporte Markdown completo
     var bodyContent = document.getElementById('cpm-body-content');
     if (bodyContent) {
       var rawDesc = (act.descripcion || '').trim();
-      var paragraphs = rawDesc ? rawDesc.split(/\n\s*\n/).map(function(p) { return p.trim(); }).filter(Boolean) : ['Sin descripción detallada.'];
-      bodyContent.innerHTML = paragraphs.map(function(p) {
-        return '<p>' + esc(p) + '</p>';
-      }).join('');
+      if (!rawDesc) {
+        bodyContent.innerHTML = '<p class="cpm-empty-text">Sin descripción detallada registrada para esta actividad.</p>';
+      } else {
+        bodyContent.innerHTML = formatMarkdown(rawDesc);
+      }
     }
 
     // Botones de acción / enlaces adicionales
@@ -869,9 +889,18 @@
       var dwgId = (a.id || 'EXP').replace(/^act-/, '').toUpperCase();
       var stateClass = 'state-' + it.estado.clave;
 
+      var subtituloHtml = a.subtitulo
+        ? '<p class="np-clase-subtitulo">' + esc(a.subtitulo) + '</p>'
+        : '<p class="np-clase-subtitulo is-empty" aria-hidden="true">&nbsp;</p>';
+
+      var deadlineHtml = fechaPresentacion || hasta || desdeProx;
+      if (!deadlineHtml) {
+        deadlineHtml = '<span class="hn-act-deadline hn-act-deadline-empty" style="visibility:hidden;" aria-hidden="true"><i class="far fa-calendar-alt"></i> &nbsp;</span>';
+      }
+
       var accionesClase = (botones ? '<div class="np-clase-actions">' + botones + '</div>' : '');
 
-      return '<article class="np-clase-card ' + stateClass + (it.mia ? ' es-mia' : '') + '" data-act-idx="' + idx + '" role="button" tabindex="0" onclick="window.abrirModalClasePorIndice(' + idx + ');" title="Clic para abrir expediente estilo periódico">' +
+      return '<article class="np-clase-card ' + stateClass + (it.mia ? ' es-mia' : '') + '" data-act-idx="' + idx + '" role="button" tabindex="0" onclick="window.abrirModalClasePorIndice(' + idx + ');" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.abrirModalClasePorIndice(' + idx + ');}" title="Clic para abrir expediente estilo periódico">' +
         '<div class="np-clase-top">' +
           '<span class="np-clase-exp"><i class="fas fa-file-alt"></i> EXPEDIENTE DE AULA Nº ' + esc(dwgId) + '</span>' +
           '<span class="np-clase-stamp ' + stateClass + '">' + esc(it.estado.texto) + '</span>' +
@@ -883,12 +912,12 @@
         '<div class="np-clase-body">' +
           (it.mia ? '<span class="np-clase-mine"><i class="fas fa-bookmark"></i> ASIGNADO A TU GRADO</span>' : '') +
           '<h3 class="np-clase-title">' + esc(a.titulo) + '</h3>' +
-          (a.subtitulo ? '<p class="np-clase-subtitulo" style="font-family:\'Newsreader\',serif; font-style:italic; font-size:0.88rem; color:#5A4E44; margin:0 0 8px 0; line-height:1.35;">' + esc(a.subtitulo) + '</p>' : '') +
-          '<p class="np-clase-desc">' + esc(a.descripcion) + '</p>' +
+          subtituloHtml +
+          '<p class="np-clase-desc">' + esc(stripMarkdown(a.descripcion)) + '</p>' +
           chips +
           '<div class="np-clase-meta">' +
             '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
-            fechaPresentacion + hasta + desdeProx +
+            deadlineHtml +
           '</div>' +
           accionesClase +
           '<div class="np-clase-foot">' +
