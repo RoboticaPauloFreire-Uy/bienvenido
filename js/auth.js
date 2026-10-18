@@ -603,9 +603,6 @@
             '<span>Iniciar Sesión</span>' +
             '<i class="fas fa-sign-in-alt"></i>' +
           '</button>' +
-          '<div style="text-align:center;margin-top:14px;">' +
-            '<a href="admin.html" style="font-size:0.8rem;color:#78909C;text-decoration:none;"><i class="fas fa-user-shield"></i> Panel Docente / Gestión de Credenciales</a>' +
-          '</div>' +
         '</form>';
 
       var form  = document.getElementById('classic-login-form');
