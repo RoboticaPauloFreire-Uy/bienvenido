@@ -213,6 +213,25 @@ window.HOME_CONTENT = {
 
 
     {
+      id: 'act-libro-hechizos',
+      titulo: 'Libro de Hechizos — Grimorio Mágico',
+      descripcion: 'Grimorio digital interactivo en 3D. Pasá las páginas con sonido real, forjá tus propios hechizos mágicos con inteligencia artificial y explorá las creaciones del taller de robótica y arte digital.',
+      tipo: 'casa',
+      modalidad: 'maker',
+      materiales: 'Celular, tablet o computadora (100% online, sin instalar nada)',
+      grados: ['todos'],
+      icono: '📖',
+      color: '#7C3AED',
+      desde: '2026-10-19',
+      hasta: '2026-12-15',
+      chips: ['✨ Magia e IA', '📖 Grimorio 3D', '🧙 Hechizos', '🎨 Arte Digital'],
+      botones: [
+        { texto: '¡Abrir Grimorio!', url: 'https://roboticapaulofreire-uy.github.io/libro_hechizos/', icono: 'fas fa-book-open', principal: true },
+        { texto: 'Descargar PDF', url: 'https://roboticapaulofreire-uy.github.io/libro_hechizos/libro_de_hechizos.pdf', icono: 'fas fa-file-pdf' }
+      ]
+    },
+
+    {
       id: 'act-inventario',
       titulo: 'Inventario de Materiales Maker',
       descripcion: '¿Qué herramientas, sensores y componentes usamos en el taller? Observá, clasificá y reconocé los materiales de robótica en casa.',
