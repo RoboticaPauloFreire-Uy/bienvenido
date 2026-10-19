@@ -1302,14 +1302,14 @@
 
   function checkCollapsibleGameDescs(container) {
     if (!container) return;
-    requestAnimationFrame(function () {
+    var runCheck = function () {
       var wraps = container.querySelectorAll('.game-card-desc-wrap');
       wraps.forEach(function (wrap) {
         var textEl = wrap.querySelector('.game-card-desc');
         var btn = wrap.querySelector('.btn-game-desc-toggle');
         if (!textEl || !btn) return;
         // Si el contenido supera 10 líneas de texto (~205px), colapsar con botón "Ver más"
-        if (textEl.scrollHeight > 210) {
+        if (textEl.scrollHeight > 208) {
           wrap.classList.add('is-collapsed');
           btn.style.display = 'inline-flex';
           btn.innerHTML = '<span><i class="fas fa-chevron-down"></i> Ver más</span>';
@@ -1318,7 +1318,9 @@
           btn.style.display = 'none';
         }
       });
-    });
+    };
+    requestAnimationFrame(runCheck);
+    setTimeout(runCheck, 150);
   }
 
   window.toggleGameDesc = function (btn) {

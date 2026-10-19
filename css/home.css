@@ -5366,11 +5366,19 @@ body.student-logged-in .site-footer {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-}
 .np-games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
   gap: 24px;
+  align-items: stretch;
+}
+.np-games-grid .game-grid-card {
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  align-self: stretch !important;
 }
 .np-games-grid .game-card {
   background: #FAF6EC;
