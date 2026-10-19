@@ -211,23 +211,7 @@ window.HOME_CONTENT = {
       ]
     },
 
-    {
-      id: 'act-robot-reciclado',
-      titulo: 'Misión Maker: Mi Primer Robot con Reciclaje',
-      descripcion: 'Uní cajitas de remedios o té para el torso, tapitas plásticas para las ruedas y tubos de cartón para los brazos. ¡Podés pintarlo como quieras!',
-      tipo: 'casa',
-      modalidad: 'maker',
-      materiales: 'Cajitas de remedios/té, 4 tapitas plásticas, tubos de rollo y cinta/plasticola',
-      grados: ['todos'],
-      icono: '🤖',
-      color: '#059669',
-      desde: '2026-10-05',
-      hasta: '2026-11-30',
-      chips: ['♻️ Reciclaje', '🎨 Pintura', '✂️ Construcción'],
-      botones: [
-        { texto: 'Ver Ficha de Armado', url: 'aula.html', icono: 'fas fa-clipboard-list', principal: true }
-      ]
-    },
+
     {
       id: 'act-inventario',
       titulo: 'Inventario de Materiales Maker',
