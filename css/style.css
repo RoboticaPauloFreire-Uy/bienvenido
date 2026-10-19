@@ -4783,11 +4783,28 @@ button, input, select, textarea { font-family: inherit; }
   background: rgba(254, 243, 199, 0.85);
   color: #78350f;
   border: 1.5px dashed #d97706;
-  padding: 6px 10px;
+  padding: 5px 8px;
   border-radius: 8px;
-  font-size: .74rem;
+  font-size: .73rem;
   font-weight: 700;
   line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clf-hint-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: normal;
+}
+
+.clf-hint-sub {
+  padding-left: 17px;
+  color: #92400e;
+  font-size: .71rem;
+  white-space: nowrap;
 }
 
 .clf-demo-hint code {
@@ -4797,6 +4814,7 @@ button, input, select, textarea { font-family: inherit; }
   padding: 1px 5px;
   border-radius: 4px;
   font-family: monospace;
+  white-space: nowrap;
 }
 
 .clf-submit-btn {

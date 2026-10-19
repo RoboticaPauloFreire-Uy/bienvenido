@@ -601,8 +601,9 @@
                 '<input type="text" id="clf-user" placeholder="Ej: agumor o tu nombre" required autocomplete="username">' +
               '</div>' +
               '<div class="clf-demo-hint">' +
-                '<i class="fas fa-info-circle"></i> <strong>Usuario:</strong> 3 letras nombre + 3 apellido (ej: <code>agumor</code>)<br>' +
-                '<i class="fas fa-key"></i> <strong>Clave:</strong> PIN de 4 dígitos' +
+                '<div class="clf-hint-row"><i class="fas fa-info-circle"></i> <span><strong>Usuario:</strong> 3 letras nombre + 3 apellido</span></div>' +
+                '<div class="clf-hint-row clf-hint-sub"><i class="fas fa-arrow-right" style="font-size:0.65rem;"></i> (ej: <code>agumor</code>)</div>' +
+                '<div class="clf-hint-row"><i class="fas fa-key"></i> <span><strong>Clave:</strong> PIN de 4 dígitos</span></div>' +
               '</div>' +
               '<button type="submit" class="clf-submit-btn">' +
                 '<span>Abrir e Iniciar Sesión</span>' +
