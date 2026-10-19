@@ -3909,8 +3909,8 @@ button, input, select, textarea { font-family: inherit; }
     ),
     linear-gradient(180deg, #3e200d 0%, #261206 50%, #180b03 100%);
   width: 100%;
-  max-width: 620px;
-  max-height: 96vh;
+  max-width: 660px;
+  max-height: 94vh;
   border-radius: 18px;
   border: 4px solid #b45309;
   outline: 2px solid #fde047;
@@ -3931,7 +3931,7 @@ button, input, select, textarea { font-family: inherit; }
     radial-gradient(circle at calc(100% - 18px) 50%, #fbbf24 3px, #78350f 4px, transparent 5px),
     linear-gradient(180deg, #451a03 0%, #290f02 100%);
   color: #fef3c7;
-  padding: 12px 26px;
+  padding: 10px 20px;
   border-radius: 14px 14px 0 0;
   border-bottom: 3px solid #d97706;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
@@ -3997,12 +3997,14 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .slm-body {
-  padding: 14px 16px;
+  padding: 10px 14px;
   overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b45309 transparent;
   background:
     radial-gradient(circle at 50% 35%, rgba(255, 251, 235, 0.96) 0%, rgba(245, 222, 179, 0.94) 70%, rgba(218, 180, 120, 0.95) 100%);
-  margin: 8px 10px 10px;
+  margin: 6px 8px 8px;
   border-radius: 12px;
   border: 2px solid #92400e;
   box-shadow:
@@ -4687,26 +4689,22 @@ button, input, select, textarea { font-family: inherit; }
 /* ─────────────────────────────────────────────────────────────
    CLASSIC LOGIN FORM (USUARIO & PASSWORD)
 ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   FORMULARIO DE LOGIN CLÁSICO (SIN SCROLL / COMPACTO)
+───────────────────────────────────────────────────────────── */
 .classic-login-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.clf-intro {
-  font-size: .92rem;
-  color: #451a03;
-  font-weight: 700;
-  margin-bottom: 4px;
+  gap: 8px;
 }
 
 .clf-error-alert {
   background: #fef2f2;
   color: #991b1b;
   border: 1.5px solid #f87171;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: var(--radius-md);
-  font-size: .84rem;
+  font-size: .82rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -4715,14 +4713,42 @@ button, input, select, textarea { font-family: inherit; }
 
 .clf-error-alert.hidden { display: none; }
 
+.clf-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.clf-col-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.clf-col-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.clf-intro {
+  font-size: .84rem;
+  color: #451a03;
+  font-weight: 800;
+  margin: 0 0 2px;
+  line-height: 1.35;
+}
+
 .clf-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .clf-field label {
-  font-size: .88rem;
+  font-size: .84rem;
   font-weight: 900;
   color: #451a03;
   display: flex;
@@ -4735,8 +4761,8 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .clf-field input {
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 9px 12px;
+  border-radius: 9px;
   border: 2px solid #b45309;
   background: #fffbeb;
   color: #290f02;
@@ -4757,17 +4783,18 @@ button, input, select, textarea { font-family: inherit; }
   background: rgba(254, 243, 199, 0.85);
   color: #78350f;
   border: 1.5px dashed #d97706;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: .78rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: .74rem;
   font-weight: 700;
+  line-height: 1.35;
 }
 
 .clf-demo-hint code {
   background: rgba(120, 53, 15, 0.12);
   color: #451a03;
   font-weight: 900;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
   font-family: monospace;
 }
@@ -4777,102 +4804,102 @@ button, input, select, textarea { font-family: inherit; }
   color: #290f02;
   border: 2px solid #fef08a;
   font-weight: 900;
-  font-size: .95rem;
-  padding: 12px 24px;
+  font-size: .92rem;
+  padding: 10px 18px;
   border-radius: var(--radius-full);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6);
   transition: all var(--transition);
-  margin-top: 6px;
+  margin-top: auto;
 }
 
 .clf-submit-btn:hover {
   transform: translateY(-2px);
   filter: brightness(1.08);
-  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
 }
 
-/* ───────────────────────────────────────────────────────────
-   TECLADO DE CAJA FUERTE / BÓVEDA PARA PIN DE 4 DÍGITOS
-─────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   TECLADO DE CAJA FUERTE / BÓVEDA PARA PIN DE 4 DÍGITOS (COMPACTO)
+───────────────────────────────────────────────────────────── */
 .vault-safe-box {
   position: relative;
   background: linear-gradient(150deg, #2b2520 0%, #1e1915 50%, #14100d 100%);
-  border: 3px solid #854d0e;
+  border: 2.5px solid #854d0e;
   outline: 2px solid #ca8a04;
   outline-offset: -4px;
-  border-radius: 16px;
-  padding: 14px 14px 16px;
+  border-radius: 14px;
+  padding: 8px 10px 10px;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.12),
     inset 0 -2px 6px rgba(0, 0, 0, 0.8),
-    0 10px 25px rgba(0, 0, 0, 0.55);
-  margin-top: 4px;
+    0 8px 20px rgba(0, 0, 0, 0.55);
+  margin-top: 0;
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 /* Remaches metálicos en las esquinas */
 .vault-rivet {
   position: absolute;
-  width: 9px;
-  height: 9px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #fef08a 0%, #ca8a04 60%, #713f12 100%);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.6);
   pointer-events: none;
 }
-.vault-rivet.top-left { top: 7px; left: 7px; }
-.vault-rivet.top-right { top: 7px; right: 7px; }
-.vault-rivet.bottom-left { bottom: 7px; left: 7px; }
-.vault-rivet.bottom-right { bottom: 7px; right: 7px; }
+.vault-rivet.top-left { top: 5px; left: 5px; }
+.vault-rivet.top-right { top: 5px; right: 5px; }
+.vault-rivet.bottom-left { bottom: 5px; left: 5px; }
+.vault-rivet.bottom-right { bottom: 5px; right: 5px; }
 
 /* Encabezado de la caja fuerte */
 .vault-safe-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-  padding: 0 4px;
+  gap: 8px;
+  margin-bottom: 5px;
+  padding: 0 2px;
 }
 
 .vault-brand {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   color: #fef08a;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 900;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .vault-shield-icon {
   color: #eab308;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 .vault-status-indicator {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 9px;
+  gap: 5px;
+  padding: 2px 7px;
   border-radius: 999px;
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 900;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .vault-status-indicator .vault-led-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   display: inline-block;
   transition: all 0.25s ease;
@@ -4884,7 +4911,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 .vault-status-indicator.locked .vault-led-dot {
   background: #ef4444;
-  box-shadow: 0 0 8px #ef4444;
+  box-shadow: 0 0 6px #ef4444;
 }
 
 .vault-status-indicator.ready {
@@ -4894,7 +4921,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 .vault-status-indicator.ready .vault-led-dot {
   background: #22c55e;
-  box-shadow: 0 0 10px #22c55e, 0 0 4px #86efac;
+  box-shadow: 0 0 8px #22c55e, 0 0 3px #86efac;
 }
 
 .vault-status-indicator.error {
@@ -4905,7 +4932,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 .vault-status-indicator.error .vault-led-dot {
   background: #dc2626;
-  box-shadow: 0 0 10px #dc2626;
+  box-shadow: 0 0 8px #dc2626;
 }
 
 @keyframes vaultLedBlink {
@@ -4921,13 +4948,13 @@ button, input, select, textarea { font-family: inherit; }
   justify-content: center;
   background: radial-gradient(ellipse at center, #181512 0%, #0d0a08 100%);
   border: 2px solid #574838;
-  border-radius: 12px;
-  padding: 10px 14px;
+  border-radius: 10px;
+  padding: 5px 8px;
   box-shadow:
-    inset 0 3px 8px rgba(0, 0, 0, 0.85),
-    inset 0 0 15px rgba(0, 0, 0, 0.6),
+    inset 0 3px 6px rgba(0, 0, 0, 0.85),
+    inset 0 0 12px rgba(0, 0, 0, 0.6),
     0 1px 0 rgba(255, 255, 255, 0.08);
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .vault-screen-glare {
@@ -4937,7 +4964,7 @@ button, input, select, textarea { font-family: inherit; }
   right: 0;
   height: 45%;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
-  border-radius: 10px 10px 0 0;
+  border-radius: 8px 8px 0 0;
   pointer-events: none;
 }
 
@@ -4945,25 +4972,25 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   flex: 1;
 }
 
 .vault-slot {
-  width: 44px;
-  height: 50px;
+  width: 36px;
+  height: 40px;
   background: linear-gradient(180deg, #13100d 0%, #201a15 100%);
-  border: 2px solid #52473b;
-  border-radius: 8px;
+  border: 1.5px solid #52473b;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.65rem;
+  font-size: 1.35rem;
   font-weight: 900;
   font-family: 'Consolas', 'Monaco', monospace;
   color: #78716c;
   box-shadow:
-    inset 0 2px 5px rgba(0, 0, 0, 0.9),
+    inset 0 2px 4px rgba(0, 0, 0, 0.9),
     0 1px 2px rgba(255, 255, 255, 0.05);
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   user-select: none;
@@ -4971,7 +4998,7 @@ button, input, select, textarea { font-family: inherit; }
 
 .vault-slot::before {
   content: '–';
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #44403c;
   transition: opacity 0.15s ease;
 }
@@ -4984,14 +5011,14 @@ button, input, select, textarea { font-family: inherit; }
   border-color: #f59e0b;
   background: linear-gradient(180deg, #241c14 0%, #15110d 100%);
   box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.9),
-    0 0 12px rgba(245, 158, 11, 0.35);
+    inset 0 2px 5px rgba(0, 0, 0, 0.9),
+    0 0 10px rgba(245, 158, 11, 0.35);
   transform: translateY(-1px);
 }
 
 .vault-slot .vault-slot-char {
   color: #fbbf24;
-  text-shadow: 0 0 10px #f59e0b, 0 0 2px #fff;
+  text-shadow: 0 0 8px #f59e0b, 0 0 2px #fff;
   line-height: 1;
   display: inline-block;
   animation: vaultDigitPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -4999,8 +5026,8 @@ button, input, select, textarea { font-family: inherit; }
 
 .vault-slot.revealed .vault-slot-char {
   color: #38bdf8;
-  text-shadow: 0 0 10px #0284c7, 0 0 2px #fff;
-  font-size: 1.55rem;
+  text-shadow: 0 0 8px #0284c7, 0 0 2px #fff;
+  font-size: 1.25rem;
 }
 
 @keyframes vaultDigitPop {
@@ -5013,18 +5040,18 @@ button, input, select, textarea { font-family: inherit; }
   background: rgba(0, 0, 0, 0.45);
   border: 1.5px solid #78716c;
   color: #d6d3d1;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   transition: all 0.2s ease;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
   flex-shrink: 0;
-  margin-left: 6px;
+  margin-left: 4px;
 }
 
 .vault-eye-btn:hover {
@@ -5050,16 +5077,16 @@ button, input, select, textarea { font-family: inherit; }
 /* Barra de subtítulo / feedback */
 .vault-instruction-bar {
   text-align: center;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: #d6d3d1;
-  margin-bottom: 10px;
-  padding: 0 4px;
-  min-height: 1.25rem;
+  margin-bottom: 5px;
+  padding: 0 2px;
+  min-height: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .vault-instruction-bar i {
@@ -5070,8 +5097,8 @@ button, input, select, textarea { font-family: inherit; }
 .vault-keypad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  max-width: 275px;
+  gap: 5px;
+  max-width: 245px;
   margin: 0 auto;
 }
 
@@ -5079,11 +5106,11 @@ button, input, select, textarea { font-family: inherit; }
   appearance: none;
   -webkit-appearance: none;
   background: linear-gradient(180deg, #443e38 0%, #2f2924 50%, #1f1b17 100%);
-  border: 2px solid #6b5f54;
-  border-bottom: 4px solid #14110e;
-  border-radius: 11px;
-  padding: 8px 4px;
-  min-height: 48px;
+  border: 1.5px solid #6b5f54;
+  border-bottom: 3px solid #14110e;
+  border-radius: 9px;
+  padding: 3px 2px;
+  min-height: 38px;
   color: #f5f5f4;
   cursor: pointer;
   display: flex;
@@ -5092,8 +5119,8 @@ button, input, select, textarea { font-family: inherit; }
   justify-content: center;
   gap: 1px;
   box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.5),
-    inset 0 1px 2px rgba(255, 255, 255, 0.22);
+    0 3px 5px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.22);
   transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease, border-color 0.12s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -5107,28 +5134,28 @@ button, input, select, textarea { font-family: inherit; }
 
 .vault-key:active,
 .vault-key.keyboard-pressed {
-  transform: translateY(3px);
+  transform: translateY(2px);
   border-bottom-width: 1px;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.7),
-    inset 0 2px 6px rgba(0, 0, 0, 0.85);
+    inset 0 2px 4px rgba(0, 0, 0, 0.85);
   background: #14110e !important;
   color: #fbbf24 !important;
   border-color: #f59e0b !important;
 }
 
 .vault-key .vk-num {
-  font-size: 1.32rem;
+  font-size: 1.15rem;
   font-weight: 800;
   font-family: system-ui, -apple-system, sans-serif;
   line-height: 1;
 }
 
 .vault-key .vk-sub {
-  font-size: 0.55rem;
+  font-size: 0.5rem;
   font-weight: 700;
   color: #a8a29e;
-  letter-spacing: 1px;
+  letter-spacing: 0.6px;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -5140,16 +5167,16 @@ button, input, select, textarea { font-family: inherit; }
 }
 
 .vault-key-action .vk-action-icon {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   line-height: 1;
 }
 
 .vault-key-action .vk-action-label {
-  font-size: 0.62rem;
+  font-size: 0.56rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
+  letter-spacing: 0.4px;
+  margin-top: 1px;
 }
 
 .vault-key-clear {
@@ -5186,20 +5213,31 @@ button, input, select, textarea { font-family: inherit; }
   40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 540px) {
+  .clf-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .clf-col-left {
+    gap: 6px;
+  }
+  .vault-safe-box {
+    padding: 6px 8px 8px;
+  }
   .vault-slot {
-    width: 38px;
-    height: 44px;
-    font-size: 1.4rem;
+    width: 32px;
+    height: 36px;
+    font-size: 1.15rem;
   }
   .vault-key {
-    min-height: 44px;
-    padding: 6px 2px;
+    min-height: 35px;
+    padding: 2px;
   }
   .vault-key .vk-num {
-    font-size: 1.2rem;
+    font-size: 1.05rem;
   }
 }
+
 
 
 .nav-drive-link {

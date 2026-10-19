@@ -587,82 +587,90 @@
       if (title) title.innerHTML = '<i class="fas fa-compass"></i> Ingreso al Taller';
       body.innerHTML =
         '<form id="classic-login-form" class="classic-login-form">' +
-          '<p class="clf-intro">Ingresá tu nombre de tripulante y clave secreta para subir a bordo:</p>' +
           '<div class="clf-error-alert hidden" id="clf-error-alert">' +
             '<i class="fas fa-exclamation-circle"></i>' +
             '<span>Usuario o clave de 4 dígitos incorrectos.</span>' +
           '</div>' +
-          '<div class="clf-field">' +
-            '<label for="clf-user"><i class="fas fa-user-astronaut"></i> Tripulante / Usuario:</label>' +
-            '<input type="text" id="clf-user" placeholder="Ej: agumor o tu nombre" required autocomplete="username">' +
-          '</div>' +
 
-          '<!-- TECLADO DE CAJA FUERTE PARA PIN DE 4 DÍGITOS -->' +
-          '<div class="vault-safe-box" id="vault-safe-box">' +
-            '<span class="vault-rivet top-left"></span>' +
-            '<span class="vault-rivet top-right"></span>' +
-            '<span class="vault-rivet bottom-left"></span>' +
-            '<span class="vault-rivet bottom-right"></span>' +
-
-            '<div class="vault-safe-header">' +
-              '<div class="vault-brand">' +
-                '<i class="fas fa-shield-alt vault-shield-icon"></i>' +
-                '<span>Caja Fuerte · PIN 4 Dígitos</span>' +
+          '<div class="clf-layout-grid">' +
+            '<!-- COLUMNA IZQUIERDA: USUARIO Y ACCIONES -->' +
+            '<div class="clf-col-left">' +
+              '<p class="clf-intro">Ingresá tu usuario y PIN para subir a bordo:</p>' +
+              '<div class="clf-field">' +
+                '<label for="clf-user"><i class="fas fa-user-astronaut"></i> Tripulante / Usuario:</label>' +
+                '<input type="text" id="clf-user" placeholder="Ej: agumor o tu nombre" required autocomplete="username">' +
               '</div>' +
-              '<div class="vault-status-indicator locked" id="vault-status-led" title="Estado de la cerradura">' +
-                '<span class="vault-led-dot"></span>' +
-                '<span class="vault-led-text" id="vault-led-text">BLOQUEADO</span>' +
+              '<div class="clf-demo-hint">' +
+                '<i class="fas fa-info-circle"></i> <strong>Usuario:</strong> 3 letras nombre + 3 apellido (ej: <code>agumor</code>)<br>' +
+                '<i class="fas fa-key"></i> <strong>Clave:</strong> PIN de 4 dígitos' +
               '</div>' +
-            '</div>' +
-
-            '<div class="vault-screen" id="vault-screen" tabindex="0" role="region" aria-label="Pantalla de la caja fuerte">' +
-              '<div class="vault-screen-glare"></div>' +
-              '<div class="vault-slots-wrap">' +
-                '<div class="vault-slot" data-slot="0"><span class="vault-slot-char"></span></div>' +
-                '<div class="vault-slot" data-slot="1"><span class="vault-slot-char"></span></div>' +
-                '<div class="vault-slot" data-slot="2"><span class="vault-slot-char"></span></div>' +
-                '<div class="vault-slot" data-slot="3"><span class="vault-slot-char"></span></div>' +
-              '</div>' +
-              '<button type="button" class="vault-eye-btn" id="vault-eye-toggle" title="Mostrar / ocultar dígitos del PIN" aria-label="Mostrar u ocultar PIN">' +
-                '<i class="fas fa-eye"></i>' +
+              '<button type="submit" class="clf-submit-btn">' +
+                '<span>Abrir e Iniciar Sesión</span>' +
+                '<i class="fas fa-unlock-alt"></i>' +
               '</button>' +
             '</div>' +
 
-            '<input type="password" id="clf-pass" maxlength="4" required autocomplete="current-password" class="vault-hidden-input" tabindex="-1" aria-hidden="true">' +
+            '<!-- COLUMNA DERECHA: CAJA FUERTE Y TECLADO -->' +
+            '<div class="clf-col-right">' +
+              '<div class="vault-safe-box" id="vault-safe-box">' +
+                '<span class="vault-rivet top-left"></span>' +
+                '<span class="vault-rivet top-right"></span>' +
+                '<span class="vault-rivet bottom-left"></span>' +
+                '<span class="vault-rivet bottom-right"></span>' +
 
-            '<div class="vault-instruction-bar" id="vault-instruction">' +
-              '<i class="fas fa-key"></i> <span id="vault-subtext">Ingresá los 4 números de tu clave:</span>' +
-            '</div>' +
+                '<div class="vault-safe-header">' +
+                  '<div class="vault-brand">' +
+                    '<i class="fas fa-shield-alt vault-shield-icon"></i>' +
+                    '<span>Caja Fuerte · PIN 4 Dígitos</span>' +
+                  '</div>' +
+                  '<div class="vault-status-indicator locked" id="vault-status-led" title="Estado de la cerradura">' +
+                    '<span class="vault-led-dot"></span>' +
+                    '<span class="vault-led-text" id="vault-led-text">BLOQUEADO</span>' +
+                  '</div>' +
+                '</div>' +
 
-            '<div class="vault-keypad">' +
-              '<button type="button" class="vault-key" data-digit="1"><span class="vk-num">1</span></button>' +
-              '<button type="button" class="vault-key" data-digit="2"><span class="vk-num">2</span><span class="vk-sub">ABC</span></button>' +
-              '<button type="button" class="vault-key" data-digit="3"><span class="vk-num">3</span><span class="vk-sub">DEF</span></button>' +
-              '<button type="button" class="vault-key" data-digit="4"><span class="vk-num">4</span><span class="vk-sub">GHI</span></button>' +
-              '<button type="button" class="vault-key" data-digit="5"><span class="vk-num">5</span><span class="vk-sub">JKL</span></button>' +
-              '<button type="button" class="vault-key" data-digit="6"><span class="vk-num">6</span><span class="vk-sub">MNO</span></button>' +
-              '<button type="button" class="vault-key" data-digit="7"><span class="vk-num">7</span><span class="vk-sub">PQRS</span></button>' +
-              '<button type="button" class="vault-key" data-digit="8"><span class="vk-num">8</span><span class="vk-sub">TUV</span></button>' +
-              '<button type="button" class="vault-key" data-digit="9"><span class="vk-num">9</span><span class="vk-sub">WXYZ</span></button>' +
-              '<button type="button" class="vault-key vault-key-action vault-key-clear" id="vault-key-clear" title="Borrar todo el código">' +
-                '<span class="vk-action-icon"><i class="fas fa-trash-alt"></i></span>' +
-                '<span class="vk-action-label">Borrar</span>' +
-              '</button>' +
-              '<button type="button" class="vault-key" data-digit="0"><span class="vk-num">0</span></button>' +
-              '<button type="button" class="vault-key vault-key-action vault-key-backspace" id="vault-key-backspace" title="Borrar último dígito">' +
-                '<span class="vk-action-icon"><i class="fas fa-backspace"></i></span>' +
-                '<span class="vk-action-label">Atrás</span>' +
-              '</button>' +
+                '<div class="vault-screen" id="vault-screen" tabindex="0" role="region" aria-label="Pantalla de la caja fuerte">' +
+                  '<div class="vault-screen-glare"></div>' +
+                  '<div class="vault-slots-wrap">' +
+                    '<div class="vault-slot" data-slot="0"><span class="vault-slot-char"></span></div>' +
+                    '<div class="vault-slot" data-slot="1"><span class="vault-slot-char"></span></div>' +
+                    '<div class="vault-slot" data-slot="2"><span class="vault-slot-char"></span></div>' +
+                    '<div class="vault-slot" data-slot="3"><span class="vault-slot-char"></span></div>' +
+                  '</div>' +
+                  '<button type="button" class="vault-eye-btn" id="vault-eye-toggle" title="Mostrar / ocultar dígitos del PIN" aria-label="Mostrar u ocultar PIN">' +
+                    '<i class="fas fa-eye"></i>' +
+                  '</button>' +
+                '</div>' +
+
+                '<input type="password" id="clf-pass" maxlength="4" required autocomplete="current-password" class="vault-hidden-input" tabindex="-1" aria-hidden="true">' +
+
+                '<div class="vault-instruction-bar" id="vault-instruction">' +
+                  '<i class="fas fa-key"></i> <span id="vault-subtext">Ingresá los 4 números de tu clave:</span>' +
+                '</div>' +
+
+                '<div class="vault-keypad">' +
+                  '<button type="button" class="vault-key" data-digit="1"><span class="vk-num">1</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="2"><span class="vk-num">2</span><span class="vk-sub">ABC</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="3"><span class="vk-num">3</span><span class="vk-sub">DEF</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="4"><span class="vk-num">4</span><span class="vk-sub">GHI</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="5"><span class="vk-num">5</span><span class="vk-sub">JKL</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="6"><span class="vk-num">6</span><span class="vk-sub">MNO</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="7"><span class="vk-num">7</span><span class="vk-sub">PQRS</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="8"><span class="vk-num">8</span><span class="vk-sub">TUV</span></button>' +
+                  '<button type="button" class="vault-key" data-digit="9"><span class="vk-num">9</span><span class="vk-sub">WXYZ</span></button>' +
+                  '<button type="button" class="vault-key vault-key-action vault-key-clear" id="vault-key-clear" title="Borrar todo el código">' +
+                    '<span class="vk-action-icon"><i class="fas fa-trash-alt"></i></span>' +
+                    '<span class="vk-action-label">Borrar</span>' +
+                  '</button>' +
+                  '<button type="button" class="vault-key" data-digit="0"><span class="vk-num">0</span></button>' +
+                  '<button type="button" class="vault-key vault-key-action vault-key-backspace" id="vault-key-backspace" title="Borrar último dígito">' +
+                    '<span class="vk-action-icon"><i class="fas fa-backspace"></i></span>' +
+                    '<span class="vk-action-label">Atrás</span>' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
             '</div>' +
           '</div>' +
-
-          '<div class="clf-demo-hint">' +
-            '<i class="fas fa-info-circle"></i> <strong>Usuario:</strong> 3 letras nombre + 3 apellido (ej: <code>agumor</code>) | <strong>Clave:</strong> PIN de 4 dígitos' +
-          '</div>' +
-          '<button type="submit" class="clf-submit-btn">' +
-            '<span>Abrir e Iniciar Sesión</span>' +
-            '<i class="fas fa-unlock-alt"></i>' +
-          '</button>' +
         '</form>';
 
       var form  = document.getElementById('classic-login-form');
