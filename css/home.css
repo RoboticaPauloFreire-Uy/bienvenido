@@ -5100,6 +5100,7 @@ body.student-logged-in .site-footer {
   grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
   gap: 26px 22px;
   margin-top: 14px;
+  align-items: stretch;
 }
 .np-casa-card {
   background: #FAF6EC;
@@ -5107,6 +5108,8 @@ body.student-logged-in .site-footer {
   padding: 18px 16px;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
   position: relative;
   box-shadow: 3px 3px 0 rgba(74, 62, 49, 0.12);
   transition: transform 0.22s ease, box-shadow 0.22s ease;
@@ -5128,6 +5131,7 @@ body.student-logged-in .site-footer {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 28px;
   margin-bottom: 10px;
 }
 .np-casa-badge {
@@ -5153,114 +5157,164 @@ body.student-logged-in .site-footer {
   color: #9A3412;
   background: #FFEDD5;
 }
-.np-casa-photo-wrap {
+.np-casa-card .hn-act-thumb {
+  height: 140px !important;
+  min-height: 140px !important;
+  max-height: 140px !important;
   border: 1px solid #4A3E31;
   background: #EAE3D2;
-  padding: 3px;
+  padding: 0;
   margin-bottom: 12px;
-  height: 140px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
+  flex-shrink: 0;
 }
-.np-casa-photo-wrap img {
+.np-casa-card .hn-act-thumb img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.np-casa-photo-icon {
-  font-size: 2.8rem;
+.np-casa-card .hn-act-thumb:not(.has-img) .hn-act-emoji {
+  font-size: 3.2rem;
+  filter: none;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: static;
 }
-.np-casa-photo-wrap.has-img .np-casa-photo-icon {
+.np-casa-card .hn-act-thumb.has-img .hn-act-emoji {
   position: absolute;
   left: 8px;
   bottom: 8px;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   background: #FAF6EC;
   border: 1px solid #4A3E31;
   padding: 2px 6px;
-  border-radius: 2px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.18);
+  width: auto;
+  height: auto;
+  z-index: 2;
+  filter: none;
+  line-height: 1.2;
+}
+.np-casa-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 .np-casa-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.22rem;
+  font-size: 1.18rem;
   font-weight: 900;
-  line-height: 1.25;
+  line-height: 1.28;
   color: #14110E;
   margin: 0 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.6em;
+  max-height: 2.6em;
 }
 .np-casa-desc {
   font-family: 'Newsreader', Georgia, serif;
-  font-size: 0.92rem;
-  line-height: 1.5;
+  font-size: 0.90rem;
+  line-height: 1.45;
   color: #352E26;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 4.35em;
+  max-height: 4.35em;
 }
 .np-casa-box-receipt {
   background: #EFE8D6;
   border: 1px solid #D2C7B1;
+  border-radius: 4px;
   padding: 8px 10px;
-  margin-top: auto;
   margin-bottom: 12px;
+  min-height: 68px;
+  max-height: 68px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
   font-family: 'Special Elite', monospace;
   font-size: 0.74rem;
   color: #4A3F33;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
-.np-casa-box-receipt span {
-  display: inline-flex;
+.np-casa-box-receipt .np-receipt-lbl {
+  font-weight: 900;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: #78350F;
+  white-space: nowrap;
+}
+.np-casa-box-receipt .np-receipt-txt {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.35;
+}
+.np-casa-card .hn-act-chips {
+  display: none;
+}
+.np-casa-meta {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed #D4CBBB;
+  display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  min-height: 26px;
+  margin-bottom: 12px;
+  font-size: 0.80rem;
+  font-weight: 700;
+  color: #4A3F33;
 }
 .np-casa-actions {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  align-items: stretch;
+  margin-top: 0;
+  min-height: 42px;
 }
-.np-casa-btn {
-  font-family: 'Special Elite', monospace;
-  font-size: 0.78rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 7px 14px;
-  border: 1.5px solid #9A3412;
-  border-radius: 2px;
-  text-decoration: none;
-  cursor: pointer;
+.np-casa-actions .hn-act-btn {
+  flex: 1 1 0px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.18s ease;
-  box-shadow: 2px 2px 0 rgba(154, 52, 18, 0.2);
-}
-.np-casa-btn.primary {
-  background: #C2410C;
-  color: #FFFFFF;
-}
-.np-casa-btn.primary:hover {
-  background: #EA580C;
-  box-shadow: 3px 3px 0 rgba(154, 52, 18, 0.35);
-  transform: translate(-1px, -1px);
-}
-.np-casa-btn.secondary {
-  background: #FAF6EC;
-  color: #9A3412;
-}
-.np-casa-btn.secondary:hover {
-  background: #9A3412;
-  color: #FAF6EC;
-  transform: translate(-1px, -1px);
+  justify-content: center;
+  height: 42px;
+  min-height: 42px;
+  padding: 0 10px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.80rem;
+  font-weight: 800;
+  border-radius: 10px;
+  box-sizing: border-box;
+  text-decoration: none;
 }
 
 /* ── PÁGINA 05: JUEGOS (PASATIEMPOS, PUZZLES & RECREO) ── */

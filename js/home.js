@@ -1003,10 +1003,9 @@
               '<span class="np-receipt-lbl">' + matLabel + '</span> ' +
               '<span class="np-receipt-txt">' + esc(matText) + '</span>' +
             '</div>' +
-            chips +
             '<div class="np-casa-meta">' +
               '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
-              hasta + desdeProx +
+              (hasta || desdeProx || '<span class="hn-act-deadline is-empty" style="visibility:hidden;" aria-hidden="true"><i class="far fa-calendar-check"></i> &nbsp;</span>') +
             '</div>' +
             (botones ? '<div class="np-casa-actions">' + botones + '</div>' : '') +
           '</div>' +
