@@ -1269,6 +1269,14 @@
           '</div>'
         : '';
 
+      var descHtml =
+        '<div class="game-card-desc-wrap">' +
+          '<p class="game-card-desc">' + esc(gm.description || '') + '</p>' +
+          '<button type="button" class="btn-game-desc-toggle" onclick="window.toggleGameDesc(this)" style="display:none;" title="Ampliar descripción del juego">' +
+            '<span><i class="fas fa-chevron-down"></i> Ver más</span>' +
+          '</button>' +
+        '</div>';
+
       return '<article class="game-grid-card">' +
         '<div class="game-card-thumb-wrap">' +
           '<img src="' + esc(thumb) + '" alt="' + esc(gm.title) + '" class="game-card-thumb" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80\'">' +
@@ -1277,7 +1285,7 @@
         '</div>' +
         '<div class="game-card-body">' +
           '<h3 class="game-card-title">' + esc(gm.title) + '</h3>' +
-          '<p class="game-card-desc">' + esc(gm.description || '') + '</p>' +
+          descHtml +
           benefitsHtml +
           tagsHtml +
         '</div>' +
@@ -1288,7 +1296,46 @@
         '</div>' +
       '</article>';
     }).join('');
+
+    checkCollapsibleGameDescs(grid);
   }
+
+  function checkCollapsibleGameDescs(container) {
+    if (!container) return;
+    requestAnimationFrame(function () {
+      var wraps = container.querySelectorAll('.game-card-desc-wrap');
+      wraps.forEach(function (wrap) {
+        var textEl = wrap.querySelector('.game-card-desc');
+        var btn = wrap.querySelector('.btn-game-desc-toggle');
+        if (!textEl || !btn) return;
+        // Si el contenido supera 10 líneas de texto (~205px), colapsar con botón "Ver más"
+        if (textEl.scrollHeight > 210) {
+          wrap.classList.add('is-collapsed');
+          btn.style.display = 'inline-flex';
+          btn.innerHTML = '<span><i class="fas fa-chevron-down"></i> Ver más</span>';
+        } else {
+          wrap.classList.remove('is-collapsed');
+          btn.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  window.toggleGameDesc = function (btn) {
+    var wrap = btn.closest('.game-card-desc-wrap');
+    if (!wrap) return;
+    var isCollapsed = wrap.classList.contains('is-collapsed');
+    if (isCollapsed) {
+      wrap.classList.remove('is-collapsed');
+      wrap.classList.add('is-expanded');
+      btn.innerHTML = '<span><i class="fas fa-chevron-up"></i> Ver menos</span>';
+    } else {
+      wrap.classList.add('is-collapsed');
+      wrap.classList.remove('is-expanded');
+      btn.innerHTML = '<span><i class="fas fa-chevron-down"></i> Ver más</span>';
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
 
   /* ───────────── Agenda (Solo Proyectos en Clase: Título, Imagen, Día de Presentación y Grado) ───────────── */
   function renderAgenda() {
