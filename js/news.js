@@ -210,23 +210,7 @@ window.HOME_CONTENT = {
         { texto: '¡Jugar Ahora!', url: 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html', icono: 'fas fa-gamepad', principal: true }
       ]
     },
-    {
-      id: 'act-laberinto-canicas',
-      titulo: 'Misión Maker: Laberinto de Canicas en Cartón',
-      descripcion: 'Diseñá tu propio juego físico: usá una tapa de caja y tiras de cartón para crear caminos, desvíos y trampas para hacer rodar una bolita.',
-      tipo: 'casa',
-      modalidad: 'maker',
-      materiales: 'Tapa de caja de zapatos, tiras de cartón, tijera, plasticola y 1 canica o bolita',
-      grados: ['todos'],
-      icono: '🌀',
-      color: '#D97706',
-      desde: '2026-10-10',
-      hasta: '2026-11-30',
-      chips: ['📦 Cartón', '✂️ Tijera', '🔴 Bolita', '🎯 Puntería'],
-      botones: [
-        { texto: 'Ver Guía del Desafío', url: 'aula.html', icono: 'fas fa-tools', principal: true }
-      ]
-    },
+
     {
       id: 'act-robot-reciclado',
       titulo: 'Misión Maker: Mi Primer Robot con Reciclaje',
@@ -261,20 +245,7 @@ window.HOME_CONTENT = {
         { texto: 'Descargar PDF', url: 'https://drive.google.com/uc?export=download&id=10EGSDHn36iWy5n5XxX1utxxmyxdKkEwo', icono: 'fas fa-download' }
       ]
     },
-    {
-      id: 'act-reciclaje',
-      titulo: 'Campaña Eco-Maker: Juntamos Materiales',
-      descripcion: '¡En casa no tiramos nada! Guardamos cajas de cartón fino, tubos, tapitas, clips y papel de aluminio para los proyectos del taller.',
-      tipo: 'familia',
-      modalidad: 'maker',
-      materiales: 'Cajas de cartón fino, tubos de cocina, tapitas plásticas y clips limpios',
-      grados: ['todos'],
-      icono: '📦',
-      color: '#EA580C',
-      desde: '2026-09-01',
-      hasta: '2026-12-05',
-      chips: ['📦 Cajas', '🧻 Tubos', '🔴 Tapitas', '📎 Clips', '🥫 Aluminio']
-    },
+
     {
       id: 'act-guitarra',
       titulo: 'Guitarra musical de cartón',
