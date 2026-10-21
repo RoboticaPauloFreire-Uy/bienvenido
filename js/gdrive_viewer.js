@@ -51,9 +51,22 @@
   }
 
   // Extensiones por tipo
-  var DIBUJO_EXTS   = ['.png', '.jpg', '.jpeg', '.bmp'];
+  var DIBUJO_EXTS   = ['.png', '.jpg', '.jpeg', '.bmp', '.webp', '.gif', '.svg'];
+  var VIDEO_EXTS    = ['.mp4', '.mov', '.webm', '.mkv', '.avi', '.m4v', '.3gp', '.ogv'];
   var SCRATCH_EXTS  = ['.sb3', '.sjr', '.pjson', '.sb'];
   var MAKECODE_EXTS = ['.hex', '.uf2', '.js', '.json', '.mkcd'];
+
+  function isVideoFile(name, type) {
+    if (type === 'video' || (typeof type === 'string' && type.indexOf('video') !== -1)) return true;
+    var ext = extOf(name);
+    return VIDEO_EXTS.indexOf(ext) !== -1;
+  }
+
+  function isImageFile(name, type) {
+    if (type === 'image' || (typeof type === 'string' && type.indexOf('image') !== -1)) return true;
+    var ext = extOf(name);
+    return DIBUJO_EXTS.indexOf(ext) !== -1;
+  }
 
   function extOf(name) {
     var m = (name || '').match(/(\.[^.]+)$/);
@@ -68,7 +81,7 @@
   const FOLDER_CONTENTS = {
     proyectos:   { name: '🗺️ Ruta de Aventuras', icon: 'fa-compass',        items: [] },
     juegos:      { name: '🎮 Juegos del Grado',  icon: 'fa-gamepad',        items: [] },
-    dibujos:     { name: '🎨 Dibujos',             icon: 'fa-paint-brush',    items: [] },
+    dibujos:     { name: '📸🎬 Fotos & Videos',    icon: 'fa-photo-video',    items: [] },
     proyecto:    { name: '📁 Proyectos',           icon: 'fa-folder-open',    items: [] },
     actividades: { name: '🏠 Actividades de casa', icon: 'fa-house-user',     items: [], generalItems: [] },
     familiar:    { name: '👨‍👩‍👧 Actividad familiar',   icon: 'fa-heart',          items: [] }
@@ -90,6 +103,9 @@
   let captainTablePage           = 1;
   const CAPTAIN_TABLE_PAGE_SIZE  = 6;
   let isRoadmapGridMode          = false;
+  let fbMediaFilter              = 'all'; // 'all' | 'videos' | 'photos' | 'grid'
+  let currentFbLightboxIndex     = 0;
+  let currentFbLightboxItems     = [];
   let selectedClassProjectIdx    = null; // null => auto-selecciona el último proyecto de clase al ingresar
   let lastSelectedGradeId        = null;
 
@@ -202,62 +218,109 @@
   window.downloadDriveFileDirect = downloadDriveFileDirect;
 
   // ──────────────────────────────────────────────────
-  // FETCH: Dibujos (subfolder=dibujo)
+  // FETCH: Fotos y Videos del Alumno (Google Drive)
+  // Consulta concurrentemente subcarpetas dibujo, videos, fotos y raíz
   // ──────────────────────────────────────────────────
   function fetchRealDriveFiles(student, containerId) {
     var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
     if (!hook || isLoadingDriveFiles) return;
     isLoadingDriveFiles = true;
     renderGDriveDashboard(containerId);
-    fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=dibujo')
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        isLoadingDriveFiles = false; hasFetchedDriveFiles = true;
-        if (data && Array.isArray(data.files)) {
-          // Filtrar para que solo entren imágenes / dibujos (excluir proyectos .sjr, .sb3, .hex)
-          var drawingFilesOnly = data.files.filter(function(f){
-            return !isScratchFile(f.name) && !isMakecodeFile(f.name) && f.type !== 'pdf';
-          });
 
-          // Rescate automático: Si existen proyectos Scratch o MakeCode en la carpeta Dibujo (de subidas previas),
-          // integrarlos en Proyectos para que se contabilicen y no se pierdan
-          var scratchInDibujo = data.files.filter(function(f){
-            return isScratchFile(f.name) || isMakecodeFile(f.name);
-          });
-          scratchInDibujo.forEach(function(f){
-            if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name === f.name; })) {
-              FOLDER_CONTENTS.proyecto.items.push({
-                id: f.id,
-                name: f.name,
-                title: (isScratchFile(f.name) ? '🐱 ' : '💻 ') + f.name.replace(/\.[^.]+$/,''),
-                type: isScratchFile(f.name) ? 'scratch' : 'makecode',
-                size: f.size || '—',
-                date: f.date || '—',
-                url: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : ''),
-                downloadUrl: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : '')
-              });
-            }
-          });
-          var remote = drawingFilesOnly.map(function(f){
-            return { id:f.id, name:f.name, title:f.title||f.name.replace(/\.[^.]+$/,''),
-              type:'image', size:f.size||'—', date:f.date||'—',
-              url: f.id ? 'https://drive.google.com/thumbnail?id='+f.id+'&sz=w800' : f.url,
-              downloadUrl: f.downloadUrl||'' };
-          });
-          var pending = (FOLDER_CONTENTS.dibujos.items||[]).filter(function(l){
-            return l.isLocalPending && !remote.some(function(r){ return r.name===l.name; });
-          });
-          var combined = pending.concat(remote);
-          var unique = [];
-          var seen = {};
-          combined.forEach(function(it){
-            if (!seen[it.name]) { seen[it.name] = true; unique.push(it); }
-          });
-          FOLDER_CONTENTS.dibujos.items = unique;
-        }
+    var reqDibujo = fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=dibujo')
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { files: [] }; });
+    var reqVideos = fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=videos')
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { files: [] }; });
+    var reqFotos  = fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=fotos')
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { files: [] }; });
+
+    Promise.all([reqDibujo, reqVideos, reqFotos])
+      .then(function(results){
+        isLoadingDriveFiles = false;
+        hasFetchedDriveFiles = true;
+
+        var allRawFiles = [];
+        results.forEach(function(res){
+          if (res && Array.isArray(res.files)) {
+            allRawFiles = allRawFiles.concat(res.files);
+          }
+        });
+
+        // Deduplicar archivos
+        var seenRaw = {};
+        var uniqueFiles = [];
+        allRawFiles.forEach(function(f){
+          var key = f.id || f.name;
+          if (key && !seenRaw[key]) {
+            seenRaw[key] = true;
+            uniqueFiles.push(f);
+          }
+        });
+
+        // Rescate automático de proyectos Scratch Jr o MakeCode
+        var scratchInMedia = uniqueFiles.filter(function(f){
+          return isScratchFile(f.name) || isMakecodeFile(f.name);
+        });
+        scratchInMedia.forEach(function(f){
+          if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name === f.name || it.id === f.id; })) {
+            FOLDER_CONTENTS.proyecto.items.push({
+              id: f.id,
+              name: f.name,
+              title: (isScratchFile(f.name) ? '🐱 ' : '💻 ') + f.name.replace(/\.[^.]+$/,''),
+              type: isScratchFile(f.name) ? 'scratch' : 'makecode',
+              size: f.size || '—',
+              date: f.date || '—',
+              url: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : ''),
+              downloadUrl: f.downloadUrl || (f.id ? 'https://drive.google.com/uc?export=download&id=' + f.id : '')
+            });
+          }
+        });
+
+        // Filtrar exclusivamente fotos, imágenes y videos (excluyendo proyectos y PDFs)
+        var mediaFilesOnly = uniqueFiles.filter(function(f){
+          return !isScratchFile(f.name) && !isMakecodeFile(f.name) && f.type !== 'pdf';
+        });
+
+        var remote = mediaFilesOnly.map(function(f){
+          var isVid = isVideoFile(f.name, f.type);
+          var driveId = f.id || extractDriveId(f.downloadUrl) || extractDriveId(f.url);
+          return {
+            id: driveId || f.name,
+            name: f.name,
+            title: f.title || f.name.replace(/\.[^.]+$/,''),
+            type: isVid ? 'video' : 'image',
+            size: f.size || '—',
+            date: f.date || '—',
+            url: isVid
+              ? (driveId ? 'https://drive.google.com/file/d/' + driveId + '/preview' : (f.downloadUrl || f.url))
+              : (driveId ? 'https://drive.google.com/thumbnail?id=' + driveId + '&sz=w1200' : f.url),
+            thumbUrl: driveId ? 'https://drive.google.com/thumbnail?id=' + driveId + '&sz=w800' : (f.url || ''),
+            videoEmbedUrl: driveId ? 'https://drive.google.com/file/d/' + driveId + '/preview' : '',
+            downloadUrl: f.downloadUrl || (driveId ? 'https://drive.google.com/uc?export=download&id=' + driveId : '')
+          };
+        });
+
+        var pending = (FOLDER_CONTENTS.dibujos.items || []).filter(function(l){
+          return l.isLocalPending && !remote.some(function(r){ return r.name === l.name || (r.id && r.id === l.id); });
+        });
+        var combined = pending.concat(remote);
+        var unique = [];
+        var seen = {};
+        combined.forEach(function(it){
+          var k = it.id || it.name;
+          if (!seen[k]) { seen[k] = true; unique.push(it); }
+        });
+        FOLDER_CONTENTS.dibujos.items = unique;
         renderGDriveDashboard(containerId);
       })
-      .catch(function(){ isLoadingDriveFiles=false; hasFetchedDriveFiles=true; renderGDriveDashboard(containerId); });
+      .catch(function(){
+        isLoadingDriveFiles = false;
+        hasFetchedDriveFiles = true;
+        renderGDriveDashboard(containerId);
+      });
   }
 
   // ──────────────────────────────────────────────────
@@ -2699,7 +2762,14 @@
       selectedClassProjectIdx = Math.max(0, classProjects.length - 1);
     }
 
-    var badgeDibujos     = isLoadingDriveFiles ? '<i class="fas fa-spinner fa-spin"></i>' : FOLDER_CONTENTS.dibujos.items.length;
+    var allMediaItems = FOLDER_CONTENTS.dibujos.items || [];
+    var videoMediaItems = allMediaItems.filter(function(it){ return it.type === 'video'; });
+    var photoMediaItems = allMediaItems.filter(function(it){ return it.type !== 'video'; });
+    var badgeDibujos = isLoadingDriveFiles
+      ? '<i class="fas fa-spinner fa-spin"></i>'
+      : (videoMediaItems.length > 0
+          ? (videoMediaItems.length + ' vid &bull; ' + photoMediaItems.length + ' fot')
+          : allMediaItems.length + ' fotos');
     var badgeProyectos   = adventureMissions.length;
     var badgeProyecto    = isLoadingProyectoFiles ? '<i class="fas fa-spinner fa-spin"></i>' : validProyectoFiles.length;
     var badgeActividades = classProjects.length || (FOLDER_CONTENTS.actividades.items.length + (FOLDER_CONTENTS.actividades.generalItems.length > 0 ? FOLDER_CONTENTS.actividades.generalItems.length : 1));
@@ -2713,8 +2783,8 @@
     var countText = '';
     if (activeFolderKey === 'dibujos') {
       countText = isLoadingDriveFiles
-        ? '<i class="fas fa-sync-alt fa-spin"></i> Conectando...'
-        : FOLDER_CONTENTS.dibujos.items.length + (isLegacy ? ' recuerdo(s) de honor' : (isCyber ? ' render(s) cyber' : (isSpace ? ' holograma(s)' : ' dibujo(s)')));
+        ? '<i class="fas fa-sync-alt fa-spin"></i> Sincronizando con Google Drive...'
+        : allMediaItems.length + ' publicaciones (' + videoMediaItems.length + ' videos, ' + photoMediaItems.length + ' fotos)';
     } else if (activeFolderKey === 'proyectos') {
       countText = adventureMissions.length + (isLegacy ? ' hitos del camino (' : (isCyber ? ' nodos de circuito (' : (isSpace ? ' misiones planetarias (' : ' misiones de aventura ('))) + student.gradeName + ')';
     } else if (activeFolderKey === 'juegos') {
@@ -3273,25 +3343,10 @@
       mainDisplayHtml = renderGradeGamesHtml(student, gradeGames);
       uploadZoneHtml = '';
 
-    // ═══ CARPETA: DIBUJOS (La Mesa del Capitán / Galería Holográfica / Matriz Cyber) ═══
+    // ═══ CARPETA: FOTOS & VIDEOS ESTILO FACEBOOK ═══
     } else {
       displayItems = FOLDER_CONTENTS.dibujos.items || [];
-
-      if (isLoadingDriveFiles && displayItems.length === 0) {
-        mainDisplayHtml = loadingHtml(
-          isCyber ? 'Compilando Matriz de Renders y Diseños...' : (isSpace ? 'Abriendo la Cápsula de Hologramas y Dibujos...' : 'Abriendo el Cofre de Dibujos...'),
-          isCyber ? 'Cargando esquemas técnicos y creaciones digitales en la terminal...' : (isSpace ? 'Escaneando capturas y creaciones en la consola estelar...' : 'Buscando pergaminos y creaciones en la mesa del capitán...'),
-          isCyber ? '#10B981' : (isSpace ? '#0284C7' : '#D97706')
-        );
-      } else if (!isLoadingDriveFiles && displayItems.length === 0) {
-        mainDisplayHtml = emptyHtml(
-          isCyber ? '📟' : (isSpace ? '🌌' : '🎨'),
-          isCyber ? 'Terminal de Renders vacía' : (isSpace ? 'Cápsula de Hologramas vacía' : 'Cofre de Pergaminos vacío'),
-          isCyber ? '¡Subí tu primer render 3D o esquema técnico abajo para compilarlo en la matriz!' : (isSpace ? '¡Subí tu primer dibujo o captura espacial abajo para proyectarlo en la consola!' : '¡Depositá tu primer pergamino o dibujo abajo para desplegarlo en la mesa!')
-        );
-      } else {
-        mainDisplayHtml = renderCaptainTableHtml(displayItems);
-      }
+      mainDisplayHtml = renderFacebookMediaWallHtml(student, displayItems, fbMediaFilter, driveTargetUrl, isLoadingDriveFiles);
     }
 
     // ──────────────────────────────────────────────────
@@ -3299,18 +3354,18 @@
     // Solo aparece la zona activa al arrastrar un archivo o con el botón
     // ──────────────────────────────────────────────────
     var canUpload = (activeFolderKey === 'dibujos') || (activeFolderKey === 'proyecto' && proyectoSubTab === 'scratch' && showScratch);
-    var uploadAccept = activeFolderKey === 'dibujos' ? '.bmp,.png,.jpg,.jpeg,image/bmp,image/png,image/jpeg' : '.sb3,.sjr,.pjson,.sb';
+    var uploadAccept = activeFolderKey === 'dibujos' ? '.bmp,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.webm,.avi,image/*,video/*' : '.sb3,.sjr,.pjson,.sb';
     var uploadBtnText = activeFolderKey === 'dibujos'
-      ? (isLegacy ? '<i class="fas fa-graduation-cap"></i> Guardar Recuerdo' : (isCyber ? '<i class="fas fa-microchip"></i> Guardar Render' : (isSpace ? '<i class="fas fa-satellite-dish"></i> Guardar Holograma' : '<i class="fas fa-scroll"></i> Guardar Pergamino')))
+      ? '<i class="fas fa-plus-circle"></i> Subir Foto o Video'
       : '<i class="fas fa-plus-circle"></i> Subir Scratch Jr';
     var uploadBtnClass = activeFolderKey === 'dibujos' ? 'gca-btn-upload' : 'gca-btn-upload scratch';
 
     if (canUpload) {
       var dragTitle = activeFolderKey === 'dibujos'
-        ? (isLegacy ? '¡Soltá tu foto, diploma o recuerdo aquí para guardarlo en tu anuario!' : (isCyber ? '¡Soltá tu render o esquema aquí para guardarlo en la terminal!' : (isSpace ? '¡Soltá tu dibujo aquí para guardarlo en la cápsula!' : '¡Soltá tu dibujo aquí para guardarlo en el cofre!')))
+        ? '¡Soltá tu foto o video aquí para guardarlo en tu muro de Google Drive!'
         : '¡Soltá tu proyecto Scratch Jr aquí!';
       var dragHint = activeFolderKey === 'dibujos'
-        ? 'Formatos permitidos: <strong>.png, .jpg, .bmp</strong>'
+        ? 'Formatos permitidos: <strong>fotos (.png, .jpg, .webp) o videos (.mp4, .mov, .webm)</strong>'
         : 'Formatos permitidos: <strong>.sb3, .sjr, .pjson, .sb</strong>';
 
       uploadZoneHtml =
@@ -3426,10 +3481,10 @@
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'dibujos' ? 'active' : '') + '" data-folder="dibujos">' +
-            '<span class="gnb-emoji">' + (isLegacy ? '🏆' : (isCyber ? '📟' : (isSpace ? '🌌' : '🎨'))) + '</span>' +
+            '<span class="gnb-emoji">📸🎬</span>' +
             '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isLegacy ? 'Álbum de Recuerdos' : (isCyber ? 'Renders & Planos' : (isSpace ? 'Hologramas' : 'Cofre de Dibujos'))) + '</span>' +
-              '<span class="gnb-badge">' + badgeDibujos + (isLegacy ? ' recuerdos' : (isCyber ? ' renders' : (isSpace ? ' capturas' : ' pergaminos'))) + '</span>' +
+              '<span class="gnb-title">Fotos & Videos</span>' +
+              '<span class="gnb-badge">' + badgeDibujos + '</span>' +
             '</div>' +
           '</button>' +
           '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyecto' ? 'active' : '') + '" data-folder="proyecto">' +
@@ -5464,6 +5519,436 @@
       '</div>' +
     '</div>';
   }
+  // ──────────────────────────────────────────────────
+  // FUNCIONES DEL MURO ESTILO FACEBOOK (FOTOS Y VIDEOS)
+  // ──────────────────────────────────────────────────
+  function isItemLiked(itemId) {
+    if (!itemId) return false;
+    var student = window.getActiveStudent ? window.getActiveStudent() : null;
+    var u = student ? student.username : 'default';
+    try {
+      var likes = JSON.parse(localStorage.getItem('pf_fb_likes_' + u) || '{}');
+      return !!likes[itemId];
+    } catch(e) { return false; }
+  }
+
+  function toggleFbLike(itemId, e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    var student = window.getActiveStudent ? window.getActiveStudent() : null;
+    var u = student ? student.username : 'default';
+    var likes = {};
+    try {
+      likes = JSON.parse(localStorage.getItem('pf_fb_likes_' + u) || '{}');
+    } catch(err) {}
+
+    var isNowLiked = !likes[itemId];
+    if (isNowLiked) {
+      likes[itemId] = true;
+    } else {
+      delete likes[itemId];
+    }
+    try {
+      localStorage.setItem('pf_fb_likes_' + u, JSON.stringify(likes));
+    } catch(err) {}
+
+    var btn = document.getElementById('fb-like-btn-' + itemId);
+    if (btn) {
+      if (isNowLiked) {
+        btn.classList.add('liked');
+        btn.innerHTML = '<i class="fas fa-thumbs-up"></i> <span>¡Te gusta!</span>';
+      } else {
+        btn.classList.remove('liked');
+        btn.innerHTML = '<i class="far fa-thumbs-up"></i> <span>Me gusta</span>';
+      }
+    }
+    var statText = document.getElementById('fb-reaction-text-' + itemId);
+    if (statText) {
+      statText.textContent = isNowLiked
+        ? 'A vos y al equipo de Robótica les gusta esto'
+        : 'Al equipo de Robótica le gusta esto';
+    }
+  }
+  window.toggleFbLike = toggleFbLike;
+
+  function toggleFbComments(itemId, e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var el = document.getElementById('fb-comments-' + itemId);
+    if (el) {
+      el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+    }
+  }
+  window.toggleFbComments = toggleFbComments;
+
+  function switchFbFilter(filterName, e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    fbMediaFilter = filterName || 'all';
+    renderGDriveDashboard('student-drive-dashboard-container');
+    renderGDriveDashboard('gdrive-explorer-container');
+  }
+  window.switchFbFilter = switchFbFilter;
+
+  function openFbLightbox(index) {
+    if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    if (!currentFbLightboxItems || currentFbLightboxItems.length === 0) return;
+    currentFbLightboxIndex = Math.max(0, Math.min(index, currentFbLightboxItems.length - 1));
+    renderFbLightboxModal();
+  }
+  window.openFbLightbox = openFbLightbox;
+
+  function closeFbLightbox() {
+    var modal = document.getElementById('fb-lightbox-modal');
+    if (modal) modal.remove();
+  }
+  window.closeFbLightbox = closeFbLightbox;
+
+  function navFbLightbox(delta) {
+    if (!currentFbLightboxItems || currentFbLightboxItems.length === 0) return;
+    var newIdx = currentFbLightboxIndex + delta;
+    if (newIdx >= 0 && newIdx < currentFbLightboxItems.length) {
+      currentFbLightboxIndex = newIdx;
+      renderFbLightboxModal();
+    }
+  }
+  window.navFbLightbox = navFbLightbox;
+
+  function renderFbLightboxModal() {
+    var item = currentFbLightboxItems[currentFbLightboxIndex];
+    if (!item) return;
+
+    var modal = document.getElementById('fb-lightbox-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'fb-lightbox-modal';
+      modal.className = 'fb-lightbox-modal';
+      document.body.appendChild(modal);
+    }
+
+    var total = currentFbLightboxItems.length;
+    var cur = currentFbLightboxIndex + 1;
+    var isVid = (item.type === 'video');
+    var dlUrl = getDownloadUrl(item);
+
+    var mediaHtml = '';
+    if (isVid) {
+      var embedSrc = item.videoEmbedUrl || (item.id ? ('https://drive.google.com/file/d/' + item.id + '/preview') : item.url);
+      mediaHtml =
+        '<div class="fb-lb-video-box">' +
+          '<iframe src="' + embedSrc + '" style="width:100%;height:100%;border:0;" allow="autoplay; fullscreen" allowfullscreen></iframe>' +
+        '</div>';
+    } else {
+      var imgSrc = getDrawingImageUrl(item);
+      mediaHtml = '<img src="' + imgSrc + '" alt="' + (item.title || 'Foto') + '" class="fb-lb-img">';
+    }
+
+    modal.innerHTML =
+      '<div class="fb-lb-header">' +
+        '<div class="fb-lb-counter">' + (isVid ? '🎬 Video ' : '📸 Foto ') + cur + ' de ' + total + '</div>' +
+        '<div class="fb-lb-actions">' +
+          (dlUrl && dlUrl !== '#' ?
+            '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + (item.title || '').replace(/'/g, "\\'") + '\', event);" class="fb-lb-btn" title="Descargar archivo"><i class="fas fa-download"></i></a>' : '') +
+          (item.url ?
+            '<a href="' + item.url + '" target="_blank" rel="noopener noreferrer" class="fb-lb-btn" title="Abrir en pestaña nueva"><i class="fas fa-external-link-alt"></i></a>' : '') +
+          '<button type="button" class="fb-lb-btn" onclick="window.closeFbLightbox()" title="Cerrar (Esc)"><i class="fas fa-times"></i></button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="fb-lb-body">' +
+        (currentFbLightboxIndex > 0 ?
+          '<button type="button" class="fb-lb-nav-btn prev" onclick="window.navFbLightbox(-1)" title="Anterior"><i class="fas fa-chevron-left"></i></button>' : '') +
+        '<div class="fb-lb-media-wrap">' + mediaHtml + '</div>' +
+        (currentFbLightboxIndex < total - 1 ?
+          '<button type="button" class="fb-lb-nav-btn next" onclick="window.navFbLightbox(1)" title="Siguiente"><i class="fas fa-chevron-right"></i></button>' : '') +
+      '</div>' +
+      '<div class="fb-lb-footer">' +
+        '<div class="fb-lb-info">' +
+          '<h4>' + (item.title || item.name) + '</h4>' +
+          '<p>' + (item.date ? item.date + ' &bull; ' : '') + (item.size ? item.size + ' &bull; ' : '') + (isVid ? 'Video oficial en Google Drive' : 'Fotografía / Dibujo en Google Drive') + '</p>' +
+        '</div>' +
+      '</div>';
+  }
+
+  if (!window._fbLightboxKeybound) {
+    window._fbLightboxKeybound = true;
+    window.addEventListener('keydown', function(e){
+      var modal = document.getElementById('fb-lightbox-modal');
+      if (!modal) return;
+      if (e.key === 'Escape') {
+        closeFbLightbox();
+      } else if (e.key === 'ArrowLeft') {
+        navFbLightbox(-1);
+      } else if (e.key === 'ArrowRight') {
+        navFbLightbox(1);
+      }
+    });
+  }
+
+  function renderFacebookMediaWallHtml(student, allItems, filter, driveTargetUrl, isLoading) {
+    allItems = allItems || [];
+    var videoItems = allItems.filter(function(it){ return it.type === 'video'; });
+    var photoItems = allItems.filter(function(it){ return it.type !== 'video'; });
+
+    var filteredItems = allItems;
+    if (filter === 'videos') filteredItems = videoItems;
+    else if (filter === 'photos') filteredItems = photoItems;
+
+    currentFbLightboxItems = filteredItems;
+
+    // 1. Perfil / Cabecera Facebook
+    var profileHtml =
+      '<div class="fb-profile-card">' +
+        '<div class="fb-profile-cover">' +
+          '<div class="fb-cover-badge"><i class="fas fa-graduation-cap"></i> Colegio Paulo Freire &bull; Taller de Robótica 2026</div>' +
+        '</div>' +
+        '<div class="fb-profile-info-row">' +
+          '<div class="fb-avatar-ring">' +
+            '<div class="fb-avatar-emoji">' + (student.avatar || '🤖') + '</div>' +
+            '<div class="fb-avatar-online" title="Conectado a Google Drive"></div>' +
+          '</div>' +
+          '<div class="fb-profile-details">' +
+            '<div class="fb-profile-name-row">' +
+              '<h3 class="fb-profile-name">' + student.name + '</h3>' +
+              '<i class="fas fa-check-circle fb-verified-icon" title="Alumno Verificado FreireBot"></i>' +
+            '</div>' +
+            '<div class="fb-profile-sub">' +
+              '<span>' + student.gradeName + '</span>' +
+              '<span>&bull;</span>' +
+              '<span class="fb-drive-status-pill"><i class="fab fa-google-drive"></i> Carpeta de Drive Sincronizada</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Barra de pestañas Facebook
+        '<nav class="fb-nav-tabs" role="tablist">' +
+          '<button type="button" class="fb-tab-btn ' + (filter==='all' ? 'active' : '') + '" onclick="window.switchFbFilter(\'all\', event)">' +
+            '<i class="fas fa-stream"></i> Todo el Muro <span class="fb-tab-badge">' + allItems.length + '</span>' +
+          '</button>' +
+          '<button type="button" class="fb-tab-btn ' + (filter==='videos' ? 'active' : '') + '" onclick="window.switchFbFilter(\'videos\', event)">' +
+            '<i class="fas fa-video"></i> Videos <span class="fb-tab-badge">' + videoItems.length + '</span>' +
+          '</button>' +
+          '<button type="button" class="fb-tab-btn ' + (filter==='photos' ? 'active' : '') + '" onclick="window.switchFbFilter(\'photos\', event)">' +
+            '<i class="fas fa-images"></i> Fotos & Dibujos <span class="fb-tab-badge">' + photoItems.length + '</span>' +
+          '</button>' +
+          '<button type="button" class="fb-tab-btn ' + (filter==='grid' ? 'active' : '') + '" onclick="window.switchFbFilter(\'grid\', event)">' +
+            '<i class="fas fa-th"></i> Cuadrícula' +
+          '</button>' +
+          (driveTargetUrl ?
+            '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-tab-btn" style="text-decoration:none; margin-left:auto;">' +
+              '<i class="fab fa-google-drive" style="color:#1877F2;"></i> Abrir en Drive <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>' +
+            '</a>' : '') +
+        '</nav>' +
+      '</div>';
+
+    // 2. Composer Box ("¿Qué aprendimos hoy en Robótica?")
+    var composerHtml =
+      '<div class="fb-composer-card">' +
+        '<div class="fb-composer-top">' +
+          '<div class="fb-composer-avatar">' + (student.avatar || '🤖') + '</div>' +
+          '<button type="button" class="fb-composer-trigger" onclick="var inp=document.getElementById(\'gdz-file-input\'); if(inp) inp.click();">' +
+            'Muro multimedia de ' + student.name.split(' ')[0] + ' &bull; Subir foto o video...' +
+          '</button>' +
+        '</div>' +
+        '<div class="fb-composer-actions">' +
+          '<button type="button" class="fb-composer-btn video-btn" onclick="window.switchFbFilter(\'videos\', event)">' +
+            '<i class="fas fa-video"></i> <span>Videos de Clase (' + videoItems.length + ')</span>' +
+          '</button>' +
+          '<button type="button" class="fb-composer-btn photo-btn" onclick="window.switchFbFilter(\'photos\', event)">' +
+            '<i class="fas fa-camera"></i> <span>Fotos de Proyectos (' + photoItems.length + ')</span>' +
+          '</button>' +
+          (driveTargetUrl ?
+            '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-composer-btn drive-btn" style="text-decoration:none;">' +
+              '<i class="fab fa-google-drive"></i> <span>Google Drive</span>' +
+            '</a>' : '') +
+        '</div>' +
+      '</div>';
+
+    // 3. Contenido según el filtro
+    var bodyHtml = '';
+
+    if (isLoading && allItems.length === 0) {
+      bodyHtml = loadingHtml(
+        'Sincronizando Muro de Fotos y Videos...',
+        'Conectando en vivo con la carpeta de Google Drive del alumno...',
+        '#1877F2'
+      );
+    } else if (filter === 'grid') {
+      // ── MODO CUADRÍCULA / GALERÍA ──
+      if (filteredItems.length === 0) {
+        bodyHtml =
+          '<div class="fb-empty-state">' +
+            '<div class="fb-empty-icon">🖼️</div>' +
+            '<h4 class="fb-empty-title">Aún no hay fotos ni videos en tu galería</h4>' +
+            '<p class="fb-empty-desc">Los archivos que el docente o vos suban a la carpeta de Google Drive aparecerán organizados en este álbum.</p>' +
+            '<button type="button" class="fb-empty-action-btn" onclick="var inp=document.getElementById(\'gdz-file-input\'); if(inp) inp.click();"><i class="fas fa-plus"></i> Subir Foto o Video</button>' +
+          '</div>';
+      } else {
+        bodyHtml =
+          '<div class="fb-grid-gallery">' +
+            filteredItems.map(function(item, idx){
+              var isVid = (item.type === 'video');
+              var thumb = isVid
+                ? (item.thumbUrl || 'https://drive.google.com/thumbnail?id=' + item.id + '&sz=w600')
+                : getDrawingImageUrl(item);
+              return '<div class="fb-grid-item" onclick="window.openFbLightbox(' + idx + ')">' +
+                '<img src="' + thumb + '" alt="' + (item.title || item.name).replace(/"/g, '&quot;') + '" class="fb-grid-thumb" loading="lazy" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
+                (isVid ? '<div class="fb-grid-video-pill"><i class="fas fa-play"></i> Video</div>' : '') +
+                '<div class="fb-grid-hover-overlay">' +
+                  '<i class="fas ' + (isVid ? 'fa-play-circle' : 'fa-expand') + '"></i>' +
+                  '<span class="fb-grid-hover-title">' + (item.title || item.name) + '</span>' +
+                '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>';
+      }
+    } else {
+      // ── MODO FEED DE PUBLICACIONES (ESTILO FACEBOOK WALL) ──
+      if (filteredItems.length === 0) {
+        var emptyMsg = filter === 'videos'
+          ? { icon: '🎬', title: 'Aún no hay videos subidos en tu carpeta', desc: 'Cuando el profe grabe y suba los videos de tus robots y proyectos en acción a tu Google Drive, los vas a ver y reproducir directamente acá con su reproductor integrado.' }
+          : (filter === 'photos'
+              ? { icon: '📸', title: 'Aún no hay fotos en tu carpeta', desc: 'Tus fotos, dibujos de Paint y capturas de proyectos quedarán registradas acá en tu muro.' }
+              : { icon: '📸🎬', title: '¡Tu Muro de Fotos y Videos está listo!', desc: 'Acá vas a ver todas las grabaciones, demostraciones en video y fotos de tus creaciones en el Taller de Robótica.' });
+
+        bodyHtml =
+          '<div class="fb-empty-state">' +
+            '<div class="fb-empty-icon">' + emptyMsg.icon + '</div>' +
+            '<h4 class="fb-empty-title">' + emptyMsg.title + '</h4>' +
+            '<p class="fb-empty-desc">' + emptyMsg.desc + '</p>' +
+            '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
+              '<button type="button" class="fb-empty-action-btn" onclick="var inp=document.getElementById(\'gdz-file-input\'); if(inp) inp.click();"><i class="fas fa-upload"></i> Subir Foto o Video</button>' +
+              (driveTargetUrl ? '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-empty-action-btn" style="background:#0F172A; text-decoration:none;"><i class="fab fa-google-drive"></i> Abrir Carpeta de Drive</a>' : '') +
+            '</div>' +
+          '</div>';
+      } else {
+        bodyHtml =
+          '<div class="fb-feed-list">' +
+            filteredItems.map(function(item, idx){
+              var isVid = (item.type === 'video');
+              var isLiked = isItemLiked(item.id || item.name);
+              var dlUrl = getDownloadUrl(item);
+              var title = item.title || item.name;
+
+              // Media player
+              var mediaBoxHtml = '';
+              if (isVid) {
+                var embedSrc = item.videoEmbedUrl || (item.id ? ('https://drive.google.com/file/d/' + item.id + '/preview') : item.url);
+                mediaBoxHtml =
+                  '<div class="fb-video-container">' +
+                    '<div class="fb-video-aspect">' +
+                      '<iframe src="' + embedSrc + '" class="fb-video-iframe" allow="autoplay; fullscreen" allowfullscreen loading="lazy" title="' + title.replace(/"/g, '&quot;') + '"></iframe>' +
+                    '</div>' +
+                    '<div class="fb-video-bar">' +
+                      '<span><i class="fas fa-video"></i> Video Oficial &bull; ' + (item.size || 'HD') + '</span>' +
+                      (dlUrl && dlUrl !== '#' ?
+                        '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + title.replace(/'/g, "\\'") + '\', event);"><i class="fas fa-download"></i> Descargar Video</a>' : '') +
+                    '</div>' +
+                  '</div>';
+              } else {
+                var imgSrc = getDrawingImageUrl(item);
+                mediaBoxHtml =
+                  '<div class="fb-photo-container" onclick="window.openFbLightbox(' + idx + ')" title="Hacé clic para ver la foto en pantalla completa">' +
+                    '<img src="' + imgSrc + '" alt="' + title.replace(/"/g, '&quot;') + '" class="fb-photo-image" loading="lazy" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
+                    '<div class="fb-photo-zoom-hint"><i class="fas fa-search-plus"></i> Ver foto completa</div>' +
+                  '</div>';
+              }
+
+              return '<article class="fb-post-card" id="fb-post-' + item.id + '">' +
+                // Cabecera del Post
+                '<div class="fb-post-header">' +
+                  '<div class="fb-post-avatar-wrap">' +
+                    '<span class="fb-post-avatar">' + (student.avatar || '🤖') + '</span>' +
+                  '</div>' +
+                  '<div class="fb-post-meta">' +
+                    '<div class="fb-author-row">' +
+                      '<strong class="fb-author-name">Colegio Paulo Freire &bull; ' + student.name + '</strong>' +
+                      '<span class="fb-post-badge-type ' + (isVid ? 'video' : 'image') + '">' +
+                        (isVid ? '<i class="fas fa-video"></i> Video' : '<i class="fas fa-image"></i> Foto') +
+                      '</span>' +
+                    '</div>' +
+                    '<div class="fb-post-time-row">' +
+                      '<span><i class="far fa-calendar-alt"></i> ' + (item.date || 'Taller 2026') + '</span>' +
+                      '<span>&bull;</span>' +
+                      '<span title="Visible para alumno y familia"><i class="fas fa-user-friends"></i></span>' +
+                      '<span>&bull;</span>' +
+                      '<span>' + student.gradeName + '</span>' +
+                    '</div>' +
+                  '</div>' +
+                  (driveTargetUrl ?
+                    '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-menu-btn" title="Ver en Google Drive">' +
+                      '<i class="fab fa-google-drive"></i>' +
+                    '</a>' : '') +
+                '</div>' +
+
+                // Contenido del Post
+                '<div class="fb-post-content">' +
+                  '<h4 class="fb-post-title">' + title + '</h4>' +
+                  '<p class="fb-post-desc">' +
+                    (isVid ? '🎬 Demostración y registro en video de la actividad práctica de robótica y programación en clase.' : '📸 Registro fotográfico de creaciones, dibujos y maquetas del taller de tecnología.') +
+                  '</p>' +
+                  '<div class="fb-post-tags">' +
+                    '<span class="fb-post-tag">#RoboticaFreire</span>' +
+                    '<span class="fb-post-tag">#ColegioPauloFreire</span>' +
+                    '<span class="fb-post-tag">#Taller2026</span>' +
+                    '<span class="fb-post-tag">#' + (student.gradeId || 'robotica') + '</span>' +
+                  '</div>' +
+                '</div>' +
+
+                // Media (Video o Foto)
+                '<div class="fb-post-media">' + mediaBoxHtml + '</div>' +
+
+                // Barra de Estadísticas / Reacciones
+                '<div class="fb-post-stats">' +
+                  '<div style="display:flex; align-items:center;">' +
+                    '<div class="fb-reactions-icons">' +
+                      '<span class="fb-rx-bubble like">👍</span>' +
+                      '<span class="fb-rx-bubble love">❤️</span>' +
+                      '<span class="fb-rx-bubble rocket">🚀</span>' +
+                      '<span class="fb-rx-bubble robot">🤖</span>' +
+                    '</div>' +
+                    '<span class="fb-rx-text" id="fb-reaction-text-' + item.id + '">' +
+                      (isLiked ? 'A vos y al equipo de Robótica les gusta esto' : 'Al equipo de Robótica le gusta esto') +
+                    '</span>' +
+                  '</div>' +
+                  '<span>' + (item.size || 'HD') + ' &bull; En Google Drive</span>' +
+                '</div>' +
+
+                // Barra de Acciones Facebook (Me gusta, Comentar, Descargar, Drive)
+                '<div class="fb-post-actions">' +
+                  '<button type="button" class="fb-action-btn fb-btn-like ' + (isLiked ? 'liked' : '') + '" id="fb-like-btn-' + item.id + '" onclick="window.toggleFbLike(\'" + item.id + "\', event)">' +
+                    '<i class="' + (isLiked ? 'fas' : 'far') + ' fa-thumbs-up"></i> <span>' + (isLiked ? '¡Te gusta!' : 'Me gusta') + '</span>' +
+                  '</button>' +
+                  '<button type="button" class="fb-action-btn" onclick="window.toggleFbComments(\'" + item.id + "\', event)">' +
+                    '<i class="far fa-comment-alt"></i> <span>Comentario</span>' +
+                  '</button>' +
+                  (dlUrl && dlUrl !== '#' ?
+                    '<a href="' + dlUrl + '" onclick="return window.downloadDriveFileDirect(\'' + dlUrl + '\', \'' + title.replace(/'/g, "\\'") + '\', event);" class="fb-action-btn" title="Descargar archivo en tu equipo">' +
+                      '<i class="fas fa-download"></i> <span>Descargar</span>' +
+                    '</a>' : '') +
+                  (driveTargetUrl ?
+                    '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-action-btn" title="Abrir carpeta de Google Drive">' +
+                      '<i class="fab fa-google-drive"></i> <span>Drive</span>' +
+                    '</a>' : '') +
+                '</div>' +
+
+                // Sección de Comentarios / Feedback Docente
+                '<div class="fb-comments-section" id="fb-comments-' + item.id + '" style="display:none;">' +
+                  '<div class="fb-comment-item">' +
+                    '<div class="fb-comment-avatar">🤖</div>' +
+                    '<div class="fb-comment-bubble">' +
+                      '<span class="fb-comment-author">FreireBot &bull; Taller de Robótica</span>' +
+                      '<p class="fb-comment-body">¡Excelente trabajo en clase! Este archivo está guardado en tu carpeta institucional de Google Drive para compartir con tu familia. 🌟</p>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</article>';
+            }).join('') +
+          '</div>';
+      }
+    }
+
+    return '<div class="fb-wall-wrapper">' + profileHtml + composerHtml + bodyHtml + '</div>';
+  }
+
   // ──────────────────────────────────────────────────
   // LA MESA DEL CAPITÁN (PIRATA) / PROYECTOR DE HOLOGRAMAS (ESPACIAL)
   // ──────────────────────────────────────────────────
@@ -10249,9 +10734,9 @@
     function isValidFormat(file) {
       if (!file || !file.name) return false;
       var name = file.name.toLowerCase();
-      if (subfolder === 'dibujo') {
-        // Formatos permitidos para dibujo: bmp, png, jpg, jpeg
-        return /\.(bmp|png|jpe?g)$/i.test(name) || /^(image\/(png|jpeg|pjpeg|bmp|x-ms-bmp))$/i.test(file.type || '');
+      if (subfolder === 'dibujo' || subfolder === 'fotos' || subfolder === 'videos') {
+        // Formatos permitidos para Muro: fotos (.png, .jpg, .bmp, .webp, .gif) y videos (.mp4, .mov, .webm, .avi)
+        return /\.(bmp|png|jpe?g|webp|gif|mp4|mov|webm|avi|mkv)$/i.test(name) || /^(image\/|video\/)/i.test(file.type || '');
       } else if (subfolder === 'proyectos' || subfolder === 'proyecto') {
         // Formatos permitidos para Scratch Jr y Electrónica / Circuitos
         return /\.(sb3|sjr|pjson|sb|png|jpe?g|webp|gif|mp4|mov)$/i.test(name);
@@ -10318,11 +10803,12 @@
         }
 
         var nowStr = new Date().toLocaleDateString('es-ES');
-        var isCirc = isProyecto && /\.(jpe?g|png|webp|gif|mp4|mov)$/i.test(file.name);
-        var type   = isCirc ? 'circuito' : (fileType || (isProyecto ? 'scratch' : 'image'));
-        var icon   = type==='scratch' ? '🐱' : type==='makecode' ? '💻' : type==='circuito' ? '⚡' : '✨';
+        var isCirc = isProyecto && /\.(jpe?g|png|webp|gif)$/i.test(file.name);
+        var isVid  = isVideoFile(file.name, file.type);
+        var type   = isCirc ? 'circuito' : (fileType || (isProyecto ? 'scratch' : (isVid ? 'video' : 'image')));
+        var icon   = type==='scratch' ? '🐱' : type==='makecode' ? '💻' : type==='circuito' ? '⚡' : (isVid ? '🎬' : '📸');
         var newItem = { name:file.name, title:icon+' '+file.name.replace(/\.[^.]+$/,''), size:sz, date:nowStr,
-          url:ev.target.result, downloadUrl:'', isLocalPending:true, type:type };
+          url:ev.target.result, downloadUrl:'', isLocalPending:true, type:type, videoEmbedUrl:(isVid ? ev.target.result : '') };
 
         if (isProyecto) {
           if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name===file.name; })) {
