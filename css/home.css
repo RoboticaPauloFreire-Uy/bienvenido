@@ -5366,6 +5366,7 @@ body.student-logged-in .site-footer {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
+}
 .np-games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));

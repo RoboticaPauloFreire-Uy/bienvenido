@@ -852,6 +852,7 @@
     var modalEl = document.getElementById('clase-periodico-modal');
     if (!modalEl) return;
     modalEl.classList.remove('open');
+    modalEl.style.display = 'none';
     modalEl.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
