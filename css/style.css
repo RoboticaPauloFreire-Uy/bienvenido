@@ -19119,9 +19119,9 @@ body.student-logged-in #student-drive-dashboard-container {
 
 /* 4. Muro Multimedia estilo Facebook */
 .fb-avatar-ring .cpf-avatar-figurita-wrap {
-  width: 72px;
-  height: 72px;
-  border-width: 3px;
+  width: 100%;
+  height: 100%;
+  border-width: 2.5px;
 }
 .fb-composer-avatar .cpf-avatar-figurita-wrap {
   width: 40px;

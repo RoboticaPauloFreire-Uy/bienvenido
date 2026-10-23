@@ -25,49 +25,58 @@
 }
 
 .fb-profile-cover {
-  height: 120px;
+  height: 135px;
   background: linear-gradient(135deg, #1877f2 0%, #0c4a2a 50%, #10b981 100%);
   position: relative;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
+  justify-content: flex-end;
   padding: 14px 20px;
 }
 
 .fb-cover-badge {
-  background: rgba(0, 0, 0, 0.45);
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(8px);
   color: #ffffff;
   font-size: 0.8rem;
   font-weight: 700;
   padding: 6px 14px;
   border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  z-index: 2;
 }
 
 .fb-profile-info-row {
   display: flex;
-  align-items: flex-end;
-  gap: 16px;
-  padding: 0 20px 16px;
-  margin-top: -38px;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px 16px;
   position: relative;
   flex-wrap: wrap;
 }
 
 .fb-avatar-ring {
-  width: 82px;
-  height: 82px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   background: #ffffff;
   padding: 4px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   position: relative;
+  margin-top: -46px;
+  z-index: 5;
+  border: 3px solid #ffffff;
 }
 
 .fb-avatar-emoji {
@@ -82,19 +91,21 @@
 }
 
 .fb-avatar-online {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #31a24c;
-  border: 2px solid #ffffff;
+  border: 2.5px solid #ffffff;
   position: absolute;
   bottom: 2px;
   right: 2px;
+  z-index: 6;
 }
 
 .fb-profile-details {
   flex: 1;
   min-width: 220px;
+  padding-top: 10px;
   padding-bottom: 4px;
 }
 
