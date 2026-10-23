@@ -19310,3 +19310,14 @@ body.student-logged-in #student-drive-dashboard-container {
   background: rgba(255, 255, 255, 0.16);
   color: #FFFFFF !important;
 }
+
+/* Ocultar barra de scroll en pestañas del muro */
+.fb-nav-tabs {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.fb-nav-tabs::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}

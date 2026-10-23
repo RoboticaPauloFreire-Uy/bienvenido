@@ -5749,8 +5749,6 @@
             '</div>' +
             '<div class="fb-profile-sub">' +
               '<span>' + student.gradeName + '</span>' +
-              '<span>&bull;</span>' +
-              '<span class="fb-drive-status-pill"><i class="fab fa-google-drive"></i> Carpeta de Drive Sincronizada</span>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -5764,14 +5762,14 @@
             '<i class="fas fa-video"></i> Videos <span class="fb-tab-badge">' + videoItems.length + '</span>' +
           '</button>' +
           '<button type="button" class="fb-tab-btn ' + (filter==='photos' ? 'active' : '') + '" onclick="window.switchFbFilter(\'photos\', event)">' +
-            '<i class="fas fa-images"></i> Fotos & Dibujos <span class="fb-tab-badge">' + photoItems.length + '</span>' +
+            '<i class="fas fa-images"></i> Fotos <span class="fb-tab-badge">' + photoItems.length + '</span>' +
           '</button>' +
           '<button type="button" class="fb-tab-btn ' + (filter==='grid' ? 'active' : '') + '" onclick="window.switchFbFilter(\'grid\', event)">' +
             '<i class="fas fa-th"></i> Cuadrícula' +
           '</button>' +
           (driveTargetUrl ?
             '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-tab-btn" style="text-decoration:none; margin-left:auto;">' +
-              '<i class="fab fa-google-drive" style="color:#1877F2;"></i> Abrir en Drive <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>' +
+              '<i class="fab fa-google-drive" style="color:#1877F2;"></i> Drive <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>' +
             '</a>' : '') +
         '</nav>' +
       '</div>';
