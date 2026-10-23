@@ -72,8 +72,12 @@
       // Botón muestra avatar + nombre
       if (btn) {
         btn.className = 'topbar-student-pill logged-in';
+        var topbarAvatarHtml = (typeof window.renderStudentAvatarHtml === 'function')
+          ? window.renderStudentAvatarHtml(student, 'sp-avatar', true)
+          : ('<span class="sp-avatar">' + (student.avatar || '👦') + '</span>');
+
         btn.innerHTML =
-          '<span class="sp-avatar">' + (student.avatar || '👦') + '</span>' +
+          topbarAvatarHtml +
           '<div class="sp-info">' +
             '<span class="sp-name">' + student.name + '</span>' +
             '<span class="sp-grade">' + student.gradeName + '</span>' +
@@ -247,6 +251,19 @@
       var nextMission = missions.find(function(m) { return m.status !== 'completado'; }) || missions[missions.length - 1] || { level: 1, title: defaultMissionTitle };
       var gId = (student.gradeId || '').toLowerCase();
 
+      var figObj = (typeof window.getStudentFigurita === 'function') ? window.getStudentFigurita(student) : null;
+      function getMedallionAvatarHtml(defaultEmoji) {
+        if (figObj && typeof window.renderStudentAvatarHtml === 'function') {
+          return window.renderStudentAvatarHtml(student, 'pcc-figurita-avatar', true);
+        }
+        return '<span class="pcc-avatar-emoji">' + (student.avatar || defaultEmoji) + '</span>';
+      }
+      var figRibbonHtml = figObj ?
+        ('<div class="pcc-figurita-ribbon" onclick="window.abrirModalFiguritaAlumno && window.abrirModalFiguritaAlumno();" title="Clic para ver tu figurita oficial coleccionable">' +
+          '<span><i class="fas fa-trophy"></i> Figurita Oficial #' + figObj.id + ' (' + figObj.group + ')</span>' +
+          '<span class="pcc-fr-arrow">Ver cromo <i class="fas fa-chevron-right"></i></span>' +
+        '</div>') : '';
+
       if (isLegacy) {
         // ═══ GRUPO 4 (6° GRADO): ANUARIO Y LIBRO DE RECUERDOS LEGENDARIO DE EGRESADOS ═══
         if (kicker) kicker.innerHTML = '🎓 Anuario de Egresados · Generación Maker Paulo Freire';
@@ -259,7 +276,7 @@
           '<div class="slm-active-profile pirate-crew-card legacy-crew-card">' +
             '<div class="pcc-top-banner">' +
               '<div class="pcc-avatar-medallion">' +
-                '<span class="pcc-avatar-emoji">' + (student.avatar || '🎓') + '</span>' +
+                getMedallionAvatarHtml('🎓') +
                 '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
               '</div>' +
               '<div class="pcc-identity">' +
@@ -271,6 +288,7 @@
                 '</div>' +
               '</div>' +
             '</div>' +
+            figRibbonHtml +
 
             '<div class="pcc-stats-scroll">' +
               '<div class="pcc-scroll-title"><i class="fas fa-award"></i> Registro Histórico del Egresado</div>' +
@@ -339,7 +357,7 @@
           '<div class="slm-active-profile pirate-crew-card cyber-crew-card">' +
             '<div class="pcc-top-banner">' +
               '<div class="pcc-avatar-medallion">' +
-                '<span class="pcc-avatar-emoji">' + (student.avatar || '🤖') + '</span>' +
+                getMedallionAvatarHtml('🤖') +
                 '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
               '</div>' +
               '<div class="pcc-identity">' +
@@ -351,6 +369,7 @@
                 '</div>' +
               '</div>' +
             '</div>' +
+            figRibbonHtml +
 
             '<div class="pcc-stats-scroll">' +
               '<div class="pcc-scroll-title"><i class="fas fa-network-wired"></i> Registro de Procesamiento y Sistemas</div>' +
@@ -419,7 +438,7 @@
           '<div class="slm-active-profile pirate-crew-card space-crew-card">' +
             '<div class="pcc-top-banner">' +
               '<div class="pcc-avatar-medallion">' +
-                '<span class="pcc-avatar-emoji">' + (student.avatar || '👨‍🚀') + '</span>' +
+                getMedallionAvatarHtml('👨‍🚀') +
                 '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
               '</div>' +
               '<div class="pcc-identity">' +
@@ -431,6 +450,7 @@
                 '</div>' +
               '</div>' +
             '</div>' +
+            figRibbonHtml +
 
             '<div class="pcc-stats-scroll">' +
               '<div class="pcc-scroll-title"><i class="fas fa-satellite"></i> Hoja de Vuelo Interplanetario</div>' +
@@ -502,7 +522,7 @@
           '<div class="slm-active-profile pirate-crew-card">' +
             '<div class="pcc-top-banner">' +
               '<div class="pcc-avatar-medallion">' +
-                '<span class="pcc-avatar-emoji">' + (student.avatar || '🏴‍☠️') + '</span>' +
+                getMedallionAvatarHtml('🏴‍☠️') +
                 '<span class="pcc-level-pill">NVL ' + studentLevel + '</span>' +
               '</div>' +
               '<div class="pcc-identity">' +
@@ -514,6 +534,7 @@
                 '</div>' +
               '</div>' +
             '</div>' +
+            figRibbonHtml +
 
             '<div class="pcc-stats-scroll">' +
               '<div class="pcc-scroll-title"><i class="fas fa-scroll"></i> Hoja de Servicio en Alta Mar</div>' +

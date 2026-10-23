@@ -2773,7 +2773,7 @@
     var badgeProyectos   = adventureMissions.length;
     var badgeProyecto    = isLoadingProyectoFiles ? '<i class="fas fa-spinner fa-spin"></i>' : validProyectoFiles.length;
     var badgeActividades = classProjects.length || (FOLDER_CONTENTS.actividades.items.length + (FOLDER_CONTENTS.actividades.generalItems.length > 0 ? FOLDER_CONTENTS.actividades.generalItems.length : 1));
-    var badgeFamiliar    = 1;
+    var badgeFamiliar    = 2;
 
     // ── Filtros por subtab ──
     var scratchItems   = validProyectoFiles.filter(function(f){ return isScratchFile(f.name) || f.type==='scratch' || f.type==='circuito' || f.type==='electronica' || /\.(bmp|png|jpe?g|webp|mp4|mov)$/i.test(f.name); }).slice(0, 10);
@@ -2800,7 +2800,7 @@
       var actCur = (selectedClassProjectIdx !== null ? selectedClassProjectIdx + 1 : actTotal);
       countText = 'Clase / Proyecto #' + actCur + ' de ' + actTotal + ' (' + student.gradeName + ')';
     } else if (activeFolderKey === 'familiar') {
-      countText = isLegacy ? '1 tributo y despedida (Homenaje Familiar)' : (isCyber ? '1 experiencia hacker (Escape Room Cooperativo)' : '1 experiencia familiar (Escape Rooms Nostálgico)');
+      countText = '2 experiencias interactivas en familia (Álbum Mundial & Escape Room)';
     }
 
     // ──────────────────────────────────────────────────
@@ -3280,6 +3280,43 @@
     // ═══ CARPETA: ACTIVIDAD FAMILIAR (Escape Rooms Nostálgico) ═══
     } else if (activeFolderKey === 'familiar') {
       var escapeRoomUrl = 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html';
+      var mundialUrl = 'https://roboticapaulofreire-uy.github.io/mundial/';
+      var albumThumb = 'https://roboticapaulofreire-uy.github.io/mundial/img/tapa-album-robotica.jpg';
+      var figObj = (typeof window.getStudentFigurita === 'function') ? window.getStudentFigurita(student) : null;
+
+      var albumMundialCardHtml =
+        '<div class="grade-game-card ptb-card" style="max-width: 480px; margin: 0 auto;">' +
+          '<div class="ptb-card-nail" title="Álbum Oficial de Figuritas"></div>' +
+          '<div class="ggc-thumb-wrap" onclick="window.open(\'' + mundialUrl + '\', \'_blank\')" title="Hacé clic para abrir el Álbum Digital CPF 2026" style="cursor:pointer;">' +
+            '<img src="' + albumThumb + '" alt="Tapa Álbum Digital CPF 2026" class="ggc-thumb-img" style="object-fit:cover;">' +
+            '<div class="ggc-play-overlay">' +
+              '<div class="ggc-play-bubble"><i class="fas fa-book-open"></i></div>' +
+              '<span>¡Abrir mi Álbum!</span>' +
+            '</div>' +
+            '<div class="ggc-lvl-badge pirate-gold-badge"><i class="fas fa-trophy"></i> Mundial 2026</div>' +
+            '<div class="ggc-platform-badge pirate-plat-badge">⚽ 232 Figuritas</div>' +
+          '</div>' +
+          '<div class="ggc-body">' +
+            '<div class="ggc-top-row">' +
+              '<h3 class="ggc-title">Álbum Digital CPF 2026 — Robótica Mundial</h3>' +
+            '</div>' +
+            '<p class="ggc-desc">¡Coleccioná las 232 figuritas de tus compañeros en familia! Escaneá códigos QR, abrí paquetes virtuales con confeti y descubrí tu propio cromo coleccionable.</p>' +
+            '<div class="ggc-tags-row">' +
+              '<span class="ggc-tag">#FiguritasCPF</span>' +
+              '<span class="ggc-tag">#EscánerQR</span>' +
+              '<span class="ggc-tag">#ColecciónFamiliar</span>' +
+            '</div>' +
+            '<div class="ggc-actions">' +
+              '<a href="' + mundialUrl + '" target="_blank" rel="noopener noreferrer" class="ggc-btn-play pirate-btn-exec" title="Abrir Álbum Digital">' +
+                '<i class="fas fa-book-open"></i> <span>Abrir mi Álbum</span>' +
+              '</a>' +
+              (figObj ?
+                '<button type="button" class="ggc-btn-sugerencias" onclick="window.abrirModalFiguritaAlumno && window.abrirModalFiguritaAlumno();" style="display:flex;align-items:center;justify-content:center;gap:6px;" title="Ver mi cromo">' +
+                  '<i class="fas fa-star" style="color:#EAB308;"></i> <span>Mi Figurita</span>' +
+                '</button>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
 
       var escapeRoomCardHtml =
         '<div class="grade-game-card ptb-card" style="max-width: 480px; margin: 0 auto;">' +
@@ -3333,7 +3370,7 @@
             : (isSpace
               ? '¡Despegá junto a la tripulación de tu hogar! Descifrá enigmas nostálgicos, acertijos interactivos y códigos secretos para completar la misión.'
               : '¡Zarpá junto a tu tripulación familiar! Descifrá enigmas nostálgicos, acertijos interactivos y secretos ocultos para escapar con el botín.')),
-        contentHtml: '<div class="grade-games-grid ptb-games-grid" style="grid-template-columns: minmax(300px, 480px); justify-content: center;">' + escapeRoomCardHtml + '</div>'
+        contentHtml: '<div class="grade-games-grid ptb-games-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 440px)); justify-content: center; gap: 20px;">' + albumMundialCardHtml + escapeRoomCardHtml + '</div>'
       });
 
       uploadZoneHtml = '';
@@ -3412,7 +3449,7 @@
           '<div class="gh-main-row">' +
             '<div class="gh-player-profile">' +
               '<div class="gh-avatar-container">' +
-                '<span class="gh-avatar">' + (student.avatar || (isLegacy ? '🎓' : (isCyber ? '🤖' : (isSpace ? '👨‍🚀' : '👦')))) + '</span>' +
+                ((typeof window.renderStudentAvatarHtml === 'function') ? window.renderStudentAvatarHtml(student, 'gh-avatar', true) : ('<span class="gh-avatar">' + (student.avatar || (isLegacy ? '🎓' : (isCyber ? '🤖' : (isSpace ? '👨‍🚀' : '👦')))) + '</span>')) +
                 '<span class="gh-status-dot" title="' + (isLegacy ? 'Egresado de Honor de la Generación Maker Paulo Freire' : (isCyber ? 'Conectado a la Red Neuronal Paulo Freire' : (isSpace ? 'En órbita en la Estación Espacial Paulo Freire' : 'A bordo del Navío Paulo Freire'))) + '"></span>' +
               '</div>' +
               '<div class="gh-player-meta">' +
@@ -5702,7 +5739,7 @@
         '</div>' +
         '<div class="fb-profile-info-row">' +
           '<div class="fb-avatar-ring">' +
-            '<div class="fb-avatar-emoji">' + (student.avatar || '🤖') + '</div>' +
+            ((typeof window.renderStudentAvatarHtml === 'function') ? window.renderStudentAvatarHtml(student, 'fb-avatar-emoji', true) : ('<div class="fb-avatar-emoji">' + (student.avatar || '🤖') + '</div>')) +
             '<div class="fb-avatar-online" title="Conectado a Google Drive"></div>' +
           '</div>' +
           '<div class="fb-profile-details">' +
@@ -5743,7 +5780,7 @@
     var composerHtml =
       '<div class="fb-composer-card">' +
         '<div class="fb-composer-top">' +
-          '<div class="fb-composer-avatar">' + (student.avatar || '🤖') + '</div>' +
+          '<div class="fb-composer-avatar">' + ((typeof window.renderStudentAvatarHtml === 'function') ? window.renderStudentAvatarHtml(student, 'fb-composer-avatar-fig', false) : (student.avatar || '🤖')) + '</div>' +
           '<button type="button" class="fb-composer-trigger" onclick="var inp=document.getElementById(\'gdz-file-input\'); if(inp) inp.click();">' +
             'Muro multimedia de ' + student.name.split(' ')[0] + ' &bull; Subir foto o video...' +
           '</button>' +
@@ -5856,7 +5893,7 @@
                 // Cabecera del Post
                 '<div class="fb-post-header">' +
                   '<div class="fb-post-avatar-wrap">' +
-                    '<span class="fb-post-avatar">' + (student.avatar || '🤖') + '</span>' +
+                    ((typeof window.renderStudentAvatarHtml === 'function') ? window.renderStudentAvatarHtml(student, 'fb-post-avatar-fig', true) : ('<span class="fb-post-avatar">' + (student.avatar || '🤖') + '</span>')) +
                   '</div>' +
                   '<div class="fb-post-meta">' +
                     '<div class="fb-author-row">' +

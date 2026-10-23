@@ -195,6 +195,25 @@ window.HOME_CONTENT = {
   /* ───────────── ACTIVIDADES ───────────── */
   actividades: [
     {
+      id: 'act-album-mundial-cpf',
+      titulo: 'Álbum Digital CPF 2026 — Robótica Mundial',
+      descripcion: '¡Llegó el Álbum Oficial de Robótica del Colegio Paulo Freire! Una experiencia interactiva para disfrutar en familia: escaneen códigos QR o ingresen códigos secretos para abrir paquetes virtuales, revelar cartas coleccionables con confeti y completar las 232 figuritas de todos los grados.',
+      tipo: 'familia',
+      modalidad: 'juego',
+      materiales: 'Celular, tablet o computadora con cámara o lector QR (100% online, sin instalar nada)',
+      grados: ['todos'],
+      icono: '⚽',
+      color: '#0284C7',
+      imagen: 'https://roboticapaulofreire-uy.github.io/mundial/img/tapa-album-robotica.jpg',
+      desde: '2026-10-23',
+      hasta: '2026-12-18',
+      chips: ['⚽ 232 Figuritas', '📱 Escáner QR', '🎁 Sobres Virtuales', '👨‍👩‍👧 Colección Familiar'],
+      botones: [
+        { texto: '¡Abrir mi Álbum!', url: 'https://roboticapaulofreire-uy.github.io/mundial/', icono: 'fas fa-book-open', principal: true }
+      ]
+    },
+
+    {
       id: 'act-escape-room',
       titulo: 'Escape Rooms Nostálgico',
       descripcion: 'Resolvé enigmas y pistas nostálgicas en familia. Una experiencia interactiva cooperativa y divertida para todas las edades.',

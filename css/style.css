@@ -19021,3 +19021,292 @@ body.student-logged-in #student-drive-dashboard-container {
   border-color: rgba(245, 158, 11, 0.4);
 }
 
+
+/* ─────────────────────────────────────────────────────────────
+   AVATARES OFICIALES CPF ROBÓTICA MUNDIAL 2026 (FIGURITAS)
+   ───────────────────────────────────────────────────────────── */
+
+.cpf-avatar-figurita-wrap {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #0A1930;
+  border: 2px solid #00F0FF;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.cpf-avatar-figurita-wrap:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.7);
+}
+
+.cpf-avatar-figurita-crop {
+  position: absolute;
+  width: 315%;
+  height: auto;
+  left: -58%;
+  top: -262%;
+  max-width: none;
+  max-height: none;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cpf-avatar-star-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, #F59E0B, #EAB308);
+  color: #451A03;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+/* Tamaños contextuales */
+/* 1. Botón de usuario en la barra superior (topbar) */
+.topbar-student-pill .cpf-avatar-figurita-wrap {
+  width: 36px;
+  height: 36px;
+  border-width: 2px;
+}
+.topbar-student-pill .cpf-avatar-star-badge {
+  width: 14px;
+  height: 14px;
+  font-size: 0.5rem;
+}
+
+/* 2. Círculo grande del Avatar en el Panel del Alumno (Hero Header) */
+.gh-avatar-container .cpf-avatar-figurita-wrap {
+  width: 76px;
+  height: 76px;
+  border-width: 3px;
+  box-shadow: 0 0 22px rgba(0, 240, 255, 0.55);
+}
+.gh-avatar-container .cpf-avatar-star-badge {
+  width: 22px;
+  height: 22px;
+  font-size: 0.7rem;
+}
+
+/* 3. Carnet / Credencial de Alumno (Medallón de Capitán) */
+.pcc-avatar-medallion .cpf-avatar-figurita-wrap {
+  width: 74px;
+  height: 74px;
+  border-width: 3px;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+}
+.pcc-avatar-medallion .cpf-avatar-star-badge {
+  width: 22px;
+  height: 22px;
+  font-size: 0.7rem;
+}
+
+/* 4. Muro Multimedia estilo Facebook */
+.fb-avatar-ring .cpf-avatar-figurita-wrap {
+  width: 72px;
+  height: 72px;
+  border-width: 3px;
+}
+.fb-composer-avatar .cpf-avatar-figurita-wrap {
+  width: 40px;
+  height: 40px;
+  border-width: 2px;
+}
+.fb-post-avatar-wrap .cpf-avatar-figurita-wrap {
+  width: 44px;
+  height: 44px;
+  border-width: 2px;
+}
+
+/* Cinta de Figurita en el Carnet */
+.pcc-figurita-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.18) 0%, rgba(202, 138, 4, 0.28) 100%);
+  border: 1.5px solid #F59E0B;
+  color: #FEF08A;
+  padding: 8px 14px;
+  border-radius: 12px;
+  margin-top: 12px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 800;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.pcc-figurita-ribbon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+}
+.pcc-fr-arrow {
+  font-size: 0.78rem;
+  color: #FDE047;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MODAL DE FIGURITA OFICIAL CPF ROBÓTICA MUNDIAL 2026
+   ───────────────────────────────────────────────────────────── */
+
+.cpf-fig-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(10, 25, 48, 0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.cpf-fig-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.cpf-fig-modal-card {
+  background: linear-gradient(135deg, #0d2b52 0%, #0a1930 100%);
+  border: 2.5px solid #00f0ff;
+  box-shadow: 0 0 35px rgba(0, 240, 255, 0.4), 0 25px 50px rgba(0, 0, 0, 0.85);
+  border-radius: 20px;
+  max-width: 440px;
+  width: 95vw;
+  padding: 22px;
+  position: relative;
+  text-align: center;
+  animation: cpfCardZoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes cpfCardZoomIn {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+.cpf-fig-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: #00f0ff;
+  font-size: 1.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.2s, color 0.2s;
+}
+.cpf-fig-modal-close:hover {
+  color: #FFFFFF;
+  transform: scale(1.2);
+}
+.cpf-fig-header-tag {
+  display: inline-block;
+  background: rgba(0, 240, 255, 0.15);
+  color: #00f0ff;
+  border: 1px solid #00f0ff;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.cpf-fig-header-title {
+  color: #FFFFFF;
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin: 0 0 4px 0;
+  text-shadow: 0 2px 10px rgba(0, 240, 255, 0.5);
+}
+.cpf-fig-header-sub {
+  color: #94A3B8;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 16px;
+}
+.cpf-fig-card-preview-wrap {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border: 3px solid #EAB308;
+  background: #000;
+  max-width: 300px;
+  margin: 0 auto 18px auto;
+  aspect-ratio: 1054 / 1492;
+}
+.cpf-fig-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cpf-fig-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.15) 100%);
+  pointer-events: none;
+}
+.cpf-fig-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cpf-fig-btn-album {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #00f0ff 0%, #0284C7 100%);
+  color: #0A1930 !important;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 0.95rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cpf-fig-btn-album:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.6);
+  color: #0A1930 !important;
+}
+.cpf-fig-btn-drive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #CBD5E1 !important;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.86rem;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 0.2s, color 0.2s;
+}
+.cpf-fig-btn-drive:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF !important;
+}
