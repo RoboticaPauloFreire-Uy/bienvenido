@@ -686,6 +686,114 @@
       background: #EDE9FE;
       color: #6D28D9;
     }
+    /* SECCIÓN NAVEGACIÓN PRINCIPAL (ALUMNOS vs JUEGOS) */
+    .admin-main-nav {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .admin-nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 22px;
+      border-radius: 14px;
+      background: white;
+      border: 2px solid #E2E8F0;
+      color: #475569;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .admin-nav-pill:hover {
+      border-color: #CBD5E1;
+      color: #1E293B;
+      transform: translateY(-1px);
+    }
+    .admin-nav-pill.active {
+      background: #1565C0;
+      color: white;
+      border-color: #1565C0;
+      box-shadow: 0 4px 12px rgba(21, 101, 192, 0.28);
+    }
+    .admin-nav-pill.active .nav-count {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+    }
+    .admin-nav-pill.pill-external {
+      margin-left: auto;
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+      color: #475569;
+    }
+    .admin-nav-pill.pill-external:hover {
+      background: #EFF6FF;
+      border-color: #93C5FD;
+      color: #1D4ED8;
+    }
+    .nav-count {
+      background: #F1F5F9;
+      color: #475569;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+    .nav-count-juegos {
+      background: #EDE9FE;
+      color: #6D28D9;
+    }
+    .game-thumb-cell {
+      width: 58px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #CBD5E1;
+    }
+    .game-title-text {
+      font-weight: 800;
+      font-size: 0.96rem;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+    .game-desc-text {
+      font-size: 0.82rem;
+      color: #64748B;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .game-benefits-box {
+      margin-top: 5px;
+      font-size: 0.76rem;
+      color: #6B21A8;
+      background: #FAF5FF;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border-left: 3px solid #9333EA;
+      line-height: 1.35;
+    }
+    .game-grade-chip {
+      display: inline-block;
+      margin: 2px 3px 2px 0;
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: #F1F5F9;
+      color: #334155;
+      white-space: nowrap;
+    }
+    .game-grade-all {
+      background: #EDE9FE;
+      color: #6D28D9;
+    }
   </style>
 </head>
 <body>
@@ -720,6 +828,10 @@
           <i class="fas fa-print"></i>
           <span>Imprimir Lista</span>
         </button>
+        <button class="btn-admin" id="header-btn-toggle-juegos" onclick="toggleSeccionJuegos()" style="background:#7C3AED; color:white;">
+          <i class="fas fa-gamepad"></i>
+          <span id="header-btn-toggle-text">Ver Juegos (37)</span>
+        </button>
         <a href="index.html" class="btn-admin btn-admin-blue">
           <i class="fas fa-arrow-left"></i>
           <span>Volver al Portal</span>
@@ -727,6 +839,27 @@
       </div>
     </header>
 
+    <!-- SELECTOR DE SECCIÓN SUPERIOR: ALUMNOS vs JUEGOS -->
+    <div class="admin-main-nav">
+      <button type="button" class="admin-nav-pill active" id="btn-sec-alumnos" onclick="cambiarSeccion('alumnos')">
+        <i class="fas fa-user-graduate"></i>
+        <span>Alumnos y Credenciales</span>
+        <span class="nav-count" id="pill-count-alumnos">232</span>
+      </button>
+      <button type="button" class="admin-nav-pill" id="btn-sec-juegos" onclick="cambiarSeccion('juegos')">
+        <i class="fas fa-gamepad"></i>
+        <span>Catálogo de Juegos Educativos</span>
+        <span class="nav-count nav-count-juegos" id="pill-count-juegos">37</span>
+      </button>
+      <a href="../pagina-admin/index.html" target="_blank" class="admin-nav-pill pill-external" title="Abrir Panel Central con sincronización en la nube">
+        <i class="fas fa-sliders-h"></i>
+        <span>Panel de Control Avanzado (Nube Firestore)</span>
+        <i class="fas fa-external-link-alt" style="font-size:0.75rem; margin-left:4px;"></i>
+      </a>
+    </div>
+
+    <!-- SECCIÓN: ALUMNOS -->
+    <div id="admin-section-alumnos">
     <!-- TARJETA DE CONTROLES: BÚSQUEDA POR NOMBRE Y FILTRO POR GRADO -->
     <div class="admin-controls-card">
       <div class="admin-search-row">
@@ -802,6 +935,73 @@
         </table>
       </div>
     </div>
+    </div><!-- FIN admin-section-alumnos -->
+
+    <!-- SECCIÓN: JUEGOS EDUCATIVOS -->
+    <div id="admin-section-juegos" style="display:none;">
+      <!-- TARJETA DE CONTROLES DE JUEGOS -->
+      <div class="admin-controls-card">
+        <div class="admin-search-row">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="juegos-search" class="search-input" placeholder="Buscar juego por título, plataforma o etiquetas..." oninput="filtrarJuegosAdmin()">
+          </div>
+          <div class="stats-badge-pill" id="juegos-stats-badge" style="background:#EDE9FE; color:#6D28D9;">
+            <i class="fas fa-gamepad"></i>
+            <span id="juegos-stats-text">Cargando catálogo...</span>
+          </div>
+        </div>
+
+        <!-- BOTONES DE FILTRO POR GRADO PARA JUEGOS -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:8px;">
+          <div class="groups-tabs-container" id="juegos-grade-tabs">
+            <button class="group-tab-btn active" data-grade="ALL" onclick="seleccionarGradoJuegos('ALL')">
+              <i class="fas fa-layer-group"></i> Todos los Grados
+            </button>
+            <button class="group-tab-btn" data-grade="sala5" onclick="seleccionarGradoJuegos('sala5')">🌱 Sala de 5</button>
+            <button class="group-tab-btn" data-grade="grado1" onclick="seleccionarGradoJuegos('grado1')">📖 1° Primaria</button>
+            <button class="group-tab-btn" data-grade="grado2" onclick="seleccionarGradoJuegos('grado2')">🎨 2° Primaria</button>
+            <button class="group-tab-btn" data-grade="grado3" onclick="seleccionarGradoJuegos('grado3')">⚡ 3° Primaria</button>
+            <button class="group-tab-btn" data-grade="grado4" onclick="seleccionarGradoJuegos('grado4')">🎮 4° Primaria</button>
+            <button class="group-tab-btn" data-grade="grado5" onclick="seleccionarGradoJuegos('grado5')">💻 5° Primaria</button>
+            <button class="group-tab-btn" data-grade="grado6" onclick="seleccionarGradoJuegos('grado6')">🤖 6° Primaria</button>
+          </div>
+          <a href="../pagina-admin/index.html" target="_blank" class="btn-admin btn-admin-primary" style="background:#7C3AED; padding:8px 14px; font-size:0.85rem;">
+            <i class="fas fa-sliders-h"></i> Gestionar en Panel Central
+          </a>
+        </div>
+      </div>
+
+      <!-- TABLA DE JUEGOS -->
+      <div class="admin-table-card">
+        <div class="admin-table-header">
+          <div class="admin-table-title">
+            <i class="fas fa-gamepad" style="color:#7C3AED;"></i>
+            <span id="juegos-table-title">Catálogo Oficial de Juegos y Desafíos de Programación</span>
+          </div>
+          <div style="font-size: 0.85rem; color: #64748B;">
+            Total disponible para alumnos: <strong id="juegos-count-label">37 juegos</strong>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:70px; text-align:center;">Vista</th>
+                <th>Juego / Descripción Didáctica &amp; Razonamiento</th>
+                <th style="width:180px;">Grados Asignados</th>
+                <th style="width:145px;">Plataforma</th>
+                <th style="width:130px; text-align:center;">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="juegos-tbody">
+              <!-- Renderizado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- FIN admin-section-juegos -->
 
   </div>
 
@@ -1389,7 +1589,182 @@
       mostrarToast(`¡Alumno ${nombreCompleto} dado de alta con usuario "${user}"!`);
     }
 
-    document.addEventListener('DOMContentLoaded', inicializarAdmin);
+    /* ══════════════════════════════════════════════════════════════════
+       GESTIÓN DEL CATÁLOGO DE JUEGOS EDUCATIVOS EN PANEL ADMINISTRATIVO
+       ══════════════════════════════════════════════════════════════════ */
+    let seccionActiva = 'alumnos';
+    let gradoJuegosActivo = 'ALL';
+    let catalogoJuegosCache = [];
+
+    const GRADE_NAMES_MAP = {
+      sala5: '🌱 Sala de 5',
+      grado1: '📖 1° Primaria',
+      grado2: '🎨 2° Primaria',
+      grado3: '⚡ 3° Primaria',
+      grado4: '🎮 4° Primaria',
+      grado5: '💻 5° Primaria',
+      grado6: '🤖 6° Primaria'
+    };
+
+    function cambiarSeccion(seccion) {
+      seccionActiva = seccion;
+      const isAlumnos = (seccion === 'alumnos');
+      
+      const secAlum = document.getElementById('admin-section-alumnos');
+      const secJueg = document.getElementById('admin-section-juegos');
+      if (secAlum) secAlum.style.display = isAlumnos ? 'block' : 'none';
+      if (secJueg) secJueg.style.display = isAlumnos ? 'none' : 'block';
+      
+      const btnAlum = document.getElementById('btn-sec-alumnos');
+      const btnJueg = document.getElementById('btn-sec-juegos');
+      if (btnAlum) btnAlum.classList.toggle('active', isAlumnos);
+      if (btnJueg) btnJueg.classList.toggle('active', !isAlumnos);
+
+      const toggleText = document.getElementById('header-btn-toggle-text');
+      if (toggleText) {
+        toggleText.textContent = isAlumnos ? 'Ver Juegos (' + catalogoJuegosCache.length + ')' : 'Ver Alumnos';
+      }
+
+      if (!isAlumnos) {
+        if (!catalogoJuegosCache.length) cargarCatalogoJuegos();
+        else filtrarJuegosAdmin();
+      }
+    }
+
+    function toggleSeccionJuegos() {
+      cambiarSeccion(seccionActiva === 'alumnos' ? 'juegos' : 'alumnos');
+    }
+
+    function cargarCatalogoJuegos() {
+      const map = new Map();
+      if (window.SCHOOL_DATA && window.SCHOOL_DATA.grades) {
+        window.SCHOOL_DATA.grades.forEach(g => {
+          (g.games || []).forEach(gm => {
+            if (!map.has(gm.id)) {
+              const item = Object.assign({}, gm);
+              item.gradesList = [g.id];
+              map.set(gm.id, item);
+            } else {
+              const existing = map.get(gm.id);
+              if (existing.gradesList && !existing.gradesList.includes(g.id)) {
+                existing.gradesList.push(g.id);
+              }
+            }
+          });
+        });
+      }
+
+      catalogoJuegosCache = Array.from(map.values());
+      const pillCount = document.getElementById('pill-count-juegos');
+      if (pillCount) pillCount.textContent = catalogoJuegosCache.length;
+      const labelCount = document.getElementById('juegos-count-label');
+      if (labelCount) labelCount.textContent = catalogoJuegosCache.length + ' juegos';
+
+      filtrarJuegosAdmin();
+    }
+
+    function seleccionarGradoJuegos(grade) {
+      gradoJuegosActivo = grade;
+      document.querySelectorAll('#juegos-grade-tabs .group-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.grade === grade);
+      });
+      filtrarJuegosAdmin();
+    }
+
+    function filtrarJuegosAdmin() {
+      const query = (document.getElementById('juegos-search')?.value || '').toLowerCase().trim();
+      
+      const filtrados = catalogoJuegosCache.filter(j => {
+        // Filtro por grado
+        if (gradoJuegosActivo !== 'ALL') {
+          const inGrades = (j.gradesList && j.gradesList.includes(gradoJuegosActivo)) || 
+                           (j.grades && j.grades.includes(gradoJuegosActivo)) ||
+                           (j.gradeId === gradoJuegosActivo) ||
+                           (j.grades && j.grades.includes('todos'));
+          if (!inGrades) return false;
+        }
+
+        // Filtro por búsqueda
+        if (query) {
+          const matchTitle = (j.title || '').toLowerCase().includes(query);
+          const matchDesc = (j.description || '').toLowerCase().includes(query);
+          const matchPlat = (j.platform || '').toLowerCase().includes(query);
+          const matchTags = (j.tags || []).some(t => t.toLowerCase().includes(query));
+          if (!matchTitle && !matchDesc && !matchPlat && !matchTags) return false;
+        }
+
+        return true;
+      });
+
+      renderTablaJuegos(filtrados);
+    }
+
+    function renderTablaJuegos(juegos) {
+      const tbody = document.getElementById('juegos-tbody');
+      const stats = document.getElementById('juegos-stats-text');
+      if (stats) stats.textContent = 'Mostrando ' + juegos.length + ' de ' + catalogoJuegosCache.length + ' juegos';
+
+      if (!juegos.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color:#64748B;"><i class="fas fa-gamepad" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.4;"></i>No se encontraron juegos con los filtros seleccionados.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = juegos.map(j => {
+        const pm = (window.platformMeta && window.platformMeta(j.platform)) || { label: j.platform || 'Juego', icon: '🎮', cls: 'pb-default' };
+        const thumb = j.thumbnail || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80';
+        const url = (window.getGameUrl && window.getGameUrl(j)) || j.externalUrl || (j.scratchId ? 'https://scratch.mit.edu/projects/' + j.scratchId : '#');
+
+        const gradesArray = j.gradesList || j.grades || [];
+        const isAllSchool = gradesArray.length >= 7 || gradesArray.includes('todos');
+
+        const gradesHtml = isAllSchool 
+          ? '<span class="game-grade-chip game-grade-all"><i class="fas fa-users"></i> Todo el Colegio</span>'
+          : gradesArray.map(g => '<span class="game-grade-chip">' + (GRADE_NAMES_MAP[g] || g) + '</span>').join('');
+
+        const tagsHtml = (j.tags && j.tags.length)
+          ? '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:5px;">' +
+              j.tags.slice(0, 4).map(t => '<span style="background:#F1F5F9; color:#475569; font-size:0.70rem; font-weight:700; padding:2px 6px; border-radius:4px;">#' + t + '</span>').join('') +
+            '</div>'
+          : '';
+
+        const benefitsHtml = j.benefits
+          ? '<div class="game-benefits-box"><strong><i class="fas fa-lightbulb" style="color:#EAB308;"></i> Razonamiento:</strong> ' + j.benefits + '</div>'
+          : '';
+
+        return '<tr>' +
+          '<td style="text-align:center; vertical-align:middle;">' +
+            '<img src="' + thumb + '" alt="' + j.title + '" class="game-thumb-cell" onerror="this.src=\'img/angrybirds.png\'">' +
+          '</td>' +
+          '<td>' +
+            '<div class="game-title-text">' + j.title + '</div>' +
+            '<div class="game-desc-text">' + (j.description || '') + '</div>' +
+            benefitsHtml +
+            tagsHtml +
+          '</td>' +
+          '<td style="vertical-align:middle;">' + gradesHtml + '</td>' +
+          '<td style="vertical-align:middle;">' +
+            '<span class="game-card-badge ' + (pm.cls || 'pb-default') + '" style="font-size:0.75rem; padding:4px 8px; border-radius:6px; display:inline-block; font-weight:700;">' +
+              pm.icon + ' ' + pm.label +
+            '</span>' +
+          '</td>' +
+          '<td style="text-align:center; vertical-align:middle;">' +
+            (url && url !== '#' ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="btn-admin btn-admin-blue" style="padding:6px 12px; font-size:0.82rem; display:inline-flex; align-items:center; gap:6px; text-decoration:none;" title="Probar juego"><i class="fas fa-play"></i> Jugar</a>' : '<span style="color:#94A3B8; font-size:0.8rem;">Interno</span>') +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    // Inicialización al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      inicializarAdmin();
+      cargarCatalogoJuegos();
+      if (window.location.hash === '#juegos') {
+        cambiarSeccion('juegos');
+      }
+    });
   </script>
+  <!-- Scripts de Datos y Metadatos de Plataformas para Juegos -->
+  <script src="js/data.js?v=96"></script>
+  <script src="js/modal.js?v=2"></script>
 </body>
 </html>
