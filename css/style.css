@@ -2335,6 +2335,11 @@ button, input, select, textarea { font-family: inherit; }
 .pb-makecode { background: #F3E5F5; color: #6A1B9A; }
 .pb-native   { background: #E8F5E9; color: #2E7D32; }
 .pb-web      { background: #E3F2FD; color: #1565C0; }
+.pb-cobots   { background: #EDE9FE; color: #5B21B6; }
+.pb-scriptacademy { background: #FEF3C7; color: #92400E; }
+.pb-toxicode { background: #FCE7F3; color: #9D174D; }
+.pb-runmarco { background: #DCFCE7; color: #166534; }
+.pb-grinch   { background: #FEE2E2; color: #991B1B; }
 .pb-default  { background: #F5F5F5; color: #616161; }
 
 /* ─────────────────────────────────────────────────────────────

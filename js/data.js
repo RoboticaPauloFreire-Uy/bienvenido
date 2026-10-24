@@ -35,6 +35,40 @@ const SCHOOL_DATA = {
       /* ---- JUEGOS PERMITIDOS (SALA DE 5 AÑOS) ---- */
       games: [
         {
+          id: "g-mix-move-ai-2025",
+          title: "Mix & Move AI: Fiesta de Baile con IA 🤖💃",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/mix-move-ai-2025/units/1/lessons/1/levels/1",
+          thumbnail: "https://images.unsplash.com/photo-1546776310-eef45dd6d63c?auto=format&fit=crop&w=600&q=80",
+          description: "¡Una fiesta de baile interactiva impulsada por Inteligencia Artificial! Entrena modelos para reconocer movimientos, sincroniza coreografías de personajes animados, cambia fondos coloridos y experimenta cómo la IA responde al ritmo musical.",
+          benefits: "Introduce nociones elementales de Inteligencia Artificial y Machine Learning, reconocimiento de patrones (pattern matching), correspondencia causa-efecto, coordinación viso-espacial y programación visual orientada a eventos.",
+          tags: ["Code.org","Inteligencia Artificial","Baile","Animación","Música","Lógica"],
+          grades: ["sala5","grado1","grado2"]
+        },
+        {
+          id: "g-grinch-hoc",
+          title: "El Grinch: Salva la Navidad con Código 🎄🎁",
+          platform: "grinch",
+          externalUrl: "https://www.grinchhourofcode.com",
+          thumbnail: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80",
+          description: "¡Ayuda al Grinch y a su fiel perro Max a recuperar los regalos en Villa Quién! Programa drones y artilugios mecánicos con bloques sencillos de dirección para esquivar obstáculos, superar tejados nevados y completar divertidas misiones navideñas.",
+          benefits: "Fomenta la orientación espacial (arriba, abajo, izquierda, derecha), descomposición de trayectorias en pasos ordenados, planificación algorítmica temprana y resolución de problemas sin requerir lectura compleja.",
+          tags: ["Hora del Código","Grinch","Navidad","Drones","Lógica Infantil","Direcciones"],
+          grades: ["sala5","grado1","grado2"]
+        },
+        {
+          id: "g-run-marco",
+          title: "Run Marco!: Expedición en la Selva 🐒🌿",
+          platform: "runmarco",
+          externalUrl: "https://runmarco.com/#jungle-2",
+          thumbnail: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=600&q=80",
+          description: "¡Una aventura gráfica en la selva profunda! Ayuda al valiente explorador Marco a sortear arenas movedizas, ríos caudalosos y ruinas misteriosas utilizando bloques de comandos visuales para guiar sus pasos hacia el tesoro sagrado.",
+          benefits: "Ideal para el desarrollo temprano del pensamiento computacional: lectura de mapas por cuadrícula, previsión de consecuencias, secuencias de órdenes estrictas y bucles de avance condicional.",
+          tags: ["Run Marco","AllCanCode","Aventura","Selva","Secuencias","Pensamiento Infantil"],
+          grades: ["sala5","grado1","grado2"]
+        },
+
+        {
           id: "s5-g1",
           level: 9,
           title: "Escenarios CodeJr - Primera Parte: Ambiente y Velocidades 🐱⚡",
@@ -784,6 +818,40 @@ const SCHOOL_DATA = {
       description: "Títeres de cartón y personajes interactivos: unimos manualidades recicladas con primeras secuencias en bloques.",
 
       games: [
+        {
+          id: "g-mix-move-ai-2025",
+          title: "Mix & Move AI: Fiesta de Baile con IA 🤖💃",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/mix-move-ai-2025/units/1/lessons/1/levels/1",
+          thumbnail: "https://images.unsplash.com/photo-1546776310-eef45dd6d63c?auto=format&fit=crop&w=600&q=80",
+          description: "¡Una fiesta de baile interactiva impulsada por Inteligencia Artificial! Entrena modelos para reconocer movimientos, sincroniza coreografías de personajes animados, cambia fondos coloridos y experimenta cómo la IA responde al ritmo musical.",
+          benefits: "Introduce nociones elementales de Inteligencia Artificial y Machine Learning, reconocimiento de patrones (pattern matching), correspondencia causa-efecto, coordinación viso-espacial y programación visual orientada a eventos.",
+          tags: ["Code.org","Inteligencia Artificial","Baile","Animación","Música","Lógica"],
+          grades: ["sala5","grado1","grado2"]
+        },
+        {
+          id: "g-grinch-hoc",
+          title: "El Grinch: Salva la Navidad con Código 🎄🎁",
+          platform: "grinch",
+          externalUrl: "https://www.grinchhourofcode.com",
+          thumbnail: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80",
+          description: "¡Ayuda al Grinch y a su fiel perro Max a recuperar los regalos en Villa Quién! Programa drones y artilugios mecánicos con bloques sencillos de dirección para esquivar obstáculos, superar tejados nevados y completar divertidas misiones navideñas.",
+          benefits: "Fomenta la orientación espacial (arriba, abajo, izquierda, derecha), descomposición de trayectorias en pasos ordenados, planificación algorítmica temprana y resolución de problemas sin requerir lectura compleja.",
+          tags: ["Hora del Código","Grinch","Navidad","Drones","Lógica Infantil","Direcciones"],
+          grades: ["sala5","grado1","grado2"]
+        },
+        {
+          id: "g-run-marco",
+          title: "Run Marco!: Expedición en la Selva 🐒🌿",
+          platform: "runmarco",
+          externalUrl: "https://runmarco.com/#jungle-2",
+          thumbnail: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=600&q=80",
+          description: "¡Una aventura gráfica en la selva profunda! Ayuda al valiente explorador Marco a sortear arenas movedizas, ríos caudalosos y ruinas misteriosas utilizando bloques de comandos visuales para guiar sus pasos hacia el tesoro sagrado.",
+          benefits: "Ideal para el desarrollo temprano del pensamiento computacional: lectura de mapas por cuadrícula, previsión de consecuencias, secuencias de órdenes estrictas y bucles de avance condicional.",
+          tags: ["Run Marco","AllCanCode","Aventura","Selva","Secuencias","Pensamiento Infantil"],
+          grades: ["sala5","grado1","grado2"]
+        },
+
         {
           id: "g1-g1",
           level: 9,
@@ -1544,6 +1612,73 @@ const SCHOOL_DATA = {
 
       games: [
         {
+          id: "g-music-jam-2024",
+          title: "Music Jam 2024 🎵🎧",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/music-jam-2024/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+          description: "¡Conviértete en DJ y productor musical con código! En el laboratorio Music Lab de Code.org aprenderás a componer canciones, mezclar loops de batería, sintetizadores, voces y efectos de sonido de artistas mundiales creando tus propios beats interactivos.",
+          benefits: "Desarrolla secuenciación temporal, comprensión matemática de compases y tiempos rítmicos, lógica de bucles continuos (loops), sincronización de eventos de audio y creatividad multimedia.",
+          tags: ["Code.org","Música","Sonido","Beats","Loops","Creatividad"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-mix-move-ai-2025",
+          title: "Mix & Move AI: Fiesta de Baile con IA 🤖💃",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/mix-move-ai-2025/units/1/lessons/1/levels/1",
+          thumbnail: "https://images.unsplash.com/photo-1546776310-eef45dd6d63c?auto=format&fit=crop&w=600&q=80",
+          description: "¡Una fiesta de baile interactiva impulsada por Inteligencia Artificial! Entrena modelos para reconocer movimientos, sincroniza coreografías de personajes animados, cambia fondos coloridos y experimenta cómo la IA responde al ritmo musical.",
+          benefits: "Introduce nociones elementales de Inteligencia Artificial y Machine Learning, reconocimiento de patrones (pattern matching), correspondencia causa-efecto, coordinación viso-espacial y programación visual orientada a eventos.",
+          tags: ["Code.org","Inteligencia Artificial","Baile","Animación","Música","Lógica"],
+          grades: ["sala5","grado1","grado2"]
+        },
+        {
+          id: "g-grinch-hoc",
+          title: "El Grinch: Salva la Navidad con Código 🎄🎁",
+          platform: "grinch",
+          externalUrl: "https://www.grinchhourofcode.com",
+          thumbnail: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80",
+          description: "¡Ayuda al Grinch y a su fiel perro Max a recuperar los regalos en Villa Quién! Programa drones y artilugios mecánicos con bloques sencillos de dirección para esquivar obstáculos, superar tejados nevados y completar divertidas misiones navideñas.",
+          benefits: "Fomenta la orientación espacial (arriba, abajo, izquierda, derecha), descomposición de trayectorias en pasos ordenados, planificación algorítmica temprana y resolución de problemas sin requerir lectura compleja.",
+          tags: ["Hora del Código","Grinch","Navidad","Drones","Lógica Infantil","Direcciones"],
+          grades: ["sala5","grado1","grado2"]
+        },
+        {
+          id: "g-coding-town",
+          title: "Coding Town: Construye y Automatiza tu Ciudad 🏡🚗",
+          platform: "scriptacademy",
+          externalUrl: "https://www.scriptacademy.net/hour-of-code/coding-town",
+          thumbnail: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un pueblo lleno de vida donde cada habitante y vehículo necesita tus instrucciones! Automatiza patrullas de policía, camiones de bomberos y servicios urbanos programando secuencias lógicas y bucles de repetición para mantener la ciudad en marcha.",
+          benefits: "Refuerza la descomposición paso a paso de problemas urbanos, uso eficiente de bucles (loops) para tareas repetitivas, coordinación de múltiples agentes en simultáneo y lógica espacial.",
+          tags: ["Script Academy","Ciudad","Automatización","Bucles","Simulación","Lógica"],
+          grades: ["grado2","grado3","grado4"]
+        },
+        {
+          id: "g-little-dot",
+          title: "Little Dot: El Viaje del Punto Geométrico 🔴✨",
+          platform: "toxicode",
+          externalUrl: "https://little-dot.toxicode.fr/?hour-of-code",
+          thumbnail: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un deslumbrante desafío geométrico de lógica pura y minimalismo! Guía a Little Dot a través de laberintos de vectores y figuras geométricas programando distancias milimétricas, ángulos exactos de giro y bucles elegantes de repetición.",
+          benefits: "Desarrolla razonamiento geométrico abstracto, nociones de ángulos y grados (45°, 90°, 180°), optimización de código para encontrar caminos mínimos y perseverancia ante el ensayo y error.",
+          tags: ["Toxicode","Geometría","Ángulos","Minimalista","Vectores","Lógica Pura"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-run-marco",
+          title: "Run Marco!: Expedición en la Selva 🐒🌿",
+          platform: "runmarco",
+          externalUrl: "https://runmarco.com/#jungle-2",
+          thumbnail: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=600&q=80",
+          description: "¡Una aventura gráfica en la selva profunda! Ayuda al valiente explorador Marco a sortear arenas movedizas, ríos caudalosos y ruinas misteriosas utilizando bloques de comandos visuales para guiar sus pasos hacia el tesoro sagrado.",
+          benefits: "Ideal para el desarrollo temprano del pensamiento computacional: lectura de mapas por cuadrícula, previsión de consecuencias, secuencias de órdenes estrictas y bucles de avance condicional.",
+          tags: ["Run Marco","AllCanCode","Aventura","Selva","Secuencias","Pensamiento Infantil"],
+          grades: ["sala5","grado1","grado2"]
+        },
+
+        {
           id: "g2-g1",
           title: "Gatito Atrapa Peces 🐟",
           platform: "scratch",
@@ -1671,6 +1806,84 @@ const SCHOOL_DATA = {
 
       games: [
         {
+          id: "g-music-jam-2024",
+          title: "Music Jam 2024 🎵🎧",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/music-jam-2024/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+          description: "¡Conviértete en DJ y productor musical con código! En el laboratorio Music Lab de Code.org aprenderás a componer canciones, mezclar loops de batería, sintetizadores, voces y efectos de sonido de artistas mundiales creando tus propios beats interactivos.",
+          benefits: "Desarrolla secuenciación temporal, comprensión matemática de compases y tiempos rítmicos, lógica de bucles continuos (loops), sincronización de eventos de audio y creatividad multimedia.",
+          tags: ["Code.org","Música","Sonido","Beats","Loops","Creatividad"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-acceleration-city",
+          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
+          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
+          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
+          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
+          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-flappy-code",
+          title: "Flappy Code: Programa tu Flappy Bird 🐦🕹️",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/flappy/1",
+          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+          description: "¡Programa desde cero uno de los juegos más virales de la historia! Vincula el clic del mouse al aleteo del pájaro, añade física de gravedad para la caída, detecta colisiones contra el suelo o tuberías y programa el marcador de puntos con sonidos retro.",
+          benefits: "Domina el modelo de programación orientada a eventos (Event-Driven Architecture), manipulación de variables numéricas acumulativas, detección de colisiones de cajas (AABB) y calibración de dificultad de juego.",
+          tags: ["Code.org","Flappy Bird","Arcade","Eventos","Variables","Colisiones"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-sports-lab",
+          title: "Sports Game Lab: Diseña tu Deporte Interactivo 🏀⚽",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/sports/units/1/lessons/1/levels/1",
+          thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80",
+          description: "¡Crea tu propio videojuego deportivo personalizado! Elige entre básquetbol, fútbol, fútbol americano o hockey: programa los movimientos de los jugadores, la velocidad de lanzamiento, los rebotes contra las paredes y la lógica del tanteador al encestar.",
+          benefits: "Estimula la formulación de reglas lógicas condicionales, modelado de trayectorias y rebotes físicos, interacción multiobjeto y personalización de interfaces interactivas.",
+          tags: ["Code.org","Deportes","Fútbol","Básquetbol","Física","Reglas de Juego"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-coding-town",
+          title: "Coding Town: Construye y Automatiza tu Ciudad 🏡🚗",
+          platform: "scriptacademy",
+          externalUrl: "https://www.scriptacademy.net/hour-of-code/coding-town",
+          thumbnail: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un pueblo lleno de vida donde cada habitante y vehículo necesita tus instrucciones! Automatiza patrullas de policía, camiones de bomberos y servicios urbanos programando secuencias lógicas y bucles de repetición para mantener la ciudad en marcha.",
+          benefits: "Refuerza la descomposición paso a paso de problemas urbanos, uso eficiente de bucles (loops) para tareas repetitivas, coordinación de múltiples agentes en simultáneo y lógica espacial.",
+          tags: ["Script Academy","Ciudad","Automatización","Bucles","Simulación","Lógica"],
+          grades: ["grado2","grado3","grado4"]
+        },
+        {
+          id: "g-little-dot",
+          title: "Little Dot: El Viaje del Punto Geométrico 🔴✨",
+          platform: "toxicode",
+          externalUrl: "https://little-dot.toxicode.fr/?hour-of-code",
+          thumbnail: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un deslumbrante desafío geométrico de lógica pura y minimalismo! Guía a Little Dot a través de laberintos de vectores y figuras geométricas programando distancias milimétricas, ángulos exactos de giro y bucles elegantes de repetición.",
+          benefits: "Desarrolla razonamiento geométrico abstracto, nociones de ángulos y grados (45°, 90°, 180°), optimización de código para encontrar caminos mínimos y perseverancia ante el ensayo y error.",
+          tags: ["Toxicode","Geometría","Ángulos","Minimalista","Vectores","Lógica Pura"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-super-slime-battle",
+          title: "Super Slime Battle: Batalla Estratégica de Cobots 🟢⚔️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/super-slime-battle",
+          thumbnail: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+          description: "¡Estrategia y robótica competitiva en una arena de combate futurista! Programa los algoritmos de comportamiento de tus robots cobots: recolecta esferas de slime, activa escudos de defensa y toma decisiones tácticas para vencer a los rivales.",
+          benefits: "Fomenta el pensamiento táctico y estratégico, diseño de algoritmos de toma de decisiones basadas en estados (State Machines), balance de recursos (energía vs. ataque) y programación competitiva.",
+          tags: ["CS2N","Cobots","Estrategia","Robótica Competitiva","IA","Arena"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+
+        {
           id: "g3-g1",
           title: "Super Salto: Plataformas 🎮",
           platform: "scratch",
@@ -1690,17 +1903,7 @@ const SCHOOL_DATA = {
           benefits: "Desarrolla el pensamiento algorítmico y la descomposición de problemas en un entorno de juego sumamente motivador.",
           tags: ["Code.org", "Minecraft", "Bucles"]
         },
-        {
-          id: "g3-g3",
-          title: "Make a Flappy Game 🐦",
-          platform: "codeorg",
-          externalUrl: "https://studio.code.org/flappy/1",
-          thumbnail: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=600&q=80",
-          description: "Creá tu propia versión de Flappy Bird personalizando la gravedad, los obstáculos y las reglas del juego.",
-          benefits: "Fomenta la creatividad al personalizar reglas de juego, la comprensión de gravedad simulada y la perseverancia.",
-          tags: ["Code.org", "Flappy", "Reglas"]
-        },
-        {
+                {
           id: "g3-g4",
           title: "¿Sabés Programar? Trivia 🧠",
           platform: "native",
@@ -1831,6 +2034,95 @@ const SCHOOL_DATA = {
 
       games: [
         {
+          id: "g-music-jam-2024",
+          title: "Music Jam 2024 🎵🎧",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/music-jam-2024/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+          description: "¡Conviértete en DJ y productor musical con código! En el laboratorio Music Lab de Code.org aprenderás a componer canciones, mezclar loops de batería, sintetizadores, voces y efectos de sonido de artistas mundiales creando tus propios beats interactivos.",
+          benefits: "Desarrolla secuenciación temporal, comprensión matemática de compases y tiempos rítmicos, lógica de bucles continuos (loops), sincronización de eventos de audio y creatividad multimedia.",
+          tags: ["Code.org","Música","Sonido","Beats","Loops","Creatividad"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-star-wars-blocks",
+          title: "Star Wars: Construye una Galaxia con Código 🚀⭐",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/starwarsblocks/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80",
+          description: "¡Únete a la Resistencia y programa en una galaxia muy, muy lejana! Controla a BB-8, R2-D2 y Rey para recolectar chatarra espacial, esquivar droides de patrulla y crear tu propio juego personalizado de Star Wars con eventos en tiempo real.",
+          benefits: "Potencia el pensamiento algorítmico avanzado, manejo de eventos en tiempo real, condicionales lógicos múltiples, orientación vectorial y diseño de mecánicas de videojuegos.",
+          tags: ["Code.org","Star Wars","Robótica","Eventos","Aventura","Ciencia Ficción"],
+          grades: ["grado4","grado5","grado6"]
+        },
+        {
+          id: "g-acceleration-city",
+          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
+          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
+          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
+          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
+          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-flappy-code",
+          title: "Flappy Code: Programa tu Flappy Bird 🐦🕹️",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/flappy/1",
+          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+          description: "¡Programa desde cero uno de los juegos más virales de la historia! Vincula el clic del mouse al aleteo del pájaro, añade física de gravedad para la caída, detecta colisiones contra el suelo o tuberías y programa el marcador de puntos con sonidos retro.",
+          benefits: "Domina el modelo de programación orientada a eventos (Event-Driven Architecture), manipulación de variables numéricas acumulativas, detección de colisiones de cajas (AABB) y calibración de dificultad de juego.",
+          tags: ["Code.org","Flappy Bird","Arcade","Eventos","Variables","Colisiones"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-sports-lab",
+          title: "Sports Game Lab: Diseña tu Deporte Interactivo 🏀⚽",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/sports/units/1/lessons/1/levels/1",
+          thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80",
+          description: "¡Crea tu propio videojuego deportivo personalizado! Elige entre básquetbol, fútbol, fútbol americano o hockey: programa los movimientos de los jugadores, la velocidad de lanzamiento, los rebotes contra las paredes y la lógica del tanteador al encestar.",
+          benefits: "Estimula la formulación de reglas lógicas condicionales, modelado de trayectorias y rebotes físicos, interacción multiobjeto y personalización de interfaces interactivas.",
+          tags: ["Code.org","Deportes","Fútbol","Básquetbol","Física","Reglas de Juego"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-coding-town",
+          title: "Coding Town: Construye y Automatiza tu Ciudad 🏡🚗",
+          platform: "scriptacademy",
+          externalUrl: "https://www.scriptacademy.net/hour-of-code/coding-town",
+          thumbnail: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un pueblo lleno de vida donde cada habitante y vehículo necesita tus instrucciones! Automatiza patrullas de policía, camiones de bomberos y servicios urbanos programando secuencias lógicas y bucles de repetición para mantener la ciudad en marcha.",
+          benefits: "Refuerza la descomposición paso a paso de problemas urbanos, uso eficiente de bucles (loops) para tareas repetitivas, coordinación de múltiples agentes en simultáneo y lógica espacial.",
+          tags: ["Script Academy","Ciudad","Automatización","Bucles","Simulación","Lógica"],
+          grades: ["grado2","grado3","grado4"]
+        },
+        {
+          id: "g-little-dot",
+          title: "Little Dot: El Viaje del Punto Geométrico 🔴✨",
+          platform: "toxicode",
+          externalUrl: "https://little-dot.toxicode.fr/?hour-of-code",
+          thumbnail: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un deslumbrante desafío geométrico de lógica pura y minimalismo! Guía a Little Dot a través de laberintos de vectores y figuras geométricas programando distancias milimétricas, ángulos exactos de giro y bucles elegantes de repetición.",
+          benefits: "Desarrolla razonamiento geométrico abstracto, nociones de ángulos y grados (45°, 90°, 180°), optimización de código para encontrar caminos mínimos y perseverancia ante el ensayo y error.",
+          tags: ["Toxicode","Geometría","Ángulos","Minimalista","Vectores","Lógica Pura"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-super-slime-battle",
+          title: "Super Slime Battle: Batalla Estratégica de Cobots 🟢⚔️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/super-slime-battle",
+          thumbnail: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+          description: "¡Estrategia y robótica competitiva en una arena de combate futurista! Programa los algoritmos de comportamiento de tus robots cobots: recolecta esferas de slime, activa escudos de defensa y toma decisiones tácticas para vencer a los rivales.",
+          benefits: "Fomenta el pensamiento táctico y estratégico, diseño de algoritmos de toma de decisiones basadas en estados (State Machines), balance de recursos (energía vs. ataque) y programación competitiva.",
+          tags: ["CS2N","Cobots","Estrategia","Robótica Competitiva","IA","Arena"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+
+        {
           id: "g4-g1",
           title: "Aventura RPG: El Bosque Encantado 🌲",
           platform: "scratch",
@@ -1906,6 +2198,84 @@ const SCHOOL_DATA = {
       /* ---- JUEGOS ---- */
       games: [
         {
+          id: "g-music-jam-2024",
+          title: "Music Jam 2024 🎵🎧",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/music-jam-2024/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+          description: "¡Conviértete en DJ y productor musical con código! En el laboratorio Music Lab de Code.org aprenderás a componer canciones, mezclar loops de batería, sintetizadores, voces y efectos de sonido de artistas mundiales creando tus propios beats interactivos.",
+          benefits: "Desarrolla secuenciación temporal, comprensión matemática de compases y tiempos rítmicos, lógica de bucles continuos (loops), sincronización de eventos de audio y creatividad multimedia.",
+          tags: ["Code.org","Música","Sonido","Beats","Loops","Creatividad"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-star-wars-blocks",
+          title: "Star Wars: Construye una Galaxia con Código 🚀⭐",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/starwarsblocks/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80",
+          description: "¡Únete a la Resistencia y programa en una galaxia muy, muy lejana! Controla a BB-8, R2-D2 y Rey para recolectar chatarra espacial, esquivar droides de patrulla y crear tu propio juego personalizado de Star Wars con eventos en tiempo real.",
+          benefits: "Potencia el pensamiento algorítmico avanzado, manejo de eventos en tiempo real, condicionales lógicos múltiples, orientación vectorial y diseño de mecánicas de videojuegos.",
+          tags: ["Code.org","Star Wars","Robótica","Eventos","Aventura","Ciencia Ficción"],
+          grades: ["grado4","grado5","grado6"]
+        },
+        {
+          id: "g-acceleration-city",
+          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
+          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
+          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
+          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
+          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-flappy-code",
+          title: "Flappy Code: Programa tu Flappy Bird 🐦🕹️",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/flappy/1",
+          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+          description: "¡Programa desde cero uno de los juegos más virales de la historia! Vincula el clic del mouse al aleteo del pájaro, añade física de gravedad para la caída, detecta colisiones contra el suelo o tuberías y programa el marcador de puntos con sonidos retro.",
+          benefits: "Domina el modelo de programación orientada a eventos (Event-Driven Architecture), manipulación de variables numéricas acumulativas, detección de colisiones de cajas (AABB) y calibración de dificultad de juego.",
+          tags: ["Code.org","Flappy Bird","Arcade","Eventos","Variables","Colisiones"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-sports-lab",
+          title: "Sports Game Lab: Diseña tu Deporte Interactivo 🏀⚽",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/sports/units/1/lessons/1/levels/1",
+          thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80",
+          description: "¡Crea tu propio videojuego deportivo personalizado! Elige entre básquetbol, fútbol, fútbol americano o hockey: programa los movimientos de los jugadores, la velocidad de lanzamiento, los rebotes contra las paredes y la lógica del tanteador al encestar.",
+          benefits: "Estimula la formulación de reglas lógicas condicionales, modelado de trayectorias y rebotes físicos, interacción multiobjeto y personalización de interfaces interactivas.",
+          tags: ["Code.org","Deportes","Fútbol","Básquetbol","Física","Reglas de Juego"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-little-dot",
+          title: "Little Dot: El Viaje del Punto Geométrico 🔴✨",
+          platform: "toxicode",
+          externalUrl: "https://little-dot.toxicode.fr/?hour-of-code",
+          thumbnail: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un deslumbrante desafío geométrico de lógica pura y minimalismo! Guía a Little Dot a través de laberintos de vectores y figuras geométricas programando distancias milimétricas, ángulos exactos de giro y bucles elegantes de repetición.",
+          benefits: "Desarrolla razonamiento geométrico abstracto, nociones de ángulos y grados (45°, 90°, 180°), optimización de código para encontrar caminos mínimos y perseverancia ante el ensayo y error.",
+          tags: ["Toxicode","Geometría","Ángulos","Minimalista","Vectores","Lógica Pura"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-super-slime-battle",
+          title: "Super Slime Battle: Batalla Estratégica de Cobots 🟢⚔️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/super-slime-battle",
+          thumbnail: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+          description: "¡Estrategia y robótica competitiva en una arena de combate futurista! Programa los algoritmos de comportamiento de tus robots cobots: recolecta esferas de slime, activa escudos de defensa y toma decisiones tácticas para vencer a los rivales.",
+          benefits: "Fomenta el pensamiento táctico y estratégico, diseño de algoritmos de toma de decisiones basadas en estados (State Machines), balance de recursos (energía vs. ataque) y programación competitiva.",
+          tags: ["CS2N","Cobots","Estrategia","Robótica Competitiva","IA","Arena"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+
+        {
           id: "g5-g1",
           title: "Neon Runner JS ⚡",
           platform: "native",
@@ -1980,6 +2350,84 @@ const SCHOOL_DATA = {
       description: "Domótica y automatización: maquetas inteligentes de cartón, sensores de luz/temperatura y JavaScript.",
 
       games: [
+        {
+          id: "g-music-jam-2024",
+          title: "Music Jam 2024 🎵🎧",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/music-jam-2024/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+          description: "¡Conviértete en DJ y productor musical con código! En el laboratorio Music Lab de Code.org aprenderás a componer canciones, mezclar loops de batería, sintetizadores, voces y efectos de sonido de artistas mundiales creando tus propios beats interactivos.",
+          benefits: "Desarrolla secuenciación temporal, comprensión matemática de compases y tiempos rítmicos, lógica de bucles continuos (loops), sincronización de eventos de audio y creatividad multimedia.",
+          tags: ["Code.org","Música","Sonido","Beats","Loops","Creatividad"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-star-wars-blocks",
+          title: "Star Wars: Construye una Galaxia con Código 🚀⭐",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/starwarsblocks/units/1?viewAs=Instructor",
+          thumbnail: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80",
+          description: "¡Únete a la Resistencia y programa en una galaxia muy, muy lejana! Controla a BB-8, R2-D2 y Rey para recolectar chatarra espacial, esquivar droides de patrulla y crear tu propio juego personalizado de Star Wars con eventos en tiempo real.",
+          benefits: "Potencia el pensamiento algorítmico avanzado, manejo de eventos en tiempo real, condicionales lógicos múltiples, orientación vectorial y diseño de mecánicas de videojuegos.",
+          tags: ["Code.org","Star Wars","Robótica","Eventos","Aventura","Ciencia Ficción"],
+          grades: ["grado4","grado5","grado6"]
+        },
+        {
+          id: "g-acceleration-city",
+          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
+          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
+          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
+          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
+          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-flappy-code",
+          title: "Flappy Code: Programa tu Flappy Bird 🐦🕹️",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/flappy/1",
+          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+          description: "¡Programa desde cero uno de los juegos más virales de la historia! Vincula el clic del mouse al aleteo del pájaro, añade física de gravedad para la caída, detecta colisiones contra el suelo o tuberías y programa el marcador de puntos con sonidos retro.",
+          benefits: "Domina el modelo de programación orientada a eventos (Event-Driven Architecture), manipulación de variables numéricas acumulativas, detección de colisiones de cajas (AABB) y calibración de dificultad de juego.",
+          tags: ["Code.org","Flappy Bird","Arcade","Eventos","Variables","Colisiones"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-sports-lab",
+          title: "Sports Game Lab: Diseña tu Deporte Interactivo 🏀⚽",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/sports/units/1/lessons/1/levels/1",
+          thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80",
+          description: "¡Crea tu propio videojuego deportivo personalizado! Elige entre básquetbol, fútbol, fútbol americano o hockey: programa los movimientos de los jugadores, la velocidad de lanzamiento, los rebotes contra las paredes y la lógica del tanteador al encestar.",
+          benefits: "Estimula la formulación de reglas lógicas condicionales, modelado de trayectorias y rebotes físicos, interacción multiobjeto y personalización de interfaces interactivas.",
+          tags: ["Code.org","Deportes","Fútbol","Básquetbol","Física","Reglas de Juego"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-little-dot",
+          title: "Little Dot: El Viaje del Punto Geométrico 🔴✨",
+          platform: "toxicode",
+          externalUrl: "https://little-dot.toxicode.fr/?hour-of-code",
+          thumbnail: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=600&q=80",
+          description: "¡Un deslumbrante desafío geométrico de lógica pura y minimalismo! Guía a Little Dot a través de laberintos de vectores y figuras geométricas programando distancias milimétricas, ángulos exactos de giro y bucles elegantes de repetición.",
+          benefits: "Desarrolla razonamiento geométrico abstracto, nociones de ángulos y grados (45°, 90°, 180°), optimización de código para encontrar caminos mínimos y perseverancia ante el ensayo y error.",
+          tags: ["Toxicode","Geometría","Ángulos","Minimalista","Vectores","Lógica Pura"],
+          grades: ["grado2","grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-super-slime-battle",
+          title: "Super Slime Battle: Batalla Estratégica de Cobots 🟢⚔️",
+          platform: "cobots",
+          externalUrl: "https://cobots.cs2n.org/games/super-slime-battle",
+          thumbnail: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+          description: "¡Estrategia y robótica competitiva en una arena de combate futurista! Programa los algoritmos de comportamiento de tus robots cobots: recolecta esferas de slime, activa escudos de defensa y toma decisiones tácticas para vencer a los rivales.",
+          benefits: "Fomenta el pensamiento táctico y estratégico, diseño de algoritmos de toma de decisiones basadas en estados (State Machines), balance de recursos (energía vs. ataque) y programación competitiva.",
+          tags: ["CS2N","Cobots","Estrategia","Robótica Competitiva","IA","Arena"],
+          grades: ["grado3","grado4","grado5","grado6"]
+        },
+
         {
           id: "g6-g1",
           title: "Neon Cyber Runner 2099 ⚡",

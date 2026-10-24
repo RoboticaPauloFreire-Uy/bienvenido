@@ -19,6 +19,12 @@
       case 'makecode': return { label: 'MakeCode',      icon: '🕹️', cls: 'pb-makecode' };
       case 'native':   return { label: 'Juego Web',     icon: '⚡', cls: 'pb-native'   };
       case 'web':      return { label: 'App / Tool',    icon: '💻', cls: 'pb-web'      };
+      case 'cobots':
+      case 'cs2n':     return { label: 'CS2N Cobots',   icon: '🤖', cls: 'pb-cobots'    };
+      case 'scriptacademy': return { label: 'Script Academy', icon: '💻', cls: 'pb-scriptacademy' };
+      case 'toxicode': return { label: 'Toxicode',      icon: '🔴', cls: 'pb-toxicode'  };
+      case 'runmarco': return { label: 'Run Marco!',    icon: '🐒', cls: 'pb-runmarco'  };
+      case 'grinch':   return { label: 'Hour of Code',  icon: '🎄', cls: 'pb-grinch'    };
       default:         return { label: 'Proyecto',      icon: '📁', cls: 'pb-default'  };
     }
   }
