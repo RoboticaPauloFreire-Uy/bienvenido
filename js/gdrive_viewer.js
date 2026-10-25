@@ -5152,10 +5152,10 @@
           '<div class="apm-circuit-schematic-card" style="background:#FFF7ED;border:1.5px solid #FDBA74;margin:0;color:#7C2D12;">' +
             '<div class="apm-csc-header" style="border-bottom-color:#FED7AA;">' +
               '<span style="color:#9A3412;font-weight:900;"><i class="fas fa-image"></i> Portada del Proyecto Especial</span>' +
-              '<a href="img/proyectos/halloween_ia_cover.svg" target="_blank" class="apm-csc-badge" style="background:#EA580C;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
+              '<a href="img/proyectos/halloween_ia_cover.jpg" target="_blank" class="apm-csc-badge" style="background:#EA580C;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
             '</div>' +
             '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
-              '<img src="img/proyectos/halloween_ia_cover.svg" alt="Especial Halloween IA" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #FED7AA;box-shadow:0 2px 8px rgba(0,0,0,0.08);">' +
+              '<img src="img/proyectos/halloween_ia_cover.jpg" alt="Especial Halloween IA" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #FED7AA;box-shadow:0 2px 8px rgba(0,0,0,0.08);">' +
               '<div style="font-size:0.8rem;color:#7C2D12;margin-top:6px;font-weight:600;">Ecosistema Creativo: Gemini AI &bull; Libro de los Hechizos &bull; Canva Polaroid &bull; Flow Video</div>' +
             '</div>' +
           '</div>' +
@@ -7694,14 +7694,25 @@
           (isHalloween ?
             // ── PESTAÑA HALLOWEEN 1: PASOS DEL PROYECTO ──
             '<div class="apm-tab-pane pane-pasos ' + (activeTab === 'pasos' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'pasos' ? 'flex' : 'none') + ';flex-direction:column;">' +
-              '<div style="background:linear-gradient(135deg, #431407 0%, #7C2D12 50%, #4C1D95 100%);border-radius:16px;padding:22px;border:1px solid rgba(249,115,22,0.35);margin-bottom:24px;box-shadow:0 10px 25px rgba(0,0,0,0.4);">' +
-                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">' +
-                  '<span style="background:#EA580C;color:#FFF;padding:5px 14px;border-radius:999px;font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;"><i class="fas fa-ghost"></i> Proyecto Especial Halloween con IA</span>' +
-                  '<span style="background:rgba(255,255,255,0.15);color:#FDBA74;padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;"><i class="fas fa-graduation-cap"></i> 5° y 6° de Primaria</span>' +
-                  '<span style="background:rgba(124,58,237,0.4);color:#DDD6FE;padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;"><i class="fas fa-clock"></i> 3 Clases Consecutivas</span>' +
+              '<div style="background:linear-gradient(135deg, #2A0800 0%, #581C0C 40%, #3B0764 100%);border-radius:18px;padding:24px;border:1.5px solid rgba(249,115,22,0.45);margin-bottom:24px;box-shadow:0 12px 30px rgba(0,0,0,0.5);display:flex;gap:24px;align-items:center;flex-wrap:wrap;">' +
+                '<div style="flex-shrink:0;text-align:center;margin:0 auto;">' +
+                  '<a href="img/proyectos/halloween_ia_cover.jpg" target="_blank" rel="noopener noreferrer" title="Ver portada oficial en tamaño completo">' +
+                    '<img src="img/proyectos/halloween_ia_cover.jpg" alt="Portada Oficial: Proyecto Halloween Foto a Monstruo" style="width:190px;max-width:100%;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2.5px solid #F97316;display:block;">' +
+                  '</a>' +
+                  '<span style="display:inline-block;margin-top:6px;font-size:0.75rem;color:#FDBA74;font-weight:700;"><i class="fas fa-search-plus"></i> Clic para ampliar</span>' +
                 '</div>' +
-                '<h2 style="font-size:1.75rem;font-weight:900;color:#FFF;margin:0 0 10px;line-height:1.2;">De la Foto al Monstruo, Postal Polaroid en Canva y Video Animado en Flow 🎃👻🎬</h2>' +
-                '<p style="color:#FED7AA;font-size:0.95rem;margin:0;line-height:1.5;">Seguí la guía paso a paso explicada en las tres clases del taller de robótica para transformar tu imagen con inteligencia artificial, componer tu foto para impresión física y animarla en video.</p>' +
+                '<div style="flex:1;min-width:280px;">' +
+                  '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">' +
+                    '<span style="background:#EA580C;color:#FFF;padding:5px 14px;border-radius:999px;font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;box-shadow:0 2px 8px rgba(234,88,12,0.4);"><i class="fas fa-ghost"></i> Proyecto Oficial Halloween 2026</span>' +
+                    '<span style="background:rgba(255,255,255,0.15);color:#FDBA74;padding:5px 12px;border-radius:999px;font-size:0.78rem;font-weight:700;"><i class="fas fa-graduation-cap"></i> 5° y 6° de Primaria</span>' +
+                    '<span style="background:rgba(124,58,237,0.45);color:#DDD6FE;padding:5px 12px;border-radius:999px;font-size:0.78rem;font-weight:700;"><i class="fas fa-clock"></i> 3 Clases Consecutivas</span>' +
+                  '</div>' +
+                  '<h2 style="font-size:1.85rem;font-weight:900;color:#FFF;margin:0 0 10px;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.5);">PROYECTO HALLOWEEN: FOTO A MONSTRUO 🎃👻🎬</h2>' +
+                  '<div style="font-size:1.05rem;font-weight:700;color:#FDBA74;margin-bottom:10px;">Transformación con IA y Generación de Video</div>' +
+                  '<p style="color:#FED7AA;font-size:0.92rem;margin:0;line-height:1.55;">' +
+                    'Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller: captura con prompt de 5 capas en Gemini, postal Polaroid en Canva para impresión física de recuerdo familiar y animación cinemática de video en Flow.' +
+                  '</p>' +
+                '</div>' +
               '</div>' +
 
               '<div style="display:flex;flex-direction:column;gap:20px;">' +

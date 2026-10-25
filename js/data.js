@@ -2320,7 +2320,7 @@ const SCHOOL_DATA = {
           badge: "🎃 Especial Halloween & Laboratorio IA",
           icon: "fa-ghost",
           color: "#D97706",
-          coverImage: "img/proyectos/halloween_ia_cover.svg",
+          coverImage: "img/proyectos/halloween_ia_cover.jpg",
           gameUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
           externalUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
           description: "¡Proyecto Oficial de Halloween! Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller:\n\n1) Clase 1 — Captura y Gemini AI: Tomamos la foto desde la computadora del taller y la subimos a Google Gemini. Aprendemos a construir un prompt preciso aplicando la técnica de las 5 Capas explicada en clase y documentada en nuestro manual oficial 'El Libro de los Hechizos de IA' (https://roboticapaulofreire-uy.github.io/libro_hechizos/).\n\n2) Clase 2 — Foto Polaroid en Canva: Importamos la imagen del monstruo a Canva y diseñamos una postal estilo marco Polaroid vintage con tipografías y adornos de Halloween. Esta foto será impresa físicamente por el profesor en papel fotográfico para que cada alumno la lleve a su hogar como recuerdo.\n\n3) Clase 3 — Video Animado con Flow: Subimos la imagen a Flow y aprendemos a estructurar prompts de video (movimiento de cámara, gestos de la criatura y atmósfera cinematográfica en movimiento) para crear un video MP4 animado y guardarlo en el Muro de Google Drive.",
@@ -2328,7 +2328,7 @@ const SCHOOL_DATA = {
           benefits: "Desarrolla el pensamiento computacional aplicado a la IA, la precisión semántica y lingüística al redactar prompts estructurados (las 5 capas), el sentido estético y composición en Canva, y la experimentación con modelos de video generativo, coronado con una entrega tangible física para compartir con la familia.",
           tags: ["Halloween", "Inteligencia Artificial", "Gemini", "Libro de Hechizos", "Canva", "Polaroid", "Flow", "Video IA", "Prompts 5 Capas", "Nivel 1"],
           gallery: [
-            "img/proyectos/halloween_ia_cover.svg"
+            "img/proyectos/halloween_ia_cover.jpg"
           ],
           pdfUrl: null,
           downloadPdfUrl: null,
@@ -2537,7 +2537,7 @@ const SCHOOL_DATA = {
           badge: "🎃 Especial Halloween & Laboratorio IA",
           icon: "fa-ghost",
           color: "#D97706",
-          coverImage: "img/proyectos/halloween_ia_cover.svg",
+          coverImage: "img/proyectos/halloween_ia_cover.jpg",
           gameUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
           externalUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
           description: "¡Proyecto Oficial de Halloween! Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller:\n\n1) Clase 1 — Captura y Gemini AI: Tomamos la foto desde la computadora del taller y la subimos a Google Gemini. Aprendemos a construir un prompt preciso aplicando la técnica de las 5 Capas explicada en clase y documentada en nuestro manual oficial 'El Libro de los Hechizos de IA' (https://roboticapaulofreire-uy.github.io/libro_hechizos/).\n\n2) Clase 2 — Foto Polaroid en Canva: Importamos la imagen del monstruo a Canva y diseñamos una postal estilo marco Polaroid vintage con tipografías y adornos de Halloween. Esta foto será impresa físicamente por el profesor en papel fotográfico para que cada alumno la lleve a su hogar como recuerdo.\n\n3) Clase 3 — Video Animado con Flow: Subimos la imagen a Flow y aprendemos a estructurar prompts de video (movimiento de cámara, gestos de la criatura y atmósfera cinematográfica en movimiento) para crear un video MP4 animado y guardarlo en el Muro de Google Drive.",
@@ -2545,7 +2545,7 @@ const SCHOOL_DATA = {
           benefits: "Desarrolla el pensamiento computacional aplicado a la IA, la precisión semántica y lingüística al redactar prompts estructurados (las 5 capas), el sentido estético y composición en Canva, y la experimentación con modelos de video generativo, coronado con una entrega tangible física para compartir con la familia.",
           tags: ["Halloween", "Inteligencia Artificial", "Gemini", "Libro de Hechizos", "Canva", "Polaroid", "Flow", "Video IA", "Prompts 5 Capas", "Nivel 1"],
           gallery: [
-            "img/proyectos/halloween_ia_cover.svg"
+            "img/proyectos/halloween_ia_cover.jpg"
           ],
           pdfUrl: null,
           downloadPdfUrl: null,
