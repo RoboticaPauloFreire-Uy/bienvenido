@@ -103,7 +103,9 @@
   let captainTablePage           = 1;
   const CAPTAIN_TABLE_PAGE_SIZE  = 6;
   let isRoadmapGridMode          = false;
-  let fbMediaFilter              = 'all'; // 'all' | 'videos' | 'photos' | 'grid'
+  let fbMediaFilter              = 'all'; // 'all' | 'videos' | 'photos' | 'grid' | 'albums'
+  let fbSelectedYear             = 'all'; // 'all' | '2026' | '2025' | ...
+  let fbSelectedAlbum            = 'all'; // 'all' | 'Halloween' | ...
   let currentFbLightboxIndex     = 0;
   let currentFbLightboxItems     = [];
   let selectedClassProjectIdx    = null; // null => auto-selecciona el último proyecto de clase al ingresar
@@ -218,6 +220,59 @@
   window.downloadDriveFileDirect = downloadDriveFileDirect;
 
   // ──────────────────────────────────────────────────
+  // HELPERS: Extracción y enriquecimiento de Año y Álbum/Carpeta
+  // Soporta estructura: fotos / [año] / [album (ej. halloween, eventos)]
+  // ──────────────────────────────────────────────────
+  function getAlbumEmoji(albumName) {
+    var a = (albumName || '').toLowerCase().trim();
+    if (a.indexOf('hallow') !== -1) return '🎃';
+    if (a.indexOf('navi') !== -1) return '🎄';
+    if (a.indexOf('event') !== -1) return '🎪';
+    if (a.indexOf('feria') !== -1 || a.indexOf('muestra') !== -1 || a.indexOf('ciencia') !== -1) return '🔬';
+    if (a.indexOf('robot') !== -1 || a.indexOf('taller') !== -1) return '🤖';
+    if (a.indexOf('video') !== -1) return '🎬';
+    if (a.indexOf('paint') !== -1 || a.indexOf('dibuj') !== -1) return '🎨';
+    if (a.indexOf('viaje') !== -1 || a.indexOf('paseo') !== -1 || a.indexOf('salida') !== -1) return '🚀';
+    if (a.indexOf('diploma') !== -1 || a.indexOf('egresad') !== -1 || a.indexOf('gradua') !== -1) return '🎓';
+    if (a.indexOf('torneo') !== -1 || a.indexOf('compet') !== -1 || a.indexOf('olimpi') !== -1) return '🏆';
+    return '📁';
+  }
+  window.getAlbumEmoji = getAlbumEmoji;
+
+  function extractItemYear(f) {
+    if (f && f.year && f.year !== 'all') return String(f.year);
+    var str = ((f && f.folderPath) || '') + ' ' + ((f && f.name) || '') + ' ' + ((f && f.date) || '');
+    var m = str.match(/\b(202[0-9])\b/);
+    if (m) return m[1];
+    return '2026';
+  }
+  window.extractItemYear = extractItemYear;
+
+  function extractItemAlbum(f) {
+    if (f && f.album && f.album !== 'all') return String(f.album);
+    var path = ((f && f.folderPath) || '').trim();
+    if (path) {
+      var parts = path.split(/[\/\\]+/).filter(Boolean);
+      var albumParts = parts.filter(function(p){
+        var low = p.toLowerCase();
+        return low !== 'fotos' && low !== 'drive' && !/^\d{4}$/.test(p);
+      });
+      if (albumParts.length > 0) {
+        var last = albumParts[albumParts.length - 1];
+        return last.charAt(0).toUpperCase() + last.slice(1);
+      }
+    }
+    var nm = ((f && f.name) || '').toLowerCase();
+    if (nm.indexOf('hallow') !== -1) return 'Halloween';
+    if (nm.indexOf('navi') !== -1) return 'Navidad';
+    if (nm.indexOf('feria') !== -1 || nm.indexOf('muestra') !== -1) return 'Muestra Anual';
+    if (nm.indexOf('paint') !== -1 || nm.indexOf('dibuj') !== -1) return 'Dibujos Paint';
+    if (isVideoFile(nm, f && f.type)) return 'Videos de Clase';
+    return 'Taller & Proyectos';
+  }
+  window.extractItemAlbum = extractItemAlbum;
+
+  // ──────────────────────────────────────────────────
   // FETCH: Fotos y Videos del Alumno (Google Drive)
   // Consulta concurrentemente subcarpetas dibujo, videos, fotos y raíz
   // ──────────────────────────────────────────────────
@@ -287,6 +342,9 @@
         var remote = mediaFilesOnly.map(function(f){
           var isVid = isVideoFile(f.name, f.type);
           var driveId = f.id || extractDriveId(f.downloadUrl) || extractDriveId(f.url);
+          var itemYear = extractItemYear(f);
+          var itemAlbum = extractItemAlbum(f);
+          var itemAlbumIcon = f.albumIcon || getAlbumEmoji(itemAlbum);
           return {
             id: driveId || f.name,
             name: f.name,
@@ -294,6 +352,11 @@
             type: isVid ? 'video' : 'image',
             size: f.size || '—',
             date: f.date || '—',
+            year: itemYear,
+            album: itemAlbum,
+            albumIcon: itemAlbumIcon,
+            folderPath: f.folderPath || ('fotos/' + itemYear + '/' + itemAlbum.toLowerCase()),
+            folderName: f.folderName || itemAlbum,
             url: isVid
               ? (driveId ? 'https://drive.google.com/file/d/' + driveId + '/preview' : (f.downloadUrl || f.url))
               : (driveId ? 'https://drive.google.com/thumbnail?id=' + driveId + '&sz=w1200' : f.url),
@@ -5626,6 +5689,36 @@
   }
   window.switchFbFilter = switchFbFilter;
 
+  function switchFbYear(year, e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    fbSelectedYear = year || 'all';
+    renderGDriveDashboard('student-drive-dashboard-container');
+    renderGDriveDashboard('gdrive-explorer-container');
+  }
+  window.switchFbYear = switchFbYear;
+
+  function switchFbAlbum(album, e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    fbSelectedAlbum = album || 'all';
+    if (fbMediaFilter === 'albums') fbMediaFilter = 'all';
+    renderGDriveDashboard('student-drive-dashboard-container');
+    renderGDriveDashboard('gdrive-explorer-container');
+  }
+  window.switchFbAlbum = switchFbAlbum;
+
+  function resetFbFilters(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+    fbSelectedYear = 'all';
+    fbSelectedAlbum = 'all';
+    fbMediaFilter = 'all';
+    renderGDriveDashboard('student-drive-dashboard-container');
+    renderGDriveDashboard('gdrive-explorer-container');
+  }
+  window.resetFbFilters = resetFbFilters;
+
   function openFbLightbox(index) {
     if (window.sounds && window.sounds.playClick) window.sounds.playClick();
     if (!currentFbLightboxItems || currentFbLightboxItems.length === 0) return;
@@ -5722,10 +5815,69 @@
 
   function renderFacebookMediaWallHtml(student, allItems, filter, driveTargetUrl, isLoading) {
     allItems = allItems || [];
-    var videoItems = allItems.filter(function(it){ return it.type === 'video'; });
-    var photoItems = allItems.filter(function(it){ return it.type !== 'video'; });
 
+    // Normalizar metadatos de año y álbum para cada elemento
+    allItems.forEach(function(it){
+      if (!it.year) it.year = extractItemYear(it);
+      if (!it.album) it.album = extractItemAlbum(it);
+      if (!it.albumIcon) it.albumIcon = getAlbumEmoji(it.album);
+    });
+
+    // 1. Extraer años disponibles
+    var availableYears = [];
+    var yearSet = {};
+    allItems.forEach(function(it){
+      var y = it.year || '2026';
+      if (!yearSet[y]) {
+        yearSet[y] = true;
+        availableYears.push(y);
+      }
+    });
+    availableYears.sort().reverse();
+    if (availableYears.length === 0) availableYears.push('2026');
+
+    // 2. Extraer álbumes disponibles según el año seleccionado (o todos si fbSelectedYear === 'all')
+    var yearFilteredPool = (fbSelectedYear === 'all')
+      ? allItems
+      : allItems.filter(function(it){ return it.year === fbSelectedYear; });
+
+    var availableAlbumsMap = {};
+    yearFilteredPool.forEach(function(it){
+      var alb = it.album || 'Taller & Proyectos';
+      if (!availableAlbumsMap[alb]) {
+        availableAlbumsMap[alb] = {
+          name: alb,
+          icon: it.albumIcon || getAlbumEmoji(alb),
+          count: 0,
+          videoCount: 0,
+          photoCount: 0,
+          coverItem: it,
+          year: it.year
+        };
+      }
+      availableAlbumsMap[alb].count++;
+      if (it.type === 'video') availableAlbumsMap[alb].videoCount++;
+      else availableAlbumsMap[alb].photoCount++;
+    });
+    var availableAlbums = Object.keys(availableAlbumsMap).map(function(k){ return availableAlbumsMap[k]; });
+
+    // Si el álbum seleccionado no existe en el año actual, resetear a 'all'
+    if (fbSelectedAlbum !== 'all' && !availableAlbumsMap[fbSelectedAlbum]) {
+      fbSelectedAlbum = 'all';
+    }
+
+    // 3. Filtrar ítems para la vista
     var filteredItems = allItems;
+    if (fbSelectedYear !== 'all') {
+      filteredItems = filteredItems.filter(function(it){ return it.year === fbSelectedYear; });
+    }
+    if (fbSelectedAlbum !== 'all') {
+      filteredItems = filteredItems.filter(function(it){ return it.album === fbSelectedAlbum; });
+    }
+
+    var videoItems = filteredItems.filter(function(it){ return it.type === 'video'; });
+    var photoItems = filteredItems.filter(function(it){ return it.type !== 'video'; });
+
     if (filter === 'videos') filteredItems = videoItems;
     else if (filter === 'photos') filteredItems = photoItems;
 
@@ -5735,7 +5887,7 @@
     var profileHtml =
       '<div class="fb-profile-card">' +
         '<div class="fb-profile-cover">' +
-          '<div class="fb-cover-badge"><i class="fas fa-graduation-cap"></i> Colegio Paulo Freire &bull; Taller de Robótica 2026</div>' +
+          '<div class="fb-cover-badge"><i class="fas fa-graduation-cap"></i> Colegio Paulo Freire &bull; Taller de Robótica ' + (fbSelectedYear !== 'all' ? fbSelectedYear : '2026') + '</div>' +
         '</div>' +
         '<div class="fb-profile-info-row">' +
           '<div class="fb-avatar-ring">' +
@@ -5756,7 +5908,10 @@
         // Barra de pestañas Facebook
         '<nav class="fb-nav-tabs" role="tablist">' +
           '<button type="button" class="fb-tab-btn ' + (filter==='all' ? 'active' : '') + '" onclick="window.switchFbFilter(\'all\', event)">' +
-            '<i class="fas fa-stream"></i> Todo el Muro <span class="fb-tab-badge">' + allItems.length + '</span>' +
+            '<i class="fas fa-stream"></i> Muro <span class="fb-tab-badge">' + filteredItems.length + '</span>' +
+          '</button>' +
+          '<button type="button" class="fb-tab-btn ' + (filter==='albums' ? 'active' : '') + '" onclick="window.switchFbFilter(\'albums\', event)">' +
+            '<i class="fas fa-folder"></i> Álbumes <span class="fb-tab-badge">' + availableAlbums.length + '</span>' +
           '</button>' +
           '<button type="button" class="fb-tab-btn ' + (filter==='videos' ? 'active' : '') + '" onclick="window.switchFbFilter(\'videos\', event)">' +
             '<i class="fas fa-video"></i> Videos <span class="fb-tab-badge">' + videoItems.length + '</span>' +
@@ -5774,7 +5929,55 @@
         '</nav>' +
       '</div>';
 
-    // 2. Composer Box ("¿Qué aprendimos hoy en Robótica?")
+    // 2. Panel de Filtros por Año y Álbum/Carpeta
+    var filtersPanelHtml =
+      '<div class="fb-filters-panel">' +
+        // Fila 1: Selector de Año
+        '<div class="fb-selector-row">' +
+          '<div class="fb-selector-label"><i class="far fa-calendar-alt"></i> Año:</div>' +
+          '<div class="fb-selector-pills">' +
+            '<button type="button" class="fb-filter-pill ' + (fbSelectedYear === 'all' ? 'active' : '') + '" onclick="window.switchFbYear(\'all\', event)">' +
+              '🌟 Todos los Años' +
+            '</button>' +
+            availableYears.map(function(y){
+              return '<button type="button" class="fb-filter-pill ' + (fbSelectedYear === y ? 'active' : '') + '" onclick="window.switchFbYear(\'' + y + '\', event)">' +
+                '📅 ' + y +
+              '</button>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+
+        // Fila 2: Selector de Álbum / Carpeta
+        '<div class="fb-selector-row">' +
+          '<div class="fb-selector-label"><i class="fas fa-folder-open"></i> Álbum:</div>' +
+          '<div class="fb-selector-pills">' +
+            '<button type="button" class="fb-filter-pill purple ' + (fbSelectedAlbum === 'all' ? 'active' : '') + '" onclick="window.switchFbAlbum(\'all\', event)">' +
+              '📁 Todos (' + yearFilteredPool.length + ')' +
+            '</button>' +
+            availableAlbums.map(function(alb){
+              return '<button type="button" class="fb-filter-pill purple ' + (fbSelectedAlbum === alb.name ? 'active' : '') + '" onclick="window.switchFbAlbum(\'' + alb.name.replace(/'/g, "\\'") + '\', event)">' +
+                alb.icon + ' ' + alb.name + ' <span style="font-size:0.75rem; opacity:0.85;">(' + alb.count + ')</span>' +
+              '</button>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+
+        // Banner informativo de filtro activo
+        ((fbSelectedYear !== 'all' || fbSelectedAlbum !== 'all') ?
+          ('<div class="fb-active-album-banner">' +
+            '<div class="fb-active-album-text">' +
+              '<i class="fas fa-filter"></i> Mostrando: ' +
+              (fbSelectedYear !== 'all' ? '<strong>Año ' + fbSelectedYear + '</strong> ' : '') +
+              (fbSelectedAlbum !== 'all' ? '<strong>&bull; Álbum ' + fbSelectedAlbum + '</strong>' : '') +
+              ' (' + filteredItems.length + ' archivos)' +
+            '</div>' +
+            '<button type="button" class="fb-active-album-clear" onclick="window.resetFbFilters(event)">' +
+              '<i class="fas fa-times"></i> Ver Todo' +
+            '</button>' +
+          '</div>') : '') +
+      '</div>';
+
+    // 3. Composer Box ("¿Qué aprendimos hoy en Robótica?")
     var composerHtml =
       '<div class="fb-composer-card">' +
         '<div class="fb-composer-top">' +
@@ -5785,19 +5988,22 @@
         '</div>' +
         '<div class="fb-composer-actions">' +
           '<button type="button" class="fb-composer-btn video-btn" onclick="window.switchFbFilter(\'videos\', event)">' +
-            '<i class="fas fa-video"></i> <span>Videos de Clase (' + videoItems.length + ')</span>' +
+            '<i class="fas fa-video"></i> <span>Videos (' + videoItems.length + ')</span>' +
           '</button>' +
           '<button type="button" class="fb-composer-btn photo-btn" onclick="window.switchFbFilter(\'photos\', event)">' +
-            '<i class="fas fa-camera"></i> <span>Fotos de Proyectos (' + photoItems.length + ')</span>' +
+            '<i class="fas fa-camera"></i> <span>Fotos (' + photoItems.length + ')</span>' +
+          '</button>' +
+          '<button type="button" class="fb-composer-btn album-btn" onclick="window.switchFbFilter(\'albums\', event)">' +
+            '<i class="fas fa-folder"></i> <span>Álbumes (' + availableAlbums.length + ')</span>' +
           '</button>' +
           (driveTargetUrl ?
             '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-composer-btn drive-btn" style="text-decoration:none;">' +
-              '<i class="fab fa-google-drive"></i> <span>Google Drive</span>' +
+              '<i class="fab fa-google-drive"></i> <span>Drive</span>' +
             '</a>' : '') +
         '</div>' +
       '</div>';
 
-    // 3. Contenido según el filtro
+    // 4. Contenido según el filtro
     var bodyHtml = '';
 
     if (isLoading && allItems.length === 0) {
@@ -5806,15 +6012,54 @@
         'Conectando en vivo con la carpeta de Google Drive del alumno...',
         '#1877F2'
       );
+    } else if (filter === 'albums') {
+      // ── MODO VISTA DE ÁLBUMES / CARPETAS ──
+      if (availableAlbums.length === 0) {
+        bodyHtml =
+          '<div class="fb-empty-state">' +
+            '<div class="fb-empty-icon">📁</div>' +
+            '<h4 class="fb-empty-title">No hay carpetas ni álbumes en este período</h4>' +
+            '<p class="fb-empty-desc">Las fotos y videos organizados en subcarpetas de Google Drive (como 2026, eventos, etc.) se agruparán automáticamente aquí.</p>' +
+            '<button type="button" class="fb-empty-action-btn" onclick="window.resetFbFilters(event)"><i class="fas fa-undo"></i> Restablecer Filtros</button>' +
+          '</div>';
+      } else {
+        bodyHtml =
+          '<div class="fb-albums-grid">' +
+            availableAlbums.map(function(alb){
+              var coverThumb = alb.coverItem
+                ? (alb.coverItem.type === 'video'
+                    ? (alb.coverItem.thumbUrl || 'https://drive.google.com/thumbnail?id=' + alb.coverItem.id + '&sz=w600')
+                    : getDrawingImageUrl(alb.coverItem))
+                : 'img/escudo_paulo_freire.png';
+              return '<div class="fb-album-card" onclick="window.switchFbAlbum(\'' + alb.name.replace(/'/g, "\\'") + '\', event)" title="Abrir álbum ' + alb.name.replace(/"/g, '&quot;') + '">' +
+                '<div class="fb-album-cover-wrap">' +
+                  '<img src="' + coverThumb + '" alt="' + alb.name.replace(/"/g, '&quot;') + '" class="fb-album-cover" loading="lazy" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
+                  '<span class="fb-album-icon-badge">' + alb.icon + '</span>' +
+                  '<span class="fb-album-year-badge"><i class="far fa-calendar-alt"></i> ' + (alb.year || fbSelectedYear) + '</span>' +
+                '</div>' +
+                '<div class="fb-album-info">' +
+                  '<div class="fb-album-title">' + alb.name + '</div>' +
+                  '<div class="fb-album-meta">' +
+                    '<span><i class="fas fa-images"></i> ' + alb.count + ' archivo' + (alb.count === 1 ? '' : 's') + '</span>' +
+                    (alb.videoCount > 0 ? '<span>&bull; <i class="fas fa-video"></i> ' + alb.videoCount + '</span>' : '') +
+                  '</div>' +
+                '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>';
+      }
     } else if (filter === 'grid') {
       // ── MODO CUADRÍCULA / GALERÍA ──
       if (filteredItems.length === 0) {
         bodyHtml =
           '<div class="fb-empty-state">' +
             '<div class="fb-empty-icon">🖼️</div>' +
-            '<h4 class="fb-empty-title">Aún no hay fotos ni videos en tu galería</h4>' +
+            '<h4 class="fb-empty-title">Aún no hay fotos ni videos en esta vista</h4>' +
             '<p class="fb-empty-desc">Los archivos que el docente o vos suban a la carpeta de Google Drive aparecerán organizados en este álbum.</p>' +
-            '<button type="button" class="fb-empty-action-btn" onclick="var inp=document.getElementById(\'gdz-file-input\'); if(inp) inp.click();"><i class="fas fa-plus"></i> Subir Foto o Video</button>' +
+            '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
+              '<button type="button" class="fb-empty-action-btn" onclick="var inp=document.getElementById(\'gdz-file-input\'); if(inp) inp.click();"><i class="fas fa-plus"></i> Subir Foto o Video</button>' +
+              ((fbSelectedYear !== 'all' || fbSelectedAlbum !== 'all') ? '<button type="button" class="fb-empty-action-btn" style="background:#475569;" onclick="window.resetFbFilters(event)"><i class="fas fa-undo"></i> Ver Todo</button>' : '') +
+            '</div>' +
           '</div>';
       } else {
         bodyHtml =
@@ -5839,10 +6084,10 @@
       // ── MODO FEED DE PUBLICACIONES (ESTILO FACEBOOK WALL) ──
       if (filteredItems.length === 0) {
         var emptyMsg = filter === 'videos'
-          ? { icon: '🎬', title: 'Aún no hay videos subidos en tu carpeta', desc: 'Cuando el profe grabe y suba los videos de tus robots y proyectos en acción a tu Google Drive, los vas a ver y reproducir directamente acá con su reproductor integrado.' }
+          ? { icon: '🎬', title: 'No hay videos en este filtro', desc: 'No se encontraron videos para el año o álbum seleccionado.' }
           : (filter === 'photos'
-              ? { icon: '📸', title: 'Aún no hay fotos en tu carpeta', desc: 'Tus fotos, dibujos de Paint y capturas de proyectos quedarán registradas acá en tu muro.' }
-              : { icon: '📸🎬', title: '¡Tu Muro de Fotos y Videos está listo!', desc: 'Acá vas a ver todas las grabaciones, demostraciones en video y fotos de tus creaciones en el Taller de Robótica.' });
+              ? { icon: '📸', title: 'No hay fotos en este filtro', desc: 'No se encontraron fotos para el año o álbum seleccionado.' }
+              : { icon: '📸🎬', title: '¡No hay publicaciones para este filtro!', desc: 'Probá seleccionando otro año, otro álbum o restablecé los filtros para ver todo tu muro.' });
 
         bodyHtml =
           '<div class="fb-empty-state">' +
@@ -5851,6 +6096,7 @@
             '<p class="fb-empty-desc">' + emptyMsg.desc + '</p>' +
             '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
               '<button type="button" class="fb-empty-action-btn" onclick="var inp=document.getElementById(\'gdz-file-input\'); if(inp) inp.click();"><i class="fas fa-upload"></i> Subir Foto o Video</button>' +
+              ((fbSelectedYear !== 'all' || fbSelectedAlbum !== 'all') ? '<button type="button" class="fb-empty-action-btn" style="background:#475569;" onclick="window.resetFbFilters(event)"><i class="fas fa-undo"></i> Restablecer Filtros</button>' : '') +
               (driveTargetUrl ? '<a href="' + driveTargetUrl + '" target="_blank" rel="noopener noreferrer" class="fb-empty-action-btn" style="background:#0F172A; text-decoration:none;"><i class="fab fa-google-drive"></i> Abrir Carpeta de Drive</a>' : '') +
             '</div>' +
           '</div>';
@@ -5901,7 +6147,11 @@
                       '</span>' +
                     '</div>' +
                     '<div class="fb-post-time-row">' +
-                      '<span><i class="far fa-calendar-alt"></i> ' + (item.date || 'Taller 2026') + '</span>' +
+                      '<span><i class="far fa-calendar-alt"></i> ' + (item.date || ('Taller ' + (item.year || '2026'))) + '</span>' +
+                      '<span>&bull;</span>' +
+                      '<span class="fb-post-album-tag" onclick="window.switchFbAlbum(\'' + (item.album || 'Taller').replace(/'/g, "\\'") + '\', event)" title="Ver fotos y videos del álbum ' + (item.album || 'Taller').replace(/"/g, '&quot;') + '">' +
+                        (item.albumIcon || '📁') + ' ' + (item.album || 'Taller') +
+                      '</span>' +
                       '<span>&bull;</span>' +
                       '<span title="Visible para alumno y familia"><i class="fas fa-user-friends"></i></span>' +
                       '<span>&bull;</span>' +
@@ -5922,8 +6172,8 @@
                   '</p>' +
                   '<div class="fb-post-tags">' +
                     '<span class="fb-post-tag">#RoboticaFreire</span>' +
-                    '<span class="fb-post-tag">#ColegioPauloFreire</span>' +
-                    '<span class="fb-post-tag">#Taller2026</span>' +
+                    '<span class="fb-post-tag">#' + (item.album ? item.album.replace(/\s+/g,'') : 'Taller') + '</span>' +
+                    '<span class="fb-post-tag">#Taller' + (item.year || '2026') + '</span>' +
                     '<span class="fb-post-tag">#' + (student.gradeId || 'robotica') + '</span>' +
                   '</div>' +
                 '</div>' +
@@ -5949,10 +6199,10 @@
 
                 // Barra de Acciones Facebook (Me gusta, Comentar, Descargar, Drive)
                 '<div class="fb-post-actions">' +
-                  '<button type="button" class="fb-action-btn fb-btn-like ' + (isLiked ? 'liked' : '') + '" id="fb-like-btn-' + item.id + '" onclick="window.toggleFbLike(\'" + item.id + "\', event)">' +
+                  '<button type="button" class="fb-action-btn fb-btn-like ' + (isLiked ? 'liked' : '') + '" id="fb-like-btn-' + item.id + '" onclick="window.toggleFbLike(\'' + item.id + '\', event)">' +
                     '<i class="' + (isLiked ? 'fas' : 'far') + ' fa-thumbs-up"></i> <span>' + (isLiked ? '¡Te gusta!' : 'Me gusta') + '</span>' +
                   '</button>' +
-                  '<button type="button" class="fb-action-btn" onclick="window.toggleFbComments(\'" + item.id + "\', event)">' +
+                  '<button type="button" class="fb-action-btn" onclick="window.toggleFbComments(\'' + item.id + '\', event)">' +
                     '<i class="far fa-comment-alt"></i> <span>Comentario</span>' +
                   '</button>' +
                   (dlUrl && dlUrl !== '#' ?
@@ -5981,8 +6231,9 @@
       }
     }
 
-    return '<div class="fb-wall-wrapper">' + profileHtml + composerHtml + bodyHtml + '</div>';
+    return '<div class="fb-wall-wrapper">' + profileHtml + filtersPanelHtml + composerHtml + bodyHtml + '</div>';
   }
+
 
   // ──────────────────────────────────────────────────
   // LA MESA DEL CAPITÁN (PIRATA) / PROYECTOR DE HOLOGRAMAS (ESPACIAL)
@@ -10828,11 +11079,21 @@
         var b64 = ev.target.result.split(',')[1];
         var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
         var targetSubfolder = (subfolder === 'proyecto' || subfolder === 'proyectos') ? 'proyectos' : subfolder;
+        var uploadYear = (fbSelectedYear && fbSelectedYear !== 'all') ? fbSelectedYear : (new Date().getFullYear().toString());
+        var uploadAlbum = (fbSelectedAlbum && fbSelectedAlbum !== 'all') ? fbSelectedAlbum : 'Taller';
         if (hook) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe){ iframe=document.createElement('iframe'); iframe.name=iframe.id='gdrive_silent_upload_iframe'; iframe.style.display='none'; document.body.appendChild(iframe); }
           var form = document.createElement('form'); form.target='gdrive_silent_upload_iframe'; form.method='POST'; form.action=hook;
-          var fields = { filename:file.name, mimeType:file.type||'application/octet-stream', base64:b64, folderId:student.driveFolderId||'', subfolder:targetSubfolder };
+          var fields = {
+            filename: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64: b64,
+            folderId: student.driveFolderId || '',
+            subfolder: targetSubfolder,
+            year: uploadYear,
+            album: uploadAlbum
+          };
           for (var k in fields){ var i=document.createElement('input'); i.type='hidden'; i.name=k; i.value=fields[k]; form.appendChild(i); }
           document.body.appendChild(form); form.submit(); setTimeout(function(){ form.remove(); }, 2500);
         }
@@ -10842,8 +11103,22 @@
         var isVid  = isVideoFile(file.name, file.type);
         var type   = isCirc ? 'circuito' : (fileType || (isProyecto ? 'scratch' : (isVid ? 'video' : 'image')));
         var icon   = type==='scratch' ? '🐱' : type==='makecode' ? '💻' : type==='circuito' ? '⚡' : (isVid ? '🎬' : '📸');
-        var newItem = { name:file.name, title:icon+' '+file.name.replace(/\.[^.]+$/,''), size:sz, date:nowStr,
-          url:ev.target.result, downloadUrl:'', isLocalPending:true, type:type, videoEmbedUrl:(isVid ? ev.target.result : '') };
+        var newItem = {
+          name: file.name,
+          title: icon + ' ' + file.name.replace(/\.[^.]+$/,''),
+          size: sz,
+          date: nowStr,
+          year: uploadYear,
+          album: uploadAlbum,
+          albumIcon: getAlbumEmoji(uploadAlbum),
+          folderPath: 'fotos/' + uploadYear + '/' + uploadAlbum.toLowerCase(),
+          folderName: uploadAlbum,
+          url: ev.target.result,
+          downloadUrl: '',
+          isLocalPending: true,
+          type: type,
+          videoEmbedUrl: (isVid ? ev.target.result : '')
+        };
 
         if (isProyecto) {
           if (!FOLDER_CONTENTS.proyecto.items.some(function(it){ return it.name===file.name; })) {
