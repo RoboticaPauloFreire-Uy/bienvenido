@@ -524,7 +524,7 @@
 
 .fb-photo-zoom-hint {
   position: absolute;
-  bottom: 12px;
+  top: 12px;
   right: 12px;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
@@ -536,6 +536,49 @@
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
+}
+
+/* ── Marca de Agua / Escudo Oficial del Colegio en Videos y Fotos ── */
+.fb-media-watermark {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 5;
+  pointer-events: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.fb-media-watermark img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+@media (max-width: 640px) {
+  .fb-media-watermark {
+    width: 40px;
+    height: 40px;
+    right: 10px;
+    bottom: 10px;
+  }
+  .fb-media-watermark img {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .fb-photo-container:hover .fb-photo-zoom-hint {

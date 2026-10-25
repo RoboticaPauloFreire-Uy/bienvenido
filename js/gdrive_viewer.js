@@ -5767,12 +5767,21 @@
     if (isVid) {
       var embedSrc = item.videoEmbedUrl || (item.id ? ('https://drive.google.com/file/d/' + item.id + '/preview') : item.url);
       mediaHtml =
-        '<div class="fb-lb-video-box">' +
+        '<div class="fb-lb-video-box" style="position:relative;">' +
           '<iframe src="' + embedSrc + '" style="width:100%;height:100%;border:0;" allow="autoplay; fullscreen" allowfullscreen></iframe>' +
+          '<div class="fb-media-watermark" title="Colegio Paulo Freire &bull; Taller de Robótica">' +
+            '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" />' +
+          '</div>' +
         '</div>';
     } else {
       var imgSrc = getDrawingImageUrl(item);
-      mediaHtml = '<img src="' + imgSrc + '" alt="' + (item.title || 'Foto') + '" class="fb-lb-img">';
+      mediaHtml =
+        '<div style="position:relative; display:inline-block; max-width:100%; max-height:100%;">' +
+          '<img src="' + imgSrc + '" alt="' + (item.title || 'Foto') + '" class="fb-lb-img">' +
+          '<div class="fb-media-watermark" title="Colegio Paulo Freire &bull; Taller de Robótica">' +
+            '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" />' +
+          '</div>' +
+        '</div>';
     }
 
     modal.innerHTML =
@@ -6120,6 +6129,9 @@
                   '<div class="fb-video-container">' +
                     '<div class="fb-video-aspect">' +
                       '<iframe src="' + embedSrc + '" class="fb-video-iframe" allow="autoplay; fullscreen" allowfullscreen loading="lazy" title="' + title.replace(/"/g, '&quot;') + '"></iframe>' +
+                      '<div class="fb-media-watermark" title="Colegio Paulo Freire &bull; Taller de Robótica">' +
+                        '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" />' +
+                      '</div>' +
                     '</div>' +
                     '<div class="fb-video-bar">' +
                       '<span><i class="fas fa-video"></i> Video Oficial &bull; ' + (item.size || 'HD') + '</span>' +
@@ -6132,6 +6144,9 @@
                 mediaBoxHtml =
                   '<div class="fb-photo-container" onclick="window.openFbLightbox(' + idx + ')" title="Hacé clic para ver la foto en pantalla completa">' +
                     '<img src="' + imgSrc + '" alt="' + title.replace(/"/g, '&quot;') + '" class="fb-photo-image" loading="lazy" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
+                    '<div class="fb-media-watermark" title="Colegio Paulo Freire &bull; Taller de Robótica">' +
+                      '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" />' +
+                    '</div>' +
                     '<div class="fb-photo-zoom-hint"><i class="fas fa-search-plus"></i> Ver foto completa</div>' +
                   '</div>';
               }
