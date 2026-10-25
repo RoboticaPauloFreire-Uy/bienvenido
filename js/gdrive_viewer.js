@@ -920,6 +920,16 @@
       return m && m.type !== 'pdf' && !(m.id && m.id.toString().startsWith('pdf-'));
     });
 
+    // Para 5to y 6to: en los usuarios SOLO mostrar el proyecto oficial de Halloween con IA
+    if (gradeId === 'grado5' || gradeId === 'grado6' || gradeId === '5to' || gradeId === '6to') {
+      missions = missions.filter(function(m) {
+        return m.id === 'g5-p1' || m.id === 'g6-p1' || /halloween|hechizos|monstruo/i.test((m.title || '') + ' ' + (m.id || ''));
+      });
+      missions.forEach(function(m, idx) {
+        m.level = idx + 1;
+      });
+    }
+
     // ── Determinar estado dinámico de cada misión según entregas del alumno ──
     var explicitlyCompletedIds = {};
     var explicitlyCompletedCount = 0;
@@ -2988,6 +2998,15 @@
           }
         });
 
+        if (student.gradeId === 'grado5' || student.gradeId === 'grado6' || student.gradeId === '5to' || student.gradeId === '6to') {
+          displayProjects = displayProjects.filter(function(p){
+            return p.id === 'g5-p1' || p.id === 'g6-p1' || /halloween|hechizos|monstruo/i.test((p.title || '') + ' ' + (p.id || ''));
+          });
+          displayProjects.forEach(function(p, idx){
+            p.level = idx + 1;
+          });
+        }
+
         if (displayProjects.length === 0) {
           tabContent = '<div class="gdb-empty-state">' +
             '<div class="ges-icon">💻</div>' +
@@ -3728,7 +3747,7 @@
         };
       });
 
-      // Clic en isla pirata (Landmark): Despliega o repliega el pergamino con el contenido al hacer click
+      // Clic en isla pirata (Landmark): Abre el Modal directamente con las pestañas pedagógicas
       container.querySelectorAll('.pirate-island-landmark').forEach(function(landmark){
         landmark.onclick = function(e){
           if (e.target.closest('button') || e.target.closest('a')) return;
@@ -3737,6 +3756,13 @@
             window.sounds.playPop();
           } else if (window.sounds && window.sounds.playClick) {
             window.sounds.playClick();
+          }
+          var idx = parseInt(landmark.dataset.missionIdx, 10);
+          var mission = adventureMissions[idx];
+          if (mission) {
+            var isHw = (mission.id === 'g5-p1' || mission.id === 'g6-p1' || /halloween/i.test(mission.title || ''));
+            openAdventureProjectModal(mission, isHw ? 'pasos' : 'presentacion');
+            return;
           }
           var station = landmark.closest('.pirate-island-station');
           if (!station) return;
@@ -7472,8 +7498,10 @@
     var isClaseActivity = (mission.tipo === 'clase' || mission.type === 'clase' || (mission.badge && mission.badge.includes('Actividad de Clase')));
     var isGeminiNotebooks = !isClaseActivity && ((mission.id === 'g6-p3') || (/gemini|notebooklm|notebooks.*ia|materiales.*estudio/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /notebooklm|gemini|materiales de estudio/i.test(t); })));
     var isGame = !isClaseActivity && !isPaint && !isCanva && !isGeminiNotebooks && (mission.type === 'game' || isCodeorg || (mission.tags && mission.tags.some(function(t){ return /juego|game/i.test(t); })));
-    var activeTab = initialTab || 'presentacion';
-    if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
+    var activeTab = initialTab || (isHalloween ? 'pasos' : 'presentacion');
+    if (isHalloween && (!initialTab || initialTab === 'presentacion' || initialTab === 'solucion')) {
+      activeTab = 'pasos';
+    } else if (isGame && (activeTab === 'entrega' || activeTab === 'solucion' || activeTab === 'simulador')) {
       activeTab = 'presentacion';
     } else if (activeTab === 'simulador') {
       activeTab = 'solucion';
@@ -7617,25 +7645,293 @@
         '</div>' +
 
         // Barra de pestañas
-        '<div class="apm-tabs-bar">' +
-          '<button type="button" class="apm-tab-btn ' + (activeTab === 'presentacion' ? 'active' : '') + '" data-tab="presentacion">' +
-            '<i class="fas fa-chalkboard-teacher"></i> Modo Presentación' +
-          '</button>' +
-          (!isGame ?
-            '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega">' +
-              '<i class="fas fa-cloud-upload-alt"></i> Mi Entrega' +
+        '<div class="apm-tabs-bar' + (isHalloween ? ' apm-tabs-bar-halloween' : '') + '" style="' + (isHalloween ? 'background:#18181B;border-bottom:2px solid #EA580C;padding:8px 16px;display:flex;gap:8px;overflow-x:auto;' : '') + '">' +
+          (isHalloween ?
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'pasos' ? 'active' : '') + '" data-tab="pasos" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
+              '<i class="fas fa-list-check" style="color:#F97316;"></i> 🎃 Pasos del Proyecto' +
             '</button>' +
-            '<button type="button" class="apm-tab-btn ' + (activeTab === 'solucion' ? 'active' : '') + '" data-tab="solucion">' +
-              '<i class="fas fa-lightbulb"></i> Solución Oficial' +
-            '</button>' : ''
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'paginas' ? 'active' : '') + '" data-tab="paginas" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
+              '<i class="fas fa-globe" style="color:#38BDF8;"></i> 🌐 Páginas & Herramientas' +
+            '</button>' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'libro' ? 'active' : '') + '" data-tab="libro" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
+              '<i class="fas fa-book-sparkles" style="color:#A855F7;"></i> 📖 Libro de Hechizos' +
+            '</button>' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
+              '<i class="fas fa-cloud-upload-alt" style="color:#10B981;"></i> 📤 Mi Entrega & Drive' +
+            '</button>'
+          :
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'presentacion' ? 'active' : '') + '" data-tab="presentacion">' +
+              '<i class="fas fa-chalkboard-teacher"></i> Modo Presentación' +
+            '</button>' +
+            (!isGame ?
+              '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega">' +
+                '<i class="fas fa-cloud-upload-alt"></i> Mi Entrega' +
+              '</button>' +
+              '<button type="button" class="apm-tab-btn ' + (activeTab === 'solucion' ? 'active' : '') + '" data-tab="solucion">' +
+                '<i class="fas fa-lightbulb"></i> Solución Oficial' +
+              '</button>' : ''
+            ) +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'pdf' ? 'active' : '') + '" data-tab="pdf">' +
+              '<i class="fas fa-file-pdf"></i> Guía PDF' +
+            '</button>'
           ) +
-          '<button type="button" class="apm-tab-btn ' + (activeTab === 'pdf' ? 'active' : '') + '" data-tab="pdf">' +
-            '<i class="fas fa-file-pdf"></i> Guía PDF' +
-          '</button>' +
         '</div>' +
 
         // Paneles
         '<div class="apm-panes-container">' +
+          (isHalloween ?
+            // ── PESTAÑA HALLOWEEN 1: PASOS DEL PROYECTO ──
+            '<div class="apm-tab-pane pane-pasos ' + (activeTab === 'pasos' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;">' +
+              '<div style="background:linear-gradient(135deg, #431407 0%, #7C2D12 50%, #4C1D95 100%);border-radius:16px;padding:22px;border:1px solid rgba(249,115,22,0.35);margin-bottom:24px;box-shadow:0 10px 25px rgba(0,0,0,0.4);">' +
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">' +
+                  '<span style="background:#EA580C;color:#FFF;padding:5px 14px;border-radius:999px;font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;"><i class="fas fa-ghost"></i> Proyecto Especial Halloween con IA</span>' +
+                  '<span style="background:rgba(255,255,255,0.15);color:#FDBA74;padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;"><i class="fas fa-graduation-cap"></i> 5° y 6° de Primaria</span>' +
+                  '<span style="background:rgba(124,58,237,0.4);color:#DDD6FE;padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;"><i class="fas fa-clock"></i> 3 Clases Consecutivas</span>' +
+                '</div>' +
+                '<h2 style="font-size:1.75rem;font-weight:900;color:#FFF;margin:0 0 10px;line-height:1.2;">De la Foto al Monstruo, Postal Polaroid en Canva y Video Animado en Flow 🎃👻🎬</h2>' +
+                '<p style="color:#FED7AA;font-size:0.95rem;margin:0;line-height:1.5;">Seguí la guía paso a paso explicada en las tres clases del taller de robótica para transformar tu imagen con inteligencia artificial, componer tu foto para impresión física y animarla en video.</p>' +
+              '</div>' +
+
+              '<div style="display:flex;flex-direction:column;gap:20px;">' +
+
+                // ETAPA 1: FOTO & GEMINI
+                '<div style="background:#1E293B;border-radius:14px;border-left:5px solid #F97316;padding:22px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 4px 14px rgba(0,0,0,0.2);">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
+                    '<div style="display:flex;align-items:center;gap:12px;">' +
+                      '<span style="background:#EA580C;color:#FFF;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;">1</span>' +
+                      '<div>' +
+                        '<h3 style="margin:0;font-size:1.2rem;font-weight:800;color:#FFF;">Clase 1: Foto en la Computadora y Creación del Monstruo con Google Gemini</h3>' +
+                        '<span style="font-size:0.8rem;color:#94A3B8;">Inteligencia Artificial Multimodal • Técnica de las 5 Capas de Hechizo</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div style="display:flex;gap:8px;">' +
+                      '<a href="https://gemini.google.com/app" target="_blank" rel="noopener" style="background:#2563EB;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-brain"></i> Abrir Gemini ↗</a>' +
+                      '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener" style="background:#7C3AED;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-book-skull"></i> Libro de Hechizos ↗</a>' +
+                    '</div>' +
+                  '</div>' +
+                  '<p style="color:#CBD5E1;font-size:0.9rem;line-height:1.55;margin-bottom:14px;">' +
+                    '<strong>1.</strong> Sentate frente a la computadora del taller y tomate una foto nítida de tu rostro con la webcam.<br>' +
+                    '<strong>2.</strong> Ingresá a <strong>Google Gemini</strong>, subí la fotografía y redactá el prompt aplicando la fórmula de las <strong>5 Capas del Hechizo</strong> que vimos en clase y en el manual oficial del colegio (<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" style="color:#38BDF8;">El Libro de los Hechizos de IA</a>):' +
+                  '</p>' +
+                  '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:10px;margin-bottom:14px;">' +
+                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
+                      '<span style="color:#F97316;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 1: Sujeto</span>' +
+                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Quién aparece y qué postura tiene (primer plano de estudiante sonriendo).</p>' +
+                    '</div>' +
+                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
+                      '<span style="color:#C084FC;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 2: Transformación</span>' +
+                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Criatura o rasgos: vampiro victoriano, zombi cibernético, hechicero oscuro.</p>' +
+                    '</div>' +
+                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
+                      '<span style="color:#38BDF8;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 3: Entorno</span>' +
+                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Castillo gótico a medianoche, niebla baja, laboratorio o calabazas ardientes.</p>' +
+                    '</div>' +
+                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
+                      '<span style="color:#FACC15;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 4: Iluminación</span>' +
+                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Sombras dramáticas, luz lunar plateada, neón morado y fuego naranja.</p>' +
+                    '</div>' +
+                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
+                      '<span style="color:#34D399;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 5: Estilo Visual</span>' +
+                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Fotografía hiperrealista 8k, claroscuro cinematográfico y alta definición.</p>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div style="background:#0F172A;padding:10px 14px;border-radius:8px;font-size:0.84rem;color:#CBD5E1;border-left:3px solid #38BDF8;">' +
+                    '💡 <strong>Tip de clase:</strong> Si algún rasgo no te convence, ajustá los adjetivos de las 5 capas hasta lograr el monstruo que más te guste y descargalo en tu computadora.' +
+                  '</div>' +
+                '</div>' +
+
+                // ETAPA 2: CANVA POLAROID
+                '<div style="background:#1E293B;border-radius:14px;border-left:5px solid #06B6D4;padding:22px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 4px 14px rgba(0,0,0,0.2);">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
+                    '<div style="display:flex;align-items:center;gap:12px;">' +
+                      '<span style="background:#0891B2;color:#FFF;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;">2</span>' +
+                      '<div>' +
+                        '<h3 style="margin:0;font-size:1.2rem;font-weight:800;color:#FFF;">Clase 2: Foto Estilo Polaroid en Canva para Impresión Física</h3>' +
+                        '<span style="font-size:0.8rem;color:#94A3B8;">Diseño Gráfico Editorial • Impresión Tangible para la Familia</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<a href="https://www.canva.com/" target="_blank" rel="noopener" style="background:#0284C7;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-palette"></i> Abrir Canva ↗</a>' +
+                  '</div>' +
+                  '<p style="color:#CBD5E1;font-size:0.9rem;line-height:1.55;margin-bottom:14px;">' +
+                    '<strong>1.</strong> En la siguiente clase abrimos Canva y buscamos una plantilla de <strong>Marco Polaroid / Foto Instantánea</strong>.<br>' +
+                    '<strong>2.</strong> Colocamos la foto del monstruo de Gemini en el centro del marco.<br>' +
+                    '<strong>3.</strong> Escribimos en el borde inferior tu nombre, el curso ("Halloween 2026 - Taller de Robótica") y sumamos adornos temáticos de murciélagos, telas de araña y calabazas.' +
+                  '</p>' +
+                  '<div style="background:linear-gradient(135deg, rgba(16,185,129,0.18) 0%, rgba(6,95,70,0.3) 100%);border:2px dashed #10B981;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;">' +
+                    '<div style="font-size:2.2rem;color:#34D399;flex-shrink:0;"><i class="fas fa-print"></i></div>' +
+                    '<div>' +
+                      '<h4 style="margin:0 0 4px;color:#6EE7B7;font-size:1.05rem;font-weight:900;">⭐ ¡Entrega Física en Papel Fotográfico de Alta Calidad!</h4>' +
+                      '<p style="margin:0;color:#D1FAE5;font-size:0.88rem;line-height:1.5;">' +
+                        'Tu foto Polaroid terminada será <strong>impresa físicamente por el profesor en papel fotográfico profesional</strong> en el colegio. Cada estudiante la recibirá en mano para llevarla a su hogar y compartirla con su familia como recuerdo del taller.' +
+                      '</p>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                // ETAPA 3: FLOW & DRIVE
+                '<div style="background:#1E293B;border-radius:14px;border-left:5px solid #8B5CF6;padding:22px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 4px 14px rgba(0,0,0,0.2);">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
+                    '<div style="display:flex;align-items:center;gap:12px;">' +
+                      '<span style="background:#7C3AED;color:#FFF;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;">3</span>' +
+                      '<div>' +
+                        '<h3 style="margin:0;font-size:1.2rem;font-weight:800;color:#FFF;">Clase 3: Video Animado con Flow y Guardado en Google Drive</h3>' +
+                        '<span style="font-size:0.8rem;color:#94A3B8;">Inteligencia Artificial de Video • Prompts Cinemáticos de Movimiento</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div style="display:flex;gap:8px;">' +
+                      '<button type="button" class="apm-quick-tab-btn" data-target-tab="entrega" style="background:#10B981;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-cloud-upload-alt"></i> Subir Entrega a Drive ↗</button>' +
+                    '</div>' +
+                  '</div>' +
+                  '<p style="color:#CBD5E1;font-size:0.9rem;line-height:1.55;margin-bottom:14px;">' +
+                    '<strong>1.</strong> Subimos la imagen del monstruo a <strong>Flow</strong>.<br>' +
+                    '<strong>2.</strong> Aprendemos a redactar prompts para video: movimiento de cámara (zoom in lento, paneo sutil), gestos del personaje (ojos brillantes parpadeando, sonrisa misteriosa) y atmósfera dinámica (humo avanzando sobre el suelo).<br>' +
+                    '<strong>3.</strong> Descargamos el video MP4 terminado y lo subimos a la carpeta <strong>fotos/2026/halloween</strong> de Google Drive para verlo en el muro interactivo del colegio con el logo oficial.' +
+                  '</p>' +
+                '</div>' +
+
+              '</div>' +
+            '</div>' +
+
+            // ── PESTAÑA HALLOWEEN 2: PÁGINAS & HERRAMIENTAS WEB ──
+            '<div class="apm-tab-pane pane-paginas ' + (activeTab === 'paginas' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;">' +
+              '<div style="margin-bottom:20px;">' +
+                '<h3 style="font-size:1.35rem;font-weight:800;color:#FFF;margin:0 0 6px;"><i class="fas fa-globe" style="color:#38BDF8;"></i> Páginas Web y Herramientas del Proyecto</h3>' +
+                '<p style="color:#94A3B8;font-size:0.9rem;margin:0;">Hacé clic en cualquiera de las tarjetas para abrir directamente los sitios oficiales utilizados en cada etapa de Halloween.</p>' +
+              '</div>' +
+              '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">' +
+                // Libro de Hechizos
+                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
+                  '<div>' +
+                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+                      '<div style="width:44px;height:44px;border-radius:10px;background:#7C3AED;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-book-skull"></i></div>' +
+                      '<div>' +
+                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">El Libro de los Hechizos de IA</h4>' +
+                        '<span style="font-size:0.75rem;color:#C084FC;">Manual Oficial del Colegio</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Grimorio interactivo 3D con ejemplos de fórmulas mágicas, prompts de transformación y la técnica de las 5 Capas explicada paso a paso.</p>' +
+                  '</div>' +
+                  '<div style="display:flex;gap:8px;">' +
+                    '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener" style="flex:1;text-align:center;background:#7C3AED;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Libro ↗</a>' +
+                    '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/libro_de_hechizos.pdf" target="_blank" rel="noopener" style="background:#334155;color:#E2E8F0;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;" title="Descargar PDF"><i class="fas fa-file-pdf"></i> PDF</a>' +
+                  '</div>' +
+                '</div>' +
+                // Gemini
+                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
+                  '<div>' +
+                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+                      '<div style="width:44px;height:44px;border-radius:10px;background:#2563EB;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-brain"></i></div>' +
+                      '<div>' +
+                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Google Gemini AI</h4>' +
+                        '<span style="font-size:0.75rem;color:#93C5FD;">Laboratorio de Inteligencia Artificial</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Motor multimodal de inteligencia artificial para subir tu foto y aplicar las 5 capas de tu prompt para generar tu monstruo en alta definición.</p>' +
+                  '</div>' +
+                  '<a href="https://gemini.google.com/app" target="_blank" rel="noopener" style="text-align:center;background:#2563EB;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Google Gemini ↗</a>' +
+                '</div>' +
+                // Canva
+                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
+                  '<div>' +
+                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+                      '<div style="width:44px;height:44px;border-radius:10px;background:#0284C7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-palette"></i></div>' +
+                      '<div>' +
+                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Canva Educación</h4>' +
+                        '<span style="font-size:0.75rem;color:#7DD3FC;">Marco Polaroid Vintage</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Plataforma de composición gráfica para enmarcar tu monstruo en formato Polaroid con tipografía espeluznante y stickers para la impresión en papel.</p>' +
+                  '</div>' +
+                  '<a href="https://www.canva.com/" target="_blank" rel="noopener" style="text-align:center;background:#0284C7;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Canva ↗</a>' +
+                '</div>' +
+                // Flow
+                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
+                  '<div>' +
+                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+                      '<div style="width:44px;height:44px;border-radius:10px;background:#D97706;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-film"></i></div>' +
+                      '<div>' +
+                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Flow (Video con IA)</h4>' +
+                        '<span style="font-size:0.75rem;color:#FCD34D;">Animación de Imagen a Video</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Herramienta generativa de video con IA para animar la fotografía fija en un clip con movimientos de cámara y atmósfera tenebrosa.</p>' +
+                  '</div>' +
+                  '<a href="https://flow.google.com" target="_blank" rel="noopener" style="text-align:center;background:#D97706;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Flow ↗</a>' +
+                '</div>' +
+                // Google Drive
+                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
+                  '<div>' +
+                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+                      '<div style="width:44px;height:44px;border-radius:10px;background:#059669;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fab fa-google-drive"></i></div>' +
+                      '<div>' +
+                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Google Drive Institucional</h4>' +
+                        '<span style="font-size:0.75rem;color:#6EE7B7;">Carpeta fotos/2026/halloween</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Espacio de almacenamiento del colegio para guardar las fotos Polaroid y videos de Halloween para visualizarlos en el reproductor con el logo oficial.</p>' +
+                  '</div>' +
+                  '<button type="button" class="apm-quick-tab-btn" data-target-tab="entrega" style="text-align:center;background:#059669;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;border:none;cursor:pointer;"><i class="fas fa-cloud-upload-alt"></i> Ir a Panel de Entrega & Drive ↗</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // ── PESTAÑA HALLOWEEN 3: LIBRO DE HECHIZOS EMBEBIDO ──
+            '<div class="apm-tab-pane pane-libro ' + (activeTab === 'libro' ? 'active' : '') + '" style="height:100%;display:flex;flex-direction:column;background:#0F172A;">' +
+              '<div style="background:#1E293B;padding:10px 18px;border-bottom:1px solid #334155;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
+                '<div style="display:flex;align-items:center;gap:8px;">' +
+                  '<i class="fas fa-book-skull" style="color:#A855F7;font-size:1.2rem;"></i>' +
+                  '<strong style="color:#FFF;font-size:0.95rem;">El Libro de los Hechizos de IA — Grimorio Mágico 3D</strong>' +
+                '</div>' +
+                '<div style="display:flex;gap:8px;">' +
+                  '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener" style="background:#7C3AED;color:#FFF;padding:6px 14px;border-radius:6px;font-size:0.8rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-external-link-alt"></i> Pantalla Completa ↗</a>' +
+                  '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/libro_de_hechizos.pdf" target="_blank" rel="noopener" style="background:#334155;color:#E2E8F0;padding:6px 14px;border-radius:6px;font-size:0.8rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-file-pdf"></i> Descargar PDF</a>' +
+                '</div>' +
+              '</div>' +
+              '<div style="flex:1;position:relative;min-height:550px;">' +
+                '<iframe src="https://roboticapaulofreire-uy.github.io/libro_hechizos/" style="width:100%;height:100%;border:none;position:absolute;inset:0;" allow="camera; clipboard-write"></iframe>' +
+              '</div>' +
+            '</div>' +
+
+            // ── PESTAÑA HALLOWEEN 4: MI ENTREGA & DRIVE ──
+            '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;">' +
+              '<div class="apm-delivery-card" style="border:1px solid #334155;border-radius:14px;background:#1E293B;box-shadow:0 4px 16px rgba(0,0,0,0.3);overflow:hidden;margin-bottom:20px;">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #7C2D12 0%, #C2410C 50%, #7C3AED 100%);padding:18px 22px;display:flex;align-items:center;gap:14px;">' +
+                  '<div class="apm-dh-icon" style="background:rgba(255,255,255,0.18);color:#FDBA74;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-ghost"></i></div>' +
+                  '<div>' +
+                    '<h4 style="margin:0 0 4px;font-size:1.15rem;color:#FFF;font-weight:800;">Entrega de Proyecto Especial: Halloween con IA 🎃👻🎬</h4>' +
+                    '<p style="margin:0;font-size:0.85rem;color:#FED7AA;">Registrá tu entrega compartiendo tu enlace de diseño o subiendo tu foto Polaroid y video de Flow a tu carpeta de Halloween en Google Drive.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body" style="padding:22px;">' +
+                  '<div style="margin-bottom:18px;">' +
+                    '<label style="display:block;font-size:0.85rem;font-weight:700;color:#E2E8F0;margin-bottom:6px;"><i class="fas fa-link" style="color:#F97316;"></i> Enlace de tu Proyecto (Canva o Google Drive):</label>' +
+                    '<div style="display:flex;gap:8px;">' +
+                      '<input type="url" id="apm-halloween-student-url" class="apm-delivery-url-input" placeholder="https://www.canva.com/design/... o link a Google Drive" value="' + (savedMakecodeUrl || '') + '" style="flex:1;background:#0F172A;border:1px solid #334155;color:#FFF;padding:10px 14px;border-radius:8px;font-size:0.9rem;">' +
+                      '<button type="button" id="apm-save-halloween-btn" style="background:#EA580C;color:#FFF;padding:10px 18px;border-radius:8px;font-weight:800;border:none;cursor:pointer;white-space:nowrap;"><i class="fas fa-save"></i> Guardar Enlace</button>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div style="margin-bottom:18px;">' +
+                    '<label style="display:block;font-size:0.85rem;font-weight:700;color:#E2E8F0;margin-bottom:6px;"><i class="fas fa-cloud-upload-alt" style="color:#38BDF8;"></i> Subir Archivo a Drive (Foto Polaroid o Video Flow MP4):</label>' +
+                    '<div id="apm-dropzone-halloween" style="border:2px dashed #475569;border-radius:12px;padding:26px;text-align:center;background:#0F172A;cursor:pointer;transition:border-color 0.2s;">' +
+                      '<input type="file" id="apm-file-input-halloween" accept="image/*,video/mp4" style="display:none;">' +
+                      '<i class="fas fa-file-arrow-up" style="font-size:2.2rem;color:#F97316;margin-bottom:10px;display:block;"></i>' +
+                      '<strong style="color:#FFF;font-size:0.95rem;display:block;margin-bottom:4px;">Arrastrá aquí tu archivo o hacé click para seleccionar</strong>' +
+                      '<span style="font-size:0.8rem;color:#94A3B8;">Formatos permitidos: JPG, PNG (Foto Polaroid) y MP4 (Video de Flow)</span>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:14px;border-top:1px solid #334155;">' +
+                    '<button type="button" id="apm-mark-halloween-completed-btn" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%);color:#FFF;padding:12px 22px;border-radius:10px;font-weight:800;font-size:0.95rem;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(16,185,129,0.3);display:inline-flex;align-items:center;gap:8px;">' +
+                      '<i class="fas fa-check-circle"></i> ⭐ Marcar Misión de Halloween Completada (+100 XP)' +
+                    '</button>' +
+                  '</div>' +
+                  '<div id="apm-halloween-delivery-status" style="margin-top:16px;">' +
+                    (savedFileName || savedMakecodeUrl || isAlreadyCompleted ?
+                      '<div style="padding:14px 18px;background:rgba(16,185,129,0.15);border:1px solid #10B981;border-radius:10px;display:flex;align-items:center;gap:12px;"><i class="fas fa-trophy" style="font-size:1.6rem;color:#F59E0B;"></i> <div><strong style="color:#6EE7B7;font-size:0.95rem;">¡Misión Completada ⭐ (+100 XP)!</strong><br><span style="font-size:0.84rem;color:#A7F3D0;">' + (savedFileName ? 'Archivo guardado: <strong>' + savedFileName + '</strong>' : (savedMakecodeUrl ? 'Enlace registrado: <strong>' + savedMakecodeUrl + '</strong>' : '¡Misión de Halloween validada con éxito!')) + ' (' + (savedFileDate || 'Guardado') + ') en tu Google Drive.</span></div></div>' : '') +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>'
+          : '') +
 
           // ── PANEL 1: MODO PRESENTACIÓN (SLIDESHOW) ──
           '<div class="apm-tab-pane pane-presentacion ' + (activeTab === 'presentacion' ? 'active' : '') + '">' +
@@ -9869,6 +10165,13 @@
     modal.querySelectorAll('.apm-tab-btn').forEach(function(btn){
       btn.onclick = function(){
         switchApmTab(btn.dataset.tab);
+      };
+    });
+
+    // Botones de acceso rápido entre pestañas (ej: Ir a Entrega)
+    modal.querySelectorAll('.apm-quick-tab-btn').forEach(function(btn){
+      btn.onclick = function(){
+        if (btn.dataset.targetTab) switchApmTab(btn.dataset.targetTab);
       };
     });
 

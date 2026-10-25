@@ -2603,151 +2603,6 @@ const SCHOOL_DATA = {
               tip: "¡Entrá a la sección de Fotos y Videos en el portal para reproducir tu video cuantas veces quieras!"
             }
           ]
-        },
-{
-          id: "g6-p2",
-          level: 2,
-          title: "El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático 🧤🕹️⚙️",
-          author: "Taller de Robótica y Tecnología 6° Grado",
-          date: "Abril 2026",
-          type: "makecode",
-          platform: "makecode",
-          badge: "🧤 Arquero, Joystick Chico Negro & Servo SG90",
-          icon: "fa-gamepad",
-          color: "#0D9488",
-          coverImage: "img/proyectos/servo_joystick_makecode_cover.svg",
-          gameUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
-          externalUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
-          makecodeUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
-          codeSnippet: `let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})`,
-          description: "¡Nivel 2 de nuestra Ruta de Aventuras! Conectamos el joystick micro:bit chico negro (palanca en Pin P1) y un servomotor SG90 (Pin P0) para mover físicamente al arquero de poste a poste en el arco de fútbol. Usamos el ajuste de intervalo matemático (Math.map de 0..1023 a 0..180°) y límites de seguridad para que el arquero ataje con precisión y fluidez.",
-          objective: "Construir y programar el mecanismo del arquero atajador en el arco de fútbol: leer la palanca del joystick chico negro en el Pin P1 (0 a 1023), aplicar el ajuste de intervalo proporcional (Math.map) para convertirlo en el rango angular del servomotor SG90 en el Pin P0 (0° a 180°) y programar las condiciones de seguridad en un bucle continuo de 20 ms.",
-          benefits: "Conecta la animación digital del Nivel 1 con la robótica física y la cinemática en el mundo real. Fortalece la comprensión de funciones lineales y proporcionalidad matemática (ajuste de intervalo) al controlar un actuador mecánico angular con un joystick analógico continuo.",
-          tags: ["MakeCode", "BBC micro:bit", "El Arquero Mecánico", "Joystick Chico Negro", "Servomotor SG90", "Mapeo Matemático", "Ajuste de Intervalo", "Robótica", "Nivel 2"],
-          gallery: [
-            "img/proyectos/servo_joystick_makecode_cover.svg"
-          ],
-          pdfUrl: null,
-          downloadPdfUrl: null,
-          scratchId: null,
-          materials: [
-            { title: "Joystick micro:bit chico negro", description: "Módulo con palanca analógica para micro:bit; eje X conectado al Pin P1 (lecturas continuas de 0 a 1023).", icon: "fa-gamepad" },
-            { title: "Micro Servomotor SG90 (Pin P0)", description: "Servomotor angular en el Pin P0 que sostiene al arquero y lo mueve de poste a poste (0° a 180°).", icon: "fa-cogs" },
-            { title: "Placa BBC micro:bit v2", description: "Microcontrolador central que ejecuta el código MakeCode, calcula el mapeo matemático y controla el servo.", icon: "fa-microchip" },
-            { title: "Arco y Figura del Arquero", description: "Estructura del arco de fútbol con el arquero atajador montado sobre el aspa mecánica del servomotor.", icon: "fa-futbol" },
-            { title: "Cables Dupont de Conexión", description: "Conexiones de alimentación (3V/VCC y GND) y pines de señal P0 (servo) y P1 (joystick).", icon: "fa-bezier-curve" },
-            { title: "Editor MakeCode micro:bit", description: "Entorno de bloques con la función matemática Math.map y escritura analógica de servo.", icon: "fa-laptop-code" }
-          ],
-          instructions: [
-            {
-              step: 1,
-              title: "Conexión del Joystick Chico Negro (Pin P1)",
-              desc: "Conectá los pines de alimentación VCC a 3V y GND a tierra en el shield. Llevá la señal de la palanca (eje horizontal X) al Pin P1 de la micro:bit.",
-              tip: "El joystick chico negro permite mover al arquero con gran precisión usando el pulgar."
-            },
-            {
-              step: 2,
-              title: "Conexión del Servomotor del Arquero (Pin P0)",
-              desc: "Conectá el servomotor SG90 en el Pin P0 (cable marrón a GND, rojo a 3V y naranja a Pin P0). Acoplá firmemente la figura del arquero sobre el aspa del servo.",
-              tip: "Asegurate de que el cable naranja quede en el Pin P0 de la micro:bit."
-            },
-            {
-              step: 3,
-              title: "Inicializar el Arquero al Centro (90°)",
-              desc: "Al encender la micro:bit, fijá la variable 'angulo' en 90° y escribí en el Pin P0 para que el arquero empiece ubicado en el centro exacto del arco.",
-              tip: "Código MakeCode inicial: let x = 0; let angulo = 90; pins.servoWritePin(AnalogPin.P0, angulo)."
-            },
-            {
-              step: 4,
-              title: "Lectura Analógica y Mapeo Matemático",
-              desc: "En el bucle 'para siempre', leé la posición de la palanca: x = pins.analogReadPin(AnalogPin.P1). Luego calculá el ángulo proporcional con el bloque matemático: angulo = Math.map(x, 0, 1023, 0, 180).",
-              tip: "La fórmula matemática es: Ángulo = (x * 180) / 1023."
-            },
-            {
-              step: 5,
-              title: "Límites de Seguridad y Giro del Servo (Pin P0)",
-              desc: "Evitá que el arquero golpee los postes con dos condiciones: si angulo < 0 entonces angulo = 0, y si angulo > 180 entonces angulo = 180. Escribí el ángulo con pins.servoWritePin(AnalogPin.P0, angulo) y pausá 20 ms.",
-              tip: "La pausa de 20 milisegundos suaviza el movimiento del servomotor."
-            },
-            {
-              step: 6,
-              title: "¡Atajar Penales y Compartir Proyecto!",
-              desc: "Probá tu mecanismo moviendo la palanca: a la izquierda (x=0) el arquero vuela al palo izquierdo (0°), al soltarlo vuelve al centro (90°) y a la derecha (x=1023) ataja en el palo derecho (180°).",
-              tip: "Proyecto oficial MakeCode: https://makecode.microbit.org/S17294-82339-82111-72476"
-            }
-          ]
-        },
-        {
-          id: "g6-p3",
-          level: 3,
-          title: "NIVEL 3 — Geminis Notebook ⚡: Creación de Materiales de Estudio con IA 🧠🎙️📽️📊",
-          author: "Taller de Robótica, IA y Tecnología 6° Grado",
-          date: "Abril 2026",
-          type: "gemini_notebooks",
-          platform: "notebooklm",
-          badge: "🧠 NIVEL 3 — Geminis Notebook ⚡",
-          icon: "fa-brain",
-          color: "#4F46E5",
-          coverImage: "img/proyectos/gemini_notebooks_cover.svg",
-          gameUrl: null,
-          externalUrl: "https://notebooklm.google.com",
-          pdfUrl: "docs/guia_ia_gemini_notebooks.pdf",
-          downloadPdfUrl: "docs/guia_ia_gemini_notebooks.pdf",
-          makecodeUrl: null,
-          scratchId: null,
-          description: "¡Nivel 3 de nuestra Ruta de Aventuras! Aprendemos a usar Google Gemini y NotebookLM para convertir fuentes confiables (PDFs escolares, libros de texto y apuntes) en materiales de estudio interactivos: podcasts de audio con dos locutores sintetizados (Audio Overview), guiones audiovisuales para videos educativos, esquemas para presentaciones en Canva y guías de estudio con cuestionarios tipo FAQ y flashcards para autoevaluación con cero alucinaciones.",
-          objective: "Dominar el uso educativo de la IA generativa basada en fuentes verificables (Grounding): cargar libros y apuntes en Google NotebookLM, generar un podcast explicativo con dos voces sintéticas, diseñar un guión audiovisual para video con gancho y escenas, estructurar diapositivas para Canva/Slides y formular cuestionarios de autoevaluación con active recall y citas exactas a los textos originales.",
-          benefits: "Desarrolla el pensamiento crítico, la alfabetización en inteligencia artificial y la autonomía en el estudio. Enseña a distinguir entre chatbots convencionales propensos a alucinaciones y modelos anclados en fuentes comprobables, transformando a los alumnos de 6° grado en creadores de contenidos educativos multimedia de vanguardia.",
-          tags: ["Google Gemini", "Geminis Notebook", "NotebookLM", "Inteligencia Artificial", "Podcasts Educativos", "Guiones de Video", "Materiales de Estudio", "Grounding", "Flashcards", "Nivel 3"],
-          gallery: [
-            "img/proyectos/gemini_notebooks_cover.svg"
-          ],
-          materials: [
-            { title: "Google NotebookLM (Gemini 1.5 Pro)", description: "Cuaderno inteligente de Google con IA anclada a fuentes para generar podcasts, resúmenes y preguntas.", icon: "fa-brain" },
-            { title: "Fuentes en PDF, Libros y Apuntes", description: "Capítulos escolares, notas tomadas en clase y artículos educativos que alimentan el cuaderno sin alucinaciones.", icon: "fa-file-pdf" },
-            { title: "Generador de Audio Overview (Podcast)", description: "Herramienta que crea una conversación de audio entre 2 locutores virtuales analizando los temas clave.", icon: "fa-microphone" },
-            { title: "Editor Canva o Google Slides", description: "Plataforma de diseño visual para maquetar las diapositivas y esquemas generados por la IA.", icon: "fa-tv" },
-            { title: "Guía Oficial de Estudio en PDF", description: "Documento técnico y pedagógico descargable con instrucciones paso a paso, prompts y decálogo de ética.", icon: "fa-file-alt" },
-            { title: "Fichas Flashcards y Quizzes FAQ", description: "Tarjetas de autoevaluación con active recall y preguntas de opción múltiple con citas verificadas.", icon: "fa-question-circle" }
-          ],
-          instructions: [
-            {
-              step: 1,
-              title: "Crear tu Cuaderno en NotebookLM",
-              desc: "Ingresá a notebooklm.google.com con tu cuenta educativa y hacé clic en 'Nuevo cuaderno'. Escribí un título claro según el tema de ciencias, historia o robótica que estés investigando.",
-              tip: "NotebookLM es 100% gratuito y seguro, no comparte tus apuntes para entrenar modelos públicos."
-            },
-            {
-              step: 2,
-              title: "Cargar tus Fuentes Confiables (Grounding)",
-              desc: "Subí el archivo PDF de tu libro de texto, enlaces a artículos web de consulta o pegá tus propios apuntes de clase. NotebookLM leerá y organizará todos los textos en pocos segundos.",
-              tip: "Podés subir hasta 50 fuentes por cuaderno. Cuanto más ricas sean tus fuentes, mejores serán las respuestas."
-            },
-            {
-              step: 3,
-              title: "Generar el Podcast de Audio (Audio Overview)",
-              desc: "En el panel lateral derecho ('Notebook Guide'), pulsá el botón 'Generar' en la sección Audio Overview. Dos locutores de IA conversarán y debatirán los conceptos principales como en un programa de radio profesional.",
-              tip: "Podés pausar, retroceder y descargar el audio para escucharlo en casa o camino a la escuela."
-            },
-            {
-              step: 4,
-              title: "Crear Guión Audiovisual para Video",
-              desc: "Escribí en el chat: 'Genera un guión para un video de 2 minutos explicando este tema para mis compañeros de 6° grado, con Gancho inicial, Desarrollo con analogías simples y Cierre con llamado a la acción'.",
-              tip: "Pedile que incluya descripciones de qué imágenes mostrar en pantalla en cada escena."
-            },
-            {
-              step: 5,
-              title: "Estructurar Diapositivas para Canva o Slides",
-              desc: "Solicitá un esquema de 6 diapositivas con título, 3 puntos clave por diapositiva y recomendaciones de imágenes. Luego abrilo en Canva para darle formato gráfico atractivo.",
-              tip: "Recordá la regla del 6x6: pocas palabras por viñeta para que tus diapositivas no se sobrecarguen de texto."
-            },
-            {
-              step: 6,
-              title: "Autoevaluación con Flashcards y Descargar Guía PDF",
-              desc: "Pedile a NotebookLM que cree 5 preguntas frecuentes (FAQ) con trampa y respuestas citadas. Al finalizar, descargá la Guía PDF integral para repasar todos los prompts y el decálogo ético.",
-              tip: "¡Hacé clic en los números de cita [1], [2] para comprobar que la IA no haya inventado ningún dato!"
-            }
-          ]
         }
       ]
     }
@@ -2831,22 +2686,8 @@ const MAKECODE_LIBRARY = {
     }
   ],
 
-  // 6° Grado
-  grado6: [
-    {
-      id: "g6-p2",
-      level: 2,
-      title: "El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático 🧤🕹️⚙️",
-      subtitle: "Lectura de Joystick Chico Negro (P1), Ajuste de Intervalo (Math.map) y Servomotor SG90 (P0)",
-      description: "Lectura de la palanca del joystick chico negro en Pin P1, bloque matemático 'mapear' de 0-1023 a 0-180°, límites de seguridad y control del servomotor del arquero en Pin P0.",
-      shareUrl: "https://makecode.microbit.org/S17294-82339-82111-72476",
-      coverImage: "img/proyectos/servo_joystick_makecode_cover.svg",
-      badge: "🧤 Arquero, Joystick Chico Negro & Servo SG90",
-      icon: "fa-gamepad",
-      color: "#0D9488",
-      codeSnippet: `let x = 0\nlet angulo = 90\npins.servoWritePin(AnalogPin.P0, angulo)\n// Joystick principal\nbasic.forever(function () {\n    x = pins.analogReadPin(AnalogPin.P1)\n    angulo = Math.map(x, 0, 1023, 0, 180)\n    if (angulo < 0) {\n        angulo = 0\n    }\n    if (angulo > 180) {\n        angulo = 180\n    }\n    pins.servoWritePin(AnalogPin.P0, angulo)\n    basic.pause(20)\n})`
-    }
-  ]
+  // 6° Grado (Halloween 2026 - Sin MakeCode)
+  grado6: []
 };
 
 if (typeof window !== 'undefined') {
@@ -2945,11 +2786,10 @@ if (typeof window !== 'undefined') {
           }
           if (gradeId === 'grado6' || gradeId === '6to') {
             const items = data.items || [];
-            const isStaleGrado6 = items.length === 0 ||
-              !items.some(it => (it.shareUrl || '').includes('S17294') && it.coverImage && it.coverImage.includes('servo_joystick_makecode_cover') && it.codeSnippet);
-            if (isStaleGrado6) {
-              console.log("🔄 MakeCode desactualizado en Firestore para grado6. Conservando definición oficial y re-sembrando...");
+            if (items.length > 0) {
+              console.log("🔄 MakeCode en Firestore para grado6 debe estar vacío para Halloween. Limpiando y re-sembrando...");
               needsReseed = true;
+              MAKECODE_LIBRARY[gradeId] = [];
               return;
             }
           }
@@ -3039,11 +2879,9 @@ if (typeof window !== 'undefined') {
 
               // Para 6° Grado: verificar que tenga el proyecto oficial de Halloween con IA en Nivel 1, el Arquero Mecánico y Gemini NotebookLM
               const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
-                targetProjects.length < 3 ||
+                targetProjects.length !== 1 ||
                 !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g6-p1') ||
-                !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
-                !targetProjects.some(p => ((p.title || '').includes('Gemini') || (p.title || '').includes('Notebook')) && !/runner|arcade/i.test(p.title || '')) ||
-                targetProjects.some(p => /p[aá]gina.*web|neon.*runner|cyber.*runner|serpiente/i.test(p.title || ''))
+                targetProjects.some(p => p.id !== 'g6-p1' || !/halloween/i.test(p.title || ''))
               );
 
               if (isStaleSala5 || isStaleGrado1 || isStaleGrado5 || isStaleGrado6) {
