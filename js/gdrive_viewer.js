@@ -7916,84 +7916,94 @@
             '</div>' +
 
             // ── PESTAÑA HALLOWEEN 4: MI ENTREGA & DRIVE ──
-            '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'entrega' ? 'flex' : 'none') + ';flex-direction:column;">' +
-              '<div class="apm-delivery-card" style="border:1px solid #334155;border-radius:14px;background:#1E293B;box-shadow:0 4px 16px rgba(0,0,0,0.3);overflow:hidden;margin-bottom:20px;">' +
-                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #7C2D12 0%, #C2410C 50%, #7C3AED 100%);padding:18px 22px;display:flex;align-items:center;gap:14px;">' +
-                  '<div class="apm-dh-icon" style="background:rgba(255,255,255,0.18);color:#FDBA74;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-ghost"></i></div>' +
-                  '<div>' +
-                    '<h4 style="margin:0 0 4px;font-size:1.15rem;color:#FFF;font-weight:800;">Entrega de Proyecto Especial: Halloween con IA 🎃👻🎬</h4>' +
-                    '<p style="margin:0;font-size:0.85rem;color:#FED7AA;">Registrá tu entrega compartiendo tu enlace de diseño o subiendo tu foto Polaroid y video de Flow a tu carpeta de Halloween en Google Drive.</p>' +
+            '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '" style="overflow-y:auto;padding:12px 16px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'entrega' ? 'flex' : 'none') + ';flex-direction:column;max-height:100%;box-sizing:border-box;scrollbar-width:thin;" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'entrega' ? 'flex' : 'none') + ';flex-direction:column;">' +
+              '<div class="apm-delivery-card" style="border:1px solid #334155;border-radius:14px;background:#1E293B;box-shadow:0 4px 16px rgba(0,0,0,0.3);overflow:hidden;margin-bottom:10px;">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #7C2D12 0%, #C2410C 50%, #7C3AED 100%);padding:10px 16px;display:flex;align-items:center;gap:10px;">' +
+                  '<div class="apm-dh-icon" style="background:rgba(255,255,255,0.18);color:#FDBA74;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;"><i class="fas fa-ghost"></i></div>' +
+                  '<div style="flex:1;min-width:0;">' +
+                    '<h4 style="margin:0;font-size:1.02rem;color:#FFF;font-weight:800;line-height:1.2;">Entrega de Proyecto: Halloween con IA 🎃👻🎬</h4>' +
+                    '<p style="margin:2px 0 0;font-size:0.78rem;color:#FED7AA;">Elegí cómo entregar: compartiendo la URL de tu proyecto o subiendo tu foto Polaroid y video a Google Drive.</p>' +
                   '</div>' +
                 '</div>' +
-                '<div class="apm-delivery-body" style="padding:16px 20px;">' +
-                    (student ?
-                      '<div id="apm-halloween-student-banner" style="background:rgba(16,185,129,0.12);border:1px solid #10B981;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">' +
-                        '<div style="display:flex;align-items:center;gap:10px;">' +
-                          '<span style="font-size:1.4rem;background:rgba(255,255,255,0.1);padding:4px 8px;border-radius:8px;">' + (student.avatar || '👦') + '</span>' +
-                          '<div>' +
-                            '<span style="font-size:0.72rem;color:#A7F3D0;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;">Alumno Conectado</span><br>' +
-                            '<strong style="color:#FFF;font-size:0.96rem;">' + student.name + '</strong> ' +
-                            '<span style="font-size:0.8rem;color:#94A3B8;">(' + (student.gradeName || '') + ')</span>' +
-                          '</div>' +
+                '<div class="apm-delivery-body" style="padding:12px 16px;">' +
+                  (student ?
+                    '<div id="apm-halloween-student-banner" style="background:rgba(16,185,129,0.12);border:1px solid #10B981;border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
+                      '<div style="display:flex;align-items:center;gap:8px;">' +
+                        '<span style="font-size:1.2rem;background:rgba(255,255,255,0.1);padding:3px 6px;border-radius:6px;">' + (student.avatar || '👦') + '</span>' +
+                        '<div>' +
+                          '<span style="font-size:0.68rem;color:#A7F3D0;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;">Alumno Conectado:</span> ' +
+                          '<strong style="color:#FFF;font-size:0.9rem;">' + student.name + '</strong> ' +
+                          '<span style="font-size:0.76rem;color:#94A3B8;">(' + (student.gradeName || '') + ')</span>' +
                         '</div>' +
-                        '<div style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#6EE7B7;padding:5px 12px;border-radius:6px;font-size:0.78rem;font-weight:700;">' +
-                          '<i class="fas fa-folder-open"></i> Carpeta Drive: <strong>' + student.name + ' &rarr; 2026 &rarr; evento &rarr; halloween</strong>' +
+                      '</div>' +
+                      '<div style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#6EE7B7;padding:3px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;">' +
+                        '<i class="fas fa-folder-open"></i> Carpeta Drive: <strong>' + student.name + ' &rarr; 2026 &rarr; evento &rarr; halloween</strong>' +
+                      '</div>' +
+                    '</div>'
+                  :
+                    '<div id="apm-halloween-student-banner" style="background:rgba(234,88,12,0.16);border:1.5px solid #EA580C;border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
+                      '<div style="display:flex;align-items:center;gap:8px;">' +
+                        '<i class="fas fa-user-lock" style="font-size:1.4rem;color:#F97316;"></i>' +
+                        '<div>' +
+                          '<strong style="color:#FED7AA;font-size:0.88rem;display:block;">Iniciá sesión para enviar a tu carpeta de Google Drive</strong>' +
+                          '<span style="font-size:0.75rem;color:#CBD5E1;">Tus archivos se guardarán en tu carpeta personal en: <strong>2026 / evento / halloween</strong>.</span>' +
                         '</div>' +
-                      '</div>'
-                    :
-                      '<div id="apm-halloween-student-banner" style="background:rgba(234,88,12,0.16);border:1.5px solid #EA580C;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">' +
-                        '<div style="display:flex;align-items:center;gap:10px;">' +
-                          '<i class="fas fa-user-lock" style="font-size:1.6rem;color:#F97316;"></i>' +
-                          '<div>' +
-                            '<strong style="color:#FED7AA;font-size:0.92rem;display:block;">Iniciá sesión para enviar a tu carpeta de Google Drive</strong>' +
-                            '<span style="font-size:0.78rem;color:#CBD5E1;">El sistema detectará al alumno logueado y enviará tus archivos a: <strong>2026 / evento / halloween</strong>.</span>' +
-                          '</div>' +
-                        '</div>' +
-                        '<button type="button" id="apm-halloween-login-prompt-btn" style="background:#EA580C;color:#FFF;padding:8px 18px;border-radius:8px;font-weight:800;font-size:0.84rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(234,88,12,0.4);"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión de Alumno</button>' +
-                      '</div>'
-                    ) +
-                  '<!-- OPCIÓN 1: COMPARTIR URL DEL PROYECTO -->' +
-                  '<div style="margin-bottom:14px;background:#0F172A;border:1px solid #334155;border-radius:12px;padding:14px 16px;">' +
-                    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">' +
-                      '<label style="font-size:0.88rem;font-weight:800;color:#FDBA74;display:flex;align-items:center;gap:8px;">' +
-                        '<i class="fas fa-share-nodes" style="color:#F97316;"></i> Compartir la URL del Proyecto (Canva o Google Drive):' +
-                      '</label>' +
-                      '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="font-size:0.76rem;color:#38BDF8;text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:4px;">' +
-                        '<i class="fas fa-palette"></i> Abrir Plantilla Canva ↗' +
-                      '</a>' +
-                    '</div>' +
-                    '<p style="margin:0 0 10px;font-size:0.78rem;color:#94A3B8;line-height:1.4;">' +
-                      'En Canva hacé clic arriba en el botón <strong>"Compartir"</strong> &gt; <strong>"Copiar enlace de colaboración o vista pública"</strong> y pegá la URL aquí para entregar tu proyecto:' +
-                    '</p>' +
-                    '<div style="display:flex;gap:8px;align-items:center;">' +
-                      '<input type="url" id="apm-halloween-student-url" class="apm-delivery-url-input" placeholder="Pegá aquí la URL compartida de tu diseño (ej: https://www.canva.com/design/... o link a Drive)" value="' + (savedMakecodeUrl || '') + '" style="flex:1;background:#1E293B;border:1.5px solid #475569;color:#FFF;padding:10px 14px;border-radius:8px;font-size:0.88rem;">' +
-                      '<button type="button" id="apm-halloween-save-link-btn" style="background:#EA580C;color:#FFF;padding:10px 18px;border-radius:8px;font-weight:800;border:none;cursor:pointer;white-space:nowrap;font-size:0.86rem;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(234,88,12,0.35);"><i class="fas fa-share-nodes"></i> Compartir URL (+100 XP)</button>' +
-                    '</div>' +
-                  '</div>' +
-                  '<!-- OPCIÓN 2: SUBIR ARCHIVO A DRIVE -->' +
-                  '<div style="margin-bottom:14px;background:#0F172A;border:1px solid #334155;border-radius:12px;padding:14px 16px;">' +
-                    '<label style="display:block;font-size:0.88rem;font-weight:800;color:#38BDF8;margin-bottom:8px;"><i class="fas fa-cloud-upload-alt"></i> Subir Archivo a Drive (Foto Polaroid o Video Flow MP4):</label>' +
-                    '<div id="apm-halloween-dropzone" style="border:2px dashed #475569;border-radius:10px;padding:20px 14px;text-align:center;background:#1E293B;cursor:pointer;transition:all 0.2s;">' +
-                      '<input type="file" id="apm-halloween-file-input" accept="image/*,video/mp4,video/*" style="display:none;">' +
-                      '<i class="fas fa-file-arrow-up" style="font-size:2.1rem;color:#F97316;margin-bottom:6px;display:block;"></i>' +
-                      '<strong style="color:#FFF;font-size:0.96rem;display:block;margin-bottom:4px;">Arrastrá aquí tu archivo o hacé click para seleccionar</strong>' +
-                      '<span style="font-size:0.78rem;color:#94A3B8;display:block;margin-bottom:10px;">Formatos permitidos: Video (.mp4, .mov, .webm) o Foto / Polaroid (.png, .jpg, .webp)</span>' +
+                      '</div>' +
+                      '<button type="button" id="apm-halloween-login-prompt-btn" style="background:#EA580C;color:#FFF;padding:6px 14px;border-radius:6px;font-weight:800;font-size:0.8rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(234,88,12,0.4);"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</button>' +
+                    '</div>'
+                  ) +
+                  '<!-- GRID DE 2 COLUMNAS LADO A LADO PARA QUE TODO ENTRE A SIMPLE VISTA -->' +
+                  '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:12px;margin-bottom:10px;">' +
+                    '<!-- COLUMNA 1: COMPARTIR URL -->' +
+                    '<div style="background:#0F172A;border:1px solid #334155;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;">' +
                       '<div>' +
-                        '<button type="button" id="apm-halloween-browse-btn" style="background:#EA580C;color:#FFF;padding:8px 18px;border-radius:8px;font-weight:800;font-size:0.82rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 8px rgba(234,88,12,0.35);"><i class="fas fa-folder-open"></i> Elegir Archivo</button>' +
+                        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:4px;">' +
+                          '<label style="font-size:0.84rem;font-weight:800;color:#FDBA74;display:flex;align-items:center;gap:6px;">' +
+                            '<i class="fas fa-share-nodes" style="color:#F97316;"></i> Opción 1: Compartir URL del Proyecto' +
+                          '</label>' +
+                          '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="font-size:0.72rem;color:#38BDF8;text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:3px;">' +
+                            '<i class="fas fa-palette"></i> Plantilla Canva ↗' +
+                          '</a>' +
+                        '</div>' +
+                        '<p style="margin:0 0 8px;font-size:0.74rem;color:#94A3B8;line-height:1.35;">' +
+                          'En Canva tocá arriba <strong>"Compartir"</strong> &gt; <strong>"Copiar enlace"</strong> y pegá la URL aquí:' +
+                        '</p>' +
                       '</div>' +
-                      '<div style="margin-top:10px;font-size:0.75rem;color:#38BDF8;display:flex;align-items:center;justify-content:center;gap:6px;">' +
-                        '<i class="fas fa-shield-alt"></i> Destino directo: 📁 <strong>' + (student ? student.name : 'Alumno') + ' / 2026 / evento / halloween</strong>' +
+                      '<div>' +
+                        '<input type="url" id="apm-halloween-student-url" class="apm-delivery-url-input" placeholder="https://www.canva.com/design/... o link a Drive" value="' + (savedMakecodeUrl || '') + '" style="width:100%;box-sizing:border-box;background:#1E293B;border:1.5px solid #475569;color:#FFF;padding:8px 10px;border-radius:6px;font-size:0.82rem;margin-bottom:6px;">' +
+                        '<button type="button" id="apm-halloween-save-link-btn" style="width:100%;background:#EA580C;color:#FFF;padding:8px 12px;border-radius:6px;font-weight:800;border:none;cursor:pointer;font-size:0.82rem;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 6px rgba(234,88,12,0.35);"><i class="fas fa-share-nodes"></i> Compartir URL (+100 XP)</button>' +
+                      '</div>' +
+                    '</div>' +
+                    '<!-- COLUMNA 2: SUBIR IMAGEN O VIDEO A DRIVE -->' +
+                    '<div style="background:#0F172A;border:1px solid #334155;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;">' +
+                      '<div>' +
+                        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">' +
+                          '<label style="font-size:0.84rem;font-weight:800;color:#38BDF8;display:flex;align-items:center;gap:6px;">' +
+                            '<i class="fas fa-cloud-upload-alt"></i> Opción 2: Subir Archivo a Drive' +
+                          '</label>' +
+                          '<span style="font-size:0.68rem;color:#A7F3D0;background:rgba(16,185,129,0.15);padding:2px 6px;border-radius:4px;font-weight:700;">2026/evento/halloween</span>' +
+                        '</div>' +
+                        '<div id="apm-halloween-dropzone" style="border:2px dashed #475569;border-radius:8px;padding:12px 8px;text-align:center;background:#1E293B;cursor:pointer;transition:all 0.2s;">' +
+                          '<input type="file" id="apm-halloween-file-input" accept="image/*,video/mp4,video/*" style="display:none;">' +
+                          '<i class="fas fa-file-arrow-up" style="font-size:1.6rem;color:#F97316;margin-bottom:4px;display:block;"></i>' +
+                          '<strong style="color:#FFF;font-size:0.82rem;display:block;margin-bottom:2px;">Arrastrá aquí tu archivo o tocalo</strong>' +
+                          '<span style="font-size:0.7rem;color:#94A3B8;display:block;margin-bottom:6px;">Video (.mp4) o Foto / Polaroid (.png, .jpg)</span>' +
+                          '<button type="button" id="apm-halloween-browse-btn" style="background:#EA580C;color:#FFF;padding:6px 14px;border-radius:6px;font-weight:800;font-size:0.78rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(234,88,12,0.35);"><i class="fas fa-folder-open"></i> Elegir Archivo</button>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div style="margin-top:6px;font-size:0.7rem;color:#38BDF8;text-align:center;">' +
+                        '<i class="fas fa-shield-alt"></i> Destino: 📁 <strong>' + (student ? student.name : 'Alumno') + ' / 2026 / evento / halloween</strong>' +
                       '</div>' +
                     '</div>' +
                   '</div>' +
-                  '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:10px;border-top:1px solid #334155;">' +
-                    '<button type="button" id="apm-mark-halloween-completed-btn" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%);color:#FFF;padding:12px 22px;border-radius:10px;font-weight:900;font-size:0.9rem;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(16,185,129,0.35);display:inline-flex;align-items:center;gap:8px;">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:8px;border-top:1px solid #334155;">' +
+                    '<button type="button" id="apm-mark-halloween-completed-btn" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%);color:#FFF;padding:9px 18px;border-radius:8px;font-weight:900;font-size:0.84rem;border:none;cursor:pointer;box-shadow:0 3px 10px rgba(16,185,129,0.35);display:inline-flex;align-items:center;gap:6px;">' +
                       '<i class="fas fa-check-circle"></i> ⭐ Marcar Misión de Halloween Completada (+100 XP)' +
                     '</button>' +
                   '</div>' +
-                  '<div id="apm-halloween-delivery-status" style="margin-top:14px;">' +
+                  '<div id="apm-halloween-delivery-status" style="margin-top:8px;">' +
                     (savedFileName || savedMakecodeUrl || isAlreadyCompleted ?
-                      '<div style="padding:12px 16px;background:rgba(16,185,129,0.15);border:1px solid #10B981;border-radius:10px;display:flex;align-items:center;gap:12px;"><i class="fas fa-trophy" style="font-size:1.5rem;color:#F59E0B;"></i> <div><strong style="color:#6EE7B7;font-size:0.92rem;">¡Misión Completada ⭐ (+100 XP)!</strong><br><span style="font-size:0.82rem;color:#A7F3D0;">' + (savedFileName ? 'Archivo guardado: <strong>' + savedFileName + '</strong>' : (savedMakecodeUrl ? 'URL de proyecto compartida: <a href="' + savedMakecodeUrl + '" target="_blank" rel="noopener" style="color:#6EE7B7;font-weight:700;text-decoration:underline;">' + savedMakecodeUrl + ' ↗</a>' : '¡Misión de Halloween validada con éxito!')) + ' (' + (savedFileDate || 'Guardado') + ') en tu Google Drive.</span></div></div>' : '') +
+                      '<div style="padding:10px 14px;background:rgba(16,185,129,0.15);border:1px solid #10B981;border-radius:8px;display:flex;align-items:center;gap:10px;"><i class="fas fa-trophy" style="font-size:1.3rem;color:#F59E0B;"></i> <div><strong style="color:#6EE7B7;font-size:0.88rem;">¡Misión Completada ⭐ (+100 XP)!</strong><br><span style="font-size:0.78rem;color:#A7F3D0;">' + (savedFileName ? 'Archivo guardado: <strong>' + savedFileName + '</strong>' : (savedMakecodeUrl ? 'URL compartida: <a href="' + savedMakecodeUrl + '" target="_blank" rel="noopener" style="color:#6EE7B7;font-weight:700;text-decoration:underline;">' + savedMakecodeUrl + ' ↗</a>' : '¡Misión de Halloween validada con éxito!')) + ' (' + (savedFileDate || 'Guardado') + ') en tu Google Drive.</span></div></div>' : '') +
                   '</div>' +
                   '<div id="apm-halloween-files-gallery"></div>' +
                 '</div>' +
