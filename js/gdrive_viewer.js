@@ -920,14 +920,22 @@
       return m && m.type !== 'pdf' && !(m.id && m.id.toString().startsWith('pdf-'));
     });
 
-    // Para 5to y 6to: en los usuarios SOLO mostrar el proyecto oficial de Halloween con IA
+    // Para 5to y 6to: en los usuarios SOLO mostrar EXACTAMENTE UN ÚNICO proyecto oficial de Halloween con IA
     if (gradeId === 'grado5' || gradeId === 'grado6' || gradeId === '5to' || gradeId === '6to') {
-      missions = missions.filter(function(m) {
-        return m.id === 'g5-p1' || m.id === 'g6-p1' || /halloween|hechizos|monstruo/i.test((m.title || '') + ' ' + (m.id || ''));
+      var officialHw = missions.find(function(m) {
+        return m.id === 'g5-p1' || m.id === 'g6-p1';
       });
-      missions.forEach(function(m, idx) {
-        m.level = idx + 1;
-      });
+      if (!officialHw) {
+        officialHw = missions.find(function(m) {
+          return /halloween|hechizos|monstruo/i.test((m.title || '') + ' ' + (m.id || ''));
+        });
+      }
+      if (officialHw) {
+        officialHw.level = 1;
+        missions = [officialHw];
+      } else {
+        missions = missions.slice(0, 1);
+      }
     }
 
     // ── Determinar estado dinámico de cada misión según entregas del alumno ──
@@ -1897,7 +1905,7 @@
           }
         }
 
-        var isInitiallyOpen = (m.status === 'activo');
+        var isInitiallyOpen = false;
         var coverImgSrc = m.coverImage || (m.type === 'circuito' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png');
 
         var toolBtnHtml = '';
@@ -7526,12 +7534,16 @@
     function closeAdventureModal() {
       if (window.sounds) window.sounds.playClick();
       modal.classList.remove('active');
+      modal.style.display = 'none';
+      modal.style.visibility = 'hidden';
+      modal.style.opacity = '0';
       document.removeEventListener('keydown', handleKeyDown);
       modal.innerHTML = '';
       if (document.fullscreenElement) {
         document.exitFullscreen().catch(function(){});
       }
     }
+    window.closeAdventureModal = closeAdventureModal;
 
     function toggleFullscreen() {
       if (window.sounds) window.sounds.playClick();
@@ -7640,7 +7652,7 @@
             '<button type="button" class="apm-btn-fullscreen" id="apm-fs-btn">' +
               '<i class="fas fa-expand"></i> Pantalla Completa' +
             '</button>' +
-            '<button type="button" class="apm-close-btn" id="apm-close-btn" aria-label="Cerrar modal">&times;</button>' +
+            '<button type="button" class="apm-close-btn" id="apm-close-btn" aria-label="Cerrar modal" title="Cerrar ventana" style="background:#EF4444;color:#FFFFFF;border:2px solid #FCA5A5;width:38px;height:38px;border-radius:50%;font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(239,68,68,0.4);"><i class="fas fa-times"></i></button>' +
           '</div>' +
         '</div>' +
 
@@ -7681,7 +7693,7 @@
         '<div class="apm-panes-container">' +
           (isHalloween ?
             // ── PESTAÑA HALLOWEEN 1: PASOS DEL PROYECTO ──
-            '<div class="apm-tab-pane pane-pasos ' + (activeTab === 'pasos' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;">' +
+            '<div class="apm-tab-pane pane-pasos ' + (activeTab === 'pasos' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'pasos' ? 'flex' : 'none') + ';flex-direction:column;">' +
               '<div style="background:linear-gradient(135deg, #431407 0%, #7C2D12 50%, #4C1D95 100%);border-radius:16px;padding:22px;border:1px solid rgba(249,115,22,0.35);margin-bottom:24px;box-shadow:0 10px 25px rgba(0,0,0,0.4);">' +
                 '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">' +
                   '<span style="background:#EA580C;color:#FFF;padding:5px 14px;border-radius:999px;font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;"><i class="fas fa-ghost"></i> Proyecto Especial Halloween con IA</span>' +
@@ -7793,7 +7805,7 @@
             '</div>' +
 
             // ── PESTAÑA HALLOWEEN 2: PÁGINAS & HERRAMIENTAS WEB ──
-            '<div class="apm-tab-pane pane-paginas ' + (activeTab === 'paginas' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;">' +
+            '<div class="apm-tab-pane pane-paginas ' + (activeTab === 'paginas' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'paginas' ? 'flex' : 'none') + ';flex-direction:column;">' +
               '<div style="margin-bottom:20px;">' +
                 '<h3 style="font-size:1.35rem;font-weight:800;color:#FFF;margin:0 0 6px;"><i class="fas fa-globe" style="color:#38BDF8;"></i> Páginas Web y Herramientas del Proyecto</h3>' +
                 '<p style="color:#94A3B8;font-size:0.9rem;margin:0;">Hacé clic en cualquiera de las tarjetas para abrir directamente los sitios oficiales utilizados en cada etapa de Halloween.</p>' +
@@ -7876,7 +7888,7 @@
             '</div>' +
 
             // ── PESTAÑA HALLOWEEN 3: LIBRO DE HECHIZOS EMBEBIDO ──
-            '<div class="apm-tab-pane pane-libro ' + (activeTab === 'libro' ? 'active' : '') + '" style="height:100%;display:flex;flex-direction:column;background:#0F172A;">' +
+            '<div class="apm-tab-pane pane-libro ' + (activeTab === 'libro' ? 'active' : '') + '" style="height:100%;flex-direction:column;background:#0F172A;display:' + (activeTab === 'libro' ? 'flex' : 'none') + ';">' +
               '<div style="background:#1E293B;padding:10px 18px;border-bottom:1px solid #334155;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
                 '<div style="display:flex;align-items:center;gap:8px;">' +
                   '<i class="fas fa-book-skull" style="color:#A855F7;font-size:1.2rem;"></i>' +
@@ -7893,7 +7905,7 @@
             '</div>' +
 
             // ── PESTAÑA HALLOWEEN 4: MI ENTREGA & DRIVE ──
-            '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;">' +
+            '<div class="apm-tab-pane pane-entrega ' + (activeTab === 'entrega' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'entrega' ? 'flex' : 'none') + ';flex-direction:column;">' +
               '<div class="apm-delivery-card" style="border:1px solid #334155;border-radius:14px;background:#1E293B;box-shadow:0 4px 16px rgba(0,0,0,0.3);overflow:hidden;margin-bottom:20px;">' +
                 '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #7C2D12 0%, #C2410C 50%, #7C3AED 100%);padding:18px 22px;display:flex;align-items:center;gap:14px;">' +
                   '<div class="apm-dh-icon" style="background:rgba(255,255,255,0.18);color:#FDBA74;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-ghost"></i></div>' +
@@ -10157,8 +10169,14 @@
     function switchApmTab(tabName) {
       if (window.sounds) window.sounds.playClick();
       activeTab = tabName;
-      modal.querySelectorAll('.apm-tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === activeTab); });
-      modal.querySelectorAll('.apm-tab-pane').forEach(function(p){ p.classList.toggle('active', p.classList.contains('pane-' + activeTab)); });
+      modal.querySelectorAll('.apm-tab-btn').forEach(function(b){
+        b.classList.toggle('active', b.dataset.tab === activeTab);
+      });
+      modal.querySelectorAll('.apm-tab-pane').forEach(function(p){
+        var isThisTab = p.classList.contains('pane-' + activeTab);
+        p.classList.toggle('active', isThisTab);
+        p.style.display = isThisTab ? 'flex' : 'none';
+      });
     }
 
     // Botones de pestañas principales
@@ -11538,7 +11556,15 @@
       }, false);
     }
 
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
     modal.classList.add('active');
+
+    // Inicializar pestaña activa explícitamente
+    if (typeof switchApmTab === 'function') {
+      switchApmTab(activeTab);
+    }
   }
 
   window.openAdventureProjectModal = openAdventureProjectModal;

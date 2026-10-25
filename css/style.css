@@ -19326,3 +19326,29 @@ body.student-logged-in #student-drive-dashboard-container {
   width: 0 !important;
   height: 0 !important;
 }
+
+/* Estilos Pestañas Halloween en Modal */
+.apm-tabs-bar-halloween .apm-tab-btn {
+  background: #1E293B !important;
+  border: 1.5px solid #334155 !important;
+  color: #CBD5E1 !important;
+  transition: all 0.2s ease !important;
+}
+
+.apm-tabs-bar-halloween .apm-tab-btn:hover {
+  background: #334155 !important;
+  color: #FFFFFF !important;
+  border-color: #F97316 !important;
+}
+
+.apm-tabs-bar-halloween .apm-tab-btn.active {
+  background: #EA580C !important;
+  color: #FFFFFF !important;
+  border-color: #EA580C !important;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4) !important;
+}
+
+.apm-close-btn:hover {
+  transform: scale(1.1);
+  background: #DC2626 !important;
+}
