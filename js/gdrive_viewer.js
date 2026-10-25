@@ -5152,10 +5152,10 @@
           '<div class="apm-circuit-schematic-card" style="background:#FFF7ED;border:1.5px solid #FDBA74;margin:0;color:#7C2D12;">' +
             '<div class="apm-csc-header" style="border-bottom-color:#FED7AA;">' +
               '<span style="color:#9A3412;font-weight:900;"><i class="fas fa-image"></i> Portada del Proyecto Especial</span>' +
-              '<a href="img/proyectos/halloween_ia_cover.jpg" target="_blank" class="apm-csc-badge" style="background:#EA580C;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
+              '<a href="img/proyectos/halloween_ia_cover.jpg?v=2" target="_blank" class="apm-csc-badge" style="background:#EA580C;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
             '</div>' +
             '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
-              '<img src="img/proyectos/halloween_ia_cover.jpg" alt="Especial Halloween IA" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #FED7AA;box-shadow:0 2px 8px rgba(0,0,0,0.08);">' +
+              '<img src="img/proyectos/halloween_ia_cover.jpg?v=2" alt="Especial Halloween IA" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #FED7AA;box-shadow:0 2px 8px rgba(0,0,0,0.08);">' +
               '<div style="font-size:0.8rem;color:#7C2D12;margin-top:6px;font-weight:600;">Ecosistema Creativo: Gemini AI &bull; Libro de los Hechizos &bull; Canva Polaroid &bull; Flow Video</div>' +
             '</div>' +
           '</div>' +
@@ -7696,8 +7696,8 @@
             '<div class="apm-tab-pane pane-pasos ' + (activeTab === 'pasos' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'pasos' ? 'flex' : 'none') + ';flex-direction:column;">' +
               '<div style="background:linear-gradient(135deg, #2A0800 0%, #581C0C 40%, #3B0764 100%);border-radius:18px;padding:24px;border:1.5px solid rgba(249,115,22,0.45);margin-bottom:24px;box-shadow:0 12px 30px rgba(0,0,0,0.5);display:flex;gap:24px;align-items:center;flex-wrap:wrap;">' +
                 '<div style="flex-shrink:0;text-align:center;margin:0 auto;">' +
-                  '<a href="img/proyectos/halloween_ia_cover.jpg" target="_blank" rel="noopener noreferrer" title="Ver portada oficial en tamaño completo">' +
-                    '<img src="img/proyectos/halloween_ia_cover.jpg" alt="Portada Oficial: Proyecto Halloween Foto a Monstruo" style="width:190px;max-width:100%;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2.5px solid #F97316;display:block;">' +
+                  '<a href="img/proyectos/halloween_ia_cover.jpg?v=2" target="_blank" rel="noopener noreferrer" title="Ver portada oficial en tamaño completo">' +
+                    '<img src="img/proyectos/halloween_ia_cover.jpg?v=2" alt="Portada Oficial: Proyecto Halloween Foto a Monstruo" style="width:190px;max-width:100%;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2.5px solid #F97316;display:block;">' +
                   '</a>' +
                   '<span style="display:inline-block;margin-top:6px;font-size:0.75rem;color:#FDBA74;font-weight:700;"><i class="fas fa-search-plus"></i> Clic para ampliar</span>' +
                 '</div>' +
