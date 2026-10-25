@@ -7915,24 +7915,24 @@
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body" style="padding:22px;">' +
-                  '<div style="margin-bottom:18px;">' +
-                    '<label style="display:block;font-size:0.85rem;font-weight:700;color:#E2E8F0;margin-bottom:6px;"><i class="fas fa-link" style="color:#F97316;"></i> Enlace de tu Proyecto (Canva o Google Drive):</label>' +
-                    '<div style="display:flex;gap:8px;">' +
-                      '<input type="url" id="apm-halloween-student-url" class="apm-delivery-url-input" placeholder="https://www.canva.com/design/... o link a Google Drive" value="' + (savedMakecodeUrl || '') + '" style="flex:1;background:#0F172A;border:1px solid #334155;color:#FFF;padding:10px 14px;border-radius:8px;font-size:0.9rem;">' +
-                      '<button type="button" id="apm-save-halloween-btn" style="background:#EA580C;color:#FFF;padding:10px 18px;border-radius:8px;font-weight:800;border:none;cursor:pointer;white-space:nowrap;"><i class="fas fa-save"></i> Guardar Enlace</button>' +
+                  '<div style="margin-bottom:20px;">' +
+                    '<label style="display:block;font-size:0.88rem;font-weight:700;color:#E2E8F0;margin-bottom:8px;"><i class="fas fa-link" style="color:#F97316;"></i> Enlace de tu Proyecto (Canva o Google Drive):</label>' +
+                    '<div style="display:flex;gap:10px;align-items:center;">' +
+                      '<input type="url" id="apm-halloween-student-url" class="apm-delivery-url-input" placeholder="https://canva.link/polaroid-freirebotuy o link a tu diseño / Drive" value="' + (savedMakecodeUrl || '') + '" style="flex:1;background:#0F172A;border:1.5px solid #334155;color:#FFF;padding:12px 16px;border-radius:10px;font-size:0.92rem;">' +
+                      '<button type="button" id="apm-halloween-save-link-btn" style="background:#EA580C;color:#FFF;padding:12px 20px;border-radius:10px;font-weight:800;border:none;cursor:pointer;white-space:nowrap;font-size:0.92rem;display:inline-flex;align-items:center;gap:8px;box-shadow:0 3px 10px rgba(234,88,12,0.3);"><i class="fas fa-paper-plane"></i> Guardar Enlace (+100 XP)</button>' +
                     '</div>' +
                   '</div>' +
-                  '<div style="margin-bottom:18px;">' +
-                    '<label style="display:block;font-size:0.85rem;font-weight:700;color:#E2E8F0;margin-bottom:6px;"><i class="fas fa-cloud-upload-alt" style="color:#38BDF8;"></i> Subir Archivo a Drive (Foto Polaroid o Video Flow MP4):</label>' +
-                    '<div id="apm-dropzone-halloween" style="border:2px dashed #475569;border-radius:12px;padding:26px;text-align:center;background:#0F172A;cursor:pointer;transition:border-color 0.2s;">' +
-                      '<input type="file" id="apm-file-input-halloween" accept="image/*,video/mp4" style="display:none;">' +
-                      '<i class="fas fa-file-arrow-up" style="font-size:2.2rem;color:#F97316;margin-bottom:10px;display:block;"></i>' +
-                      '<strong style="color:#FFF;font-size:0.95rem;display:block;margin-bottom:4px;">Arrastrá aquí tu archivo o hacé click para seleccionar</strong>' +
-                      '<span style="font-size:0.8rem;color:#94A3B8;">Formatos permitidos: JPG, PNG (Foto Polaroid) y MP4 (Video de Flow)</span>' +
+                  '<div style="margin-bottom:20px;">' +
+                    '<label style="display:block;font-size:0.88rem;font-weight:700;color:#E2E8F0;margin-bottom:8px;"><i class="fas fa-cloud-upload-alt" style="color:#38BDF8;"></i> Subir Archivo a Drive (Foto Polaroid o Video Flow MP4):</label>' +
+                    '<div id="apm-halloween-dropzone" style="border:2px dashed #475569;border-radius:14px;padding:32px 20px;text-align:center;background:#0F172A;cursor:pointer;transition:all 0.2s;">' +
+                      '<input type="file" id="apm-halloween-file-input" accept="image/*,video/mp4" style="display:none;">' +
+                      '<i class="fas fa-file-arrow-up" style="font-size:2.6rem;color:#F97316;margin-bottom:12px;display:block;"></i>' +
+                      '<strong style="color:#FFF;font-size:1.05rem;display:block;margin-bottom:6px;">Arrastrá aquí tu archivo o hacé click para seleccionar</strong>' +
+                      '<span style="font-size:0.82rem;color:#94A3B8;">Formatos permitidos: Video (.mp4, .mov) o Foto / Polaroid (.png, .jpg, .webp)</span>' +
                     '</div>' +
                   '</div>' +
-                  '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:14px;border-top:1px solid #334155;">' +
-                    '<button type="button" id="apm-mark-halloween-completed-btn" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%);color:#FFF;padding:12px 22px;border-radius:10px;font-weight:800;font-size:0.95rem;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(16,185,129,0.3);display:inline-flex;align-items:center;gap:8px;">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:16px;border-top:1px solid #334155;">' +
+                    '<button type="button" id="apm-mark-halloween-completed-btn" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%);color:#FFF;padding:14px 26px;border-radius:12px;font-weight:900;font-size:0.95rem;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(16,185,129,0.35);display:inline-flex;align-items:center;gap:10px;">' +
                       '<i class="fas fa-check-circle"></i> ⭐ Marcar Misión de Halloween Completada (+100 XP)' +
                     '</button>' +
                   '</div>' +
@@ -7943,9 +7943,8 @@
                 '</div>' +
               '</div>' +
             '</div>'
-          : '') +
-
-          // ── PANEL 1: MODO PRESENTACIÓN (SLIDESHOW) ──
+          :
+            // ── PANEL 1: MODO PRESENTACIÓN (SLIDESHOW) ──
           '<div class="apm-tab-pane pane-presentacion ' + (activeTab === 'presentacion' ? 'active' : '') + '">' +
             '<div class="apm-presentation-wrapper">' +
               '<div class="apm-slide-top-nav">' +
@@ -10154,8 +10153,8 @@
                 ) +
               '</div>' +
             '</div>' +
-          '</div>' +
-
+          '</div>'
+        ) +
         '</div>' + // Fin apm-panes-container
       '</div>';
 
@@ -10427,6 +10426,38 @@
         var statusEl = modal.querySelector('#apm-halloween-delivery-status');
         if (statusEl) {
           statusEl.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Enlace Guardado con Éxito ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">' + val + '</span></div></div>';
+        }
+      };
+    }
+
+    var btnHalloweenMarkDone = modal.querySelector('#apm-mark-halloween-completed-btn');
+    if (btnHalloweenMarkDone) {
+      btnHalloweenMarkDone.onclick = function() {
+        if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var input = modal.querySelector('#apm-halloween-student-url');
+        var val = input ? input.value.trim() : '';
+        markMissionCompleted(student, mission.id, { type: 'halloween', date: nowStr, url: val || 'Validado en taller', missionId: mission.id, missionTitle: mission.title });
+        mission.status = 'completado';
+        var statusEl = modal.querySelector('#apm-halloween-delivery-status');
+        if (statusEl) {
+          statusEl.innerHTML = '<div style="padding:14px 18px;background:rgba(16,185,129,0.15);border:1px solid #10B981;border-radius:10px;display:flex;align-items:center;gap:12px;"><i class="fas fa-trophy" style="font-size:1.6rem;color:#F59E0B;"></i> <div><strong style="color:#6EE7B7;font-size:0.95rem;">¡Misión Completada ⭐ (+100 XP)!</strong><br><span style="font-size:0.84rem;color:#A7F3D0;">¡Misión de Halloween validada con éxito!</span></div></div>';
+        }
+      };
+    }
+
+    var dropzoneHalloween = modal.querySelector('#apm-halloween-dropzone');
+    var inputHalloweenFileRef = modal.querySelector('#apm-halloween-file-input');
+    if (dropzoneHalloween && inputHalloweenFileRef) {
+      dropzoneHalloween.onclick = function() { inputHalloweenFileRef.click(); };
+      dropzoneHalloween.ondragover = function(e) { e.preventDefault(); dropzoneHalloween.style.borderColor = '#F97316'; };
+      dropzoneHalloween.ondragleave = function(e) { e.preventDefault(); dropzoneHalloween.style.borderColor = '#475569'; };
+      dropzoneHalloween.ondrop = function(e) {
+        e.preventDefault();
+        dropzoneHalloween.style.borderColor = '#10B981';
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          inputHalloweenFileRef.files = e.dataTransfer.files;
+          inputHalloweenFileRef.dispatchEvent(new Event('change'));
         }
       };
     }
