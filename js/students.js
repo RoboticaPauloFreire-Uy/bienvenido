@@ -11,7 +11,7 @@
  * =============================================================
  */
 
-const GOOGLE_DRIVE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby_83yLvczeYroaFs3O20SeWxDlWLmnNuXERZLtakdHBP1Y9fEX5o9AJHP7abslsZgr/exec";
+const GOOGLE_DRIVE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxZMCUvLtMmBxCldF8wps9yjWuE7OSWJGm384DpH5ppwvSPiiX_pvM_wNvu6nd08Q2q9g/exec";
 const PROJECTS_DRIVE_FOLDER_ID = "1cpI7C-tkjb6Wm1B_GpqZuryPl4SWNVAG";
 const PROJECTS_DRIVE_URL = "https://drive.google.com/drive/folders/1cpI7C-tkjb6Wm1B_GpqZuryPl4SWNVAG?usp=sharing";
 

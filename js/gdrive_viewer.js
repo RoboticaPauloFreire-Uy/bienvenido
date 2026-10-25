@@ -232,8 +232,10 @@
     if (a.indexOf('robot') !== -1 || a.indexOf('taller') !== -1) return '🤖';
     if (a.indexOf('video') !== -1) return '🎬';
     if (a.indexOf('paint') !== -1 || a.indexOf('dibuj') !== -1) return '🎨';
+    if (a.indexOf('poke') !== -1 || a.indexOf('juego') !== -1) return '🎮';
+    if (a.indexOf('despedida') !== -1 || a.indexOf('egresad') !== -1 || a.indexOf('gradua') !== -1) return '🎓';
     if (a.indexOf('viaje') !== -1 || a.indexOf('paseo') !== -1 || a.indexOf('salida') !== -1) return '🚀';
-    if (a.indexOf('diploma') !== -1 || a.indexOf('egresad') !== -1 || a.indexOf('gradua') !== -1) return '🎓';
+    if (a.indexOf('diploma') !== -1) return '📜';
     if (a.indexOf('torneo') !== -1 || a.indexOf('compet') !== -1 || a.indexOf('olimpi') !== -1) return '🏆';
     return '📁';
   }
@@ -277,7 +279,7 @@
   // Consulta concurrentemente subcarpetas dibujo, videos, fotos y raíz
   // ──────────────────────────────────────────────────
   function fetchRealDriveFiles(student, containerId) {
-    var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
+    var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
     if (!hook || isLoadingDriveFiles) return;
     isLoadingDriveFiles = true;
     renderGDriveDashboard(containerId);
@@ -390,7 +392,7 @@
   // FETCH: Proyectos PDF (carpeta compartida por grado)
   // ──────────────────────────────────────────────────
   function fetchProjectsDriveFiles(student, containerId) {
-    var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
+    var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
     var fid  = window.PROJECTS_DRIVE_FOLDER_ID || '1cpI7C-tkjb6Wm1B_GpqZuryPl4SWNVAG';
     if (!hook || isLoadingProjectFiles) return;
     isLoadingProjectFiles = true;
@@ -418,7 +420,7 @@
   // Trae y filtra ÚNICAMENTE archivos válidos de proyecto (Scratch Jr o MakeCode)
   // ──────────────────────────────────────────────────
   function fetchProyectoFiles(student, containerId) {
-    var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
+    var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
     if (!hook || isLoadingProyectoFiles) return;
     isLoadingProyectoFiles = true;
     renderGDriveDashboard(containerId);
@@ -515,7 +517,7 @@
   // Subcarpetas: grado (5años, 1ero, etc.) y general
   // ──────────────────────────────────────────────────
   function fetchActividadesDriveFiles(student, containerId) {
-    var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
+    var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
     var fid  = window.ACTIVITIES_DRIVE_FOLDER_ID || '1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK';
     if (!hook || isLoadingActividadesFiles) return;
     isLoadingActividadesFiles = true;
@@ -2755,6 +2757,7 @@
     if (!container) return;
     var student = window.getActiveStudent ? window.getActiveStudent() : null;
     if (!student) { container.innerHTML = ''; return; }
+    if (window.GOOGLE_DRIVE_WEBHOOK_URL) { student.webhookUrl = window.GOOGLE_DRIVE_WEBHOOK_URL; }
 
     var isLegacy = isLegacyTheme(student);
     var isCyber = isCyberTheme(student);
@@ -9942,7 +9945,7 @@
       var reader = new FileReader();
       reader.onload = function(ev) {
         var b64 = ev.target.result.split(',')[1];
-        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
         if (hook && student) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe) {
@@ -10178,7 +10181,7 @@
       var reader = new FileReader();
       reader.onload = function(ev) {
         var b64 = ev.target.result.split(',')[1];
-        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
         if (hook && student) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe) {
@@ -10321,7 +10324,7 @@
       var reader = new FileReader();
       reader.onload = function(ev) {
         var b64 = ev.target.result.split(',')[1];
-        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
         if (hook && student) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe) {
@@ -10465,7 +10468,7 @@
       var reader = new FileReader();
       reader.onload = function(ev) {
         var b64 = ev.target.result.split(',')[1];
-        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
         if (hook && student) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe) {
@@ -10871,7 +10874,7 @@
       var reader = new FileReader();
       reader.onload = function(ev) {
         var b64 = ev.target.result.split(',')[1];
-        var hook = (student && student.webhookUrl) || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
         if (hook && student) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe) {
@@ -11077,7 +11080,7 @@
       var reader = new FileReader();
       reader.onload = function(ev){
         var b64 = ev.target.result.split(',')[1];
-        var hook = student.webhookUrl || window.GOOGLE_DRIVE_WEBHOOK_URL;
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
         var targetSubfolder = (subfolder === 'proyecto' || subfolder === 'proyectos') ? 'proyectos' : subfolder;
         var uploadYear = (fbSelectedYear && fbSelectedYear !== 'all') ? fbSelectedYear : (new Date().getFullYear().toString());
         var uploadAlbum = (fbSelectedAlbum && fbSelectedAlbum !== 'all') ? fbSelectedAlbum : 'Taller';

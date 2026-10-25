@@ -12,11 +12,22 @@
       var cached = localStorage.getItem('pf_active_student_data');
       if (cached) {
         var parsed = JSON.parse(cached);
-        if (parsed && parsed.id) return parsed;
+        if (parsed && parsed.id) {
+          if (window.GOOGLE_DRIVE_WEBHOOK_URL) {
+            parsed.webhookUrl = window.GOOGLE_DRIVE_WEBHOOK_URL;
+          }
+          return parsed;
+        }
       }
       var id = localStorage.getItem(STORAGE_KEY);
       if (!id) return null;
-      if (window.getStudentById) return window.getStudentById(id);
+      if (window.getStudentById) {
+        var st = window.getStudentById(id);
+        if (st && window.GOOGLE_DRIVE_WEBHOOK_URL) {
+          st.webhookUrl = window.GOOGLE_DRIVE_WEBHOOK_URL;
+        }
+        return st;
+      }
       return null;
     } catch(e) {
       return null;

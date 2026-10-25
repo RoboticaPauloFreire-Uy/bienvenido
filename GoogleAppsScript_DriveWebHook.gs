@@ -269,6 +269,8 @@ function getAlbumIcon(albumName) {
   if (low.indexOf('evento') !== -1 || low.indexOf('festejo') !== -1) return '🎉';
   if (low.indexOf('robot') !== -1 || low.indexOf('microbit') !== -1) return '🤖';
   if (low.indexOf('paint') !== -1 || low.indexOf('dibujo') !== -1) return '🎨';
+  if (low.indexOf('poke') !== -1 || low.indexOf('juego') !== -1) return '🎮';
+  if (low.indexOf('despedida') !== -1 || low.indexOf('egresad') !== -1 || low.indexOf('gradua') !== -1) return '🎓';
   if (low.indexOf('video') !== -1) return '🎬';
   return '📁';
 }
