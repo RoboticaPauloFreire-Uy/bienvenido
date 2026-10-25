@@ -1058,166 +1058,72 @@
 
     var sala5SpecialBannerHtml = '';
     var isGrado6 = student && (student.gradeId === 'grado6' || student.gradeId === '6to');
-    var isSpotlightGrade = (student.gradeId === 'sala5' || student.gradeId === 'grado1' || student.gradeId === '1ero' || isGrado6);
+    var isGrado5 = student && (student.gradeId === 'grado5' || student.gradeId === '5to');
+    var isHalloweenGrade = isGrado6 || isGrado5;
+    var isSpotlightGrade = (student.gradeId === 'sala5' || student.gradeId === 'grado1' || student.gradeId === '1ero' || isHalloweenGrade);
     if (isSpotlightGrade) {
       var adventureMissions = missions || [];
       var isGrado1 = (student.gradeId === 'grado1' || student.gradeId === '1ero');
 
-      if (isGrado6) {
-        var idxG6Canva = adventureMissions.findIndex(function(m){
-          return m.id === 'g6-p1' || (/canva|arquero.*ia/i.test(m.title || ''));
-        });
-        if (idxG6Canva === -1) idxG6Canva = 0;
+      if (isHalloweenGrade) {
+        var halloweenMission = adventureMissions.find(function(m){
+          return /halloween/i.test(m.title || '') || m.id === 'g6-p1' || m.id === 'g5-p1';
+        }) || adventureMissions[0];
 
-        var idxG6Servo = adventureMissions.findIndex(function(m){
-          return m.id === 'g6-p2' || (/servo.*joystick|joystick.*servo/i.test(m.title || ''));
-        });
-        if (idxG6Servo === -1) idxG6Servo = 1;
-
-        var idxG6Gemini = adventureMissions.findIndex(function(m){
-          return m.id === 'g6-p3' || (/gemini|notebooklm|materiales.*estudio/i.test(m.title || ''));
-        });
-        if (idxG6Gemini === -1) idxG6Gemini = 2;
-
-        var activeSpotlight = (window.grado6SpotlightCurrentSlide !== undefined) ? window.grado6SpotlightCurrentSlide : 2;
-        if (activeSpotlight < 0 || activeSpotlight > 2) activeSpotlight = 2;
-        var spotlightTheme = (activeSpotlight === 0) ? 'theme-canva' : (activeSpotlight === 1 ? 'theme-servo' : 'theme-gemini');
+        var idxHalloween = adventureMissions.indexOf(halloweenMission);
+        if (idxHalloween === -1) idxHalloween = 0;
 
         sala5SpecialBannerHtml =
-          '<div class="arm-sala5-spotlight-card ' + spotlightTheme + '" id="arm-sala5-spotlight-carousel">' +
+          '<div class="arm-sala5-spotlight-card theme-halloween" id="arm-sala5-spotlight-carousel" style="border:2px solid #D97706;background:linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #F5F3FF 100%);box-shadow:0 8px 24px rgba(217,119,6,0.18);">' +
             '<div class="arm-s5-carousel-topbar">' +
               '<div class="arm-s5-badge-top">' +
                 '<img src="img/escudo_paulo_freire.png" alt="Colegio Paulo Freire" class="arm-s5-crest">' +
-                '<span>Colegio Paulo Freire · Taller de Robótica, IA y Programación (6° Grado)</span>' +
+                '<span>Colegio Paulo Freire · Taller de Robótica, IA y Programación (' + (isGrado6 ? '6° Grado' : '5° Grado') + ')</span>' +
               '</div>' +
               '<div class="arm-s5-carousel-nav">' +
-                '<button type="button" class="arm-s5-cnav-btn arm-s5-prev-btn" title="Proyecto Anterior" aria-label="Anterior">' +
-                  '<i class="fas fa-chevron-left"></i>' +
-                '</button>' +
-                '<div class="arm-s5-carousel-tabs">' +
-                  '<button type="button" class="arm-s5-tab-pill tab-canva ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" data-spotlight-theme="canva">' +
-                    '<span>🎨 Canva Arquero IA</span>' +
-                  '</button>' +
-                  '<button type="button" class="arm-s5-tab-pill tab-servo ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" data-spotlight-theme="servo">' +
-                    '<span>🕹️ Servo & Joystick</span>' +
-                  '</button>' +
-                  '<button type="button" class="arm-s5-tab-pill tab-gemini ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" data-spotlight-theme="gemini">' +
-                    '<span>🧠 Geminis Notebook ⚡</span>' +
-                  '</button>' +
-                '</div>' +
-                '<button type="button" class="arm-s5-cnav-btn arm-s5-next-btn" title="Proyecto Siguiente" aria-label="Siguiente">' +
-                  '<i class="fas fa-chevron-right"></i>' +
-                '</button>' +
+                '<span class="arm-s5-tab-pill active" style="background:#D97706;color:#FFF;cursor:default;box-shadow:0 2px 8px rgba(217,119,6,0.3);">' +
+                  '<span>🎃 Especial Halloween con IA</span>' +
+                '</span>' +
               '</div>' +
             '</div>' +
 
             '<div class="arm-s5-slides-container">' +
-              // SLIDE 0: Canva Arquero con IA
-              '<div class="arm-s5-slide ' + (activeSpotlight === 0 ? 'active' : '') + '" data-slide-idx="0" style="' + (activeSpotlight === 0 ? 'display:block;' : 'display:none;') + '">' +
-                '<span class="arm-s5-watermark">🎨</span>' +
+              '<div class="arm-s5-slide active" data-slide-idx="0" style="display:block;">' +
+                '<span class="arm-s5-watermark">🎃</span>' +
                 '<div class="arm-s5-content-row">' +
-                  '<div class="arm-s5-preview arm-s5-canva-preview" id="arm-g6-canva-interactive" role="button" tabindex="0" title="¡Hacé click para ver la animación en Canva!">' +
-                    '<img src="img/proyectos/canva_arquero_ia_cover.svg" alt="Arquero con IA en Canva" class="arm-s5-preview-img">' +
-                    '<div class="arm-s5-led-glow glow-canva" id="arm-g6-glow-canva"><i class="fas fa-wand-magic-sparkles"></i></div>' +
-                    '<span class="arm-s5-interactive-hint" style="background:rgba(2, 132, 199, 0.95);"><i class="fas fa-magic"></i> ¡Tocá para probar IA!</span>' +
+                  '<div class="arm-s5-preview arm-s5-halloween-preview" id="arm-halloween-spotlight-interactive" role="button" tabindex="0" title="¡Hacé click para abrir la guía y pasos del proyecto!">' +
+                    '<img src="img/proyectos/halloween_ia_cover.jpg?v=2" alt="Especial Halloween con IA" class="arm-s5-preview-img" style="object-fit:cover;object-position:center top;border-radius:12px;border:2px solid #D97706;box-shadow:0 4px 14px rgba(217,119,6,0.25);">' +
+                    '<div class="arm-s5-led-glow glow-halloween" id="arm-halloween-glow"><i class="fas fa-ghost"></i></div>' +
+                    '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #D97706 0%, #7C3AED 100%);"><i class="fas fa-magic"></i> ¡Tocá para explorar!</span>' +
                   '</div>' +
                   '<div class="arm-s5-info">' +
-                    '<div class="arm-s5-tag" style="color:#0284C7;"><i class="fas fa-robot"></i> PROYECTO OFICIAL 6° GRADO • NIVEL 1</div>' +
-                    '<h3 class="arm-s5-title" style="color:#0369A1;">El Arquero con Inteligencia Artificial en Canva ⚽🧤🤖</h3>' +
-                    '<p class="arm-s5-desc">Fotografía real en el aula, remoción de fondo con <strong>Quitafondos IA</strong>, montaje en plantilla de fútbol y animación de atajada con <strong>Magic Animate</strong> en formato video MP4 o GIF animado.</p>' +
+                    '<div class="arm-s5-tag" style="color:#D97706;"><i class="fas fa-ghost"></i> PROYECTO OFICIAL ' + (isGrado6 ? '6° GRADO' : '5° GRADO') + ' • ESPECIAL HALLOWEEN 🎃</div>' +
+                    '<h3 class="arm-s5-title" style="color:#B45309;">Especial Halloween con IA: Monstruo en Gemini, Polaroid en Canva y Video en Flow 🎃👻🎬</h3>' +
+                    '<p class="arm-s5-desc">De la foto real en el aula al monstruo de fantasía con <strong>Google Gemini</strong> y la técnica de las 5 Capas de <strong>El Libro de los Hechizos</strong>, diseño de la foto instantánea <strong>Polaroid en Canva</strong> e impresión física para llevar a casa, y animación cinematográfica con <strong>Flow</strong>.</p>' +
                     '<div class="arm-s5-materials-pills">' +
-                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-camera"></i> Foto en el aula</span>' +
-                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-magic"></i> Quitafondos IA</span>' +
-                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-futbol"></i> Fotomontaje</span>' +
-                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-film"></i> Magic Animate</span>' +
+                      '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-camera"></i> Foto en Aula</span>' +
+                      '<span style="border-color:#DDD6FE;color:#6D28D9;"><i class="fas fa-book-skull"></i> Libro de Hechizos</span>' +
+                      '<span style="border-color:#DDD6FE;color:#6D28D9;"><i class="fas fa-wand-magic-sparkles"></i> Gemini (5 Capas)</span>' +
+                      '<span style="border-color:#BAE6FD;color:#0369A1;"><i class="fas fa-palette"></i> Polaroid Canva</span>' +
+                      '<span style="border-color:#FDE68A;color:#B45309;"><i class="fas fa-print"></i> Impresión Real</span>' +
+                      '<span style="border-color:#DDD6FE;color:#6D28D9;"><i class="fas fa-film"></i> Video con Flow</span>' +
                     '</div>' +
                     '<div class="arm-s5-actions">' +
-                      '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);box-shadow:0 4px 14px rgba(2,132,199,0.35);" data-mission-idx="' + idxG6Canva + '">' +
-                        '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
+                      '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #D97706 0%, #EA580C 50%, #7C3AED 100%);box-shadow:0 4px 14px rgba(217,119,6,0.35);" data-mission-idx="' + idxHalloween + '">' +
+                        '<i class="fas fa-book-open"></i> <span>Ver Pasos del Proyecto y Tutorial</span>' +
                       '</button>' +
-                      '<a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;padding:9px 18px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
-                        '<i class="fas fa-palette"></i> <span>Abrir Canva</span>' +
+                      '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#6D28D9;border-color:#DDD6FE;background:#F5F3FF;padding:9px 16px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
+                        '<i class="fas fa-book-skull"></i> <span>El Libro de Hechizos</span>' +
+                      '</a>' +
+                      '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0284C7;border-color:#BAE6FD;background:#F0F9FF;padding:9px 16px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
+                        '<i class="fas fa-palette"></i> <span>Plantilla Polaroid en Canva</span>' +
                       '</a>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
               '</div>' +
-
-              // SLIDE 1: El Arquero Mecánico: Servo y Joystick
-              '<div class="arm-s5-slide ' + (activeSpotlight === 1 ? 'active' : '') + '" data-slide-idx="1" style="' + (activeSpotlight === 1 ? 'display:block;' : 'display:none;') + '">' +
-                '<span class="arm-s5-watermark">🕹️</span>' +
-                '<div class="arm-s5-content-row">' +
-                  '<div class="arm-s5-preview arm-s5-servo-preview" id="arm-g6-servo-interactive" role="button" tabindex="0" title="¡Hacé click para mover el servomotor!">' +
-                    '<img src="img/proyectos/servo_joystick_makecode_cover.svg" alt="Arquero Mecánico Servo y Joystick" class="arm-s5-preview-img">' +
-                    '<div class="arm-s5-led-glow glow-servo" id="arm-g6-glow-servo"><i class="fas fa-gamepad"></i></div>' +
-                    '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);"><i class="fas fa-futbol"></i> ¡Tocá para atajar!</span>' +
-                  '</div>' +
-                  '<div class="arm-s5-info">' +
-                    '<div class="arm-s5-tag" style="color:#0D9488;"><i class="fas fa-microchip"></i> PROYECTO OFICIAL 6° GRADO • NIVEL 2</div>' +
-                    '<h3 class="arm-s5-title" style="color:#0F766E;">El Arquero Mecánico: Control de Servo y Joystick 🧤🕹️⚙️</h3>' +
-                    '<p class="arm-s5-desc">Lectura analógica del <strong>joystick chico negro</strong> en Pin P1 (0..1023), bloque matemático de <strong>ajuste de intervalo (Math.map)</strong> de 0 a 180° y control en tiempo real del <strong>servomotor SG90</strong> en Pin P0.</p>' +
-                    '<div class="arm-s5-materials-pills">' +
-                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-gamepad"></i> Joystick Chico (P1)</span>' +
-                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-calculator"></i> Ajuste Math.map</span>' +
-                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-cogs"></i> Servo SG90 (P0)</span>' +
-                      '<span style="border-color:#99F6E4;color:#0F766E;"><i class="fas fa-microchip"></i> micro:bit v2</span>' +
-                    '</div>' +
-                    '<div class="arm-s5-actions">' +
-                      '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);box-shadow:0 4px 14px rgba(13,148,136,0.35);" data-mission-idx="' + idxG6Servo + '">' +
-                        '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
-                      '</button>' +
-                      '<a href="https://makecode.microbit.org/S17294-82339-82111-72476" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#0D9488;border-color:#99F6E4;padding:9px 18px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
-                        '<i class="fas fa-code"></i> <span>Abrir MakeCode</span>' +
-                      '</a>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-
-              // SLIDE 2: Gemini & NotebookLM: Materiales de Estudio con IA
-              '<div class="arm-s5-slide ' + (activeSpotlight === 2 ? 'active' : '') + '" data-slide-idx="2" style="' + (activeSpotlight === 2 ? 'display:block;' : 'display:none;') + '">' +
-                '<span class="arm-s5-watermark">🧠</span>' +
-                '<div class="arm-s5-content-row">' +
-                  '<div class="arm-s5-preview arm-s5-gemini-preview" id="arm-g6-gemini-interactive" role="button" tabindex="0" title="¡Hacé click para probar la generación con IA!">' +
-                    '<img src="img/proyectos/gemini_notebooks_cover.svg" alt="Gemini NotebookLM Ecosistema" class="arm-s5-preview-img">' +
-                    '<div class="arm-s5-led-glow glow-gemini" id="arm-g6-glow-gemini"><i class="fas fa-brain"></i></div>' +
-                    '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #4F46E5 0%, #EC4899 100%);"><i class="fas fa-sparkles"></i> ¡Generar con IA!</span>' +
-                  '</div>' +
-                  '<div class="arm-s5-info">' +
-                    '<div class="arm-s5-tag" style="color:#4F46E5;"><i class="fas fa-brain"></i> PROYECTO OFICIAL 6° GRADO • NIVEL 3</div>' +
-                    '<h3 class="arm-s5-title" style="color:#3730A3;">NIVEL 3 — Geminis Notebook ⚡: Creación de Materiales de Estudio con IA 🧠🎙️📽️📊</h3>' +
-                    '<p class="arm-s5-desc">Ecosistema de IA con anclaje estricto a fuentes confiables (Grounding): generá <strong>podcasts con dos locutores sintetizados (Audio Overview)</strong>, <strong>guiones audiovisuales para video educativo</strong>, <strong>esquemas para Canva</strong> y <strong>guías de estudio con flashcards para autoevaluación</strong> sin alucinaciones.</p>' +
-                    '<div class="arm-s5-materials-pills">' +
-                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-microphone"></i> Podcasts (Audio Overview)</span>' +
-                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-video"></i> Guiones de Video</span>' +
-                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-tv"></i> Diapositivas Canva</span>' +
-                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-question-circle"></i> Flashcards & FAQs</span>' +
-                      '<span style="border-color:#C7D2FE;color:#3730A3;"><i class="fas fa-file-pdf"></i> Guía PDF Completa</span>' +
-                    '</div>' +
-                    '<div class="arm-s5-actions">' +
-                      '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);box-shadow:0 4px 14px rgba(79,70,229,0.35);" data-mission-idx="' + idxG6Gemini + '">' +
-                        '<i class="fas fa-chalkboard-teacher"></i> <span>Ver Modo Presentación Guiado</span>' +
-                      '</button>' +
-                      '<a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="arm-s5-btn-pdf arm-btn-open-pdf" style="color:#DB2777;border-color:#FBCFE8;text-decoration:none;" data-mission-idx="' + idxG6Gemini + '">' +
-                        '<i class="fas fa-file-pdf"></i> <span>Descargar Guía PDF Completa</span>' +
-                      '</a>' +
-                      '<a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="arm-btn-secondary" style="color:#4F46E5;border-color:#C7D2FE;padding:9px 18px;text-decoration:none;font-size:0.86rem;font-weight:800;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">' +
-                        '<i class="fas fa-external-link-alt"></i> <span>Abrir NotebookLM</span>' +
-                      '</a>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-
-            // Dots para 6to
-            '<div class="arm-s5-carousel-dots">' +
-              '<span class="arm-s5-dot ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" title="Canva Arquero con IA"></span>' +
-              '<span class="arm-s5-dot ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" title="El Arquero Mecánico: Servo y Joystick"></span>' +
-              '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="NIVEL 3 — Geminis Notebook ⚡"></span>' +
             '</div>' +
           '</div>';
-
       } else {
 
       var idxSombrero = adventureMissions.findIndex(function(m){
@@ -3870,13 +3776,16 @@
         };
       });
 
-      // Carrusel Spotlight para Sala de 5, 1° Grado y 6° Grado
+      // Carrusel Spotlight para Sala de 5 y 1° Grado / Banner Halloween para 5° y 6°
       var spotlightCarousel = container.querySelector('#arm-sala5-spotlight-carousel');
       if (spotlightCarousel) {
         var isG6Student = student && (student.gradeId === 'grado6' || student.gradeId === '6to');
+        var isG5Student = student && (student.gradeId === 'grado5' || student.gradeId === '5to');
+        var isHalloweenStudent = isG6Student || isG5Student;
         var isG1Student = student && (student.gradeId === 'grado1' || student.gradeId === '1ero');
 
         function setSpotlightSlide(newIdx) {
+          if (isHalloweenStudent) return;
           if (newIdx < 0) newIdx = 2;
           if (newIdx > 2) newIdx = 0;
 
@@ -4039,45 +3948,23 @@
           };
         }
 
-        // 4. Previews Interactivos de 6° Grado
-        // 4a. Canva Arquero IA
-        var canvaG6Interactive = spotlightCarousel.querySelector('#arm-g6-canva-interactive');
-        if (canvaG6Interactive) {
-          canvaG6Interactive.onclick = function(e){
+        // 4. Previews Interactivos de Halloween (5° y 6° Grado)
+        var halloweenInteractive = spotlightCarousel.querySelector('#arm-halloween-spotlight-interactive');
+        if (halloweenInteractive) {
+          halloweenInteractive.onclick = function(e){
             e.stopPropagation();
-            var glow = spotlightCarousel.querySelector('#arm-g6-glow-canva');
+            var glow = spotlightCarousel.querySelector('#arm-halloween-glow');
             if (glow) {
               glow.classList.toggle('active');
               if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
               else if (window.sounds) window.sounds.playClick();
             }
-          };
-        }
-
-        // 4b. Servo SG90 Arquero Mecánico
-        var servoG6Interactive = spotlightCarousel.querySelector('#arm-g6-servo-interactive');
-        if (servoG6Interactive) {
-          servoG6Interactive.onclick = function(e){
-            e.stopPropagation();
-            var glow = spotlightCarousel.querySelector('#arm-g6-glow-servo');
-            if (glow) {
-              glow.classList.toggle('active');
-              if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
-              else if (window.sounds) window.sounds.playClick();
-            }
-          };
-        }
-
-        // 4c. Gemini & NotebookLM Ecosistema IA
-        var geminiG6Interactive = spotlightCarousel.querySelector('#arm-g6-gemini-interactive');
-        if (geminiG6Interactive) {
-          geminiG6Interactive.onclick = function(e){
-            e.stopPropagation();
-            var glow = spotlightCarousel.querySelector('#arm-g6-glow-gemini');
-            if (glow) {
-              glow.classList.toggle('active');
-              if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
-              else if (window.sounds) window.sounds.playClick();
+            var advMissions = getAdventureMissionsForStudent(student);
+            var hMission = advMissions.find(function(m){
+              return /halloween/i.test(m.title || '') || m.id === 'g6-p1' || m.id === 'g5-p1';
+            }) || advMissions[0];
+            if (hMission) {
+              openAdventureProjectModal(hMission, 'pasos');
             }
           };
         }

@@ -251,72 +251,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Marca-libros interactivo de Tom Sawyer en 1° Grado (enciende y apaga la luz en el gorro con sonido)
 
-  // Arquero interactivo con IA de 6° Grado
-  const canvaCard = document.getElementById('g6-interactive-canva-card');
-  if (canvaCard) {
-    canvaCard.addEventListener('click', () => {
-      const badge = document.getElementById('g6-live-ai-badge');
-      if (badge) {
-        badge.classList.toggle('active');
-        if (badge.classList.contains('active')) {
-          badge.style.opacity = '1';
-          badge.style.transform = 'translate(-50%,-50%) scale(1.25) rotate(15deg)';
+  // Proyecto interactivo Halloween con IA (5° y 6° Grado)
+  const halloweenCard = document.getElementById('halloween-interactive-card');
+  if (halloweenCard) {
+    halloweenCard.addEventListener('click', () => {
+      const glow = document.getElementById('halloween-live-glow');
+      if (glow) {
+        glow.classList.toggle('active');
+        if (glow.classList.contains('active')) {
+          glow.style.opacity = '1';
+          glow.style.transform = 'translate(-50%,-50%) scale(1.25) rotate(15deg)';
           if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
           else if (window.sounds) window.sounds.playClick();
           setTimeout(() => {
-            badge.style.transform = 'translate(-50%,-50%) scale(1)';
+            glow.style.transform = 'translate(-50%,-50%) scale(1)';
           }, 300);
         } else {
-          badge.style.opacity = '0';
+          glow.style.opacity = '0';
           if (window.sounds) window.sounds.playClick();
         }
       }
-    });
-  }
-
-  // Control de Servo y Joystick interactivo de 6° Grado (gira el servo y muestra el ángulo con sonido)
-  const servoCard = document.getElementById('g6-interactive-servo-card');
-  if (servoCard) {
-    const angles = [0, 45, 90, 135, 180];
-    let aIdx = 2; // Iniciar en 90 grados
-    servoCard.addEventListener('click', () => {
-      aIdx = (aIdx + 1) % angles.length;
-      const angle = angles[aIdx];
-      const badge = document.getElementById('g6-live-servo-badge');
-      if (badge) {
-        badge.style.opacity = '1';
-        badge.innerHTML = `<i class="fas fa-futbol"></i> ${angle}° ${angle === 90 ? '(Centro)' : angle < 90 ? '(Palo Izq)' : '(Palo Der)'}`;
-        badge.style.transform = `translate(-50%,-50%) scale(1.15) rotate(${angle - 90}deg)`;
-      }
-      if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
-      else if (window.sounds && window.sounds.playClick) window.sounds.playClick();
-    });
-  }
-
-  // Explorador de Materiales de Estudio con IA (Google Gemini & NotebookLM)
-  const geminiCard = document.getElementById('g6-interactive-gemini-card');
-  if (geminiCard) {
-    const modes = [
-      { text: '<i class="fas fa-microphone"></i> 🎙️ Generando Podcast (Audio Overview)...', color: '#BE185D', scale: 1.15, rot: -3 },
-      { text: '<i class="fas fa-video"></i> 📽️ Creando Guión de Video Educativo...', color: '#0E7490', scale: 1.15, rot: 3 },
-      { text: '<i class="fas fa-tv"></i> 📊 Estructurando Diapositivas Canva...', color: '#0369A1', scale: 1.15, rot: -2 },
-      { text: '<i class="fas fa-question-circle"></i> 📑 Formulando Flashcards & FAQs...', color: '#4338CA', scale: 1.15, rot: 2 },
-      { text: '<i class="fas fa-file-pdf"></i> ✅ ¡Guía PDF Unificada Lista!', color: '#047857', scale: 1.2, rot: 0 }
-    ];
-    let mIdx = 0;
-    geminiCard.addEventListener('click', () => {
-      const mode = modes[mIdx];
-      mIdx = (mIdx + 1) % modes.length;
-      const badge = document.getElementById('g6-live-gemini-badge');
-      if (badge) {
-        badge.style.opacity = '1';
-        badge.innerHTML = mode.text;
-        badge.style.borderColor = mode.color;
-        badge.style.color = mode.color;
-        badge.style.transform = `translate(-50%,-50%) scale(${mode.scale}) rotate(${mode.rot}deg)`;
-      }
-      if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
-      else if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+      const projId = halloweenCard.dataset.projectId;
+      const grade = window.CURRENT_GRADE || (window.SCHOOL_DATA && window.SCHOOL_DATA.grades.find(g => (projId && projId.startsWith('g5')) ? g.id === 'grado5' : g.id === 'grado6'));
+      const proj = grade && grade.projects ? grade.projects.find(p => p.id === projId) : null;
+      if (proj) openProjectModal(proj, grade);
     });
   }
 
@@ -512,195 +470,75 @@ function renderProjectsSectionHtml(grade) {
         </div>
       </section>
     `;
-  }
-
-  else if (grade.id === 'grado6' || grade.id === '6to') {
+  }  else if (grade.id === 'grado5' || grade.id === '5to' || grade.id === 'grado6' || grade.id === '6to') {
+    const isGrado6 = (grade.id === 'grado6' || grade.id === '6to');
+    const projId = isGrado6 ? 'g6-p1' : 'g5-p1';
     extraHeroHtml = `
-      <section class="sala5-hero-showcase" style="border-top:4px solid #0284C7;background:linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);">
+      <section class="sala5-hero-showcase" style="border-top:4px solid #D97706;background:linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 45%, #F5F3FF 100%);">
         <div class="s5-showcase-header">
           <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
           <div class="s5-header-titles">
-            <span class="s5-dept-tag" style="background:rgba(2,132,199,0.15);color:#0284C7;border:1px solid rgba(2,132,199,0.3);"><i class="fas fa-robot"></i> Taller de robótica y programación</span>
-            <h2 class="s5-main-title" style="color:#0369A1;">⚽ El Arquero con Inteligencia Artificial en Canva 🧤🤖</h2>
-            <p class="s5-subtitle" style="color:#0C4A6E;">Proyecto oficial para Graduados de 6° Grado · ¡De la foto real en el aula a la animación con IA!</p>
+            <span class="s5-dept-tag" style="background:rgba(217,119,6,0.15);color:#B45309;border:1px solid rgba(217,119,6,0.3);"><i class="fas fa-ghost"></i> Taller de robótica y tecnología · Especial Halloween 🎃</span>
+            <h2 class="s5-main-title" style="color:#B45309;">🎃 Especial Halloween con IA: Monstruo en Gemini, Polaroid en Canva y Video en Flow 👻🎬</h2>
+            <p class="s5-subtitle" style="color:#78350F;">Proyecto oficial para ${isGrado6 ? '6° Grado' : '5° Grado'} · ¡De la foto real en el aula al monstruo de fantasía con IA, foto Polaroid física impresa y video cinematográfico!</p>
           </div>
         </div>
 
         <div class="s5-interactive-stage">
           <div class="s5-stage-left">
-            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-canva-card" role="button" tabindex="0" title="¡Tocá para activar la animación con Inteligencia Artificial!">
-              <img src="img/proyectos/canva_arquero_ia_cover.svg" alt="Arquero con IA en Canva" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
-              <div class="arm-s5-led-glow" id="g6-live-ai-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:42px;color:#0284C7;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 30px #0284C7,0 0 60px #7C3AED;"><i class="fas fa-wand-magic-sparkles"></i></div>
-              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para probar IA!</div>
+            <div class="s5-hat-box arm-s5-bookmark-preview" id="halloween-interactive-card" role="button" tabindex="0" title="¡Tocá para ver el proyecto de Halloween!" data-project-id="${projId}">
+              <img src="img/proyectos/halloween_ia_cover.jpg?v=2" alt="Especial Halloween con IA" class="s5-hat-render" style="max-height:260px;object-fit:cover;border-radius:14px;border:2px solid #D97706;box-shadow:0 8px 24px rgba(217,119,6,0.25);">
+              <div class="arm-s5-led-glow" id="halloween-live-glow" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:42px;color:#D97706;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 30px #D97706,0 0 60px #7C3AED;"><i class="fas fa-wand-magic-sparkles"></i></div>
+              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #D97706 0%, #7C3AED 100%);"><i class="fas fa-magic"></i> ¡Tocá para explorar!</div>
             </div>
           </div>
 
           <div class="s5-stage-right">
             <div class="s5-intro-bubble">
-              <div class="s5-bubble-badge" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-sparkles"></i> ¿Cómo funciona este proyecto con IA?</div>
+              <div class="s5-bubble-badge" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-sparkles"></i> ¿Cómo funciona el laboratorio de Halloween con IA?</div>
               <p>
-                Los estudiantes se sacan una <strong>foto en el aula</strong>, la suben a Canva y con el <strong>Quitafondos IA</strong> aíslan su cabeza. Luego eligen la imagen de un arquero atajando y <strong>reemplazan la cabeza original con su propia foto</strong>. Finalmente, mediante <strong>Magic Animate (IA de Canva)</strong> transforman el fotomontaje en una <strong>animación de video (MP4 o GIF)</strong> con movimiento de atajada realista.
+                Un proyecto creativo en 3 etapas del taller: 1) Tomamos nuestra foto con la cámara web del aula y en <strong>Google Gemini</strong> construimos un prompt con la técnica de las <strong>5 Capas</strong> guiados por <strong>El Libro de los Hechizos</strong>. 2) Montamos la foto del monstruo en <strong>Canva</strong> dentro del marco de la foto instantánea <strong>Polaroid</strong> y el docente la <strong>imprime físicamente en papel fotográfico</strong> para llevar a casa. 3) En <strong>Flow</strong> animamos la criatura con prompts de video cinemático y la guardamos en la carpeta <strong>Halloween</strong> de Google Drive.
               </p>
             </div>
 
             <!-- Materiales clave visuales -->
             <div class="s5-materials-grid">
               <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#E0F2FE;color:#0284C7;"><i class="fas fa-camera"></i></div>
-                <div class="s5-mat-text"><strong>Foto en Aula</strong><span>Rostro y cabeza</span></div>
+                <div class="s5-mat-icon" style="background:#FEF3C7;color:#D97706;"><i class="fas fa-camera"></i></div>
+                <div class="s5-mat-text"><strong>Foto en Aula</strong><span>Cámara de la PC</span></div>
               </div>
               <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#F3E8FF;color:#7C3AED;"><i class="fas fa-wand-magic-sparkles"></i></div>
-                <div class="s5-mat-text"><strong>Quitafondos IA</strong><span>Aislar la cabeza</span></div>
+                <div class="s5-mat-icon" style="background:#F3E8FF;color:#7C3AED;"><i class="fas fa-book-skull"></i></div>
+                <div class="s5-mat-text"><strong>Libro Hechizos</strong><span>Prompts 5 Capas</span></div>
               </div>
               <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-futbol"></i></div>
-                <div class="s5-mat-text"><strong>Fotomontaje</strong><span>Reemplazar cabeza</span></div>
+                <div class="s5-mat-icon" style="background:#E0F2FE;color:#0284C7;"><i class="fas fa-palette"></i></div>
+                <div class="s5-mat-text"><strong>Polaroid Canva</strong><span>Marco & Stickers</span></div>
               </div>
               <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-film"></i></div>
-                <div class="s5-mat-text"><strong>Magic Animate</strong><span>Transformar en video</span></div>
+                <div class="s5-mat-icon" style="background:#DCFCE7;color:#15803D;"><i class="fas fa-print"></i></div>
+                <div class="s5-mat-text"><strong>Impresión Real</strong><span>Papel fotográfico</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FCE7F3;color:#BE185D;"><i class="fas fa-film"></i></div>
+                <div class="s5-mat-text"><strong>Flow Video IA</strong><span>Animación cine</span></div>
+              </div>
+              <div class="s5-mat-item">
+                <div class="s5-mat-icon" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="s5-mat-text"><strong>Google Drive</strong><span>Carpeta Halloween</span></div>
               </div>
             </div>
 
             <!-- Botones de Acción -->
             <div class="s5-actions-row">
-              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g6-p1" style="background:linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);">
-                <i class="fas fa-folder-open"></i> Ver Ficha y Pasos Oficiales
+              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="${projId}" style="background:linear-gradient(135deg, #D97706 0%, #EA580C 50%, #7C3AED 100%);box-shadow:0 4px 14px rgba(217,119,6,0.35);">
+                <i class="fas fa-book-open"></i> Ver Pasos y Tutorial
               </button>
-              <a href="https://www.canva.com/es_419/crear/animaciones/" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#0284C7;border-color:#BAE6FD;">
-                <i class="fas fa-palette"></i> Abrir Canva Animaciones
+              <a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action" style="color:#7C3AED;border:1.5px solid #DDD6FE;background:#F5F3FF;">
+                <i class="fas fa-book-skull"></i> El Libro de Hechizos
               </a>
-              <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
-                <i class="fas fa-compass"></i> Ruta de Aventuras
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- NIVEL 2: El Arquero Mecánico con Joystick y Servomotor -->
-      <section class="sala5-hero-showcase" style="border-top:4px solid #0D9488;background:linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%);margin-top:24px;">
-        <div class="s5-showcase-header">
-          <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
-          <div class="s5-header-titles">
-            <span class="s5-dept-tag" style="background:rgba(13,148,136,0.15);color:#0D9488;border:1px solid rgba(13,148,136,0.3);"><i class="fas fa-futbol"></i> Robótica, Programación & Deportes</span>
-            <h2 class="s5-main-title" style="color:#0F766E;">🧤 El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático 🕹️⚙️⚽</h2>
-            <p class="s5-subtitle" style="color:#134E4A;">Nivel 2 para 6° Grado · ¡Controlá los reflejos del arquero en el arco con el joystick chico negro y el servo SG90 en MakeCode micro:bit!</p>
-          </div>
-        </div>
-
-        <div class="s5-interactive-stage">
-          <div class="s5-stage-left">
-            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-servo-card" role="button" tabindex="0" title="¡Tocá para probar los reflejos y giro del arquero!">
-              <img src="img/proyectos/servo_joystick_makecode_cover.svg" alt="El Arquero Mecánico con Servo y Joystick MakeCode" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
-              <div class="arm-s5-led-glow" id="g6-live-servo-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;font-weight:900;color:#0D9488;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 20px #0D9488,0 0 40px #4F46E5;background:rgba(255,255,255,0.95);padding:6px 14px;border-radius:20px;border:2px solid #0D9488;white-space:nowrap;"><i class="fas fa-futbol"></i> 90° Centrado</div>
-              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para atajar a los lados!</div>
-            </div>
-          </div>
-
-          <div class="s5-stage-right">
-            <div class="s5-intro-bubble">
-              <div class="s5-bubble-badge" style="background:#CCFBF1;color:#0F766E;"><i class="fas fa-calculator"></i> ¿Cómo funciona el ajuste de intervalo matemático del arquero?</div>
-              <p>
-                El <strong>joystick chico negro de micro:bit</strong> entrega lecturas analógicas continuas del eje horizontal entre <strong>0 y 1023</strong> en el pin <strong>P1</strong>. Como el <strong>servomotor SG90</strong> que mueve la figura del arquero en el pin <strong>P0</strong> gira entre <strong>0° y 180°</strong>, usamos el bloque matemático <strong>ajuste de intervalo (Math.map) de [0..1023] a [0..180]</strong> junto a limitadores de seguridad (clamping). Al mover la palanca de izquierda a derecha, ¡el arquero se desliza de palo a palo para atajar la pelota en tiempo real!
-              </p>
-            </div>
-
-            <!-- Materiales clave visuales -->
-            <div class="s5-materials-grid">
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#CCFBF1;color:#0D9488;"><i class="fas fa-gamepad"></i></div>
-                <div class="s5-mat-text"><strong>Joystick micro:bit chico negro</strong><span>Pin P1 (Eje X: 0 a 1023)</span></div>
-              </div>
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#E0E7FF;color:#4338CA;"><i class="fas fa-calculator"></i></div>
-                <div class="s5-mat-text"><strong>Ajuste de Intervalo</strong><span>Math.map + Clamping</span></div>
-              </div>
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#FFEDD5;color:#C2410C;"><i class="fas fa-cogs"></i></div>
-                <div class="s5-mat-text"><strong>Servo SG90 Arquero</strong><span>Pin P0 (Giro: 0° a 180°)</span></div>
-              </div>
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#FEF3C7;color:#B45309;"><i class="fas fa-microchip"></i></div>
-                <div class="s5-mat-text"><strong>micro:bit v2</strong><span>Inicio a 90° + Bucle 20ms</span></div>
-              </div>
-            </div>
-
-            <!-- Botones de Acción -->
-            <div class="s5-actions-row">
-              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g6-p2" style="background:linear-gradient(135deg, #0D9488 0%, #4F46E5 100%);">
-                <i class="fas fa-folder-open"></i> Ver Ficha y Pasos Oficiales
-              </button>
-              <a href="https://makecode.microbit.org/S17294-82339-82111-72476" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action s5-btn-pdf" style="color:#0D9488;border-color:#99F6E4;">
-                <i class="fas fa-code"></i> Abrir en MakeCode
-              </a>
-              <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
-                <i class="fas fa-compass"></i> Ruta de Aventuras
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- NIVEL 3: IA con Gemini & NotebookLM: Creación de Materiales de Estudio -->
-      <section class="sala5-hero-showcase" style="border-top:4px solid #4F46E5;background:linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 40%, #FCE7F3 100%);margin-top:24px;">
-        <div class="s5-showcase-header">
-          <img src="img/escudo_paulo_freire.png" alt="Escudo Colegio Paulo Freire" class="s5-school-logo">
-          <div class="s5-header-titles">
-            <span class="s5-dept-tag" style="background:rgba(79,70,229,0.15);color:#4F46E5;border:1px solid rgba(79,70,229,0.3);"><i class="fas fa-brain"></i> Inteligencia Artificial Educativa & Metodología de Estudio</span>
-            <h2 class="s5-main-title" style="color:#3730A3;">🧠 NIVEL 3 — Geminis Notebook ⚡: Creación de Materiales de Estudio con IA 🎙️📽️📊📑</h2>
-            <p class="s5-subtitle" style="color:#312E81;">Nivel 3 para 6° Grado · ¡Aprendé a transformar tus libros escolares y apuntes en podcasts, guiones de video, presentaciones y guías de autoevaluación con IA sin alucinaciones!</p>
-          </div>
-        </div>
-
-        <div class="s5-interactive-stage">
-          <div class="s5-stage-left">
-            <div class="s5-hat-box arm-s5-bookmark-preview" id="g6-interactive-gemini-card" role="button" tabindex="0" title="¡Tocá para probar las opciones de generación con IA!">
-              <img src="img/proyectos/gemini_notebooks_cover.svg" alt="Google Gemini & NotebookLM Ecosistema" class="s5-hat-render" style="max-height:240px;object-fit:contain;">
-              <div class="arm-s5-led-glow" id="g6-live-gemini-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:900;color:#4F46E5;opacity:0;transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);text-shadow:0 0 20px #818CF8;background:rgba(255,255,255,0.96);padding:8px 16px;border-radius:20px;border:2px solid #4F46E5;white-space:nowrap;box-shadow:0 4px 15px rgba(79,70,229,0.25);"><i class="fas fa-sparkles"></i> ¡Generar con IA!</div>
-              <div class="s5-tap-badge" style="background:linear-gradient(135deg, #4F46E5 0%, #EC4899 100%);"><i class="fas fa-hand-pointer"></i> ¡Tocá para generar materiales!</div>
-            </div>
-          </div>
-
-          <div class="s5-stage-right">
-            <div class="s5-intro-bubble">
-              <div class="s5-bubble-badge" style="background:#E0E7FF;color:#3730A3;"><i class="fas fa-sparkles"></i> ¿Cómo funciona el estudio inteligente con fuentes verificadas (Grounding)?</div>
-              <p>
-                A diferencia de los chatbots convencionales que pueden inventar datos, <strong>Google NotebookLM ancla el modelo Gemini 1.5 Pro únicamente a tus documentos de clase</strong> (capítulos en PDF, apuntes y lecturas). A partir de esas fuentes seguras, con un solo clic podés crear <strong>podcasts de audio con dos locutores sintetizados (Audio Overview)</strong> que debaten los temas centrales, <strong>guiones para videos educativos</strong>, <strong>esquemas para diapositivas en Canva</strong> y <strong>cuestionarios tipo FAQ con flashcards de autoevaluación</strong> donde cada respuesta incluye una cita exacta al texto original.
-              </p>
-            </div>
-
-            <!-- Materiales clave visuales -->
-            <div class="s5-materials-grid">
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#FDF2F8;color:#BE185D;"><i class="fas fa-microphone"></i></div>
-                <div class="s5-mat-text"><strong>Podcasts (Audio Overview)</strong><span>2 locutores sintéticos</span></div>
-              </div>
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#ECFEFF;color:#0E7490;"><i class="fas fa-video"></i></div>
-                <div class="s5-mat-text"><strong>Guiones de Video</strong><span>Hook, escenas & remate</span></div>
-              </div>
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#E0F2FE;color:#0369A1;"><i class="fas fa-tv"></i></div>
-                <div class="s5-mat-text"><strong>Diapositivas Canva</strong><span>Estructura visual limpia</span></div>
-              </div>
-              <div class="s5-mat-item">
-                <div class="s5-mat-icon" style="background:#EEF2FF;color:#4338CA;"><i class="fas fa-file-pdf"></i></div>
-                <div class="s5-mat-text"><strong>Guía PDF & Flashcards</strong><span>Active recall sin fallas</span></div>
-              </div>
-            </div>
-
-            <!-- Botones de Acción -->
-            <div class="s5-actions-row">
-              <button type="button" class="btn s5-btn-action s5-btn-primary btn-open-project-modal" data-project-id="g6-p3" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);box-shadow:0 4px 14px rgba(79,70,229,0.35);">
-                <i class="fas fa-folder-open"></i> Ver Ficha y Pasos Oficiales
-              </button>
-              <a href="docs/guia_ia_gemini_notebooks.pdf" target="_blank" download="guia_ia_gemini_notebooks.pdf" class="btn s5-btn-action s5-btn-pdf" style="color:#DB2777;border-color:#FBCFE8;background:#FFF;">
-                <i class="fas fa-file-pdf"></i> Descargar Guía Completa PDF
-              </a>
-              <a href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action" style="color:#4F46E5;border:1.5px solid #C7D2FE;background:#EEF2FF;">
-                <i class="fas fa-external-link-alt"></i> Abrir NotebookLM
+              <a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener noreferrer" class="btn s5-btn-action" style="color:#0284C7;border:1.5px solid #BAE6FD;background:#F0F9FF;">
+                <i class="fas fa-palette"></i> Plantilla Canva
               </a>
               <button type="button" class="btn s5-btn-action s5-btn-drive" data-switch-to="drive">
                 <i class="fas fa-compass"></i> Ruta de Aventuras

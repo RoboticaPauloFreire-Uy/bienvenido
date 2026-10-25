@@ -2677,14 +2677,8 @@ const MAKECODE_LIBRARY = {
     }
   ],
 
-  // 5° Grado
-  grado5: [
-    {
-      title: "Proyecto Micro:bit — Ejemplo",
-      description: "Código de bloques en MakeCode para Micro:bit (solo lectura)",
-      shareUrl: "https://makecode.microbit.org/S18043-28109-69626-83440"
-    }
-  ],
+  // 5° Grado (Halloween 2026 - Sin MakeCode)
+  grado5: [],
 
   // 6° Grado (Halloween 2026 - Sin MakeCode)
   grado6: []
@@ -2784,10 +2778,10 @@ if (typeof window !== 'undefined') {
             MAKECODE_LIBRARY[gradeId] = [];
             return;
           }
-          if (gradeId === 'grado6' || gradeId === '6to') {
+          if (gradeId === 'grado5' || gradeId === '5to' || gradeId === 'grado6' || gradeId === '6to') {
             const items = data.items || [];
             if (items.length > 0) {
-              console.log("🔄 MakeCode en Firestore para grado6 debe estar vacío para Halloween. Limpiando y re-sembrando...");
+              console.log("🔄 MakeCode en Firestore para " + gradeId + " debe estar vacío para Halloween. Limpiando y re-sembrando...");
               needsReseed = true;
               MAKECODE_LIBRARY[gradeId] = [];
               return;
@@ -2872,9 +2866,9 @@ if (typeof window !== 'undefined') {
 
               // Para 5° Grado: verificar que tenga el proyecto oficial de Halloween con IA
               const isStaleGrado5 = (gradeId === 'grado5' || gradeId === '5to') && (
-                targetProjects.length < 1 ||
+                targetProjects.length !== 1 ||
                 !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g5-p1') ||
-                targetProjects.some(p => /serpiente|snake|javascript.*bug/i.test(p.title || ''))
+                targetProjects.some(p => p.id !== 'g5-p1' || !/halloween/i.test(p.title || ''))
               );
 
               // Para 6° Grado: verificar que tenga el proyecto oficial de Halloween con IA en Nivel 1, el Arquero Mecánico y Gemini NotebookLM
