@@ -7926,6 +7926,32 @@
                   '</div>' +
                 '</div>' +
                 '<div class="apm-delivery-body" style="padding:22px;">' +
+                    (student ?
+                      '<div id="apm-halloween-student-banner" style="background:rgba(16,185,129,0.14);border:1.5px solid #10B981;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+                        '<div style="display:flex;align-items:center;gap:12px;">' +
+                          '<span style="font-size:1.6rem;background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:10px;">' + (student.avatar || '👦') + '</span>' +
+                          '<div>' +
+                            '<span style="font-size:0.75rem;color:#A7F3D0;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;">Alumno Conectado</span><br>' +
+                            '<strong style="color:#FFF;font-size:1.02rem;">' + student.name + '</strong> ' +
+                            '<span style="font-size:0.82rem;color:#CBD5E1;">(' + (student.gradeName || '') + ')</span>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div style="background:rgba(16,185,129,0.22);border:1px solid rgba(16,185,129,0.4);color:#6EE7B7;padding:6px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;">' +
+                          '<i class="fas fa-folder-open"></i> Carpeta Drive: <strong>' + student.name + ' &rarr; 2026 &rarr; evento &rarr; halloween</strong>' +
+                        '</div>' +
+                      '</div>'
+                    :
+                      '<div id="apm-halloween-student-banner" style="background:rgba(234,88,12,0.16);border:1.5px solid #EA580C;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+                        '<div style="display:flex;align-items:center;gap:12px;">' +
+                          '<i class="fas fa-user-lock" style="font-size:1.8rem;color:#F97316;"></i>' +
+                          '<div>' +
+                            '<strong style="color:#FED7AA;font-size:0.96rem;display:block;">Iniciá sesión para enviar a tu carpeta de Google Drive</strong>' +
+                            '<span style="font-size:0.82rem;color:#CBD5E1;">El sistema detectará al alumno logueado y guardará en su carpeta personal en: <strong>2026 / evento / halloween</strong>.</span>' +
+                          '</div>' +
+                        '</div>' +
+                        '<button type="button" id="apm-halloween-login-prompt-btn" style="background:#EA580C;color:#FFF;padding:10px 22px;border-radius:10px;font-weight:800;font-size:0.88rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 3px 10px rgba(234,88,12,0.4);"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión de Alumno</button>' +
+                      '</div>'
+                    ) +
                   '<div style="margin-bottom:20px;">' +
                     '<label style="display:block;font-size:0.88rem;font-weight:700;color:#E2E8F0;margin-bottom:8px;"><i class="fas fa-link" style="color:#F97316;"></i> Enlace de tu Proyecto (Canva o Google Drive):</label>' +
                     '<div style="display:flex;gap:10px;align-items:center;">' +
@@ -10547,6 +10573,31 @@
 
     function processHalloweenUpload(file) {
       if (!file) return;
+
+      // Obtener siempre el alumno actualmente logueado
+      var currentStudent = (typeof window.getActiveStudent === 'function') ? window.getActiveStudent() : student;
+      if (!currentStudent || !currentStudent.id) {
+        if (window.sounds) window.sounds.playError();
+        alert('⚠️ Para subir tu archivo a Google Drive, primero tenés que iniciar sesión con tu usuario y PIN de alumno.');
+        if (typeof window.openLoginModal === 'function') {
+          window.openLoginModal();
+        }
+        return;
+      }
+
+      // Buscar la carpeta personal de Google Drive del alumno logueado
+      var targetFolderId = currentStudent.driveFolderId;
+      if (!targetFolderId && typeof window.getStudentDriveFolderId === 'function') {
+        targetFolderId = window.getStudentDriveFolderId(currentStudent);
+        currentStudent.driveFolderId = targetFolderId;
+      }
+
+      if (!targetFolderId) {
+        if (window.sounds) window.sounds.playError();
+        alert('⚠️ No se encontró la carpeta de Google Drive asignada para el alumno ' + currentStudent.name + '. Por favor consulta con tu profesor.');
+        return;
+      }
+
       var validExt = /\.(png|jpe?g|webp|gif|bmp|mp4|mov|webm|mkv)$/i.test(file.name);
       var validMime = /^(image|video)\//i.test(file.type || '');
       if (!validExt && !validMime) {
@@ -10562,7 +10613,7 @@
           '<i class="fas fa-sync-alt fa-spin" style="font-size:1.6rem;color:#F59E0B;"></i>' +
           '<div>' +
             '<strong style="color:#FDE68A;font-size:0.95rem;">Subiendo a Google Drive...</strong><br>' +
-            '<span style="font-size:0.84rem;color:#FEF3C7;">Archivo: <strong>' + file.name + '</strong> (' + sz + ') &rarr; Destino: 📁 <strong>' + (student ? student.name : 'Alumno') + ' / 2026 / evento / halloween</strong></span>' +
+            '<span style="font-size:0.84rem;color:#FEF3C7;">Archivo: <strong>' + file.name + '</strong> (' + sz + ') &rarr; Destino: 📁 <strong>' + currentStudent.name + ' / 2026 / evento / halloween</strong></span>' +
           '</div>' +
         '</div>';
       });
@@ -10571,8 +10622,7 @@
       reader.onload = function(ev) {
         var dataUrl = ev.target.result;
         var b64 = dataUrl.split(',')[1];
-        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
-        var targetFolderId = student ? (student.driveFolderId || '') : '';
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (currentStudent && currentStudent.webhookUrl);
 
         if (hook && targetFolderId) {
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
@@ -10643,7 +10693,7 @@
           missionId: mission.id,
           missionTitle: mission.title
         };
-        markMissionCompleted(student, mission.id, submissionData);
+        markMissionCompleted(currentStudent, mission.id, submissionData);
         mission.status = 'completado';
 
         var topBadge = modal.querySelector('#apm-header-status-badge');
@@ -10656,7 +10706,7 @@
             '<i class="fas fa-check-circle" style="font-size:1.8rem;color:#10B981;"></i>' +
             '<div>' +
               '<strong style="color:#6EE7B7;font-size:1rem;">¡Archivo Enviado con Éxito a Google Drive! ⭐ (+100 XP)</strong><br>' +
-              '<span style="font-size:0.85rem;color:#A7F3D0;">Guardado en: 📁 <strong>' + (student ? student.name : 'Alumno') + ' &rarr; 2026 &rarr; evento &rarr; halloween &rarr; ' + file.name + '</strong> (' + sz + ')</span>' +
+              '<span style="font-size:0.85rem;color:#A7F3D0;">Guardado en carpeta de: 📁 <strong>' + currentStudent.name + ' &rarr; 2026 &rarr; evento &rarr; halloween &rarr; ' + file.name + '</strong> (' + sz + ')</span>' +
             '</div>' +
           '</div>';
         });
@@ -10670,6 +10720,13 @@
     dropzonesHalloween.forEach(function(dz) {
       dz.onclick = function(e) {
         if (e.target && (e.target.id === 'apm-halloween-browse-btn' || e.target.closest('#apm-halloween-browse-btn'))) {
+          return;
+        }
+        var curSt = (typeof window.getActiveStudent === 'function') ? window.getActiveStudent() : student;
+        if (!curSt) {
+          if (window.sounds) window.sounds.playError();
+          alert('⚠️ Por favor iniciá sesión como alumno para subir archivos a tu carpeta de Google Drive.');
+          if (typeof window.openLoginModal === 'function') window.openLoginModal();
           return;
         }
         var fileInp = dz.querySelector('input[type="file"]') || modal.querySelector('#apm-halloween-file-input');
@@ -10689,6 +10746,13 @@
         e.preventDefault();
         dz.style.borderColor = '#10B981';
         dz.style.background = '#0F172A';
+        var curSt = (typeof window.getActiveStudent === 'function') ? window.getActiveStudent() : student;
+        if (!curSt) {
+          if (window.sounds) window.sounds.playError();
+          alert('⚠️ Por favor iniciá sesión como alumno para subir archivos a tu carpeta de Google Drive.');
+          if (typeof window.openLoginModal === 'function') window.openLoginModal();
+          return;
+        }
         if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
           processHalloweenUpload(e.dataTransfer.files[0]);
         }
@@ -10698,6 +10762,13 @@
     btnsHalloweenBrowse.forEach(function(btn) {
       btn.onclick = function(e) {
         e.stopPropagation();
+        var curSt = (typeof window.getActiveStudent === 'function') ? window.getActiveStudent() : student;
+        if (!curSt) {
+          if (window.sounds) window.sounds.playError();
+          alert('⚠️ Por favor iniciá sesión como alumno para subir archivos a tu carpeta de Google Drive.');
+          if (typeof window.openLoginModal === 'function') window.openLoginModal();
+          return;
+        }
         var fileInp = modal.querySelector('#apm-halloween-file-input');
         if (fileInp) fileInp.click();
       };
@@ -10711,17 +10782,54 @@
       };
     });
 
+    var loginPromptBtn = modal.querySelector('#apm-halloween-login-prompt-btn');
+    if (loginPromptBtn) {
+      loginPromptBtn.onclick = function() {
+        if (typeof window.openLoginModal === 'function') window.openLoginModal();
+      };
+    }
+
+    // Escuchar cambio de sesión si el alumno inicia sesión con el modal abierto
+    function onHalloweenSessionChanged(e) {
+      var newStudent = e && e.detail;
+      if (newStudent) {
+        student = newStudent;
+        var banner = modal.querySelector('#apm-halloween-student-banner');
+        if (banner) {
+          banner.style.background = 'rgba(16,185,129,0.14)';
+          banner.style.border = '1.5px solid #10B981';
+          banner.innerHTML = '<div style="display:flex;align-items:center;gap:12px;">' +
+            '<span style="font-size:1.6rem;background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:10px;">' + (newStudent.avatar || '👦') + '</span>' +
+            '<div><span style="font-size:0.75rem;color:#A7F3D0;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;">Alumno Conectado</span><br><strong style="color:#FFF;font-size:1.02rem;">' + newStudent.name + '</strong> <span style="font-size:0.82rem;color:#CBD5E1;">(' + (newStudent.gradeName || '') + ')</span></div>' +
+          '</div>' +
+          '<div style="background:rgba(16,185,129,0.22);border:1px solid rgba(16,185,129,0.4);color:#6EE7B7;padding:6px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;"><i class="fas fa-folder-open"></i> Carpeta Drive: <strong>' + newStudent.name + ' &rarr; 2026 &rarr; evento &rarr; halloween</strong></div>';
+        }
+        var targetFid = newStudent.driveFolderId || (window.getStudentDriveFolderId && window.getStudentDriveFolderId(newStudent));
+        if (targetFid && typeof fetchRealDriveFiles === 'function') {
+          newStudent.driveFolderId = targetFid;
+          fetchRealDriveFiles(newStudent, 'gdrive-container');
+          setTimeout(renderHalloweenGallery, 3000);
+        }
+      }
+    }
+    window.addEventListener('student_session_changed', onHalloweenSessionChanged);
+
     // Render inicial de archivos de Halloween si existen en FOLDER_CONTENTS
     renderHalloweenGallery();
 
-    // Si aún no se han cargado los archivos de Drive del alumno, solicitarlos
-    if (student && student.driveFolderId && !hasFetchedDriveFiles && typeof fetchRealDriveFiles === 'function') {
-      fetchRealDriveFiles(student, 'gdrive-container');
-      setTimeout(renderHalloweenGallery, 3000);
-      setTimeout(renderHalloweenGallery, 6000);
+    // Si hay alumno logueado, solicitar sus archivos de Google Drive
+    var activeSt = (typeof window.getActiveStudent === 'function') ? window.getActiveStudent() : student;
+    if (activeSt) {
+      var actFid = activeSt.driveFolderId || (window.getStudentDriveFolderId && window.getStudentDriveFolderId(activeSt));
+      if (actFid && typeof fetchRealDriveFiles === 'function') {
+        activeSt.driveFolderId = actFid;
+        fetchRealDriveFiles(activeSt, 'gdrive-container');
+        setTimeout(renderHalloweenGallery, 3000);
+        setTimeout(renderHalloweenGallery, 6000);
+      }
     }
 
-    var btnCompleteClase = modal.querySelector('#apm-btn-complete-clase');
+        var btnCompleteClase = modal.querySelector('#apm-btn-complete-clase');
     if (btnCompleteClase) {
       btnCompleteClase.onclick = function() {
         if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();

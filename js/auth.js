@@ -16,6 +16,12 @@
           if (window.GOOGLE_DRIVE_WEBHOOK_URL) {
             parsed.webhookUrl = window.GOOGLE_DRIVE_WEBHOOK_URL;
           }
+          if (!parsed.driveFolderId && window.getStudentDriveFolderId) {
+            parsed.driveFolderId = window.getStudentDriveFolderId(parsed);
+            if (parsed.driveFolderId) {
+              parsed.driveUrl = 'https://drive.google.com/drive/folders/' + parsed.driveFolderId;
+            }
+          }
           return parsed;
         }
       }
@@ -23,10 +29,18 @@
       if (!id) return null;
       if (window.getStudentById) {
         var st = window.getStudentById(id);
-        if (st && window.GOOGLE_DRIVE_WEBHOOK_URL) {
-          st.webhookUrl = window.GOOGLE_DRIVE_WEBHOOK_URL;
+        if (st) {
+          if (window.GOOGLE_DRIVE_WEBHOOK_URL) {
+            st.webhookUrl = window.GOOGLE_DRIVE_WEBHOOK_URL;
+          }
+          if (!st.driveFolderId && window.getStudentDriveFolderId) {
+            st.driveFolderId = window.getStudentDriveFolderId(st);
+            if (st.driveFolderId) {
+              st.driveUrl = 'https://drive.google.com/drive/folders/' + st.driveFolderId;
+            }
+          }
+          return st;
         }
-        return st;
       }
       return null;
     } catch(e) {
