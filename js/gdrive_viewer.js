@@ -7935,11 +7935,17 @@
                   '</div>' +
                   '<div style="margin-bottom:20px;">' +
                     '<label style="display:block;font-size:0.88rem;font-weight:700;color:#E2E8F0;margin-bottom:8px;"><i class="fas fa-cloud-upload-alt" style="color:#38BDF8;"></i> Subir Archivo a Drive (Foto Polaroid o Video Flow MP4):</label>' +
-                    '<div id="apm-halloween-dropzone" style="border:2px dashed #475569;border-radius:14px;padding:32px 20px;text-align:center;background:#0F172A;cursor:pointer;transition:all 0.2s;">' +
-                      '<input type="file" id="apm-halloween-file-input" accept="image/*,video/mp4" style="display:none;">' +
+                    '<div id="apm-halloween-dropzone" style="border:2px dashed #475569;border-radius:14px;padding:28px 20px;text-align:center;background:#0F172A;cursor:pointer;transition:all 0.2s;">' +
+                      '<input type="file" id="apm-halloween-file-input" accept="image/*,video/mp4,video/*" style="display:none;">' +
                       '<i class="fas fa-file-arrow-up" style="font-size:2.6rem;color:#F97316;margin-bottom:12px;display:block;"></i>' +
                       '<strong style="color:#FFF;font-size:1.05rem;display:block;margin-bottom:6px;">Arrastrá aquí tu archivo o hacé click para seleccionar</strong>' +
-                      '<span style="font-size:0.82rem;color:#94A3B8;">Formatos permitidos: Video (.mp4, .mov) o Foto / Polaroid (.png, .jpg, .webp)</span>' +
+                      '<span style="font-size:0.82rem;color:#94A3B8;display:block;margin-bottom:14px;">Formatos permitidos: Video (.mp4, .mov, .webm) o Foto / Polaroid (.png, .jpg, .webp)</span>' +
+                      '<div>' +
+                        '<button type="button" id="apm-halloween-browse-btn" style="background:#EA580C;color:#FFF;padding:9px 20px;border-radius:8px;font-weight:800;font-size:0.88rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 3px 10px rgba(234,88,12,0.35);"><i class="fas fa-folder-open"></i> Elegir Archivo</button>' +
+                      '</div>' +
+                      '<div style="margin-top:12px;font-size:0.78rem;color:#38BDF8;display:flex;align-items:center;justify-content:center;gap:6px;">' +
+                        '<i class="fas fa-shield-alt"></i> Destino directo: 📁 <strong>' + (student ? student.name : 'Mi Carpeta') + ' / 2026 / evento / halloween</strong>' +
+                      '</div>' +
                     '</div>' +
                   '</div>' +
                   '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:16px;border-top:1px solid #334155;">' +
@@ -7951,6 +7957,7 @@
                     (savedFileName || savedMakecodeUrl || isAlreadyCompleted ?
                       '<div style="padding:14px 18px;background:rgba(16,185,129,0.15);border:1px solid #10B981;border-radius:10px;display:flex;align-items:center;gap:12px;"><i class="fas fa-trophy" style="font-size:1.6rem;color:#F59E0B;"></i> <div><strong style="color:#6EE7B7;font-size:0.95rem;">¡Misión Completada ⭐ (+100 XP)!</strong><br><span style="font-size:0.84rem;color:#A7F3D0;">' + (savedFileName ? 'Archivo guardado: <strong>' + savedFileName + '</strong>' : (savedMakecodeUrl ? 'Enlace registrado: <strong>' + savedMakecodeUrl + '</strong>' : '¡Misión de Halloween validada con éxito!')) + ' (' + (savedFileDate || 'Guardado') + ') en tu Google Drive.</span></div></div>' : '') +
                   '</div>' +
+                  '<div id="apm-halloween-files-gallery"></div>' +
                 '</div>' +
               '</div>' +
             '</div>'
@@ -10457,39 +10464,261 @@
       };
     }
 
-    var dropzoneHalloween = modal.querySelector('#apm-halloween-dropzone');
-    var inputHalloweenFileRef = modal.querySelector('#apm-halloween-file-input');
-    if (dropzoneHalloween && inputHalloweenFileRef) {
-      dropzoneHalloween.onclick = function() { inputHalloweenFileRef.click(); };
-      dropzoneHalloween.ondragover = function(e) { e.preventDefault(); dropzoneHalloween.style.borderColor = '#F97316'; };
-      dropzoneHalloween.ondragleave = function(e) { e.preventDefault(); dropzoneHalloween.style.borderColor = '#475569'; };
-      dropzoneHalloween.ondrop = function(e) {
-        e.preventDefault();
-        dropzoneHalloween.style.borderColor = '#10B981';
-        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
-          inputHalloweenFileRef.files = e.dataTransfer.files;
-          inputHalloweenFileRef.dispatchEvent(new Event('change'));
-        }
-      };
-    }
+    // ── GESTIÓN DE SUBIDA HALLOWEEN A GOOGLE DRIVE (2026 -> evento -> halloween) ──
+    var dropzonesHalloween = modal.querySelectorAll('#apm-halloween-dropzone');
+    var inputsHalloweenFile = modal.querySelectorAll('#apm-halloween-file-input');
+    var btnsHalloweenBrowse = modal.querySelectorAll('#apm-halloween-browse-btn');
+    var statusHalloweenEls = modal.querySelectorAll('#apm-halloween-delivery-status');
+    var galleryHalloweenEl = modal.querySelector('#apm-halloween-files-gallery');
 
-    var btnHalloweenBrowse = modal.querySelector('#apm-halloween-browse-btn');
-    var inputHalloweenFile = modal.querySelector('#apm-halloween-file-input');
-    if (btnHalloweenBrowse && inputHalloweenFile) {
-      btnHalloweenBrowse.onclick = function() { inputHalloweenFile.click(); };
-      inputHalloweenFile.onchange = function() {
-        if (inputHalloweenFile.files && inputHalloweenFile.files[0]) {
-          var file = inputHalloweenFile.files[0];
-          if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
-          var nowStr = new Date().toLocaleDateString('es-ES');
-          markMissionCompleted(student, mission.id, { type: 'halloween', fileName: file.name, date: nowStr, missionId: mission.id, missionTitle: mission.title });
-          mission.status = 'completado';
-          var statusEl = modal.querySelector('#apm-halloween-delivery-status');
-          if (statusEl) {
-            statusEl.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Archivo de Halloween Registrado ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">' + file.name + ' subido con éxito.</span></div></div>';
+    function renderHalloweenGallery() {
+      if (!galleryHalloweenEl) return;
+      var items = [];
+      if (window.FOLDER_CONTENTS && window.FOLDER_CONTENTS.dibujos && Array.isArray(window.FOLDER_CONTENTS.dibujos.items)) {
+        items = window.FOLDER_CONTENTS.dibujos.items.filter(function(it) {
+          var alb = (it.album || '').toLowerCase();
+          var nm = (it.name || '').toLowerCase();
+          var fp = (it.folderPath || '').toLowerCase();
+          return alb === 'halloween' || nm.indexOf('halloween') !== -1 || fp.indexOf('halloween') !== -1;
+        });
+      }
+
+      if (!items || items.length === 0) {
+        galleryHalloweenEl.innerHTML = '';
+        return;
+      }
+
+      var html = '<div style="margin-top:22px;padding-top:18px;border-top:1px solid #334155;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">' +
+          '<h5 style="margin:0;font-size:0.96rem;color:#FDBA74;font-weight:800;display:flex;align-items:center;gap:8px;">' +
+            '<i class="fas fa-folder-open" style="color:#F97316;"></i> Archivos en tu Google Drive (2026 &gt; evento &gt; halloween):' +
+          '</h5>' +
+          '<span style="font-size:0.8rem;background:#334155;color:#E2E8F0;padding:3px 10px;border-radius:12px;font-weight:700;">' +
+            items.length + ' archivo' + (items.length !== 1 ? 's' : '') +
+          '</span>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:12px;">';
+
+      items.forEach(function(it) {
+        var isVid = isVideoFile(it.name, it.type);
+        var iconHtml = isVid
+          ? '<i class="fas fa-video" style="color:#EF4444;font-size:1.3rem;"></i>'
+          : '<i class="fas fa-image" style="color:#F59E0B;font-size:1.3rem;"></i>';
+        var previewHtml = '';
+        if (it.thumbUrl || it.url) {
+          if (!isVid) {
+            previewHtml = '<div style="height:115px;border-radius:8px;overflow:hidden;background:#0B1120;margin-bottom:8px;display:flex;align-items:center;justify-content:center;">' +
+              '<img src="' + (it.thumbUrl || it.url) + '" alt="' + it.name + '" style="max-height:100%;max-width:100%;object-fit:cover;" loading="lazy">' +
+            '</div>';
+          } else {
+            previewHtml = '<div style="height:115px;border-radius:8px;overflow:hidden;background:#0B1120;margin-bottom:8px;display:flex;align-items:center;justify-content:center;position:relative;">' +
+              '<i class="fas fa-play-circle" style="font-size:2.6rem;color:#F97316;opacity:0.9;"></i>' +
+            '</div>';
           }
         }
+
+        html += '<div style="background:#0F172A;border:1px solid #334155;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;">' +
+          '<div>' +
+            previewHtml +
+            '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;">' +
+              iconHtml +
+              '<div style="flex:1;min-width:0;">' +
+                '<strong style="color:#FFF;font-size:0.84rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + it.name + '">' + it.name + '</strong>' +
+                '<span style="font-size:0.75rem;color:#94A3B8;">' + (it.size || '—') + ' • ' + (it.date || '') + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:8px;">' +
+            (it.url || it.videoEmbedUrl || it.downloadUrl ?
+              '<a href="' + (it.videoEmbedUrl || it.url || it.downloadUrl) + '" target="_blank" rel="noopener" style="flex:1;text-align:center;background:#EA580C;color:#FFF;padding:6px 10px;border-radius:6px;font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;">' +
+                '<i class="fas fa-eye"></i> ' + (isVid ? 'Ver Video' : 'Ver Foto') +
+              '</a>' : '') +
+            (it.downloadUrl ?
+              '<a href="' + it.downloadUrl + '" download="' + it.name + '" style="background:#334155;color:#E2E8F0;padding:6px 10px;border-radius:6px;font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;" title="Descargar">' +
+                '<i class="fas fa-download"></i>' +
+              '</a>' : '') +
+          '</div>' +
+        '</div>';
+      });
+
+      html += '</div></div>';
+      galleryHalloweenEl.innerHTML = html;
+    }
+
+    function processHalloweenUpload(file) {
+      if (!file) return;
+      var validExt = /\.(png|jpe?g|webp|gif|bmp|mp4|mov|webm|mkv)$/i.test(file.name);
+      var validMime = /^(image|video)\//i.test(file.type || '');
+      if (!validExt && !validMime) {
+        if (window.sounds) window.sounds.playError();
+        alert('Por favor seleccioná una imagen (.png, .jpg) o un video (.mp4, .mov, .webm) para tu entrega de Halloween.');
+        return;
+      }
+
+      if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+      var sz = formatFileSize(file.size);
+      statusHalloweenEls.forEach(function(el) {
+        el.innerHTML = '<div class="apm-status-badge warning" style="padding:14px 18px;background:rgba(245,158,11,0.15);border:1px solid #F59E0B;border-radius:10px;display:flex;align-items:center;gap:12px;">' +
+          '<i class="fas fa-sync-alt fa-spin" style="font-size:1.6rem;color:#F59E0B;"></i>' +
+          '<div>' +
+            '<strong style="color:#FDE68A;font-size:0.95rem;">Subiendo a Google Drive...</strong><br>' +
+            '<span style="font-size:0.84rem;color:#FEF3C7;">Archivo: <strong>' + file.name + '</strong> (' + sz + ') &rarr; Destino: 📁 <strong>' + (student ? student.name : 'Alumno') + ' / 2026 / evento / halloween</strong></span>' +
+          '</div>' +
+        '</div>';
+      });
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var dataUrl = ev.target.result;
+        var b64 = dataUrl.split(',')[1];
+        var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
+        var targetFolderId = student ? (student.driveFolderId || '') : '';
+
+        if (hook && targetFolderId) {
+          var iframe = document.getElementById('gdrive_silent_upload_iframe');
+          if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = iframe.id = 'gdrive_silent_upload_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+          }
+          var form = document.createElement('form');
+          form.target = 'gdrive_silent_upload_iframe';
+          form.method = 'POST';
+          form.action = hook;
+          var fields = {
+            filename: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64: b64,
+            folderId: targetFolderId,
+            path: '2026/evento/halloween',
+            folderPath: '2026/evento/halloween',
+            year: '2026',
+            subfolder: 'evento',
+            album: 'halloween'
+          };
+          for (var k in fields) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = k;
+            inp.value = fields[k];
+            form.appendChild(inp);
+          }
+          document.body.appendChild(form);
+          form.submit();
+          setTimeout(function(){ form.remove(); }, 3000);
+        }
+
+        var isVid = isVideoFile(file.name, file.type);
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var localItem = {
+          id: 'hw_up_' + Date.now(),
+          name: file.name,
+          title: (isVid ? '🎬 ' : '🎃 ') + file.name.replace(/\.[^.]+$/, ''),
+          type: isVid ? 'video' : 'image',
+          size: sz,
+          date: nowStr,
+          year: '2026',
+          album: 'Halloween',
+          albumIcon: '🎃',
+          folderPath: 'Fotos/2026/Evento/Halloween',
+          folderName: 'Halloween',
+          url: dataUrl,
+          thumbUrl: dataUrl,
+          videoEmbedUrl: isVid ? dataUrl : '',
+          downloadUrl: dataUrl
+        };
+
+        if (window.FOLDER_CONTENTS && window.FOLDER_CONTENTS.dibujos && Array.isArray(window.FOLDER_CONTENTS.dibujos.items)) {
+          window.FOLDER_CONTENTS.dibujos.items.unshift(localItem);
+        }
+
+        var submissionData = {
+          fileName: file.name,
+          fileSize: sz,
+          date: nowStr,
+          type: 'halloween',
+          folderPath: '2026/evento/halloween',
+          completed: true,
+          missionId: mission.id,
+          missionTitle: mission.title
+        };
+        markMissionCompleted(student, mission.id, submissionData);
+        mission.status = 'completado';
+
+        var topBadge = modal.querySelector('#apm-header-status-badge');
+        if (topBadge) {
+          topBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+
+        statusHalloweenEls.forEach(function(el) {
+          el.innerHTML = '<div class="apm-status-badge success" style="padding:14px 18px;background:rgba(16,185,129,0.18);border:1px solid #10B981;border-radius:10px;display:flex;align-items:center;gap:12px;">' +
+            '<i class="fas fa-check-circle" style="font-size:1.8rem;color:#10B981;"></i>' +
+            '<div>' +
+              '<strong style="color:#6EE7B7;font-size:1rem;">¡Archivo Enviado con Éxito a Google Drive! ⭐ (+100 XP)</strong><br>' +
+              '<span style="font-size:0.85rem;color:#A7F3D0;">Guardado en: 📁 <strong>' + (student ? student.name : 'Alumno') + ' &rarr; 2026 &rarr; evento &rarr; halloween &rarr; ' + file.name + '</strong> (' + sz + ')</span>' +
+            '</div>' +
+          '</div>';
+        });
+
+        renderHalloweenGallery();
+        if (typeof refreshDashboard === 'function') refreshDashboard();
       };
+      reader.readAsDataURL(file);
+    }
+
+    dropzonesHalloween.forEach(function(dz) {
+      dz.onclick = function(e) {
+        if (e.target && (e.target.id === 'apm-halloween-browse-btn' || e.target.closest('#apm-halloween-browse-btn'))) {
+          return;
+        }
+        var fileInp = dz.querySelector('input[type="file"]') || modal.querySelector('#apm-halloween-file-input');
+        if (fileInp) fileInp.click();
+      };
+      dz.ondragover = function(e) {
+        e.preventDefault();
+        dz.style.borderColor = '#F97316';
+        dz.style.background = '#1E293B';
+      };
+      dz.ondragleave = function(e) {
+        e.preventDefault();
+        dz.style.borderColor = '#475569';
+        dz.style.background = '#0F172A';
+      };
+      dz.ondrop = function(e) {
+        e.preventDefault();
+        dz.style.borderColor = '#10B981';
+        dz.style.background = '#0F172A';
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          processHalloweenUpload(e.dataTransfer.files[0]);
+        }
+      };
+    });
+
+    btnsHalloweenBrowse.forEach(function(btn) {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        var fileInp = modal.querySelector('#apm-halloween-file-input');
+        if (fileInp) fileInp.click();
+      };
+    });
+
+    inputsHalloweenFile.forEach(function(inp) {
+      inp.onchange = function() {
+        if (inp.files && inp.files[0]) {
+          processHalloweenUpload(inp.files[0]);
+        }
+      };
+    });
+
+    // Render inicial de archivos de Halloween si existen en FOLDER_CONTENTS
+    renderHalloweenGallery();
+
+    // Si aún no se han cargado los archivos de Drive del alumno, solicitarlos
+    if (student && student.driveFolderId && !hasFetchedDriveFiles && typeof fetchRealDriveFiles === 'function') {
+      fetchRealDriveFiles(student, 'gdrive-container');
+      setTimeout(renderHalloweenGallery, 3000);
+      setTimeout(renderHalloweenGallery, 6000);
     }
 
     var btnCompleteClase = modal.querySelector('#apm-btn-complete-clase');

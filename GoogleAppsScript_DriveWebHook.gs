@@ -61,7 +61,25 @@ function doGet(e) {
     }
 
     // ─────────────────────────────────────────────────────────────
-    // CASO 2: CARPETA PROYECTOS (SCRATCH JR / MAKECODE)
+    // CASO 2: CARPETA HALLOWEEN ESPECÍFICA (RECURSIVA)
+    // ─────────────────────────────────────────────────────────────
+    if (subfolderName === 'halloween') {
+      var hwFolder = findFolderRecursive(rootFolder, 'halloween');
+      if (hwFolder) {
+        var hwResults = scanMediaRecursively(hwFolder, '2026/evento/halloween', '2026');
+        return makeJsonResponse({
+          status: 'ok',
+          folder: hwFolder.getName(),
+          totalFiles: hwResults.files.length,
+          years: hwResults.years,
+          albums: hwResults.albums,
+          files: hwResults.files
+        });
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CASO 3: CARPETA PROYECTOS (SCRATCH JR / MAKECODE)
     // ─────────────────────────────────────────────────────────────
     if (subfolderName === 'proyectos' || subfolderName === 'proyecto') {
       var projFolder = findSubfolderByName(rootFolder, ['proyectos', 'proyecto']);
@@ -77,9 +95,9 @@ function doGet(e) {
     }
 
     // ─────────────────────────────────────────────────────────────
-    // CASO 3: CUALQUIER OTRA SUBCARPETA POR NOMBRE EXACTO
+    // CASO 4: CUALQUIER OTRA SUBCARPETA POR NOMBRE EXACTO O RECURSIVO
     // ─────────────────────────────────────────────────────────────
-    var customFolder = findSubfolderByName(rootFolder, [subfolderName]);
+    var customFolder = findSubfolderByName(rootFolder, [subfolderName]) || findFolderRecursive(rootFolder, subfolderName);
     if (customFolder) {
       var customFiles = scanMediaRecursively(customFolder, customFolder.getName(), null);
       return makeJsonResponse({
@@ -245,11 +263,11 @@ function listProjectFiles(folder) {
 function extractAlbumName(path, folderName, year) {
   var parts = path.split('/').map(function (s) { return s.trim(); }).filter(Boolean);
 
-  // Buscar desde el final el primer nombre que no sea "fotos", "dibujo" ni el año
+  // Buscar desde el final el primer nombre que no sea "fotos", "dibujo", "evento" ni el año
   for (var i = parts.length - 1; i >= 0; i--) {
     var p = parts[i];
     var low = p.toLowerCase();
-    if (!low.match(/^20\d{2}$/) && low !== 'fotos' && low !== 'foto' && low !== 'dibujo' && low !== 'videos') {
+    if (!low.match(/^20\d{2}$/) && low !== 'fotos' && low !== 'foto' && low !== 'dibujo' && low !== 'videos' && low !== 'evento' && low !== 'eventos') {
       return capitalize(p);
     }
   }
@@ -276,15 +294,19 @@ function getAlbumIcon(albumName) {
 }
 
 /**
- * Buscar subcarpeta por lista de posibles nombres (insensible a mayúsculas)
+ * Buscar subcarpeta por lista de posibles nombres (insensible a mayúsculas y singular/plural)
  */
 function findSubfolderByName(parentFolder, candidates) {
+  if (!parentFolder) return null;
   var folders = parentFolder.getFolders();
   while (folders.hasNext()) {
     var f = folders.next();
     var nameLower = f.getName().toLowerCase();
     for (var i = 0; i < candidates.length; i++) {
-      if (nameLower === candidates[i].toLowerCase()) {
+      var candLower = candidates[i].toLowerCase();
+      if (nameLower === candLower ||
+          (candLower === 'evento' && nameLower === 'eventos') ||
+          (candLower === 'eventos' && nameLower === 'evento')) {
         return f;
       }
     }
@@ -293,7 +315,33 @@ function findSubfolderByName(parentFolder, candidates) {
 }
 
 /**
+ * Buscar subcarpeta recursivamente en cualquier nivel
+ */
+function findFolderRecursive(parentFolder, targetName) {
+  if (!parentFolder) return null;
+  var targetLower = (targetName || '').toLowerCase().trim();
+  var folders = parentFolder.getFolders();
+  var sublist = [];
+  while (folders.hasNext()) {
+    var f = folders.next();
+    var nLower = f.getName().toLowerCase();
+    if (nLower === targetLower || 
+        (targetLower === 'evento' && nLower === 'eventos') ||
+        (targetLower === 'eventos' && nLower === 'evento')) {
+      return f;
+    }
+    sublist.push(f);
+  }
+  for (var i = 0; i < sublist.length; i++) {
+    var match = findFolderRecursive(sublist[i], targetName);
+    if (match) return match;
+  }
+  return null;
+}
+
+/**
  * Manejo de subida de archivos (POST)
+ * Guarda con precisión en: Carpeta del Alumno -> 2026 -> evento -> halloween
  */
 function doPost(e) {
   try {
@@ -302,9 +350,10 @@ function doPost(e) {
     var filename = p.filename || ('archivo_' + new Date().getTime());
     var mimeType = p.mimeType || 'application/octet-stream';
     var base64Data = p.base64;
-    var subfolderParam = (p.subfolder || 'fotos').toLowerCase();
-    var yearParam = p.year || '2026';
-    var albumParam = p.album || '';
+    var pathParam = (p.path || p.folderPath || '').trim();
+    var subfolderParam = (p.subfolder || 'fotos').toLowerCase().trim();
+    var yearParam = (p.year || '2026').trim();
+    var albumParam = (p.album || '').toLowerCase().trim();
 
     if (!folderId || !base64Data) {
       return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Faltan datos obligatorios (folderId o base64)' }))
@@ -312,19 +361,74 @@ function doPost(e) {
     }
 
     var rootFolder = DriveApp.getFolderById(folderId);
+    if (!rootFolder) {
+      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Carpeta raíz de Drive no encontrada con el ID provisto' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     var targetFolder = rootFolder;
 
-    // Si es subida de fotos/videos, colocar en fotos -> año -> album (si corresponde)
-    if (subfolderParam === 'fotos' || subfolderParam === 'dibujo' || subfolderParam === 'videos') {
-      var fotosFolder = getOrCreateFolder(rootFolder, 'Fotos');
-      var yearFolder = getOrCreateFolder(fotosFolder, yearParam);
+    // ─────────────────────────────────────────────────────────────
+    // CASO 1: HALLOWEEN (Carpeta Alumno -> 2026 -> evento -> halloween)
+    // ─────────────────────────────────────────────────────────────
+    var isHalloween = (albumParam === 'halloween' || subfolderParam === 'halloween' || pathParam.toLowerCase().indexOf('halloween') !== -1);
+
+    if (isHalloween) {
+      // 1. Identificar o crear carpeta del año (2026) en la raíz o dentro de Fotos si ya existía
+      var yearContainer = null;
+      var yearInRoot = findSubfolderByName(rootFolder, [yearParam, '2026']);
+      if (yearInRoot) {
+        yearContainer = yearInRoot;
+      } else {
+        var fotosContainer = findSubfolderByName(rootFolder, ['fotos', 'foto']);
+        if (fotosContainer) {
+          yearContainer = findSubfolderByName(fotosContainer, [yearParam, '2026']) || getOrCreateFolder(fotosContainer, yearParam);
+        } else {
+          yearContainer = getOrCreateFolder(rootFolder, yearParam);
+        }
+      }
+
+      // 2. Subcarpeta evento (o eventos)
+      var eventoFolder = findSubfolderByName(yearContainer, ['evento', 'eventos']) || getOrCreateFolder(yearContainer, 'evento');
+
+      // 3. Subcarpeta halloween
+      var halloweenFolder = findSubfolderByName(eventoFolder, ['halloween']) || getOrCreateFolder(eventoFolder, 'halloween');
+      targetFolder = halloweenFolder;
+
+    // ─────────────────────────────────────────────────────────────
+    // CASO 2: RUTA PERSONALIZADA ESPECÍFICA (ej: "2026/evento/halloween")
+    // ─────────────────────────────────────────────────────────────
+    } else if (pathParam) {
+      var segments = pathParam.split(/[\/\\]+/).filter(Boolean);
+      var curr = rootFolder;
+      for (var s = 0; s < segments.length; s++) {
+        var segName = segments[s].trim();
+        if (!segName) continue;
+        var existing = findSubfolderByName(curr, [segName]);
+        curr = existing || getOrCreateFolder(curr, segName);
+      }
+      targetFolder = curr;
+
+    // ─────────────────────────────────────────────────────────────
+    // CASO 3: PROYECTOS (Scratch Jr / MakeCode)
+    // ─────────────────────────────────────────────────────────────
+    } else if (subfolderParam === 'proyectos' || subfolderParam === 'proyecto') {
+      var projFolder = findSubfolderByName(rootFolder, ['proyectos', 'proyecto']);
+      targetFolder = projFolder || getOrCreateFolder(rootFolder, 'Proyectos');
+
+    // ─────────────────────────────────────────────────────────────
+    // CASO 4: FOTOS / VIDEOS GENERALES (por año y álbum)
+    // ─────────────────────────────────────────────────────────────
+    } else {
+      var fotosFolder = findSubfolderByName(rootFolder, ['fotos', 'foto']);
+      var basePhotos = fotosFolder || rootFolder;
+      var yearFolder = findSubfolderByName(basePhotos, [yearParam]) || getOrCreateFolder(basePhotos, yearParam);
       targetFolder = yearFolder;
 
       if (albumParam) {
-        targetFolder = getOrCreateFolder(yearFolder, albumParam);
+        var albFolder = findSubfolderByName(yearFolder, [albumParam]);
+        targetFolder = albFolder || getOrCreateFolder(yearFolder, capitalize(albumParam));
       }
-    } else if (subfolderParam === 'proyectos' || subfolderParam === 'proyecto') {
-      targetFolder = getOrCreateFolder(rootFolder, 'Proyectos');
     }
 
     var bytes = Utilities.base64Decode(base64Data);
@@ -335,7 +439,8 @@ function doPost(e) {
       status: 'ok',
       id: createdFile.getId(),
       name: createdFile.getName(),
-      url: createdFile.getUrl()
+      url: createdFile.getUrl(),
+      targetPath: targetFolder.getName()
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
