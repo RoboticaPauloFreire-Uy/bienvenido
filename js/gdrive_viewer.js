@@ -5173,9 +5173,9 @@
                   '<i class="fas fa-wand-magic-sparkles" style="font-size:1.2rem;"></i>' +
                   '<span>🤖 Ir a Google Gemini AI <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i></span>' +
                 '</a>' +
-                '<a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0284C7;color:#FFF;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
+                '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0284C7;color:#FFF;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
                   '<i class="fas fa-palette" style="font-size:1.2rem;"></i>' +
-                  '<span>🎨 Ir a Canva (Diseño Polaroid) <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i></span>' +
+                  '<span>🎨 Abrir Plantilla Polaroid en Canva <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i></span>' +
                 '</a>' +
               '</div>' +
             '</div>' +
@@ -7762,10 +7762,10 @@
                         '<span style="font-size:0.8rem;color:#94A3B8;">Diseño Gráfico Editorial • Impresión Tangible para la Familia</span>' +
                       '</div>' +
                     '</div>' +
-                    '<a href="https://www.canva.com/" target="_blank" rel="noopener" style="background:#0284C7;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-palette"></i> Abrir Canva ↗</a>' +
+                    '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="background:#0284C7;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-palette"></i> Abrir Plantilla en Canva ↗</a>' +
                   '</div>' +
                   '<p style="color:#CBD5E1;font-size:0.9rem;line-height:1.55;margin-bottom:14px;">' +
-                    '<strong>1.</strong> En la siguiente clase abrimos Canva y buscamos una plantilla de <strong>Marco Polaroid / Foto Instantánea</strong>.<br>' +
+                    '<strong>1.</strong> En la siguiente clase abrimos la <a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="color:#38BDF8;font-weight:700;">Plantilla Oficial de la Foto Polaroid en Canva (https://canva.link/polaroid-freirebotuy)</a>.<br>' +
                     '<strong>2.</strong> Colocamos la foto del monstruo de Gemini en el centro del marco.<br>' +
                     '<strong>3.</strong> Escribimos en el borde inferior tu nombre, el curso ("Halloween 2026 - Taller de Robótica") y sumamos adornos temáticos de murciélagos, telas de araña y calabazas.' +
                   '</p>' +
@@ -7848,13 +7848,13 @@
                     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
                       '<div style="width:44px;height:44px;border-radius:10px;background:#0284C7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-palette"></i></div>' +
                       '<div>' +
-                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Canva Educación</h4>' +
-                        '<span style="font-size:0.75rem;color:#7DD3FC;">Marco Polaroid Vintage</span>' +
+                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Plantilla Polaroid en Canva</h4>' +
+                        '<span style="font-size:0.75rem;color:#7DD3FC;">Plantilla Oficial Freirebot</span>' +
                       '</div>' +
                     '</div>' +
-                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Plataforma de composición gráfica para enmarcar tu monstruo en formato Polaroid con tipografía espeluznante y stickers para la impresión en papel.</p>' +
+                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Plantilla oficial con el marco estilo Polaroid vintage para colocar tu monstruo, nombre y curso listo para la impresión física en papel fotográfico.</p>' +
                   '</div>' +
-                  '<a href="https://www.canva.com/" target="_blank" rel="noopener" style="text-align:center;background:#0284C7;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Canva ↗</a>' +
+                  '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="text-align:center;background:#0284C7;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Plantilla en Canva ↗</a>' +
                 '</div>' +
                 // Flow
                 '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
@@ -9408,7 +9408,7 @@
                   '</div>' +
                   '<div class="apm-delivery-actions-row">' +
                     '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#7C3AED;font-weight:700;"><i class="fas fa-book-skull"></i> 📖 Ver El Libro de Hechizos</a>' +
-                    '<a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#0284C7;font-weight:700;"><i class="fas fa-palette"></i> Ir a Canva</a>' +
+                    '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#0284C7;font-weight:700;"><i class="fas fa-palette"></i> Abrir Plantilla Polaroid en Canva</a>' +
                     '<a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#EA580C;font-weight:700;"><i class="fas fa-wand-magic-sparkles"></i> Ir a Gemini</a>' +
                   '</div>' +
                   '<div class="apm-scratch-dropzone" id="apm-halloween-dropzone" style="margin-top:16px;border-color:#FDBA74;background:#FFF7ED;">' +

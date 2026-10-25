@@ -2338,7 +2338,7 @@ const SCHOOL_DATA = {
             { title: "Cámara Web de la Computadora", description: "Captura de la fotografía frontal del rostro con buena iluminación en el taller.", icon: "fa-camera" },
             { title: "Google Gemini AI (Modo Creativo)", description: "Modelo multimodal de IA generativa para transformar la foto según el prompt de 5 capas.", icon: "fa-wand-magic-sparkles" },
             { title: "Manual 'El Libro de los Hechizos'", description: "Guía oficial del colegio con ejemplos de prompts y transformaciones: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
-            { title: "Canva Educación", description: "Lienzo de diseño gráfico para componer la foto con el marco Polaroid retro y tipografía.", icon: "fa-palette" },
+            { title: "Plantilla Polaroid en Canva", description: "Marco instantáneo oficial listo para editar e imprimir: https://canva.link/polaroid-freirebotuy", icon: "fa-palette" },
             { title: "Impresora Fotográfica del Colegio", description: "Impresión en papel fotográfico de la Polaroid terminada que se entrega en mano al estudiante.", icon: "fa-print" },
             { title: "Flow (Video & Animación IA)", description: "Herramienta de generación de video a partir de imagen para animar al monstruo con prompts de cámara.", icon: "fa-film" }
           ],
@@ -2364,7 +2364,7 @@ const SCHOOL_DATA = {
             {
               step: 4,
               title: "Clase 2: Diseño de Fotografía tipo Polaroid en Canva",
-              desc: "En la siguiente clase ingresamos a Canva (https://www.canva.com). Buscamos una plantilla o marco de 'Foto Polaroid / Marco Instantáneo'. Colocamos la imagen generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
+              desc: "En la siguiente clase ingresamos directamente a nuestra plantilla oficial de la foto Polaroid en Canva (https://canva.link/polaroid-freirebotuy). Colocamos la imagen del monstruo generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
               tip: "Dejá el clásico espacio blanco ancho inferior de la Polaroid para que simule una foto instantánea real."
             },
             {
@@ -2555,7 +2555,7 @@ const SCHOOL_DATA = {
             { title: "Cámara Web de la Computadora", description: "Captura de la fotografía frontal del rostro con buena iluminación en el taller.", icon: "fa-camera" },
             { title: "Google Gemini AI (Modo Creativo)", description: "Modelo multimodal de IA generativa para transformar la foto según el prompt de 5 capas.", icon: "fa-wand-magic-sparkles" },
             { title: "Manual 'El Libro de los Hechizos'", description: "Guía oficial del colegio con ejemplos de prompts y transformaciones: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
-            { title: "Canva Educación", description: "Lienzo de diseño gráfico para componer la foto con el marco Polaroid retro y tipografía.", icon: "fa-palette" },
+            { title: "Plantilla Polaroid en Canva", description: "Marco instantáneo oficial listo para editar e imprimir: https://canva.link/polaroid-freirebotuy", icon: "fa-palette" },
             { title: "Impresora Fotográfica del Colegio", description: "Impresión en papel fotográfico de la Polaroid terminada que se entrega en mano al estudiante.", icon: "fa-print" },
             { title: "Flow (Video & Animación IA)", description: "Herramienta de generación de video a partir de imagen para animar al monstruo con prompts de cámara.", icon: "fa-film" }
           ],
@@ -2581,7 +2581,7 @@ const SCHOOL_DATA = {
             {
               step: 4,
               title: "Clase 2: Diseño de Fotografía tipo Polaroid en Canva",
-              desc: "En la siguiente clase ingresamos a Canva (https://www.canva.com). Buscamos una plantilla o marco de 'Foto Polaroid / Marco Instantáneo'. Colocamos la imagen generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
+              desc: "En la siguiente clase ingresamos directamente a nuestra plantilla oficial de la foto Polaroid en Canva (https://canva.link/polaroid-freirebotuy). Colocamos la imagen del monstruo generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
               tip: "Dejá el clásico espacio blanco ancho inferior de la Polaroid para que simule una foto instantánea real."
             },
             {
