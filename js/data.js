@@ -2310,26 +2310,80 @@ const SCHOOL_DATA = {
       projects: [
         {
           id: "g5-p1",
-          title: "Nuestro Primer Juego en JavaScript 🐍",
-          author: "Grupo JavaScript 5°",
-          date: "Agosto 2026",
-          coverImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
-          description: "Creamos la serpiente 'Bug Hunter' con JavaScript real y Canvas HTML5. Los chicos aprendieron a manejar el bucle del juego, colisiones en matriz y puntajes en memoria.",
-          tags: ["JavaScript", "HTML5", "Canvas", "Snake"],
+          level: 1,
+          title: "Especial Halloween con IA: Monstruo en Gemini, Polaroid en Canva y Video en Flow 🎃👻🎬",
+          subtitle: "Laboratorio Creativo en 3 Etapas: Transformación con Prompts de 5 Capas, Diseño Polaroid para Impresión y Animación de Video en Flow",
+          author: "Taller de Robótica & Tecnología (5° Grado)",
+          date: "Octubre 2026",
+          type: "halloween",
+          platform: "gemini",
+          badge: "🎃 Especial Halloween & Laboratorio IA",
+          icon: "fa-ghost",
+          color: "#D97706",
+          coverImage: "img/proyectos/halloween_ia_cover.svg",
+          gameUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
+          externalUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
+          description: "¡Proyecto Oficial de Halloween! Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller:\n\n1) Clase 1 — Captura y Gemini AI: Tomamos la foto desde la computadora del taller y la subimos a Google Gemini. Aprendemos a construir un prompt preciso aplicando la técnica de las 5 Capas explicada en clase y documentada en nuestro manual oficial 'El Libro de los Hechizos de IA' (https://roboticapaulofreire-uy.github.io/libro_hechizos/).\n\n2) Clase 2 — Foto Polaroid en Canva: Importamos la imagen del monstruo a Canva y diseñamos una postal estilo marco Polaroid vintage con tipografías y adornos de Halloween. Esta foto será impresa físicamente por el profesor en papel fotográfico para que cada alumno la lleve a su hogar como recuerdo.\n\n3) Clase 3 — Video Animado con Flow: Subimos la imagen a Flow y aprendemos a estructurar prompts de video (movimiento de cámara, gestos de la criatura y atmósfera cinematográfica en movimiento) para crear un video MP4 animado y guardarlo en el Muro de Google Drive.",
+          objective: "Dominar el flujo completo de creación multimedia con Inteligencia Artificial generativa a través de tres etapas prácticas: captura fotográfica y formulación de prompts en 5 capas con Google Gemini, composición y diseño editorial de una postal Polaroid en Canva para entrega física impresa a las familias, y animación generativa con IA en Flow mediante prompts dinámicos de movimiento y cámara cinematográfica.",
+          benefits: "Desarrolla el pensamiento computacional aplicado a la IA, la precisión semántica y lingüística al redactar prompts estructurados (las 5 capas), el sentido estético y composición en Canva, y la experimentación con modelos de video generativo, coronado con una entrega tangible física para compartir con la familia.",
+          tags: ["Halloween", "Inteligencia Artificial", "Gemini", "Libro de Hechizos", "Canva", "Polaroid", "Flow", "Video IA", "Prompts 5 Capas", "Nivel 1"],
           gallery: [
-            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1568386453619-84c3ff4b43c5?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80"
+            "img/proyectos/halloween_ia_cover.svg"
           ],
           pdfUrl: null,
+          downloadPdfUrl: null,
           makecodeUrl: null,
           scratchId: null,
           materials: [
+            { title: "Cámara Web de la Computadora", description: "Captura de la fotografía frontal del rostro con buena iluminación en el taller.", icon: "fa-camera" },
+            { title: "Google Gemini AI (Modo Creativo)", description: "Modelo multimodal de IA generativa para transformar la foto según el prompt de 5 capas.", icon: "fa-wand-magic-sparkles" },
+            { title: "Manual 'El Libro de los Hechizos'", description: "Guía oficial del colegio con ejemplos de prompts y transformaciones: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
+            { title: "Canva Educación", description: "Lienzo de diseño gráfico para componer la foto con el marco Polaroid retro y tipografía.", icon: "fa-palette" },
+            { title: "Impresora Fotográfica del Colegio", description: "Impresión en papel fotográfico de la Polaroid terminada que se entrega en mano al estudiante.", icon: "fa-print" },
+            { title: "Flow (Video & Animación IA)", description: "Herramienta de generación de video a partir de imagen para animar al monstruo con prompts de cámara.", icon: "fa-film" }
+          ],
+          instructions: [
             {
-              title: "Código Fuente Explicado",
-              type: "Guía de Código",
-              icon: "fas fa-code",
-              description: "Explicación paso a paso de las funciones de movimiento y colisión de la serpiente."
+              step: 1,
+              title: "Clase 1: Captura de Fotografía en la Computadora",
+              desc: "Nos sentamos frente a la computadora del taller y utilizamos la cámara web para tomarnos una fotografía en primer plano de nuestro rostro con buena luz y gesto misterioso o divertido.",
+              tip: "Mantené tu cara centrada y sin sombras duras para que la IA conserve los rasgos de tu fisonomía."
+            },
+            {
+              step: 2,
+              title: "Clase 1: Construcción del Prompt en 5 Capas con el 'Libro de Hechizos'",
+              desc: "Ingresamos a Google Gemini y abrimos nuestro manual oficial 'El Libro de los Hechizos' (https://roboticapaulofreire-uy.github.io/libro_hechizos/). Estructuramos el prompt utilizando las 5 Capas: 1. Rol (Artista digital de fantasía), 2. Sujeto (Transformar la persona en monstruo de Halloween), 3. Escena (Habitación antigua con velas y sombras), 4. Estilo (Cinematográfico, claroscuro, alta definición), 5. Reglas (Conservar rostro reconocible pero con rasgos espeluznantes).",
+              tip: "¡Leé los hechizos del manual para inspirarte con palabras clave como niebla volumétrica o iluminación tenebrosa!"
+            },
+            {
+              step: 3,
+              title: "Clase 1: Generación y Descarga del Monstruo",
+              desc: "Enviamos el prompt a Gemini junto a nuestra foto. Si algún detalle no nos gusta, ajustamos los adjetivos de las 5 capas hasta obtener el monstruo deseado. Descargamos la imagen en la computadora.",
+              tip: "Podés elegir entre estilo zombi tecnológico, vampiro cibernético, brujo de las sombras o espectro de neón."
+            },
+            {
+              step: 4,
+              title: "Clase 2: Diseño de Fotografía tipo Polaroid en Canva",
+              desc: "En la siguiente clase ingresamos a Canva (https://www.canva.com). Buscamos una plantilla o marco de 'Foto Polaroid / Marco Instantáneo'. Colocamos la imagen generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
+              tip: "Dejá el clásico espacio blanco ancho inferior de la Polaroid para que simule una foto instantánea real."
+            },
+            {
+              step: 5,
+              title: "Clase 2: Impresión Física de Recuerdo para la Familia",
+              desc: "Descargamos el diseño en alta calidad para impresión. El docente imprime la fotografía Polaroid en papel fotográfico y la entrega en mano a cada alumno para llevar a su casa y compartir con su familia.",
+              tip: "¡Una creación digital que se convierte en un recuerdo físico y tangible de tu paso por el taller!"
+            },
+            {
+              step: 6,
+              title: "Clase 3: Animación de la Criatura con Flow (Prompts de Video)",
+              desc: "En la tercera clase abrimos Flow (herramienta de video con IA) y cargamos nuestra imagen. Aprendemos que los prompts de video describen movimiento y tiempo: movimiento de cámara (zoom in lento, paneo cinematográfico), gestos del personaje (mirada penetrante, parpadeo sutil, respiración misteriosa) y atmósfera móvil (niebla que se desplaza).",
+              tip: "Mantené el prompt de video conciso y enfocado en el movimiento para evitar deformaciones bruscas."
+            },
+            {
+              step: 7,
+              title: "Clase 3: Subir el Video y Foto a Google Drive",
+              desc: "Descargamos el video MP4 terminado y lo subimos a nuestra carpeta de Google Drive institucional en la subcarpeta 'Halloween'. En pocos segundos quedará publicado en nuestro muro con reproductor integrado y el sello oficial del colegio.",
+              tip: "¡Entrá a la sección de Fotos y Videos en el portal para reproducir tu video cuantas veces quieras!"
             }
           ]
         }
@@ -2474,76 +2528,83 @@ const SCHOOL_DATA = {
         {
           id: "g6-p1",
           level: 1,
-          title: "El Arquero con Inteligencia Artificial en Canva ⚽🧤🤖",
-          author: "Taller de Robótica y Tecnología 6° Grado",
-          date: "Marzo 2026",
-          type: "canva",
-          platform: "canva",
-          badge: "🤖 Canva & Animación con IA",
-          icon: "fa-wand-magic-sparkles",
-          color: "#0284C7",
-          coverImage: "img/proyectos/canva_arquero_ia_cover.svg",
-          gameUrl: "https://www.canva.com",
-          externalUrl: "https://www.canva.com",
-          description: "¡Nivel 1 de nuestra Ruta de Aventuras! Aprendemos edición digital y animación con Inteligencia Artificial en Canva: nos sacamos una foto en el aula, la subimos a Canva y usamos la IA para aislar la cabeza. Luego buscamos la imagen de un arquero atajando la pelota, reemplazamos su cabeza original con la nuestra y con Magic Animate transformamos el fotomontaje en una espectacular animación de video MP4 o GIF.",
-          objective: "Aprender la técnica de fotomontaje digital y animación con Inteligencia Artificial en Canva: tomar una fotografía en el aula, aislar la cabeza con el Quitafondos IA, reemplazar la cabeza de un arquero en una imagen de fútbol, y aplicar la IA de animación (Magic Animate) para convertir el diseño en una animación de atajada en video MP4 o GIF.",
-          benefits: "Desarrolla habilidades en Inteligencia Artificial generativa, la técnica de fotomontaje y reemplazo de rostros por capas en Canva, el ajuste de proporciones y perspectiva visual, y el entusiasmo creativo al verse a sí mismos como los arqueros protagonistas de la animación.",
-          tags: ["Canva", "Inteligencia Artificial", "IA Generativa", "Animación", "Arquero", "Fútbol", "Quitafondos", "Magic Animate", "Nivel 1"],
+          title: "Especial Halloween con IA: Monstruo en Gemini, Polaroid en Canva y Video en Flow 🎃👻🎬",
+          subtitle: "Laboratorio Creativo en 3 Etapas: Transformación con Prompts de 5 Capas, Diseño Polaroid para Impresión y Animación de Video en Flow",
+          author: "Taller de Robótica & Tecnología (6° Grado)",
+          date: "Octubre 2026",
+          type: "halloween",
+          platform: "gemini",
+          badge: "🎃 Especial Halloween & Laboratorio IA",
+          icon: "fa-ghost",
+          color: "#D97706",
+          coverImage: "img/proyectos/halloween_ia_cover.svg",
+          gameUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
+          externalUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
+          description: "¡Proyecto Oficial de Halloween! Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller:\n\n1) Clase 1 — Captura y Gemini AI: Tomamos la foto desde la computadora del taller y la subimos a Google Gemini. Aprendemos a construir un prompt preciso aplicando la técnica de las 5 Capas explicada en clase y documentada en nuestro manual oficial 'El Libro de los Hechizos de IA' (https://roboticapaulofreire-uy.github.io/libro_hechizos/).\n\n2) Clase 2 — Foto Polaroid en Canva: Importamos la imagen del monstruo a Canva y diseñamos una postal estilo marco Polaroid vintage con tipografías y adornos de Halloween. Esta foto será impresa físicamente por el profesor en papel fotográfico para que cada alumno la lleve a su hogar como recuerdo.\n\n3) Clase 3 — Video Animado con Flow: Subimos la imagen a Flow y aprendemos a estructurar prompts de video (movimiento de cámara, gestos de la criatura y atmósfera cinematográfica en movimiento) para crear un video MP4 animado y guardarlo en el Muro de Google Drive.",
+          objective: "Dominar el flujo completo de creación multimedia con Inteligencia Artificial generativa a través de tres etapas prácticas: captura fotográfica y formulación de prompts en 5 capas con Google Gemini, composición y diseño editorial de una postal Polaroid en Canva para entrega física impresa a las familias, y animación generativa con IA en Flow mediante prompts dinámicos de movimiento y cámara cinematográfica.",
+          benefits: "Desarrolla el pensamiento computacional aplicado a la IA, la precisión semántica y lingüística al redactar prompts estructurados (las 5 capas), el sentido estético y composición en Canva, y la experimentación con modelos de video generativo, coronado con una entrega tangible física para compartir con la familia.",
+          tags: ["Halloween", "Inteligencia Artificial", "Gemini", "Libro de Hechizos", "Canva", "Polaroid", "Flow", "Video IA", "Prompts 5 Capas", "Nivel 1"],
           gallery: [
-            "img/proyectos/canva_arquero_ia_cover.svg"
+            "img/proyectos/halloween_ia_cover.svg"
           ],
           pdfUrl: null,
           downloadPdfUrl: null,
           makecodeUrl: null,
           scratchId: null,
           materials: [
-            { title: "Foto del Estudiante (Aula)", description: "Primer plano del rostro y cabeza con buena luz en el taller.", icon: "fa-camera" },
-            { title: "Plataforma Canva (Educación)", description: "Lienzo de diseño y acceso a Magic Studio con herramientas de IA.", icon: "fa-palette" },
-            { title: "Imagen de Arquero en el Arco", description: "Foto o diseño base de un arquero volando para atajar la pelota.", icon: "fa-futbol" },
-            { title: "Quitafondos con IA de Canva", description: "Herramienta inteligente que recorta y aísla la cabeza automáticamente.", icon: "fa-wand-magic-sparkles" },
-            { title: "Reemplazo de Cabeza (Fotomontaje)", description: "Ajuste de tamaño, inclinación y cuello sobre el cuerpo del arquero.", icon: "fa-user-astronaut" },
-            { title: "Magic Animate / Animación con IA", description: "Transforma el fotomontaje estático en una animación de video MP4 o GIF.", icon: "fa-film" }
+            { title: "Cámara Web de la Computadora", description: "Captura de la fotografía frontal del rostro con buena iluminación en el taller.", icon: "fa-camera" },
+            { title: "Google Gemini AI (Modo Creativo)", description: "Modelo multimodal de IA generativa para transformar la foto según el prompt de 5 capas.", icon: "fa-wand-magic-sparkles" },
+            { title: "Manual 'El Libro de los Hechizos'", description: "Guía oficial del colegio con ejemplos de prompts y transformaciones: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
+            { title: "Canva Educación", description: "Lienzo de diseño gráfico para componer la foto con el marco Polaroid retro y tipografía.", icon: "fa-palette" },
+            { title: "Impresora Fotográfica del Colegio", description: "Impresión en papel fotográfico de la Polaroid terminada que se entrega en mano al estudiante.", icon: "fa-print" },
+            { title: "Flow (Video & Animación IA)", description: "Herramienta de generación de video a partir de imagen para animar al monstruo con prompts de cámara.", icon: "fa-film" }
           ],
           instructions: [
             {
               step: 1,
-              title: "Toma de Fotografía en el Aula",
-              desc: "Con la tablet o cámara del taller, tomate una foto en primer plano de tu rostro y cabeza con buena iluminación y gesto concentrado de arquero listo para atajar.",
-              tip: "Mantené un fondo liso para que la IA reconozca el contorno de tu cabeza con máxima precisión."
+              title: "Clase 1: Captura de Fotografía en la Computadora",
+              desc: "Nos sentamos frente a la computadora del taller y utilizamos la cámara web para tomarnos una fotografía en primer plano de nuestro rostro con buena luz y gesto misterioso o divertido.",
+              tip: "Mantené tu cara centrada y sin sombras duras para que la IA conserve los rasgos de tu fisonomía."
             },
             {
               step: 2,
-              title: "Buscar la Imagen del Arquero en Canva",
-              desc: "Ingresá a Canva con la cuenta del colegio. En 'Elementos' o 'Fotos', buscá 'arquero atajando' o 'goalkeeper save' y seleccioná una imagen donde el arquero esté volando hacia la pelota.",
-              tip: "Elegí una imagen donde el cuerpo tenga buena visibilidad del cuello y los guantes de arquero."
+              title: "Clase 1: Construcción del Prompt en 5 Capas con el 'Libro de Hechizos'",
+              desc: "Ingresamos a Google Gemini y abrimos nuestro manual oficial 'El Libro de los Hechizos' (https://roboticapaulofreire-uy.github.io/libro_hechizos/). Estructuramos el prompt utilizando las 5 Capas: 1. Rol (Artista digital de fantasía), 2. Sujeto (Transformar la persona en monstruo de Halloween), 3. Escena (Habitación antigua con velas y sombras), 4. Estilo (Cinematográfico, claroscuro, alta definición), 5. Reglas (Conservar rostro reconocible pero con rasgos espeluznantes).",
+              tip: "¡Leé los hechizos del manual para inspirarte con palabras clave como niebla volumétrica o iluminación tenebrosa!"
             },
             {
               step: 3,
-              title: "Subir tu Foto y Aislar la Cabeza con Quitafondos IA",
-              desc: "Andá a la pestaña 'Subidos' y cargá tu foto. Colocala en el diseño, tocá 'Editar la foto' y hacé clic en 'Quitafondos' (Efecto de IA) para eliminar el fondo del aula y dejar únicamente tu cabeza limpia.",
-              tip: "Podés usar la herramienta de borrado manual para eliminar cualquier detalle sobrante alrededor del cuello."
+              title: "Clase 1: Generación y Descarga del Monstruo",
+              desc: "Enviamos el prompt a Gemini junto a nuestra foto. Si algún detalle no nos gusta, ajustamos los adjetivos de las 5 capas hasta obtener el monstruo deseado. Descargamos la imagen en la computadora.",
+              tip: "Podés elegir entre estilo zombi tecnológico, vampiro cibernético, brujo de las sombras o espectro de neón."
             },
             {
               step: 4,
-              title: "Reemplazar la Cabeza del Arquero con tu Foto",
-              desc: "Arrastrá tu cabeza recortada y colócala exactamente sobre la cabeza del arquero de la imagen original. Ajustá el tamaño, la inclinación y la posición para que encaje de manera natural sobre el buzo de arquero.",
-              tip: "Usá los controles de rotación de Canva para inclinar tu cabeza con el mismo ángulo de vuelo del cuerpo."
+              title: "Clase 2: Diseño de Fotografía tipo Polaroid en Canva",
+              desc: "En la siguiente clase ingresamos a Canva (https://www.canva.com). Buscamos una plantilla o marco de 'Foto Polaroid / Marco Instantáneo'. Colocamos la imagen generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
+              tip: "Dejá el clásico espacio blanco ancho inferior de la Polaroid para que simule una foto instantánea real."
             },
             {
               step: 5,
-              title: "Transformar en Animación con la IA de Canva",
-              desc: "Hacé clic en 'Animar' en la barra superior y seleccioná 'Magic Animate' (Animación Mágica con IA). La Inteligencia Artificial analizará el arquero, el fondo y la pelota para generar un movimiento dinámico y cinematográfico.",
-              tip: "Probá los estilos 'Enérgico' o 'Épico' para que la atajada parezca una repetición de fútbol real."
+              title: "Clase 2: Impresión Física de Recuerdo para la Familia",
+              desc: "Descargamos el diseño en alta calidad para impresión. El docente imprime la fotografía Polaroid en papel fotográfico y la entrega en mano a cada alumno para llevar a su casa y compartir con su familia.",
+              tip: "¡Una creación digital que se convierte en un recuerdo físico y tangible de tu paso por el taller!"
             },
             {
               step: 6,
-              title: "Descargar en Video MP4 o GIF y Entregar",
-              desc: "Tocá 'Compartir' > 'Descargar', seleccioná formato 'Video MP4' o 'GIF animado' y guardalo. Subilo a la pestaña 'Mi Entrega' de tu panel o pegá tu enlace público de Canva para sumar tus +100 XP.",
-              tip: "¡Tus compañeros y el profe van a poder reproducir tu video atajando en el aula virtual!"
+              title: "Clase 3: Animación de la Criatura con Flow (Prompts de Video)",
+              desc: "En la tercera clase abrimos Flow (herramienta de video con IA) y cargamos nuestra imagen. Aprendemos que los prompts de video describen movimiento y tiempo: movimiento de cámara (zoom in lento, paneo cinematográfico), gestos del personaje (mirada penetrante, parpadeo sutil, respiración misteriosa) y atmósfera móvil (niebla que se desplaza).",
+              tip: "Mantené el prompt de video conciso y enfocado en el movimiento para evitar deformaciones bruscas."
+            },
+            {
+              step: 7,
+              title: "Clase 3: Subir el Video y Foto a Google Drive",
+              desc: "Descargamos el video MP4 terminado y lo subimos a nuestra carpeta de Google Drive institucional en la subcarpeta 'Halloween'. En pocos segundos quedará publicado en nuestro muro con reproductor integrado y el sello oficial del colegio.",
+              tip: "¡Entrá a la sección de Fotos y Videos en el portal para reproducir tu video cuantas veces quieras!"
             }
           ]
         },
-        {
+{
           id: "g6-p2",
           level: 2,
           title: "El Arquero Mecánico: Control de Servo y Joystick con Mapeo Matemático 🧤🕹️⚙️",
@@ -2685,34 +2746,6 @@ const SCHOOL_DATA = {
               title: "Autoevaluación con Flashcards y Descargar Guía PDF",
               desc: "Pedile a NotebookLM que cree 5 preguntas frecuentes (FAQ) con trampa y respuestas citadas. Al finalizar, descargá la Guía PDF integral para repasar todos los prompts y el decálogo ético.",
               tip: "¡Hacé clic en los números de cita [1], [2] para comprobar que la IA no haya inventado ningún dato!"
-            }
-          ]
-        },
-        {
-          id: "g6-p4",
-          level: 4,
-          title: "Mi Primera Página Web Personal 🌐",
-          author: "Grupo 6° Grado",
-          date: "Agosto 2026",
-          badge: "🌐 Desarrollo Web & HTML/CSS",
-          icon: "fa-code",
-          color: "#2563EB",
-          coverImage: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80",
-          description: "Cada alumno de 6° diseñó y programó su propia página web con HTML y CSS desde cero.",
-          tags: ["HTML5", "CSS3", "Diseño Web", "Nivel 4"],
-          gallery: [
-            "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80"
-          ],
-          pdfUrl: null,
-          makecodeUrl: null,
-          scratchId: null,
-          materials: [
-            {
-              title: "Plantilla Base HTML5 & CSS3",
-              type: "Plantilla Web",
-              icon: "fa-file-code",
-              description: "Estructura semántica inicial con header, main, section y footer utilizada por los alumnos."
             }
           ]
         }
@@ -2997,17 +3030,23 @@ if (typeof window !== 'undefined') {
                 targetProjects.some(p => ((p.id === 'g1-p4' || p.id === 'g1-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
 
-              // Para 6° Grado: verificar que tenga el proyecto oficial de Canva con IA, el Arquero Mecánico con imagen y NIVEL 3 — Geminis Notebook
-              const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
-                targetProjects.length < 3 ||
-                !targetProjects.some(p => (p.title || '').includes('Canva') || (p.title || '').includes('Arquero') || p.id === 'g6-p1') ||
-                !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
-                !targetProjects.some(p => (p.id === 'g6-p2' && (p.makecodeUrl || '').includes('S17294') && p.coverImage && p.coverImage.includes('servo_joystick_makecode_cover'))) ||
-                !targetProjects.some(p => ((p.title || '').includes('Gemini') || (p.title || '').includes('Notebook')) && !/runner|arcade/i.test(p.title || '')) ||
-                targetProjects.some(p => /neon.*runner|cyber.*runner|arcade/i.test(p.title || ''))
+              // Para 5° Grado: verificar que tenga el proyecto oficial de Halloween con IA
+              const isStaleGrado5 = (gradeId === 'grado5' || gradeId === '5to') && (
+                targetProjects.length < 1 ||
+                !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g5-p1') ||
+                targetProjects.some(p => /serpiente|snake|javascript.*bug/i.test(p.title || ''))
               );
 
-              if (isStaleSala5 || isStaleGrado1 || isStaleGrado6) {
+              // Para 6° Grado: verificar que tenga el proyecto oficial de Halloween con IA en Nivel 1, el Arquero Mecánico y Gemini NotebookLM
+              const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
+                targetProjects.length < 3 ||
+                !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g6-p1') ||
+                !targetProjects.some(p => (p.title || '').includes('Servo') || (p.title || '').includes('Joystick') || p.id === 'g6-p2') ||
+                !targetProjects.some(p => ((p.title || '').includes('Gemini') || (p.title || '').includes('Notebook')) && !/runner|arcade/i.test(p.title || '')) ||
+                targetProjects.some(p => /p[aá]gina.*web|neon.*runner|cyber.*runner|serpiente/i.test(p.title || ''))
+              );
+
+              if (isStaleSala5 || isStaleGrado1 || isStaleGrado5 || isStaleGrado6) {
                 console.log("🔄 Proyectos desactualizados en Firestore para " + gradeId + ". Conservando definición oficial y re-sembrando en Firestore...");
                 needsReseed = true;
                 // NO sobrescribir gradeObj.projects con datos viejos de Firestore! Mantener definición oficial de SCHOOL_DATA

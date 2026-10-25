@@ -5101,6 +5101,151 @@
     '</div>';
   }
 
+    function renderHalloweenSolutionHtml(mission) {
+    return '<div class="apm-sol-electro-wrap">' +
+      // Header con gradiente temático Halloween
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #451A03 0%, #C2410C 50%, #7C3AED 100%);">' +
+        '<div class="apm-seh-icon" style="background:rgba(255,255,255,0.18);color:#FDBA74;"><i class="fas fa-ghost"></i></div>' +
+        '<div>' +
+          '<h4>Tutorial y Solución Oficial: Especial Halloween con Inteligencia Artificial 🎃👻🎬</h4>' +
+          '<p>El proceso completo en 3 clases: 1) Foto a Monstruo en Gemini con el Libro de los Hechizos, 2) Diseño Polaroid en Canva entregado impreso, y 3) Animación de video en Flow.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body">' +
+
+        // Portada y Accesos directos a herramientas
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:18px;">' +
+          '<div class="apm-circuit-schematic-card" style="background:#FFF7ED;border:1.5px solid #FDBA74;margin:0;color:#7C2D12;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#FED7AA;">' +
+              '<span style="color:#9A3412;font-weight:900;"><i class="fas fa-image"></i> Portada del Proyecto Especial</span>' +
+              '<a href="img/proyectos/halloween_ia_cover.svg" target="_blank" class="apm-csc-badge" style="background:#EA580C;color:#FFF;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Ver en Grande</a>' +
+            '</div>' +
+            '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/halloween_ia_cover.svg" alt="Especial Halloween IA" style="max-height:220px;max-width:100%;object-fit:contain;border-radius:6px;border:1px solid #FED7AA;box-shadow:0 2px 8px rgba(0,0,0,0.08);">' +
+              '<div style="font-size:0.8rem;color:#7C2D12;margin-top:6px;font-weight:600;">Ecosistema Creativo: Gemini AI &bull; Libro de los Hechizos &bull; Canva Polaroid &bull; Flow Video</div>' +
+            '</div>' +
+          '</div>' +
+
+          // Tarjeta de Herramientas Oficiales con enlaces directos
+          '<div style="background:#FAF5FF;border:1.5px solid #E9D5FF;border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;">' +
+            '<div>' +
+              '<h5 style="margin:0 0 10px;color:#6B21A8;font-size:1.05rem;"><i class="fas fa-magic"></i> Enlaces y Herramientas del Proyecto</h5>' +
+              '<div style="display:flex;flex-direction:column;gap:8px;">' +
+                '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#7C3AED;color:#FFF;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;box-shadow:0 2px 6px rgba(124,58,237,0.3);">' +
+                  '<i class="fas fa-book-skull" style="font-size:1.2rem;"></i>' +
+                  '<span>📖 Abrir "El Libro de los Hechizos" (Manual de Prompts) <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i></span>' +
+                '</a>' +
+                '<a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#EA580C;color:#FFF;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;box-shadow:0 2px 6px rgba(234,88,12,0.3);">' +
+                  '<i class="fas fa-wand-magic-sparkles" style="font-size:1.2rem;"></i>' +
+                  '<span>🤖 Ir a Google Gemini AI <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i></span>' +
+                '</a>' +
+                '<a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0284C7;color:#FFF;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.9rem;box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
+                  '<i class="fas fa-palette" style="font-size:1.2rem;"></i>' +
+                  '<span>🎨 Ir a Canva (Diseño Polaroid) <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i></span>' +
+                '</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="margin-top:10px;padding:8px 12px;background:#F3E8FF;border-radius:8px;font-size:0.8rem;color:#581C87;">' +
+              '<i class="fas fa-info-circle"></i> <strong>Aclaración Pedagógica:</strong> Este proyecto se completó en clases sucesivas para que cada alumno viviera la experiencia completa de creador multimedia con IA.' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // SECCIÓN 1: ETAPA 1 - GEMINI & LAS 5 CAPAS DEL PROMPT
+        '<div style="background:#FFF7ED;border:1.5px solid #FDBA74;border-radius:12px;padding:18px;margin-bottom:16px;">' +
+          '<h5 style="margin:0 0 8px;color:#9A3412;font-size:1.1rem;"><i class="fas fa-wand-magic-sparkles"></i> Etapa 1: Transformación con Gemini AI & Las 5 Capas del Hechizo</h5>' +
+          '<p style="margin:0 0 12px;font-size:0.88rem;color:#7C2D12;">Tomamos la foto con la cámara de la computadora y la subimos a Google Gemini. En clase explicamos cómo redactar un prompt preciso apoyándonos en el manual <a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" style="color:#EA580C;font-weight:700;">El Libro de los Hechizos</a>, estructurando el pedido en <strong>5 Capas</strong>:</p>' +
+          '<div class="apm-pinout-table-wrap">' +
+            '<table class="apm-pinout-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th style="width:18%;">Capa</th>' +
+                  '<th style="width:28%;">Propósito Pedagógico</th>' +
+                  '<th style="width:54%;">Ejemplo de Prompt en Clase (Hechizo de Halloween)</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                '<tr>' +
+                  '<td><strong>1. Rol / Identidad</strong></td>' +
+                  '<td>Define la mente y el oficio de la IA</td>' +
+                  '<td><code>"Actúa como un artista digital y diseñador de criaturas de fantasía y terror cinematográfico..."</code></td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>2. Tarea / Sujeto</strong></td>' +
+                  '<td>Transforma a la persona de la foto</td>' +
+                  '<td><code>"Toma a la persona de esta fotografía y transfórmala en un monstruo de Halloween (zombi cyber, vampiro o hechicero)..."</code></td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>3. Escenario / Contexto</strong></td>' +
+                  '<td>Ambienta la escena en un lugar</td>' +
+                  '<td><code>"Ubicado en una mansión antigua, laboratorio abandonado o pasillo tenebroso con velas y sombras..."</code></td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>4. Estilo / Parámetros</strong></td>' +
+                  '<td>Determina luz, textura y cámara</td>' +
+                  '<td><code>"Iluminación dramática claroscuro, niebla volumétrica, textura hiperrealista, plano medio cinematográfico..."</code></td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>5. Reglas / Conservación</strong></td>' +
+                  '<td>Evita deformaciones y mantiene identidad</td>' +
+                  '<td><code>"Conserva la forma de los ojos, sonrisa y fisonomía facial del alumno para que siga siendo reconocible."</code></td>' +
+                '</tr>' +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+
+        // SECCIÓN 2: ETAPA 2 - CANVA POLAROID & IMPRESIÓN FÍSICA
+        '<div style="background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:12px;padding:18px;margin-bottom:16px;">' +
+          '<h5 style="margin:0 0 8px;color:#0369A1;font-size:1.1rem;"><i class="fas fa-palette"></i> Etapa 2: Diseño de Fotografía Polaroid en Canva (Para entrega impresa)</h5>' +
+          '<p style="margin:0 0 12px;font-size:0.88rem;color:#075985;">En la segunda clase subimos la imagen creada con Gemini a Canva para componer una foto instantánea tipo Polaroid de recuerdo:</p>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">' +
+            '<div style="background:#FFF;padding:12px;border-radius:8px;border:1px solid #E0F2FE;">' +
+              '<strong style="color:#0284C7;"><i class="fas fa-crop-alt"></i> 1. Marco Polaroid</strong>' +
+              '<p style="font-size:0.82rem;color:#475569;margin:4px 0 0;">Buscamos un marco blanco estilo foto instantánea retro con el borde inferior ancho característico.</p>' +
+            '</div>' +
+            '<div style="background:#FFF;padding:12px;border-radius:8px;border:1px solid #E0F2FE;">' +
+              '<strong style="color:#0284C7;"><i class="fas fa-font"></i> 2. Tipografía Temática</strong>' +
+              '<p style="font-size:0.82rem;color:#475569;margin:4px 0 0;">Agregamos textos con fuentes góticas o divertidas: "Halloween 2026", nombre del alumno y stickers de murciélagos.</p>' +
+            '</div>' +
+            '<div style="background:#FFF;padding:12px;border-radius:8px;border:1px solid #E0F2FE;">' +
+              '<strong style="color:#0284C7;"><i class="fas fa-print"></i> 3. Entrega Impresa Física</strong>' +
+              '<p style="font-size:0.82rem;color:#475569;margin:4px 0 0;">El docente imprime la foto en papel fotográfico de alta calidad para entregarla en mano como recuerdo tangible para la familia.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // SECCIÓN 3: ETAPA 3 - ANIMACIÓN EN FLOW CON PROMPTS DE VIDEO
+        '<div style="background:#FAF5FF;border:1.5px solid #E9D5FF;border-radius:12px;padding:18px;margin-bottom:16px;">' +
+          '<h5 style="margin:0 0 8px;color:#6B21A8;font-size:1.1rem;"><i class="fas fa-film"></i> Etapa 3: Generación de Video y Animación con Flow</h5>' +
+          '<p style="margin:0 0 12px;font-size:0.88rem;color:#581C87;">En la tercera clase importamos la criatura a Flow (herramienta de video generativo con IA) para darle vida y movimiento. Aprendemos cómo redactar prompts específicos para video:</p>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">' +
+            '<div style="background:#FFF;padding:12px;border-radius:8px;border:1px solid #F3E8FF;">' +
+              '<strong style="color:#7C3AED;"><i class="fas fa-video"></i> Movimiento de Cámara</strong>' +
+              '<p style="font-size:0.82rem;color:#475569;margin:4px 0 0;">Describimos movimientos cinematográficos suaves: <code>"slow zoom in on face, subtle handheld camera shake"</code>.</p>' +
+            '</div>' +
+            '<div style="background:#FFF;padding:12px;border-radius:8px;border:1px solid #F3E8FF;">' +
+              '<strong style="color:#7C3AED;"><i class="fas fa-eye"></i> Acciones del Personaje</strong>' +
+              '<p style="font-size:0.82rem;color:#475569;margin:4px 0 0;">Animamos gestos naturales: <code>"blinking slowly, deep mysterious breathing, looking straight into the camera"</code>.</p>' +
+            '</div>' +
+            '<div style="background:#FFF;padding:12px;border-radius:8px;border:1px solid #F3E8FF;">' +
+              '<strong style="color:#7C3AED;"><i class="fas fa-smog"></i> Atmósfera en Movimiento</strong>' +
+              '<p style="font-size:0.82rem;color:#475569;margin:4px 0 0;">Dinamismo ambiental: <code>"drifting fog in background, flickering candlelight on walls, cinematic shadow drift"</code>.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Sello y Resultado en Google Drive
+        '<div style="text-align:center;padding:14px;background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:10px;">' +
+          '<span style="font-size:1.1rem;color:#1E293B;font-weight:800;">🌟 Resultado publicado en el Muro Oficial</span>' +
+          '<p style="margin:4px 0 0;font-size:0.84rem;color:#64748B;">Al subir el video y foto a Google Drive en la carpeta <code>fotos/2026/halloween</code>, quedan inmediatamente disponibles en tu muro con reproductor integrado y la marca de agua del colegio.</p>' +
+        '</div>' +
+
+      '</div>' +
+    '</div>';
+  }
+
+
   function renderGeminiNotebooksSolutionHtml(mission) {
     return '<div class="apm-sol-electro-wrap">' +
       '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #1E1B4B 0%, #4338CA 50%, #4F46E5 100%);">' +
@@ -6920,6 +7065,13 @@
           { icon: 'fa-sync-alt', color: '#16A34A', title: 'Bucle Continuo y Tasa de Refresco (20 ms)', desc: 'Ejecutar el ciclo en el bloque "para siempre" con pausa de 20 ms para lograr atajadas fluidas sin tirones mecánicos.' }
         ];
         tipBoxText = '<strong>🧤 El Arquero Mecánico con Joystick Chico Negro y Servo:</strong> En este Nivel 2 de 6° Grado, los estudiantes construyen y programan el arquero atajador. La palanca del joystick chico negro (Pin P1) envía lecturas de 0 a 1023, la micro:bit aplica el <strong>ajuste de intervalo matemático (Math.map)</strong> con límites de 0° a 180° y comanda el servomotor SG90 (Pin P0) para atajar penales de poste a poste en tiempo real.';
+      } else if (isHalloween) {
+        pillars = [
+          { icon: 'fa-wand-magic-sparkles', color: '#D97706', title: '1. Gemini AI & Libro de los Hechizos', desc: 'Aprender ingeniería de prompts en 5 capas para transformar la foto personal en una criatura de fantasía usando nuestro manual oficial https://roboticapaulofreire-uy.github.io/libro_hechizos/.' },
+          { icon: 'fa-palette', color: '#0284C7', title: '2. Foto Polaroid en Canva (Impresión)', desc: 'Composición de una postal retro tipo Polaroid con tipografías y adornos de Halloween, que el profesor entrega impresa en papel fotográfico.' },
+          { icon: 'fa-film', color: '#9333EA', title: '3. Video y Animación con Flow', desc: 'Prompts dinámicos de movimiento de cámara, gestos cinemáticos y atmósfera para convertir la foto en un video animado MP4 en Google Drive.' }
+        ];
+        tipBoxText = '<strong>🎃 Proyecto Real de Aula:</strong> Desarrollado en 3 clases consecutivas del taller: 1) Foto a monstruo en Gemini con el Libro de los Hechizos, 2) Diseño de recuerdo Polaroid en Canva entregado impreso a cada alumno, y 3) Animación de video en Flow.';
       } else if (isGeminiNotebooks) {
         pillars = [
           { icon: 'fa-brain', color: '#4F46E5', title: 'Grounding: Anclaje Estricto en Fuentes', desc: 'Aprender cómo Gemini 1.5 Pro y NotebookLM eliminan alucinaciones al procesar exclusivamente textos escolares y apuntes con citas verificables [1].' },
@@ -7035,6 +7187,13 @@
           { icon: 'fa-gamepad', color: '#16A34A', title: 'Robótica Lúdica y Competitiva', desc: 'Evolucionar desde la animación en pantalla hacia un invento mecatrónico real para jugar tandas de penales con compañeros en el aula.' }
         ];
         tipBoxText = '<strong>📐 Matemáticas y Robótica en Acción:</strong> El bloque "ajustar intervalo" (Math.map) traduce las matemáticas escolares en reflejos deportivos: convierte la inclinación de la palanca del joystick en la atajada exacta del arquero mecánico en el arco.';
+      } else if (isHalloween) {
+        pillars = [
+          { icon: 'fa-wand-magic-sparkles', color: '#D97706', title: '1. Gemini AI & Libro de los Hechizos', desc: 'Aprender ingeniería de prompts en 5 capas para transformar la foto personal en una criatura de fantasía usando nuestro manual oficial https://roboticapaulofreire-uy.github.io/libro_hechizos/.' },
+          { icon: 'fa-palette', color: '#0284C7', title: '2. Foto Polaroid en Canva (Impresión)', desc: 'Composición de una postal retro tipo Polaroid con tipografías y adornos de Halloween, que el profesor entrega impresa en papel fotográfico.' },
+          { icon: 'fa-film', color: '#9333EA', title: '3. Video y Animación con Flow', desc: 'Prompts dinámicos de movimiento de cámara, gestos cinemáticos y atmósfera para convertir la foto en un video animado MP4 en Google Drive.' }
+        ];
+        tipBoxText = '<strong>🎃 Proyecto Real de Aula:</strong> Desarrollado en 3 clases consecutivas del taller: 1) Foto a monstruo en Gemini con el Libro de los Hechizos, 2) Diseño de recuerdo Polaroid en Canva entregado impreso a cada alumno, y 3) Animación de video en Flow.';
       } else if (isGeminiNotebooks) {
         pillars = [
           { icon: 'fa-brain', color: '#4F46E5', title: 'Pensamiento Crítico y Verificación de Fuentes', desc: 'Aprender a no confiar ciegamente en la IA, usando las citas directas [1] para auditar la información contra los libros de texto originales.' },
@@ -7307,6 +7466,7 @@
     var isMarcalibro = !isPaint && !isCodeorg && (mission.id === 'g1-p3' || (mission.tags && mission.tags.some(function(t){ return /marca ?libro|marcalibro|origami|tom sawyer/i.test(t); })) || (/marca ?libro|marcalibro|origami|tom sawyer/i.test(mission.title || '')));
     var isScratchJrPerspectiva = !isPaint && !isCodeorg && !isMarcalibro && (mission.id === 's5-p10' || mission.id === 's5-g5' || mission.id === 'g1-p10' || mission.id === 'g1-g5' || (mission.tags && mission.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(mission.title || '')));
     var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (mission.id === 's5-p9' || mission.id === 's5-g1' || mission.id === 'g1-p9' || mission.id === 'g1-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
+    var isHalloween = (mission.id === 'g5-p1' || mission.id === 'g6-p1' || mission.type === 'halloween' || /halloween/i.test(mission.title || '') || (mission.tags && mission.tags.some(function(t){ return /halloween|hechizos|libro_hechizos|monstruo|polaroid/i.test(t); })));
     var isServoJoystick = (mission.id === 'g6-p2') || (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
     var isCanva = !isServoJoystick && (mission.type === 'canva' || (mission.tags && mission.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(mission.title || '')));
     var isClaseActivity = (mission.tipo === 'clase' || mission.type === 'clase' || (mission.badge && mission.badge.includes('Actividad de Clase')));
@@ -8921,6 +9081,48 @@
               '</div>' +
 
               // SUB-PANEL GEMINI / NOTEBOOKLM
+                            // SUB-PANEL HALLOWEEN
+              '<div id="apm-halloween-delivery-section" style="' + (isHalloween ? 'display:block;' : 'display:none;') + '">' +
+                '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #7C2D12 0%, #C2410C 50%, #7C3AED 100%);">' +
+                  '<div class="apm-dh-icon" style="background:rgba(255,255,255,0.18);color:#FDBA74;"><i class="fas fa-ghost"></i></div>' +
+                  '<div>' +
+                    '<h4>Entrega de Proyecto Especial: Halloween con IA 🎃👻🎬</h4>' +
+                    '<p>Podés registrar tu entrega compartiendo tu diseño de Canva o subiendo tu foto/video transformado para guardarlo en la carpeta de Halloween de tu Google Drive.</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="apm-delivery-body">' +
+                  '<div class="apm-delivery-input-group">' +
+                    '<div class="apm-delivery-input-wrap">' +
+                      '<i class="fas fa-link apm-delivery-link-icon"></i>' +
+                      '<input type="url" id="apm-halloween-student-url" class="apm-delivery-url-input" placeholder="https://www.canva.com/design/... o link a Drive / prompt" value="' + (savedMakecodeUrl || '') + '">' +
+                    '</div>' +
+                    '<button type="button" id="apm-halloween-save-link-btn" class="apm-delivery-submit-btn" style="background:#EA580C;"><i class="fas fa-paper-plane"></i> Guardar Enlace (+100 XP)</button>' +
+                  '</div>' +
+                  '<div class="apm-delivery-actions-row">' +
+                    '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#7C3AED;font-weight:700;"><i class="fas fa-book-skull"></i> 📖 Ver El Libro de Hechizos</a>' +
+                    '<a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#0284C7;font-weight:700;"><i class="fas fa-palette"></i> Ir a Canva</a>' +
+                    '<a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="apm-delivery-link-btn" style="color:#EA580C;font-weight:700;"><i class="fas fa-wand-magic-sparkles"></i> Ir a Gemini</a>' +
+                  '</div>' +
+                  '<div class="apm-scratch-dropzone" id="apm-halloween-dropzone" style="margin-top:16px;border-color:#FDBA74;background:#FFF7ED;">' +
+                    '<div class="apm-sd-icon" style="color:#EA580C;background:#FED7AA;"><i class="fas fa-cloud-upload-alt"></i></div>' +
+                    '<h4 style="color:#9A3412;">Subí tu Foto o Video de Halloween aquí</h4>' +
+                    '<p style="color:#7C2D12;">Formatos permitidos: Video (.mp4, .mov) o Foto / Polaroid (.png, .jpg, .webp)</p>' +
+                    '<input type="file" id="apm-halloween-file-input" style="display:none;" accept=".mp4,.mov,.webm,.png,.jpg,.jpeg,.webp">' +
+                    '<button type="button" id="apm-halloween-browse-btn" class="apm-delivery-submit-btn" style="background:#EA580C;"><i class="fas fa-folder-open"></i> Seleccionar Archivo de Halloween</button>' +
+                  '</div>' +
+                  '<div style="text-align:center;margin-top:18px;padding:16px;background:#FAF5FF;border:1.5px dashed #D8B4FE;border-radius:12px;">' +
+                    '<p style="margin:0 0 10px;font-size:0.86rem;color:#581C87;">¿Ya generaste tu monstruo con Gemini, diseñaste tu Polaroid en Canva y probaste la animación en Flow?</p>' +
+                    '<button type="button" id="apm-btn-complete-halloween" class="apm-delivery-submit-btn" style="background:linear-gradient(135deg, #EA580C 0%, #7C3AED 100%);font-size:0.95rem;padding:10px 24px;box-shadow:0 4px 12px rgba(234,88,12,0.3);">' +
+                      '<i class="fas fa-check-circle"></i> ⭐ Marcar Misión de Halloween Completada (+100 XP)' +
+                    '</button>' +
+                  '</div>' +
+                  '<div id="apm-halloween-delivery-status" style="margin-top:14px;">' +
+                    (savedFileName || savedMakecodeUrl || isAlreadyCompleted ?
+                      '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">' + (savedFileName ? 'Archivo entregado: <strong>' + savedFileName + '</strong>' : (savedMakecodeUrl ? 'Enlace registrado: <strong>' + savedMakecodeUrl + '</strong>' : '¡Misión de Halloween validada con éxito!')) + ' (' + (savedFileDate || 'Guardado') + ') en tu Google Drive.</span></div></div>' : '') +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
               '<div id="apm-gemini-delivery-section" style="' + (isGeminiNotebooks ? 'display:block;' : 'display:none;') + '">' +
                 '<div class="apm-delivery-header" style="background:linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4F46E5 100%);">' +
                   '<div class="apm-dh-icon" style="background:rgba(255,255,255,0.18);color:#A5B4FC;"><i class="fas fa-brain"></i></div>' +
@@ -9192,6 +9394,8 @@
           '<div class="apm-tab-pane pane-solucion ' + (activeTab === 'solucion' ? 'active' : '') + '">' +
             (isClaseActivity ?
               renderClaseActivitySolutionHtml(mission) :
+             isHalloween ?
+              renderHalloweenSolutionHtml(mission) :
              isMarcalibro ?
               renderMarcalibroOrigamiSolutionHtml(mission) :
              isScratchJrPerspectiva ?
@@ -9863,6 +10067,68 @@
     setDeliveryMode(isClaseActivity ? 'clase' : (isGeminiNotebooks ? 'gemini' : (isPaint ? 'paint' : (isCodeorg ? 'codeorg' : (isElectronica ? 'electro' : (isMakecode ? 'mk' : 'scratch'))))));
 
     // --- Subida / Completar Actividad de Clase con 1-Click ---
+        var btnCompleteHalloween = modal.querySelector('#apm-btn-complete-halloween');
+    if (btnCompleteHalloween) {
+      btnCompleteHalloween.onclick = function() {
+        if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+        else if (window.sounds) window.sounds.playClick();
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        var submissionData = {
+          type: 'halloween',
+          date: nowStr,
+          missionId: mission.id,
+          missionTitle: mission.title,
+          url: 'https://roboticapaulofreire-uy.github.io/libro_hechizos/'
+        };
+        markMissionCompleted(student, mission.id, submissionData);
+        mission.status = 'completado';
+        var statusEl = modal.querySelector('#apm-halloween-delivery-status');
+        if (statusEl) {
+          statusEl.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">¡Felicitaciones! Misión Completada ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">Proyecto de Halloween registrado el ' + nowStr + ' en el sistema.</span></div></div>';
+        }
+        var headerBadge = modal.querySelector('#apm-header-status-badge');
+        if (headerBadge) {
+          headerBadge.innerHTML = '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>';
+        }
+      };
+    }
+
+    var btnSaveHalloweenLink = modal.querySelector('#apm-halloween-save-link-btn');
+    if (btnSaveHalloweenLink) {
+      btnSaveHalloweenLink.onclick = function() {
+        var input = modal.querySelector('#apm-halloween-student-url');
+        var val = input ? input.value.trim() : '';
+        if (!val) return;
+        if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+        var nowStr = new Date().toLocaleDateString('es-ES');
+        markMissionCompleted(student, mission.id, { type: 'halloween', date: nowStr, url: val, missionId: mission.id, missionTitle: mission.title });
+        mission.status = 'completado';
+        var statusEl = modal.querySelector('#apm-halloween-delivery-status');
+        if (statusEl) {
+          statusEl.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Enlace Guardado con Éxito ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">' + val + '</span></div></div>';
+        }
+      };
+    }
+
+    var btnHalloweenBrowse = modal.querySelector('#apm-halloween-browse-btn');
+    var inputHalloweenFile = modal.querySelector('#apm-halloween-file-input');
+    if (btnHalloweenBrowse && inputHalloweenFile) {
+      btnHalloweenBrowse.onclick = function() { inputHalloweenFile.click(); };
+      inputHalloweenFile.onchange = function() {
+        if (inputHalloweenFile.files && inputHalloweenFile.files[0]) {
+          var file = inputHalloweenFile.files[0];
+          if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+          var nowStr = new Date().toLocaleDateString('es-ES');
+          markMissionCompleted(student, mission.id, { type: 'halloween', fileName: file.name, date: nowStr, missionId: mission.id, missionTitle: mission.title });
+          mission.status = 'completado';
+          var statusEl = modal.querySelector('#apm-halloween-delivery-status');
+          if (statusEl) {
+            statusEl.innerHTML = '<div class="apm-status-badge success" style="padding:12px 18px;border-left:4px solid #10B981;"><i class="fas fa-trophy" style="font-size:1.4rem;color:#F59E0B;"></i> <div><strong style="color:#065F46;">Archivo de Halloween Registrado ⭐ (+100 XP)</strong><br><span style="font-size:0.84rem;color:#047857;">' + file.name + ' subido con éxito.</span></div></div>';
+          }
+        }
+      };
+    }
+
     var btnCompleteClase = modal.querySelector('#apm-btn-complete-clase');
     if (btnCompleteClase) {
       btnCompleteClase.onclick = function() {
