@@ -748,16 +748,17 @@
     if (gradeObj && Array.isArray(gradeObj.projects)) {
       gradeObj.projects.forEach(function(p, idx) {
         var isPaint    = p.type === 'paint' || (p.tags && p.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|bandera/i.test(p.title || ''));
-        var isMakecode = !isPaint && (!!p.makecodeUrl || p.type === 'makecode' || p.platform === 'makecode' || (p.tags && p.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
-        var isScratch  = !isPaint && (p.type === 'scratch' || p.type === 'codejr' || p.platform === 'codejr' || p.platform === 'scratch' || !!p.scratchId || (p.tags && p.tags.some(function(t){ return /scratch ?jr|codejr|velocidad|perspectiva|perpestiva/i.test(t); })));
-        var isCodeorg  = !isPaint && (p.type === 'codeorg' || p.platform === 'codeorg' || (p.externalUrl && p.externalUrl.includes('code.org')) || (p.tags && p.tags.some(function(t){ return /code\.org|angry ?birds|frozen|minecraft/i.test(t); })));
-        var isElectronica = !isPaint && !isCodeorg && !isScratch && !isMakecode && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
+        var isHalloween = (p.id === 'g5-p1' || p.id === 'g6-p1' || p.type === 'halloween' || /halloween|hechizos|monstruo/i.test((p.title || '') + ' ' + (p.id || '')));
+        var isMakecode = !isPaint && !isHalloween && (!!p.makecodeUrl || p.type === 'makecode' || p.platform === 'makecode' || (p.tags && p.tags.some(function(t){ return /makecode|micro:?bit/i.test(t); })));
+        var isScratch  = !isPaint && !isHalloween && (p.type === 'scratch' || p.type === 'codejr' || p.platform === 'codejr' || p.platform === 'scratch' || !!p.scratchId || (p.tags && p.tags.some(function(t){ return /scratch ?jr|codejr|velocidad|perspectiva|perpestiva/i.test(t); })));
+        var isCodeorg  = !isPaint && !isHalloween && (p.type === 'codeorg' || p.platform === 'codeorg' || (p.externalUrl && p.externalUrl.includes('code.org')) || (p.tags && p.tags.some(function(t){ return /code\.org|angry ?birds|frozen|minecraft/i.test(t); })));
+        var isElectronica = !isPaint && !isHalloween && !isCodeorg && !isScratch && !isMakecode && (p.type === 'electronica' || p.isElectronica || (p.tags && p.tags.some(function(t){ return /electr[oó]nica|circuito|sin programaci[oó]n|papertronics/i.test(t); })) || (!p.makecodeUrl && !p.scratchId && p.materials && p.materials.some(function(m){ return /led|pila|bater[ií]a|cobre|circuito|motor/i.test((m.title||'') + ' ' + (m.description||'')); })));
         var isMkMicrobit = isMakecode && ((p.makecodeUrl && p.makecodeUrl.includes('microbit.org')) || (p.tags && p.tags.some(function(t){ return /micro:?bit/i.test(t); })) || p.id === 'g6-p2' || /servo|joystick|arquero/i.test(p.title || ''));
         var mkDefaultBadge = isMkMicrobit ? '💻 MakeCode Micro:bit' : '🕹️ MakeCode Arcade';
-        var type  = isPaint ? 'paint' : (p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica')))));
-        var badge = p.badge || (isPaint ? '🎨 Arte Digital & Figuras' : (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? mkDefaultBadge : (isScratch ? '🐱 Scratch Jr' : '🚀 Proyecto Maker')))));
-        var icon  = isPaint ? (p.icon || 'fa-palette') : (p.icon || (isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket')))));
-        var color = isPaint ? (p.color || '#16A34A') : (p.color || (isCodeorg ? (p.color || '#E11D48') : (isElectronica ? '#D97706' : (isScratch ? '#EA580C' : (gradeObj.color || '#2563EB')))));
+        var type  = isHalloween ? 'halloween' : (isPaint ? 'paint' : (p.type || (isCodeorg ? 'codeorg' : (isElectronica ? 'electronica' : (isMakecode ? 'makecode' : (isScratch ? 'scratch' : 'robotica'))))));
+        var badge = p.badge || (isHalloween ? '🎃 Especial Halloween & Laboratorio IA' : (isPaint ? '🎨 Arte Digital & Figuras' : (isCodeorg ? '🎮 Programación & Algoritmos' : (isElectronica ? '⚡ Circuito Electrónico' : (isMakecode ? mkDefaultBadge : (isScratch ? '🐱 Scratch Jr' : '🚀 Proyecto Maker'))))));
+        var icon  = isHalloween ? 'fa-ghost' : (isPaint ? (p.icon || 'fa-palette') : (p.icon || (isCodeorg ? 'fa-puzzle-piece' : (isElectronica ? 'fa-bolt' : (isMakecode ? 'fa-gamepad' : (isScratch ? 'fa-cat' : 'fa-rocket'))))));
+        var color = isHalloween ? '#D97706' : (isPaint ? (p.color || '#16A34A') : (p.color || (isCodeorg ? (p.color || '#E11D48') : (isElectronica ? '#D97706' : (isScratch ? '#EA580C' : (gradeObj.color || '#2563EB'))))));
 
         missions.push({
           id: p.id || ('proj-' + idx),
@@ -777,8 +778,8 @@
           color: color,
           stars: 3,
           status: 'desafio',
-          coverImage: p.coverImage || (p.gallery && p.gallery[0]) || (isMakecode || isElectronica ? 'img/microbit.png' : 'img/scratchjr.png'),
-          gallery: p.gallery || [],
+          coverImage: isHalloween ? 'img/proyectos/halloween_ia_cover.jpg?v=3' : (p.coverImage || (p.gallery && p.gallery[0]) || (isMakecode || isElectronica ? 'img/microbit.png' : 'img/scratchjr.png')),
+          gallery: isHalloween ? ['img/proyectos/halloween_ia_cover.jpg?v=3', 'img/proyectos/halloween_foto_monstruo_colegio.png'] : (p.gallery || []),
           pdfUrl: p.pdfUrl || null,
           downloadPdfUrl: p.pdfUrl || null,
           makecodeUrl: p.makecodeUrl || null,
@@ -1815,7 +1816,9 @@
         }
 
         var isInitiallyOpen = false;
-        var coverImgSrc = m.coverImage || (m.type === 'circuito' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png');
+        var isHalloweenM = (m.id === 'g5-p1' || m.id === 'g6-p1' || m.type === 'halloween' || /halloween|hechizos|monstruo/i.test((m.title || '') + ' ' + (m.id || '')));
+        var coverImgSrc = isHalloweenM ? (m.coverImage || 'img/proyectos/halloween_ia_cover.jpg?v=3') : (m.coverImage || (m.type === 'circuito' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png'));
+        var islandFallbackImg = isHalloweenM ? 'img/proyectos/halloween_ia_cover.png' : 'img/scratchjr.png';
 
         var toolBtnHtml = '';
         if (m.botones && m.botones.length > 0) {
@@ -1860,7 +1863,7 @@
                   '<span class="pct-tick pct-o">O</span>' +
                 '</div>' +
                 '<div class="pirate-medallion-inner">' +
-                  '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.src=\'img/scratchjr.png\'">' +
+                  '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.onerror=null;this.src=\'' + islandFallbackImg + '\';">' +
                   '<div class="pirate-level-coin">' +
                     '<span>' + (isLegacy ? '👑 H' : (isCyber ? '⚡ N' : (isSpace ? '🌟 N' : '🪙 L'))) + m.level + '</span>' +
                   '</div>' +
@@ -2342,6 +2345,9 @@
       // ── Cuadrícula (Grid Mode) ──
       bodyHtml = '<div class="arm-grid-view">' +
         missions.map(function(m, idx) {
+          var isHwMission = (m.id === 'g5-p1' || m.id === 'g6-p1' || m.type === 'halloween' || /halloween|hechizos|monstruo/i.test((m.title || '') + ' ' + (m.id || '')));
+          var gridCover = isHwMission ? (m.coverImage || 'img/proyectos/halloween_ia_cover.jpg?v=3') : m.coverImage;
+          var gridFallback = isHwMission ? 'img/proyectos/halloween_ia_cover.png' : (m.type === 'makecode' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png');
           var statusText = m.status === 'completado' ? '⭐ Completado' : (m.status === 'activo' ? '⚡ En Curso' : '🎯 Reto');
           return '<div class="arm-grid-card ' + m.status + '" data-mission-idx="' + idx + '">' +
             '<div class="arm-mc-header">' +
@@ -2350,9 +2356,9 @@
               '</span>' +
               '<span class="arm-mc-status ' + m.status + '">' + statusText + '</span>' +
             '</div>' +
-            (m.coverImage ?
+            (gridCover ?
               '<div class="arm-mc-cover-wrap">' +
-                '<img src="' + m.coverImage + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="arm-mc-cover-img" loading="lazy">' +
+                '<img src="' + gridCover + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="arm-mc-cover-img" loading="lazy" onerror="this.onerror=null;this.src=\'' + gridFallback + '\';">' +
               '</div>' : '') +
             '<div class="arm-mc-body">' +
               '<h4 class="arm-mc-title">' + m.title + '</h4>' +
@@ -7922,7 +7928,7 @@
                 '<div class="apm-slide-page active" data-slide-idx="0">' +
                   '<div class="apm-slide-grid-2col">' +
                     '<div class="apm-sg-img-wrap">' +
-                      '<img src="' + mission.coverImage + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.src=\'' + (isMakecode || isServoJoystick ? 'img/microbit.png' : 'img/scratchjr.png') + '\'">' +
+                      '<img src="' + (isHalloween ? (mission.coverImage || 'img/proyectos/halloween_ia_cover.jpg?v=3') : mission.coverImage) + '" alt="' + mission.title + '" class="apm-sg-img" onerror="this.onerror=null;this.src=\'' + (isHalloween ? 'img/proyectos/halloween_ia_cover.png' : (isMakecode || isServoJoystick ? 'img/microbit.png' : 'img/scratchjr.png')) + '\';">' +
                     '</div>' +
                     '<div>' +
                       '<div style="font-size:0.8rem;font-weight:800;color:' + (isGeminiNotebooks ? '#4F46E5' : (isServoJoystick ? '#0D9488' : (isCanva ? '#0284C7' : (isScratchJrPerspectiva ? '#7C3AED' : (isScratchJrVelocidad ? '#EA580C' : (isDiaMadre ? '#E11D48' : (isMinecraft ? '#059669' : (isFrozen ? '#0284C7' : (isAngryBirds ? '#E11D48' : (isPaintBanderas ? '#2563EB' : (isPaint ? '#16A34A' : (isElectronica ? '#D97706' : '#6366F1')))))))))))) + ';text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">' +
