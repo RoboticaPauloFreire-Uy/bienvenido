@@ -63,7 +63,7 @@ function doGet(e) {
     // ─────────────────────────────────────────────────────────────
     // CASO 2: CARPETA HALLOWEEN ESPECÍFICA (RECURSIVA)
     // ─────────────────────────────────────────────────────────────
-    if (subfolderName === 'halloween') {
+    if (subfolderName === 'halloween' || subfolderName === 'evento') {
       var hwFolder = findFolderRecursive(rootFolder, 'halloween');
       if (hwFolder) {
         var hwResults = scanMediaRecursively(hwFolder, '2026/evento/halloween', '2026');
@@ -374,24 +374,13 @@ function doPost(e) {
     var isHalloween = (albumParam === 'halloween' || subfolderParam === 'halloween' || pathParam.toLowerCase().indexOf('halloween') !== -1);
 
     if (isHalloween) {
-      // 1. Identificar o crear carpeta del año (2026) en la raíz o dentro de Fotos si ya existía
-      var yearContainer = null;
-      var yearInRoot = findSubfolderByName(rootFolder, [yearParam, '2026']);
-      if (yearInRoot) {
-        yearContainer = yearInRoot;
-      } else {
-        var fotosContainer = findSubfolderByName(rootFolder, ['fotos', 'foto']);
-        if (fotosContainer) {
-          yearContainer = findSubfolderByName(fotosContainer, [yearParam, '2026']) || getOrCreateFolder(fotosContainer, yearParam);
-        } else {
-          yearContainer = getOrCreateFolder(rootFolder, yearParam);
-        }
-      }
+      // 1. Crear o buscar carpeta del año (2026) directamente en la raíz del alumno
+      var yearContainer = findSubfolderByName(rootFolder, [yearParam, '2026']) || getOrCreateFolder(rootFolder, yearParam);
 
-      // 2. Subcarpeta evento (o eventos)
+      // 2. Crear o buscar subcarpeta evento
       var eventoFolder = findSubfolderByName(yearContainer, ['evento', 'eventos']) || getOrCreateFolder(yearContainer, 'evento');
 
-      // 3. Subcarpeta halloween
+      // 3. Crear o buscar subcarpeta halloween
       var halloweenFolder = findSubfolderByName(eventoFolder, ['halloween']) || getOrCreateFolder(eventoFolder, 'halloween');
       targetFolder = halloweenFolder;
 

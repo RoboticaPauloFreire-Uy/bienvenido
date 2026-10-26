@@ -293,8 +293,11 @@
     var reqFotos  = fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=fotos')
       .then(function(r){ return r.json(); })
       .catch(function(){ return { files: [] }; });
+    var reqHalloween = fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=halloween')
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return { files: [] }; });
 
-    Promise.all([reqDibujo, reqVideos, reqFotos])
+    Promise.all([reqDibujo, reqVideos, reqFotos, reqHalloween])
       .then(function(results){
         isLoadingDriveFiles = false;
         hasFetchedDriveFiles = true;
@@ -10582,7 +10585,7 @@
             path: '2026/evento/halloween',
             folderPath: '2026/evento/halloween',
             year: '2026',
-            subfolder: 'evento',
+            subfolder: 'halloween',
             album: 'halloween'
           };
           for (var k in fields) {
@@ -10877,7 +10880,18 @@
           form.target = 'gdrive_silent_upload_iframe';
           form.method = 'POST';
           form.action = hook;
-          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyectos' };
+          var isHw = (mission && (mission.id === 'g5-p1' || mission.id === 'g6-p1' || /halloween/i.test(mission.title || '')));
+          var fields = {
+            filename: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64: b64,
+            folderId: student.driveFolderId || '',
+            subfolder: isHw ? 'halloween' : 'proyectos',
+            album: isHw ? 'halloween' : '',
+            year: '2026',
+            path: isHw ? '2026/evento/halloween' : '',
+            folderPath: isHw ? '2026/evento/halloween' : ''
+          };
           for (var k in fields) {
             var inp = document.createElement('input');
             inp.type = 'hidden';
@@ -11113,7 +11127,18 @@
           form.target = 'gdrive_silent_upload_iframe';
           form.method = 'POST';
           form.action = hook;
-          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyectos' };
+          var isHw = (mission && (mission.id === 'g5-p1' || mission.id === 'g6-p1' || /halloween/i.test(mission.title || '')));
+          var fields = {
+            filename: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64: b64,
+            folderId: student.driveFolderId || '',
+            subfolder: isHw ? 'halloween' : 'proyectos',
+            album: isHw ? 'halloween' : '',
+            year: '2026',
+            path: isHw ? '2026/evento/halloween' : '',
+            folderPath: isHw ? '2026/evento/halloween' : ''
+          };
           for (var k in fields) {
             var inp = document.createElement('input');
             inp.type = 'hidden';
@@ -11806,7 +11831,18 @@
           form.target = 'gdrive_silent_upload_iframe';
           form.method = 'POST';
           form.action = hook;
-          var fields = { filename: file.name, mimeType: file.type || 'application/octet-stream', base64: b64, folderId: student.driveFolderId || '', subfolder: 'proyectos' };
+          var isHw = (mission && (mission.id === 'g5-p1' || mission.id === 'g6-p1' || /halloween/i.test(mission.title || '')));
+          var fields = {
+            filename: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64: b64,
+            folderId: student.driveFolderId || '',
+            subfolder: isHw ? 'halloween' : 'proyectos',
+            album: isHw ? 'halloween' : '',
+            year: '2026',
+            path: isHw ? '2026/evento/halloween' : '',
+            folderPath: isHw ? '2026/evento/halloween' : ''
+          };
           for (var k in fields) {
             var inp = document.createElement('input');
             inp.type = 'hidden';
@@ -12015,15 +12051,20 @@
           var iframe = document.getElementById('gdrive_silent_upload_iframe');
           if (!iframe){ iframe=document.createElement('iframe'); iframe.name=iframe.id='gdrive_silent_upload_iframe'; iframe.style.display='none'; document.body.appendChild(iframe); }
           var form = document.createElement('form'); form.target='gdrive_silent_upload_iframe'; form.method='POST'; form.action=hook;
-          var fields = {
-            filename: file.name,
-            mimeType: file.type || 'application/octet-stream',
-            base64: b64,
-            folderId: student.driveFolderId || '',
-            subfolder: targetSubfolder,
-            year: uploadYear,
-            album: uploadAlbum
-          };
+          var isHwStudent = student && (student.gradeId === 'grado5' || student.gradeId === '5to' || student.gradeId === 'grado6' || student.gradeId === '6to');
+        var isHwAlbum = (uploadAlbum && uploadAlbum.toLowerCase().indexOf('hallow') !== -1);
+        var isHw = isHwAlbum || (isHwStudent && subfolder !== 'dibujo');
+        var fields = {
+          filename: file.name,
+          mimeType: file.type || 'application/octet-stream',
+          base64: b64,
+          folderId: student.driveFolderId || '',
+          subfolder: isHw ? 'halloween' : targetSubfolder,
+          year: uploadYear,
+          album: isHw ? 'halloween' : uploadAlbum,
+          path: isHw ? '2026/evento/halloween' : ('fotos/' + uploadYear + '/' + uploadAlbum.toLowerCase()),
+          folderPath: isHw ? '2026/evento/halloween' : ('fotos/' + uploadYear + '/' + uploadAlbum.toLowerCase())
+        };
           for (var k in fields){ var i=document.createElement('input'); i.type='hidden'; i.name=k; i.value=fields[k]; form.appendChild(i); }
           document.body.appendChild(form); form.submit(); setTimeout(function(){ form.remove(); }, 2500);
         }
