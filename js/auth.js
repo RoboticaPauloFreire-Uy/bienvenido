@@ -5,11 +5,116 @@
  */
 
 (function () {
-  var STORAGE_KEY = 'pf_active_student_id';
+  var STORAGE_KEY           = 'pf_active_student_id';
+  var STORAGE_DATA_KEY      = 'pf_active_student_data';
+  var STORAGE_LAST_ACTIVITY = 'pf_student_last_activity';
+  var STORAGE_LOGIN_TIME    = 'pf_student_login_time';
+
+  // ⏰ Tiempo de expiración automática de sesión: 20 minutos (en milisegundos)
+  var SESSION_TIMEOUT_MS = 20 * 60 * 1000;
+  var _sessionWatcherInterval = null;
+  var _lastRecordedActivity = 0;
+
+  function isSessionExpired() {
+    var raw = localStorage.getItem(STORAGE_LAST_ACTIVITY);
+    if (!raw) return false;
+    var last = parseInt(raw, 10);
+    if (isNaN(last) || last <= 0) return false;
+    return (Date.now() - last) >= SESSION_TIMEOUT_MS;
+  }
+
+  function clearStudentSessionData() {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_DATA_KEY);
+    localStorage.removeItem(STORAGE_LAST_ACTIVITY);
+    localStorage.removeItem(STORAGE_LOGIN_TIME);
+  }
+
+  function showAuthToast(msg) {
+    if (typeof window.showToast === 'function') {
+      window.showToast(msg);
+      return;
+    }
+    var toast = document.createElement('div');
+    toast.className = 'auth-session-toast';
+    toast.innerHTML = '<i class="fas fa-clock" style="color:#F59E0B;margin-right:8px;"></i><span>' + msg + '</span>';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1E293B;color:#FFFFFF;padding:12px 24px;border-radius:9999px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:999999;font-weight:700;display:flex;align-items:center;font-family:sans-serif;font-size:0.95rem;border:1.5px solid #F59E0B;';
+    document.body.appendChild(toast);
+    setTimeout(function() {
+      toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(10px)';
+      setTimeout(function() { toast.remove(); }, 400);
+    }, 4500);
+  }
+
+  function handleSessionExpired() {
+    stopSessionWatcher();
+    clearStudentSessionData();
+    try {
+      sessionStorage.setItem('pf_session_expired_notice', '1');
+    } catch(e) {}
+    closeLoginModal();
+    updateUI();
+    window.dispatchEvent(new CustomEvent('student_session_changed', { detail: null }));
+    setTimeout(function() {
+      window.location.reload();
+    }, 400);
+  }
+
+  function checkSessionTimeout() {
+    var id = localStorage.getItem(STORAGE_KEY);
+    if (!id) {
+      stopSessionWatcher();
+      return;
+    }
+    if (isSessionExpired()) {
+      console.log('⏰ Sesión cerrada automáticamente tras 20 minutos de inactividad.');
+      handleSessionExpired();
+    }
+  }
+
+  function startSessionWatcher() {
+    stopSessionWatcher();
+    _sessionWatcherInterval = setInterval(checkSessionTimeout, 15000); // Verifica cada 15 segundos
+  }
+
+  function stopSessionWatcher() {
+    if (_sessionWatcherInterval) {
+      clearInterval(_sessionWatcherInterval);
+      _sessionWatcherInterval = null;
+    }
+  }
+
+  function recordUserActivity() {
+    var now = Date.now();
+    if (now - _lastRecordedActivity < 10000) return; // Throttling: máximo una actualización cada 10 segundos
+    _lastRecordedActivity = now;
+    if (localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_LAST_ACTIVITY, String(now));
+    }
+  }
+
+  function initActivityListeners() {
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(function(evt) {
+      window.addEventListener(evt, recordUserActivity, { passive: true });
+    });
+    window.addEventListener('storage', function(e) {
+      if (e.key === STORAGE_KEY && !e.newValue) {
+        // Otra pestaña cerró la sesión
+        updateUI();
+        window.dispatchEvent(new CustomEvent('student_session_changed', { detail: null }));
+      }
+    });
+  }
 
   function getActiveStudent() {
     try {
-      var cached = localStorage.getItem('pf_active_student_data');
+      if (isSessionExpired()) {
+        clearStudentSessionData();
+        return null;
+      }
+      var cached = localStorage.getItem(STORAGE_DATA_KEY);
       if (cached) {
         var parsed = JSON.parse(cached);
         if (parsed && parsed.id) {
@@ -50,24 +155,29 @@
 
   function setActiveStudent(studentDataOrId) {
     if (studentDataOrId) {
+      var now = Date.now();
       if (typeof studentDataOrId === 'object' && studentDataOrId.id) {
         localStorage.setItem(STORAGE_KEY, studentDataOrId.id);
-        localStorage.setItem('pf_active_student_data', JSON.stringify(studentDataOrId));
+        localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(studentDataOrId));
       } else {
         localStorage.setItem(STORAGE_KEY, studentDataOrId);
       }
+      localStorage.setItem(STORAGE_LAST_ACTIVITY, String(now));
+      localStorage.setItem(STORAGE_LOGIN_TIME, String(now));
+      startSessionWatcher();
     } else {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem('pf_active_student_data');
+      clearStudentSessionData();
+      stopSessionWatcher();
     }
     updateUI();
     window.dispatchEvent(new CustomEvent('student_session_changed', { detail: getActiveStudent() }));
   }
 
-  function logoutStudent() {
-    if (window.sounds) window.sounds.playClick();
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem('pf_active_student_data');
+  function logoutStudent(options) {
+    var silent = options && options.silent;
+    if (!silent && window.sounds) window.sounds.playClick();
+    clearStudentSessionData();
+    stopSessionWatcher();
     closeLoginModal();
     window.location.reload();
   }
@@ -1006,6 +1116,24 @@
 
   // === INICIALIZACIÓN ===
   function initAuth() {
+    initActivityListeners();
+
+    // Notificación si venimos de un cierre automático por inactividad
+    try {
+      if (sessionStorage.getItem('pf_session_expired_notice') === '1') {
+        sessionStorage.removeItem('pf_session_expired_notice');
+        setTimeout(function() {
+          showAuthToast('⏳ Tu sesión se cerró automáticamente tras 20 minutos de inactividad.');
+        }, 800);
+      }
+    } catch(e) {}
+
+    // Iniciar el vigilante de inactividad si hay un alumno activo
+    if (getActiveStudent()) {
+      recordUserActivity();
+      startSessionWatcher();
+    }
+
     updateUI();
     var btn = document.getElementById('student-login-btn');
     if (btn) btn.onclick = openLoginModal;
@@ -1032,9 +1160,11 @@
   }
 
   // Exportar a window
-  window.getActiveStudent = getActiveStudent;
-  window.setActiveStudent = setActiveStudent;
-  window.logoutStudent    = logoutStudent;
-  window.openLoginModal   = openLoginModal;
-  window.updateAuthUI     = updateUI;
+  window.getActiveStudent      = getActiveStudent;
+  window.setActiveStudent      = setActiveStudent;
+  window.logoutStudent         = logoutStudent;
+  window.openLoginModal        = openLoginModal;
+  window.updateAuthUI          = updateUI;
+  window.extendStudentSession  = recordUserActivity;
+  window.SESSION_TIMEOUT_MS    = SESSION_TIMEOUT_MS;
 })();
