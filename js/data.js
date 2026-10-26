@@ -1645,6 +1645,17 @@ const SCHOOL_DATA = {
           grades: ["sala5","grado1","grado2"]
         },
         {
+          id: "g-acceleration-city",
+          title: "Acceleration City: Conducción & Programación de CoBots 🏎️🤖",
+          platform: "cs2n",
+          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
+          thumbnail: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+          description: "¡Desafío 3D de alta velocidad creado por la Carnegie Mellon Robotics Academy (CS2N)! Conduce por una ciudad futurista repleta de pistas desafiantes y acrobacias mientras programas en tiempo real a tu propio robot asistente (CoBot) con bloques lógicos para construir rampas, puentes y turbos propulsores que te permitan sortear obstáculos y rescatar a los Minanimals.",
+          benefits: "Enseña lógica de eventos y disparadores condicionales (If-Then), colaboración interactiva humano-robot (CoBots), orientación y navegación en entornos tridimensionales (3D), secuenciación algorítmica y resolución ágil de problemas de ingeniería.",
+          tags: ["Carnegie Mellon", "CS2N", "CoBots", "Robótica", "Velocidad", "Condicionales", "3D", "Eventos"],
+          grades: ["grado2", "grado3", "grado4"]
+        },
+        {
           id: "g-coding-town",
           title: "Coding Town: Construye y Automatiza tu Ciudad 🏡🚗",
           platform: "scriptacademy",
@@ -1848,6 +1859,17 @@ const SCHOOL_DATA = {
           benefits: "Estimula la formulación de reglas lógicas condicionales, modelado de trayectorias y rebotes físicos, interacción multiobjeto y personalización de interfaces interactivas.",
           tags: ["Code.org","Deportes","Fútbol","Básquetbol","Física","Reglas de Juego"],
           grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-acceleration-city",
+          title: "Acceleration City: Conducción & Programación de CoBots 🏎️🤖",
+          platform: "cs2n",
+          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
+          thumbnail: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+          description: "¡Desafío 3D de alta velocidad creado por la Carnegie Mellon Robotics Academy (CS2N)! Conduce por una ciudad futurista repleta de pistas desafiantes y acrobacias mientras programas en tiempo real a tu propio robot asistente (CoBot) con bloques lógicos para construir rampas, puentes y turbos propulsores que te permitan sortear obstáculos y rescatar a los Minanimals.",
+          benefits: "Enseña lógica de eventos y disparadores condicionales (If-Then), colaboración interactiva humano-robot (CoBots), orientación y navegación en entornos tridimensionales (3D), secuenciación algorítmica y resolución ágil de problemas de ingeniería.",
+          tags: ["Carnegie Mellon", "CS2N", "CoBots", "Robótica", "Velocidad", "Condicionales", "3D", "Eventos"],
+          grades: ["grado2", "grado3", "grado4"]
         },
         {
           id: "g-coding-town",
@@ -2087,6 +2109,17 @@ const SCHOOL_DATA = {
           benefits: "Estimula la formulación de reglas lógicas condicionales, modelado de trayectorias y rebotes físicos, interacción multiobjeto y personalización de interfaces interactivas.",
           tags: ["Code.org","Deportes","Fútbol","Básquetbol","Física","Reglas de Juego"],
           grades: ["grado3","grado4","grado5","grado6"]
+        },
+        {
+          id: "g-acceleration-city",
+          title: "Acceleration City: Conducción & Programación de CoBots 🏎️🤖",
+          platform: "cs2n",
+          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
+          thumbnail: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+          description: "¡Desafío 3D de alta velocidad creado por la Carnegie Mellon Robotics Academy (CS2N)! Conduce por una ciudad futurista repleta de pistas desafiantes y acrobacias mientras programas en tiempo real a tu propio robot asistente (CoBot) con bloques lógicos para construir rampas, puentes y turbos propulsores que te permitan sortear obstáculos y rescatar a los Minanimals.",
+          benefits: "Enseña lógica de eventos y disparadores condicionales (If-Then), colaboración interactiva humano-robot (CoBots), orientación y navegación en entornos tridimensionales (3D), secuenciación algorítmica y resolución ágil de problemas de ingeniería.",
+          tags: ["Carnegie Mellon", "CS2N", "CoBots", "Robótica", "Velocidad", "Condicionales", "3D", "Eventos"],
+          grades: ["grado2", "grado3", "grado4"]
         },
         {
           id: "g-coding-town",
