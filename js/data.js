@@ -2687,9 +2687,16 @@ const MAKECODE_LIBRARY = {
 if (typeof window !== 'undefined') {
   window.MAKECODE_LIBRARY = MAKECODE_LIBRARY;
 
+  let isSeedingMakecode = false;
+  let lastMakecodeSeedTime = 0;
+  let isSeedingProjects = false;
+  let lastProjectsSeedTime = 0;
+
   // ── Sincronización y Subida de MakeCode a Firestore ──
   async function seedMakecodeLibraryToFirestore(force) {
-    if (!window.db) return false;
+    if (!window.db || isSeedingMakecode) return false;
+    isSeedingMakecode = true;
+    lastMakecodeSeedTime = Date.now();
     try {
       const batch = window.db.batch();
       Object.keys(MAKECODE_LIBRARY).forEach(gradeId => {
@@ -2706,12 +2713,16 @@ if (typeof window !== 'undefined') {
     } catch (e) {
       console.warn("Aviso al sembrar MakeCode en Firestore:", e);
       return false;
+    } finally {
+      setTimeout(function() { isSeedingMakecode = false; }, 3000);
     }
   }
 
   // ── Sincronización y Subida de Proyectos a Firestore ──
   async function seedGradeProjectsToFirestore(force) {
-    if (!window.db || !window.SCHOOL_DATA || !Array.isArray(window.SCHOOL_DATA.grades)) return false;
+    if (!window.db || !window.SCHOOL_DATA || !Array.isArray(window.SCHOOL_DATA.grades) || isSeedingProjects) return false;
+    isSeedingProjects = true;
+    lastProjectsSeedTime = Date.now();
     try {
       const batch = window.db.batch();
       window.SCHOOL_DATA.grades.forEach(grade => {
@@ -2729,6 +2740,8 @@ if (typeof window !== 'undefined') {
     } catch (e) {
       console.warn("Aviso al sembrar proyectos en Firestore:", e);
       return false;
+    } finally {
+      setTimeout(function() { isSeedingProjects = false; }, 3000);
     }
   }
 
@@ -2791,8 +2804,8 @@ if (typeof window !== 'undefined') {
             MAKECODE_LIBRARY[gradeId] = data.items;
           }
         });
-        // Si falta sala5, grado1 o grado6 en la nube o está desactualizado, guardarlo
-        if (!hasSala5 || !hasGrado1 || !hasGrado6 || needsReseed) {
+        // Si falta sala5, grado1 o grado6 en la nube o está desactualizado, guardarlo (máx una vez por minuto)
+        if ((!hasSala5 || !hasGrado1 || !hasGrado6 || needsReseed) && !isSeedingMakecode && (Date.now() - lastMakecodeSeedTime > 60000)) {
           seedMakecodeLibraryToFirestore(true);
         }
         console.log("☁️ MakeCode sincronizado desde Firestore.");
@@ -2865,15 +2878,15 @@ if (typeof window !== 'undefined') {
               );
 
               // Para 5° Grado: verificar que tenga el proyecto oficial de Halloween con IA
-              const isStaleGrado5 = (gradeId === 'grado5' || gradeId === '5to') && (
+              const isStaleGrado5 = gradeId === 'grado5' && (
                 targetProjects.length !== 1 ||
                 !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g5-p1') ||
                 targetProjects.some(p => p.id !== 'g5-p1' || !/halloween/i.test(p.title || '')) ||
                 !targetProjects.some(p => (p.id === 'g5-p1' && (p.coverImage || '').includes('halloween_ia_cover.jpg')))
               );
 
-              // Para 6° Grado: verificar que tenga el proyecto oficial de Halloween con IA en Nivel 1, el Arquero Mecánico y Gemini NotebookLM
-              const isStaleGrado6 = (gradeId === 'grado6' || gradeId === '6to') && (
+              // Para 6° Grado: verificar que tenga el proyecto oficial de Halloween con IA en Nivel 1
+              const isStaleGrado6 = gradeId === 'grado6' && (
                 targetProjects.length !== 1 ||
                 !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g6-p1') ||
                 targetProjects.some(p => p.id !== 'g6-p1' || !/halloween/i.test(p.title || '')) ||
@@ -2911,7 +2924,7 @@ if (typeof window !== 'undefined') {
             }
           }
         });
-        if (!hasSala5 || !hasGrado1 || !hasGrado6 || needsReseed) {
+        if ((!hasSala5 || !hasGrado1 || !hasGrado6 || needsReseed) && !isSeedingProjects && (Date.now() - lastProjectsSeedTime > 60000)) {
           seedGradeProjectsToFirestore(true);
         }
         console.log("☁️ Proyectos de grado sincronizados desde Firestore.");

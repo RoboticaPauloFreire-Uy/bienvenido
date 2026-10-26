@@ -282,7 +282,6 @@
     var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
     if (!hook || isLoadingDriveFiles) return;
     isLoadingDriveFiles = true;
-    renderGDriveDashboard(containerId);
 
     var reqDibujo = fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=dibujo')
       .then(function(r){ return r.json(); })
@@ -399,7 +398,6 @@
     var fid  = window.PROJECTS_DRIVE_FOLDER_ID || '1cpI7C-tkjb6Wm1B_GpqZuryPl4SWNVAG';
     if (!hook || isLoadingProjectFiles) return;
     isLoadingProjectFiles = true;
-    renderGDriveDashboard(containerId);
     var grade = getGradeFolderKey(student.gradeId);
     fetch(hook + '?action=list&folderId=' + fid + '&subfolder=' + encodeURIComponent(grade))
       .then(function(r){ return r.json(); })
@@ -426,7 +424,6 @@
     var hook = window.GOOGLE_DRIVE_WEBHOOK_URL || (student && student.webhookUrl);
     if (!hook || isLoadingProyectoFiles) return;
     isLoadingProyectoFiles = true;
-    renderGDriveDashboard(containerId);
     fetch(hook + '?action=list&folderId=' + student.driveFolderId + '&subfolder=proyectos')
       .then(function(r){ return r.json(); })
       .then(function(data){
@@ -524,7 +521,6 @@
     var fid  = window.ACTIVITIES_DRIVE_FOLDER_ID || '1axzC6xBTXxhvAi8VM2P4j3ywKsNonovK';
     if (!hook || isLoadingActividadesFiles) return;
     isLoadingActividadesFiles = true;
-    renderGDriveDashboard(containerId);
 
     var grade = getGradeFolderKey(student.gradeId);
 
@@ -2683,9 +2679,21 @@
   }
 
   // ──────────────────────────────────────────────────
-  // RENDER PRINCIPAL
+  // RENDER PRINCIPAL (CON DEBOUNCE ANTI-PARPADEO / FLICKER)
   // ──────────────────────────────────────────────────
+  var _renderDashboardDebounceTimer = null;
   function renderGDriveDashboard(containerId) {
+    var cid = containerId || 'student-drive-dashboard-container';
+    if (_renderDashboardDebounceTimer) {
+      clearTimeout(_renderDashboardDebounceTimer);
+    }
+    _renderDashboardDebounceTimer = setTimeout(function() {
+      _renderDashboardDebounceTimer = null;
+      _executeRenderGDriveDashboard(cid);
+    }, 35);
+  }
+
+  function _executeRenderGDriveDashboard(containerId) {
     var container = document.getElementById(containerId);
     if (!container) return;
     var student = window.getActiveStudent ? window.getActiveStudent() : null;

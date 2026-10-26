@@ -1077,6 +1077,11 @@
   background: linear-gradient(135deg, #18032B 0%, #2E084D 45%, #7C2D12 100%) !important;
   border-color: rgba(249, 115, 22, 0.45) !important;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 30px rgba(234, 88, 12, 0.2) !important;
+  animation: none !important;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 [data-theme="halloween"] .gamer-hero-card::before {
@@ -1088,6 +1093,8 @@
   opacity: 0.12;
   pointer-events: none;
   animation: batFloat 4s infinite ease-in-out alternate;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 @keyframes batFloat {
