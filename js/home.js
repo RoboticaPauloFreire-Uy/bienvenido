@@ -1088,6 +1088,48 @@
   /* ───────────── Juegos por Grupo ───────────── */
   var filtroGrupoJuegos = 'todos';
   window._customRemoteGames = [];
+  window._deletedRemoteGameIds = {};
+
+  function applyLocalGameOverrides(gamesList, delMap) {
+    try {
+      var raw = localStorage.getItem('pf_admin_games_overrides');
+      if (!raw) return gamesList;
+      var map = JSON.parse(raw);
+      var result = gamesList.slice();
+      Object.keys(map).forEach(function (id) {
+        var item = map[id];
+        if (!item) return;
+        if (item.deleted === true) {
+          if (delMap) delMap[id] = true;
+          result = result.filter(function (g) { return g.id !== id; });
+        } else {
+          var idx = result.findIndex(function (g) { return g.id === id; });
+          var gObj = {
+            id: id,
+            title: item.title || '',
+            grade: item.grade || item.gradeId || 'todos',
+            gradeId: item.grade || item.gradeId || 'todos',
+            grades: item.grades || [item.grade || 'todos'],
+            platform: item.platform || 'web',
+            scratchId: item.scratchId || null,
+            externalUrl: item.externalUrl || '',
+            thumbnail: item.thumbnail || '',
+            description: item.description || '',
+            benefits: item.benefits || '',
+            tags: item.tags || []
+          };
+          if (idx >= 0) result[idx] = gObj;
+          else result.push(gObj);
+        }
+      });
+      return result;
+    } catch (e) {
+      console.warn('Error en applyLocalGameOverrides:', e);
+      return gamesList;
+    }
+  }
+
+  window._customRemoteGames = applyLocalGameOverrides([], window._deletedRemoteGameIds);
 
   function getGradesConJuegos() {
     var d = window.SCHOOL_DATA;
@@ -2607,6 +2649,7 @@
             });
           });
 
+          remoteGames = applyLocalGameOverrides(remoteGames, deletedMap);
           window._deletedRemoteGameIds = deletedMap;
           window._customRemoteGames = remoteGames;
           renderFiltrosJuegos();

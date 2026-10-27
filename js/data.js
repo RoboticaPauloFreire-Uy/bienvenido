@@ -1649,7 +1649,7 @@ const SCHOOL_DATA = {
           title: "Acceleration City: Conducción & Programación de CoBots 🏎️🤖",
           platform: "cs2n",
           externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
-          thumbnail: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+          thumbnail: "https://cobots.cs2n.org/hero/acceleration-city-screenshot.jpg",
           description: "¡Desafío 3D de alta velocidad creado por la Carnegie Mellon Robotics Academy (CS2N)! Conduce por una ciudad futurista repleta de pistas desafiantes y acrobacias mientras programas en tiempo real a tu propio robot asistente (CoBot) con bloques lógicos para construir rampas, puentes y turbos propulsores que te permitan sortear obstáculos y rescatar a los Minanimals.",
           benefits: "Enseña lógica de eventos y disparadores condicionales (If-Then), colaboración interactiva humano-robot (CoBots), orientación y navegación en entornos tridimensionales (3D), secuenciación algorítmica y resolución ágil de problemas de ingeniería.",
           tags: ["Carnegie Mellon", "CS2N", "CoBots", "Robótica", "Velocidad", "Condicionales", "3D", "Eventos"],
@@ -1828,17 +1828,6 @@ const SCHOOL_DATA = {
           grades: ["grado2","grado3","grado4","grado5","grado6"]
         },
         {
-          id: "g-acceleration-city",
-          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
-          platform: "cobots",
-          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
-          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
-          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
-          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
-          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
-          grades: ["grado3","grado4","grado5","grado6"]
-        },
-        {
           id: "g-flappy-code",
           title: "Flappy Code: Programa tu Flappy Bird 🐦🕹️",
           platform: "codeorg",
@@ -1865,7 +1854,7 @@ const SCHOOL_DATA = {
           title: "Acceleration City: Conducción & Programación de CoBots 🏎️🤖",
           platform: "cs2n",
           externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
-          thumbnail: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+          thumbnail: "https://cobots.cs2n.org/hero/acceleration-city-screenshot.jpg",
           description: "¡Desafío 3D de alta velocidad creado por la Carnegie Mellon Robotics Academy (CS2N)! Conduce por una ciudad futurista repleta de pistas desafiantes y acrobacias mientras programas en tiempo real a tu propio robot asistente (CoBot) con bloques lógicos para construir rampas, puentes y turbos propulsores que te permitan sortear obstáculos y rescatar a los Minanimals.",
           benefits: "Enseña lógica de eventos y disparadores condicionales (If-Then), colaboración interactiva humano-robot (CoBots), orientación y navegación en entornos tridimensionales (3D), secuenciación algorítmica y resolución ágil de problemas de ingeniería.",
           tags: ["Carnegie Mellon", "CS2N", "CoBots", "Robótica", "Velocidad", "Condicionales", "3D", "Eventos"],
@@ -2078,17 +2067,6 @@ const SCHOOL_DATA = {
           grades: ["grado4","grado5","grado6"]
         },
         {
-          id: "g-acceleration-city",
-          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
-          platform: "cobots",
-          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
-          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
-          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
-          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
-          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
-          grades: ["grado3","grado4","grado5","grado6"]
-        },
-        {
           id: "g-flappy-code",
           title: "Flappy Code: Programa tu Flappy Bird 🐦🕹️",
           platform: "codeorg",
@@ -2115,7 +2093,7 @@ const SCHOOL_DATA = {
           title: "Acceleration City: Conducción & Programación de CoBots 🏎️🤖",
           platform: "cs2n",
           externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
-          thumbnail: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80",
+          thumbnail: "https://cobots.cs2n.org/hero/acceleration-city-screenshot.jpg",
           description: "¡Desafío 3D de alta velocidad creado por la Carnegie Mellon Robotics Academy (CS2N)! Conduce por una ciudad futurista repleta de pistas desafiantes y acrobacias mientras programas en tiempo real a tu propio robot asistente (CoBot) con bloques lógicos para construir rampas, puentes y turbos propulsores que te permitan sortear obstáculos y rescatar a los Minanimals.",
           benefits: "Enseña lógica de eventos y disparadores condicionales (If-Then), colaboración interactiva humano-robot (CoBots), orientación y navegación en entornos tridimensionales (3D), secuenciación algorítmica y resolución ágil de problemas de ingeniería.",
           tags: ["Carnegie Mellon", "CS2N", "CoBots", "Robótica", "Velocidad", "Condicionales", "3D", "Eventos"],
@@ -2251,17 +2229,6 @@ const SCHOOL_DATA = {
           benefits: "Potencia el pensamiento algorítmico avanzado, manejo de eventos en tiempo real, condicionales lógicos múltiples, orientación vectorial y diseño de mecánicas de videojuegos.",
           tags: ["Code.org","Star Wars","Robótica","Eventos","Aventura","Ciencia Ficción"],
           grades: ["grado4","grado5","grado6"]
-        },
-        {
-          id: "g-acceleration-city",
-          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
-          platform: "cobots",
-          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
-          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
-          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
-          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
-          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
-          grades: ["grado3","grado4","grado5","grado6"]
         },
         {
           id: "g-flappy-code",
@@ -2458,17 +2425,6 @@ const SCHOOL_DATA = {
           benefits: "Potencia el pensamiento algorítmico avanzado, manejo de eventos en tiempo real, condicionales lógicos múltiples, orientación vectorial y diseño de mecánicas de videojuegos.",
           tags: ["Code.org","Star Wars","Robótica","Eventos","Aventura","Ciencia Ficción"],
           grades: ["grado4","grado5","grado6"]
-        },
-        {
-          id: "g-acceleration-city",
-          title: "Acceleration City: Ciudad de Cobots 🏙️🏎️",
-          platform: "cobots",
-          externalUrl: "https://cobots.cs2n.org/games/acceleration-city",
-          thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80",
-          description: "¡Simulador de tráfico autónomo y robótica urbana! Toma el control de vehículos inteligentes y robots colaborativos en una ciudad moderna: calibra aceleraciones, velocidades y sensores de frenado para atravesar cruces peligrosos sin chocar.",
-          benefits: "Enseña física aplicada a la robótica (velocidad, aceleración, inercia y fricción), calibración de sensores de distancia, condicionales de seguridad en tiempo real y optimización de rutas.",
-          tags: ["CS2N","Cobots","Robótica Autónoma","Física","Vehículos","Sensores"],
-          grades: ["grado3","grado4","grado5","grado6"]
         },
         {
           id: "g-flappy-code",
