@@ -3475,9 +3475,16 @@ body.student-logged-in #mobile-menu-btn {
 }
 
 /* Ocultar vistas públicas y pie de página debajo del panel del alumno */
-body.student-logged-in .hn-view,
-body.student-logged-in .site-footer {
+/* Ocultar vistas públicas debajo del panel del alumno */
+body.student-logged-in .hn-view {
   display: none !important;
+}
+
+body.student-logged-in .site-footer {
+  display: block !important;
+  margin-top: 32px;
+  position: relative;
+  z-index: 10;
 }
 
 /* ─────────────── LECTOR DE NOTICIAS (CHASIS HARDWARE MICRO:BIT) ─────────────── */

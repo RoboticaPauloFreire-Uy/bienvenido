@@ -10356,8 +10356,7 @@ body.student-logged-in .aula-resources-section,
 body.student-logged-in #nav-dropdown-aulas,
 body.student-logged-in .topbar-nav .topbar-nav-link,
 body.student-logged-in #mobile-menu-btn,
-body.student-logged-in .hn-view,
-body.student-logged-in .site-footer {
+body.student-logged-in .hn-view {
   display: none !important;
 }
 
