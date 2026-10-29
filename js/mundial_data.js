@@ -144,10 +144,6 @@
             '<a href="' + MUNDIAL_BASE_URL + '" target="_blank" rel="noopener noreferrer" class="cpf-fig-btn-album">' +
               '<i class="fas fa-book-open"></i> <span>Abrir mi Álbum Digital</span>' +
             '</a>' +
-            (student.driveFolderUrl ?
-              '<a href="' + student.driveFolderUrl + '" target="_blank" rel="noopener noreferrer" class="cpf-fig-btn-drive">' +
-                '<i class="fab fa-google-drive"></i> <span>Mi Carpeta Drive</span>' +
-              '</a>' : '') +
           '</div>' +
         '</div>' +
       '</div>';
