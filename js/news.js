@@ -39,6 +39,7 @@ window.HOME_CONTENT = {
 
   /* ───────────── AVISOS (barra superior) ───────────── */
   avisos: [
+    '?? Nuevo en Casa: Luces, C?mara, IA ? Cre? tu propia pel?cula animada con Inteligencia Artificial',
     '🆕 Nueva actividad en familia: Escape Rooms Nostálgico',
     '📦 Seguimos juntando cartón, tapitas y tubos para los proyectos maker',
     '💻 ¿Sin micro:bit en casa? Usá el simulador gratuito de MakeCode',
@@ -194,6 +195,25 @@ window.HOME_CONTENT = {
 
   /* ───────────── ACTIVIDADES ───────────── */
   actividades: [
+    {
+      id: 'act-luces-camara-ia',
+      titulo: 'Luces, C?mara, IA ? Estudio de Cine Escolar',
+      descripcion: '?Convertite en director de cine con Inteligencia Artificial! Dise?? tus propios personajes y escenarios, explor? movimientos de c?mara reales con videos de ejemplo (dolly, ?rbita 360?, dron a?reo, zoom de sat?lite), eleg? estilos visuales e iluminaci?n y arm? paso a paso el guion de prompts para crear tu pel?cula animada en Google Flow y guardarla en tu cuenta.',
+      tipo: 'casa',
+      modalidad: 'maker',
+      materiales: 'Computadora o tablet con navegador web (100% online, ingres? con tu usuario y PIN del taller para guardar tus pel?culas)',
+      grados: ['todos'],
+      icono: '??',
+      color: '#7C3AED',
+      imagen: 'https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/images/Animacion_3D_494c8dcd.jpg',
+      desde: '2026-11-03',
+      hasta: '2026-12-20',
+      chips: ['?? Cine con IA', '?? Movimientos de C?mara', '?? Estilos y Luz', '??? Guard? tu Pel?cula'],
+      botones: [
+        { texto: '?Entrar al Estudio de Cine!', url: 'https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/', icono: 'fas fa-film', principal: true }
+      ]
+    },
+
     {
       id: 'act-album-mundial-cpf',
       titulo: 'Álbum Digital CPF 2026 — Robótica Mundial',
