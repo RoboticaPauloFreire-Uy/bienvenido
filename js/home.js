@@ -2417,6 +2417,61 @@
   }
 
   function syncRemoteCasaActivities() {
+    function applyCasaMerge(remoteCasaList, deletedIdsList) {
+      remoteCasaList = remoteCasaList || [];
+      deletedIdsList = deletedIdsList || [];
+
+      // Fusionar con overrides locales de admin si existen
+      try {
+        var rawOv = localStorage.getItem('pf_admin_casa_overrides');
+        if (rawOv) {
+          var ovMap = JSON.parse(rawOv);
+          Object.keys(ovMap).forEach(function (k) {
+            var ov = ovMap[k];
+            if (!ov) return;
+            if (ov.deleted) {
+              if (deletedIdsList.indexOf(k) === -1) deletedIdsList.push(k);
+              remoteCasaList = remoteCasaList.filter(function (it) { return it.id !== k; });
+            } else {
+              var eIdx = remoteCasaList.findIndex(function (it) { return it.id === k; });
+              if (eIdx !== -1) {
+                remoteCasaList[eIdx] = Object.assign(remoteCasaList[eIdx], ov);
+              } else {
+                remoteCasaList.push(ov);
+              }
+            }
+          });
+        }
+      } catch (eOv) {
+        console.warn('Error fusionando overrides locales de casa:', eOv);
+      }
+
+      // Obtener actividades iniciales de news.js
+      var baseActivities = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
+      var currentClase = (C.actividades || []).filter(function (a) { return a.tipo === 'clase'; });
+      if (!currentClase.length) {
+        currentClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
+      }
+      var baseCasa = baseActivities.filter(function (a) { return a.tipo === 'casa' || a.tipo === 'familia'; });
+
+      // Unir las de casa: Firestore y overrides prevalecen sobre base, descartando eliminadas
+      var mergedCasa = remoteCasaList.concat(baseCasa.filter(function (ba) {
+        return !remoteCasaList.some(function (rc) {
+          return rc.id === ba.id || (rc.titulo && ba.titulo && rc.titulo.trim().toLowerCase() === ba.titulo.trim().toLowerCase());
+        }) && deletedIdsList.indexOf(ba.id) === -1;
+      }));
+
+      C.actividades = currentClase.concat(mergedCasa);
+
+      renderFiltrosActividades();
+      renderActividades();
+      renderMasthead();
+      renderAgenda();
+    }
+
+    // Aplicar inmediatamente con base + overrides locales si existen
+    applyCasaMerge([], []);
+
     try {
       if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
         window.db.collection('casa_activities').onSnapshot(function (snapshot) {
@@ -2433,6 +2488,8 @@
               id: doc.id,
               titulo: d.titulo || '',
               tipo: d.tipo || 'casa',
+              modalidad: d.modalidad || 'maker',
+              materiales: d.materiales || '',
               grados: d.grados || [d.grado || 'todos'],
               grado: d.grado || 'todos',
               descripcion: d.descripcion || '',
@@ -2441,31 +2498,12 @@
               imagen: d.imagen || '',
               desde: d.desde || '',
               hasta: d.hasta || '',
+              chips: d.chips || [],
               botones: d.botones || []
             });
           });
 
-          // Obtener actividades iniciales de news.js
-          var baseActivities = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
-          var currentClase = (C.actividades || []).filter(function (a) { return a.tipo === 'clase'; });
-          if (!currentClase.length) {
-            currentClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
-          }
-          var baseCasa = baseActivities.filter(function (a) { return a.tipo === 'casa' || a.tipo === 'familia'; });
-
-          // Unir las de casa: Firestore prevalece sobre base y se descartan las eliminadas o duplicadas
-          var mergedCasa = remoteCasa.concat(baseCasa.filter(function (ba) {
-            return !remoteCasa.some(function (rc) {
-              return rc.id === ba.id || (rc.titulo && ba.titulo && rc.titulo.trim().toLowerCase() === ba.titulo.trim().toLowerCase());
-            }) && deletedIds.indexOf(ba.id) === -1;
-          }));
-
-          C.actividades = currentClase.concat(mergedCasa);
-
-          renderFiltrosActividades();
-          renderActividades();
-          renderMasthead();
-          renderAgenda();
+          applyCasaMerge(remoteCasa, deletedIds);
         }, function (err) {
           console.warn('Sync casa activities notice:', err);
         });
