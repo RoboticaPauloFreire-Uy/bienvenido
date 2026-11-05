@@ -39,6 +39,7 @@ window.HOME_CONTENT = {
 
   /* ───────────── AVISOS (barra superior) ───────────── */
   avisos: [
+    '👻 Nuevo en Casa (Sala de 5 y 1° Grado): Tutorial El Fantasma Levitante — Ciencia, magnetismo y levitación en familia',
     '🎬 Nuevo en Casa: Luces, Cámara, IA — Creá tu propia película animada con Inteligencia Artificial',
     '🆕 Nueva actividad en familia: Escape Rooms Nostálgico',
     '📦 Seguimos juntando cartón, tapitas y tubos para los proyectos maker',
@@ -195,6 +196,25 @@ window.HOME_CONTENT = {
 
   /* ───────────── ACTIVIDADES ───────────── */
   actividades: [
+    {
+      id: 'act-fantasma-levitante',
+      titulo: 'El Fantasma Levitante — Tutorial de Ciencia en Casa 👻🧲',
+      descripcion: '¡Hacé flotar un fantasma en el aire usando la física del magnetismo y la tensegridad! Construí una estructura con palitos de madera, una base blanca, hilo tensor y una pelota de ping-pong con imanes para crear una ilusión científica fascinante. Especialmente diseñado para Exploradores de Sala de 5 y Creadores de 1° Grado.',
+      tipo: 'casa',
+      modalidad: 'maker',
+      materiales: 'Palitos de madera, pegamento escolar, calcetín de tela con cara de fantasma (o tela blanca), hilo firme, pelota de ping-pong, imanes de neodimio y base rectangular envuelta en papel blanco.',
+      grados: ['sala5', 'grado1'],
+      icono: '👻',
+      color: '#4F46E5',
+      imagen: 'img/proyectos/fantasma_levitante_tutorial.jpg',
+      desde: '2026-11-04',
+      hasta: '2026-12-20',
+      chips: ['🧲 Magnetismo', '👻 Levitación Maker', '🧵 Tensegridad', '🎨 Sala 5 & 1° Grado'],
+      botones: [
+        { texto: '¡Ver Tutorial y Pasos!', imagenModal: 'img/proyectos/fantasma_levitante_tutorial.jpg', icono: 'fas fa-ghost', principal: true }
+      ]
+    },
+
     {
       id: 'act-luces-camara-ia',
       titulo: 'Luces, Cámara, IA — Estudio de Cine Escolar',

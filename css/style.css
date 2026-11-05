@@ -11822,7 +11822,8 @@ body.student-logged-in #student-drive-dashboard-container {
 .arm-sala5-spotlight-card.theme-marcalibro,
 .arm-sala5-spotlight-card.theme-canva,
 .arm-sala5-spotlight-card.theme-servo,
-.arm-sala5-spotlight-card.theme-gemini {
+.arm-sala5-spotlight-card.theme-gemini,
+.arm-sala5-spotlight-card.theme-fantasma {
   background: radial-gradient(circle at 20% 20%, #FFFDF7 0%, #FEF3C7 50%, #FDE68A 100%) !important;
   border-color: #B45309 !important;
   box-shadow: 0 10px 30px rgba(120, 53, 15, 0.22), inset 0 0 30px rgba(180, 83, 9, 0.08) !important;
@@ -11944,6 +11945,14 @@ body.student-logged-in #student-drive-dashboard-container {
 .arm-s5-tab-pill.active.tab-servo,
 .arm-s5-tab-pill.active[data-spotlight-theme="servo"],
 .arm-s5-tab-pill.active.tab-gemini,
+.arm-s5-tab-pill.active.tab-fantasma,
+.arm-s5-tab-pill.active[data-spotlight-theme="fantasma"] {
+  background: linear-gradient(135deg, #4F46E5 0%, #312E81 100%) !important;
+  color: #E0E7FF !important;
+  border: 1px solid #818CF8 !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35) !important;
+}
+
 .arm-s5-tab-pill.active[data-spotlight-theme="gemini"] {
   background: linear-gradient(135deg, #B45309 0%, #78350F 100%) !important;
   color: #FEF08A !important;
@@ -12064,6 +12073,19 @@ body.student-logged-in #student-drive-dashboard-container {
   color: #FFFFFF;
   box-shadow: 0 0 15px #4F46E5, 0 0 35px #818CF8, 0 0 60px #EC4899;
   animation: ledGlowPulseVarita 1.4s infinite ease-in-out;
+}
+
+.arm-s5-led-glow.glow-fantasma.active {
+  background: #6366F1;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px #6366F1, 0 0 35px #818CF8, 0 0 60px #4F46E5;
+  animation: ledGlowPulseFantasma 1.4s infinite ease-in-out;
+}
+
+@keyframes ledGlowPulseFantasma {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #6366F1, 0 0 28px #6366F1, 0 0 45px #4F46E5; }
+  50% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 18px #818CF8, 0 0 42px #6366F1, 0 0 70px #4338CA; }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 12px #6366F1, 0 0 28px #6366F1, 0 0 45px #4F46E5; }
 }
 
 .arm-s5-led-glow.glow-marcalibro.active {

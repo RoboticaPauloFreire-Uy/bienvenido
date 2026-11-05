@@ -1148,11 +1148,20 @@
         return (m.id === 's5-p5' || m.id === 'g1-p5') || (/madre|coraz[oó]n|pop-up/i.test(m.title || ''));
       });
       if (idxMadre === -1) idxMadre = 4;
+      var idxFantasma = adventureMissions.findIndex(function(m){
+        return (m.id === 's5-fantasma-levitante' || m.id === 'g1-fantasma-levitante') || (/fantasma.*levitante|levitante/i.test(m.title || ''));
+      });
+      if (idxFantasma === -1) idxFantasma = (adventureMissions.length ? adventureMissions.length - 1 : 0);
 
       var activeSpotlight = window.sala5SpotlightCurrentSlide || 0;
-      if (activeSpotlight < 0 || activeSpotlight > 2) activeSpotlight = 0;
+      if (activeSpotlight < 0 || activeSpotlight > 3) activeSpotlight = 0;
       var slide1Theme = isGrado1 ? 'theme-marcalibro' : 'theme-varita';
-      var spotlightTheme = (activeSpotlight === 1) ? slide1Theme : (activeSpotlight === 2 ? 'theme-madre' : 'theme-sombrero');
+      var spotlightTheme = (activeSpotlight === 1) ? slide1Theme : (activeSpotlight === 2 ? 'theme-madre' : (activeSpotlight === 3 ? 'theme-fantasma' : 'theme-sombrero'));
+
+      var slide3TabHtml =
+        '<button type="button" class="arm-s5-tab-pill tab-fantasma ' + (activeSpotlight === 3 ? 'active' : '') + '" data-spotlight-idx="3" data-spotlight-theme="fantasma">' +
+          '<span>👻 Fantasma Levitante</span>' +
+        '</button>';
 
       var slide1TabHtml = isGrado1
         ? '<button type="button" class="arm-s5-tab-pill tab-marcalibro ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" data-spotlight-theme="marcalibro">' +
@@ -1249,6 +1258,7 @@
                 '<button type="button" class="arm-s5-tab-pill ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2">' +
                   '<span>💖 Tarjeta Pop-Up 3D</span>' +
                 '</button>' +
+                slide3TabHtml +
               '</div>' +
               '<button type="button" class="arm-s5-cnav-btn arm-s5-next-btn" title="Proyecto Siguiente" aria-label="Siguiente">' +
                 '<i class="fas fa-chevron-right"></i>' +
@@ -1324,6 +1334,38 @@
                 '</div>' +
               '</div>' +
             '</div>' +
+            // SLIDE 3: El Fantasma Levitante (Ciencia en Casa)
+            '<div class="arm-s5-slide ' + (activeSpotlight === 3 ? 'active' : '') + '" data-slide-idx="3" style="' + (activeSpotlight === 3 ? 'display:block;' : 'display:none;') + '">' +
+              '<span class="arm-s5-watermark">👻</span>' +
+              '<div class="arm-s5-content-row">' +
+                '<div class="arm-s5-preview arm-s5-ghost-preview" id="arm-s5-ghost-interactive" role="button" tabindex="0" title="¡Hacé click para ver la lámina y tutorial del fantasma levitante!">' +
+                  '<img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="Tutorial Fantasma Levitante" class="arm-s5-preview-img" style="object-fit:cover;object-position:center;border-radius:12px;border:2px solid #6366F1;box-shadow:0 6px 18px rgba(99,102,241,0.25);">' +
+                  '<div class="arm-s5-led-glow glow-fantasma" id="arm-s5-led-glow-fantasma"><i class="fas fa-ghost"></i></div>' +
+                  '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);"><i class="fas fa-magic"></i> ¡Tocá para levitar!</span>' +
+                '</div>' +
+                '<div class="arm-s5-info">' +
+                  '<div class="arm-s5-tag" style="color:#4F46E5;"><i class="fas fa-flask"></i> PROYECTO OFICIAL ' + gradeLabelText + ' • CIENCIA EN CASA 🧲👻</div>' +
+                  '<h3 class="arm-s5-title" style="color:#312E81;">El Fantasma Levitante (Ciencia y Magnetismo) 👻🧲</h3>' +
+                  '<p class="arm-s5-desc">¡Hacé flotar un fantasma en el aire usando la física del magnetismo y la tensegridad! Construimos una estructura con <strong>palitos de madera</strong>, una <strong>base blanca</strong>, <strong>hilo tensor</strong> y una <strong>pelota de ping-pong con imanes</strong> enfrentados. Al soltarlo, la fuerza magnética lo levanta pero el hilo lo sostiene... ¡quedando suspendido en el aire como por arte de magia!</p>' +
+                  '<div class="arm-s5-materials-pills">' +
+                    '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-grip-lines-vertical"></i> Palitos de madera</span>' +
+                    '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-magnet"></i> Imanes (N y S)</span>' +
+                    '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-ghost"></i> Calcetín / Tela fantasma</span>' +
+                    '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-bezier-curve"></i> Hilo tensor</span>' +
+                    '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-circle"></i> Pelota de ping-pong</span>' +
+                    '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-square"></i> Base rectangular</span>' +
+                  '</div>' +
+                  '<div class="arm-s5-actions">' +
+                    '<button type="button" class="arm-s5-btn-main arm-btn-open-presentation" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);box-shadow:0 4px 14px rgba(79,70,229,0.35);" data-mission-idx="' + idxFantasma + '">' +
+                      '<i class="fas fa-list-check"></i> <span>Ver Pasos del Tutorial y Montaje</span>' +
+                    '</button>' +
+                    '<button type="button" class="arm-s5-btn-pdf arm-btn-view-sheet" style="color:#4F46E5;border-color:#C7D2FE;background:#EEF2FF;padding:9px 16px;border-radius:10px;font-weight:800;border:1.5px solid #C7D2FE;cursor:pointer;display:inline-flex;align-items:center;gap:6px;" data-img="img/proyectos/fantasma_levitante_tutorial.jpg">' +
+                      '<i class="fas fa-image"></i> <span>Ver Lámina del Tutorial</span>' +
+                    '</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
 
           // Indicador de puntos (dots)
@@ -1331,6 +1373,7 @@
             '<span class="arm-s5-dot ' + (activeSpotlight === 0 ? 'active' : '') + '" data-spotlight-idx="0" title="El Sombrero Luminoso"></span>' +
             '<span class="arm-s5-dot ' + (activeSpotlight === 1 ? 'active' : '') + '" data-spotlight-idx="1" title="' + (isGrado1 ? 'Marca-Libros Tom Sawyer' : 'La Varita Mágica') + '"></span>' +
             '<span class="arm-s5-dot ' + (activeSpotlight === 2 ? 'active' : '') + '" data-spotlight-idx="2" title="Tarjeta Pop-Up 3D"></span>' +
+            '<span class="arm-s5-dot ' + (activeSpotlight === 3 ? 'active' : '') + '" data-spotlight-idx="3" title="El Fantasma Levitante"></span>' +
           '</div>' +
         '</div>';
       }
@@ -3784,6 +3827,20 @@
       });
 
       // Botón Guía PDF
+      
+      // Botón Ver Lámina de Proyecto
+      container.querySelectorAll('.arm-btn-view-sheet').forEach(function(btn){
+        btn.onclick = function(e){
+          e.stopPropagation();
+          var imgUrl = btn.dataset.img || 'img/proyectos/fantasma_levitante_tutorial.jpg';
+          if (window.openImageModal) {
+            window.openImageModal(imgUrl, 'Tutorial: El Fantasma Levitante (Ciencia en Casa)');
+          } else {
+            window.open(imgUrl, '_blank');
+          }
+        };
+      });
+
       container.querySelectorAll('.arm-btn-open-pdf').forEach(function(btn){
         btn.onclick = function(e){
           e.stopPropagation();
@@ -3803,8 +3860,9 @@
 
         function setSpotlightSlide(newIdx) {
           if (isHalloweenStudent) return;
-          if (newIdx < 0) newIdx = 2;
-          if (newIdx > 2) newIdx = 0;
+          var maxSlideIdx = isG6Student ? 2 : 3;
+          if (newIdx < 0) newIdx = maxSlideIdx;
+          if (newIdx > maxSlideIdx) newIdx = 0;
 
           if (isG6Student) {
             window.grado6SpotlightCurrentSlide = newIdx;
@@ -3814,7 +3872,8 @@
             window.sala5SpotlightCurrentSlide = newIdx;
             var slide1Theme = isG1Student ? 'theme-marcalibro' : 'theme-varita';
             spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre', 'theme-marcalibro', 'theme-canva', 'theme-servo', 'theme-gemini');
-            spotlightCarousel.classList.add(newIdx === 1 ? slide1Theme : (newIdx === 2 ? 'theme-madre' : 'theme-sombrero'));
+            spotlightCarousel.classList.remove('theme-sombrero', 'theme-varita', 'theme-madre', 'theme-marcalibro', 'theme-canva', 'theme-servo', 'theme-gemini', 'theme-fantasma');
+            spotlightCarousel.classList.add(newIdx === 1 ? slide1Theme : (newIdx === 2 ? 'theme-madre' : (newIdx === 3 ? 'theme-fantasma' : 'theme-sombrero')));
           }
 
           // Slides
@@ -3894,6 +3953,25 @@
 
         // Previews interactivos con luces LED de cada invento
         // 1. Sombrero de San Patricio (luz verde)
+        
+        // 4. El Fantasma Levitante (brillo y sonido)
+        var ghostInteractive = spotlightCarousel.querySelector('#arm-s5-ghost-interactive');
+        if (ghostInteractive) {
+          ghostInteractive.onclick = function(e){
+            e.stopPropagation();
+            var glow = spotlightCarousel.querySelector('#arm-s5-led-glow-fantasma');
+            if (glow) {
+              glow.classList.toggle('active');
+              if (glow.classList.contains('active')) {
+                if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+                else if (window.sounds) window.sounds.playClick();
+              } else {
+                if (window.sounds) window.sounds.playClick();
+              }
+            }
+          };
+        }
+
         var hatInteractive = spotlightCarousel.querySelector('#arm-s5-hat-interactive');
         if (hatInteractive) {
           hatInteractive.onclick = function(e){
@@ -4721,6 +4799,122 @@
             '<i class="fas fa-file-pdf"></i> Ver Guía Didáctica en PDF' +
           '</a>' +
         '</div>' : '') +
+    '</div>';
+  }
+
+  function renderFantasmaLevitanteSolutionHtml(mission) {
+    return '<div class="apm-sol-electro-wrap">' +
+      '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #312E81 0%, #4F46E5 50%, #7C3AED 100%);">' +
+        '<div class="apm-seh-icon" style="color:#C7D2FE;background:rgba(255,255,255,0.18);"><i class="fas fa-ghost"></i></div>' +
+        '<div>' +
+          '<h4>Tutorial Oficial de Ciencia en Casa: El Fantasma Levitante 👻🧲</h4>' +
+          '<p>Experimento de suspensión magnética y tensegridad: logramos que el fantasma flote en el aire gracias al equilibrio entre la atracción de los imanes y la tensión del hilo.</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="apm-sol-electro-body">' +
+
+        // Infografía principal del proyecto
+        '<div class="apm-circuit-schematic-card" style="background:#EEF2FF;border:1.5px solid #C7D2FE;margin-bottom:18px;">' +
+          '<div class="apm-csc-header" style="border-bottom-color:#E0E7FF;">' +
+            '<span style="color:#3730A3;font-weight:900;"><i class="fas fa-image"></i> Lámina Oficial del Experimento (Materiales & Montaje)</span>' +
+            '<button type="button" class="apm-csc-badge" style="background:#4F46E5;color:#FFF;border:none;cursor:pointer;padding:4px 10px;border-radius:6px;font-weight:800;" onclick="if(window.openImageModal) window.openImageModal(\'img/proyectos/fantasma_levitante_tutorial.jpg\', \'Lámina Tutorial: El Fantasma Levitante (Ciencia en Casa)\'); else window.open(\'img/proyectos/fantasma_levitante_tutorial.jpg\', \'_blank\');">' +
+              '<i class="fas fa-expand"></i> Ver en Pantalla Completa' +
+            '</button>' +
+          '</div>' +
+          '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+            '<img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="Lámina Tutorial El Fantasma Levitante" style="max-height:360px;max-width:100%;object-fit:contain;border-radius:8px;border:1px solid #E2E8F0;box-shadow:0 4px 14px rgba(0,0,0,0.08);cursor:pointer;" onclick="if(window.openImageModal) window.openImageModal(this.src, \'Tutorial: El Fantasma Levitante (Ciencia en Casa)\'); else window.open(this.src, \'_blank\');">' +
+            '<div style="font-size:0.82rem;color:#475569;margin-top:8px;font-weight:600;"><i class="fas fa-search-plus"></i> Tocá la lámina para hacer zoom y ver en alta resolución.</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Diagrama de Fuerzas de Tensegridad
+        '<div class="apm-circuit-schematic-card" style="margin-bottom:18px;">' +
+          '<div class="apm-csc-header">' +
+            '<span><i class="fas fa-project-diagram"></i> Diagrama Físico de Fuerzas: Atracción Magnética vs. Tensión del Hilo</span>' +
+            '<span class="apm-csc-badge" style="background:#4F46E5;">Equilibrio Físico</span>' +
+          '</div>' +
+          '<div class="apm-circuit-visual-diagram">' +
+            '<div class="apm-cv-node" style="border-color:#4F46E5;background:#EEF2FF;">' +
+              '<div class="cv-icon" style="color:#4F46E5;"><i class="fas fa-magnet"></i></div>' +
+              '<div class="cv-label">Imán Superior (Norte)<br><strong>Palito de Madera</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line pos" style="background:#818CF8;">' +
+              '<span class="cv-wire-label">🧲 Tira hacia arriba (Atracción N-S)</span>' +
+              '<i class="fas fa-arrow-down" style="transform:rotate(180deg);"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node" style="border-color:#7C3AED;background:#F5F3FF;">' +
+              '<div class="cv-icon" style="color:#7C3AED;"><i class="fas fa-ghost"></i></div>' +
+              '<div class="cv-label">Fantasma + Pelota (Sur)<br><strong>Flotando en el Aire</strong></div>' +
+            '</div>' +
+            '<div class="apm-cv-line neg" style="background:#CBD5E1;">' +
+              '<span class="cv-wire-label">🧵 Sostiene hacia abajo (Tensión)</span>' +
+              '<i class="fas fa-arrow-down"></i>' +
+            '</div>' +
+            '<div class="apm-cv-node" style="border-color:#64748B;background:#F8FAFC;">' +
+              '<div class="cv-icon" style="color:#64748B;"><i class="fas fa-square"></i></div>' +
+              '<div class="cv-label">Base Rectangular<br><strong>Ancla en Mesa</strong></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Los 5 Pasos del Montaje
+        '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
+          '<h5><i class="fas fa-tools"></i> Los 5 Pasos de Montaje (Guía Paso a Paso para Casa):</h5>' +
+          '<div class="apm-pinout-table-wrap">' +
+            '<table class="apm-pinout-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th>Paso</th>' +
+                  '<th>Elemento</th>' +
+                  '<th>Instrucciones Detalladas</th>' +
+                  '<th>Tip Científico / Secreto</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                '<tr>' +
+                  '<td><strong>Paso 1</strong></td>' +
+                  '<td>📦 Base rectangular</td>' +
+                  '<td>Envolvé un bloque de telgopor, madera o cartón pesado con papel blanco prolijo.</td>' +
+                  '<td>Debe tener peso para que no se levante con el tirón magnético.</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>Paso 2</strong></td>' +
+                  '<td>🪵 Estructura de palitos</td>' +
+                  '<td>Pegá dos columnas verticales en los laterales y una viga horizontal superior como techo.</td>' +
+                  '<td>Dejá secar bien el pegamento para que quede firme y derecha.</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>Paso 3</strong></td>' +
+                  '<td>🧵 Hilo tensor</td>' +
+                  '<td>Atá y fijá un extremo del hilo firme en el centro exacto de la base blanca.</td>' +
+                  '<td>El largo debe frenar al fantasma antes de que toque el imán del techo.</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>Paso 4</strong></td>' +
+                  '<td>🏓 Pelota con imán</td>' +
+                  '<td>Pegá un imán de neodimio en la pelota de ping-pong y atale el hilo en la parte inferior.</td>' +
+                  '<td>Verificá que el imán de la pelota y el del techo se atraigan (polos opuestos).</td>' +
+                '</tr>' +
+                '<tr>' +
+                  '<td><strong>Paso 5</strong></td>' +
+                  '<td>👻 Fantasma de tela</td>' +
+                  '<td>Colocá el calcetín con carita sobre la pelota y soltalo hacia arriba para ver la levitación.</td>' +
+                  '<td>¡Si se pega al techo, acortá un milímetro el hilo; si cae, acercá el techo!</td>' +
+                '</tr>' +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>' +
+
+        // Explicación para los peques de 5 años y 1° Grado
+        '<div style="background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:14px;padding:16px 20px;margin-top:20px;">' +
+          '<h5 style="color:#581C87;margin:0 0 8px;font-size:1.02rem;display:flex;align-items:center;gap:8px;"><i class="fas fa-magic" style="color:#7C3AED;"></i> ¿Por qué flota el fantasma? (Explicación para Exploradores y Creadores)</h5>' +
+          '<p style="color:#4C1D95;font-size:0.88rem;line-height:1.55;margin:0;">' +
+            'Parece un truco de magia, ¡pero es pura ciencia! Los imanes tienen una fuerza invisible que viaja por el aire y atrae a otros imanes. El imán del palito de arriba quiere levantar al fantasma hacia el techo, pero el <strong>hilo tensor</strong> atado a la base lo frena en seco. Al estar atrapado entre dos fuerzas iguales y opuestas (el tirón del imán hacia arriba y el hilo hacia abajo), <strong>¡el fantasma queda suspendido flotando en el aire!</strong>' +
+          '</p>' +
+        '</div>' +
+
+      '</div>' +
     '</div>';
   }
 
@@ -7401,6 +7595,7 @@
     var isCodeorg = !isPaint && (isFrozen || isMinecraft || mission.type === 'codeorg' || (mission.externalUrl && mission.externalUrl.includes('code.org')) || (mission.tags && mission.tags.some(function(t){ return /code\.org|angry ?birds|frozen|elsa|minecraft/i.test(t); })));
     var isAngryBirds = isCodeorg && !isFrozen && !isMinecraft;
     var isDiaMadre = !isPaint && ((mission.tags && mission.tags.some(function(t){ return /madre|coraz[oó]n|ilumina/i.test(t); })) || (/madre|coraz[oó]n|ilumina/i.test(mission.title || '')));
+    var isFantasma = (mission.id === 's5-fantasma-levitante' || mission.id === 'g1-fantasma-levitante' || (mission.tags && mission.tags.some(function(t){ return /fantasma|levitante/i.test(t); })) || (/fantasma.*levitante|levitante/i.test(mission.title || '')));
     var isMarcalibro = !isPaint && !isCodeorg && (mission.id === 'g1-p3' || (mission.tags && mission.tags.some(function(t){ return /marca ?libro|marcalibro|origami|tom sawyer/i.test(t); })) || (/marca ?libro|marcalibro|origami|tom sawyer/i.test(mission.title || '')));
     var isScratchJrPerspectiva = !isPaint && !isCodeorg && !isMarcalibro && (mission.id === 's5-p10' || mission.id === 's5-g5' || mission.id === 'g1-p10' || mission.id === 'g1-g5' || (mission.tags && mission.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(mission.title || '')));
     var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (mission.id === 's5-p9' || mission.id === 's5-g1' || mission.id === 'g1-p9' || mission.id === 'g1-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
@@ -9673,6 +9868,8 @@
               renderClaseActivitySolutionHtml(mission) :
              isHalloween ?
               renderHalloweenSolutionHtml(mission) :
+             isFantasma ?
+              renderFantasmaLevitanteSolutionHtml(mission) :
              isMarcalibro ?
               renderMarcalibroOrigamiSolutionHtml(mission) :
              isScratchJrPerspectiva ?

@@ -769,6 +769,67 @@ const SCHOOL_DATA = {
               desc: "Abrí Scratch Jr y tocá el botón del paisaje arriba. Elegí un escenario que tenga profundidad, como un camino, bosque o sendero (por ejemplo el fondo del bosque).",
               tip: "Los fondos con un sendero que va desde el horizonte hacia el frente son ideales para practicar perspectiva."
             },
+        {
+          id: "s5-fantasma-levitante",
+          level: 11,
+          title: "El Fantasma Levitante (Ciencia y Magnetismo en Casa) 👻🧲",
+          author: "Taller de Ciencias & Maker Sala 5",
+          date: "Noviembre 2026",
+          type: "electronica",
+          platform: "maker",
+          badge: "👻 Ciencia Maker & Levitación",
+          icon: "fa-ghost",
+          color: "#4F46E5",
+          coverImage: "img/proyectos/fantasma_levitante_tutorial.jpg",
+          description: "¡Construimos un fantasma flotante que levita en el aire sin tocar nada! Un experimento asombroso de magnetismo y tensegridad para hacer en casa con palitos de madera, una base blanca, una pelota de ping-pong con imán y un hilo tensor que desafía la gravedad.",
+          objective: "Comprender de forma vivencial cómo funciona la fuerza de atracción entre polos magnéticos y el equilibrio con un hilo tensor (suspensión de tensegridad), desarrollando motricidad fina y curiosidad científica en familia.",
+          benefits: "Fomenta el pensamiento científico, la hipótesis experimental ('¿por qué flota?'), la comprensión de fuerzas invisibles y la diversión de crear un juguete científico propio.",
+          tags: ["Ciencia en Casa", "Magnetismo", "Levitación", "Tensegridad", "Fantasma", "Maker", "Sala 5"],
+          gallery: [
+            "img/proyectos/fantasma_levitante_tutorial.jpg"
+          ],
+          materials: [
+            { title: "Palitos de madera", description: "Para construir la estructura de soporte (2 columnas laterales y 1 viga superior).", icon: "fa-grip-lines-vertical" },
+            { title: "Pegamento escolar", description: "Para unir firmemente los palitos de madera y asegurar los imanes.", icon: "fa-flask" },
+            { title: "Calcetín de tela con cara de fantasma", description: "O un trozo de tela blanca / pañuelo con carita dibujada que cubre la pelota.", icon: "fa-ghost" },
+            { title: "Hilo firme y resistente", description: "Hilo de coser o hilo fino que une la base con la pelota para dar la tensión exacta.", icon: "fa-bezier-curve" },
+            { title: "Pelota de ping-pong", description: "Va colocada dentro de la tela para darle la cabeza redonda al fantasma.", icon: "fa-circle" },
+            { title: "Imanes de neodimio (N y S)", description: "Uno fijado en la parte superior de la pelota y otro en el palito de madera arriba.", icon: "fa-magnet" },
+            { title: "Base rectangular envuelta en papel blanco", description: "Bloque de telgopor, madera o cartón pesado forrado en papel blanco como ancla.", icon: "fa-square" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "1. Preparar la Base Rectangular",
+              desc: "Tomá una base pesada (un bloque de madera, telgopor o una cajita pequeña de cartón) y envolvela con papel blanco prolijo. Esta base servirá de ancla firme para que la estructura no se vuelque.",
+              tip: "Asegurate de que la base tenga algo de peso para que el hilo tensor quede bien firme y tirante al tirar hacia arriba."
+            },
+            {
+              step: 2,
+              title: "2. Montar la Estructura de Palitos",
+              desc: "Pegá dos palitos de madera verticales a los costados de la base para formar las columnas de soporte. Luego, uní en la parte superior un palito horizontal a modo de puente o viga.",
+              tip: "Dejá secar bien el pegamento unos minutos para que la estructura quede rígida y soporte la atracción magnética sin doblarse."
+            },
+            {
+              step: 3,
+              title: "3. Fijar el Hilo Tensor en la Base",
+              desc: "Fijá un extremo del hilo en el centro exacto de la base blanca. La longitud del hilo debe medirse cuidadosamente: debe permitir que el fantasma se acerque al imán superior, pero sin llegar a tocarlo (dejando unos 5 a 10 milímetros de espacio de aire).",
+              tip: "¡La clave del truco es que el hilo quede bien tirante antes de que los imanes lleguen a pegarse!"
+            },
+            {
+              step: 4,
+              title: "4. Colocar la Pelota de Ping-Pong y los Imanes",
+              desc: "Pegá un imán en la parte superior de la pelota de ping-pong y atale el otro extremo del hilo tensor en la parte inferior. Pegá el segundo imán en la cara inferior del palito horizontal superior, asegurándote de que los polos se atraigan (Norte hacia Sur).",
+              tip: "¡Probá antes con los dedos para verificar que los imanes se atraigan con fuerza y no se rechacen!"
+            },
+            {
+              step: 5,
+              title: "5. Colocar el Fantasma de Tela y ¡Ver la Levitación!",
+              desc: "Colocá el calcetín o tela blanca sobre la pelota de ping-pong, dibujale una carita divertida de fantasma con marcador negro y soltalo hacia arriba. La atracción del imán superior lo levantará, pero el hilo lo mantendrá sujeto... ¡y el fantasma quedará levitando en el aire como por arte de magia!",
+              tip: "¿El fantasma se cae o se pega al palito? Si se pega, acortá un poquito el hilo; si no sube, acercá el palito o usá un imán un poquito más potente."
+            }
+          ]
+        },
             {
               step: 2,
               title: "Seleccionar el Personaje y Ubicarlo al Fondo",
@@ -1562,6 +1623,67 @@ const SCHOOL_DATA = {
               desc: "Abrí Scratch Jr y tocá el botón del paisaje arriba. Elegí un escenario que tenga profundidad, como un camino, bosque o sendero (por ejemplo el fondo del bosque).",
               tip: "Los fondos con un sendero que va desde el horizonte hacia el frente son ideales para practicar perspectiva."
             },
+        {
+          id: "g1-fantasma-levitante",
+          level: 11,
+          title: "El Fantasma Levitante (Ciencia y Magnetismo en Casa) 👻🧲",
+          author: "Taller de Ciencias & Maker 1° Grado",
+          date: "Noviembre 2026",
+          type: "electronica",
+          platform: "maker",
+          badge: "👻 Ciencia Maker & Levitación",
+          icon: "fa-ghost",
+          color: "#4F46E5",
+          coverImage: "img/proyectos/fantasma_levitante_tutorial.jpg",
+          description: "¡Construimos un fantasma flotante que levita en el aire sin tocar nada! Un experimento asombroso de magnetismo y tensegridad para hacer en casa con palitos de madera, una base blanca, una pelota de ping-pong con imán y un hilo tensor que desafía la gravedad.",
+          objective: "Comprender de forma vivencial cómo funciona la fuerza de atracción entre polos magnéticos y el equilibrio con un hilo tensor (suspensión de tensegridad), desarrollando motricidad fina y curiosidad científica en familia.",
+          benefits: "Fomenta el pensamiento científico, la hipótesis experimental ('¿por qué flota?'), la comprensión de fuerzas invisibles y la diversión de crear un juguete científico propio.",
+          tags: ["Ciencia en Casa", "Magnetismo", "Levitación", "Tensegridad", "Fantasma", "Maker", "1° Grado"],
+          gallery: [
+            "img/proyectos/fantasma_levitante_tutorial.jpg"
+          ],
+          materials: [
+            { title: "Palitos de madera", description: "Para construir la estructura de soporte (2 columnas laterales y 1 viga superior).", icon: "fa-grip-lines-vertical" },
+            { title: "Pegamento escolar", description: "Para unir firmemente los palitos de madera y asegurar los imanes.", icon: "fa-flask" },
+            { title: "Calcetín de tela con cara de fantasma", description: "O un trozo de tela blanca / pañuelo con carita dibujada que cubre la pelota.", icon: "fa-ghost" },
+            { title: "Hilo firme y resistente", description: "Hilo de coser o hilo fino que une la base con la pelota para dar la tensión exacta.", icon: "fa-bezier-curve" },
+            { title: "Pelota de ping-pong", description: "Va colocada dentro de la tela para darle la cabeza redonda al fantasma.", icon: "fa-circle" },
+            { title: "Imanes de neodimio (N y S)", description: "Uno fijado en la parte superior de la pelota y otro en el palito de madera arriba.", icon: "fa-magnet" },
+            { title: "Base rectangular envuelta en papel blanco", description: "Bloque de telgopor, madera o cartón pesado forrado en papel blanco como ancla.", icon: "fa-square" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "1. Preparar la Base Rectangular",
+              desc: "Tomá una base pesada (un bloque de madera, telgopor o una cajita pequeña de cartón) y envolvela con papel blanco prolijo. Esta base servirá de ancla firme para que la estructura no se vuelque.",
+              tip: "Asegurate de que la base tenga algo de peso para que el hilo tensor quede bien firme y tirante al tirar hacia arriba."
+            },
+            {
+              step: 2,
+              title: "2. Montar la Estructura de Palitos",
+              desc: "Pegá dos palitos de madera verticales a los costados de la base para formar las columnas de soporte. Luego, uní en la parte superior un palito horizontal a modo de puente o viga.",
+              tip: "Dejá secar bien el pegamento unos minutos para que la estructura quede rígida y soporte la atracción magnética sin doblarse."
+            },
+            {
+              step: 3,
+              title: "3. Fijar el Hilo Tensor en la Base",
+              desc: "Fijá un extremo del hilo en el centro exacto de la base blanca. La longitud del hilo debe medirse cuidadosamente: debe permitir que el fantasma se acerque al imán superior, pero sin llegar a tocarlo (dejando unos 5 a 10 milímetros de espacio de aire).",
+              tip: "¡La clave del truco es que el hilo quede bien tirante antes de que los imanes lleguen a pegarse!"
+            },
+            {
+              step: 4,
+              title: "4. Colocar la Pelota de Ping-Pong y los Imanes",
+              desc: "Pegá un imán en la parte superior de la pelota de ping-pong y atale el otro extremo del hilo tensor en la parte inferior. Pegá el segundo imán en la cara inferior del palito horizontal superior, asegurándote de que los polos se atraigan (Norte hacia Sur).",
+              tip: "¡Probá antes con los dedos para verificar que los imanes se atraigan con fuerza y no se rechacen!"
+            },
+            {
+              step: 5,
+              title: "5. Colocar el Fantasma de Tela y ¡Ver la Levitación!",
+              desc: "Colocá el calcetín o tela blanca sobre la pelota de ping-pong, dibujale una carita divertida de fantasma con marcador negro y soltalo hacia arriba. La atracción del imán superior lo levantará, pero el hilo lo mantendrá sujeto... ¡y el fantasma quedará levitando en el aire como por arte de magia!",
+              tip: "¿El fantasma se cae o se pega al palito? Si se pega, acortá un poquito el hilo; si no sube, acercá el palito o usá un imán un poquito más potente."
+            }
+          ]
+        },
             {
               step: 2,
               title: "Seleccionar el Personaje y Ubicarlo al Fondo",

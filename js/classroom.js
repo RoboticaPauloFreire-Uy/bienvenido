@@ -159,6 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  document.querySelectorAll('.btn-open-fantasma-sheet').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (window.openImageModal) {
+        window.openImageModal('img/proyectos/fantasma_levitante_tutorial.jpg', 'Tutorial: El Fantasma Levitante (Ciencia en Casa)');
+      } else {
+        window.open('img/proyectos/fantasma_levitante_tutorial.jpg', '_blank');
+      }
+    });
+  });
+
   // ─── SIDEBAR DERECHA (ÍNDICE DE PROYECTOS) ──────
   document.getElementById('sidebar-right').innerHTML = `
     <div class="widget-card">
@@ -403,6 +413,31 @@ function renderProjectsSectionHtml(grade) {
             </div>
           </div>
         </div>
+        <!-- Banner Proyecto Extra: El Fantasma Levitante -->
+        <div class="s5-extra-project-banner" style="margin-top:22px;background:linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);color:#FFF;border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;box-shadow:0 8px 24px rgba(49,46,129,0.22);border:1.5px solid rgba(199,210,254,0.3);">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:68px;height:68px;border-radius:12px;overflow:hidden;border:2px solid #818CF8;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.3);background:#000;">
+              <img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="El Fantasma Levitante" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div>
+              <span style="background:rgba(255,255,255,0.18);color:#C7D2FE;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
+                <i class="fas fa-flask"></i> ¡Nuevo Experimento Maker en Casa!
+              </span>
+              <h3 style="margin:4px 0 2px;font-size:1.15rem;font-weight:900;color:#FFF;">👻 El Fantasma Levitante (Magnetismo y Tensegridad)</h3>
+              <p style="margin:0;font-size:0.85rem;color:#E0E7FF;max-width:540px;line-height:1.4;">
+                ¡Hacé flotar un fantasma en el aire sin tocar nada! Palitos de madera, hilo, pelota de ping-pong e imanes para experimentar en familia.
+              </p>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" class="btn s5-btn-action btn-open-project-modal" data-project-id="s5-fantasma-levitante" style="background:linear-gradient(135deg, #F59E0B 0%, #D97706 100%);color:#FFF;border:none;box-shadow:0 4px 12px rgba(217,119,6,0.35);">
+              <i class="fas fa-list-check"></i> Ver Tutorial y Pasos
+            </button>
+            <button type="button" class="btn s5-btn-action btn-open-fantasma-sheet" style="background:rgba(255,255,255,0.14);color:#FFF;border:1px solid rgba(255,255,255,0.28);">
+              <i class="fas fa-image"></i> Ver Lámina
+            </button>
+          </div>
+        </div>
       </section>
     `;
   } else if (grade.id === 'grado1' || grade.id === '1ero') {
@@ -466,6 +501,31 @@ function renderProjectsSectionHtml(grade) {
                 <i class="fas fa-compass"></i> Ruta de Aventuras
               </button>
             </div>
+          </div>
+        </div>
+        <!-- Banner Proyecto Extra: El Fantasma Levitante -->
+        <div class="s5-extra-project-banner" style="margin-top:22px;background:linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);color:#FFF;border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;box-shadow:0 8px 24px rgba(49,46,129,0.22);border:1.5px solid rgba(199,210,254,0.3);">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:68px;height:68px;border-radius:12px;overflow:hidden;border:2px solid #818CF8;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.3);background:#000;">
+              <img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="El Fantasma Levitante" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div>
+              <span style="background:rgba(255,255,255,0.18);color:#C7D2FE;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
+                <i class="fas fa-flask"></i> ¡Nuevo Experimento Maker en Casa!
+              </span>
+              <h3 style="margin:4px 0 2px;font-size:1.15rem;font-weight:900;color:#FFF;">👻 El Fantasma Levitante (Magnetismo y Tensegridad)</h3>
+              <p style="margin:0;font-size:0.85rem;color:#E0E7FF;max-width:540px;line-height:1.4;">
+                ¡Hacé flotar un fantasma en el aire sin tocar nada! Palitos de madera, hilo, pelota de ping-pong e imanes para experimentar en familia.
+              </p>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" class="btn s5-btn-action btn-open-project-modal" data-project-id="g1-fantasma-levitante" style="background:linear-gradient(135deg, #F59E0B 0%, #D97706 100%);color:#FFF;border:none;box-shadow:0 4px 12px rgba(217,119,6,0.35);">
+              <i class="fas fa-list-check"></i> Ver Tutorial y Pasos
+            </button>
+            <button type="button" class="btn s5-btn-action btn-open-fantasma-sheet" style="background:rgba(255,255,255,0.14);color:#FFF;border:1px solid rgba(255,255,255,0.28);">
+              <i class="fas fa-image"></i> Ver Lámina
+            </button>
           </div>
         </div>
       </section>
