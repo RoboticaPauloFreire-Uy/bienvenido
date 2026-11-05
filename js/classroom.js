@@ -162,9 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.btn-open-fantasma-sheet').forEach(btn => {
     btn.addEventListener('click', () => {
       if (window.openImageModal) {
-        window.openImageModal('img/proyectos/fantasma_levitante_tutorial.jpg', 'Tutorial: El Fantasma Levitante (Ciencia en Casa)');
+        window.openImageModal('img/proyectos/fantasma_levitante_presentacion.jpg', 'Tutorial: El Fantasma Levitante (Ciencia en Casa)');
       } else {
-        window.open('img/proyectos/fantasma_levitante_tutorial.jpg', '_blank');
+        window.open('img/proyectos/fantasma_levitante_presentacion.jpg', '_blank');
       }
     });
   });
@@ -417,7 +417,7 @@ function renderProjectsSectionHtml(grade) {
         <div class="s5-extra-project-banner" style="margin-top:22px;background:linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);color:#FFF;border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;box-shadow:0 8px 24px rgba(49,46,129,0.22);border:1.5px solid rgba(199,210,254,0.3);">
           <div style="display:flex;align-items:center;gap:16px;">
             <div style="width:68px;height:68px;border-radius:12px;overflow:hidden;border:2px solid #818CF8;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.3);background:#000;">
-              <img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="El Fantasma Levitante" style="width:100%;height:100%;object-fit:cover;">
+              <img src="img/proyectos/fantasma_levitante_presentacion.jpg" alt="El Fantasma Levitante" style="width:100%;height:100%;object-fit:cover;">
             </div>
             <div>
               <span style="background:rgba(255,255,255,0.18);color:#C7D2FE;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
@@ -507,7 +507,7 @@ function renderProjectsSectionHtml(grade) {
         <div class="s5-extra-project-banner" style="margin-top:22px;background:linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);color:#FFF;border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;box-shadow:0 8px 24px rgba(49,46,129,0.22);border:1.5px solid rgba(199,210,254,0.3);">
           <div style="display:flex;align-items:center;gap:16px;">
             <div style="width:68px;height:68px;border-radius:12px;overflow:hidden;border:2px solid #818CF8;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.3);background:#000;">
-              <img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="El Fantasma Levitante" style="width:100%;height:100%;object-fit:cover;">
+              <img src="img/proyectos/fantasma_levitante_presentacion.jpg" alt="El Fantasma Levitante" style="width:100%;height:100%;object-fit:cover;">
             </div>
             <div>
               <span style="background:rgba(255,255,255,0.18);color:#C7D2FE;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">

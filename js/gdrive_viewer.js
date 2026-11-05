@@ -1339,7 +1339,7 @@
               '<span class="arm-s5-watermark">👻</span>' +
               '<div class="arm-s5-content-row">' +
                 '<div class="arm-s5-preview arm-s5-ghost-preview" id="arm-s5-ghost-interactive" role="button" tabindex="0" title="¡Hacé click para ver la lámina y tutorial del fantasma levitante!">' +
-                  '<img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="Tutorial Fantasma Levitante" class="arm-s5-preview-img" style="object-fit:cover;object-position:center;border-radius:12px;border:2px solid #6366F1;box-shadow:0 6px 18px rgba(99,102,241,0.25);">' +
+                  '<img src="img/proyectos/fantasma_levitante_presentacion.jpg" alt="Presentación Fantasma Levitante" class="arm-s5-preview-img" style="object-fit:cover;object-position:center;border-radius:12px;border:2px solid #6366F1;box-shadow:0 6px 18px rgba(99,102,241,0.25);">' +
                   '<div class="arm-s5-led-glow glow-fantasma" id="arm-s5-led-glow-fantasma"><i class="fas fa-ghost"></i></div>' +
                   '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);"><i class="fas fa-magic"></i> ¡Tocá para levitar!</span>' +
                 '</div>' +
@@ -4813,17 +4813,32 @@
       '</div>' +
       '<div class="apm-sol-electro-body">' +
 
-        // Infografía principal del proyecto
-        '<div class="apm-circuit-schematic-card" style="background:#EEF2FF;border:1.5px solid #C7D2FE;margin-bottom:18px;">' +
-          '<div class="apm-csc-header" style="border-bottom-color:#E0E7FF;">' +
-            '<span style="color:#3730A3;font-weight:900;"><i class="fas fa-image"></i> Lámina Oficial del Experimento (Materiales & Montaje)</span>' +
-            '<button type="button" class="apm-csc-badge" style="background:#4F46E5;color:#FFF;border:none;cursor:pointer;padding:4px 10px;border-radius:6px;font-weight:800;" onclick="if(window.openImageModal) window.openImageModal(\'img/proyectos/fantasma_levitante_tutorial.jpg\', \'Lámina Tutorial: El Fantasma Levitante (Ciencia en Casa)\'); else window.open(\'img/proyectos/fantasma_levitante_tutorial.jpg\', \'_blank\');">' +
-              '<i class="fas fa-expand"></i> Ver en Pantalla Completa' +
-            '</button>' +
+        // Galería del proyecto: Presentación Oficial y Esquema de Montaje
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:18px;">' +
+          '<div class="apm-circuit-schematic-card" style="background:#EEF2FF;border:1.5px solid #C7D2FE;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#E0E7FF;">' +
+              '<span style="color:#3730A3;font-weight:900;"><i class="fas fa-award"></i> Folleto de Presentación Oficial</span>' +
+              '<button type="button" class="apm-csc-badge" style="background:#4F46E5;color:#FFF;border:none;cursor:pointer;padding:4px 10px;border-radius:6px;font-weight:800;" onclick="if(window.openImageModal) window.openImageModal(\'img/proyectos/fantasma_levitante_presentacion.jpg\', \'Presentación: El Fantasma Levitante\'); else window.open(\'img/proyectos/fantasma_levitante_presentacion.jpg\', \'_blank\');">' +
+                '<i class="fas fa-expand"></i> Ampliar' +
+              '</button>' +
+            '</div>' +
+            '<div style="text-align:center;padding:10px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/fantasma_levitante_presentacion.jpg" alt="Presentación El Fantasma Levitante" style="max-height:250px;max-width:100%;object-fit:contain;border-radius:8px;border:1px solid #E2E8F0;box-shadow:0 4px 12px rgba(0,0,0,0.08);cursor:pointer;" onclick="if(window.openImageModal) window.openImageModal(this.src, \'Presentación: El Fantasma Levitante\'); else window.open(this.src, \'_blank\');">' +
+              '<div style="font-size:0.78rem;color:#475569;margin-top:6px;font-weight:600;"><i class="fas fa-search-plus"></i> Presentación: Proyecto de clase, materiales y explicación científica.</div>' +
+            '</div>' +
           '</div>' +
-          '<div style="text-align:center;padding:12px;background:#FFF;border-radius:10px;margin-top:8px;">' +
-            '<img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="Lámina Tutorial El Fantasma Levitante" style="max-height:360px;max-width:100%;object-fit:contain;border-radius:8px;border:1px solid #E2E8F0;box-shadow:0 4px 14px rgba(0,0,0,0.08);cursor:pointer;" onclick="if(window.openImageModal) window.openImageModal(this.src, \'Tutorial: El Fantasma Levitante (Ciencia en Casa)\'); else window.open(this.src, \'_blank\');">' +
-            '<div style="font-size:0.82rem;color:#475569;margin-top:8px;font-weight:600;"><i class="fas fa-search-plus"></i> Tocá la lámina para hacer zoom y ver en alta resolución.</div>' +
+
+          '<div class="apm-circuit-schematic-card" style="background:#F5F3FF;border:1.5px solid #DDD6FE;margin:0;">' +
+            '<div class="apm-csc-header" style="border-bottom-color:#EDE9FE;">' +
+              '<span style="color:#581C87;font-weight:900;"><i class="fas fa-drafting-compass"></i> Esquema de Montaje y Piezas</span>' +
+              '<button type="button" class="apm-csc-badge" style="background:#7C3AED;color:#FFF;border:none;cursor:pointer;padding:4px 10px;border-radius:6px;font-weight:800;" onclick="if(window.openImageModal) window.openImageModal(\'img/proyectos/fantasma_levitante_tutorial.jpg\', \'Esquema: El Fantasma Levitante\'); else window.open(\'img/proyectos/fantasma_levitante_tutorial.jpg\', \'_blank\');">' +
+                '<i class="fas fa-expand"></i> Ampliar' +
+              '</button>' +
+            '</div>' +
+            '<div style="text-align:center;padding:10px;background:#FFF;border-radius:10px;margin-top:8px;">' +
+              '<img src="img/proyectos/fantasma_levitante_tutorial.jpg" alt="Esquema Técnico El Fantasma Levitante" style="max-height:250px;max-width:100%;object-fit:contain;border-radius:8px;border:1px solid #E2E8F0;box-shadow:0 4px 12px rgba(0,0,0,0.08);cursor:pointer;" onclick="if(window.openImageModal) window.openImageModal(this.src, \'Esquema: El Fantasma Levitante\'); else window.open(this.src, \'_blank\');">' +
+              '<div style="font-size:0.78rem;color:#475569;margin-top:6px;font-weight:600;"><i class="fas fa-search-plus"></i> Esquema: Base, palitos, pelota, hilo e imanes.</div>' +
+            '</div>' +
           '</div>' +
         '</div>' +
 

@@ -206,12 +206,17 @@ window.HOME_CONTENT = {
       grados: ['sala5', 'grado1'],
       icono: '👻',
       color: '#4F46E5',
-      imagen: 'img/proyectos/fantasma_levitante_tutorial.jpg',
+      imagen: 'img/proyectos/fantasma_levitante_presentacion.jpg',
+      galeria: [
+        'img/proyectos/fantasma_levitante_presentacion.jpg',
+        'img/proyectos/fantasma_levitante_tutorial.jpg'
+      ],
       desde: '2026-11-04',
       hasta: '2026-12-20',
       chips: ['🧲 Magnetismo', '👻 Levitación en Clase', '🏫 Taller de Aula', '🎨 Sala 5 & 1° Grado'],
       botones: [
-        { texto: '¡Ver Ficha y Tutorial!', imagenModal: 'img/proyectos/fantasma_levitante_tutorial.jpg', icono: 'fas fa-ghost', principal: true }
+        { texto: '¡Ver Ficha y Presentación!', imagenModal: 'img/proyectos/fantasma_levitante_presentacion.jpg', icono: 'fas fa-ghost', principal: true },
+        { texto: 'Ver Esquema de Montaje', imagenModal: 'img/proyectos/fantasma_levitante_tutorial.jpg', icono: 'fas fa-tools' }
       ]
     },
 

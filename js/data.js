@@ -780,12 +780,13 @@ const SCHOOL_DATA = {
           badge: "🏫 Proyecto de Clase • Ciencia Maker",
           icon: "fa-ghost",
           color: "#4F46E5",
-          coverImage: "img/proyectos/fantasma_levitante_tutorial.jpg",
+          coverImage: "img/proyectos/fantasma_levitante_presentacion.jpg",
           description: "¡Experimento realizado en el taller de clase! Construimos un fantasma flotante que levita en el aire sin tocar nada gracias al equilibrio entre la fuerza de los imanes y la tensión del hilo con palitos de madera, una base blanca, una pelota de ping-pong con imán y un hilo tensor que desafía la gravedad.",
           objective: "Comprender de forma vivencial cómo funciona la fuerza de atracción entre polos magnéticos y el equilibrio con un hilo tensor (suspensión de tensegridad), desarrollando motricidad fina y curiosidad científica en familia.",
           benefits: "Fomenta el pensamiento científico, la hipótesis experimental ('¿por qué flota?'), la comprensión de fuerzas invisibles y la diversión de crear un juguete científico propio.",
           tags: ["Proyecto en Clase", "Magnetismo", "Levitación", "Tensegridad", "Fantasma", "Maker", "Sala 5"],
           gallery: [
+            "img/proyectos/fantasma_levitante_presentacion.jpg",
             "img/proyectos/fantasma_levitante_tutorial.jpg"
           ],
           materials: [
@@ -1634,12 +1635,13 @@ const SCHOOL_DATA = {
           badge: "🏫 Proyecto de Clase • Ciencia Maker",
           icon: "fa-ghost",
           color: "#4F46E5",
-          coverImage: "img/proyectos/fantasma_levitante_tutorial.jpg",
+          coverImage: "img/proyectos/fantasma_levitante_presentacion.jpg",
           description: "¡Experimento realizado en el taller de clase! Construimos un fantasma flotante que levita en el aire sin tocar nada gracias al equilibrio entre la fuerza de los imanes y la tensión del hilo con palitos de madera, una base blanca, una pelota de ping-pong con imán y un hilo tensor que desafía la gravedad.",
           objective: "Comprender de forma vivencial cómo funciona la fuerza de atracción entre polos magnéticos y el equilibrio con un hilo tensor (suspensión de tensegridad), desarrollando motricidad fina y curiosidad científica en familia.",
           benefits: "Fomenta el pensamiento científico, la hipótesis experimental ('¿por qué flota?'), la comprensión de fuerzas invisibles y la diversión de crear un juguete científico propio.",
           tags: ["Proyecto en Clase", "Magnetismo", "Levitación", "Tensegridad", "Fantasma", "Maker", "1° Grado"],
           gallery: [
+            "img/proyectos/fantasma_levitante_presentacion.jpg",
             "img/proyectos/fantasma_levitante_tutorial.jpg"
           ],
           materials: [

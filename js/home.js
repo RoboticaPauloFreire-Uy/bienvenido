@@ -1034,7 +1034,9 @@
           '<span class="np-clase-stamp ' + stateClass + '">' + esc(it.estado.texto) + '</span>' +
         '</div>' +
         '<div class="np-clase-photo-wrap' + (a.imagen ? ' has-img' : '') + '">' +
-          thumb +
+          (a.imagen
+            ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="np-clase-img" loading="lazy" onerror="this.parentNode.classList.remove(\'has-img\');this.remove();"><span class="np-clase-photo-icon">' + esc(a.icono || '🤖') + '</span>'
+            : '<div style="text-align:center;"><span class="np-clase-photo-icon">' + esc(a.icono || '🤖') + '</span></div>') +
           '<span class="np-clase-fig-tag">GRABADO // ACTIVIDAD PRÁCTICA</span>' +
         '</div>' +
         '<div class="np-clase-body">' +
