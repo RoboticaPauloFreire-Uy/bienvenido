@@ -1344,9 +1344,9 @@
                   '<span class="arm-s5-interactive-hint" style="background:linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);"><i class="fas fa-magic"></i> ¡Tocá para levitar!</span>' +
                 '</div>' +
                 '<div class="arm-s5-info">' +
-                  '<div class="arm-s5-tag" style="color:#4F46E5;"><i class="fas fa-flask"></i> PROYECTO OFICIAL ' + gradeLabelText + ' • CIENCIA EN CASA 🧲👻</div>' +
-                  '<h3 class="arm-s5-title" style="color:#312E81;">El Fantasma Levitante (Ciencia y Magnetismo) 👻🧲</h3>' +
-                  '<p class="arm-s5-desc">¡Hacé flotar un fantasma en el aire usando la física del magnetismo y la tensegridad! Construimos una estructura con <strong>palitos de madera</strong>, una <strong>base blanca</strong>, <strong>hilo tensor</strong> y una <strong>pelota de ping-pong con imanes</strong> enfrentados. Al soltarlo, la fuerza magnética lo levanta pero el hilo lo sostiene... ¡quedando suspendido en el aire como por arte de magia!</p>' +
+                  '<div class="arm-s5-tag" style="color:#4F46E5;"><i class="fas fa-flask"></i> PROYECTO OFICIAL DE CLASE • ' + gradeLabelText + ' • MAGNETISMO & TENSEGRIDAD 🧲👻</div>' +
+                  '<h3 class="arm-s5-title" style="color:#312E81;">El Fantasma Levitante (Proyecto de Clase) 👻🧲</h3>' +
+                  '<p class="arm-s5-desc">¡Experimento realizado en clase con el taller de robótica! Construimos una estructura con <strong>palitos de madera</strong>, una <strong>base blanca</strong>, <strong>hilo tensor</strong> y una <strong>pelota de ping-pong con imanes</strong> enfrentados. Al soltarlo, la fuerza magnética lo levanta pero el hilo lo sostiene... ¡quedando suspendido en el aire como por arte de magia!</p>' +
                   '<div class="arm-s5-materials-pills">' +
                     '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-grip-lines-vertical"></i> Palitos de madera</span>' +
                     '<span style="border-color:#C7D2FE;color:#4338CA;"><i class="fas fa-magnet"></i> Imanes (N y S)</span>' +
@@ -4807,7 +4807,7 @@
       '<div class="apm-sol-electro-header" style="background:linear-gradient(135deg, #312E81 0%, #4F46E5 50%, #7C3AED 100%);">' +
         '<div class="apm-seh-icon" style="color:#C7D2FE;background:rgba(255,255,255,0.18);"><i class="fas fa-ghost"></i></div>' +
         '<div>' +
-          '<h4>Tutorial Oficial de Ciencia en Casa: El Fantasma Levitante 👻🧲</h4>' +
+          '<h4>Tutorial Oficial del Proyecto de Clase: El Fantasma Levitante 👻🧲</h4>' +
           '<p>Experimento de suspensión magnética y tensegridad: logramos que el fantasma flote en el aire gracias al equilibrio entre la atracción de los imanes y la tensión del hilo.</p>' +
         '</div>' +
       '</div>' +
@@ -4859,7 +4859,7 @@
 
         // Los 5 Pasos del Montaje
         '<div class="apm-sol-visual-guide" style="margin-top:16px;">' +
-          '<h5><i class="fas fa-tools"></i> Los 5 Pasos de Montaje (Guía Paso a Paso para Casa):</h5>' +
+          '<h5><i class="fas fa-tools"></i> Los 5 Pasos del Montaje Realizado en Clase:</h5>' +
           '<div class="apm-pinout-table-wrap">' +
             '<table class="apm-pinout-table">' +
               '<thead>' +

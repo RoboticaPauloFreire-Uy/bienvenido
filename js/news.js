@@ -39,7 +39,7 @@ window.HOME_CONTENT = {
 
   /* ───────────── AVISOS (barra superior) ───────────── */
   avisos: [
-    '👻 Nuevo en Casa (Sala de 5 y 1° Grado): Tutorial El Fantasma Levitante — Ciencia, magnetismo y levitación en familia',
+    '👻 Proyecto en Clase (Sala de 5 y 1° Grado): El Fantasma Levitante — Taller de ciencia, magnetismo y levitación',
     '🎬 Nuevo en Casa: Luces, Cámara, IA — Creá tu propia película animada con Inteligencia Artificial',
     '🆕 Nueva actividad en familia: Escape Rooms Nostálgico',
     '📦 Seguimos juntando cartón, tapitas y tubos para los proyectos maker',
@@ -198,9 +198,9 @@ window.HOME_CONTENT = {
   actividades: [
     {
       id: 'act-fantasma-levitante',
-      titulo: 'El Fantasma Levitante — Tutorial de Ciencia en Casa 👻🧲',
-      descripcion: '¡Hacé flotar un fantasma en el aire usando la física del magnetismo y la tensegridad! Construí una estructura con palitos de madera, una base blanca, hilo tensor y una pelota de ping-pong con imanes para crear una ilusión científica fascinante. Especialmente diseñado para Exploradores de Sala de 5 y Creadores de 1° Grado.',
-      tipo: 'casa',
+      titulo: 'El Fantasma Levitante — Taller de Ciencia en Clase 👻🧲',
+      descripcion: '¡Experimento maker realizado en el aula! Los alumnos de Sala de 5 y 1° Grado construyeron una estructura de palitos de madera con hilo tensor y una pelota de ping-pong con imanes, logrando hacer levitar un fantasma en el aire gracias a la física de la tensegridad y la fuerza magnética.',
+      tipo: 'clase',
       modalidad: 'maker',
       materiales: 'Palitos de madera, pegamento escolar, calcetín de tela con cara de fantasma (o tela blanca), hilo firme, pelota de ping-pong, imanes de neodimio y base rectangular envuelta en papel blanco.',
       grados: ['sala5', 'grado1'],
@@ -209,9 +209,9 @@ window.HOME_CONTENT = {
       imagen: 'img/proyectos/fantasma_levitante_tutorial.jpg',
       desde: '2026-11-04',
       hasta: '2026-12-20',
-      chips: ['🧲 Magnetismo', '👻 Levitación Maker', '🧵 Tensegridad', '🎨 Sala 5 & 1° Grado'],
+      chips: ['🧲 Magnetismo', '👻 Levitación en Clase', '🏫 Taller de Aula', '🎨 Sala 5 & 1° Grado'],
       botones: [
-        { texto: '¡Ver Tutorial y Pasos!', imagenModal: 'img/proyectos/fantasma_levitante_tutorial.jpg', icono: 'fas fa-ghost', principal: true }
+        { texto: '¡Ver Ficha y Tutorial!', imagenModal: 'img/proyectos/fantasma_levitante_tutorial.jpg', icono: 'fas fa-ghost', principal: true }
       ]
     },
 

@@ -421,11 +421,11 @@ function renderProjectsSectionHtml(grade) {
             </div>
             <div>
               <span style="background:rgba(255,255,255,0.18);color:#C7D2FE;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
-                <i class="fas fa-flask"></i> ¡Nuevo Experimento Maker en Casa!
+                <i class="fas fa-chalkboard-teacher"></i> ¡Proyecto Oficial Realizado en Clase!
               </span>
-              <h3 style="margin:4px 0 2px;font-size:1.15rem;font-weight:900;color:#FFF;">👻 El Fantasma Levitante (Magnetismo y Tensegridad)</h3>
+              <h3 style="margin:4px 0 2px;font-size:1.15rem;font-weight:900;color:#FFF;">👻 El Fantasma Levitante (Experimento de Aula Maker)</h3>
               <p style="margin:0;font-size:0.85rem;color:#E0E7FF;max-width:540px;line-height:1.4;">
-                ¡Hacé flotar un fantasma en el aire sin tocar nada! Palitos de madera, hilo, pelota de ping-pong e imanes para experimentar en familia.
+                ¡Experimento realizado en el taller de robótica! Palitos de madera, hilo, pelota de ping-pong e imanes para descubrir el magnetismo y la física de tensegridad.
               </p>
             </div>
           </div>
@@ -511,11 +511,11 @@ function renderProjectsSectionHtml(grade) {
             </div>
             <div>
               <span style="background:rgba(255,255,255,0.18);color:#C7D2FE;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
-                <i class="fas fa-flask"></i> ¡Nuevo Experimento Maker en Casa!
+                <i class="fas fa-chalkboard-teacher"></i> ¡Proyecto Oficial Realizado en Clase!
               </span>
-              <h3 style="margin:4px 0 2px;font-size:1.15rem;font-weight:900;color:#FFF;">👻 El Fantasma Levitante (Magnetismo y Tensegridad)</h3>
+              <h3 style="margin:4px 0 2px;font-size:1.15rem;font-weight:900;color:#FFF;">👻 El Fantasma Levitante (Experimento de Aula Maker)</h3>
               <p style="margin:0;font-size:0.85rem;color:#E0E7FF;max-width:540px;line-height:1.4;">
-                ¡Hacé flotar un fantasma en el aire sin tocar nada! Palitos de madera, hilo, pelota de ping-pong e imanes para experimentar en familia.
+                ¡Experimento realizado en el taller de robótica! Palitos de madera, hilo, pelota de ping-pong e imanes para descubrir el magnetismo y la física de tensegridad.
               </p>
             </div>
           </div>
