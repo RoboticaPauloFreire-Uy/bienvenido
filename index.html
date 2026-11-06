@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=141">
   <link rel="stylesheet" href="css/games.css?v=95">
-  <link rel="stylesheet" href="css/home.css?v=36">
+  <link rel="stylesheet" href="css/home.css?v=37">
   <link rel="stylesheet" href="css/themes.css?v=6">
   <link rel="stylesheet" href="css/facebook-feed.css?v=5">
   <!-- Inicialización inmediata de tema para evitar destello -->
@@ -373,19 +373,46 @@
             <div>
               <span class="hn-kicker np-kicker"><i class="fas fa-drafting-compass"></i> Expedientes de Taller</span>
               <h2 class="hn-section-title np-section-title">Actividades en Clase</h2>
-              <p class="hn-section-sub np-section-sub">Despachos técnicos, esquemas de construcción y retos prácticos desarrollados en el taller escolar.</p>
+              <p class="hn-section-sub np-section-sub">Despachos técnicos, esquemas de construcción, retos prácticos y sala de proyección sincronizada en el taller escolar.</p>
             </div>
-            <div class="hn-controls np-controls">
+            <div class="hn-controls np-controls" id="hn-clase-filter-wrap">
               <label class="sr-only" for="hn-clase-grade">Filtrar por grado</label>
               <select id="hn-clase-grade" class="hn-select np-select"></select>
             </div>
           </div>
 
+          <!-- Selector de Modo dentro de Clase: Expedientes vs Sala de Video Sincronizada -->
+          <div class="np-clase-subnav" role="tablist" aria-label="Opciones de Clase">
+            <button type="button" class="np-clase-subtab active" id="btn-clase-tab-expedientes" onclick="if(window.switchClaseSubTab) window.switchClaseSubTab('expedientes');">
+              <i class="fas fa-folder-open"></i>
+              <span>Expedientes y Actividades</span>
+            </button>
+            <button type="button" class="np-clase-subtab np-clase-subtab-video" id="btn-clase-tab-video" onclick="if(window.switchClaseSubTab) window.switchClaseSubTab('video');">
+              <i class="fas fa-tv"></i>
+              <span>Sala de Video en Vivo (Cine de Clase)</span>
+              <span class="cvs-tab-live-dot" id="cvs-tab-live-dot" style="display:none;" title="Transmisión activa"></span>
+            </button>
+          </div>
+
+          <!-- Aviso en vivo cuando el Profesor está proyectando y el alumno está en la pestaña de Expedientes -->
+          <div class="cvs-live-clase-banner" id="cvs-live-clase-banner" style="display:none;" onclick="if(window.switchClaseSubTab) window.switchClaseSubTab('video');">
+            <div class="cvs-lcb-left">
+              <span class="cvs-lcb-badge"><span class="cvs-live-dot"></span> EN VIVO AHORA</span>
+              <span class="cvs-lcb-text">El Profesor está proyectando en la Sala de Video: <strong id="cvs-live-banner-title">Video de Clase</strong></span>
+            </div>
+            <button type="button" class="cvs-lcb-btn">
+              <i class="fas fa-play-circle"></i> Entrar a la Sala de Video
+            </button>
+          </div>
+
           <!-- Grilla de Actividades de Clase (Periódico) -->
-          <div class="np-act-wrapper">
+          <div class="np-act-wrapper" id="clase-expedientes-wrap">
             <div class="hn-act-grid np-clase-grid" id="hn-act-grid-clase"></div>
             <div class="np-pagination" id="hn-act-pag-clase" style="display:none;"></div>
           </div>
+
+          <!-- Contenedor de la Sala de Video Sincronizada (Cine de Clase) -->
+          <div id="clase-video-room-container" style="display:none;"></div>
         </section>
       </div>
 
@@ -889,7 +916,8 @@
   <script src="js/news.js?v=26"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=65"></script>
+  <script src="js/home.js?v=66"></script>
+  <script src="js/class_video_sync.js?v=1"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
