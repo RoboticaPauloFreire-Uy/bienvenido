@@ -3,13 +3,11 @@
  * PROFESOR_VIDEOS.JS — MANDO REMOTO MÓVIL Y BIBLIOTECA DOCENTE
  * Colegio Paulo Freire · Taller de Robótica, Programación & Cultura Maker
  * =============================================================
- * Optimizado para manejarse con una mano desde el celular del profesor:
- *  - Pestañas inferiores táctiles (Control Vivo / Biblioteca / Dar de Alta).
- *  - Reloj virtual + Monitor desplegable (permite controlar Play, Pausa,
- *    -10s, +10s y barra de tiempo en todas las PCs incluso con el monitor
- *    del celular oculto para ahorrar batería y pantalla).
- *  - Lanzador rápido de videos por Grado directo en el mando principal.
- *  - Alta, edición y baja de videos por Grado y Proyecto en Firebase Firestore.
+ * Incluye las 4 funciones avanzadas de aula:
+ *  1. 👀 Modo "¡Atención al Profesor!" (Oscurecer pantallas de alumnos)
+ *  2. 💬 Cartel de Consigna / Pregunta en vivo sobre el video
+ *  3. 📍 Marcadores de Pasos del Video + Auto-pausa automática en cada paso
+ *  4. 💻 Contador en tiempo real de máquinas conectadas y con sonido activo
  */
 
 (function () {
@@ -17,6 +15,7 @@
 
   var DOC_COLLECTION = 'config';
   var DOC_ID = 'classroom_video_sync';
+  var PRESENCE_COLLECTION = 'classroom_video_presence';
   var SESSION_KEY = 'pf_teacher_video_cabin_auth';
   var VALID_PASSWORDS = ['2026', '1234', 'paulo2026', 'admin123', 'robotica2026'];
 
@@ -41,7 +40,12 @@
       url: 'https://www.youtube.com/watch?v=7afwV_aJcjk',
       type: 'youtube',
       youtubeId: '7afwV_aJcjk',
-      duration: 240
+      duration: 240,
+      markers: [
+        { label: 'Paso 1: Materiales', time: 15 },
+        { label: 'Paso 2: Polos del Imán', time: 65 },
+        { label: 'Paso 3: Armado y Levitación', time: 130 }
+      ]
     },
     {
       id: 'vid-guitarra-carton',
@@ -52,7 +56,12 @@
       url: 'https://www.youtube.com/watch?v=TdNU26840_8',
       type: 'youtube',
       youtubeId: 'TdNU26840_8',
-      duration: 240
+      duration: 240,
+      markers: [
+        { label: 'Paso 1: Cuerpo de Cartón', time: 20 },
+        { label: 'Paso 2: Cinta Conductora', time: 80 },
+        { label: 'Paso 3: Código Musical', time: 150 }
+      ]
     },
     {
       id: 'vid-intro-robotica',
@@ -63,7 +72,11 @@
       url: 'https://www.youtube.com/watch?v=wA9tO7m3v6U',
       type: 'youtube',
       youtubeId: 'wA9tO7m3v6U',
-      duration: 240
+      duration: 240,
+      markers: [
+        { label: '1. ¿Qué es un Robot?', time: 10 },
+        { label: '2. Sensores y Cerebro', time: 75 }
+      ]
     }
   ];
 
@@ -81,6 +94,10 @@
     playbackRate: 1,
     lockedByTeacher: true,
     muteStudents: false,
+    attentionMode: false,
+    livePromptText: '',
+    markers: DEFAULT_LIBRARY[0].markers,
+    autoPauseAtMarkers: false,
     sessionActive: false,
     callStudentsSeq: 0,
     syncSeq: 1,
@@ -99,10 +116,14 @@
   var suppressLocalEventsUntil = 0;
   var isDraggingScrubber = false;
 
-  // Reloj virtual para cuando el monitor del celular está cerrado
+  // Reloj virtual + control de auto-pausa en marcadores
   var virtualBaseSec = 0;
   var virtualLastTickMs = Date.now();
   var virtualIsPlaying = false;
+  var lastTriggeredMarkerSec = -1;
+
+  // Presencia de máquinas
+  var presenceDocs = [];
 
   // Reproductor monitor opcional
   var currentMediaType = null;
@@ -202,7 +223,6 @@
   function init() {
     html5Video = document.getElementById('pv-html5-video');
 
-    // En PC de escritorio abrimos el monitor por defecto; en celular empieza compacto
     if (window.innerWidth >= 960) {
       toggleMonitor(true);
     }
@@ -210,16 +230,15 @@
     setupLogin();
     setupMobileTabs();
     bindControlEvents();
+    bindClassroomExtrasEvents();
     bindLibraryEvents();
     setupHtml5MonitorEvents();
     loadYouTubeApi();
     connectFirestore();
+    connectPresenceListener();
     startTimers();
   }
 
-  /**
-   * Navegación por pestañas inferiores en el celular
-   */
   function setupMobileTabs() {
     document.querySelectorAll('.pv-bnav-btn[data-tab]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -326,7 +345,7 @@
       });
     }
 
-    // Botón Gigante Play / Pausa en todas las máquinas
+    // Play / Pausa en todas las máquinas
     var playPauseBtn = document.getElementById('pv-btn-playpause');
     if (playPauseBtn) {
       playPauseBtn.addEventListener('click', function () {
@@ -345,12 +364,17 @@
           else pauseMedia();
         }
 
-        pushState({
+        // Si le damos Play, desactivamos automáticamente el modo pantalla oscurecida
+        var patch = {
           isPlaying: nextPlaying,
           baseTime: curSec,
           sessionActive: true
-        }, true);
+        };
+        if (nextPlaying) {
+          patch.attentionMode = false;
+        }
 
+        pushState(patch, true);
         showToast(nextPlaying ? '▶️ PLAY en todas las máquinas' : '⏸️ PAUSA en todas las máquinas');
       });
     }
@@ -361,6 +385,7 @@
         vibrateTap(30);
         virtualBaseSec = 0;
         virtualLastTickMs = Date.now();
+        lastTriggeredMarkerSec = -1;
         suppressLocalEventsUntil = Date.now() + 1200;
         if (monitorVisible) seekMediaTo(0);
         pushState({ baseTime: 0, sessionActive: true }, true);
@@ -375,6 +400,7 @@
         var nextSec = Math.max(0, getEffectiveCurrentTime() - 10);
         virtualBaseSec = nextSec;
         virtualLastTickMs = Date.now();
+        lastTriggeredMarkerSec = -1;
         suppressLocalEventsUntil = Date.now() + 1200;
         if (monitorVisible) seekMediaTo(nextSec);
         pushState({ baseTime: nextSec, sessionActive: true }, true);
@@ -390,6 +416,7 @@
         var nextSec = Math.min(dur, getEffectiveCurrentTime() + 10);
         virtualBaseSec = nextSec;
         virtualLastTickMs = Date.now();
+        lastTriggeredMarkerSec = -1;
         suppressLocalEventsUntil = Date.now() + 1200;
         if (monitorVisible) seekMediaTo(nextSec);
         pushState({ baseTime: nextSec, sessionActive: true }, true);
@@ -411,7 +438,6 @@
       });
     }
 
-    // Scrubber XL
     var scrubber = document.getElementById('pv-scrubber');
     if (scrubber) {
       scrubber.addEventListener('mousedown', function () { isDraggingScrubber = true; });
@@ -426,6 +452,7 @@
         var sec = Number(scrubber.value) || 0;
         virtualBaseSec = sec;
         virtualLastTickMs = Date.now();
+        lastTriggeredMarkerSec = -1;
         suppressLocalEventsUntil = Date.now() + 1200;
         if (monitorVisible) seekMediaTo(sec);
         pushState({ baseTime: sec, sessionActive: true }, true);
@@ -433,7 +460,6 @@
       });
     }
 
-    // Velocidad
     var speedSel = document.getElementById('pv-speed-select');
     if (speedSel) {
       speedSel.addEventListener('change', function () {
@@ -444,7 +470,6 @@
       });
     }
 
-    // Interruptor Bloquear / Liberar Control
     var lockBtn = document.getElementById('pv-btn-toggle-lock');
     if (lockBtn) {
       lockBtn.addEventListener('click', function () {
@@ -463,7 +488,6 @@
       });
     }
 
-    // Interruptor Sonido
     var audioBtn = document.getElementById('pv-btn-toggle-audio');
     if (audioBtn) {
       audioBtn.addEventListener('click', function () {
@@ -477,7 +501,6 @@
       });
     }
 
-    // Botón Llamar PCs
     var callBtn = document.getElementById('pv-btn-call-students');
     if (callBtn) {
       callBtn.addEventListener('click', function () {
@@ -492,7 +515,6 @@
       });
     }
 
-    // Filtro de Grado en el Lanzador Rápido del Mando
     var qTabs = document.getElementById('pv-quick-grade-tabs');
     if (qTabs) {
       qTabs.querySelectorAll('[data-qgrade]').forEach(function (btn) {
@@ -505,6 +527,244 @@
           renderQuickDeck();
         });
       });
+    }
+  }
+
+  /**
+   * ─────────────────────────────────────────────────────────────
+   * EVENTOS DE LAS 4 FUNCIONES EXTRA DE AULA
+   * (Atención al Profe, Cartel de Consigna, Marcadores, Presencia)
+   * ─────────────────────────────────────────────────────────────
+   */
+  function bindClassroomExtrasEvents() {
+    // 1. Botón "¡Atención al Profesor!" (Oscurecer Pantallas)
+    var attBtn = document.getElementById('pv-btn-attention');
+    if (attBtn) {
+      attBtn.addEventListener('click', function () {
+        vibrateTap(45);
+        var curAtt = remoteState ? !!remoteState.attentionMode : false;
+        var nextAtt = !curAtt;
+
+        if (nextAtt) {
+          // Pausar el video automáticamente cuando oscurecemos las pantallas
+          virtualBaseSec = getEffectiveCurrentTime();
+          virtualLastTickMs = Date.now();
+          virtualIsPlaying = false;
+          if (monitorVisible) pauseMedia();
+        }
+
+        pushState({
+          attentionMode: nextAtt,
+          isPlaying: nextAtt ? false : virtualIsPlaying,
+          baseTime: virtualBaseSec
+        }, true);
+
+        showToast(nextAtt
+          ? '👀 Pantallas oscurecidas: ¡Atención al Profesor!'
+          : '🎬 Pantallas restauradas al video');
+      });
+    }
+
+    // 2. Cartel de Consigna / Pregunta en Pantalla
+    var sendPromptBtn = document.getElementById('pv-btn-send-prompt');
+    var promptInput = document.getElementById('pv-prompt-input');
+    var clearPromptBtn = document.getElementById('pv-btn-clear-prompt');
+
+    if (sendPromptBtn && promptInput) {
+      sendPromptBtn.addEventListener('click', function () {
+        var txt = promptInput.value.trim();
+        if (!txt) return;
+        vibrateTap(35);
+        pushState({ livePromptText: txt }, false);
+        promptInput.value = '';
+        showToast('💬 Cartel mostrado en todas las pantallas');
+      });
+      promptInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          sendPromptBtn.click();
+        }
+      });
+    }
+
+    if (clearPromptBtn) {
+      clearPromptBtn.addEventListener('click', function () {
+        vibrateTap(25);
+        pushState({ livePromptText: '' }, false);
+        showToast('❌ Cartel quitado de las pantallas');
+      });
+    }
+
+    document.querySelectorAll('[data-qprompt]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        vibrateTap(30);
+        var txt = btn.getAttribute('data-qprompt') || '';
+        // Pausar y mostrar cartel rápido
+        virtualBaseSec = getEffectiveCurrentTime();
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = false;
+        if (monitorVisible) pauseMedia();
+
+        pushState({
+          isPlaying: false,
+          baseTime: virtualBaseSec,
+          livePromptText: txt
+        }, true);
+
+        showToast('⏸️ Pausa + Cartel enviado a las PCs');
+      });
+    });
+
+    // 3. Marcadores de Pasos + Auto-pausa
+    var addMarkerBtn = document.getElementById('pv-btn-add-marker');
+    var markerLabelInput = document.getElementById('pv-marker-label-input');
+    var autoPauseCheck = document.getElementById('pv-autopause-check');
+
+    if (addMarkerBtn) {
+      addMarkerBtn.addEventListener('click', function () {
+        vibrateTap(35);
+        var curSec = Math.floor(getEffectiveCurrentTime());
+        var curMarkers = (remoteState && Array.isArray(remoteState.markers)) ? remoteState.markers.slice() : [];
+        var lbl = (markerLabelInput && markerLabelInput.value.trim()) || ('Paso ' + (curMarkers.length + 1));
+
+        curMarkers.push({ label: lbl, time: curSec });
+        curMarkers.sort(function (a, b) { return (a.time || 0) - (b.time || 0); });
+
+        // También actualizar los marcadores en el video correspondiente de la biblioteca
+        var list = (remoteState && Array.isArray(remoteState.playlist)) ? remoteState.playlist.slice() : DEFAULT_LIBRARY.slice();
+        var activeUrl = remoteState ? remoteState.videoUrl : '';
+        list.forEach(function (v) {
+          if (v.url === activeUrl) {
+            v.markers = curMarkers;
+          }
+        });
+
+        if (markerLabelInput) markerLabelInput.value = '';
+        pushState({ markers: curMarkers, playlist: list }, false);
+        showToast('📍 Marcado «' + lbl + '» en ' + formatTime(curSec));
+      });
+    }
+
+    if (autoPauseCheck) {
+      autoPauseCheck.addEventListener('change', function () {
+        vibrateTap(25);
+        pushState({ autoPauseAtMarkers: !!autoPauseCheck.checked }, false);
+        showToast(autoPauseCheck.checked
+          ? '⏸️ Auto-pausa en cada Paso ACTIVADA'
+          : '▶️ Auto-pausa en pasos desactivada');
+      });
+    }
+
+    // 4. Toque en el contador de máquinas conectadas
+    var presPill = document.getElementById('pv-presence-pill');
+    if (presPill) {
+      presPill.addEventListener('click', function () {
+        vibrateTap(20);
+        var stats = getPresenceStats();
+        showToast('💻 ' + stats.inRoom + ' PCs en Sala de Video (' + stats.withAudio + ' con 🔊 sonido listo)');
+      });
+    }
+  }
+
+  function renderMarkersControls(markers) {
+    var wrap = document.getElementById('pv-markers-chips');
+    if (!wrap) return;
+
+    if (!Array.isArray(markers) || !markers.length) {
+      wrap.innerHTML = '<div style="font-size:0.78rem;color:#94A3B8;">Aún no marcaste pasos en este video. Podés agregarlos abajo mientras corre el video.</div>';
+      return;
+    }
+
+    wrap.innerHTML = markers.map(function (m, idx) {
+      return '<div class="pv-marker-pill" data-jump-marker="' + idx + '">' +
+        '<time>' + formatTime(m.time || 0) + '</time>' +
+        '<span>' + esc(m.label || ('Paso ' + (idx + 1))) + '</span>' +
+        '<button type="button" class="pv-marker-del" data-del-marker="' + idx + '" title="Borrar paso">&times;</button>' +
+      '</div>';
+    }).join('');
+
+    wrap.querySelectorAll('[data-jump-marker]').forEach(function (pill) {
+      pill.addEventListener('click', function (e) {
+        if (e.target && e.target.hasAttribute('data-del-marker')) return;
+        vibrateTap(30);
+        var idx = Number(pill.getAttribute('data-jump-marker'));
+        var m = markers[idx];
+        if (!m) return;
+        var targetSec = Number(m.time) || 0;
+        virtualBaseSec = targetSec;
+        virtualLastTickMs = Date.now();
+        lastTriggeredMarkerSec = targetSec;
+        suppressLocalEventsUntil = Date.now() + 1200;
+        if (monitorVisible) seekMediaTo(targetSec);
+
+        pushState({
+          baseTime: targetSec,
+          sessionActive: true
+        }, true);
+        showToast('📍 Saltando a «' + m.label + '» (' + formatTime(targetSec) + ')');
+      });
+    });
+
+    wrap.querySelectorAll('[data-del-marker]').forEach(function (delBtn) {
+      delBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        vibrateTap(25);
+        var idx = Number(delBtn.getAttribute('data-del-marker'));
+        var nextMarkers = markers.filter(function (_, i) { return i !== idx; });
+        var list = (remoteState && Array.isArray(remoteState.playlist)) ? remoteState.playlist.slice() : DEFAULT_LIBRARY.slice();
+        var activeUrl = remoteState ? remoteState.videoUrl : '';
+        list.forEach(function (v) {
+          if (v.url === activeUrl) v.markers = nextMarkers;
+        });
+        pushState({ markers: nextMarkers, playlist: list }, false);
+      });
+    });
+  }
+
+  /**
+   * ─────────────────────────────────────────────────────────────
+   * PRESENCIA EN TIEMPO REAL DE LAS MÁQUINAS DEL SALÓN
+   * ─────────────────────────────────────────────────────────────
+   */
+  function connectPresenceListener() {
+    if (!window.db || typeof window.db.collection !== 'function') {
+      setTimeout(connectPresenceListener, 700);
+      return;
+    }
+
+    window.db.collection(PRESENCE_COLLECTION).onSnapshot(function (snapshot) {
+      if (!snapshot) return;
+      var docs = [];
+      snapshot.forEach(function (doc) {
+        docs.push(doc.data() || {});
+      });
+      presenceDocs = docs;
+      updatePresenceBadgeUi();
+    }, function () {});
+  }
+
+  function getPresenceStats() {
+    var cutoff = Date.now() - 45000; // Activas en los últimos 45s
+    var active = presenceDocs.filter(function (d) {
+      return d.lastSeenMs && d.lastSeenMs > cutoff;
+    });
+    var inRoom = active.filter(function (d) { return d.inVideoRoom || d.inClase; }).length || active.length;
+    var withAudio = active.filter(function (d) { return !!d.audioJoined; }).length;
+    return {
+      total: active.length,
+      inRoom: inRoom,
+      withAudio: withAudio
+    };
+  }
+
+  function updatePresenceBadgeUi() {
+    var txtEl = document.getElementById('pv-presence-txt');
+    if (!txtEl) return;
+    var stats = getPresenceStats();
+    if (stats.inRoom === 0) {
+      txtEl.textContent = '0 PCs';
+    } else {
+      txtEl.textContent = stats.inRoom + (stats.inRoom === 1 ? ' PC' : ' PCs') + ' (' + stats.withAudio + ' 🔊)';
     }
   }
 
@@ -628,6 +888,7 @@
     virtualBaseSec = 0;
     virtualLastTickMs = Date.now();
     virtualIsPlaying = true;
+    lastTriggeredMarkerSec = -1;
     suppressLocalEventsUntil = Date.now() + 1400;
 
     if (monitorVisible) {
@@ -642,6 +903,9 @@
       subtitle: item.subtitle || ('Proyecto: ' + (item.project || 'Clase')),
       project: item.project || '',
       grades: item.grades || ['todos'],
+      markers: Array.isArray(item.markers) ? item.markers : [],
+      attentionMode: false,
+      livePromptText: '',
       baseTime: 0,
       isPlaying: true,
       sessionActive: true
@@ -685,6 +949,8 @@
       ? remoteState.playlist.slice()
       : DEFAULT_LIBRARY.slice();
 
+    var existingItem = editId ? list.find(function (x) { return x.id === editId; }) : null;
+
     var videoItem = {
       id: editId || ('vid-' + Date.now()),
       title: title,
@@ -694,6 +960,7 @@
       url: parsed.url,
       type: parsed.type,
       youtubeId: parsed.youtubeId || '',
+      markers: (existingItem && Array.isArray(existingItem.markers)) ? existingItem.markers : [],
       updatedAt: Date.now()
     };
 
@@ -713,6 +980,7 @@
       virtualBaseSec = 0;
       virtualLastTickMs = Date.now();
       virtualIsPlaying = true;
+      lastTriggeredMarkerSec = -1;
       suppressLocalEventsUntil = Date.now() + 1400;
       statePatch.videoUrl = videoItem.url;
       statePatch.videoType = videoItem.type;
@@ -721,6 +989,9 @@
       statePatch.subtitle = videoItem.subtitle;
       statePatch.project = videoItem.project;
       statePatch.grades = videoItem.grades;
+      statePatch.markers = videoItem.markers;
+      statePatch.attentionMode = false;
+      statePatch.livePromptText = '';
       statePatch.baseTime = 0;
       statePatch.isPlaying = true;
       statePatch.sessionActive = true;
@@ -796,9 +1067,6 @@
     switchMobileTab('upload');
   }
 
-  /**
-   * Renderiza la lista rápida de cambio de video dentro de la pestaña de Control Vivo
-   */
   function renderQuickDeck() {
     var container = document.getElementById('pv-quick-list');
     if (!container) return;
@@ -842,9 +1110,6 @@
     });
   }
 
-  /**
-   * Renderiza la grilla completa de la Biblioteca
-   */
   function renderLibraryGrid() {
     var grid = document.getElementById('pv-library-grid');
     var countEl = document.getElementById('pv-library-count');
@@ -957,7 +1222,7 @@
 
   /**
    * ─────────────────────────────────────────────────────────────
-   * RELOJ HÍBRIDO (VIRTUAL + MONITOR REAL)
+   * RELOJ HÍBRIDO (VIRTUAL + MONITOR REAL) + AUTO-PAUSA EN MARCADORES
    * ─────────────────────────────────────────────────────────────
    */
   function getEffectiveCurrentTime() {
@@ -982,6 +1247,34 @@
     return (remoteState && Number(remoteState.duration) > 0) ? Number(remoteState.duration) : 300;
   }
 
+  function checkAutoPauseAtMarkers(curSec) {
+    if (!virtualIsPlaying || !remoteState || !remoteState.autoPauseAtMarkers) return;
+    var markers = remoteState.markers || [];
+    if (!Array.isArray(markers) || !markers.length) return;
+
+    var floorSec = Math.floor(curSec);
+    for (var i = 0; i < markers.length; i++) {
+      var m = markers[i];
+      var mTime = Math.floor(Number(m.time) || 0);
+      if (mTime > 0 && Math.abs(floorSec - mTime) <= 1 && lastTriggeredMarkerSec !== mTime) {
+        lastTriggeredMarkerSec = mTime;
+        virtualBaseSec = mTime;
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = false;
+        if (monitorVisible) pauseMedia();
+
+        vibrateTap([50, 40, 50]);
+        pushState({
+          isPlaying: false,
+          baseTime: mTime,
+          livePromptText: '📍 ' + (m.label || 'Paso del Proyecto')
+        }, true);
+        showToast('⏸️ Auto-pausa en: ' + m.label);
+        break;
+      }
+    }
+  }
+
   function setupHtml5MonitorEvents() {
     if (!html5Video) return;
 
@@ -993,6 +1286,7 @@
         virtualIsPlaying = true;
         pushState({
           isPlaying: true,
+          attentionMode: false,
           baseTime: virtualBaseSec,
           sessionActive: true
         }, true);
@@ -1066,6 +1360,7 @@
               virtualIsPlaying = true;
               pushState({
                 isPlaying: true,
+                attentionMode: false,
                 baseTime: virtualBaseSec,
                 duration: getMediaDuration() || 300,
                 sessionActive: true
@@ -1200,11 +1495,6 @@
     }
   }
 
-  /**
-   * ─────────────────────────────────────────────────────────────
-   * FIREBASE FIRESTORE CONEXIÓN Y ENVÍO DE ESTADO
-   * ─────────────────────────────────────────────────────────────
-   */
   function connectFirestore() {
     if (!window.db || typeof window.db.collection !== 'function') {
       setTimeout(connectFirestore, 600);
@@ -1278,8 +1568,11 @@
     var livePill = document.getElementById('pv-live-pill');
     var liveTxt = document.getElementById('pv-live-pill-txt');
     if (livePill && liveTxt) {
-      livePill.classList.toggle('is-playing', !!state.isPlaying);
-      liveTxt.textContent = state.isPlaying ? 'EN VIVO' : 'EN PAUSA';
+      livePill.className = 'pv-live-badge' +
+        (state.attentionMode ? ' is-attention' : (state.isPlaying ? ' is-playing' : ''));
+      liveTxt.textContent = state.attentionMode
+        ? 'ATENCIÓN'
+        : (state.isPlaying ? 'EN VIVO' : 'EN PAUSA');
     }
 
     var npGrade = document.getElementById('pv-np-grade');
@@ -1302,6 +1595,34 @@
         ? 'PAUSAR TODAS LAS MÁQUINAS'
         : 'REPRODUCIR EN CLASE';
     }
+
+    // Estado del Botón "¡Atención al Profesor!"
+    var attBtn = document.getElementById('pv-btn-attention');
+    var attTxt = document.getElementById('pv-attention-txt');
+    if (attBtn && attTxt) {
+      attBtn.classList.toggle('is-active', !!state.attentionMode);
+      attTxt.textContent = state.attentionMode
+        ? '👀 PANTALLAS OSCURECIDAS (Tocar para volver al video)'
+        : '👀 Atención al Profesor (Oscurecer PCs)';
+    }
+
+    // Estado del Cartel / Pregunta activa
+    var promptBar = document.getElementById('pv-prompt-active-bar');
+    var promptActiveTxt = document.getElementById('pv-prompt-active-txt');
+    if (promptBar && promptActiveTxt) {
+      var hasPrompt = !!(state.livePromptText && state.livePromptText.trim());
+      promptBar.style.display = hasPrompt ? 'flex' : 'none';
+      if (hasPrompt) {
+        promptActiveTxt.textContent = 'En pantalla: «' + state.livePromptText.trim() + '»';
+      }
+    }
+
+    // Estado de Auto-pausa y Marcadores
+    var autoPauseCheck = document.getElementById('pv-autopause-check');
+    if (autoPauseCheck) {
+      autoPauseCheck.checked = !!state.autoPauseAtMarkers;
+    }
+    renderMarkersControls(state.markers || []);
 
     var locked = state.lockedByTeacher !== false;
     var lockBox = document.getElementById('pv-lock-box');
@@ -1339,7 +1660,10 @@
 
   function startTimers() {
     if (uiTimer) clearInterval(uiTimer);
-    uiTimer = setInterval(updateMonitorTimeUi, 500);
+    uiTimer = setInterval(function () {
+      updateMonitorTimeUi();
+      updatePresenceBadgeUi();
+    }, 500);
 
     if (heartbeatTimer) clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(function () {
@@ -1358,6 +1682,11 @@
   function updateMonitorTimeUi() {
     var cur = getEffectiveCurrentTime();
     var dur = getEffectiveDuration();
+
+    checkAutoPauseAtMarkers(cur);
+
+    var markerCurSec = document.getElementById('pv-marker-cur-sec');
+    if (markerCurSec) markerCurSec.textContent = formatTime(cur);
 
     if (!isDraggingScrubber) {
       var curEl = document.getElementById('pv-cur-time');

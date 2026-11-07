@@ -166,16 +166,16 @@
     }
 
     /* ══════════════════════════════════════════════
-       BARRA SUPERIOR COMPACTA (ESTILO APP MÓVIL)
+       BARRA SUPERIOR COMPACTA + CONTADOR DE MÁQUINAS
     ══════════════════════════════════════════════ */
     .pv-topbar {
       background: #0F172A;
       border-bottom: 1px solid #1E293B;
-      padding: 10px 14px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -184,19 +184,19 @@
     .pv-topbar-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       min-width: 0;
     }
 
     .pv-topbar-brand img {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
       flex-shrink: 0;
     }
 
     .pv-topbar-title {
-      font-size: 0.98rem;
+      font-size: 0.92rem;
       font-weight: 900;
       margin: 0;
       color: #FFF;
@@ -205,22 +205,48 @@
       text-overflow: ellipsis;
     }
 
+    .pv-top-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
     .pv-live-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.7rem;
+      gap: 5px;
+      font-size: 0.68rem;
       font-weight: 800;
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 999px;
       background: #334155;
       color: #E2E8F0;
-      margin-top: 2px;
     }
 
     .pv-live-badge.is-playing {
       background: #DC2626;
       color: #FFF;
+    }
+
+    .pv-live-badge.is-attention {
+      background: #F59E0B;
+      color: #111827;
+    }
+
+    .pv-presence-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #6EE7B7;
+      cursor: pointer;
     }
 
     .pv-live-dot {
@@ -248,8 +274,8 @@
 
     .pv-top-btn {
       min-height: 40px;
-      padding: 8px 12px;
-      font-size: 0.78rem;
+      padding: 8px 11px;
+      font-size: 0.76rem;
       font-weight: 800;
       border-radius: 10px;
       border: 1px solid #334155;
@@ -259,7 +285,7 @@
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .pv-top-btn.call-btn {
@@ -286,20 +312,17 @@
       display: block;
     }
 
-    /* En pantallas grandes de PC, permitir ver más ancho si se desea */
     @media (min-width: 960px) {
       .pv-app-container {
-        max-width: 1280px;
+        max-width: 1320px;
         display: grid;
-        grid-template-columns: 460px 1fr;
+        grid-template-columns: 480px 1fr;
         gap: 20px;
         padding: 20px 20px 40px 20px;
         align-items: start;
       }
       #pv-panel-remote {
         display: block !important;
-        position: sticky;
-        top: 70px;
       }
       .pv-right-desktop-col {
         display: flex;
@@ -327,7 +350,6 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     }
 
-    /* Cabecera del video actual en el mando */
     .pv-now-header {
       display: flex;
       align-items: flex-start;
@@ -366,7 +388,7 @@
     }
 
     .pv-np-title {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       font-weight: 800;
       margin: 0 0 3px 0;
       color: #FFF;
@@ -393,7 +415,6 @@
       flex-shrink: 0;
     }
 
-    /* Monitor de Video colapsable para ahorrar espacio en el celular */
     .pv-monitor-wrap {
       margin-bottom: 12px;
       display: none;
@@ -432,13 +453,13 @@
     /* ── BOTÓN GIGANTE DE PULGAR: PLAY / PAUSA ── */
     .pv-master-play-btn {
       width: 100%;
-      min-height: 68px;
-      padding: 16px 20px;
+      min-height: 66px;
+      padding: 15px 18px;
       background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
       color: #FFF;
       border: 2px solid #22C55E;
       border-radius: 16px;
-      font-size: 1.12rem;
+      font-size: 1.1rem;
       font-weight: 900;
       letter-spacing: 0.02em;
       cursor: pointer;
@@ -447,7 +468,7 @@
       justify-content: center;
       gap: 12px;
       box-shadow: 0 8px 22px rgba(22, 163, 74, 0.38);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       transition: transform 0.08s ease;
     }
 
@@ -456,13 +477,40 @@
     }
 
     .pv-master-play-btn i {
-      font-size: 1.45rem;
+      font-size: 1.4rem;
     }
 
     .pv-master-play-btn.is-playing {
       background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
       border-color: #EF4444;
       box-shadow: 0 8px 22px rgba(220, 38, 38, 0.4);
+    }
+
+    /* ── BOTÓN MODO "¡ATENCIÓN AL PROFESOR!" (OSCURECER PANTALLAS) ── */
+    .pv-attention-btn {
+      width: 100%;
+      min-height: 50px;
+      padding: 11px 14px;
+      background: #0F172A;
+      color: #FDE68A;
+      border: 1.5px solid #D97706;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      transition: all 0.14s ease;
+    }
+
+    .pv-attention-btn.is-active {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: #111827;
+      border-color: #FEF08A;
+      box-shadow: 0 0 18px rgba(245, 158, 11, 0.55);
     }
 
     /* ── BARRA DE TIEMPO XL TÁCTIL ── */
@@ -506,7 +554,7 @@
       margin: 0;
     }
 
-    /* ── BOTONES GRANDES DE TRANSPORTE (00:00, -10s, +10s, Sincronizar) ── */
+    /* ── BOTONES GRANDES DE TRANSPORTE ── */
     .pv-transport-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -545,10 +593,6 @@
       background: rgba(37, 99, 235, 0.18);
       border-color: #3B82F6;
       color: #BFDBFE;
-    }
-
-    .pv-tr-btn.sync i {
-      color: #60A5FA;
     }
 
     /* ── 2 INTERRUPTORES TÁCTILES (BLOQUEO DE MÁQUINAS + SONIDO) ── */
@@ -631,6 +675,168 @@
     .pv-switch-tile.is-free .pv-st-btn {
       background: #10B981;
       color: #064E3B;
+    }
+
+    /* ── SECCIÓN: CARTEL DE CONSIGNA / PREGUNTA EN PAUSA ── */
+    .pv-prompt-active-bar {
+      background: rgba(245, 158, 11, 0.16);
+      border: 1.5px solid #F59E0B;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .pv-prompt-active-txt {
+      font-size: 0.82rem;
+      color: #FEF3C7;
+      font-weight: 700;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .pv-prompt-clear-btn {
+      background: #DC2626;
+      color: #FFF;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 11px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .pv-prompt-input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pv-prompt-send-btn {
+      min-height: 46px;
+      padding: 0 16px;
+      background: #F59E0B;
+      color: #111827;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      font-weight: 900;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .pv-quick-prompts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    @media (max-width: 420px) {
+      .pv-quick-prompts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pv-qp-btn {
+      background: #0F172A;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 9px 10px;
+      color: #E2E8F0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .pv-qp-btn:active {
+      background: #334155;
+    }
+
+    /* ── SECCIÓN: MARCADORES DE PASOS DEL VIDEO ── */
+    .pv-markers-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .pv-autopause-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #93C5FD;
+      background: #0F172A;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      cursor: pointer;
+    }
+
+    .pv-markers-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pv-marker-pill {
+      background: #0F172A;
+      border: 1.5px solid #3B82F6;
+      border-radius: 10px;
+      padding: 8px 11px;
+      color: #FFF;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .pv-marker-pill time {
+      background: #2563EB;
+      color: #FFF;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    .pv-marker-del {
+      background: none;
+      border: none;
+      color: #F87171;
+      font-size: 0.85rem;
+      padding: 0 2px;
+      cursor: pointer;
+    }
+
+    .pv-add-marker-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pv-add-marker-btn {
+      min-height: 44px;
+      padding: 0 14px;
+      background: #2563EB;
+      color: #FFF;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     /* ── CAMBIO RÁPIDO DE VIDEO EN EL MANDO REMOTO ── */
@@ -752,7 +958,7 @@
     }
 
     /* ══════════════════════════════════════════════
-       PESTAÑA 2: BIBLIOTECA COMPLETA (TARJETAS)
+       PESTAÑA 2: BIBLIOTECA COMPLETA
     ══════════════════════════════════════════════ */
     .pv-filters-stack {
       display: flex;
@@ -782,7 +988,7 @@
       border: 1.5px solid #334155;
       background: #0F172A;
       color: #FFF;
-      font-size: 16px; /* Evita auto-zoom en iOS/Android */
+      font-size: 16px;
     }
 
     .pv-library-grid {
@@ -926,7 +1132,7 @@
     }
 
     /* ══════════════════════════════════════════════
-       PESTAÑA 3: FORMULARIO ALTA / EDICIÓN (MÓVIL)
+       PESTAÑA 3: FORMULARIO ALTA / EDICIÓN
     ══════════════════════════════════════════════ */
     .pv-form-group {
       margin-bottom: 14px;
@@ -1065,7 +1271,6 @@
       color: #60A5FA;
     }
 
-    /* Notificación Toast Flotante */
     .pv-toast {
       position: fixed;
       top: 68px;
@@ -1114,17 +1319,23 @@
   </div>
 
   <!-- ══════════════════════════════════════════════
-       BARRA SUPERIOR COMPACTA
+       BARRA SUPERIOR COMPACTA + CONTADOR DE PCs
   ══════════════════════════════════════════════ -->
   <header class="pv-topbar">
     <div class="pv-topbar-brand">
       <img src="img/escudo_paulo_freire.png?v=2" alt="Escudo">
       <div style="min-width:0;">
         <h1 class="pv-topbar-title">Mando del Profesor</h1>
-        <span class="pv-live-badge" id="pv-live-pill">
-          <span class="pv-live-dot"></span>
-          <span id="pv-live-pill-txt">EN PAUSA</span>
-        </span>
+        <div class="pv-top-badges-row">
+          <span class="pv-live-badge" id="pv-live-pill">
+            <span class="pv-live-dot"></span>
+            <span id="pv-live-pill-txt">EN PAUSA</span>
+          </span>
+          <span class="pv-presence-pill" id="pv-presence-pill" title="Máquinas conectadas en la Sala de Video">
+            <i class="fas fa-desktop"></i>
+            <span id="pv-presence-txt">0 PCs</span>
+          </span>
+        </div>
       </div>
     </div>
 
@@ -1164,7 +1375,7 @@
           </button>
         </div>
 
-        <!-- Monitor de Video (Oculto por defecto en celular para dar prioridad a los botones, desplegable con 1 toque) -->
+        <!-- Monitor de Video (Desplegable) -->
         <div class="pv-monitor-wrap" id="pv-monitor-wrap">
           <div class="pv-monitor-box">
             <div id="pv-yt-wrap" class="pv-monitor-layer">
@@ -1180,6 +1391,12 @@
         <button type="button" class="pv-master-play-btn" id="pv-btn-playpause">
           <i class="fas fa-play" id="pv-playpause-icon"></i>
           <span id="pv-playpause-txt">REPRODUCIR EN CLASE</span>
+        </button>
+
+        <!-- BOTÓN 1: MODO "¡ATENCIÓN AL PROFESOR!" (OSCURECER PANTALLAS) -->
+        <button type="button" class="pv-attention-btn" id="pv-btn-attention">
+          <i class="fas fa-eye" id="pv-attention-icon"></i>
+          <span id="pv-attention-txt">👀 Atención al Profesor (Oscurecer PCs)</span>
         </button>
 
         <!-- BARRA DE TIEMPO XL Y RELOJ DIGITAL -->
@@ -1243,10 +1460,66 @@
 
       </div>
 
-      <!-- LANZADOR RÁPIDO DE VIDEOS POR GRADO DIRECTO EN EL MANDO -->
+      <!-- TARJETA 2: CARTEL DE CONSIGNA / PREGUNTA EN PANTALLA -->
       <div class="pv-surface-card">
         <div class="pv-quick-deck-head">
-          <h3 class="pv-quick-deck-title"><i class="fas fa-bolt" style="color:#FBBF24;"></i> Cambio Rápido de Video por Grado</h3>
+          <h3 class="pv-quick-deck-title"><i class="fas fa-comment-dots" style="color:#FBBF24;"></i> Cartel / Pregunta en las Pantallas</h3>
+        </div>
+
+        <div class="pv-prompt-active-bar" id="pv-prompt-active-bar" style="display:none;">
+          <span class="pv-prompt-active-txt" id="pv-prompt-active-txt"></span>
+          <button type="button" class="pv-prompt-clear-btn" id="pv-btn-clear-prompt">
+            <i class="fas fa-times"></i> Quitar
+          </button>
+        </div>
+
+        <div class="pv-prompt-input-row">
+          <input type="text" id="pv-prompt-input" class="pv-input-modern" placeholder="Escribí una pregunta o consigna para la clase...">
+          <button type="button" class="pv-prompt-send-btn" id="pv-btn-send-prompt">
+            <i class="fas fa-paper-plane"></i> Mostrar
+          </button>
+        </div>
+
+        <div class="pv-quick-prompts-grid">
+          <button type="button" class="pv-qp-btn" data-qprompt="🛠️ ¡Manos a la obra! Armamos este paso en equipo">
+            🛠️ ¡Manos a la obra! Armamos este paso
+          </button>
+          <button type="button" class="pv-qp-btn" data-qprompt="🤔 ¿Por qué creen que ocurre esto? Pensamos juntos">
+            🤔 ¿Por qué creen que ocurre esto?
+          </button>
+          <button type="button" class="pv-qp-btn" data-qprompt="👀 Observen con atención cómo se conectan las piezas">
+            👀 Observen cómo van las piezas
+          </button>
+          <button type="button" class="pv-qp-btn" data-qprompt="🧹 Pausamos y ordenamos los materiales en la mesa">
+            🧹 Ordenamos los materiales
+          </button>
+        </div>
+      </div>
+
+      <!-- TARJETA 3: PASOS DEL VIDEO (MARCADORES Y AUTO-PAUSA) -->
+      <div class="pv-surface-card">
+        <div class="pv-markers-header">
+          <h3 class="pv-quick-deck-title"><i class="fas fa-map-marker-alt" style="color:#60A5FA;"></i> Saltar a Pasos del Video</h3>
+          <label class="pv-autopause-label">
+            <input type="checkbox" id="pv-autopause-check">
+            <span>⏸️ Auto-pausa en cada Paso</span>
+          </label>
+        </div>
+
+        <div class="pv-markers-chips" id="pv-markers-chips"></div>
+
+        <div class="pv-add-marker-row">
+          <input type="text" id="pv-marker-label-input" class="pv-input-modern" placeholder="Nombre (ej: Paso 1 - Base)">
+          <button type="button" class="pv-add-marker-btn" id="pv-btn-add-marker">
+            <i class="fas fa-plus"></i> Marcar <span id="pv-marker-cur-sec">00:00</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TARJETA 4: LANZADOR RÁPIDO DE VIDEOS POR GRADO DIRECTO EN EL MANDO -->
+      <div class="pv-surface-card">
+        <div class="pv-quick-deck-head">
+          <h3 class="pv-quick-deck-title"><i class="fas fa-bolt" style="color:#4ADE80;"></i> Cambio Rápido de Video por Grado</h3>
         </div>
         <div class="pv-horizontal-scroll" id="pv-quick-grade-tabs">
           <button type="button" class="pv-grade-pill-btn active" data-qgrade="todos">Todos</button>
@@ -1401,6 +1674,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=95"></script>
-  <script src="js/profesor_videos.js?v=2"></script>
+  <script src="js/profesor_videos.js?v=3"></script>
 </body>
 </html>

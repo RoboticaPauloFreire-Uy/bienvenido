@@ -4,9 +4,12 @@
  * Colegio Paulo Freire · Taller de Robótica, Programación & Cultura Maker
  * =============================================================
  * Reproductor sincronizado en tiempo real para las computadoras del salón.
- * Recibe las órdenes de reproducción, pausa, tiempo, bloqueo/control libre,
- * proyecto y grado desde la consola oculta del profesor (profesor-videos.html)
- * a través de Firebase Firestore, sin mostrar controles de administración a los alumnos.
+ * Incluye:
+ *  - Sincronización Play/Pausa/Tiempo y Bloqueo/Control Libre
+ *  - Modo "¡Atención al Profesor!" (oscurecer pantalla para escuchar al docente)
+ *  - Cartel de Consigna / Pregunta en vivo sobre el video
+ *  - Indicador de Pasos / Capítulos del proyecto
+ *  - Presencia en vivo de máquinas conectadas para el mando del profesor
  */
 
 (function () {
@@ -14,8 +17,11 @@
 
   var DOC_COLLECTION = 'config';
   var DOC_ID = 'classroom_video_sync';
+  var PRESENCE_COLLECTION = 'classroom_video_presence';
+  var MACHINE_ID_KEY = 'pf_classroom_machine_id';
 
   // Estado local del alumno
+  var machineId = '';
   var hasJoinedAudio = false;
   var activeSubTab = 'expedientes'; // 'expedientes' | 'video'
   var remoteState = null;
@@ -31,6 +37,7 @@
   var ytPlayerReady = false;
   var html5Video = null;
   var uiProgressTimer = null;
+  var presenceTimer = null;
 
   var GRADE_LABELS = {
     todos: 'Todos los Grados',
@@ -57,11 +64,26 @@
     playbackRate: 1,
     lockedByTeacher: true,
     muteStudents: false,
+    attentionMode: false,
+    livePromptText: '',
+    markers: [],
     sessionActive: false,
     callStudentsSeq: 0,
     syncSeq: 1,
     updatedAtMs: Date.now()
   };
+
+  function getOrCreateMachineId() {
+    try {
+      var existing = sessionStorage.getItem(MACHINE_ID_KEY);
+      if (existing) return existing;
+      var created = 'pc-' + Math.random().toString(36).substring(2, 9) + '-' + (Date.now() % 100000);
+      sessionStorage.setItem(MACHINE_ID_KEY, created);
+      return created;
+    } catch (e) {
+      return 'pc-' + Math.floor(Math.random() * 999999);
+    }
+  }
 
   function esc(str) {
     return String(str == null ? '' : str)
@@ -127,11 +149,14 @@
     var container = document.getElementById('clase-video-room-container');
     if (!container) return;
 
+    machineId = getOrCreateMachineId();
+
     renderStudentRoomSkeleton(container);
     bindStudentEvents();
     loadYouTubeApiIfNeeded();
     connectFirestoreListener();
     startUiTimers();
+    startPresenceHeartbeat();
 
     checkUrlHashForVideo();
     window.addEventListener('hashchange', checkUrlHashForVideo);
@@ -163,6 +188,8 @@
     if (tabExpBtn) tabExpBtn.classList.toggle('active', activeSubTab === 'expedientes');
     if (tabVidBtn) tabVidBtn.classList.toggle('active', activeSubTab === 'video');
 
+    sendPresencePing();
+
     if (activeSubTab === 'video' && remoteState) {
       setTimeout(function () {
         applyRemoteStateToPlayer(remoteState, true);
@@ -172,7 +199,41 @@
   window.switchClaseSubTab = switchClaseSubTab;
 
   /**
-   * Renderiza la Sala de Video limpia para los alumnos (sin botones ni enlaces de administrador)
+   * Presencia en vivo de la computadora para que el celular del profesor vea cuántas PCs están listas
+   */
+  function startPresenceHeartbeat() {
+    sendPresencePing();
+    if (presenceTimer) clearInterval(presenceTimer);
+    presenceTimer = setInterval(sendPresencePing, 20000);
+
+    window.addEventListener('beforeunload', function () {
+      if (window.db && typeof window.db.collection === 'function' && machineId) {
+        try {
+          window.db.collection(PRESENCE_COLLECTION).doc(machineId).delete();
+        } catch (e) {}
+      }
+    });
+  }
+
+  function sendPresencePing() {
+    if (!window.db || typeof window.db.collection !== 'function' || !machineId) return;
+    var isClaseViewActive = false;
+    var viewClase = document.getElementById('view-clase');
+    if (viewClase && viewClase.classList.contains('active')) {
+      isClaseViewActive = true;
+    }
+
+    window.db.collection(PRESENCE_COLLECTION).doc(machineId).set({
+      machineId: machineId,
+      inClase: isClaseViewActive,
+      inVideoRoom: isClaseViewActive && activeSubTab === 'video',
+      audioJoined: !!hasJoinedAudio,
+      lastSeenMs: Date.now()
+    }, { merge: true }).catch(function () {});
+  }
+
+  /**
+   * Renderiza la Sala de Video limpia para los alumnos
    */
   function renderStudentRoomSkeleton(container) {
     container.innerHTML =
@@ -218,9 +279,28 @@
             /* Escudo transparente para bloquear clics de alumnos cuando lockedByTeacher === true */
             '<div class="cvs-student-shield" id="cvs-student-shield" title="Reproducción controlada por el Profesor"></div>' +
 
+            /* Cartel de Consigna / Pregunta en vivo enviado por el Profesor */
+            '<div class="cvs-prompt-banner" id="cvs-prompt-banner" style="display:none;">' +
+              '<div class="cvs-prompt-icon"><i class="fas fa-bullhorn"></i></div>' +
+              '<div class="cvs-prompt-content">' +
+                '<span class="cvs-prompt-kicker">CONSIGNA DEL PROFESOR EN CLASE</span>' +
+                '<p class="cvs-prompt-text" id="cvs-prompt-text"></p>' +
+              '</div>' +
+            '</div>' +
+
             /* Cartel flotante de Pausa del Profesor */
             '<div class="cvs-paused-badge" id="cvs-paused-badge" style="display:none;">' +
               '<i class="fas fa-pause-circle"></i> <span>VIDEO EN PAUSA POR EL PROFESOR</span>' +
+            '</div>' +
+
+            /* Modo "¡Atención al Profesor!" (Oscurece toda la pantalla de la máquina) */
+            '<div class="cvs-attention-overlay" id="cvs-attention-overlay" style="display:none;">' +
+              '<div class="cvs-attention-box">' +
+                '<div class="cvs-attention-icon">👀</div>' +
+                '<span class="cvs-attention-kicker">PAUSA DE EXPLICACIÓN EN EL AULA</span>' +
+                '<h3 class="cvs-attention-title">¡Miramos y Escuchamos al Profesor!</h3>' +
+                '<p class="cvs-attention-sub" id="cvs-attention-custom-msg">Dejamos el mouse y el teclado un momento y prestamos atención al frente.</p>' +
+              '</div>' +
             '</div>' +
 
             /* Overlay inicial para Alumnos: 1 Clic para habilitar Sonido + Sincronización */
@@ -276,6 +356,12 @@
           '</div>' +
         '</div>' +
 
+        /* ── TIRA DE PASOS / MARCADORES DEL PROYECTO (SI EL VIDEO TIENE PASOS) ── */
+        '<div class="cvs-markers-strip" id="cvs-markers-strip" style="display:none;">' +
+          '<span class="cvs-markers-lbl"><i class="fas fa-list-ol"></i> Pasos del Video:</span>' +
+          '<div class="cvs-markers-list" id="cvs-markers-list"></div>' +
+        '</div>' +
+
       '</div>';
 
     html5Video = document.getElementById('cvs-html5-video');
@@ -290,6 +376,7 @@
         if (overlay) overlay.style.display = 'none';
 
         applyAudioState();
+        sendPresencePing();
 
         if (remoteState) {
           applyRemoteStateToPlayer(remoteState, true);
@@ -340,6 +427,7 @@
         var overlay = document.getElementById('cvs-join-overlay');
         if (overlay) overlay.style.display = 'none';
         applyAudioState();
+        sendPresencePing();
         if (remoteState) {
           applyRemoteStateToPlayer(remoteState, true);
         }
@@ -353,6 +441,7 @@
         var overlay = document.getElementById('cvs-join-overlay');
         if (hasJoinedAudio && overlay) overlay.style.display = 'none';
         applyAudioState();
+        sendPresencePing();
       });
     }
 
@@ -370,7 +459,6 @@
       });
     }
 
-    // Bloquear barra espaciadora / flechas cuando el control lo tiene el profesor
     document.addEventListener('keydown', function (e) {
       if (activeSubTab !== 'video') return;
       var locked = !remoteState || remoteState.lockedByTeacher !== false;
@@ -452,15 +540,15 @@
     if (!YTState) return;
 
     if (remoteState && remoteState.lockedByTeacher !== false && hasJoinedAudio) {
-      if (remoteState.isPlaying && event.data === YTState.PAUSED) {
+      if (remoteState.isPlaying && !remoteState.attentionMode && event.data === YTState.PAUSED) {
         setTimeout(function () {
-          if (remoteState && remoteState.isPlaying && remoteState.lockedByTeacher !== false) {
+          if (remoteState && remoteState.isPlaying && !remoteState.attentionMode && remoteState.lockedByTeacher !== false) {
             playMedia();
           }
         }, 200);
-      } else if (!remoteState.isPlaying && event.data === YTState.PLAYING) {
+      } else if ((!remoteState.isPlaying || remoteState.attentionMode) && event.data === YTState.PLAYING) {
         setTimeout(function () {
-          if (remoteState && !remoteState.isPlaying && remoteState.lockedByTeacher !== false) {
+          if (remoteState && (!remoteState.isPlaying || remoteState.attentionMode) && remoteState.lockedByTeacher !== false) {
             pauseMedia();
             seekMediaTo(remoteState.baseTime || 0);
           }
@@ -613,7 +701,7 @@
     var shouldMute = false;
     if (!hasJoinedAudio) {
       shouldMute = true;
-    } else if (remoteState && remoteState.muteStudents) {
+    } else if (remoteState && (remoteState.muteStudents || remoteState.attentionMode)) {
       shouldMute = true;
     }
 
@@ -660,8 +748,8 @@
       var prevSeq = lastAppliedSyncSeq;
       var isExplicitTeacherCommand = (merged.syncSeq !== prevSeq);
 
-      // Si el profesor tocó "Traer Máquinas a la Sala de Video", abrir la pestaña automáticamente
       if (lastSeenCallSeq !== -1 && merged.callStudentsSeq && merged.callStudentsSeq > lastSeenCallSeq) {
+        if (typeof window.switchView === 'function') window.switchView('clase', false);
         switchClaseSubTab('video');
       }
       lastSeenCallSeq = merged.callStudentsSeq || 0;
@@ -690,7 +778,15 @@
     var sourceChanged = (currentMediaType !== vType) || (currentMediaIdOrUrl !== expectedIdOrUrl);
 
     if (sourceChanged) {
-      loadMediaSource(vType, vUrl, ytId, targetTime, state.isPlaying);
+      loadMediaSource(vType, vUrl, ytId, targetTime, state.isPlaying && !state.attentionMode);
+    }
+
+    // Si está en Modo Atención al Profesor, pausar inmediatamente
+    if (state.attentionMode) {
+      pauseMedia();
+      applyAudioState();
+      setTimeout(function () { isApplyingRemoteUpdate = false; }, 350);
+      return;
     }
 
     var shouldEnforceSync = (state.lockedByTeacher !== false) || isExplicitCommand || sourceChanged;
@@ -730,7 +826,6 @@
     if (titleEl) titleEl.textContent = state.title || 'Cine de Clase';
     if (subEl) subEl.textContent = state.subtitle || 'Proyección sincronizada del Taller';
 
-    // Etiquetas de Grado y Proyecto
     var gradeBadge = document.getElementById('cvs-grade-badge');
     if (gradeBadge) {
       var gList = Array.isArray(state.grades) ? state.grades : (state.grade ? [state.grade] : ['todos']);
@@ -750,8 +845,10 @@
     var livePill = document.getElementById('cvs-live-pill');
     var livePillText = document.getElementById('cvs-live-pill-text');
     if (livePill && livePillText) {
-      livePill.classList.toggle('is-playing', !!state.isPlaying);
-      livePillText.textContent = state.isPlaying ? 'EN VIVO · REPRODUCIENDO' : 'SALA EN PAUSA';
+      livePill.classList.toggle('is-playing', !!(state.isPlaying && !state.attentionMode));
+      livePillText.textContent = state.attentionMode
+        ? 'ATENCIÓN AL FRENTE'
+        : (state.isPlaying ? 'EN VIVO · REPRODUCIENDO' : 'SALA EN PAUSA');
     }
 
     var tabVidBadge = document.getElementById('cvs-tab-live-dot');
@@ -764,6 +861,29 @@
     if (liveBanner) {
       liveBanner.style.display = (state.isPlaying && activeSubTab === 'expedientes') ? 'flex' : 'none';
       if (liveBannerTitle) liveBannerTitle.textContent = state.title || 'Video de Clase en Vivo';
+    }
+
+    // 1. Modo "¡Atención al Profesor!" (Oscurecer Pantalla)
+    var attentionOverlay = document.getElementById('cvs-attention-overlay');
+    var attentionCustomMsg = document.getElementById('cvs-attention-custom-msg');
+    if (attentionOverlay) {
+      attentionOverlay.style.display = state.attentionMode ? 'flex' : 'none';
+      if (attentionCustomMsg) {
+        attentionCustomMsg.textContent = (state.livePromptText && state.livePromptText.trim())
+          ? state.livePromptText.trim()
+          : 'Dejamos el mouse y el teclado un momento y prestamos atención al Profesor.';
+      }
+    }
+
+    // 2. Cartel de Consigna / Pregunta en Vivo sobre el video
+    var promptBanner = document.getElementById('cvs-prompt-banner');
+    var promptText = document.getElementById('cvs-prompt-text');
+    if (promptBanner && promptText) {
+      var hasPrompt = !!(state.livePromptText && state.livePromptText.trim()) && !state.attentionMode;
+      promptBanner.style.display = hasPrompt ? 'flex' : 'none';
+      if (hasPrompt) {
+        promptText.textContent = state.livePromptText.trim();
+      }
     }
 
     var locked = state.lockedByTeacher !== false;
@@ -782,7 +902,8 @@
 
     var pausedBadge = document.getElementById('cvs-paused-badge');
     if (pausedBadge) {
-      pausedBadge.style.display = (!state.isPlaying && locked && hasJoinedAudio) ? 'flex' : 'none';
+      var showPaused = !state.isPlaying && !state.attentionMode && !state.livePromptText && locked && hasJoinedAudio;
+      pausedBadge.style.display = showPaused ? 'flex' : 'none';
     }
 
     var stuFreeControls = document.getElementById('cvs-student-free-controls');
@@ -796,11 +917,45 @@
         stuFreeControls.style.display = 'none';
         stuLockedMsg.style.display = 'inline-flex';
         if (stuLockedText) {
-          stuLockedText.textContent = state.isPlaying
-            ? '🔒 Reproduciendo en sincronía con el Profesor'
-            : '⏸️ En pausa por el Profesor (esperando orden de Play)';
+          stuLockedText.textContent = state.attentionMode
+            ? '👀 Escuchamos la explicación del Profesor'
+            : (state.isPlaying
+                ? '🔒 Reproduciendo en sincronía con el Profesor'
+                : '⏸️ En pausa por el Profesor (esperando orden de Play)');
         }
       }
+    }
+
+    // 3. Renderizar Marcadores / Pasos del video
+    renderStudentMarkers(state.markers || [], locked);
+  }
+
+  function renderStudentMarkers(markers, locked) {
+    var strip = document.getElementById('cvs-markers-strip');
+    var listEl = document.getElementById('cvs-markers-list');
+    if (!strip || !listEl) return;
+
+    if (!Array.isArray(markers) || !markers.length) {
+      strip.style.display = 'none';
+      return;
+    }
+
+    strip.style.display = 'flex';
+    listEl.innerHTML = markers.map(function (m, idx) {
+      return '<button type="button" class="cvs-marker-chip"' +
+        (locked ? ' disabled title="Controlado por el Profesor"' : ' data-marker-sec="' + Number(m.time || 0) + '"') + '>' +
+        '<span class="cvs-marker-time">' + formatTime(m.time || 0) + '</span> ' +
+        '<span>' + esc(m.label || ('Paso ' + (idx + 1))) + '</span>' +
+      '</button>';
+    }).join('');
+
+    if (!locked) {
+      listEl.querySelectorAll('[data-marker-sec]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var sec = Number(btn.getAttribute('data-marker-sec')) || 0;
+          seekMediaTo(sec);
+        });
+      });
     }
   }
 
@@ -839,6 +994,11 @@
     if (isApplyingRemoteUpdate) return;
 
     var playingLocal = isMediaPlaying();
+    if (remoteState.attentionMode) {
+      if (playingLocal) pauseMedia();
+      return;
+    }
+
     if (remoteState.isPlaying && !playingLocal) {
       playMedia();
     } else if (!remoteState.isPlaying && playingLocal) {
