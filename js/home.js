@@ -2336,6 +2336,9 @@
       }
       renderActividades();
       renderJuegos();
+      if (window.renderGDriveDashboard && st && document.getElementById('student-drive-dashboard-container')) {
+        window.renderGDriveDashboard('student-drive-dashboard-container');
+      }
     });
 
     if (window.renderGDriveDashboard && alumno()) {

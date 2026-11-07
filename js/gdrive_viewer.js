@@ -657,8 +657,8 @@
   }
 
   function refreshDashboard() {
-    renderGDriveDashboard('student-drive-dashboard-container');
-    renderGDriveDashboard('gdrive-explorer-container');
+    if (document.getElementById('student-drive-dashboard-container')) renderGDriveDashboard('student-drive-dashboard-container');
+    if (document.getElementById('gdrive-explorer-container')) renderGDriveDashboard('gdrive-explorer-container');
   }
 
   // ──────────────────────────────────────────────────
@@ -2724,16 +2724,18 @@
   // ──────────────────────────────────────────────────
   // RENDER PRINCIPAL (CON DEBOUNCE ANTI-PARPADEO / FLICKER)
   // ──────────────────────────────────────────────────
-  var _renderDashboardDebounceTimer = null;
+  var _renderDashboardDebounceTimers = {};
   function renderGDriveDashboard(containerId) {
     var cid = containerId || 'student-drive-dashboard-container';
-    if (_renderDashboardDebounceTimer) {
-      clearTimeout(_renderDashboardDebounceTimer);
+    var targetEl = document.getElementById(cid);
+    if (!targetEl) return;
+    if (_renderDashboardDebounceTimers[cid]) {
+      clearTimeout(_renderDashboardDebounceTimers[cid]);
     }
-    _renderDashboardDebounceTimer = setTimeout(function() {
-      _renderDashboardDebounceTimer = null;
+    _renderDashboardDebounceTimers[cid] = setTimeout(function() {
+      delete _renderDashboardDebounceTimers[cid];
       _executeRenderGDriveDashboard(cid);
-    }, 35);
+    }, 20);
   }
 
   function _executeRenderGDriveDashboard(containerId) {
@@ -12367,8 +12369,8 @@
     FOLDER_CONTENTS.proyecto.items=[];
     FOLDER_CONTENTS.actividades.items=[];
     FOLDER_CONTENTS.actividades.generalItems=[];
-    renderGDriveDashboard('student-drive-dashboard-container');
-    renderGDriveDashboard('gdrive-explorer-container');
+    if (document.getElementById('student-drive-dashboard-container')) renderGDriveDashboard('student-drive-dashboard-container');
+    if (document.getElementById('gdrive-explorer-container')) renderGDriveDashboard('gdrive-explorer-container');
   });
 
   function celebrateMetaArrival() {

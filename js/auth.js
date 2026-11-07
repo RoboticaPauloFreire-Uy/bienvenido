@@ -222,8 +222,12 @@
 
       // Renderizar panel Drive
       if (window.renderGDriveDashboard) {
-        window.renderGDriveDashboard('student-drive-dashboard-container');
-        window.renderGDriveDashboard('gdrive-explorer-container');
+        if (document.getElementById('student-drive-dashboard-container')) {
+          window.renderGDriveDashboard('student-drive-dashboard-container');
+        }
+        if (document.getElementById('gdrive-explorer-container')) {
+          window.renderGDriveDashboard('gdrive-explorer-container');
+        }
       }
 
       // Sincronizar pestaña de grado en Actividades
@@ -255,6 +259,8 @@
       // Limpiar contenedor Drive
       var dc = document.getElementById('student-drive-dashboard-container');
       if (dc) dc.innerHTML = '';
+      var ec = document.getElementById('gdrive-explorer-container');
+      if (ec) ec.innerHTML = '';
 
       // Resetear indicador de grado en Actividades
       if (typeof window.selectActividadGrade === 'function') {
@@ -1052,6 +1058,7 @@
             setActiveStudent(matches[0]);
             setTimeout(function() {
               closeLoginModal();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 300);
             if (window.sounds) window.sounds.playSuccess();
           } else if (matches.length > 1) {
@@ -1102,6 +1109,7 @@
             var selectedStudent = studentList.find(function(s) { return s.id === stId; });
             setActiveStudent(selectedStudent || stId);
             closeLoginModal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             if (window.sounds) window.sounds.playSuccess();
           };
         });
