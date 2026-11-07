@@ -628,6 +628,35 @@
       });
     }
 
+    // Botón de activación / desactivación manual de Transmisión en Vivo
+    var toggleLiveBtn = document.getElementById('pv-btn-toggle-live') || document.getElementById('pv-live-pill');
+    if (toggleLiveBtn) {
+      toggleLiveBtn.addEventListener('click', function () {
+        vibrateTap(40);
+        var isCurrentlyActive = !!(remoteState && remoteState.sessionActive);
+        if (isCurrentlyActive) {
+          if (confirm('¿Finalizar la transmisión en vivo? Los alumnos ya no verán el cartel de EN VIVO.')) {
+            virtualIsPlaying = false;
+            if (monitorVisible) pauseMedia();
+            pushState({
+              sessionActive: false,
+              isPlaying: false,
+              attentionMode: false,
+              referenceSchema: null,
+              activeQuiz: null,
+              livePromptText: ''
+            }, true);
+            showToast('⏹️ Transmisión en vivo finalizada');
+          }
+        } else {
+          pushState({
+            sessionActive: true
+          }, true);
+          showToast('🔴 Transmisión en vivo activada para la clase');
+        }
+      });
+    }
+
     var qTabs = document.getElementById('pv-quick-grade-tabs');
     if (qTabs) {
       qTabs.querySelectorAll('[data-qgrade]').forEach(function (btn) {
@@ -2146,14 +2175,17 @@
   function renderConsoleStatus(state) {
     if (!state) return;
 
-    var livePill = document.getElementById('pv-live-pill');
+    var livePill = document.getElementById('pv-btn-toggle-live') || document.getElementById('pv-live-pill');
     var liveTxt = document.getElementById('pv-live-pill-txt');
     if (livePill && liveTxt) {
+      var isLive = !!(state && state.sessionActive);
       livePill.className = 'pv-live-badge' +
-        (state.attentionMode ? ' is-attention' : (state.isPlaying ? ' is-playing' : ''));
-      liveTxt.textContent = state.attentionMode
-        ? 'ATENCIÓN'
-        : (state.isPlaying ? 'EN VIVO' : 'EN PAUSA');
+        (isLive ? (state.attentionMode ? ' is-attention' : (state.isPlaying ? ' is-playing' : '')) : '');
+      liveTxt.textContent = !isLive
+        ? 'VIVO: APAGADO'
+        : (state.attentionMode
+            ? 'ATENCIÓN'
+            : (state.isPlaying ? 'EN VIVO' : 'EN PAUSA'));
     }
 
     var npGrade = document.getElementById('pv-np-grade');

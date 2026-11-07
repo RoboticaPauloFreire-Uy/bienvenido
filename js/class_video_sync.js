@@ -152,6 +152,238 @@
     };
   }
 
+  
+  /**
+   * Determina si la sesión de video en vivo está actualmente activa
+   */
+  function isLiveSessionActive(state) {
+    if (!state) return false;
+    var hasActiveFlag = !!(
+      state.sessionActive ||
+      state.isPlaying ||
+      state.attentionMode ||
+      state.referenceSchema ||
+      state.activeQuiz
+    );
+    if (!hasActiveFlag) return false;
+
+    // Verificar si el estado no es viejo/abandonado (más de 6 horas)
+    if (state.updatedAtMs && typeof state.updatedAtMs === 'number') {
+      var age = Date.now() - state.updatedAtMs;
+      if (age > 6 * 60 * 60 * 1000) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Crea dinámicamente el cartel flotante en la esquina superior izquierda si no existiera en el HTML
+   */
+  function ensureGlobalLiveBadgeElement() {
+    var existing = document.getElementById('pf-global-live-badge');
+    if (existing) return existing;
+
+    var el = document.createElement('div');
+    el.id = 'pf-global-live-badge';
+    el.className = 'pf-global-live-badge';
+    el.style.display = 'none';
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('title', '¡Hay una clase en vivo! Tocá para unirte automáticamente');
+    el.innerHTML =
+      '<div class="pf-glb-left">' +
+        '<span class="pf-glb-radar">' +
+          '<span class="pf-glb-ring"></span>' +
+          '<span class="pf-glb-dot"></span>' +
+        '</span>' +
+        '<span class="pf-glb-tag">EN VIVO</span>' +
+      '</div>' +
+      '<div class="pf-glb-divider"></div>' +
+      '<div class="pf-glb-center">' +
+        '<span class="pf-glb-title" id="pf-glb-title">Cine de Clase</span>' +
+        '<span class="pf-glb-sub" id="pf-glb-sub"><i class="fas fa-play" style="color:#4ADE80;font-size:0.6rem;"></i> Tocá para unirte</span>' +
+      '</div>' +
+      '<div class="pf-glb-action">' +
+        '<i class="fas fa-play"></i>' +
+      '</div>';
+
+    el.addEventListener('click', handleGlobalLiveBadgeClick);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        handleGlobalLiveBadgeClick(e);
+      }
+    });
+
+    document.body.appendChild(el);
+    return el;
+  }
+
+  /**
+   * Actualiza la visibilidad y textos del cartel flotante 'EN VIVO'
+   */
+  function updateGlobalLiveBadge() {
+    var badge = document.getElementById('pf-global-live-badge');
+    if (!badge) {
+      badge = ensureGlobalLiveBadgeElement();
+    }
+    if (!badge) return;
+
+    var isLive = isLiveSessionActive(remoteState);
+    if (!isLive) {
+      badge.style.display = 'none';
+      return;
+    }
+
+    // Si el usuario ya está viendo la Sala de Video en index.html, ocultar para no tapar controles
+    var isWatchingVideoNow = false;
+    var container = document.getElementById('clase-video-room-container');
+    if (container) {
+      var viewClase = document.getElementById('view-clase');
+      var isClaseActive = viewClase && (viewClase.classList.contains('active') || viewClase.style.display !== 'none');
+      if (isClaseActive && activeSubTab === 'video') {
+        isWatchingVideoNow = true;
+      }
+    }
+
+    if (isWatchingVideoNow) {
+      badge.style.display = 'none';
+      return;
+    }
+
+    var titleEl = document.getElementById('pf-glb-title');
+    var subEl = document.getElementById('pf-glb-sub');
+    if (titleEl) {
+      var t = (remoteState && (remoteState.project || remoteState.title))
+        ? (remoteState.project || remoteState.title)
+        : 'Cine de Clase';
+      titleEl.textContent = t;
+      titleEl.title = t;
+    }
+    if (subEl) {
+      if (remoteState && remoteState.attentionMode) {
+        subEl.innerHTML = '<i class="fas fa-eye" style="color:#FBBF24;"></i> ¡Atención al Profesor!';
+      } else if (remoteState && remoteState.activeQuiz) {
+        subEl.innerHTML = '<i class="fas fa-poll" style="color:#F43F5E;"></i> ¡Pregunta en Vivo!';
+      } else if (remoteState && remoteState.referenceSchema) {
+        subEl.innerHTML = '<i class="fas fa-drafting-compass" style="color:#38BDF8;"></i> Lámina del Proyecto';
+      } else {
+        subEl.innerHTML = '<i class="fas fa-play" style="color:#4ADE80;font-size:0.6rem;"></i> Tocá para unirte';
+      }
+    }
+
+    badge.style.display = 'inline-flex';
+  }
+  window.updateGlobalLiveBadge = updateGlobalLiveBadge;
+
+  /**
+   * Conecta y une automáticamente al alumno a la Sala de Video en vivo
+   */
+  function joinLiveVideoAutomatically() {
+    hasJoinedAudio = true;
+
+    // Permitir visualización si el alumno está logueado en su cuenta de Google Drive
+    if (document.body.classList.contains('student-logged-in')) {
+      document.body.classList.add('in-class-video');
+    }
+
+    if (typeof window.switchView === 'function') {
+      window.switchView('clase', false);
+    }
+    switchClaseSubTab('video');
+
+    var overlay = document.getElementById('cvs-join-overlay');
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+
+    applyAudioState();
+
+    if (remoteState) {
+      applyRemoteStateToPlayer(remoteState, true);
+      if (remoteState.isPlaying && !remoteState.attentionMode && !remoteState.referenceSchema && !remoteState.activeQuiz) {
+        playMedia();
+      }
+    }
+
+    sendPresencePing();
+
+    setTimeout(function () {
+      var vidStage = document.getElementById('cvs-player-stage') || document.getElementById('clase-video-room-container');
+      if (vidStage) {
+        vidStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 120);
+
+    updateGlobalLiveBadge();
+  }
+  window.joinLiveVideoAutomatically = joinLiveVideoAutomatically;
+
+  /**
+   * Manejador de clic en el cartel flotante
+   */
+  function handleGlobalLiveBadgeClick(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    var container = document.getElementById('clase-video-room-container');
+    if (container) {
+      // Estamos en index.html: unirse directamente en la misma página
+      joinLiveVideoAutomatically();
+    } else {
+      // Estamos en otra página (ej: aula.html): guardar flag y navegar a index.html#clase-video
+      try {
+        sessionStorage.setItem('pf_autojoin_video', '1');
+      } catch (err) {}
+      window.location.href = 'index.html#clase-video';
+    }
+  }
+
+  /**
+   * Chequea si venimos redirigidos para unirnos automáticamente
+   */
+  function checkAutoJoinVideoFlag() {
+    try {
+      var flag = sessionStorage.getItem('pf_autojoin_video');
+      if (flag === '1') {
+        sessionStorage.removeItem('pf_autojoin_video');
+        setTimeout(function () {
+          joinLiveVideoAutomatically();
+        }, 300);
+      }
+    } catch (e) {}
+  }
+
+  /**
+   * Inicializa la sincronización global (badge + Firestore listener en toda página pública)
+   */
+  function initGlobalLiveSync() {
+    ensureGlobalLiveBadgeElement();
+
+    var staticBadge = document.getElementById('pf-global-live-badge');
+    if (staticBadge) {
+      staticBadge.removeEventListener('click', handleGlobalLiveBadgeClick);
+      staticBadge.addEventListener('click', handleGlobalLiveBadgeClick);
+      staticBadge.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleGlobalLiveBadgeClick(e);
+        }
+      });
+    }
+
+    connectFirestoreListener();
+    checkAutoJoinVideoFlag();
+
+    window.addEventListener('hashchange', function () {
+      setTimeout(updateGlobalLiveBadge, 60);
+    });
+    window.addEventListener('popstate', function () {
+      setTimeout(updateGlobalLiveBadge, 60);
+    });
+  }
+
   function initClassVideoRoom() {
     var container = document.getElementById('clase-video-room-container');
     if (!container) return;
@@ -182,6 +414,10 @@
   function switchClaseSubTab(tabName) {
     activeSubTab = tabName === 'video' ? 'video' : 'expedientes';
 
+    if (tabName === 'expedientes' && document.body.classList.contains('student-logged-in')) {
+      document.body.classList.remove('in-class-video');
+    }
+
     var expWrap = document.getElementById('clase-expedientes-wrap');
     var vidWrap = document.getElementById('clase-video-room-container');
     var filterWrap = document.getElementById('hn-clase-filter-wrap');
@@ -202,6 +438,8 @@
         applyRemoteStateToPlayer(remoteState, true);
       }, 150);
     }
+
+    updateGlobalLiveBadge();
   }
   window.switchClaseSubTab = switchClaseSubTab;
 
@@ -769,6 +1007,7 @@
         remoteState = Object.assign({}, DEFAULT_STATE);
         renderStateMetadata(remoteState);
         applyRemoteStateToPlayer(remoteState, true);
+        updateGlobalLiveBadge();
         return;
       }
 
@@ -778,8 +1017,7 @@
       var isExplicitTeacherCommand = (merged.syncSeq !== prevSeq);
 
       if (lastSeenCallSeq !== -1 && merged.callStudentsSeq && merged.callStudentsSeq > lastSeenCallSeq) {
-        if (typeof window.switchView === 'function') window.switchView('clase', false);
-        switchClaseSubTab('video');
+        joinLiveVideoAutomatically();
       }
       lastSeenCallSeq = merged.callStudentsSeq || 0;
 
@@ -788,6 +1026,7 @@
       applyRemoteStateToPlayer(merged, isExplicitTeacherCommand);
 
       lastAppliedSyncSeq = merged.syncSeq;
+      updateGlobalLiveBadge();
     }, function (err) {
       console.warn('Aviso de sincronización de Sala de Video:', err);
     });
@@ -1135,8 +1374,12 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initClassVideoRoom);
+    document.addEventListener('DOMContentLoaded', function () {
+      initGlobalLiveSync();
+      initClassVideoRoom();
+    });
   } else {
+    initGlobalLiveSync();
     initClassVideoRoom();
   }
 })();
