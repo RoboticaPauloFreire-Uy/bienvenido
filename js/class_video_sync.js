@@ -8,8 +8,9 @@
  *  - Sincronización Play/Pausa/Tiempo y Bloqueo/Control Libre
  *  - Modo "¡Atención al Profesor!" (oscurecer pantalla para escuchar al docente)
  *  - Cartel de Consigna / Pregunta en vivo sobre el video
- *  - Indicador de Pasos / Capítulos del proyecto
- *  - Presencia en vivo de máquinas conectadas para el mando del profesor
+ *  - Lámina / Esquema del Proyecto en pantalla fija durante la pausa
+ *  - Mini-Pregunta Interactiva (Votación A/B/C en tiempo real con revelación de respuesta)
+ *  - Indicador de Pasos / Capítulos del proyecto y presencia en vivo
  */
 
 (function () {
@@ -28,6 +29,10 @@
   var lastAppliedSyncSeq = -1;
   var lastSeenCallSeq = -1;
   var isApplyingRemoteUpdate = false;
+
+  // Estado local de votación de Mini-Pregunta
+  var votedQuizId = null;
+  var votedOptionIndex = -1;
 
   // Instancias de reproductores
   var currentMediaType = null; // 'youtube' | 'mp4'
@@ -66,6 +71,8 @@
     muteStudents: false,
     attentionMode: false,
     livePromptText: '',
+    referenceSchema: null, // { url, title }
+    activeQuiz: null,      // { id, question, options: [], correctIndex: 0, revealed: false }
     markers: [],
     sessionActive: false,
     callStudentsSeq: 0,
@@ -199,7 +206,7 @@
   window.switchClaseSubTab = switchClaseSubTab;
 
   /**
-   * Presencia en vivo de la computadora para que el celular del profesor vea cuántas PCs están listas
+   * Presencia en vivo + envío de respuesta de Mini-Pregunta
    */
   function startPresenceHeartbeat() {
     sendPresencePing();
@@ -228,6 +235,8 @@
       inClase: isClaseViewActive,
       inVideoRoom: isClaseViewActive && activeSubTab === 'video',
       audioJoined: !!hasJoinedAudio,
+      quizId: votedQuizId || '',
+      quizAnswer: votedOptionIndex,
       lastSeenMs: Date.now()
     }, { merge: true }).catch(function () {});
   }
@@ -293,7 +302,28 @@
               '<i class="fas fa-pause-circle"></i> <span>VIDEO EN PAUSA POR EL PROFESOR</span>' +
             '</div>' +
 
-            /* Modo "¡Atención al Profesor!" (Oscurece toda la pantalla de la máquina) */
+            /* Overlay 1: Lámina / Esquema del Proyecto proyectado por el Profesor */
+            '<div class="cvs-schema-overlay" id="cvs-schema-overlay" style="display:none;">' +
+              '<div class="cvs-schema-top">' +
+                '<span class="cvs-schema-badge"><i class="fas fa-drafting-compass"></i> LÁMINA Y ESQUEMA EN PANTALLA</span>' +
+                '<strong class="cvs-schema-title" id="cvs-schema-title">Esquema del Proyecto</strong>' +
+              '</div>' +
+              '<div class="cvs-schema-img-wrap">' +
+                '<img id="cvs-schema-img" src="" alt="Esquema del Proyecto">' +
+              '</div>' +
+            '</div>' +
+
+            /* Overlay 2: Mini-Pregunta Interactiva (Votación A / B / C en Clase) */
+            '<div class="cvs-quiz-overlay" id="cvs-quiz-overlay" style="display:none;">' +
+              '<div class="cvs-quiz-card">' +
+                '<span class="cvs-quiz-kicker"><i class="fas fa-bolt"></i> DESAFÍO INTERACTIVO EN VIVO</span>' +
+                '<h3 class="cvs-quiz-question" id="cvs-quiz-question">¿Pregunta de la clase?</h3>' +
+                '<div class="cvs-quiz-options" id="cvs-quiz-options"></div>' +
+                '<div class="cvs-quiz-feedback" id="cvs-quiz-feedback" style="display:none;"></div>' +
+              '</div>' +
+            '</div>' +
+
+            /* Overlay 3: Modo "¡Atención al Profesor!" (Oscurece toda la pantalla) */
             '<div class="cvs-attention-overlay" id="cvs-attention-overlay" style="display:none;">' +
               '<div class="cvs-attention-box">' +
                 '<div class="cvs-attention-icon">👀</div>' +
@@ -320,7 +350,6 @@
           /* ── BARRA INFERIOR DEL REPRODUCTOR ── */
           '<div class="cvs-player-bar" id="cvs-player-bar">' +
             '<div class="cvs-player-bar-left">' +
-              /* Controles locales para el alumno (solo visibles cuando el profe libera el control) */
               '<div class="cvs-student-free-controls" id="cvs-student-free-controls" style="display:none;">' +
                 '<button type="button" class="cvs-bar-btn" id="cvs-stu-playpause" title="Play / Pausa en tu máquina">' +
                   '<i class="fas fa-play"></i>' +
@@ -334,7 +363,6 @@
                 '<input type="range" class="cvs-stu-scrubber" id="cvs-stu-scrubber" min="0" max="100" step="1" value="0" title="Posición del video">' +
               '</div>' +
 
-              /* Mensaje cuando está bloqueado por el profesor */
               '<div class="cvs-student-locked-msg" id="cvs-student-locked-msg">' +
                 '<i class="fas fa-broadcast-tower"></i> ' +
                 '<span id="cvs-student-locked-text">Sincronizado con el Profesor (Play y Pausa automáticos)</span>' +
@@ -356,7 +384,7 @@
           '</div>' +
         '</div>' +
 
-        /* ── TIRA DE PASOS / MARCADORES DEL PROYECTO (SI EL VIDEO TIENE PASOS) ── */
+        /* ── TIRA DE PASOS / MARCADORES DEL PROYECTO ── */
         '<div class="cvs-markers-strip" id="cvs-markers-strip" style="display:none;">' +
           '<span class="cvs-markers-lbl"><i class="fas fa-list-ol"></i> Pasos del Video:</span>' +
           '<div class="cvs-markers-list" id="cvs-markers-list"></div>' +
@@ -540,15 +568,16 @@
     if (!YTState) return;
 
     if (remoteState && remoteState.lockedByTeacher !== false && hasJoinedAudio) {
-      if (remoteState.isPlaying && !remoteState.attentionMode && event.data === YTState.PAUSED) {
+      var shouldBePlaying = remoteState.isPlaying && !remoteState.attentionMode && !remoteState.referenceSchema && !remoteState.activeQuiz;
+      if (shouldBePlaying && event.data === YTState.PAUSED) {
         setTimeout(function () {
-          if (remoteState && remoteState.isPlaying && !remoteState.attentionMode && remoteState.lockedByTeacher !== false) {
+          if (remoteState && remoteState.isPlaying && !remoteState.attentionMode && !remoteState.referenceSchema && !remoteState.activeQuiz && remoteState.lockedByTeacher !== false) {
             playMedia();
           }
         }, 200);
-      } else if ((!remoteState.isPlaying || remoteState.attentionMode) && event.data === YTState.PLAYING) {
+      } else if (!shouldBePlaying && event.data === YTState.PLAYING) {
         setTimeout(function () {
-          if (remoteState && (!remoteState.isPlaying || remoteState.attentionMode) && remoteState.lockedByTeacher !== false) {
+          if (remoteState && (!remoteState.isPlaying || remoteState.attentionMode || remoteState.referenceSchema || remoteState.activeQuiz) && remoteState.lockedByTeacher !== false) {
             pauseMedia();
             seekMediaTo(remoteState.baseTime || 0);
           }
@@ -777,12 +806,13 @@
     var expectedIdOrUrl = vType === 'youtube' ? ytId : vUrl;
     var sourceChanged = (currentMediaType !== vType) || (currentMediaIdOrUrl !== expectedIdOrUrl);
 
+    var canPlayNow = state.isPlaying && !state.attentionMode && !state.referenceSchema && !state.activeQuiz;
+
     if (sourceChanged) {
-      loadMediaSource(vType, vUrl, ytId, targetTime, state.isPlaying && !state.attentionMode);
+      loadMediaSource(vType, vUrl, ytId, targetTime, canPlayNow);
     }
 
-    // Si está en Modo Atención al Profesor, pausar inmediatamente
-    if (state.attentionMode) {
+    if (state.attentionMode || state.referenceSchema || state.activeQuiz) {
       pauseMedia();
       applyAudioState();
       setTimeout(function () { isApplyingRemoteUpdate = false; }, 350);
@@ -802,7 +832,7 @@
         seekMediaTo(targetTime);
       }
 
-      if (state.isPlaying) {
+      if (canPlayNow) {
         if (hasJoinedAudio) {
           playMedia();
         }
@@ -848,7 +878,7 @@
       livePill.classList.toggle('is-playing', !!(state.isPlaying && !state.attentionMode));
       livePillText.textContent = state.attentionMode
         ? 'ATENCIÓN AL FRENTE'
-        : (state.isPlaying ? 'EN VIVO · REPRODUCIENDO' : 'SALA EN PAUSA');
+        : (state.activeQuiz ? 'PREGUNTA EN VIVO' : (state.referenceSchema ? 'LÁMINA EN PANTALLA' : (state.isPlaying ? 'EN VIVO · REPRODUCIENDO' : 'SALA EN PAUSA')));
     }
 
     var tabVidBadge = document.getElementById('cvs-tab-live-dot');
@@ -863,7 +893,7 @@
       if (liveBannerTitle) liveBannerTitle.textContent = state.title || 'Video de Clase en Vivo';
     }
 
-    // 1. Modo "¡Atención al Profesor!" (Oscurecer Pantalla)
+    // 1. Modo "¡Atención al Profesor!"
     var attentionOverlay = document.getElementById('cvs-attention-overlay');
     var attentionCustomMsg = document.getElementById('cvs-attention-custom-msg');
     if (attentionOverlay) {
@@ -875,11 +905,31 @@
       }
     }
 
-    // 2. Cartel de Consigna / Pregunta en Vivo sobre el video
+    // 2. Lámina / Esquema del Proyecto en Pausa (#3)
+    var schemaOverlay = document.getElementById('cvs-schema-overlay');
+    var schemaImg = document.getElementById('cvs-schema-img');
+    var schemaTitle = document.getElementById('cvs-schema-title');
+    if (schemaOverlay && schemaImg) {
+      var hasSchema = !!(state.referenceSchema && state.referenceSchema.url) && !state.attentionMode && !state.activeQuiz;
+      schemaOverlay.style.display = hasSchema ? 'flex' : 'none';
+      if (hasSchema) {
+        if (schemaImg.getAttribute('src') !== state.referenceSchema.url) {
+          schemaImg.setAttribute('src', state.referenceSchema.url);
+        }
+        if (schemaTitle) {
+          schemaTitle.textContent = state.referenceSchema.title || 'Lámina del Proyecto';
+        }
+      }
+    }
+
+    // 3. Mini-Pregunta Interactiva A/B/C (#4)
+    renderStudentQuizOverlay(state.activeQuiz, state.attentionMode);
+
+    // 4. Cartel de Consigna / Pregunta en Vivo
     var promptBanner = document.getElementById('cvs-prompt-banner');
     var promptText = document.getElementById('cvs-prompt-text');
     if (promptBanner && promptText) {
-      var hasPrompt = !!(state.livePromptText && state.livePromptText.trim()) && !state.attentionMode;
+      var hasPrompt = !!(state.livePromptText && state.livePromptText.trim()) && !state.attentionMode && !state.activeQuiz;
       promptBanner.style.display = hasPrompt ? 'flex' : 'none';
       if (hasPrompt) {
         promptText.textContent = state.livePromptText.trim();
@@ -902,7 +952,7 @@
 
     var pausedBadge = document.getElementById('cvs-paused-badge');
     if (pausedBadge) {
-      var showPaused = !state.isPlaying && !state.attentionMode && !state.livePromptText && locked && hasJoinedAudio;
+      var showPaused = !state.isPlaying && !state.attentionMode && !state.referenceSchema && !state.activeQuiz && !state.livePromptText && locked && hasJoinedAudio;
       pausedBadge.style.display = showPaused ? 'flex' : 'none';
     }
 
@@ -919,15 +969,92 @@
         if (stuLockedText) {
           stuLockedText.textContent = state.attentionMode
             ? '👀 Escuchamos la explicación del Profesor'
-            : (state.isPlaying
-                ? '🔒 Reproduciendo en sincronía con el Profesor'
-                : '⏸️ En pausa por el Profesor (esperando orden de Play)');
+            : (state.activeQuiz
+                ? '🎯 Respondé la pregunta interactiva en pantalla'
+                : (state.referenceSchema
+                    ? '📐 Observando lámina del proyecto'
+                    : (state.isPlaying
+                        ? '🔒 Reproduciendo en sincronía con el Profesor'
+                        : '⏸️ En pausa por el Profesor (esperando orden de Play)')));
         }
       }
     }
 
-    // 3. Renderizar Marcadores / Pasos del video
     renderStudentMarkers(state.markers || [], locked);
+  }
+
+  /**
+   * Renderiza la Mini-Pregunta Interactiva en la máquina del alumno
+   */
+  function renderStudentQuizOverlay(quiz, isAttention) {
+    var overlay = document.getElementById('cvs-quiz-overlay');
+    var qEl = document.getElementById('cvs-quiz-question');
+    var optsEl = document.getElementById('cvs-quiz-options');
+    var fbEl = document.getElementById('cvs-quiz-feedback');
+    if (!overlay || !qEl || !optsEl || !fbEl) return;
+
+    if (!quiz || !quiz.id || !quiz.question || isAttention) {
+      overlay.style.display = 'none';
+      return;
+    }
+
+    // Si es una pregunta nueva distinta a la anterior, limpiar voto local
+    if (votedQuizId !== quiz.id) {
+      votedQuizId = null;
+      votedOptionIndex = -1;
+    }
+
+    overlay.style.display = 'flex';
+    qEl.textContent = quiz.question;
+
+    var letters = ['A', 'B', 'C', 'D'];
+    var options = Array.isArray(quiz.options) ? quiz.options : [];
+    var hasVoted = (votedQuizId === quiz.id && votedOptionIndex >= 0);
+    var isRevealed = !!quiz.revealed;
+    var correctIdx = Number(quiz.correctIndex || 0);
+
+    optsEl.innerHTML = options.map(function (optText, idx) {
+      var cls = 'cvs-quiz-opt-btn';
+      if (hasVoted && votedOptionIndex === idx) cls += ' is-selected';
+      if (isRevealed) {
+        if (idx === correctIdx) cls += ' is-correct';
+        else if (hasVoted && votedOptionIndex === idx) cls += ' is-wrong';
+      }
+
+      return '<button type="button" class="' + cls + '" data-quiz-opt="' + idx + '"' + ((hasVoted || isRevealed) ? ' disabled' : '') + '>' +
+        '<span class="cvs-quiz-letter">' + (letters[idx] || (idx + 1)) + '</span>' +
+        '<span class="cvs-quiz-opt-txt">' + esc(optText) + '</span>' +
+        (isRevealed && idx === correctIdx ? '<i class="fas fa-check-circle cvs-quiz-status-icon"></i>' : '') +
+      '</button>';
+    }).join('');
+
+    if (isRevealed) {
+      fbEl.style.display = 'block';
+      if (hasVoted && votedOptionIndex === correctIdx) {
+        fbEl.className = 'cvs-quiz-feedback is-win';
+        fbEl.innerHTML = '🎉 <strong>¡Excelente! ¡Acertaron la respuesta correcta!</strong>';
+      } else {
+        fbEl.className = 'cvs-quiz-feedback is-info';
+        fbEl.innerHTML = '💡 <strong>Respuesta correcta: Opción ' + (letters[correctIdx] || 'A') + '</strong> — ' + esc(options[correctIdx] || '');
+      }
+    } else if (hasVoted) {
+      fbEl.style.display = 'block';
+      fbEl.className = 'cvs-quiz-feedback is-waiting';
+      fbEl.innerHTML = '✅ <strong>¡Respuesta enviada!</strong> Esperando a que el Profesor revele el resultado...';
+    } else {
+      fbEl.style.display = 'none';
+    }
+
+    if (!hasVoted && !isRevealed) {
+      optsEl.querySelectorAll('[data-quiz-opt]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          votedQuizId = quiz.id;
+          votedOptionIndex = Number(btn.getAttribute('data-quiz-opt'));
+          sendPresencePing();
+          renderStudentQuizOverlay(quiz, false);
+        });
+      });
+    }
   }
 
   function renderStudentMarkers(markers, locked) {
@@ -994,7 +1121,7 @@
     if (isApplyingRemoteUpdate) return;
 
     var playingLocal = isMediaPlaying();
-    if (remoteState.attentionMode) {
+    if (remoteState.attentionMode || remoteState.referenceSchema || remoteState.activeQuiz) {
       if (playingLocal) pauseMedia();
       return;
     }

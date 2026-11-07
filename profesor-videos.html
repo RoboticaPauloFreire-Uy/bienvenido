@@ -757,6 +757,124 @@
       background: #334155;
     }
 
+    /* ── SECCIÓN: LÁMINAS / ESQUEMAS Y MINI-PREGUNTAS INTERACTIVAS ── */
+    .pv-schema-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 420px) {
+      .pv-schema-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pv-schema-preset-btn {
+      background: #0F172A;
+      border: 1.5px solid #3B82F6;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #EFF6FF;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pv-schema-preset-btn:active {
+      background: #1E3A8A;
+      transform: scale(0.98);
+    }
+    .pv-quiz-live-box {
+      background: #0F172A;
+      border: 2px solid #F59E0B;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .pv-quiz-live-q {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #FEF3C7;
+      margin: 0 0 10px;
+    }
+    .pv-quiz-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .pv-qbar-row {
+      background: #1E293B;
+      border-radius: 8px;
+      padding: 8px 10px;
+      border: 1px solid #334155;
+    }
+    .pv-qbar-row.is-correct-opt {
+      border-color: #10B981;
+    }
+    .pv-qbar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      margin-bottom: 5px;
+    }
+    .pv-qbar-track {
+      height: 8px;
+      background: #0F172A;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .pv-qbar-fill {
+      height: 100%;
+      background: #3B82F6;
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+    .pv-qbar-row.is-correct-opt .pv-qbar-fill {
+      background: #10B981;
+    }
+    .pv-quiz-live-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+    .pv-quiz-reveal-btn {
+      min-height: 44px;
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: #FFF;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .pv-quiz-builder-details {
+      margin-top: 10px;
+      background: #0F172A;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .pv-quiz-builder-details summary {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #93C5FD;
+      cursor: pointer;
+      list-style: none;
+    }
+    .pv-quiz-builder-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
     /* ── SECCIÓN: MARCADORES DE PASOS DEL VIDEO ── */
     .pv-markers-header {
       display: flex;
@@ -1496,7 +1614,101 @@
         </div>
       </div>
 
-      <!-- TARJETA 3: PASOS DEL VIDEO (MARCADORES Y AUTO-PAUSA) -->
+      <!-- TARJETA 3: LÁMINA / ESQUEMA DEL PROYECTO SOBRE EL VIDEO EN PAUSA -->
+      <div class="pv-surface-card">
+        <div class="pv-quick-deck-head">
+          <h3 class="pv-quick-deck-title"><i class="fas fa-drafting-compass" style="color:#38BDF8;"></i> Mostrar Lámina / Esquema en Pausa</h3>
+        </div>
+
+        <div class="pv-prompt-active-bar" id="pv-schema-active-bar" style="display:none;border-color:#38BDF8;background:rgba(56,189,248,0.14);">
+          <span class="pv-prompt-active-txt" id="pv-schema-active-txt" style="color:#E0F2FE;"></span>
+          <button type="button" class="pv-prompt-clear-btn" id="pv-btn-clear-schema">
+            <i class="fas fa-times"></i> Quitar Lámina
+          </button>
+        </div>
+
+        <div class="pv-schema-grid">
+          <button type="button" class="pv-schema-preset-btn" data-schema-url="img/proyectos/fantasma_levitante_presentacion.jpg" data-schema-title="Proyecto: El Fantasma Levitante (Materiales y Explicación)">
+            👻 <span>Lámina Presentación: Fantasma Levitante</span>
+          </button>
+          <button type="button" class="pv-schema-preset-btn" data-schema-url="img/proyectos/fantasma_levitante_tutorial.jpg" data-schema-title="Esquema de Montaje Paso a Paso: El Fantasma Levitante">
+            📐 <span>Esquema de Montaje: Fantasma Levitante</span>
+          </button>
+          <button type="button" class="pv-schema-preset-btn" data-schema-url="img/proyectos/varita_magica_cover.png" data-schema-title="Lámina del Proyecto: Circuito y Conductividad">
+            ✨ <span>Lámina Portada: Circuito y Varita</span>
+          </button>
+          <button type="button" class="pv-schema-preset-btn" data-schema-url="img/proyectos/varita_magica_circuito.png" data-schema-title="Esquema Técnico del Circuito Eléctrico">
+            ⚡ <span>Esquema Técnico: Circuito LED</span>
+          </button>
+        </div>
+
+        <div class="pv-prompt-input-row" style="margin-bottom:0;">
+          <input type="text" id="pv-schema-url-input" class="pv-input-modern" placeholder="O pegá aquí la URL de otra imagen/esquema...">
+          <button type="button" class="pv-add-marker-btn" id="pv-btn-send-schema">
+            <i class="fas fa-image"></i> Proyectar
+          </button>
+        </div>
+      </div>
+
+      <!-- TARJETA 4: MINI-PREGUNTA INTERACTIVA (VOTACIÓN RÁPIDA A / B / C) -->
+      <div class="pv-surface-card">
+        <div class="pv-quick-deck-head">
+          <h3 class="pv-quick-deck-title"><i class="fas fa-poll" style="color:#F43F5E;"></i> Mini-Pregunta Interactiva (Votación A / B / C)</h3>
+        </div>
+
+        <!-- Panel en vivo cuando hay una pregunta activa en las PCs -->
+        <div class="pv-quiz-live-box" id="pv-quiz-live-box" style="display:none;">
+          <p class="pv-quiz-live-q" id="pv-quiz-live-q"></p>
+          <div class="pv-quiz-bars" id="pv-quiz-bars"></div>
+          <div class="pv-quiz-live-actions">
+            <button type="button" class="pv-quiz-reveal-btn" id="pv-btn-reveal-quiz">
+              🏆 Revelar Respuesta Correcta en PCs
+            </button>
+            <button type="button" class="pv-prompt-clear-btn" id="pv-btn-clear-quiz" style="min-height:44px;padding:0 14px;">
+              <i class="fas fa-times"></i> Cerrar
+            </button>
+          </div>
+        </div>
+
+        <!-- Preguntas listas de 1 toque -->
+        <div class="pv-quick-prompts-grid">
+          <button type="button" class="pv-qp-btn" data-preset-quiz="fantasma-flota">
+            🧲 ¿Por qué flota el Fantasma Levitante?
+          </button>
+          <button type="button" class="pv-qp-btn" data-preset-quiz="polos-imanes">
+            🧭 ¿Qué pasa al juntar dos polos iguales?
+          </button>
+          <button type="button" class="pv-qp-btn" data-preset-quiz="hilo-tensegridad">
+            🧵 ¿Qué pasa si soltamos el hilo de la base?
+          </button>
+          <button type="button" class="pv-qp-btn" data-preset-quiz="sensor-robot">
+            🤖 ¿Para qué sirve un sensor en robótica?
+          </button>
+        </div>
+
+        <!-- Creador rápido de pregunta personalizada desde el celular -->
+        <details class="pv-quiz-builder-details">
+          <summary><i class="fas fa-plus-circle"></i> Escribir mi propia pregunta A / B / C...</summary>
+          <div class="pv-quiz-builder-grid">
+            <input type="text" id="pv-custom-q-text" class="pv-input-modern" placeholder="¿Cuál es la pregunta para la clase?">
+            <input type="text" id="pv-custom-q-opt0" class="pv-input-modern" placeholder="Opción A">
+            <input type="text" id="pv-custom-q-opt1" class="pv-input-modern" placeholder="Opción B">
+            <input type="text" id="pv-custom-q-opt2" class="pv-input-modern" placeholder="Opción C">
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="pv-custom-q-correct" class="pv-select-modern" style="flex:1;">
+                <option value="0">✅ Correcta: Opción A</option>
+                <option value="1">✅ Correcta: Opción B</option>
+                <option value="2">✅ Correcta: Opción C</option>
+              </select>
+              <button type="button" class="pv-prompt-send-btn" id="pv-btn-launch-custom-quiz">
+                <i class="fas fa-bolt"></i> Lanzar
+              </button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- TARJETA 5: PASOS DEL VIDEO (MARCADORES Y AUTO-PAUSA) -->
       <div class="pv-surface-card">
         <div class="pv-markers-header">
           <h3 class="pv-quick-deck-title"><i class="fas fa-map-marker-alt" style="color:#60A5FA;"></i> Saltar a Pasos del Video</h3>
@@ -1674,6 +1886,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=95"></script>
-  <script src="js/profesor_videos.js?v=3"></script>
+  <script src="js/profesor_videos.js?v=4"></script>
 </body>
 </html>

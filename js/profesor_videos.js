@@ -80,6 +80,45 @@
     }
   ];
 
+  var PRESET_QUIZZES = {
+    'fantasma-flota': {
+      question: '¿Por qué flota nuestro Fantasma Levitante sin caerse?',
+      options: [
+        'Por la atracción entre los dos imanes y el hilo tenso',
+        'Porque está inflado con gas helio por dentro',
+        'Porque tiene una hélice oculta en la base'
+      ],
+      correctIndex: 0
+    },
+    'polos-imanes': {
+      question: '¿Qué ocurre cuando acercamos dos polos iguales de un imán (Norte con Norte)?',
+      options: [
+        'Se pegan con mucha más fuerza',
+        'Se repelen (se empujan sin tocarse)',
+        'Pierden su energía magnética'
+      ],
+      correctIndex: 1
+    },
+    'hilo-tensegridad': {
+      question: '¿Qué pasaría si cortamos o soltamos el hilo que sostiene al fantasma desde la base?',
+      options: [
+        'El fantasma quedaría flotando igual en el medio',
+        'El imán del fantasma saltaría a pegarse al imán de arriba',
+        'Los imanes dejarían de funcionar'
+      ],
+      correctIndex: 1
+    },
+    'sensor-robot': {
+      question: '¿Para qué sirven los sensores en un robot del taller?',
+      options: [
+        'Solo para decorar el chasis con luces',
+        'Para detectar lo que pasa alrededor (luz, distancia, sonido)',
+        'Para cargar la batería más rápido'
+      ],
+      correctIndex: 1
+    }
+  };
+
   var DEFAULT_STATE = {
     videoUrl: 'https://www.youtube.com/watch?v=7afwV_aJcjk',
     videoType: 'youtube',
@@ -96,6 +135,8 @@
     muteStudents: false,
     attentionMode: false,
     livePromptText: '',
+    referenceSchema: null,
+    activeQuiz: null,
     markers: DEFAULT_LIBRARY[0].markers,
     autoPauseAtMarkers: false,
     sessionActive: false,
@@ -364,7 +405,7 @@
           else pauseMedia();
         }
 
-        // Si le damos Play, desactivamos automáticamente el modo pantalla oscurecida
+        // Si le damos Play, desactivamos automáticamente el modo pantalla oscurecida, láminas o preguntas
         var patch = {
           isPlaying: nextPlaying,
           baseTime: curSec,
@@ -372,6 +413,8 @@
         };
         if (nextPlaying) {
           patch.attentionMode = false;
+          patch.referenceSchema = null;
+          patch.activeQuiz = null;
         }
 
         pushState(patch, true);
@@ -664,6 +707,158 @@
         showToast('💻 ' + stats.inRoom + ' PCs en Sala de Video (' + stats.withAudio + ' con 🔊 sonido listo)');
       });
     }
+
+    // 5. Proyectar Lámina / Esquema del Proyecto sobre el video en Pausa
+    document.querySelectorAll('[data-schema-url]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        vibrateTap(35);
+        var url = btn.getAttribute('data-schema-url') || '';
+        var title = btn.getAttribute('data-schema-title') || 'Esquema del Proyecto';
+        if (!url) return;
+
+        virtualBaseSec = getEffectiveCurrentTime();
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = false;
+        if (monitorVisible) pauseMedia();
+
+        pushState({
+          isPlaying: false,
+          baseTime: virtualBaseSec,
+          attentionMode: false,
+          activeQuiz: null,
+          referenceSchema: { url: url, title: title }
+        }, true);
+
+        showToast('🖼️ Lámina proyectada en todas las PCs');
+      });
+    });
+
+    var sendSchemaBtn = document.getElementById('pv-btn-send-schema');
+    var schemaUrlInput = document.getElementById('pv-schema-url-input');
+    var clearSchemaBtn = document.getElementById('pv-btn-clear-schema');
+
+    if (sendSchemaBtn && schemaUrlInput) {
+      sendSchemaBtn.addEventListener('click', function () {
+        var url = schemaUrlInput.value.trim();
+        if (!url) return;
+        vibrateTap(35);
+
+        virtualBaseSec = getEffectiveCurrentTime();
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = false;
+        if (monitorVisible) pauseMedia();
+
+        pushState({
+          isPlaying: false,
+          baseTime: virtualBaseSec,
+          attentionMode: false,
+          activeQuiz: null,
+          referenceSchema: {
+            url: url,
+            title: (remoteState && remoteState.project) ? ('Esquema: ' + remoteState.project) : 'Lámina del Proyecto'
+          }
+        }, true);
+
+        schemaUrlInput.value = '';
+        showToast('🖼️ Lámina proyectada en las PCs');
+      });
+    }
+
+    if (clearSchemaBtn) {
+      clearSchemaBtn.addEventListener('click', function () {
+        vibrateTap(25);
+        pushState({ referenceSchema: null }, false);
+        showToast('🎬 Lámina cerrada en las PCs');
+      });
+    }
+
+    // 6. Mini-Pregunta Interactiva (Votación Rápida A / B / C)
+    document.querySelectorAll('[data-preset-quiz]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.getAttribute('data-preset-quiz');
+        var qPreset = PRESET_QUIZZES[key];
+        if (!qPreset) return;
+        vibrateTap(40);
+        launchQuizToClassroom(qPreset.question, qPreset.options, qPreset.correctIndex);
+      });
+    });
+
+    var launchCustomQuizBtn = document.getElementById('pv-btn-launch-custom-quiz');
+    if (launchCustomQuizBtn) {
+      launchCustomQuizBtn.addEventListener('click', function () {
+        var qTextEl = document.getElementById('pv-custom-q-text');
+        var opt0El = document.getElementById('pv-custom-q-opt0');
+        var opt1El = document.getElementById('pv-custom-q-opt1');
+        var opt2El = document.getElementById('pv-custom-q-opt2');
+        var corrEl = document.getElementById('pv-custom-q-correct');
+
+        var qText = qTextEl ? qTextEl.value.trim() : '';
+        var opt0 = opt0El ? opt0El.value.trim() : '';
+        var opt1 = opt1El ? opt1El.value.trim() : '';
+        var opt2 = opt2El ? opt2El.value.trim() : '';
+        var corrIdx = corrEl ? Number(corrEl.value) || 0 : 0;
+
+        if (!qText || !opt0 || !opt1) {
+          alert('Escribí la pregunta y al menos las opciones A y B.');
+          return;
+        }
+        var opts = [opt0, opt1];
+        if (opt2) opts.push(opt2);
+        if (corrIdx >= opts.length) corrIdx = 0;
+
+        vibrateTap(40);
+        launchQuizToClassroom(qText, opts, corrIdx);
+      });
+    }
+
+    var revealQuizBtn = document.getElementById('pv-btn-reveal-quiz');
+    if (revealQuizBtn) {
+      revealQuizBtn.addEventListener('click', function () {
+        if (!remoteState || !remoteState.activeQuiz) return;
+        vibrateTap([40, 30, 50]);
+        var updatedQuiz = Object.assign({}, remoteState.activeQuiz, {
+          revealed: !remoteState.activeQuiz.revealed
+        });
+        pushState({ activeQuiz: updatedQuiz }, false);
+        showToast(updatedQuiz.revealed
+          ? '🏆 ¡Respuesta correcta revelada en todas las PCs!'
+          : '🔄 Respuesta ocultada nuevamente');
+      });
+    }
+
+    var clearQuizBtn = document.getElementById('pv-btn-clear-quiz');
+    if (clearQuizBtn) {
+      clearQuizBtn.addEventListener('click', function () {
+        vibrateTap(25);
+        pushState({ activeQuiz: null }, false);
+        showToast('❌ Pregunta cerrada en las PCs');
+      });
+    }
+  }
+
+  function launchQuizToClassroom(question, options, correctIndex) {
+    virtualBaseSec = getEffectiveCurrentTime();
+    virtualLastTickMs = Date.now();
+    virtualIsPlaying = false;
+    if (monitorVisible) pauseMedia();
+
+    var quizObj = {
+      id: 'quiz-' + Date.now(),
+      question: question,
+      options: options,
+      correctIndex: Number(correctIndex) || 0,
+      revealed: false
+    };
+
+    pushState({
+      isPlaying: false,
+      baseTime: virtualBaseSec,
+      attentionMode: false,
+      referenceSchema: null,
+      activeQuiz: quizObj
+    }, true);
+
+    showToast('🎯 Pregunta lanzada a todas las PCs');
   }
 
   function renderMarkersControls(markers) {
@@ -740,6 +935,9 @@
       });
       presenceDocs = docs;
       updatePresenceBadgeUi();
+      if (remoteState) {
+        renderQuizLiveDashboard(remoteState);
+      }
     }, function () {});
   }
 
@@ -1617,6 +1815,20 @@
       }
     }
 
+    // Estado de la Lámina / Esquema proyectado
+    var schemaBar = document.getElementById('pv-schema-active-bar');
+    var schemaActiveTxt = document.getElementById('pv-schema-active-txt');
+    if (schemaBar && schemaActiveTxt) {
+      var hasSchema = !!(state.referenceSchema && state.referenceSchema.url);
+      schemaBar.style.display = hasSchema ? 'flex' : 'none';
+      if (hasSchema) {
+        schemaActiveTxt.textContent = '🖼️ En pantalla: ' + (state.referenceSchema.title || 'Esquema del Proyecto');
+      }
+    }
+
+    // Estado de Mini-Pregunta Interactiva A/B/C
+    renderQuizLiveDashboard(state);
+
     // Estado de Auto-pausa y Marcadores
     var autoPauseCheck = document.getElementById('pv-autopause-check');
     if (autoPauseCheck) {
@@ -1656,6 +1868,59 @@
         audioBtn.textContent = '🔇 Silenciar Alumnos';
       }
     }
+  }
+
+  function renderQuizLiveDashboard(state) {
+    var box = document.getElementById('pv-quiz-live-box');
+    var qEl = document.getElementById('pv-quiz-live-q');
+    var barsEl = document.getElementById('pv-quiz-bars');
+    var revealBtn = document.getElementById('pv-btn-reveal-quiz');
+    if (!box || !qEl || !barsEl) return;
+
+    var quiz = state && state.activeQuiz;
+    if (!quiz || !quiz.question || !Array.isArray(quiz.options) || !quiz.options.length) {
+      box.style.display = 'none';
+      return;
+    }
+
+    box.style.display = 'block';
+    qEl.textContent = '🎯 ' + quiz.question;
+
+    if (revealBtn) {
+      revealBtn.textContent = quiz.revealed
+        ? '✅ Respuesta Revelada en PCs (Tocar para ocultar)'
+        : '🏆 Revelar Respuesta Correcta en PCs';
+    }
+
+    // Contar votos de las máquinas conectadas para este quiz.id
+    var cutoff = Date.now() - 120000;
+    var counts = quiz.options.map(function () { return 0; });
+    var totalVotes = 0;
+
+    presenceDocs.forEach(function (d) {
+      if (d.lastSeenMs && d.lastSeenMs > cutoff && d.quizId === quiz.id && typeof d.quizAnswer === 'number') {
+        if (d.quizAnswer >= 0 && d.quizAnswer < counts.length) {
+          counts[d.quizAnswer]++;
+          totalVotes++;
+        }
+      }
+    });
+
+    var letters = ['A', 'B', 'C', 'D'];
+    barsEl.innerHTML = quiz.options.map(function (optText, idx) {
+      var c = counts[idx] || 0;
+      var pct = totalVotes > 0 ? Math.round((c / totalVotes) * 100) : 0;
+      var isCorr = Number(quiz.correctIndex) === idx;
+      return '<div class="pv-qbar-row' + (isCorr ? ' is-correct-opt' : '') + '">' +
+        '<div class="pv-qbar-top">' +
+          '<span>' + letters[idx] + ') ' + esc(optText) + (isCorr ? ' ✅' : '') + '</span>' +
+          '<span>' + c + (c === 1 ? ' máquina' : ' máquinas') + ' (' + pct + '%)</span>' +
+        '</div>' +
+        '<div class="pv-qbar-track">' +
+          '<div class="pv-qbar-fill" style="width:' + pct + '%;"></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
 
   function startTimers() {
