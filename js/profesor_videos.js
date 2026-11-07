@@ -42,6 +42,10 @@
       youtubeId: '7afwV_aJcjk',
       duration: 240,
       schemaUrl: 'img/proyectos/fantasma_levitante_tutorial.jpg',
+      schemas: [
+        { title: 'Presentación: El Fantasma Levitante', url: 'img/proyectos/fantasma_levitante_presentacion.jpg' },
+        { title: 'Esquema de Montaje Paso a Paso', url: 'img/proyectos/fantasma_levitante_tutorial.jpg' }
+      ],
       markers: [
         { label: 'Paso 1: Materiales', time: 15 },
         { label: 'Paso 2: Polos del Imán', time: 65 },
@@ -79,6 +83,10 @@
       youtubeId: 'TdNU26840_8',
       duration: 240,
       schemaUrl: 'img/proyectos/varita_magica_circuito.png',
+      schemas: [
+        { title: 'Lámina Portada: Guitarra y Varita', url: 'img/proyectos/varita_magica_cover.png' },
+        { title: 'Esquema Técnico: Circuito LED', url: 'img/proyectos/varita_magica_circuito.png' }
+      ],
       markers: [
         { label: 'Paso 1: Cuerpo de Cartón', time: 20 },
         { label: 'Paso 2: Cinta Conductora', time: 80 },
@@ -202,6 +210,8 @@
   var suppressLocalEventsUntil = 0;
   var isDraggingScrubber = false;
   var formQuizzesDraft = [];
+  var formSchemasDraft = [];
+  var formMarkersDraft = [];
 
   // Reloj virtual + control de auto-pausa en marcadores
   var virtualBaseSec = 0;
@@ -221,6 +231,20 @@
   var html5Video = null;
   var uiTimer = null;
   var heartbeatTimer = null;
+
+  function parseTimeToSeconds(input) {
+    if (typeof input === 'number') return Math.max(0, Math.floor(input));
+    var str = String(input || '').trim();
+    if (!str) return 0;
+    if (str.indexOf(':') !== -1) {
+      var parts = str.split(':');
+      var m = parseInt(parts[0], 10) || 0;
+      var s = parseInt(parts[1], 10) || 0;
+      return Math.max(0, m * 60 + s);
+    }
+    var n = parseInt(str, 10);
+    return isNaN(n) ? 0 : Math.max(0, n);
+  }
 
   function vibrateTap(ms) {
     try {
@@ -1110,7 +1134,163 @@
       });
     }
 
+    var addFormSchemaBtn = document.getElementById('pv-btn-add-form-schema');
+    if (addFormSchemaBtn) {
+      addFormSchemaBtn.addEventListener('click', function () {
+        addPendingSchemaInputToDraft(true);
+      });
+    }
+
+    document.querySelectorAll('[data-fpreset-url]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var pTitle = btn.getAttribute('data-fpreset-title') || '';
+        var pUrl = btn.getAttribute('data-fpreset-url') || '';
+        var tEl = document.getElementById('pv-fschema-title');
+        var uEl = document.getElementById('pv-fschema-url');
+        if (tEl) tEl.value = pTitle;
+        if (uEl) uEl.value = pUrl;
+        vibrateTap(25);
+        addPendingSchemaInputToDraft(true);
+      });
+    });
+
+    var addFormMarkerBtn = document.getElementById('pv-btn-add-form-marker');
+    if (addFormMarkerBtn) {
+      addFormMarkerBtn.addEventListener('click', function () {
+        addPendingMarkerInputToDraft(true);
+      });
+    }
+
+    renderFormSchemasDraft();
+    renderFormMarkersDraft();
     renderFormQuizzesDraft();
+  }
+
+  function addPendingSchemaInputToDraft(alertIfEmpty) {
+    var titleEl = document.getElementById('pv-fschema-title');
+    var urlEl = document.getElementById('pv-fschema-url');
+    var title = titleEl ? titleEl.value.trim() : '';
+    var url = urlEl ? urlEl.value.trim() : '';
+
+    if (!title && !url) {
+      if (alertIfEmpty) alert('Escribí el título y la URL de la lámina o esquema.');
+      return false;
+    }
+    if (!url) {
+      if (alertIfEmpty) alert('Completá la URL o ruta de la imagen de la lámina.');
+      return false;
+    }
+    if (!title) {
+      title = 'Lámina ' + (formSchemasDraft.length + 1);
+    }
+
+    formSchemasDraft.push({
+      title: title,
+      url: url
+    });
+
+    if (titleEl) titleEl.value = '';
+    if (urlEl) urlEl.value = '';
+
+    vibrateTap(25);
+    renderFormSchemasDraft();
+    if (alertIfEmpty) {
+      showToast('➕ Lámina agregada (' + formSchemasDraft.length + ')');
+    }
+    return true;
+  }
+
+  function renderFormSchemasDraft() {
+    var listEl = document.getElementById('pv-form-schemas-list');
+    if (!listEl) return;
+    if (!formSchemasDraft.length) {
+      listEl.innerHTML = '<div style="font-size:0.78rem;color:#94A3B8;padding:4px 2px;">Podés agregar varias láminas o esquemas (tutorial de armado, circuito, presentación, etc.) para proyectarlas en clase.</div>';
+      return;
+    }
+
+    listEl.innerHTML = formSchemasDraft.map(function(s, idx) {
+      return '<div class="pv-fq-item">' +
+        '<div style="min-width:0;flex:1;">' +
+          '<p class="pv-fq-item-q"><i class="fas fa-image" style="color:#38BDF8;margin-right:6px;"></i>' + (idx + 1) + '. ' + esc(s.title) + '</p>' +
+          '<p class="pv-fq-item-opts" style="word-break:break-all;">' + esc(s.url) + '</p>' +
+        '</div>' +
+        '<button type="button" class="pv-fq-del-btn" data-del-fschema="' + idx + '" title="Quitar lámina">' +
+          '<i class="fas fa-trash-alt"></i>' +
+        '</button>' +
+      '</div>';
+    }).join('');
+
+    listEl.querySelectorAll('[data-del-fschema]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        vibrateTap(20);
+        var idx = Number(btn.getAttribute('data-del-fschema'));
+        formSchemasDraft = formSchemasDraft.filter(function(_, i) { return i !== idx; });
+        renderFormSchemasDraft();
+      });
+    });
+  }
+
+  function addPendingMarkerInputToDraft(alertIfEmpty) {
+    var labelEl = document.getElementById('pv-fmarker-label');
+    var timeEl = document.getElementById('pv-fmarker-time');
+    var label = labelEl ? labelEl.value.trim() : '';
+    var rawTime = timeEl ? timeEl.value.trim() : '';
+
+    if (!label && !rawTime) {
+      if (alertIfEmpty) alert('Completá el nombre del paso y el tiempo (ej: Paso 1 - 00:30).');
+      return false;
+    }
+
+    var sec = parseTimeToSeconds(rawTime);
+    if (!label) {
+      label = 'Paso ' + (formMarkersDraft.length + 1);
+    }
+
+    formMarkersDraft.push({
+      label: label,
+      time: sec
+    });
+    formMarkersDraft.sort(function(a, b) { return (a.time || 0) - (b.time || 0); });
+
+    if (labelEl) labelEl.value = '';
+    if (timeEl) timeEl.value = '';
+
+    vibrateTap(25);
+    renderFormMarkersDraft();
+    if (alertIfEmpty) {
+      showToast('➕ Paso agregado (' + formatTime(sec) + ')');
+    }
+    return true;
+  }
+
+  function renderFormMarkersDraft() {
+    var listEl = document.getElementById('pv-form-markers-list');
+    if (!listEl) return;
+    if (!formMarkersDraft.length) {
+      listEl.innerHTML = '<div style="font-size:0.78rem;color:#94A3B8;padding:4px 2px;">Podés dejar cargados los minutos y segundos de cada paso para saltar directo a ellos en clase.</div>';
+      return;
+    }
+
+    listEl.innerHTML = formMarkersDraft.map(function(m, idx) {
+      return '<div class="pv-fq-item">' +
+        '<div style="min-width:0;flex:1;display:flex;align-items:center;gap:10px;">' +
+          '<time style="background:#2563EB;color:#FFF;padding:3px 7px;border-radius:6px;font-family:monospace;font-size:0.78rem;font-weight:900;">' + formatTime(m.time || 0) + '</time>' +
+          '<strong style="font-size:0.84rem;color:#F8FAFC;">' + esc(m.label) + '</strong>' +
+        '</div>' +
+        '<button type="button" class="pv-fq-del-btn" data-del-fmarker="' + idx + '" title="Quitar paso">' +
+          '<i class="fas fa-trash-alt"></i>' +
+        '</button>' +
+      '</div>';
+    }).join('');
+
+    listEl.querySelectorAll('[data-del-fmarker]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        vibrateTap(20);
+        var idx = Number(btn.getAttribute('data-del-fmarker'));
+        formMarkersDraft = formMarkersDraft.filter(function(_, i) { return i !== idx; });
+        renderFormMarkersDraft();
+      });
+    });
   }
 
   function addPendingQuizInputToDraft(alertIfEmpty) {
@@ -1246,6 +1426,7 @@
       grades: item.grades || ['todos'],
       markers: Array.isArray(item.markers) ? item.markers : [],
       videoQuizzes: Array.isArray(item.quizzes) ? item.quizzes : [],
+      videoSchemas: Array.isArray(item.schemas) ? item.schemas : (item.schemaUrl ? [{ title: item.title, url: item.schemaUrl }] : []),
       videoSchemaUrl: item.schemaUrl || '',
       attentionMode: false,
       livePromptText: '',
@@ -1282,7 +1463,9 @@
       return;
     }
 
-    // Si el profesor dejó una pregunta escrita en los campos sin tocar "+ Agregar", la sumamos automáticamente
+    // Capturar borradores pendientes si el usuario escribió y tocó directo Guardar
+    addPendingSchemaInputToDraft(false);
+    addPendingMarkerInputToDraft(false);
     addPendingQuizInputToDraft(false);
 
     var project = projSel ? projSel.value : 'Proyecto General';
@@ -1291,15 +1474,12 @@
     }
 
     var subtitle = (subInput && subInput.value.trim()) || ('Proyecto: ' + project);
-    var schemaUrl = schemaUrlInput ? schemaUrlInput.value.trim() : '';
     var grades = getSelectedFormGrades();
     var editId = editIdInput ? editIdInput.value.trim() : '';
 
     var list = (remoteState && Array.isArray(remoteState.playlist))
       ? remoteState.playlist.slice()
       : DEFAULT_LIBRARY.slice();
-
-    var existingItem = editId ? list.find(function (x) { return x.id === editId; }) : null;
 
     var videoItem = {
       id: editId || ('vid-' + Date.now()),
@@ -1310,9 +1490,10 @@
       url: parsed.url,
       type: parsed.type,
       youtubeId: parsed.youtubeId || '',
-      schemaUrl: schemaUrl,
+      schemas: formSchemasDraft.slice(),
+      schemaUrl: (formSchemasDraft[0] ? formSchemasDraft[0].url : ''),
+      markers: formMarkersDraft.slice(),
       quizzes: formQuizzesDraft.slice(),
-      markers: (existingItem && Array.isArray(existingItem.markers)) ? existingItem.markers : [],
       updatedAt: Date.now()
     };
 
@@ -1328,10 +1509,12 @@
       playlist: list
     };
 
-    // Si estamos editando el video que ya está activo en pantalla, actualizar sus preguntas/esquema en vivo también
+    // Si estamos editando el video que ya está activo en pantalla, actualizar sus preguntas/esquemas/pasos en vivo también
     if (remoteState && remoteState.videoUrl === videoItem.url && !projectImmediately) {
       statePatch.videoQuizzes = videoItem.quizzes;
+      statePatch.videoSchemas = videoItem.schemas;
       statePatch.videoSchemaUrl = videoItem.schemaUrl;
+      statePatch.markers = videoItem.markers;
     }
 
     if (projectImmediately) {
@@ -1349,6 +1532,7 @@
       statePatch.grades = videoItem.grades;
       statePatch.markers = videoItem.markers;
       statePatch.videoQuizzes = videoItem.quizzes;
+      statePatch.videoSchemas = videoItem.schemas;
       statePatch.videoSchemaUrl = videoItem.schemaUrl;
       statePatch.attentionMode = false;
       statePatch.livePromptText = '';
@@ -1386,6 +1570,10 @@
     if (subInput) subInput.value = '';
     if (schemaUrlInput) schemaUrlInput.value = '';
     if (editIdInput) editIdInput.value = '';
+    formSchemasDraft = [];
+    renderFormSchemasDraft();
+    formMarkersDraft = [];
+    renderFormMarkersDraft();
     formQuizzesDraft = [];
     renderFormQuizzesDraft();
 
@@ -1412,6 +1600,18 @@
     if (urlInput) urlInput.value = item.url || '';
     if (subInput) subInput.value = item.subtitle || '';
     if (schemaUrlInput) schemaUrlInput.value = item.schemaUrl || '';
+
+    if (Array.isArray(item.schemas) && item.schemas.length) {
+      formSchemasDraft = item.schemas.slice();
+    } else if (item.schemaUrl) {
+      formSchemasDraft = [{ title: 'Lámina Principal', url: item.schemaUrl }];
+    } else {
+      formSchemasDraft = [];
+    }
+    renderFormSchemasDraft();
+
+    formMarkersDraft = Array.isArray(item.markers) ? item.markers.slice() : [];
+    renderFormMarkersDraft();
 
     formQuizzesDraft = Array.isArray(item.quizzes) ? item.quizzes.slice() : [];
     renderFormQuizzesDraft();
@@ -1549,6 +1749,12 @@
             '<div class="pv-vc-chips">' +
               '<span class="pv-chip grade"><i class="fas fa-graduation-cap"></i> ' + esc(formatGradesText(item.grades)) + '</span>' +
               (item.project ? '<span class="pv-chip project"><i class="fas fa-rocket"></i> ' + esc(item.project) + '</span>' : '') +
+              (Array.isArray(item.schemas) && item.schemas.length
+                ? '<span class="pv-chip" style="background:rgba(56,189,248,0.18);color:#BAE6FD;border:1px solid rgba(56,189,248,0.4);"><i class="fas fa-drafting-compass"></i> ' + item.schemas.length + (item.schemas.length === 1 ? ' lámina' : ' láminas') + '</span>'
+                : (item.schemaUrl ? '<span class="pv-chip" style="background:rgba(56,189,248,0.18);color:#BAE6FD;border:1px solid rgba(56,189,248,0.4);"><i class="fas fa-drafting-compass"></i> 1 lámina</span>' : '')) +
+              (Array.isArray(item.markers) && item.markers.length
+                ? '<span class="pv-chip" style="background:rgba(59,130,246,0.18);color:#BFDBFE;border:1px solid rgba(59,130,246,0.4);"><i class="fas fa-map-marker-alt"></i> ' + item.markers.length + (item.markers.length === 1 ? ' paso' : ' pasos') + '</span>'
+                : '') +
               (Array.isArray(item.quizzes) && item.quizzes.length
                 ? '<span class="pv-chip" style="background:rgba(244,63,94,0.18);color:#FDA4AF;border:1px solid rgba(244,63,94,0.4);"><i class="fas fa-poll"></i> ' + item.quizzes.length + (item.quizzes.length === 1 ? ' pregunta' : ' preguntas') + '</span>'
                 : '') +
@@ -2003,7 +2209,8 @@
       }
     }
 
-    // Estado de Mini-Pregunta Interactiva A/B/C
+    // Estado de Láminas y Mini-Preguntas Preparadas
+    renderActiveVideoSchemasDeck(state);
     renderQuizLiveDashboard(state);
     renderActiveVideoQuizzesDeck(state);
 
@@ -2099,6 +2306,68 @@
         '</div>' +
       '</div>';
     }).join('');
+  }
+
+  function renderActiveVideoSchemasDeck(state) {
+    var deckEl = document.getElementById('pv-video-schemas-deck');
+    if (!deckEl) return;
+
+    var schemas = (state && Array.isArray(state.videoSchemas) && state.videoSchemas.length)
+      ? state.videoSchemas
+      : null;
+
+    if (!schemas && state) {
+      var list = Array.isArray(state.playlist) ? state.playlist : DEFAULT_LIBRARY;
+      var matchVid = list.find(function (v) { return v.url === state.videoUrl; }) ||
+                     DEFAULT_LIBRARY.find(function (v) { return v.url === state.videoUrl; });
+      if (matchVid) {
+        if (Array.isArray(matchVid.schemas) && matchVid.schemas.length) {
+          schemas = matchVid.schemas;
+        } else if (matchVid.schemaUrl) {
+          schemas = [{ title: 'Lámina: ' + (matchVid.project || matchVid.title), url: matchVid.schemaUrl }];
+        }
+      }
+    }
+
+    if (!schemas || !schemas.length) {
+      deckEl.innerHTML = '';
+      deckEl.style.display = 'none';
+      return;
+    }
+
+    deckEl.style.display = 'flex';
+    deckEl.innerHTML = '<div style="font-size:0.74rem;font-weight:900;color:#38BDF8;text-transform:uppercase;letter-spacing:0.05em;">📌 Láminas preparadas de este video:</div>' +
+      schemas.map(function (s, idx) {
+        return '<button type="button" class="pv-vschema-btn" data-launch-vschema="' + idx + '">' +
+          '<span>🖼️ ' + esc(s.title || ('Lámina ' + (idx + 1))) + '</span>' +
+          '<span class="pv-vschema-launch-tag"><i class="fas fa-drafting-compass"></i> Proyectar</span>' +
+        '</button>';
+      }).join('');
+
+    deckEl.querySelectorAll('[data-launch-vschema]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var idx = Number(btn.getAttribute('data-launch-vschema'));
+        var s = schemas[idx];
+        if (!s) return;
+        vibrateTap(35);
+        virtualBaseSec = getEffectiveCurrentTime();
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = false;
+        if (monitorVisible) pauseMedia();
+
+        pushState({
+          isPlaying: false,
+          baseTime: virtualBaseSec,
+          attentionMode: false,
+          activeQuiz: null,
+          referenceSchema: {
+            url: s.url,
+            title: s.title || 'Lámina del Proyecto'
+          }
+        }, true);
+        showToast('🖼️ Lámina «' + (s.title || 'Esquema') + '» proyectada');
+      });
+    });
   }
 
   function renderActiveVideoQuizzesDeck(state) {

@@ -910,12 +910,50 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
+    .pv-form-schemas-box,
+    .pv-form-markers-box,
     .pv-form-quizzes-box {
       background: #0F172A;
       border: 1.5px solid #334155;
       border-radius: 14px;
       padding: 12px;
       margin-top: 6px;
+    }
+    .pv-video-schemas-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .pv-vschema-btn {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(2, 132, 199, 0.08));
+      border: 1.5px solid #38BDF8;
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: #E0F2FE;
+      font-size: 0.84rem;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pv-vschema-btn:active {
+      background: rgba(56, 189, 248, 0.3);
+      transform: scale(0.98);
+    }
+    .pv-vschema-launch-tag {
+      background: #0284C7;
+      color: #FFF;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .pv-fq-list {
       display: flex;
@@ -1724,6 +1762,9 @@
           </button>
         </div>
 
+        <!-- Láminas preparadas guardadas junto con este video en el Alta -->
+        <div class="pv-video-schemas-deck" id="pv-video-schemas-deck"></div>
+
         <div class="pv-schema-grid">
           <button type="button" class="pv-schema-preset-btn" data-schema-url="img/proyectos/fantasma_levitante_presentacion.jpg" data-schema-title="Proyecto: El Fantasma Levitante (Materiales y Explicación)">
             👻 <span>Lámina Presentación: Fantasma Levitante</span>
@@ -1944,8 +1985,46 @@
             </div>
 
             <div class="pv-form-group">
-              <label for="pv-input-schema-url"><i class="fas fa-drafting-compass" style="color:#38BDF8;"></i> Lámina o Esquema de este Video (opcional)</label>
-              <input type="text" id="pv-input-schema-url" class="pv-input-modern" placeholder="URL de la imagen o lámina (ej: img/proyectos/fantasma_levitante_tutorial.jpg)">
+              <label><i class="fas fa-drafting-compass" style="color:#38BDF8;"></i> Láminas o Esquemas del Proyecto (podés ingresar varias):</label>
+              <div class="pv-form-schemas-box">
+                <div class="pv-fq-list" id="pv-form-schemas-list"></div>
+
+                <div class="pv-quiz-builder-grid" style="margin-top:0;">
+                  <input type="text" id="pv-fschema-title" class="pv-input-modern" placeholder="Título de la Lámina (ej: Esquema de Montaje Paso a Paso)">
+                  <input type="text" id="pv-fschema-url" class="pv-input-modern" placeholder="URL o ruta de la imagen (ej: img/proyectos/fantasma_levitante_tutorial.jpg)">
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                    <span style="font-size:0.72rem;color:#94A3B8;font-weight:700;">Atajos rápidos:</span>
+                    <button type="button" class="pv-schema-preset-btn" style="padding:4px 8px;font-size:0.72rem;" data-fpreset-title="Presentación: Fantasma Levitante" data-fpreset-url="img/proyectos/fantasma_levitante_presentacion.jpg">👻 Fantasma Presentación</button>
+                    <button type="button" class="pv-schema-preset-btn" style="padding:4px 8px;font-size:0.72rem;" data-fpreset-title="Esquema de Montaje: Fantasma Levitante" data-fpreset-url="img/proyectos/fantasma_levitante_tutorial.jpg">📐 Fantasma Montaje</button>
+                    <button type="button" class="pv-schema-preset-btn" style="padding:4px 8px;font-size:0.72rem;" data-fpreset-title="Portada: Varita y Circuito" data-fpreset-url="img/proyectos/varita_magica_cover.png">✨ Varita Portada</button>
+                    <button type="button" class="pv-schema-preset-btn" style="padding:4px 8px;font-size:0.72rem;" data-fpreset-title="Esquema Técnico: Circuito LED" data-fpreset-url="img/proyectos/varita_magica_circuito.png">⚡ Varita Circuito</button>
+                  </div>
+                  <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+                    <button type="button" class="pv-btn-add-fq" style="background:#0284C7;" id="pv-btn-add-form-schema">
+                      <i class="fas fa-plus"></i> Agregar Lámina al Video
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pv-form-group">
+              <label><i class="fas fa-map-marker-alt" style="color:#60A5FA;"></i> Saltar a Pasos del Video (podés ingresar varios):</label>
+              <div class="pv-form-markers-box">
+                <div class="pv-fq-list" id="pv-form-markers-list"></div>
+
+                <div class="pv-quiz-builder-grid" style="margin-top:0;">
+                  <div style="display:grid;grid-template-columns:1fr 130px;gap:8px;">
+                    <input type="text" id="pv-fmarker-label" class="pv-input-modern" placeholder="Nombre del Paso (ej: Paso 1 - Materiales)">
+                    <input type="text" id="pv-fmarker-time" class="pv-input-modern" placeholder="Tiempo (ej: 01:15 o 75)" title="Formato mm:ss o segundos">
+                  </div>
+                  <div style="display:flex;justify-content:flex-end;">
+                    <button type="button" class="pv-btn-add-fq" style="background:#2563EB;" id="pv-btn-add-form-marker">
+                      <i class="fas fa-plus"></i> Agregar Paso al Video
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="pv-form-group">
@@ -2015,6 +2094,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=95"></script>
-  <script src="js/profesor_videos.js?v=5"></script>
+  <script src="js/profesor_videos.js?v=6"></script>
 </body>
 </html>
