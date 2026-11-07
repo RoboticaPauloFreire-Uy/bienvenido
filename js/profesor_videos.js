@@ -1,13 +1,15 @@
 /**
  * =============================================================
- * PROFESOR_VIDEOS.JS — CABINA EXCLUSIVA DOCENTE (BIBLIOTECA Y PROYECCIÓN)
+ * PROFESOR_VIDEOS.JS — MANDO REMOTO MÓVIL Y BIBLIOTECA DOCENTE
  * Colegio Paulo Freire · Taller de Robótica, Programación & Cultura Maker
  * =============================================================
- * Permite al profesor:
- *  1. Dar de alta, editar y dar de baja videos organizados por Grado y por Proyecto.
- *  2. Filtrar su biblioteca por grado o proyecto que va a presentar en clase.
- *  3. Proyectar cualquier video con 1 clic en todas las máquinas de los alumnos
- *     y controlar Play, Pausa, línea de tiempo, bloqueo de control y sonido en vivo.
+ * Optimizado para manejarse con una mano desde el celular del profesor:
+ *  - Pestañas inferiores táctiles (Control Vivo / Biblioteca / Dar de Alta).
+ *  - Reloj virtual + Monitor desplegable (permite controlar Play, Pausa,
+ *    -10s, +10s y barra de tiempo en todas las PCs incluso con el monitor
+ *    del celular oculto para ahorrar batería y pantalla).
+ *  - Lanzador rápido de videos por Grado directo en el mando principal.
+ *  - Alta, edición y baja de videos por Grado y Proyecto en Firebase Firestore.
  */
 
 (function () {
@@ -19,8 +21,8 @@
   var VALID_PASSWORDS = ['2026', '1234', 'paulo2026', 'admin123', 'robotica2026'];
 
   var GRADE_LABELS = {
-    todos: 'Todos los Grados',
-    sala5: 'Sala de 5',
+    todos: 'Todos',
+    sala5: 'Sala 5',
     grado1: '1° Grado',
     grado2: '2° Grado',
     grado3: '3° Grado',
@@ -38,7 +40,8 @@
       grades: ['sala5', 'grado1'],
       url: 'https://www.youtube.com/watch?v=7afwV_aJcjk',
       type: 'youtube',
-      youtubeId: '7afwV_aJcjk'
+      youtubeId: '7afwV_aJcjk',
+      duration: 240
     },
     {
       id: 'vid-guitarra-carton',
@@ -48,7 +51,8 @@
       grades: ['grado3'],
       url: 'https://www.youtube.com/watch?v=TdNU26840_8',
       type: 'youtube',
-      youtubeId: 'TdNU26840_8'
+      youtubeId: 'TdNU26840_8',
+      duration: 240
     },
     {
       id: 'vid-intro-robotica',
@@ -58,7 +62,8 @@
       grades: ['todos'],
       url: 'https://www.youtube.com/watch?v=wA9tO7m3v6U',
       type: 'youtube',
-      youtubeId: 'wA9tO7m3v6U'
+      youtubeId: 'wA9tO7m3v6U',
+      duration: 240
     }
   ];
 
@@ -72,7 +77,7 @@
     grades: ['sala5', 'grado1'],
     isPlaying: false,
     baseTime: 0,
-    duration: 0,
+    duration: 240,
     playbackRate: 1,
     lockedByTeacher: true,
     muteStudents: false,
@@ -83,16 +88,23 @@
     playlist: DEFAULT_LIBRARY
   };
 
-  // Estado local del panel docente
+  // Estado local del mando
   var remoteState = null;
+  var quickGradeFilter = 'todos';
   var filterGrade = 'todos';
   var filterProject = 'todos';
   var filterSearch = '';
+  var monitorVisible = false;
   var isApplyingRemote = false;
   var suppressLocalEventsUntil = 0;
   var isDraggingScrubber = false;
 
-  // Reproductor monitor del profesor
+  // Reloj virtual para cuando el monitor del celular está cerrado
+  var virtualBaseSec = 0;
+  var virtualLastTickMs = Date.now();
+  var virtualIsPlaying = false;
+
+  // Reproductor monitor opcional
   var currentMediaType = null;
   var currentMediaIdOrUrl = '';
   var ytPlayer = null;
@@ -101,6 +113,20 @@
   var html5Video = null;
   var uiTimer = null;
   var heartbeatTimer = null;
+
+  function vibrateTap(ms) {
+    try {
+      if (navigator.vibrate) navigator.vibrate(ms || 30);
+    } catch (e) {}
+  }
+
+  function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator && navigator.wakeLock.request) {
+        navigator.wakeLock.request('screen').catch(function () {});
+      }
+    } catch (e) {}
+  }
 
   function esc(str) {
     return String(str == null ? '' : str)
@@ -132,7 +158,7 @@
     clearTimeout(t._timer);
     t._timer = setTimeout(function () {
       t.style.display = 'none';
-    }, 3200);
+    }, 2600);
   }
 
   function parseVideoUrl(rawUrl) {
@@ -175,7 +201,14 @@
 
   function init() {
     html5Video = document.getElementById('pv-html5-video');
+
+    // En PC de escritorio abrimos el monitor por defecto; en celular empieza compacto
+    if (window.innerWidth >= 960) {
+      toggleMonitor(true);
+    }
+
     setupLogin();
+    setupMobileTabs();
     bindControlEvents();
     bindLibraryEvents();
     setupHtml5MonitorEvents();
@@ -184,16 +217,60 @@
     startTimers();
   }
 
+  /**
+   * Navegación por pestañas inferiores en el celular
+   */
+  function setupMobileTabs() {
+    document.querySelectorAll('.pv-bnav-btn[data-tab]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        vibrateTap(20);
+        switchMobileTab(btn.getAttribute('data-tab'));
+      });
+    });
+  }
+
+  function switchMobileTab(tabId) {
+    document.querySelectorAll('.pv-bnav-btn[data-tab]').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+    });
+
+    var pRemote = document.getElementById('pv-panel-remote');
+    var pLib = document.getElementById('pv-panel-library');
+    var pUp = document.getElementById('pv-panel-upload');
+
+    if (pRemote) pRemote.classList.toggle('active', tabId === 'remote');
+    if (pLib) pLib.classList.toggle('active', tabId === 'library');
+    if (pUp) pUp.classList.toggle('active', tabId === 'upload');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleMonitor(forceState) {
+    monitorVisible = typeof forceState === 'boolean' ? forceState : !monitorVisible;
+    var wrap = document.getElementById('pv-monitor-wrap');
+    var txt = document.getElementById('pv-monitor-btn-txt');
+    if (wrap) wrap.classList.toggle('open', monitorVisible);
+    if (txt) txt.textContent = monitorVisible ? 'Ocultar Video' : 'Ver Video';
+
+    if (monitorVisible && remoteState) {
+      loadMediaSource(remoteState.videoType, remoteState.videoUrl, remoteState.youtubeId, getEffectiveCurrentTime(), false);
+    } else if (!monitorVisible) {
+      pauseMedia();
+    }
+  }
+
   function setupLogin() {
     var overlay = document.getElementById('pv-login-overlay');
     var form = document.getElementById('pv-login-form');
     var passInput = document.getElementById('pv-login-pass');
+    var rememberCheck = document.getElementById('pv-login-remember');
     var errEl = document.getElementById('pv-login-error');
     var logoutBtn = document.getElementById('pv-btn-logout');
 
     try {
-      if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+      if (localStorage.getItem(SESSION_KEY) === 'true' || sessionStorage.getItem(SESSION_KEY) === 'true') {
         if (overlay) overlay.style.display = 'none';
+        requestWakeLock();
       }
     } catch (e) {}
 
@@ -202,19 +279,30 @@
         e.preventDefault();
         var val = passInput ? passInput.value.trim().toLowerCase() : '';
         if (VALID_PASSWORDS.indexOf(val) !== -1) {
-          try { sessionStorage.setItem(SESSION_KEY, 'true'); } catch (ex) {}
+          vibrateTap(40);
+          try {
+            sessionStorage.setItem(SESSION_KEY, 'true');
+            if (rememberCheck && rememberCheck.checked) {
+              localStorage.setItem(SESSION_KEY, 'true');
+            }
+          } catch (ex) {}
           if (overlay) overlay.style.display = 'none';
           if (errEl) errEl.textContent = '';
-          showToast('¡Bienvenido a la Cabina de Videos del Profesor!');
+          requestWakeLock();
+          showToast('📱 Control Remoto Activado');
         } else {
-          if (errEl) errEl.textContent = 'Clave incorrecta. Ingresá tu PIN docente (ej: 2026).';
+          vibrateTap([60, 40, 60]);
+          if (errEl) errEl.textContent = 'PIN incorrecto. Probá con 2026.';
         }
       });
     }
 
     if (logoutBtn) {
       logoutBtn.addEventListener('click', function () {
-        try { sessionStorage.removeItem(SESSION_KEY); } catch (ex) {}
+        try {
+          sessionStorage.removeItem(SESSION_KEY);
+          localStorage.removeItem(SESSION_KEY);
+        } catch (ex) {}
         if (overlay) overlay.style.display = 'flex';
         if (passInput) {
           passInput.value = '';
@@ -226,21 +314,36 @@
 
   /**
    * ─────────────────────────────────────────────────────────────
-   * EVENTOS DE LA CABINA DE CONTROL EN VIVO
+   * EVENTOS DEL CONTROL REMOTO EN VIVO
    * ─────────────────────────────────────────────────────────────
    */
   function bindControlEvents() {
-    // Play / Pausa en todas las máquinas
+    var monBtn = document.getElementById('pv-btn-toggle-monitor');
+    if (monBtn) {
+      monBtn.addEventListener('click', function () {
+        vibrateTap(20);
+        toggleMonitor();
+      });
+    }
+
+    // Botón Gigante Play / Pausa en todas las máquinas
     var playPauseBtn = document.getElementById('pv-btn-playpause');
     if (playPauseBtn) {
       playPauseBtn.addEventListener('click', function () {
-        var curPlaying = remoteState ? !!remoteState.isPlaying : isMediaPlaying();
+        vibrateTap(45);
+        var curPlaying = remoteState ? !!remoteState.isPlaying : virtualIsPlaying;
         var nextPlaying = !curPlaying;
-        var curSec = getMediaCurrentTime();
+        var curSec = getEffectiveCurrentTime();
+
+        virtualBaseSec = curSec;
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = nextPlaying;
 
         suppressLocalEventsUntil = Date.now() + 1200;
-        if (nextPlaying) playMedia();
-        else pauseMedia();
+        if (monitorVisible) {
+          if (nextPlaying) playMedia();
+          else pauseMedia();
+        }
 
         pushState({
           isPlaying: nextPlaying,
@@ -248,54 +351,67 @@
           sessionActive: true
         }, true);
 
-        showToast(nextPlaying ? '▶️ Reproduciendo en todas las máquinas' : '⏸️ Pausado en todas las máquinas');
+        showToast(nextPlaying ? '▶️ PLAY en todas las máquinas' : '⏸️ PAUSA en todas las máquinas');
       });
     }
 
     var restartBtn = document.getElementById('pv-btn-restart');
     if (restartBtn) {
       restartBtn.addEventListener('click', function () {
+        vibrateTap(30);
+        virtualBaseSec = 0;
+        virtualLastTickMs = Date.now();
         suppressLocalEventsUntil = Date.now() + 1200;
-        seekMediaTo(0);
+        if (monitorVisible) seekMediaTo(0);
         pushState({ baseTime: 0, sessionActive: true }, true);
-        showToast('⏮️ Video reiniciado a 00:00 en todas las máquinas');
+        showToast('⏮️ Reiniciado a 00:00');
       });
     }
 
     var rew10Btn = document.getElementById('pv-btn-rew10');
     if (rew10Btn) {
       rew10Btn.addEventListener('click', function () {
-        var nextSec = Math.max(0, getMediaCurrentTime() - 10);
+        vibrateTap(25);
+        var nextSec = Math.max(0, getEffectiveCurrentTime() - 10);
+        virtualBaseSec = nextSec;
+        virtualLastTickMs = Date.now();
         suppressLocalEventsUntil = Date.now() + 1200;
-        seekMediaTo(nextSec);
+        if (monitorVisible) seekMediaTo(nextSec);
         pushState({ baseTime: nextSec, sessionActive: true }, true);
+        showToast('⏪ -10s (' + formatTime(nextSec) + ')');
       });
     }
 
     var fwd10Btn = document.getElementById('pv-btn-fwd10');
     if (fwd10Btn) {
       fwd10Btn.addEventListener('click', function () {
-        var dur = getMediaDuration() || 99999;
-        var nextSec = Math.min(dur, getMediaCurrentTime() + 10);
+        vibrateTap(25);
+        var dur = getEffectiveDuration();
+        var nextSec = Math.min(dur, getEffectiveCurrentTime() + 10);
+        virtualBaseSec = nextSec;
+        virtualLastTickMs = Date.now();
         suppressLocalEventsUntil = Date.now() + 1200;
-        seekMediaTo(nextSec);
+        if (monitorVisible) seekMediaTo(nextSec);
         pushState({ baseTime: nextSec, sessionActive: true }, true);
+        showToast('⏩ +10s (' + formatTime(nextSec) + ')');
       });
     }
 
     var forceSyncBtn = document.getElementById('pv-btn-forcesync');
     if (forceSyncBtn) {
       forceSyncBtn.addEventListener('click', function () {
+        vibrateTap(35);
+        var curSec = getEffectiveCurrentTime();
         pushState({
-          isPlaying: isMediaPlaying(),
-          baseTime: getMediaCurrentTime(),
+          isPlaying: virtualIsPlaying,
+          baseTime: curSec,
           sessionActive: true
         }, true);
-        showToast('⚡ Todas las máquinas sincronizadas a tu posición actual');
+        showToast('⚡ Máquinas igualadas a ' + formatTime(curSec));
       });
     }
 
-    // Scrubber
+    // Scrubber XL
     var scrubber = document.getElementById('pv-scrubber');
     if (scrubber) {
       scrubber.addEventListener('mousedown', function () { isDraggingScrubber = true; });
@@ -306,10 +422,14 @@
       });
       scrubber.addEventListener('change', function () {
         isDraggingScrubber = false;
+        vibrateTap(25);
         var sec = Number(scrubber.value) || 0;
+        virtualBaseSec = sec;
+        virtualLastTickMs = Date.now();
         suppressLocalEventsUntil = Date.now() + 1200;
-        seekMediaTo(sec);
+        if (monitorVisible) seekMediaTo(sec);
         pushState({ baseTime: sec, sessionActive: true }, true);
+        showToast('⏱️ Salto a ' + formatTime(sec));
       });
     }
 
@@ -318,8 +438,9 @@
     if (speedSel) {
       speedSel.addEventListener('change', function () {
         var rate = Number(speedSel.value) || 1;
-        setMediaPlaybackRate(rate);
-        pushState({ playbackRate: rate, baseTime: getMediaCurrentTime() }, true);
+        if (monitorVisible) setMediaPlaybackRate(rate);
+        pushState({ playbackRate: rate, baseTime: getEffectiveCurrentTime() }, true);
+        showToast('⚡ Velocidad ' + rate + 'x');
       });
     }
 
@@ -327,17 +448,18 @@
     var lockBtn = document.getElementById('pv-btn-toggle-lock');
     if (lockBtn) {
       lockBtn.addEventListener('click', function () {
+        vibrateTap(40);
         var curLocked = remoteState ? remoteState.lockedByTeacher !== false : true;
         var nextLocked = !curLocked;
         pushState({
           lockedByTeacher: nextLocked,
-          baseTime: getMediaCurrentTime(),
-          isPlaying: isMediaPlaying(),
+          baseTime: getEffectiveCurrentTime(),
+          isPlaying: virtualIsPlaying,
           sessionActive: true
         }, true);
         showToast(nextLocked
-          ? '🔒 Máquinas bloqueadas: solo vos controlás Play y Pausa'
-          : '🔓 Control liberado: los alumnos pueden pausar o adelantar');
+          ? '🔒 Máquinas Bloqueadas (Solo Profesor)'
+          : '🔓 Control Libre en Máquinas');
       });
     }
 
@@ -345,37 +467,53 @@
     var audioBtn = document.getElementById('pv-btn-toggle-audio');
     if (audioBtn) {
       audioBtn.addEventListener('click', function () {
+        vibrateTap(35);
         var curMuted = remoteState ? !!remoteState.muteStudents : false;
         var nextMuted = !curMuted;
         pushState({ muteStudents: nextMuted }, true);
         showToast(nextMuted
-          ? '🔇 Máquinas de alumnos silenciadas'
-          : '🔊 Sonido habilitado en todas las máquinas');
+          ? '🔇 PCs de Alumnos Silenciadas'
+          : '🔊 Sonido en Todas las PCs');
       });
     }
 
-    // Botón Traer Máquinas a la Sala de Video
+    // Botón Llamar PCs
     var callBtn = document.getElementById('pv-btn-call-students');
     if (callBtn) {
       callBtn.addEventListener('click', function () {
+        vibrateTap(45);
         var nextCall = ((remoteState && remoteState.callStudentsSeq) || 0) + 1;
         pushState({
           sessionActive: true,
           callStudentsSeq: nextCall,
-          baseTime: getMediaCurrentTime()
+          baseTime: getEffectiveCurrentTime()
         }, true);
-        showToast('📢 Señal enviada: abriendo Sala de Video en las máquinas de la clase');
+        showToast('📢 Abriendo Sala de Video en las PCs');
+      });
+    }
+
+    // Filtro de Grado en el Lanzador Rápido del Mando
+    var qTabs = document.getElementById('pv-quick-grade-tabs');
+    if (qTabs) {
+      qTabs.querySelectorAll('[data-qgrade]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          vibrateTap(15);
+          quickGradeFilter = btn.getAttribute('data-qgrade') || 'todos';
+          qTabs.querySelectorAll('[data-qgrade]').forEach(function (b) {
+            b.classList.toggle('active', b === btn);
+          });
+          renderQuickDeck();
+        });
       });
     }
   }
 
   /**
    * ─────────────────────────────────────────────────────────────
-   * EVENTOS DE LA BIBLIOTECA DE VIDEOS (ALTA, BAJA, EDICIÓN Y FILTROS)
+   * EVENTOS DE LA BIBLIOTECA Y ALTA DE VIDEOS
    * ─────────────────────────────────────────────────────────────
    */
   function bindLibraryEvents() {
-    // Selector de proyecto con opción de escribir proyecto personalizado
     var projSel = document.getElementById('pv-select-project');
     var customProjInput = document.getElementById('pv-input-custom-project');
     if (projSel && customProjInput) {
@@ -386,11 +524,11 @@
       });
     }
 
-    // Selección de píldoras de Grado en el formulario
     var gradePillsWrap = document.getElementById('pv-form-grade-pills');
     if (gradePillsWrap) {
       gradePillsWrap.querySelectorAll('.pv-grade-check').forEach(function (pill) {
         pill.addEventListener('click', function () {
+          vibrateTap(15);
           var g = pill.getAttribute('data-grade');
           if (g === 'todos') {
             gradePillsWrap.querySelectorAll('.pv-grade-check').forEach(function (p) {
@@ -408,7 +546,6 @@
       });
     }
 
-    // Guardar en Biblioteca (sin cambiar la transmisión actual)
     var form = document.getElementById('pv-video-form');
     if (form) {
       form.addEventListener('submit', function (e) {
@@ -417,7 +554,6 @@
       });
     }
 
-    // Guardar y Proyectar Ahora en Clase
     var saveAndProjectBtn = document.getElementById('pv-btn-save-and-project');
     if (saveAndProjectBtn) {
       saveAndProjectBtn.addEventListener('click', function () {
@@ -425,19 +561,19 @@
       });
     }
 
-    // Cancelar edición
     var cancelEditBtn = document.getElementById('pv-btn-cancel-edit');
     if (cancelEditBtn) {
       cancelEditBtn.addEventListener('click', function () {
         resetVideoForm();
+        switchMobileTab('library');
       });
     }
 
-    // Filtros por Grado
     var filterGradesWrap = document.getElementById('pv-filter-grades');
     if (filterGradesWrap) {
       filterGradesWrap.querySelectorAll('[data-filter-grade]').forEach(function (btn) {
         btn.addEventListener('click', function () {
+          vibrateTap(15);
           filterGrade = btn.getAttribute('data-filter-grade') || 'todos';
           filterGradesWrap.querySelectorAll('[data-filter-grade]').forEach(function (b) {
             b.classList.toggle('active', b === btn);
@@ -447,7 +583,6 @@
       });
     }
 
-    // Filtro por Proyecto
     var filterProjSel = document.getElementById('pv-filter-project');
     if (filterProjSel) {
       filterProjSel.addEventListener('change', function () {
@@ -456,7 +591,6 @@
       });
     }
 
-    // Buscador por texto
     var searchInput = document.getElementById('pv-filter-search');
     if (searchInput) {
       searchInput.addEventListener('input', function () {
@@ -485,6 +619,38 @@
     });
   }
 
+  function projectVideoItem(item) {
+    if (!item) return;
+    var parsed = parseVideoUrl(item.url);
+    if (!parsed) return;
+
+    vibrateTap(45);
+    virtualBaseSec = 0;
+    virtualLastTickMs = Date.now();
+    virtualIsPlaying = true;
+    suppressLocalEventsUntil = Date.now() + 1400;
+
+    if (monitorVisible) {
+      loadMediaSource(parsed.type, parsed.url, parsed.youtubeId, 0, true);
+    }
+
+    pushState({
+      videoUrl: parsed.url,
+      videoType: parsed.type,
+      youtubeId: parsed.youtubeId || '',
+      title: item.title,
+      subtitle: item.subtitle || ('Proyecto: ' + (item.project || 'Clase')),
+      project: item.project || '',
+      grades: item.grades || ['todos'],
+      baseTime: 0,
+      isPlaying: true,
+      sessionActive: true
+    }, true);
+
+    switchMobileTab('remote');
+    showToast('📡 En Pantalla: ' + item.title);
+  }
+
   function saveVideoFromForm(projectImmediately) {
     var titleInput = document.getElementById('pv-input-title');
     var urlInput = document.getElementById('pv-input-url');
@@ -496,7 +662,7 @@
     var title = titleInput ? titleInput.value.trim() : '';
     var rawUrl = urlInput ? urlInput.value.trim() : '';
     if (!title || !rawUrl) {
-      alert('Completá el título y el enlace del video (YouTube o MP4).');
+      alert('Completá el título y el link del video.');
       return;
     }
 
@@ -544,6 +710,9 @@
     };
 
     if (projectImmediately) {
+      virtualBaseSec = 0;
+      virtualLastTickMs = Date.now();
+      virtualIsPlaying = true;
       suppressLocalEventsUntil = Date.now() + 1400;
       statePatch.videoUrl = videoItem.url;
       statePatch.videoType = videoItem.type;
@@ -555,14 +724,18 @@
       statePatch.baseTime = 0;
       statePatch.isPlaying = true;
       statePatch.sessionActive = true;
-      loadMediaSource(videoItem.type, videoItem.url, videoItem.youtubeId, 0, true);
+      if (monitorVisible) {
+        loadMediaSource(videoItem.type, videoItem.url, videoItem.youtubeId, 0, true);
+      }
     }
 
+    vibrateTap(40);
     pushState(statePatch, projectImmediately);
     resetVideoForm();
+    switchMobileTab(projectImmediately ? 'remote' : 'library');
     showToast(projectImmediately
-      ? '📡 Video guardado y proyectándose en todas las máquinas'
-      : '💾 Video guardado en la Biblioteca del Profesor');
+      ? '📡 Guardado y Proyectando en Clase'
+      : '💾 Video Guardado en Biblioteca');
   }
 
   function resetVideoForm() {
@@ -578,9 +751,9 @@
     if (urlInput) urlInput.value = '';
     if (subInput) subInput.value = '';
     if (editIdInput) editIdInput.value = '';
-    if (heading) heading.innerHTML = '<i class="fas fa-plus-circle"></i> Dar de Alta Nuevo Video en la Biblioteca';
+    if (heading) heading.innerHTML = '<i class="fas fa-plus-circle" style="color:#4ADE80;"></i> Dar de Alta Nuevo Video';
     if (cancelBtn) cancelBtn.style.display = 'none';
-    if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar en Biblioteca';
+    if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save"></i> Solo Guardar en mi Biblioteca';
   }
 
   function loadVideoIntoFormForEdit(item) {
@@ -616,16 +789,61 @@
 
     setSelectedFormGrades(item.grades || ['todos']);
 
-    if (heading) heading.innerHTML = '<i class="fas fa-edit"></i> Editando Video: ' + esc(item.title);
-    if (cancelBtn) cancelBtn.style.display = 'inline-block';
+    if (heading) heading.innerHTML = '<i class="fas fa-pen" style="color:#FBBF24;"></i> Editando Video';
+    if (cancelBtn) cancelBtn.style.display = 'block';
     if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
 
-    var formEl = document.getElementById('pv-video-form');
-    if (formEl) formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    switchMobileTab('upload');
   }
 
   /**
-   * Renderiza el selector de filtro de proyectos y las tarjetas de la Biblioteca
+   * Renderiza la lista rápida de cambio de video dentro de la pestaña de Control Vivo
+   */
+  function renderQuickDeck() {
+    var container = document.getElementById('pv-quick-list');
+    if (!container) return;
+
+    var list = (remoteState && Array.isArray(remoteState.playlist))
+      ? remoteState.playlist
+      : DEFAULT_LIBRARY;
+
+    var filtered = list.filter(function (v) {
+      var vGrades = Array.isArray(v.grades) && v.grades.length ? v.grades : ['todos'];
+      return (quickGradeFilter === 'todos') || (vGrades.indexOf('todos') !== -1) || (vGrades.indexOf(quickGradeFilter) !== -1);
+    });
+
+    if (!filtered.length) {
+      container.innerHTML = '<div style="text-align:center;padding:16px;color:#94A3B8;font-size:0.84rem;">No hay videos cargados para este grado.</div>';
+      return;
+    }
+
+    var activeUrl = remoteState ? remoteState.videoUrl : '';
+
+    container.innerHTML = filtered.map(function (item) {
+      var isOnAir = (activeUrl && item.url === activeUrl);
+      return '<div class="pv-quick-item' + (isOnAir ? ' is-on-air' : '') + '" data-qplay="' + esc(item.id) + '">' +
+        '<div class="pv-qi-info">' +
+          '<span class="pv-qi-meta">' + esc(formatGradesText(item.grades)) + (item.project ? ' · 🚀 ' + esc(item.project) : '') + '</span>' +
+          '<p class="pv-qi-title">' + esc(item.title) + '</p>' +
+        '</div>' +
+        '<button type="button" class="pv-qi-play-btn">' +
+          '<i class="fas ' + (isOnAir ? 'fa-broadcast-tower' : 'fa-play') + '"></i> ' +
+          (isOnAir ? 'Activo' : 'Poner') +
+        '</button>' +
+      '</div>';
+    }).join('');
+
+    container.querySelectorAll('[data-qplay]').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var id = row.getAttribute('data-qplay');
+        var chosen = list.find(function (x) { return x.id === id; });
+        if (chosen) projectVideoItem(chosen);
+      });
+    });
+  }
+
+  /**
+   * Renderiza la grilla completa de la Biblioteca
    */
   function renderLibraryGrid() {
     var grid = document.getElementById('pv-library-grid');
@@ -637,7 +855,6 @@
       ? remoteState.playlist
       : DEFAULT_LIBRARY;
 
-    // Poblar dinámicamente el filtro de Proyectos según los videos cargados
     if (projFilterSel) {
       var projectsSet = {};
       list.forEach(function (v) {
@@ -651,7 +868,6 @@
         }).join('');
     }
 
-    // Filtrar videos por Grado, Proyecto y Búsqueda
     var filtered = list.filter(function (v) {
       var vGrades = Array.isArray(v.grades) && v.grades.length ? v.grades : ['todos'];
       var matchGrade = (filterGrade === 'todos') || (vGrades.indexOf('todos') !== -1) || (vGrades.indexOf(filterGrade) !== -1);
@@ -668,9 +884,8 @@
     }
 
     if (!filtered.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px;background:#FAF6EC;border:1.5px dashed #2B2520;color:#57534E;">' +
-        '<i class="fas fa-video-slash" style="font-size:2rem;margin-bottom:8px;display:block;"></i>' +
-        'No hay videos en la biblioteca para este filtro. Podés dar de alta uno arriba.' +
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:28px;color:#94A3B8;border:1px dashed #334155;border-radius:14px;">' +
+        'No hay videos para este filtro.' +
       '</div>';
       return;
     }
@@ -689,14 +904,14 @@
       return '<article class="pv-video-card' + (isOnAir ? ' is-on-air' : '') + '">' +
         '<div class="pv-vc-thumb">' +
           thumbHtml +
-          '<span class="pv-vc-type-tag">' + (parsed.type === 'mp4' ? 'MP4 / DIRECTO' : 'YOUTUBE') + '</span>' +
-          (isOnAir ? '<span class="pv-vc-onair-tag">● EN PANTALLA AHORA</span>' : '') +
+          '<span class="pv-vc-type-tag">' + (parsed.type === 'mp4' ? 'MP4' : 'YOUTUBE') + '</span>' +
+          (isOnAir ? '<span class="pv-vc-onair-tag">● EN PANTALLA</span>' : '') +
         '</div>' +
         '<div class="pv-vc-body">' +
           '<div>' +
             '<div class="pv-vc-chips">' +
-              '<span class="pv-badge grade"><i class="fas fa-graduation-cap"></i> ' + esc(formatGradesText(item.grades)) + '</span>' +
-              (item.project ? '<span class="pv-badge project"><i class="fas fa-rocket"></i> ' + esc(item.project) + '</span>' : '') +
+              '<span class="pv-chip grade"><i class="fas fa-graduation-cap"></i> ' + esc(formatGradesText(item.grades)) + '</span>' +
+              (item.project ? '<span class="pv-chip project"><i class="fas fa-rocket"></i> ' + esc(item.project) + '</span>' : '') +
             '</div>' +
             '<h3 class="pv-vc-title">' + esc(item.title) + '</h3>' +
             '<p class="pv-vc-sub">' + esc(item.subtitle || '') + '</p>' +
@@ -704,12 +919,12 @@
           '<div class="pv-vc-actions">' +
             '<button type="button" class="pv-vc-btn-project" data-action="project" data-id="' + esc(item.id) + '">' +
               '<i class="fas ' + (isOnAir ? 'fa-broadcast-tower' : 'fa-play') + '"></i> ' +
-              (isOnAir ? 'En Pantalla (Reiniciar)' : 'Proyectar en Clase') +
+              (isOnAir ? 'Reiniciar en PCs' : 'Proyectar en Clase') +
             '</button>' +
-            '<button type="button" class="pv-vc-btn-icon" data-action="edit" data-id="' + esc(item.id) + '" title="Editar grado, proyecto o título">' +
+            '<button type="button" class="pv-vc-btn-icon" data-action="edit" data-id="' + esc(item.id) + '" title="Editar">' +
               '<i class="fas fa-pen"></i>' +
             '</button>' +
-            '<button type="button" class="pv-vc-btn-icon del" data-action="delete" data-id="' + esc(item.id) + '" title="Dar de baja / Eliminar de la biblioteca">' +
+            '<button type="button" class="pv-vc-btn-icon del" data-action="delete" data-id="' + esc(item.id) + '" title="Dar de baja">' +
               '<i class="fas fa-trash-alt"></i>' +
             '</button>' +
           '</div>' +
@@ -717,7 +932,6 @@
       '</article>';
     }).join('');
 
-    // Eventos de cada tarjeta
     grid.querySelectorAll('[data-action]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var action = btn.getAttribute('data-action');
@@ -727,30 +941,14 @@
         if (!item) return;
 
         if (action === 'project') {
-          var parsed = parseVideoUrl(item.url);
-          if (!parsed) return;
-          suppressLocalEventsUntil = Date.now() + 1400;
-          loadMediaSource(parsed.type, parsed.url, parsed.youtubeId, 0, true);
-          pushState({
-            videoUrl: parsed.url,
-            videoType: parsed.type,
-            youtubeId: parsed.youtubeId || '',
-            title: item.title,
-            subtitle: item.subtitle || ('Proyecto: ' + (item.project || 'Clase')),
-            project: item.project || '',
-            grades: item.grades || ['todos'],
-            baseTime: 0,
-            isPlaying: true,
-            sessionActive: true
-          }, true);
-          showToast('📡 Proyectando «' + item.title + '» en todas las máquinas');
+          projectVideoItem(item);
         } else if (action === 'edit') {
           loadVideoIntoFormForEdit(item);
         } else if (action === 'delete') {
-          if (confirm('¿Querés dar de baja el video «' + item.title + '» de tu biblioteca?')) {
+          if (confirm('¿Dar de baja «' + item.title + '» de la biblioteca?')) {
             var nextList = fullList.filter(function (x) { return x.id !== id; });
             pushState({ playlist: nextList }, false);
-            showToast('🗑️ Video dado de baja de la biblioteca');
+            showToast('🗑️ Video eliminado');
           }
         }
       });
@@ -759,45 +957,60 @@
 
   /**
    * ─────────────────────────────────────────────────────────────
-   * REPRODUCTOR MONITOR DEL PROFESOR (YOUTUBE + MP4)
+   * RELOJ HÍBRIDO (VIRTUAL + MONITOR REAL)
    * ─────────────────────────────────────────────────────────────
    */
+  function getEffectiveCurrentTime() {
+    if (monitorVisible) {
+      var realT = getMediaCurrentTime();
+      if (realT > 0) return realT;
+    }
+    var rate = (remoteState && Number(remoteState.playbackRate)) || 1;
+    var dur = getEffectiveDuration();
+    if (virtualIsPlaying) {
+      var elapsed = ((Date.now() - virtualLastTickMs) / 1000) * rate;
+      return Math.min(dur, Math.max(0, virtualBaseSec + elapsed));
+    }
+    return Math.max(0, virtualBaseSec);
+  }
+
+  function getEffectiveDuration() {
+    if (monitorVisible) {
+      var realD = getMediaDuration();
+      if (realD > 0) return realD;
+    }
+    return (remoteState && Number(remoteState.duration) > 0) ? Number(remoteState.duration) : 300;
+  }
+
   function setupHtml5MonitorEvents() {
     if (!html5Video) return;
 
     html5Video.addEventListener('play', function () {
-      if (currentMediaType !== 'mp4') return;
+      if (!monitorVisible || currentMediaType !== 'mp4') return;
       if (!isApplyingRemote && Date.now() > suppressLocalEventsUntil) {
+        virtualBaseSec = html5Video.currentTime || 0;
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = true;
         pushState({
           isPlaying: true,
-          baseTime: html5Video.currentTime || 0,
+          baseTime: virtualBaseSec,
           sessionActive: true
         }, true);
       }
-      updateMonitorTimeUi();
     });
 
     html5Video.addEventListener('pause', function () {
-      if (currentMediaType !== 'mp4') return;
+      if (!monitorVisible || currentMediaType !== 'mp4') return;
       if (!isApplyingRemote && Date.now() > suppressLocalEventsUntil) {
+        virtualBaseSec = html5Video.currentTime || 0;
+        virtualLastTickMs = Date.now();
+        virtualIsPlaying = false;
         pushState({
           isPlaying: false,
-          baseTime: html5Video.currentTime || 0,
+          baseTime: virtualBaseSec,
           sessionActive: true
         }, true);
       }
-      updateMonitorTimeUi();
-    });
-
-    html5Video.addEventListener('seeked', function () {
-      if (currentMediaType !== 'mp4') return;
-      if (!isApplyingRemote && Date.now() > suppressLocalEventsUntil) {
-        pushState({
-          baseTime: html5Video.currentTime || 0,
-          sessionActive: true
-        }, true);
-      }
-      updateMonitorTimeUi();
     });
   }
 
@@ -839,29 +1052,35 @@
       events: {
         onReady: function () {
           ytPlayerReady = true;
-          if (remoteState) {
+          if (monitorVisible && remoteState) {
             loadMediaSource(remoteState.videoType, remoteState.videoUrl, remoteState.youtubeId, remoteState.baseTime, false);
           }
         },
         onStateChange: function (event) {
-          if (currentMediaType !== 'youtube' || !window.YT) return;
+          if (!monitorVisible || currentMediaType !== 'youtube' || !window.YT) return;
           var YTState = window.YT.PlayerState;
           if (!isApplyingRemote && Date.now() > suppressLocalEventsUntil) {
             if (event.data === YTState.PLAYING) {
+              virtualBaseSec = getMediaCurrentTime();
+              virtualLastTickMs = Date.now();
+              virtualIsPlaying = true;
               pushState({
                 isPlaying: true,
-                baseTime: getMediaCurrentTime(),
+                baseTime: virtualBaseSec,
+                duration: getMediaDuration() || 300,
                 sessionActive: true
               }, true);
             } else if (event.data === YTState.PAUSED) {
+              virtualBaseSec = getMediaCurrentTime();
+              virtualLastTickMs = Date.now();
+              virtualIsPlaying = false;
               pushState({
                 isPlaying: false,
-                baseTime: getMediaCurrentTime(),
+                baseTime: virtualBaseSec,
                 sessionActive: true
               }, true);
             }
           }
-          updateMonitorTimeUi();
         }
       }
     });
@@ -886,7 +1105,7 @@
         if (ytPlayer && ytPlayerReady && typeof ytPlayer.loadVideoById === 'function') {
           isApplyingRemote = true;
           suppressLocalEventsUntil = Date.now() + 1400;
-          if (shouldPlay) {
+          if (shouldPlay && monitorVisible) {
             ytPlayer.loadVideoById({ videoId: cleanYtId, startSeconds: targetSeconds || 0 });
           } else if (typeof ytPlayer.cueVideoById === 'function') {
             ytPlayer.cueVideoById({ videoId: cleanYtId, startSeconds: targetSeconds || 0 });
@@ -912,7 +1131,7 @@
           if (targetSeconds > 0) {
             try { html5Video.currentTime = targetSeconds; } catch (ex) {}
           }
-          if (shouldPlay) {
+          if (shouldPlay && monitorVisible) {
             html5Video.play().catch(function () {});
           }
           isApplyingRemote = false;
@@ -970,17 +1189,6 @@
     return 0;
   }
 
-  function isMediaPlaying() {
-    if (currentMediaType === 'mp4') {
-      return !!(html5Video && !html5Video.paused && !html5Video.ended);
-    }
-    if (ytPlayer && ytPlayerReady && typeof ytPlayer.getPlayerState === 'function' && window.YT) {
-      return ytPlayer.getPlayerState() === window.YT.PlayerState.PLAYING ||
-             ytPlayer.getPlayerState() === window.YT.PlayerState.BUFFERING;
-    }
-    return false;
-  }
-
   function setMediaPlaybackRate(rate) {
     rate = Number(rate) || 1;
     if (currentMediaType === 'mp4') {
@@ -1008,9 +1216,10 @@
       if (!doc.exists) {
         remoteState = Object.assign({}, DEFAULT_STATE);
         docRef.set(remoteState, { merge: true }).catch(function () {});
+        syncVirtualClockFromState(remoteState);
         renderConsoleStatus(remoteState);
+        renderQuickDeck();
         renderLibraryGrid();
-        loadMediaSource(remoteState.videoType, remoteState.videoUrl, remoteState.youtubeId, 0, false);
         return;
       }
 
@@ -1022,13 +1231,23 @@
       var firstLoad = !remoteState;
       remoteState = merged;
 
-      renderConsoleStatus(merged);
-      renderLibraryGrid();
-
       if (firstLoad) {
-        loadMediaSource(merged.videoType, merged.videoUrl, merged.youtubeId, merged.baseTime || 0, false);
+        syncVirtualClockFromState(merged);
+        if (monitorVisible) {
+          loadMediaSource(merged.videoType, merged.videoUrl, merged.youtubeId, merged.baseTime || 0, false);
+        }
       }
+
+      renderConsoleStatus(merged);
+      renderQuickDeck();
+      renderLibraryGrid();
     });
+  }
+
+  function syncVirtualClockFromState(state) {
+    virtualBaseSec = Number(state.baseTime) || 0;
+    virtualLastTickMs = Date.now();
+    virtualIsPlaying = !!state.isPlaying;
   }
 
   function pushState(partial, incrementSeq) {
@@ -1045,6 +1264,7 @@
 
     remoteState = next;
     renderConsoleStatus(next);
+    renderQuickDeck();
     renderLibraryGrid();
 
     window.db.collection(DOC_COLLECTION).doc(DOC_ID).set(next, { merge: true }).catch(function (err) {
@@ -1059,7 +1279,7 @@
     var liveTxt = document.getElementById('pv-live-pill-txt');
     if (livePill && liveTxt) {
       livePill.classList.toggle('is-playing', !!state.isPlaying);
-      liveTxt.textContent = state.isPlaying ? 'EN VIVO · REPRODUCIENDO' : 'EN PAUSA';
+      liveTxt.textContent = state.isPlaying ? 'EN VIVO' : 'EN PAUSA';
     }
 
     var npGrade = document.getElementById('pv-np-grade');
@@ -1068,7 +1288,7 @@
     var npSub = document.getElementById('pv-np-sub');
 
     if (npGrade) npGrade.innerHTML = '<i class="fas fa-graduation-cap"></i> ' + esc(formatGradesText(state.grades));
-    if (npProject) npProject.innerHTML = '<i class="fas fa-rocket"></i> ' + esc(state.project || 'Proyecto de Clase');
+    if (npProject) npProject.innerHTML = '<i class="fas fa-rocket"></i> ' + esc(state.project || 'Proyecto General');
     if (npTitle) npTitle.textContent = state.title || 'Sin título';
     if (npSub) npSub.textContent = state.subtitle || '';
 
@@ -1079,8 +1299,8 @@
       playBtn.classList.toggle('is-playing', !!state.isPlaying);
       playIcon.className = state.isPlaying ? 'fas fa-pause' : 'fas fa-play';
       playTxt.textContent = state.isPlaying
-        ? 'PAUSAR EN TODAS LAS MÁQUINAS'
-        : 'REPRODUCIR EN TODAS LAS MÁQUINAS';
+        ? 'PAUSAR TODAS LAS MÁQUINAS'
+        : 'REPRODUCIR EN CLASE';
     }
 
     var locked = state.lockedByTeacher !== false;
@@ -1089,16 +1309,15 @@
     var lockDesc = document.getElementById('pv-lock-desc');
     var lockBtn = document.getElementById('pv-btn-toggle-lock');
     if (lockBox && lockTitle && lockDesc && lockBtn) {
-      lockBox.classList.toggle('locked', locked);
-      lockBtn.classList.toggle('is-locked', locked);
+      lockBox.className = 'pv-switch-tile ' + (locked ? 'is-locked' : 'is-free');
       if (locked) {
-        lockTitle.innerHTML = '<i class="fas fa-lock"></i> Bloqueado: El Profesor tiene el control';
-        lockDesc.textContent = 'Los alumnos no pueden pausar ni adelantar. Todas las máquinas siguen tu Play y Pausa.';
-        lockBtn.textContent = '🔓 Liberar Control a las Máquinas';
+        lockTitle.innerHTML = '<i class="fas fa-lock"></i> Bloqueado';
+        lockDesc.textContent = 'Alumnos no pueden pausar ni adelantar.';
+        lockBtn.textContent = '🔓 Liberar Control';
       } else {
-        lockTitle.innerHTML = '<i class="fas fa-unlock"></i> Libre: Las máquinas tienen control propio';
-        lockDesc.textContent = 'Cada alumno puede pausar o retroceder en su máquina hasta que vuelvas a bloquear o toques Play/Pausa.';
-        lockBtn.textContent = '🔒 Bloquear con Control del Profesor';
+        lockTitle.innerHTML = '<i class="fas fa-unlock"></i> Control Libre';
+        lockDesc.textContent = 'Alumnos pueden manejar su video.';
+        lockBtn.textContent = '🔒 Bloquear PCs';
       }
     }
 
@@ -1107,13 +1326,13 @@
     var audioBtn = document.getElementById('pv-btn-toggle-audio');
     if (audioTitle && audioDesc && audioBtn) {
       if (state.muteStudents) {
-        audioTitle.innerHTML = '<i class="fas fa-volume-mute"></i> Alumnos Silenciados (Solo Audio en tu PC)';
-        audioDesc.textContent = 'Las máquinas de los alumnos están en silencio.';
-        audioBtn.textContent = '🔊 Habilitar Sonido en Todas las Máquinas';
+        audioTitle.innerHTML = '<i class="fas fa-volume-mute"></i> Silenciados';
+        audioDesc.textContent = 'PCs de alumnos en silencio.';
+        audioBtn.textContent = '🔊 Activar Sonido';
       } else {
-        audioTitle.innerHTML = '<i class="fas fa-volume-up"></i> Sonido Activo en Todas las Máquinas';
-        audioDesc.textContent = 'Todas las computadoras reproducen con sonido al mismo tiempo.';
-        audioBtn.textContent = '🔇 Silenciar PCs de Alumnos';
+        audioTitle.innerHTML = '<i class="fas fa-volume-up"></i> Sonido en Todas';
+        audioDesc.textContent = 'Todas las PCs reproducen con audio.';
+        audioBtn.textContent = '🔇 Silenciar Alumnos';
       }
     }
   }
@@ -1124,19 +1343,21 @@
 
     if (heartbeatTimer) clearInterval(heartbeatTimer);
     heartbeatTimer = setInterval(function () {
-      if (isMediaPlaying()) {
+      if (virtualIsPlaying) {
+        var cur = getEffectiveCurrentTime();
+        var dur = getEffectiveDuration();
         pushState({
           isPlaying: true,
-          baseTime: getMediaCurrentTime(),
-          duration: getMediaDuration()
+          baseTime: cur,
+          duration: dur
         }, false);
       }
     }, 4000);
   }
 
   function updateMonitorTimeUi() {
-    var cur = getMediaCurrentTime();
-    var dur = getMediaDuration() || (remoteState && remoteState.duration) || 0;
+    var cur = getEffectiveCurrentTime();
+    var dur = getEffectiveDuration();
 
     if (!isDraggingScrubber) {
       var curEl = document.getElementById('pv-cur-time');
