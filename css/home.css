@@ -7382,3 +7382,30 @@ body.student-logged-in .site-footer {
   border: 1px solid #FCA5A5;
   cursor: pointer;
 }
+
+.cvs-meta-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+.cvs-meta-chip {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border: 1px solid #2B2520;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.cvs-chip-grade {
+  background: #DBEAFE;
+  color: #1E3A8A;
+  border-color: #1D4ED8;
+}
+.cvs-chip-project {
+  background: #FEF3C7;
+  color: #92400E;
+  border-color: #B45309;
+}

@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Cabina de Videos del Profesor — Colegio Paulo Freire</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #0F172A;
+      --bg-card: #1E293B;
+      --bg-panel: #FAF6EC;
+      --ink: #14110E;
+      --border-ink: #2B2520;
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --success: #16A34A;
+      --danger: #DC2626;
+      --warning: #D97706;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #EFE8D6;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── PANTALLA DE ACCESO DOCENTE ── */
+    .pv-login-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .pv-login-card {
+      max-width: 430px;
+      width: 100%;
+      background: #FAF6EC;
+      border: 3px solid #2B2520;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+      padding: 30px 26px;
+      text-align: center;
+    }
+
+    .pv-login-logo {
+      width: 68px;
+      height: 68px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .pv-login-kicker {
+      font-family: monospace;
+      font-size: 0.76rem;
+      font-weight: 900;
+      color: #991B1B;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .pv-login-title {
+      font-family: Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 900;
+      margin: 0 0 8px 0;
+      color: #14110E;
+    }
+
+    .pv-login-desc {
+      font-size: 0.9rem;
+      color: #4A4237;
+      margin: 0 0 20px 0;
+      line-height: 1.45;
+    }
+
+    .pv-login-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #2B2520;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-align: center;
+      background: #FFF;
+      margin-bottom: 12px;
+    }
+
+    .pv-login-btn {
+      width: 100%;
+      padding: 13px 18px;
+      background: #1D4ED8;
+      color: #FFF;
+      border: 2px solid #1E3A8A;
+      font-weight: 900;
+      font-size: 0.96rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #1E3A8A;
+    }
+
+    .pv-login-btn:hover {
+      background: #1E40AF;
+    }
+
+    .pv-login-error {
+      color: #DC2626;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    /* ── BARRA SUPERIOR DE LA CABINA DOCENTE ── */
+    .pv-topbar {
+      background: #1C1917;
+      color: #FAF6EC;
+      border-bottom: 3px solid #991B1B;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .pv-topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pv-topbar-brand img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .pv-topbar-title {
+      font-family: Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      margin: 0;
+      color: #FFF;
+    }
+
+    .pv-topbar-sub {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #FBBF24;
+      display: block;
+    }
+
+    .pv-topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pv-top-btn {
+      padding: 8px 14px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      border: 1.5px solid #57534E;
+      background: #292524;
+      color: #FAF6EC;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .pv-top-btn:hover {
+      background: #44403C;
+    }
+
+    .pv-top-btn.call-btn {
+      background: #F59E0B;
+      color: #1C1917;
+      border-color: #B45309;
+    }
+
+    /* ── LAYOUT PRINCIPAL (2 COLUMNAS EN PC) ── */
+    .pv-main {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 22px;
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1120px) {
+      .pv-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pv-card {
+      background: #FAF6EC;
+      border: 2px solid #2B2520;
+      box-shadow: 5px 5px 0 rgba(43, 37, 32, 0.16);
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .pv-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 2px double #C7BFA8;
+    }
+
+    .pv-card-kicker {
+      font-family: monospace;
+      font-size: 0.74rem;
+      font-weight: 900;
+      color: #991B1B;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: block;
+    }
+
+    .pv-card-title {
+      font-family: Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin: 2px 0 0 0;
+      color: #14110E;
+    }
+
+    /* ── MONITOR EN VIVO (COLUMNA IZQUIERDA) ── */
+    .pv-live-status-pill {
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 5px 10px;
+      background: #44403C;
+      color: #FFF;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pv-live-status-pill.is-playing {
+      background: #DC2626;
+    }
+
+    .pv-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FFF;
+      display: inline-block;
+    }
+
+    .pv-monitor-box {
+      background: #000;
+      border: 2px solid #2B2520;
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .pv-monitor-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .pv-monitor-layer iframe,
+    .pv-monitor-layer video {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      object-fit: contain;
+    }
+
+    .pv-now-playing-info {
+      background: #EFE8D6;
+      border: 1.5px solid #2B2520;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+    }
+
+    .pv-np-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .pv-badge {
+      font-family: monospace;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 3px 8px;
+      border: 1px solid #2B2520;
+      background: #FFF;
+    }
+
+    .pv-badge.grade {
+      background: #DBEAFE;
+      color: #1E3A8A;
+      border-color: #1D4ED8;
+    }
+
+    .pv-badge.project {
+      background: #FEF3C7;
+      color: #92400E;
+      border-color: #B45309;
+    }
+
+    .pv-np-title {
+      font-family: Georgia, serif;
+      font-size: 1.08rem;
+      font-weight: 900;
+      margin: 0 0 3px 0;
+    }
+
+    .pv-np-sub {
+      font-size: 0.84rem;
+      color: #57534E;
+      margin: 0;
+    }
+
+    /* Botón Maestro Play / Pausa */
+    .pv-master-play-btn {
+      width: 100%;
+      padding: 14px 18px;
+      background: #16A34A;
+      color: #FFF;
+      border: 2px solid #14532D;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 3px 3px 0 #14532D;
+      margin-bottom: 12px;
+    }
+
+    .pv-master-play-btn.is-playing {
+      background: #DC2626;
+      border-color: #7F1D1D;
+      box-shadow: 3px 3px 0 #7F1D1D;
+    }
+
+    .pv-transport-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pv-tr-btn {
+      padding: 9px 8px;
+      background: #FFF;
+      border: 1.5px solid #2B2520;
+      font-family: monospace;
+      font-size: 0.78rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .pv-tr-btn:hover {
+      background: #EFE8D6;
+    }
+
+    .pv-tr-btn.sync {
+      background: #DBEAFE;
+      color: #1E3A8A;
+      border-color: #1D4ED8;
+    }
+
+    .pv-scrubber-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFF;
+      border: 1.5px solid #2B2520;
+      padding: 8px 10px;
+      margin-bottom: 14px;
+    }
+
+    .pv-scrubber-time {
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: 900;
+      min-width: 42px;
+    }
+
+    .pv-scrubber-input {
+      flex: 1;
+      accent-color: #1D4ED8;
+      cursor: pointer;
+    }
+
+    .pv-speed-select {
+      padding: 4px 6px;
+      border: 1px solid #2B2520;
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: #FAF6EC;
+    }
+
+    /* Interruptores de Bloqueo y Sonido */
+    .pv-switch-box {
+      background: #FFF;
+      border: 1.5px solid #2B2520;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pv-switch-box.locked {
+      background: #FFFBEB;
+      border-color: #B45309;
+    }
+
+    .pv-switch-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .pv-switch-title {
+      font-weight: 900;
+      font-size: 0.92rem;
+      margin: 0;
+    }
+
+    .pv-switch-desc {
+      font-size: 0.8rem;
+      color: #57534E;
+      margin: 0;
+    }
+
+    .pv-switch-btn {
+      padding: 9px 12px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: 900;
+      border: 1.5px solid #14110E;
+      background: #2B2520;
+      color: #FFF;
+      cursor: pointer;
+    }
+
+    .pv-switch-btn.is-locked {
+      background: #15803D;
+      border-color: #14532D;
+    }
+
+    /* ── BIBLIOTECA DE VIDEOS (COLUMNA DERECHA) ── */
+    .pv-form-panel {
+      background: #EFE8D6;
+      border: 2px solid #2B2520;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .pv-form-title {
+      font-family: Georgia, serif;
+      font-size: 1.12rem;
+      font-weight: 900;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pv-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pv-field label {
+      display: block;
+      font-family: monospace;
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      color: #2B2520;
+    }
+
+    .pv-field input,
+    .pv-field select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1.5px solid #2B2520;
+      background: #FFF;
+      font-size: 0.9rem;
+    }
+
+    .pv-grade-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pv-grade-check {
+      padding: 6px 11px;
+      background: #FFF;
+      border: 1.5px solid #2B2520;
+      font-family: monospace;
+      font-size: 0.76rem;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pv-grade-check.selected {
+      background: #1D4ED8;
+      color: #FFF;
+      border-color: #1E3A8A;
+    }
+
+    .pv-form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .pv-btn-save {
+      padding: 10px 16px;
+      background: #2B2520;
+      color: #FFF;
+      border: 1.5px solid #14110E;
+      font-family: monospace;
+      font-size: 0.82rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .pv-btn-save-live {
+      padding: 10px 16px;
+      background: #16A34A;
+      color: #FFF;
+      border: 1.5px solid #14532D;
+      font-family: monospace;
+      font-size: 0.82rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .pv-btn-cancel {
+      padding: 10px 14px;
+      background: #FFF;
+      color: #2B2520;
+      border: 1.5px solid #2B2520;
+      font-family: monospace;
+      font-size: 0.82rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* Barra de filtros de la biblioteca */
+    .pv-filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      background: #FFF;
+      border: 1.5px solid #2B2520;
+    }
+
+    .pv-filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pv-filter-tab {
+      padding: 6px 11px;
+      background: #FAF6EC;
+      border: 1px solid #2B2520;
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .pv-filter-tab.active {
+      background: #2B2520;
+      color: #FFF;
+    }
+
+    .pv-filter-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pv-filter-select,
+    .pv-filter-search {
+      padding: 6px 10px;
+      border: 1.5px solid #2B2520;
+      font-size: 0.84rem;
+      background: #FAF6EC;
+    }
+
+    /* Grilla de tarjetas de videos */
+    .pv-library-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      gap: 16px;
+    }
+
+    .pv-video-card {
+      background: #FFF;
+      border: 2px solid #2B2520;
+      box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.14);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.14s ease;
+    }
+
+    .pv-video-card.is-on-air {
+      border-color: #DC2626;
+      box-shadow: 4px 4px 0 rgba(220, 38, 38, 0.25);
+    }
+
+    .pv-vc-thumb {
+      position: relative;
+      height: 148px;
+      background: #1C1917;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .pv-vc-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pv-vc-thumb-icon {
+      font-size: 2.6rem;
+      color: #FAF6EC;
+    }
+
+    .pv-vc-type-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(20, 17, 14, 0.88);
+      color: #FFF;
+      font-family: monospace;
+      font-size: 0.68rem;
+      font-weight: 900;
+      padding: 3px 7px;
+    }
+
+    .pv-vc-onair-tag {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #DC2626;
+      color: #FFF;
+      font-family: monospace;
+      font-size: 0.68rem;
+      font-weight: 900;
+      padding: 3px 8px;
+    }
+
+    .pv-vc-body {
+      padding: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .pv-vc-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+
+    .pv-vc-title {
+      font-family: Georgia, serif;
+      font-size: 1.02rem;
+      font-weight: 900;
+      margin: 0 0 4px 0;
+      color: #14110E;
+      line-height: 1.25;
+    }
+
+    .pv-vc-sub {
+      font-size: 0.82rem;
+      color: #57534E;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .pv-vc-actions {
+      display: flex;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px dashed #D6CFC1;
+    }
+
+    .pv-vc-btn-project {
+      flex: 1;
+      padding: 8px 10px;
+      background: #1D4ED8;
+      color: #FFF;
+      border: 1.5px solid #1E3A8A;
+      font-family: monospace;
+      font-size: 0.76rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .pv-video-card.is-on-air .pv-vc-btn-project {
+      background: #DC2626;
+      border-color: #7F1D1D;
+    }
+
+    .pv-vc-btn-icon {
+      padding: 8px 10px;
+      background: #FAF6EC;
+      color: #2B2520;
+      border: 1.5px solid #2B2520;
+      cursor: pointer;
+    }
+
+    .pv-vc-btn-icon.del:hover {
+      background: #FEE2E2;
+      color: #991B1B;
+      border-color: #DC2626;
+    }
+
+    .pv-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: #1C1917;
+      color: #FFF;
+      border: 2px solid #FBBF24;
+      padding: 12px 18px;
+      font-family: monospace;
+      font-size: 0.86rem;
+      font-weight: 900;
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       PANTALLA DE ACCESO CON CLAVE DOCENTE
+  ══════════════════════════════════════════════ -->
+  <div class="pv-login-overlay" id="pv-login-overlay">
+    <div class="pv-login-card">
+      <img src="img/escudo_paulo_freire.png?v=2" alt="Colegio Paulo Freire" class="pv-login-logo">
+      <span class="pv-login-kicker">ACCESO EXCLUSIVO DOCENTE</span>
+      <h1 class="pv-login-title">Biblioteca y Control de Videos</h1>
+      <p class="pv-login-desc">Ingresá tu PIN o contraseña de profesor para gestionar la biblioteca de videos por grado/proyecto y controlar las pantallas del salón.</p>
+      <form id="pv-login-form">
+        <input type="password" id="pv-login-pass" class="pv-login-input" placeholder="PIN o clave (ej: 2026)" required autocomplete="current-password">
+        <button type="submit" class="pv-login-btn"><i class="fas fa-unlock-alt"></i> Entrar al Panel de Videos</button>
+        <div class="pv-login-error" id="pv-login-error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       BARRA SUPERIOR
+  ══════════════════════════════════════════════ -->
+  <header class="pv-topbar">
+    <div class="pv-topbar-brand">
+      <img src="img/escudo_paulo_freire.png?v=2" alt="Escudo">
+      <div>
+        <h1 class="pv-topbar-title">Cabina de Videos del Profesor</h1>
+        <span class="pv-topbar-sub">BIBLIOTECA POR GRADO Y PROYECTO · SINCRONIZACIÓN EN VIVO</span>
+      </div>
+    </div>
+
+    <div class="pv-topbar-actions">
+      <button type="button" class="pv-top-btn call-btn" id="pv-btn-call-students" title="Hace que todas las computadoras abiertas en la sección Clase abran automáticamente la Sala de Video">
+        <i class="fas fa-bullhorn"></i> Traer Máquinas a la Sala de Video
+      </button>
+      <a href="index.html#clase-video" target="_blank" class="pv-top-btn" title="Ver cómo lo ven los alumnos en la página pública">
+        <i class="fas fa-external-link-alt"></i> Ver Pantalla Alumnos
+      </a>
+      <button type="button" class="pv-top-btn" id="pv-btn-logout">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ══════════════════════════════════════════════ -->
+  <main class="pv-main">
+
+    <!-- COLUMNA IZQUIERDA: MONITOR EN VIVO Y CONTROL MAESTRO DE LAS MÁQUINAS -->
+    <section class="pv-left-col">
+      <div class="pv-card">
+        <div class="pv-card-head">
+          <div>
+            <span class="pv-card-kicker"><i class="fas fa-satellite-dish"></i> Transmisión en Tiempo Real</span>
+            <h2 class="pv-card-title">Control de Pantallas en Clase</h2>
+          </div>
+          <span class="pv-live-status-pill" id="pv-live-pill">
+            <span class="pv-live-dot"></span>
+            <span id="pv-live-pill-txt">EN PAUSA</span>
+          </span>
+        </div>
+
+        <!-- Monitor de Video del Profesor -->
+        <div class="pv-monitor-box">
+          <div id="pv-yt-wrap" class="pv-monitor-layer">
+            <div id="pv-yt-player"></div>
+          </div>
+          <div id="pv-mp4-wrap" class="pv-monitor-layer" style="display:none;">
+            <video id="pv-html5-video" playsinline preload="auto"></video>
+          </div>
+        </div>
+
+        <!-- Información del Video Actualmente Cargado en las Máquinas -->
+        <div class="pv-now-playing-info">
+          <div class="pv-np-badges">
+            <span class="pv-badge grade" id="pv-np-grade"><i class="fas fa-graduation-cap"></i> Todos los Grados</span>
+            <span class="pv-badge project" id="pv-np-project"><i class="fas fa-rocket"></i> Proyecto General</span>
+          </div>
+          <h3 class="pv-np-title" id="pv-np-title">Cargando...</h3>
+          <p class="pv-np-sub" id="pv-np-sub">Conectando con Firebase Firestore...</p>
+        </div>
+
+        <!-- Botón Maestro Play / Pausa -->
+        <button type="button" class="pv-master-play-btn" id="pv-btn-playpause">
+          <i class="fas fa-play" id="pv-playpause-icon"></i>
+          <span id="pv-playpause-txt">REPRODUCIR EN TODAS LAS MÁQUINAS</span>
+        </button>
+
+        <!-- Botones Rápidos de Transporte -->
+        <div class="pv-transport-row">
+          <button type="button" class="pv-tr-btn" id="pv-btn-restart" title="Volver al segundo 00:00 en todas las máquinas">
+            <i class="fas fa-step-backward"></i> 00:00
+          </button>
+          <button type="button" class="pv-tr-btn" id="pv-btn-rew10" title="Retroceder 10 segundos en todas las máquinas">
+            <i class="fas fa-undo"></i> -10s
+          </button>
+          <button type="button" class="pv-tr-btn" id="pv-btn-fwd10" title="Adelantar 10 segundos en todas las máquinas">
+            <i class="fas fa-redo"></i> +10s
+          </button>
+          <button type="button" class="pv-tr-btn sync" id="pv-btn-forcesync" title="Forzar que todas las máquinas se igualen a tu segundo actual">
+            <i class="fas fa-bolt"></i> Sincronizar
+          </button>
+        </div>
+
+        <!-- Barra de Tiempo Deslizable (Scrubber) -->
+        <div class="pv-scrubber-box">
+          <span class="pv-scrubber-time" id="pv-cur-time">00:00</span>
+          <input type="range" id="pv-scrubber" class="pv-scrubber-input" min="0" max="100" step="1" value="0">
+          <span class="pv-scrubber-time" id="pv-dur-time">00:00</span>
+          <select id="pv-speed-select" class="pv-speed-select" title="Velocidad de reproducción">
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+          </select>
+        </div>
+
+        <!-- Interruptor 1: Bloqueado al Profesor vs Control Libre -->
+        <div class="pv-switch-box locked" id="pv-lock-box">
+          <div class="pv-switch-head">
+            <p class="pv-switch-title" id="pv-lock-title"><i class="fas fa-lock"></i> Bloqueado: El Profesor tiene el control</p>
+          </div>
+          <p class="pv-switch-desc" id="pv-lock-desc">Los alumnos no pueden pausar ni adelantar. Todas las máquinas siguen tu Play y Pausa.</p>
+          <button type="button" class="pv-switch-btn is-locked" id="pv-btn-toggle-lock">
+            🔓 Liberar Control a las Máquinas
+          </button>
+        </div>
+
+        <!-- Interruptor 2: Sonido en el Salón -->
+        <div class="pv-switch-box" id="pv-audio-box">
+          <div class="pv-switch-head">
+            <p class="pv-switch-title" id="pv-audio-title"><i class="fas fa-volume-up"></i> Sonido en Todas las Máquinas</p>
+          </div>
+          <p class="pv-switch-desc" id="pv-audio-desc">Todas las computadoras reproducen con sonido al mismo tiempo.</p>
+          <button type="button" class="pv-switch-btn" id="pv-btn-toggle-audio">
+            🔇 Silenciar PCs de Alumnos
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- COLUMNA DERECHA: BIBLIOTECA DE VIDEOS (ALTA, BAJA, EDICIÓN POR GRADO Y PROYECTO) -->
+    <section class="pv-right-col">
+      <div class="pv-card">
+        <div class="pv-card-head">
+          <div>
+            <span class="pv-card-kicker"><i class="fas fa-film"></i> Repositorio Docente en la Nube</span>
+            <h2 class="pv-card-title">Biblioteca de Videos por Grado y Proyecto</h2>
+          </div>
+          <span id="pv-library-count" style="font-family:monospace;font-weight:900;font-size:0.85rem;background:#EFE8D6;padding:5px 10px;border:1px solid #2B2520;">0 videos</span>
+        </div>
+
+        <!-- Formulario de Alta / Modificación de Video -->
+        <form id="pv-video-form" class="pv-form-panel">
+          <input type="hidden" id="pv-edit-id" value="">
+          <div class="pv-form-title">
+            <span id="pv-form-heading"><i class="fas fa-plus-circle"></i> Dar de Alta Nuevo Video en la Biblioteca</span>
+          </div>
+
+          <div class="pv-form-grid">
+            <div class="pv-field">
+              <label for="pv-input-title">Título del Video *</label>
+              <input type="text" id="pv-input-title" placeholder="Ej: Experimento El Fantasma Levitante" required>
+            </div>
+
+            <div class="pv-field">
+              <label for="pv-input-url">Link de YouTube o Archivo MP4 *</label>
+              <input type="text" id="pv-input-url" placeholder="https://www.youtube.com/watch?v=... o ruta .mp4" required>
+            </div>
+          </div>
+
+          <div class="pv-form-grid">
+            <div class="pv-field">
+              <label for="pv-select-project">Proyecto que presentarás a los alumnos *</label>
+              <select id="pv-select-project">
+                <option value="El Fantasma Levitante">👻 El Fantasma Levitante (Magnetismo / Tensegridad)</option>
+                <option value="Guitarra musical de cartón">🎸 Guitarra musical de cartón</option>
+                <option value="Cuento interactivo en Scratch">📖 Cuento interactivo en Scratch</option>
+                <option value="Semáforo inteligente">🚦 Semáforo inteligente</option>
+                <option value="Banderas del Mundial en Paint">🏳️ Banderas del Mundial en Paint</option>
+                <option value="Acceleration City">🏎️ Acceleration City (Robótica / CS2N)</option>
+                <option value="Varita Mágica con LED">✨ Varita Mágica con Circuito LED</option>
+                <option value="Luces, Cámara, IA">🎬 Luces, Cámara, IA</option>
+                <option value="Introducción a la Robótica">🤖 Introducción a la Robótica y Sensores</option>
+                <option value="__custom__">✏️ Escribir otro nombre de proyecto...</option>
+              </select>
+              <input type="text" id="pv-input-custom-project" placeholder="Escribí el nombre del proyecto o tema..." style="display:none;margin-top:8px;">
+            </div>
+
+            <div class="pv-field">
+              <label for="pv-input-subtitle">Consigna o indicación para la clase (opcional)</label>
+              <input type="text" id="pv-input-subtitle" placeholder="Ej: Presten atención a cómo se colocan los imanes">
+            </div>
+          </div>
+
+          <div class="pv-field">
+            <label>Grado(s) a los que corresponde este video (tocá para elegir uno o varios):</label>
+            <div class="pv-grade-pills" id="pv-form-grade-pills">
+              <span class="pv-grade-check" data-grade="todos">Todos los Grados</span>
+              <span class="pv-grade-check selected" data-grade="sala5">Sala de 5</span>
+              <span class="pv-grade-check selected" data-grade="grado1">1° Grado</span>
+              <span class="pv-grade-check" data-grade="grado2">2° Grado</span>
+              <span class="pv-grade-check" data-grade="grado3">3° Grado</span>
+              <span class="pv-grade-check" data-grade="grado4">4° Grado</span>
+              <span class="pv-grade-check" data-grade="grado5">5° Grado</span>
+              <span class="pv-grade-check" data-grade="grado6">6° Grado</span>
+            </div>
+          </div>
+
+          <div class="pv-form-actions">
+            <button type="submit" class="pv-btn-save" id="pv-btn-save-only">
+              <i class="fas fa-save"></i> Guardar en Biblioteca
+            </button>
+            <button type="button" class="pv-btn-save-live" id="pv-btn-save-and-project">
+              <i class="fas fa-satellite-dish"></i> Guardar y Proyectar Ahora en Clase
+            </button>
+            <button type="button" class="pv-btn-cancel" id="pv-btn-cancel-edit" style="display:none;">
+              Cancelar Edición
+            </button>
+          </div>
+        </form>
+
+        <!-- Filtros de la Biblioteca por Grado y Proyecto -->
+        <div class="pv-filters-bar">
+          <div class="pv-filter-tabs" id="pv-filter-grades">
+            <button type="button" class="pv-filter-tab active" data-filter-grade="todos">Todos</button>
+            <button type="button" class="pv-filter-tab" data-filter-grade="sala5">Sala de 5</button>
+            <button type="button" class="pv-filter-tab" data-filter-grade="grado1">1° Grado</button>
+            <button type="button" class="pv-filter-tab" data-filter-grade="grado2">2° Grado</button>
+            <button type="button" class="pv-filter-tab" data-filter-grade="grado3">3° Grado</button>
+            <button type="button" class="pv-filter-tab" data-filter-grade="grado4">4° Grado</button>
+            <button type="button" class="pv-filter-tab" data-filter-grade="grado5">5° Grado</button>
+            <button type="button" class="pv-filter-tab" data-filter-grade="grado6">6° Grado</button>
+          </div>
+
+          <div class="pv-filter-right">
+            <select id="pv-filter-project" class="pv-filter-select" title="Filtrar por Proyecto">
+              <option value="todos">📂 Todos los Proyectos</option>
+            </select>
+            <input type="search" id="pv-filter-search" class="pv-filter-search" placeholder="🔍 Buscar video o tema...">
+          </div>
+        </div>
+
+        <!-- Grilla de Videos Cargados -->
+        <div class="pv-library-grid" id="pv-library-grid"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div class="pv-toast" id="pv-toast"></div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js?v=95"></script>
+  <script src="js/profesor_videos.js?v=1"></script>
+</body>
+</html>
