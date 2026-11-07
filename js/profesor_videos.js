@@ -41,10 +41,31 @@
       type: 'youtube',
       youtubeId: '7afwV_aJcjk',
       duration: 240,
+      schemaUrl: 'img/proyectos/fantasma_levitante_tutorial.jpg',
       markers: [
         { label: 'Paso 1: Materiales', time: 15 },
         { label: 'Paso 2: Polos del Imán', time: 65 },
         { label: 'Paso 3: Armado y Levitación', time: 130 }
+      ],
+      quizzes: [
+        {
+          question: '¿Por qué flota nuestro Fantasma Levitante sin caerse?',
+          options: [
+            'Por la atracción entre los dos imanes y el hilo tenso',
+            'Porque está inflado con gas helio por dentro',
+            'Porque tiene una hélice oculta en la base'
+          ],
+          correctIndex: 0
+        },
+        {
+          question: '¿Qué pasaría si soltamos el hilo que sostiene al fantasma desde la base?',
+          options: [
+            'El fantasma quedaría flotando igual en el aire',
+            'El imán del fantasma saltaría a pegarse al imán de arriba',
+            'Los imanes dejarían de funcionar'
+          ],
+          correctIndex: 1
+        }
       ]
     },
     {
@@ -57,10 +78,22 @@
       type: 'youtube',
       youtubeId: 'TdNU26840_8',
       duration: 240,
+      schemaUrl: 'img/proyectos/varita_magica_circuito.png',
       markers: [
         { label: 'Paso 1: Cuerpo de Cartón', time: 20 },
         { label: 'Paso 2: Cinta Conductora', time: 80 },
         { label: 'Paso 3: Código Musical', time: 150 }
+      ],
+      quizzes: [
+        {
+          question: '¿Qué material permite que pase la electricidad en nuestra guitarra?',
+          options: [
+            'El cartón seco',
+            'El papel aluminio / cinta conductora',
+            'La goma eva'
+          ],
+          correctIndex: 1
+        }
       ]
     },
     {
@@ -73,9 +106,21 @@
       type: 'youtube',
       youtubeId: 'wA9tO7m3v6U',
       duration: 240,
+      schemaUrl: '',
       markers: [
         { label: '1. ¿Qué es un Robot?', time: 10 },
         { label: '2. Sensores y Cerebro', time: 75 }
+      ],
+      quizzes: [
+        {
+          question: '¿Para qué sirven los sensores en un robot del taller?',
+          options: [
+            'Solo para decorar el chasis con luces',
+            'Para detectar lo que pasa alrededor (luz, distancia, sonido)',
+            'Para cargar la batería más rápido'
+          ],
+          correctIndex: 1
+        }
       ]
     }
   ];
@@ -156,6 +201,7 @@
   var isApplyingRemote = false;
   var suppressLocalEventsUntil = 0;
   var isDraggingScrubber = false;
+  var formQuizzesDraft = [];
 
   // Reloj virtual + control de auto-pausa en marcadores
   var virtualBaseSec = 0;
@@ -1056,6 +1102,103 @@
         renderLibraryGrid();
       });
     }
+
+    var addFormQuizBtn = document.getElementById('pv-btn-add-form-quiz');
+    if (addFormQuizBtn) {
+      addFormQuizBtn.addEventListener('click', function () {
+        addPendingQuizInputToDraft(true);
+      });
+    }
+
+    renderFormQuizzesDraft();
+  }
+
+  function addPendingQuizInputToDraft(alertIfEmpty) {
+    var qEl = document.getElementById('pv-fq-question');
+    var o0El = document.getElementById('pv-fq-opt0');
+    var o1El = document.getElementById('pv-fq-opt1');
+    var o2El = document.getElementById('pv-fq-opt2');
+    var corrEl = document.getElementById('pv-fq-correct');
+
+    var q = qEl ? qEl.value.trim() : '';
+    var o0 = o0El ? o0El.value.trim() : '';
+    var o1 = o1El ? o1El.value.trim() : '';
+    var o2 = o2El ? o2El.value.trim() : '';
+    var corrIdx = corrEl ? Number(corrEl.value) || 0 : 0;
+
+    if (!q && !o0 && !o1) {
+      if (alertIfEmpty) {
+        alert('Escribí la pregunta y al menos las opciones A y B para agregarla al video.');
+      }
+      return false;
+    }
+
+    if (!q || !o0 || !o1) {
+      if (alertIfEmpty) {
+        alert('Completá la pregunta y las opciones A y B.');
+      }
+      return false;
+    }
+
+    var opts = [o0, o1];
+    if (o2) opts.push(o2);
+    if (corrIdx >= opts.length) corrIdx = 0;
+
+    formQuizzesDraft.push({
+      question: q,
+      options: opts,
+      correctIndex: corrIdx
+    });
+
+    if (qEl) qEl.value = '';
+    if (o0El) o0El.value = '';
+    if (o1El) o1El.value = '';
+    if (o2El) o2El.value = '';
+    if (corrEl) corrEl.value = '0';
+
+    vibrateTap(25);
+    renderFormQuizzesDraft();
+    if (alertIfEmpty) {
+      showToast('➕ Pregunta agregada a este video (' + formQuizzesDraft.length + ')');
+    }
+    return true;
+  }
+
+  function renderFormQuizzesDraft() {
+    var listEl = document.getElementById('pv-form-quizzes-list');
+    if (!listEl) return;
+
+    if (!formQuizzesDraft.length) {
+      listEl.innerHTML = '<div style="font-size:0.78rem;color:#94A3B8;padding:4px 2px;">Podés dejar 1 o varias preguntas listas acá abajo para lanzarlas con 1 toque durante la clase.</div>';
+      return;
+    }
+
+    var letters = ['A', 'B', 'C', 'D'];
+    listEl.innerHTML = formQuizzesDraft.map(function (q, idx) {
+      var optsStr = (q.options || []).map(function (opt, oIdx) {
+        var isC = Number(q.correctIndex) === oIdx;
+        return letters[oIdx] + ') ' + esc(opt) + (isC ? ' ✅' : '');
+      }).join(' · ');
+
+      return '<div class="pv-fq-item">' +
+        '<div style="min-width:0;flex:1;">' +
+          '<p class="pv-fq-item-q">' + (idx + 1) + '. ' + esc(q.question) + '</p>' +
+          '<p class="pv-fq-item-opts">' + optsStr + '</p>' +
+        '</div>' +
+        '<button type="button" class="pv-fq-del-btn" data-del-fq="' + idx + '" title="Quitar pregunta">' +
+          '<i class="fas fa-trash-alt"></i>' +
+        '</button>' +
+      '</div>';
+    }).join('');
+
+    listEl.querySelectorAll('[data-del-fq]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        vibrateTap(20);
+        var idx = Number(btn.getAttribute('data-del-fq'));
+        formQuizzesDraft = formQuizzesDraft.filter(function (_, i) { return i !== idx; });
+        renderFormQuizzesDraft();
+      });
+    });
   }
 
   function getSelectedFormGrades() {
@@ -1102,8 +1245,12 @@
       project: item.project || '',
       grades: item.grades || ['todos'],
       markers: Array.isArray(item.markers) ? item.markers : [],
+      videoQuizzes: Array.isArray(item.quizzes) ? item.quizzes : [],
+      videoSchemaUrl: item.schemaUrl || '',
       attentionMode: false,
       livePromptText: '',
+      referenceSchema: null,
+      activeQuiz: null,
       baseTime: 0,
       isPlaying: true,
       sessionActive: true
@@ -1117,6 +1264,7 @@
     var titleInput = document.getElementById('pv-input-title');
     var urlInput = document.getElementById('pv-input-url');
     var subInput = document.getElementById('pv-input-subtitle');
+    var schemaUrlInput = document.getElementById('pv-input-schema-url');
     var projSel = document.getElementById('pv-select-project');
     var customProjInput = document.getElementById('pv-input-custom-project');
     var editIdInput = document.getElementById('pv-edit-id');
@@ -1134,12 +1282,16 @@
       return;
     }
 
+    // Si el profesor dejó una pregunta escrita en los campos sin tocar "+ Agregar", la sumamos automáticamente
+    addPendingQuizInputToDraft(false);
+
     var project = projSel ? projSel.value : 'Proyecto General';
     if (project === '__custom__') {
       project = (customProjInput && customProjInput.value.trim()) || 'Proyecto de Clase';
     }
 
     var subtitle = (subInput && subInput.value.trim()) || ('Proyecto: ' + project);
+    var schemaUrl = schemaUrlInput ? schemaUrlInput.value.trim() : '';
     var grades = getSelectedFormGrades();
     var editId = editIdInput ? editIdInput.value.trim() : '';
 
@@ -1158,6 +1310,8 @@
       url: parsed.url,
       type: parsed.type,
       youtubeId: parsed.youtubeId || '',
+      schemaUrl: schemaUrl,
+      quizzes: formQuizzesDraft.slice(),
       markers: (existingItem && Array.isArray(existingItem.markers)) ? existingItem.markers : [],
       updatedAt: Date.now()
     };
@@ -1174,6 +1328,12 @@
       playlist: list
     };
 
+    // Si estamos editando el video que ya está activo en pantalla, actualizar sus preguntas/esquema en vivo también
+    if (remoteState && remoteState.videoUrl === videoItem.url && !projectImmediately) {
+      statePatch.videoQuizzes = videoItem.quizzes;
+      statePatch.videoSchemaUrl = videoItem.schemaUrl;
+    }
+
     if (projectImmediately) {
       virtualBaseSec = 0;
       virtualLastTickMs = Date.now();
@@ -1188,8 +1348,12 @@
       statePatch.project = videoItem.project;
       statePatch.grades = videoItem.grades;
       statePatch.markers = videoItem.markers;
+      statePatch.videoQuizzes = videoItem.quizzes;
+      statePatch.videoSchemaUrl = videoItem.schemaUrl;
       statePatch.attentionMode = false;
       statePatch.livePromptText = '';
+      statePatch.referenceSchema = null;
+      statePatch.activeQuiz = null;
       statePatch.baseTime = 0;
       statePatch.isPlaying = true;
       statePatch.sessionActive = true;
@@ -1204,13 +1368,14 @@
     switchMobileTab(projectImmediately ? 'remote' : 'library');
     showToast(projectImmediately
       ? '📡 Guardado y Proyectando en Clase'
-      : '💾 Video Guardado en Biblioteca');
+      : '💾 Video y Preguntas Guardados');
   }
 
   function resetVideoForm() {
     var titleInput = document.getElementById('pv-input-title');
     var urlInput = document.getElementById('pv-input-url');
     var subInput = document.getElementById('pv-input-subtitle');
+    var schemaUrlInput = document.getElementById('pv-input-schema-url');
     var editIdInput = document.getElementById('pv-edit-id');
     var heading = document.getElementById('pv-form-heading');
     var cancelBtn = document.getElementById('pv-btn-cancel-edit');
@@ -1219,7 +1384,11 @@
     if (titleInput) titleInput.value = '';
     if (urlInput) urlInput.value = '';
     if (subInput) subInput.value = '';
+    if (schemaUrlInput) schemaUrlInput.value = '';
     if (editIdInput) editIdInput.value = '';
+    formQuizzesDraft = [];
+    renderFormQuizzesDraft();
+
     if (heading) heading.innerHTML = '<i class="fas fa-plus-circle" style="color:#4ADE80;"></i> Dar de Alta Nuevo Video';
     if (cancelBtn) cancelBtn.style.display = 'none';
     if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save"></i> Solo Guardar en mi Biblioteca';
@@ -1230,6 +1399,7 @@
     var titleInput = document.getElementById('pv-input-title');
     var urlInput = document.getElementById('pv-input-url');
     var subInput = document.getElementById('pv-input-subtitle');
+    var schemaUrlInput = document.getElementById('pv-input-schema-url');
     var projSel = document.getElementById('pv-select-project');
     var customProjInput = document.getElementById('pv-input-custom-project');
     var editIdInput = document.getElementById('pv-edit-id');
@@ -1241,6 +1411,10 @@
     if (titleInput) titleInput.value = item.title || '';
     if (urlInput) urlInput.value = item.url || '';
     if (subInput) subInput.value = item.subtitle || '';
+    if (schemaUrlInput) schemaUrlInput.value = item.schemaUrl || '';
+
+    formQuizzesDraft = Array.isArray(item.quizzes) ? item.quizzes.slice() : [];
+    renderFormQuizzesDraft();
 
     if (projSel && customProjInput) {
       var existsInSelect = Array.from(projSel.options).some(function (opt) {
@@ -1258,7 +1432,7 @@
 
     setSelectedFormGrades(item.grades || ['todos']);
 
-    if (heading) heading.innerHTML = '<i class="fas fa-pen" style="color:#FBBF24;"></i> Editando Video';
+    if (heading) heading.innerHTML = '<i class="fas fa-pen" style="color:#FBBF24;"></i> Editando Video y Preguntas';
     if (cancelBtn) cancelBtn.style.display = 'block';
     if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
 
@@ -1375,6 +1549,9 @@
             '<div class="pv-vc-chips">' +
               '<span class="pv-chip grade"><i class="fas fa-graduation-cap"></i> ' + esc(formatGradesText(item.grades)) + '</span>' +
               (item.project ? '<span class="pv-chip project"><i class="fas fa-rocket"></i> ' + esc(item.project) + '</span>' : '') +
+              (Array.isArray(item.quizzes) && item.quizzes.length
+                ? '<span class="pv-chip" style="background:rgba(244,63,94,0.18);color:#FDA4AF;border:1px solid rgba(244,63,94,0.4);"><i class="fas fa-poll"></i> ' + item.quizzes.length + (item.quizzes.length === 1 ? ' pregunta' : ' preguntas') + '</span>'
+                : '') +
             '</div>' +
             '<h3 class="pv-vc-title">' + esc(item.title) + '</h3>' +
             '<p class="pv-vc-sub">' + esc(item.subtitle || '') + '</p>' +
@@ -1828,6 +2005,7 @@
 
     // Estado de Mini-Pregunta Interactiva A/B/C
     renderQuizLiveDashboard(state);
+    renderActiveVideoQuizzesDeck(state);
 
     // Estado de Auto-pausa y Marcadores
     var autoPauseCheck = document.getElementById('pv-autopause-check');
@@ -1921,6 +2099,49 @@
         '</div>' +
       '</div>';
     }).join('');
+  }
+
+  function renderActiveVideoQuizzesDeck(state) {
+    var deckEl = document.getElementById('pv-video-quizzes-deck');
+    if (!deckEl) return;
+
+    var quizzes = (state && Array.isArray(state.videoQuizzes) && state.videoQuizzes.length)
+      ? state.videoQuizzes
+      : null;
+
+    if (!quizzes && state) {
+      var list = Array.isArray(state.playlist) ? state.playlist : DEFAULT_LIBRARY;
+      var matchVid = list.find(function (v) { return v.url === state.videoUrl; }) ||
+                     DEFAULT_LIBRARY.find(function (v) { return v.url === state.videoUrl; });
+      if (matchVid && Array.isArray(matchVid.quizzes) && matchVid.quizzes.length) {
+        quizzes = matchVid.quizzes;
+      }
+    }
+
+    if (!quizzes || !quizzes.length) {
+      deckEl.innerHTML = '';
+      deckEl.style.display = 'none';
+      return;
+    }
+
+    deckEl.style.display = 'flex';
+    deckEl.innerHTML = '<div style="font-size:0.74rem;font-weight:900;color:#FDA4AF;text-transform:uppercase;letter-spacing:0.05em;">📌 Preguntas preparadas de este video:</div>' +
+      quizzes.map(function (q, idx) {
+        return '<button type="button" class="pv-vquiz-btn" data-launch-vquiz="' + idx + '">' +
+          '<span>🎯 ' + esc(q.question) + '</span>' +
+          '<span class="pv-vquiz-launch-tag"><i class="fas fa-bolt"></i> Lanzar</span>' +
+        '</button>';
+      }).join('');
+
+    deckEl.querySelectorAll('[data-launch-vquiz]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var idx = Number(btn.getAttribute('data-launch-vquiz'));
+        var q = quizzes[idx];
+        if (!q) return;
+        vibrateTap(40);
+        launchQuizToClassroom(q.question, q.options || [], q.correctIndex || 0);
+      });
+    });
   }
 
   function startTimers() {

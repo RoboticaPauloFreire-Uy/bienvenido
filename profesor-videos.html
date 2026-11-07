@@ -874,6 +874,103 @@
       gap: 8px;
       margin-top: 10px;
     }
+    .pv-video-quizzes-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .pv-vquiz-btn {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.16), rgba(225, 29, 72, 0.08));
+      border: 1.5px solid #F43F5E;
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: #FFF1F2;
+      font-size: 0.84rem;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pv-vquiz-btn:active {
+      background: rgba(244, 63, 94, 0.3);
+      transform: scale(0.98);
+    }
+    .pv-vquiz-launch-tag {
+      background: #F43F5E;
+      color: #FFF;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .pv-form-quizzes-box {
+      background: #0F172A;
+      border: 1.5px solid #334155;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 6px;
+    }
+    .pv-fq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .pv-fq-item {
+      background: #1E293B;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pv-fq-item-q {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      margin: 0 0 4px;
+    }
+    .pv-fq-item-opts {
+      font-size: 0.75rem;
+      color: #94A3B8;
+      margin: 0;
+      line-height: 1.35;
+    }
+    .pv-fq-del-btn {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FCA5A5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pv-btn-add-fq {
+      min-height: 44px;
+      padding: 0 14px;
+      background: #F43F5E;
+      color: #FFF;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
 
     /* ── SECCIÓN: MARCADORES DE PASOS DEL VIDEO ── */
     .pv-markers-header {
@@ -1670,6 +1767,9 @@
           </div>
         </div>
 
+        <!-- Preguntas guardadas junto con este video en el Alta -->
+        <div class="pv-video-quizzes-deck" id="pv-video-quizzes-deck"></div>
+
         <!-- Preguntas listas de 1 toque -->
         <div class="pv-quick-prompts-grid">
           <button type="button" class="pv-qp-btn" data-preset-quiz="fantasma-flota">
@@ -1843,6 +1943,35 @@
               <input type="text" id="pv-input-subtitle" class="pv-input-modern" placeholder="Ej: Miren cómo se colocan los dos imanes">
             </div>
 
+            <div class="pv-form-group">
+              <label for="pv-input-schema-url"><i class="fas fa-drafting-compass" style="color:#38BDF8;"></i> Lámina o Esquema de este Video (opcional)</label>
+              <input type="text" id="pv-input-schema-url" class="pv-input-modern" placeholder="URL de la imagen o lámina (ej: img/proyectos/fantasma_levitante_tutorial.jpg)">
+            </div>
+
+            <div class="pv-form-group">
+              <label><i class="fas fa-poll" style="color:#F43F5E;"></i> Preguntas Interactivas (A / B / C) para dejar listas con este video:</label>
+              <div class="pv-form-quizzes-box">
+                <div class="pv-fq-list" id="pv-form-quizzes-list"></div>
+
+                <div class="pv-quiz-builder-grid" style="margin-top:0;">
+                  <input type="text" id="pv-fq-question" class="pv-input-modern" placeholder="¿Pregunta para hacer en clase? (ej: ¿Por qué flota el fantasma?)">
+                  <input type="text" id="pv-fq-opt0" class="pv-input-modern" placeholder="Opción A">
+                  <input type="text" id="pv-fq-opt1" class="pv-input-modern" placeholder="Opción B">
+                  <input type="text" id="pv-fq-opt2" class="pv-input-modern" placeholder="Opción C (opcional)">
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <select id="pv-fq-correct" class="pv-select-modern" style="flex:1;min-width:170px;">
+                      <option value="0">✅ Correcta: Opción A</option>
+                      <option value="1">✅ Correcta: Opción B</option>
+                      <option value="2">✅ Correcta: Opción C</option>
+                    </select>
+                    <button type="button" class="pv-btn-add-fq" id="pv-btn-add-form-quiz">
+                      <i class="fas fa-plus"></i> Agregar Pregunta al Video
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="pv-form-buttons">
               <button type="button" class="pv-btn-submit-live" id="pv-btn-save-and-project">
                 <i class="fas fa-satellite-dish"></i> Guardar y Proyectar Ahora en Clase
@@ -1886,6 +2015,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=95"></script>
-  <script src="js/profesor_videos.js?v=4"></script>
+  <script src="js/profesor_videos.js?v=5"></script>
 </body>
 </html>
