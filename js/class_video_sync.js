@@ -408,28 +408,48 @@
         window.switchView('clase', false);
       }
       switchClaseSubTab('video');
+    } else if (h === 'herramientas' || h === 'clase-herramientas') {
+      if (typeof window.switchView === 'function') {
+        window.switchView('clase', false);
+      }
+      switchClaseSubTab('herramientas');
     }
   }
 
   function switchClaseSubTab(tabName) {
-    activeSubTab = tabName === 'video' ? 'video' : 'expedientes';
+    if (tabName === 'video') activeSubTab = 'video';
+    else if (tabName === 'herramientas') activeSubTab = 'herramientas';
+    else activeSubTab = 'expedientes';
 
-    if (tabName === 'expedientes' && document.body.classList.contains('student-logged-in')) {
+    if (activeSubTab !== 'video' && document.body.classList.contains('student-logged-in')) {
       document.body.classList.remove('in-class-video');
     }
 
     var expWrap = document.getElementById('clase-expedientes-wrap');
+    var toolsWrap = document.getElementById('clase-herramientas-wrap');
     var vidWrap = document.getElementById('clase-video-room-container');
     var filterWrap = document.getElementById('hn-clase-filter-wrap');
     var tabExpBtn = document.getElementById('btn-clase-tab-expedientes');
+    var tabToolsBtn = document.getElementById('btn-clase-tab-herramientas');
     var tabVidBtn = document.getElementById('btn-clase-tab-video');
 
     if (expWrap) expWrap.style.display = activeSubTab === 'expedientes' ? '' : 'none';
+    if (toolsWrap) toolsWrap.style.display = activeSubTab === 'herramientas' ? 'block' : 'none';
     if (vidWrap) vidWrap.style.display = activeSubTab === 'video' ? 'block' : 'none';
     if (filterWrap) filterWrap.style.display = activeSubTab === 'expedientes' ? '' : 'none';
 
     if (tabExpBtn) tabExpBtn.classList.toggle('active', activeSubTab === 'expedientes');
+    if (tabToolsBtn) tabToolsBtn.classList.toggle('active', activeSubTab === 'herramientas');
     if (tabVidBtn) tabVidBtn.classList.toggle('active', activeSubTab === 'video');
+
+    var liveBanner = document.getElementById('cvs-live-clase-banner');
+    if (liveBanner && remoteState) {
+      liveBanner.style.display = (remoteState.isPlaying && activeSubTab !== 'video') ? 'flex' : 'none';
+    }
+
+    if (activeSubTab === 'herramientas' && typeof window.renderHerramientas === 'function') {
+      window.renderHerramientas();
+    }
 
     sendPresencePing();
 

@@ -2440,6 +2440,9 @@
     } else if (raw === 'clase-video' || raw === 'cine' || raw === 'video-clase') {
       switchView('clase', false);
       if (window.switchClaseSubTab) window.switchClaseSubTab('video');
+    } else if (raw === 'herramientas' || raw === 'tools') {
+      switchView('clase', false);
+      if (window.switchClaseSubTab) window.switchClaseSubTab('herramientas');
     } else if (raw === 'clase' || raw === 'actividades-clase' || raw === 'actividades') {
       switchView('clase', false);
     } else if (raw === 'casa' || raw === 'actividades-casa') {

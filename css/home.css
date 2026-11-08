@@ -7958,3 +7958,9 @@ body.student-logged-in .site-footer {
     gap: 16px;
   }
 }
+
+.np-clase-subtab-tools.active {
+  background: #1E3A8A;
+  border-color: #172554;
+  color: #FFF;
+}

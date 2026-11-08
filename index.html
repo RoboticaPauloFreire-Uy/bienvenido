@@ -406,6 +406,10 @@
               <i class="fas fa-folder-open"></i>
               <span>Expedientes y Actividades</span>
             </button>
+            <button type="button" class="np-clase-subtab np-clase-subtab-tools" id="btn-clase-tab-herramientas" onclick="if(window.switchClaseSubTab) window.switchClaseSubTab('herramientas');">
+              <i class="fas fa-toolbox"></i>
+              <span>Herramientas de los Proyectos</span>
+            </button>
             <button type="button" class="np-clase-subtab np-clase-subtab-video" id="btn-clase-tab-video" onclick="if(window.switchClaseSubTab) window.switchClaseSubTab('video');">
               <i class="fas fa-tv"></i>
               <span>Sala de Video en Vivo (Cine de Clase)</span>
@@ -428,6 +432,38 @@
           <div class="np-act-wrapper" id="clase-expedientes-wrap">
             <div class="hn-act-grid np-clase-grid" id="hn-act-grid-clase"></div>
             <div class="np-pagination" id="hn-act-pag-clase" style="display:none;"></div>
+          </div>
+
+          <!-- Contenedor de Herramientas de los Proyectos (Dentro de Clase, entre Expediente y Sala) -->
+          <div class="np-tools-wrapper" id="clase-herramientas-wrap" style="display:none;">
+            <div class="hn-section-head np-section-head" style="margin-top:8px;margin-bottom:14px;border-bottom:1.5px solid #CBD5E1;padding-bottom:10px;">
+              <div>
+                <span class="hn-kicker np-kicker"><i class="fas fa-toolbox"></i> Software & IA del Taller</span>
+                <h3 style="font-size:1.25rem;font-weight:900;color:#0F172A;margin:3px 0 2px;">Herramientas utilizadas en nuestros Proyectos</h3>
+                <p class="hn-section-sub np-section-sub">Las plataformas interactivas, herramientas de diseño y motores de Inteligencia Artificial que utilizamos para dar vida a las creaciones escolares.</p>
+              </div>
+              <div class="hn-controls np-controls">
+                <div class="hn-tabs np-tools-filters" id="hn-tools-filters" role="toolbar" aria-label="Filtro de herramientas">
+                  <button type="button" class="hn-tab np-tab active" data-tool-category="todas">
+                    <i class="fas fa-th-large"></i> <span>Todas</span>
+                  </button>
+                  <button type="button" class="hn-tab np-tab" data-tool-category="ia">
+                    <i class="fas fa-brain"></i> <span>Inteligencia Artificial</span>
+                  </button>
+                  <button type="button" class="hn-tab np-tab" data-tool-category="animacion">
+                    <i class="fas fa-film"></i> <span>Animación & Video</span>
+                  </button>
+                  <button type="button" class="hn-tab np-tab" data-tool-category="diseno">
+                    <i class="fas fa-palette"></i> <span>Diseño Gráfico</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grilla de Tarjetas de Herramientas -->
+            <div class="hn-tools-grid-wrapper">
+              <div class="hn-tools-grid" id="hn-tools-grid"></div>
+            </div>
           </div>
 
           <!-- Contenedor de la Sala de Video Sincronizada (Cine de Clase) -->
@@ -622,48 +658,7 @@
         </section>
       </div>
 
-      <!-- ══════════════════════════════════════════
-           VISTA 8: HERRAMIENTAS DE LOS PROYECTOS (PÁG. 08)
-      ══════════════════════════════════════════ -->
-      <div id="view-herramientas" class="hn-view">
-        <section class="hn-section np-paper-sheet" id="herramientas" style="margin-top:0;">
-          <div class="np-page-folio" aria-hidden="true">
-            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
-            <div class="np-folio-center">SECCIÓN VIII · SUPLEMENTO DE TECNOLOGÍA & HERRAMIENTAS DIGITALES</div>
-            <div class="np-folio-right">PÁG. 08</div>
-          </div>
-
-          <div class="hn-section-head np-section-head">
-            <div>
-              <span class="hn-kicker np-kicker"><i class="fas fa-toolbox"></i> Laboratorio de Software & IA</span>
-              <h2 class="hn-section-title np-section-title">Herramientas de los Proyectos</h2>
-              <p class="hn-section-sub np-section-sub">Las plataformas interactivas, herramientas de diseño y motores de Inteligencia Artificial que utilizamos para dar vida a los proyectos de robótica y tecnología.</p>
-            </div>
-            <div class="hn-controls np-controls">
-              <!-- Filtro de Categoría -->
-              <div class="hn-tabs np-tools-filters" id="hn-tools-filters" role="toolbar" aria-label="Filtro de herramientas">
-                <button type="button" class="hn-tab np-tab active" data-tool-category="todas">
-                  <i class="fas fa-th-large"></i> <span>Todas</span>
-                </button>
-                <button type="button" class="hn-tab np-tab" data-tool-category="ia">
-                  <i class="fas fa-brain"></i> <span>Inteligencia Artificial</span>
-                </button>
-                <button type="button" class="hn-tab np-tab" data-tool-category="animacion">
-                  <i class="fas fa-film"></i> <span>Animación & Video</span>
-                </button>
-                <button type="button" class="hn-tab np-tab" data-tool-category="diseno">
-                  <i class="fas fa-palette"></i> <span>Diseño Gráfico</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Grilla de Tarjetas de Herramientas -->
-          <div class="hn-tools-grid-wrapper">
-            <div class="hn-tools-grid" id="hn-tools-grid"></div>
-          </div>
-        </section>
-      </div>
+      
 
     </main>
   </div>
@@ -978,8 +973,8 @@
   <script src="js/news.js?v=26"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=69"></script>
-  <script src="js/class_video_sync.js?v=5"></script>
+  <script src="js/home.js?v=70"></script>
+  <script src="js/class_video_sync.js?v=6"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
   <script>
