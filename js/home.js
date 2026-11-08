@@ -81,7 +81,75 @@
     return found.length ? found : ['todos'];
   }
 
+  /* ───────────── Sanitización de Textos (Evitar caracteres corruptos / ? / mojibake) ───────────── */
+  function sanearTexto(str) {
+    if (!str || typeof str !== 'string') return str;
+    var s = str;
+    // 1. Corregir patrones conocidos con signos de interrogación erróneos
+    s = s.replace(/C\?mara/g, 'Cámara')
+         .replace(/c\?mara/g, 'cámara')
+         .replace(/ingres\?/g, 'ingresá')
+         .replace(/pel\?cula/g, 'película')
+         .replace(/pel\?culas/g, 'películas')
+         .replace(/orbita/gi, 'órbita')
+         .replace(/360\?/g, '360°')
+         .replace(/sat[áa\?]lite/gi, 'satélite')
+         .replace(/arm[óo\?]\s+paso/gi, 'armá paso')
+         .replace(/Dise[ñn]o\s+tus\s+propios/gi, 'Diseñá tus propios')
+         .replace(/explorar\s+movimientos/gi, 'explorá movimientos')
+         .replace(/\s+\?\s+/g, ' — ')
+         .replace(/\?\?\s*Cine/g, '🎬 Cine')
+         .replace(/\?\?\s*Movimientos/g, '🎥 Movimientos')
+         .replace(/\?\?\s*Estilos/g, '💡 Estilos')
+         .replace(/\?\?\?\s*Guard/g, '💾 Guard')
+         .replace(/^!Entrar/g, '¡Entrar')
+         .replace(/\bqu\?\b/gi, 'qué')
+         .replace(/\bc\?mo\b/gi, 'cómo')
+         .replace(/\bcu\?l\b/gi, 'cuál')
+         .replace(/\bm\?s\b/gi, 'más')
+         .replace(/\btambi\?n\b/gi, 'también');
+
+    // 2. Corregir mojibake UTF-8 decodificado como Windows-1252 / ISO-8859-1
+    s = s.replace(/Ã¡/g, 'á')
+         .replace(/Ã©/g, 'é')
+         .replace(/Ã­/g, 'í')
+         .replace(/Ã³/g, 'ó')
+         .replace(/Ãº/g, 'ú')
+         .replace(/Ã±/g, 'ñ')
+         .replace(/Ã /g, 'Á')
+         .replace(/Ã‰/g, 'É')
+         .replace(/Ã /g, 'Í')
+         .replace(/Ã“/g, 'Ó')
+         .replace(/Ãš/g, 'Ú')
+         .replace(/Ã‘/g, 'Ñ')
+         .replace(/â€”/g, '—')
+         .replace(/â€“/g, '–')
+         .replace(/â€œ/g, '“')
+         .replace(/â€/g, '”')
+         .replace(/â€˜/g, '‘')
+         .replace(/â€™/g, '’');
+    return s;
+  }
+
+  function sanearObjetoActividad(act) {
+    if (!act) return act;
+    if (act.titulo) act.titulo = sanearTexto(act.titulo);
+    if (act.subtitulo) act.subtitulo = sanearTexto(act.subtitulo);
+    if (act.descripcion) act.descripcion = sanearTexto(act.descripcion);
+    if (act.materiales) act.materiales = sanearTexto(act.materiales);
+    if (Array.isArray(act.chips)) {
+      act.chips = act.chips.map(sanearTexto);
+    }
+    if (Array.isArray(act.botones)) {
+      act.botones.forEach(function (b) {
+        if (b && b.texto) b.texto = sanearTexto(b.texto);
+      });
+    }
+    return act;
+  }
+
   function esc(s) {
+    s = sanearTexto(s);
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -2562,21 +2630,22 @@
               deletedIds.push(doc.id);
               return;
             }
+            var cleanD = sanearObjetoActividad(Object.assign({}, d));
             remoteClase.push({
               id: doc.id,
-              titulo: d.titulo || '',
-              subtitulo: d.subtitulo || '',
+              titulo: cleanD.titulo || '',
+              subtitulo: cleanD.subtitulo || '',
               tipo: 'clase',
-              grados: d.grados || [d.grado || 'todos'],
-              grado: d.grado || 'todos',
-              descripcion: d.descripcion || '',
-              icono: d.icono || '🤖',
-              color: d.color || '#2E7D32',
-              imagen: d.imagen || '',
-              galeria: d.galeria || [],
-              desde: d.desde || '',
-              hasta: d.hasta || '',
-              botones: d.botones || []
+              grados: cleanD.grados || [cleanD.grado || 'todos'],
+              grado: cleanD.grado || 'todos',
+              descripcion: cleanD.descripcion || '',
+              icono: cleanD.icono || '🤖',
+              color: cleanD.color || '#2E7D32',
+              imagen: cleanD.imagen || '',
+              galeria: cleanD.galeria || [],
+              desde: cleanD.desde || '',
+              hasta: cleanD.hasta || '',
+              botones: cleanD.botones || []
             });
           });
 
@@ -2688,22 +2757,23 @@
               deletedIds.push(doc.id);
               return;
             }
+            var cleanD = sanearObjetoActividad(Object.assign({}, d));
             remoteCasa.push({
               id: doc.id,
-              titulo: d.titulo || '',
-              tipo: d.tipo || 'casa',
-              modalidad: d.modalidad || 'maker',
-              materiales: d.materiales || '',
-              grados: d.grados || [d.grado || 'todos'],
-              grado: d.grado || 'todos',
-              descripcion: d.descripcion || '',
-              icono: d.icono || (d.tipo === 'familia' ? '👨‍👩‍👧‍👦' : '🏠'),
-              color: d.color || '#1D4ED8',
-              imagen: d.imagen || '',
-              desde: d.desde || '',
-              hasta: d.hasta || '',
-              chips: d.chips || [],
-              botones: d.botones || []
+              titulo: cleanD.titulo || '',
+              tipo: cleanD.tipo || 'casa',
+              modalidad: cleanD.modalidad || 'maker',
+              materiales: cleanD.materiales || '',
+              grados: cleanD.grados || [cleanD.grado || 'todos'],
+              grado: cleanD.grado || 'todos',
+              descripcion: cleanD.descripcion || '',
+              icono: cleanD.icono || (cleanD.tipo === 'familia' ? '👨‍👩‍👧‍👦' : '🏠'),
+              color: cleanD.color || '#1D4ED8',
+              imagen: cleanD.imagen || '',
+              desde: cleanD.desde || '',
+              hasta: cleanD.hasta || '',
+              chips: cleanD.chips || [],
+              botones: cleanD.botones || []
             });
           });
 
