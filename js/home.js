@@ -1174,6 +1174,7 @@
 
     renderJuegos();
 
+
     if (actualizarHash !== false && history.replaceState) {
       var h = filtroGrupoJuegos === 'todos' ? '#juegos' : '#juegos-' + filtroGrupoJuegos;
       history.replaceState(null, '', h);
@@ -2198,7 +2199,168 @@
   }
 
   /* ───────────── Vistas por Pestañas (Diferentes DIVs) ───────────── */
-  var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'juegos', 'muro', 'agenda'];
+  var VALID_VIEWS = ['inicio', 'noticias', 'clase', 'casa', 'herramientas', 'juegos', 'muro', 'agenda'];
+
+  
+  /* ───────────── Herramientas de los Proyectos (Pág. 08) ───────────── */
+  var WORKSHOP_TOOLS = [
+    {
+      id: 'animated-drawings',
+      name: 'Animated Drawings',
+      subtitle: 'Animación de Dibujos con IA',
+      category: 'animacion',
+      tag: 'Meta AI · Animación 2D',
+      tagColor: '#1D4ED8',
+      tagBg: '#DBEAFE',
+      icon: '🎨',
+      faIcon: 'fas fa-child',
+      author: 'Meta Fundamental AI Research Lab',
+      url: 'https://sketch.metademolab.com/canvas',
+      description: 'Plataforma interactiva de Inteligencia Artificial que detecta automáticamente el cuerpo y las articulaciones de los personajes dibujados por los alumnos (en papel o digital) y los transforma en animaciones 2D que caminan, bailan, saltan y se mueven en tiempo real.',
+      projectUsage: 'Dar vida a personajes y robots dibujados en el aula, avatares de proyectos y creación de animaciones interactivas.',
+      features: ['Detección de articulaciones', 'Animaciones de caminata y baile', 'Exportación de video o GIF'],
+      badge: 'Meta AI'
+    },
+    {
+      id: 'flow-gemini',
+      name: 'Flow de Gemini',
+      subtitle: 'Estudio de Cine & Video con IA',
+      category: 'animacion',
+      tag: 'Google AI · Video Cinemático',
+      tagColor: '#6D28D9',
+      tagBg: '#EDE9FE',
+      icon: '🎬',
+      faIcon: 'fas fa-film',
+      author: 'Google AI & Estudio Escolar CPF',
+      url: 'https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/',
+      secondaryUrl: 'https://gemini.google.com',
+      secondaryText: 'Abrir Gemini',
+      description: 'Motor de generación y animación audiovisual con Inteligencia Artificial. Los estudiantes definen planos cinemáticos, movimientos de cámara profesionales (dolly, paneo, órbita 360°, dron cenital) e iluminación para transformar imágenes fijas en cortometrajes animados.',
+      projectUsage: 'Proyecto «Luces, Cámara, IA (Estudio de Cine)» y «Especial Halloween»: animación de criaturas fantásticas con prompts de cámara.',
+      features: ['Movimientos de cámara cinemáticos', 'Animación generativa de imágenes', 'Guardado en Google Drive'],
+      badge: 'Video & Cine'
+    },
+    {
+      id: 'gemini',
+      name: 'Google Gemini',
+      subtitle: 'Inteligencia Artificial Multimodal & Lógica',
+      category: 'ia',
+      tag: 'Google DeepMind · IA Multimodal',
+      tagColor: '#047857',
+      tagBg: '#D1FAE5',
+      icon: '🧠',
+      faIcon: 'fas fa-brain',
+      author: 'Google DeepMind',
+      url: 'https://gemini.google.com',
+      description: 'Modelo avanzado de Inteligencia Artificial para razonamiento, redacción de prompts estructurados, análisis de imágenes y resolución de problemas. Los alumnos aprenden la técnica de las 5 Capas para guiar a la IA con precisión pedagógica y ética.',
+      projectUsage: 'Elaboración de hechizos en «El Libro de los Hechizos de IA», asistencia en lógica de código, diseño conceptual y narrativa de proyectos.',
+      features: ['Técnica de prompts de 5 Capas', 'Comprensión multimodal de fotos y bocetos', 'Generación de ideas y lógica'],
+      badge: 'IA Generativa'
+    },
+    {
+      id: 'notebooklm',
+      name: 'NotebookLM (Notebook de Gemini)',
+      subtitle: 'Cuaderno Inteligente de Estudio & Podcast con IA',
+      category: 'ia',
+      tag: 'Google Labs · Cuaderno de Estudio',
+      tagColor: '#B45309',
+      tagBg: '#FEF3C7',
+      icon: '📓',
+      faIcon: 'fas fa-book-reader',
+      author: 'Google Labs & Gemini 1.5 Pro',
+      url: 'https://notebooklm.google.com',
+      description: 'Cuaderno interactivo de notas y estudio impulsado por Gemini 1.5 Pro. Los estudiantes suben sus apuntes, textos escolares o manuales de robótica, y la IA crea resúmenes exactos, guías de estudio, preguntas de repaso y resúmenes de audio en formato podcast con dos presentadores que debaten el tema.',
+      projectUsage: 'Proyecto cumbre de 6° Grado «Creación de Materiales de Estudio con IA» y repaso colaborativo de conceptos científicos sin alucinaciones.',
+      features: ['Resumen en audio tipo programa de radio', 'Guías de estudio y cuestionarios interactivos', 'Respuestas 100% basadas en fuentes propias'],
+      badge: 'Cuaderno con IA'
+    },
+    {
+      id: 'canva',
+      name: 'Canva',
+      subtitle: 'Diseño Gráfico, Láminas & Composición Visual',
+      category: 'diseno',
+      tag: 'Canva Suite · Diseño Gráfico',
+      tagColor: '#0369A1',
+      tagBg: '#E0F2FE',
+      icon: '✨',
+      faIcon: 'fas fa-palette',
+      author: 'Canva Visual Suite',
+      url: 'https://www.canva.com',
+      description: 'Suite de diseño gráfico y composición visual donde los alumnos arman láminas técnicas, esquemas de montaje, portadas de expedientes, marcos instantáneos para fotos Polaroid y piezas visuales listas para imprimir físicamente o compartir.',
+      projectUsage: 'Diseño de la Postal Polaroid física impresa en papel fotográfico para llevar a casa (Halloween), esquemas de circuitos y portadas de proyectos.',
+      features: ['Plantillas y marcos oficiales del taller', 'Composición visual y tipografía', 'Exportación lista para impresión'],
+      badge: 'Diseño Gráfico'
+    }
+  ];
+
+  var filtroCategoriaHerramientas = 'todas';
+
+  function renderHerramientas(filtro) {
+    if (filtro) filtroCategoriaHerramientas = filtro;
+    var grid = document.getElementById('hn-tools-grid');
+    if (!grid) return;
+
+    var filtered = WORKSHOP_TOOLS.filter(function (t) {
+      if (filtroCategoriaHerramientas === 'todas') return true;
+      return t.category === filtroCategoriaHerramientas;
+    });
+
+    // Actualizar botones de tabs
+    var filterBtns = document.querySelectorAll('#hn-tools-filters [data-tool-category]');
+    filterBtns.forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-tool-category') === filtroCategoriaHerramientas);
+    });
+
+    if (!filtered.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#64748B;">No hay herramientas en esta categoría.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(function (t) {
+      return (
+        '<article class="hn-tool-card" id="tool-' + esc(t.id) + '">' +
+          '<div class="hn-tool-header">' +
+            '<div class="hn-tool-icon-box" style="background:' + esc(t.tagBg) + ';color:' + esc(t.tagColor) + ';">' +
+              esc(t.icon) +
+            '</div>' +
+            '<div class="hn-tool-titles">' +
+              '<span class="hn-tool-tag" style="background:' + esc(t.tagBg) + ';color:' + esc(t.tagColor) + ';">' +
+                esc(t.tag) +
+              '</span>' +
+              '<h3 class="hn-tool-name">' + esc(t.name) + '</h3>' +
+              '<span class="hn-tool-author"><i class="fas fa-certificate" style="color:' + esc(t.tagColor) + ';"></i> ' + esc(t.author) + '</span>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="hn-tool-body">' +
+            '<p class="hn-tool-desc">' + esc(t.description) + '</p>' +
+
+            '<div class="hn-tool-project-box">' +
+              '<strong><i class="fas fa-project-diagram"></i> En nuestros proyectos del taller:</strong>' +
+              esc(t.projectUsage) +
+            '</div>' +
+
+            '<div class="hn-tool-features">' +
+              t.features.map(function (f) {
+                return '<span class="hn-tool-feat-pill"><i class="fas fa-check" style="color:#10B981;"></i> ' + esc(f) + '</span>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+
+          '<div class="hn-tool-footer">' +
+            '<a href="' + esc(t.url) + '" target="_blank" rel="noopener noreferrer" class="hn-tool-btn-primary">' +
+              '<i class="fas fa-external-link-alt"></i> <span>Abrir Herramienta</span>' +
+            '</a>' +
+            (t.secondaryUrl ?
+              '<a href="' + esc(t.secondaryUrl) + '" target="_blank" rel="noopener noreferrer" class="hn-tool-btn-secondary" title="' + esc(t.secondaryText || 'Enlace alternativo') + '">' +
+                '<span>' + esc(t.secondaryText || 'Explorar') + '</span> <i class="fas fa-arrow-right" style="font-size:0.75rem;"></i>' +
+              '</a>' : '') +
+          '</div>' +
+        '</article>'
+      );
+    }).join('');
+  }
+  window.renderHerramientas = renderHerramientas;
 
   function switchView(viewName, updateHash) {
     // Si el alumno está logueado, permitir ingresar a la sección de clase/video
@@ -2245,6 +2407,11 @@
 
     // 5. Posicionar arriba
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Renderizar herramientas si corresponde
+    if (viewName === 'herramientas') {
+      renderHerramientas();
+    }
 
     // Notificar al cartel flotante de EN VIVO
     if (typeof window.updateGlobalLiveBadge === 'function') {
@@ -2313,6 +2480,19 @@
     }
   }
 
+    function initHerramientas() {
+    var toolFiltersWrap = document.getElementById('hn-tools-filters');
+    if (toolFiltersWrap) {
+      toolFiltersWrap.querySelectorAll('[data-tool-category]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var cat = btn.getAttribute('data-tool-category');
+          renderHerramientas(cat);
+        });
+      });
+    }
+    renderHerramientas();
+  }
+
   /* ───────────── Arranque ───────────── */
   function init() {
     renderMasthead();
@@ -2327,6 +2507,7 @@
     renderFiltrosMuro();
     renderMuro();
     renderAgenda();
+    initHerramientas();
     initReader();
     initClasePeriodicoModal();
     initMuroAmpliadoModal();

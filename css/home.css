@@ -7760,3 +7760,201 @@ body.student-logged-in .site-footer {
   color: #92400E;
   border-color: #D97706;
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   SECCIÓN: HERRAMIENTAS DE LOS PROYECTOS (PÁG. 08)
+   ══════════════════════════════════════════════════════════════ */
+.hn-tools-grid-wrapper {
+  margin-top: 18px;
+}
+
+.hn-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 20px;
+}
+
+.hn-tool-card {
+  background: #FFFFFF;
+  border: 2px solid #2B2520;
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+}
+
+.hn-tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 6px 8px 0 rgba(43, 37, 32, 0.18);
+}
+
+.hn-tool-header {
+  padding: 18px 18px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border-bottom: 1.5px solid #F1F5F9;
+}
+
+.hn-tool-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.hn-tool-titles {
+  min-width: 0;
+  flex: 1;
+}
+
+.hn-tool-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.hn-tool-name {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 2px;
+  line-height: 1.25;
+}
+
+.hn-tool-author {
+  font-size: 0.74rem;
+  color: #64748B;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hn-tool-body {
+  padding: 16px 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hn-tool-desc {
+  font-size: 0.86rem;
+  color: #334155;
+  line-height: 1.48;
+  margin: 0;
+}
+
+.hn-tool-project-box {
+  background: #F8FAFC;
+  border-left: 3.5px solid #0284C7;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 12px;
+  font-size: 0.8rem;
+  color: #1E293B;
+  line-height: 1.4;
+}
+
+.hn-tool-project-box strong {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0369A1;
+  margin-bottom: 2px;
+}
+
+.hn-tool-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.hn-tool-feat-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  background: #F1F5F9;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hn-tool-footer {
+  padding: 12px 18px 16px;
+  background: #FAF8F5;
+  border-top: 1.5px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hn-tool-btn-primary {
+  flex: 1;
+  background: #0F172A;
+  color: #FFFFFF !important;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 10px 16px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.2);
+  transition: all 0.2s ease;
+}
+
+.hn-tool-btn-primary:hover {
+  background: #1E293B;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.3);
+}
+
+.hn-tool-btn-secondary {
+  background: #FFFFFF;
+  color: #334155 !important;
+  border: 1.5px solid #CBD5E1;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 9px 12px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.hn-tool-btn-secondary:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  color: #0F172A !important;
+}
+
+@media (max-width: 640px) {
+  .hn-tools-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
