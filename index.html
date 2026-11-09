@@ -249,6 +249,48 @@
             <aside class="hn-featured-side np-featured-side" id="hn-featured-side"></aside>
           </div>
 
+                    <!-- ══════════════════════════════════════════
+               LA VALIJA MAKER (MATERIALES PARA LA PRÓXIMA CLASE)
+          ══════════════════════════════════════════ -->
+          <div class="hn-valija-box np-valija-box" id="hn-valija-box">
+            <div class="np-valija-header">
+              <div class="np-valija-title-wrap">
+                <div class="np-valija-badge-tag"><i class="fas fa-suitcase"></i> PREPARANDO LA MOCHILA MAKER</div>
+                <h3 class="np-valija-headline"><i class="fas fa-tools"></i> La Valija Maker: Materiales para la Próxima Clase</h3>
+                <p class="np-valija-sub">¿Qué cosas reciclables y de la cartuchera traemos al taller esta semana? Marcá con un visto lo que ya tenés listo en casa para tu grado.</p>
+              </div>
+              <div class="np-valija-actions">
+                <button type="button" class="np-valija-btn-print" onclick="window.imprimirValijaMaker()" title="Imprimir lista para pegar en la heladera">
+                  <i class="fas fa-print"></i> <span>Imprimir lista</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Barra de filtro de grado y aviso oficial del taller -->
+            <div class="np-valija-toolbar">
+              <div class="np-valija-grade-select-wrap">
+                <label for="valija-grade-filter" class="np-valija-filter-label"><i class="fas fa-graduation-cap"></i> Tu Grupo / Grado:</label>
+                <select id="valija-grade-filter" class="np-valija-select"></select>
+              </div>
+              <div class="np-valija-taller-notice">
+                <i class="fas fa-microchip"></i> <span><strong>Aviso a las familias:</strong> Todos los componentes electrónicos (motores, LEDs, placas micro:bit, sensores y pilas) son 100% provistos por el colegio.</span>
+              </div>
+            </div>
+
+            <!-- Grilla dinámica de materiales -->
+            <div class="np-valija-grid" id="hn-valija-grid"></div>
+
+            <!-- Barra inferior con resumen de avance -->
+            <div class="np-valija-footer">
+              <div class="np-valija-progress-info" id="hn-valija-progress-info">
+                <i class="fas fa-clipboard-check"></i> <span>0 de 0 materiales listos en la mochila</span>
+              </div>
+              <div class="np-valija-tip">
+                <i class="fas fa-recycle"></i> <span>¡Reutilicemos en familia! Si no tenés un material exacto, ¡un reemplazo creativo siempre es bienvenido en el laboratorio!</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Separador con pliegue de periódico (Fold) -->
           <div class="np-fold-divider" aria-hidden="true">
             <span class="np-fold-line"></span>
@@ -973,7 +1015,7 @@
   <script src="js/news.js?v=26"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=72"></script>
+  <script src="js/home.js?v=73"></script>
   <script src="js/class_video_sync.js?v=6"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->

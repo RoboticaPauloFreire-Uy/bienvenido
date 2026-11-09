@@ -508,5 +508,76 @@ window.HOME_CONTENT = {
     { fecha: '2026-11-13', titulo: 'Semana de la Robótica', detalle: 'Todos los grados', icono: '🤖' },
     { fecha: '2026-11-27', titulo: 'Feria Maker abierta a las familias', detalle: 'Patio del colegio · 9:00 a 12:00', icono: '🎉' },
     { fecha: '2026-12-05', titulo: 'Último día para traer materiales reciclables', detalle: 'Todos los grados', icono: '📦' }
-  ]
+  ],
+
+  /* ───────────── LA VALIJA MAKER (MATERIALES PARA LA PRÓXIMA CLASE) ───────────── */
+  valijaMaker: [
+    {
+      id: 'vm-tubos-carton',
+      nombre: '2 tubos de cartón',
+      detalle: 'De papel higiénico o de cocina (limpios y secos).',
+      uso: 'Estructuras base, columnas de soporte y chasis de robots.',
+      categoria: 'reciclable',
+      icono: '🧻',
+      grados: ['todos'],
+      urgencia: 'imprescindible',
+      fechaClase: 'Próxima clase'
+    },
+    {
+      id: 'vm-tapitas-colores',
+      nombre: '4 tapitas plásticas',
+      detalle: 'De botellas de agua o refresco (cualquier color o tamaño similar).',
+      uso: 'Ruedas giratorias para autos a reacción y bases de apoyo.',
+      categoria: 'reciclable',
+      icono: '🥤',
+      grados: ['todos'],
+      urgencia: 'imprescindible',
+      fechaClase: 'Próxima clase'
+    },
+    {
+      id: 'vm-caja-chica',
+      nombre: '1 cajita chica de cartón',
+      detalle: 'De té, remedios, pasta dental o galletitas (vacía y limpia).',
+      uso: 'Cuerpo central para criaturas mecánicas y maquetas.',
+      categoria: 'reciclable',
+      icono: '📦',
+      grados: ['sala5', 'grado1', 'grado2', 'grado3'],
+      urgencia: 'imprescindible',
+      fechaClase: 'Próxima clase'
+    },
+    {
+      id: 'vm-palitos-madera',
+      nombre: '3 a 4 palitos de madera o helado',
+      detalle: 'Palitos planos comunes de helado o bajalenguas.',
+      uso: 'Articulación de brazos robóticos y palancas mecánicas.',
+      categoria: 'reciclable',
+      icono: '🥢',
+      grados: ['grado4', 'grado5', 'grado6'],
+      urgencia: 'deseable',
+      fechaClase: 'Próxima clase'
+    },
+    {
+      id: 'vm-tijera-regla',
+      nombre: 'Tijera escolar y regla',
+      detalle: 'De punta roma y regla de 15 a 30 cm de su cartuchera habitual.',
+      uso: 'Corte seguro de cartón y medición de pistas y plantillas.',
+      categoria: 'cartuchera',
+      icono: '✂️',
+      grados: ['todos'],
+      urgencia: 'imprescindible',
+      fechaClase: 'Todas las clases'
+    },
+    {
+      id: 'vm-marcadores-colores',
+      nombre: 'Marcadores de colores o lápices',
+      detalle: 'Para colorear y rotular las partes del invento.',
+      uso: 'Decoración de personajes y rotulado de componentes.',
+      categoria: 'cartuchera',
+      icono: '🖍️',
+      grados: ['todos'],
+      urgencia: 'deseable',
+      fechaClase: 'Todas las clases'
+    }
+  ],
+
 };

@@ -2606,6 +2606,219 @@
     renderHerramientas();
   }
 
+  
+  /* ───────────── La Valija Maker (Materiales para la Próxima Clase) ───────────── */
+  var filtroGradoValija = 'todos';
+
+  function initValijaGradeSelect() {
+    var sel = document.getElementById('valija-grade-filter');
+    if (!sel || sel.dataset.initialized) return;
+    var html = '<option value="todos">★ Todos los grupos (Vista General)</option>';
+    GRADOS.forEach(function (g) {
+      html += '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>';
+    });
+    sel.innerHTML = html;
+    var st = alumno();
+    if (st && st.gradeId) {
+      filtroGradoValija = st.gradeId;
+    }
+    sel.value = filtroGradoValija;
+    sel.onchange = function () {
+      filtroGradoValija = sel.value;
+      renderValijaMaker(filtroGradoValija);
+    };
+    sel.dataset.initialized = 'true';
+  }
+
+  function renderValijaMaker(gradoFiltro) {
+    var grid = document.getElementById('hn-valija-grid');
+    if (!grid) return;
+    initValijaGradeSelect();
+
+    if (gradoFiltro) {
+      filtroGradoValija = gradoFiltro;
+      var sel = document.getElementById('valija-grade-filter');
+      if (sel) sel.value = gradoFiltro;
+    }
+
+    var items = (C.valijaMaker || (window.HOME_CONTENT && window.HOME_CONTENT.valijaMaker) || []);
+    if (!items.length) {
+      grid.innerHTML = '<p style="color:#786C5E;font-size:0.9rem;grid-column:1/-1;">No hay materiales programados para esta semana.</p>';
+      return;
+    }
+
+    var normFiltro = normalizarGrado(filtroGradoValija);
+    var filtrados = items.filter(function (it) {
+      if (filtroGradoValija === 'todos') return true;
+      var grs = (it.grados || ['todos']).map(normalizarGrado);
+      return grs.indexOf('todos') !== -1 || grs.indexOf(normFiltro) !== -1;
+    });
+
+    if (!filtrados.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:16px;text-align:center;color:#786C5E;background:#FFF;border-radius:6px;border:1px dashed #D5C9B1;">' +
+        '<i class="fas fa-check-circle" style="color:#16A34A;font-size:1.4rem;margin-bottom:6px;display:block;"></i>' +
+        '<strong>¡Todo listo para este grupo!</strong> No se requieren materiales adicionales de casa para la próxima clase.' +
+      '</div>';
+      var elProg0 = document.getElementById('hn-valija-progress-info');
+      if (elProg0) elProg0.innerHTML = '<i class="fas fa-check-circle"></i> <span>Sin pedidos pendientes para este grado</span>';
+      return;
+    }
+
+    var total = filtrados.length;
+    var listos = 0;
+
+    var html = filtrados.map(function (m) {
+      var isChecked = localStorage.getItem('pf_valija_chk_' + m.id) === '1';
+      if (isChecked) listos++;
+
+      var catClass = m.categoria === 'cartuchera' ? 'cat-cartuchera' : 'cat-reciclable';
+      var catLabel = m.categoria === 'cartuchera' ? '🎒 De la cartuchera' : '♻️ Reciclable en casa';
+
+      return '<div class="np-valija-card' + (isChecked ? ' is-checked' : '') + '" data-valija-id="' + esc(m.id) + '" onclick="window.toggleValijaItem(\'' + esc(m.id) + '\')" role="button" tabindex="0" title="Tocar para marcar o desmarcar">' +
+        '<div class="np-valija-card-check">' +
+          '<span class="np-valija-checkbox"><i class="fas fa-check"></i></span>' +
+        '</div>' +
+        '<div class="np-valija-card-icon">' + esc(m.icono || '📦') + '</div>' +
+        '<div class="np-valija-card-content">' +
+          '<div class="np-valija-card-top">' +
+            '<span class="np-valija-cat-badge ' + catClass + '">' + catLabel + '</span>' +
+            '<span class="np-valija-date-badge"><i class="far fa-calendar-alt"></i> ' + esc(m.fechaClase || 'Esta semana') + '</span>' +
+          '</div>' +
+          '<h4 class="np-valija-card-title">' + esc(m.nombre) + '</h4>' +
+          '<p class="np-valija-card-detail">' + esc(m.detalle) + '</p>' +
+          (m.uso ? '<div class="np-valija-card-uso"><i class="fas fa-wrench"></i> <strong>Para qué se usa:</strong> ' + esc(m.uso) + '</div>' : '') +
+          '<div class="np-valija-card-status-text">' +
+            '<i class="fas fa-check-circle"></i> <span>' + (isChecked ? '¡Listo en la mochila!' : 'Tocar para marcar como listo') + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    grid.innerHTML = html;
+
+    var elProgress = document.getElementById('hn-valija-progress-info');
+    if (elProgress) {
+      if (total > 0 && listos === total) {
+        elProgress.innerHTML = '<i class="fas fa-check-double" style="color:#16A34A;"></i> <strong style="color:#15803D;">' + listos + ' de ' + total + ' materiales listos 🎉 ¡Mochila completa!</strong>';
+      } else {
+        elProgress.innerHTML = '<i class="fas fa-clipboard-check"></i> <span>' + listos + ' de ' + total + ' materiales listos en la mochila</span>';
+      }
+    }
+  }
+  window.renderValijaMaker = renderValijaMaker;
+
+  window.toggleValijaItem = function (id) {
+    if (!id) return;
+    var key = 'pf_valija_chk_' + id;
+    if (localStorage.getItem(key) === '1') {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, '1');
+    }
+    renderValijaMaker(filtroGradoValija);
+  };
+
+  window.imprimirValijaMaker = function () {
+    var items = (C.valijaMaker || (window.HOME_CONTENT && window.HOME_CONTENT.valijaMaker) || []);
+    var normFiltro = normalizarGrado(filtroGradoValija);
+    var filtrados = items.filter(function (it) {
+      if (filtroGradoValija === 'todos') return true;
+      var grs = (it.grados || ['todos']).map(normalizarGrado);
+      return grs.indexOf('todos') !== -1 || grs.indexOf(normFiltro) !== -1;
+    });
+
+    var grLabel = filtroGradoValija === 'todos' ? 'Todos los grupos del Taller' : nombreGrado(filtroGradoValija);
+    var fechaHoy = new Date().toLocaleDateString('es-UY', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    var itemsRows = filtrados.map(function (m) {
+      var isChecked = localStorage.getItem('pf_valija_chk_' + m.id) === '1';
+      var cat = m.categoria === 'cartuchera' ? 'De la cartuchera' : 'Reciclable de casa';
+      return '<div style="display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid #DDD;">' +
+        '<div style="width:22px;height:22px;border:2px solid #2B2520;border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;">' + (isChecked ? '✓' : '') + '</div>' +
+        '<div style="flex-grow:1;">' +
+          '<div style="font-size:15px;font-weight:bold;color:#1A1612;">' + (m.icono || '📦') + ' ' + m.nombre + ' <span style="font-size:12px;font-weight:normal;color:#666;">(' + cat + ')</span></div>' +
+          '<div style="font-size:13px;color:#444;margin-top:2px;">' + m.detalle + '</div>' +
+          (m.uso ? '<div style="font-size:12px;color:#786C5E;margin-top:2px;font-style:italic;">Proyecto: ' + m.uso + '</div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    var printHtml = '<!DOCTYPE html>' +
+'<html lang="es">' +
+'<head>' +
+'  <meta charset="utf-8">' +
+'  <title>La Valija Maker - Lista para la Heladera</title>' +
+'  <style>' +
+'    @page { margin: 15mm; size: auto; }' +
+'    body { font-family: \'Segoe UI\', Arial, sans-serif; margin: 20px; color: #1A1612; }' +
+'    .header { text-align: center; border-bottom: 2.5px solid #2B2520; padding-bottom: 12px; margin-bottom: 16px; }' +
+'    .header h1 { margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 0.05em; }' +
+'    .header h2 { margin: 4px 0 0; font-size: 15px; font-weight: normal; color: #5A4E44; }' +
+'    .meta { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 14px; border-bottom: 1px dashed #888; padding-bottom: 8px; }' +
+'    .notice { margin-top: 20px; padding: 10px 14px; background: #F0F7FF; border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; font-size: 12px; color: #1E3A8A; line-height: 1.4; }' +
+'    .tip { margin-top: 10px; font-size: 11px; color: #555; font-style: italic; text-align: center; }' +
+'    .footer { margin-top: 24px; text-align: center; font-size: 11px; color: #777; border-top: 1px solid #EEE; padding-top: 10px; }' +
+'  </style>' +
+'</head>' +
+'<body>' +
+'  <div class="header">' +
+'    <h1>Colegio Paulo Freire · Taller de Robótica</h1>' +
+'    <h2>🧰 La Valija Maker — Materiales para la Próxima Clase</h2>' +
+'  </div>' +
+'  <div class="meta">' +
+'    <span>GRUPO: ' + grLabel + '</span>' +
+'    <span>FECHA: ' + fechaHoy + '</span>' +
+'  </div>' +
+'  <div>' + itemsRows + '</div>' +
+'  <div class="notice">' +
+'    <strong>Recordatorio a las familias:</strong> Los componentes electrónicos (motores, LEDs, micro:bit, pilas y sensores) son provistos 100% por el taller escolar.' +
+'  </div>' +
+'  <div class="tip">' +
+'    💡 Consejo: Pegar esta lista con un imán en la heladera para ir guardando los materiales durante la semana.' +
+'  </div>' +
+'  <div class="footer">' +
+'    Colegio Paulo Freire · Laboratorio Maker y Robótica Educativa' +
+'  </div>' +
+'  <script>' +
+'    window.onload = function() { setTimeout(function() { window.print(); }, 250); };' +
+'  </script>' +
+'</body>' +
+'</html>';
+
+    var w = window.open('', '_blank', 'width=750,height=850');
+    if (w) {
+      w.document.open();
+      w.document.write(printHtml);
+      w.document.close();
+    } else {
+      window.print();
+    }
+  };
+
+  function syncRemoteValijaMaker() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('valija_materials').onSnapshot(function (snapshot) {
+          if (!snapshot || snapshot.empty) return;
+          var remote = [];
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            if (d.deleted) return;
+            remote.push(Object.assign({ id: doc.id }, d));
+          });
+          if (remote.length > 0) {
+            C.valijaMaker = remote;
+            renderValijaMaker(filtroGradoValija);
+          }
+        }, function (err) {
+          console.warn('Sync valija notice:', err);
+        });
+      }
+    } catch (e) {
+      console.warn('Error en syncRemoteValijaMaker:', e);
+    }
+  }
+
   /* ───────────── Arranque ───────────── */
   function init() {
     renderMasthead();
@@ -2620,6 +2833,7 @@
     renderFiltrosMuro();
     renderMuro();
     renderAgenda();
+    renderValijaMaker();
     initHerramientas();
     initReader();
     initClasePeriodicoModal();
@@ -2634,7 +2848,7 @@
       var st = alumno();
       if (st && st.gradeId) {
         filtroGradoAct = st.gradeId;
-        ['hn-clase-grade', 'hn-casa-grade'].forEach(function (id) {
+        ['hn-clase-grade', 'hn-casa-grade', 'valija-grade-filter'].forEach(function (id) {
           var sel = document.getElementById(id);
           if (sel) sel.value = st.gradeId;
         });
@@ -2642,6 +2856,7 @@
       }
       renderActividades();
       renderJuegos();
+      if (st && st.gradeId) { filtroGradoValija = st.gradeId; renderValijaMaker(st.gradeId); }
       if (window.renderGDriveDashboard && st && document.getElementById('student-drive-dashboard-container')) {
         window.renderGDriveDashboard('student-drive-dashboard-container');
       }
@@ -2657,6 +2872,7 @@
     syncRemoteClaseActivities();
     syncRemoteCasaActivities();
     syncRemoteGames();
+    syncRemoteValijaMaker();
 
     // Observar visibilidad de pestañas para activar 'Ver más' apenas se muestren sin necesidad de refrescar
     if (typeof window.IntersectionObserver !== 'undefined') {

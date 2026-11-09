@@ -7964,3 +7964,435 @@ body.student-logged-in .site-footer {
   border-color: #172554;
   color: #FFF;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   LA VALIJA MAKER (MATERIALES PARA LA PRÓXIMA CLASE)
+   Estilo Periódico de Taller & Maletín de Expedición
+   ══════════════════════════════════════════════════════════════ */
+.np-valija-box {
+  background: #FAF6EC;
+  border: 2px solid #2B2520;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.22);
+  padding: 22px 24px;
+  margin: 28px 0 22px 0;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.np-valija-box::before {
+  content: '★ LOGÍSTICA DEL TALLER ★';
+  position: absolute;
+  top: -12px;
+  right: 24px;
+  background: #2B2520;
+  color: #FAF6EC;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 10px;
+  border-radius: 3px;
+  border: 1px solid #FAF6EC;
+}
+
+.np-valija-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px dashed #C2B69D;
+}
+
+.np-valija-title-wrap {
+  flex-grow: 1;
+}
+
+.np-valija-badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #D97706;
+  color: #FFFFFF;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.np-valija-headline {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #1A1612;
+  margin: 0 0 4px 0;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.np-valija-headline i {
+  color: #B45309;
+}
+
+.np-valija-sub {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #5A4E44;
+  line-height: 1.45;
+}
+
+.np-valija-actions {
+  flex-shrink: 0;
+}
+
+.np-valija-btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #2B2520;
+  color: #FAF6EC;
+  border: 1.5px solid #2B2520;
+  border-radius: 4px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 8px 14px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.2);
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.np-valija-btn-print:hover {
+  background: #B45309;
+  border-color: #B45309;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(43, 37, 32, 0.3);
+}
+
+.np-valija-btn-print:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(43, 37, 32, 0.15);
+}
+
+/* Barra de herramientas */
+.np-valija-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #F4EEDC;
+  border: 1px solid #D5C9B1;
+  border-radius: 6px;
+}
+
+.np-valija-grade-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.np-valija-filter-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #2B2520;
+  white-space: nowrap;
+}
+
+.np-valija-select {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  background: #FFFFFF;
+  color: #1A1612;
+  border: 1.5px solid #2B2520;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  outline: none;
+}
+
+.np-valija-select:focus {
+  border-color: #D97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
+}
+
+.np-valija-taller-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #1E3A8A;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  padding: 6px 12px;
+  border-radius: 6px;
+  line-height: 1.35;
+}
+
+.np-valija-taller-notice i {
+  color: #2563EB;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+/* Grilla de materiales */
+.np-valija-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.np-valija-card {
+  background: #FFFFFF;
+  border: 1.5px solid #D5C9B1;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 2px 2px 0 rgba(43, 37, 32, 0.08);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.np-valija-card:hover {
+  transform: translateY(-2px);
+  border-color: #2B2520;
+  box-shadow: 4px 4px 0 rgba(43, 37, 32, 0.16);
+}
+
+.np-valija-card.is-checked {
+  background: #F0FDF4;
+  border-color: #16A34A;
+  box-shadow: 2px 2px 0 rgba(22, 163, 74, 0.2);
+}
+
+.np-valija-card-check {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.np-valija-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 2px solid #8D7B68;
+  background: #FAF6EC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  color: transparent;
+  transition: all 0.18s ease;
+}
+
+.np-valija-card:hover .np-valija-checkbox {
+  border-color: #2B2520;
+}
+
+.np-valija-card.is-checked .np-valija-checkbox {
+  background: #16A34A;
+  border-color: #16A34A;
+  color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.3);
+}
+
+.np-valija-card-icon {
+  font-size: 1.7rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F4EEDC;
+  border-radius: 6px;
+  border: 1px solid #D5C9B1;
+}
+
+.np-valija-card.is-checked .np-valija-card-icon {
+  background: #DCFCE7;
+  border-color: #BBF7D0;
+}
+
+.np-valija-card-content {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.np-valija-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.np-valija-cat-badge {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+
+.np-valija-cat-badge.cat-reciclable {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #BBF7D0;
+}
+
+.np-valija-cat-badge.cat-cartuchera {
+  background: #E0E7FF;
+  color: #4338CA;
+  border: 1px solid #C7D2FE;
+}
+
+.np-valija-date-badge {
+  font-size: 0.72rem;
+  color: #786C5E;
+  font-weight: 600;
+}
+
+.np-valija-card-title {
+  margin: 0 0 4px 0;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #1A1612;
+  line-height: 1.25;
+}
+
+.np-valija-card.is-checked .np-valija-card-title {
+  color: #166534;
+}
+
+.np-valija-card-detail {
+  margin: 0 0 6px 0;
+  font-size: 0.82rem;
+  color: #4B4136;
+  line-height: 1.35;
+}
+
+.np-valija-card-uso {
+  font-size: 0.76rem;
+  color: #6B5E50;
+  background: #FBF7EE;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-left: 2px solid #D97706;
+  line-height: 1.3;
+}
+
+.np-valija-card.is-checked .np-valija-card-uso {
+  background: #F0FDF4;
+  border-left-color: #16A34A;
+}
+
+.np-valija-card-status-text {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #9CA3AF;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.np-valija-card.is-checked .np-valija-card-status-text {
+  color: #16A34A;
+}
+
+/* Footer de la Valija */
+.np-valija-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1.5px dashed #C2B69D;
+}
+
+.np-valija-progress-info {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #2B2520;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.np-valija-progress-info i {
+  color: #16A34A;
+  font-size: 1rem;
+}
+
+.np-valija-tip {
+  font-size: 0.78rem;
+  color: #5A4E44;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-style: italic;
+}
+
+.np-valija-tip i {
+  color: #15803D;
+}
+
+/* Responsivo */
+@media (max-width: 680px) {
+  .np-valija-box {
+    padding: 16px 14px;
+  }
+  .np-valija-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .np-valija-actions {
+    margin-top: 6px;
+  }
+  .np-valija-btn-print {
+    width: 100%;
+    justify-content: center;
+  }
+  .np-valija-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .np-valija-grade-select-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .np-valija-select {
+    width: 100%;
+  }
+  .np-valija-grid {
+    grid-template-columns: 1fr;
+  }
+  .np-valija-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
