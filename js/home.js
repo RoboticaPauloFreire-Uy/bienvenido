@@ -1415,10 +1415,15 @@
   }
 
   function checkCollapsibleGameDescs(container) {
+    container = container || document.getElementById('hn-juegos-grid');
     if (!container) return;
     var runCheck = function () {
+      var isHidden = !container.offsetParent && (container.offsetWidth === 0 && container.offsetHeight === 0);
+      if (isHidden) return;
+
       var wraps = container.querySelectorAll('.game-card-desc-wrap');
       wraps.forEach(function (wrap) {
+        if (wrap.classList.contains('is-expanded')) return;
         var textEl = wrap.querySelector('.game-card-desc');
         var btn = wrap.querySelector('.btn-game-desc-toggle');
         if (!textEl || !btn) return;
@@ -1434,8 +1439,10 @@
       });
     };
     requestAnimationFrame(runCheck);
-    setTimeout(runCheck, 150);
+    setTimeout(runCheck, 60);
+    setTimeout(runCheck, 220);
   }
+  window.checkCollapsibleGameDescs = checkCollapsibleGameDescs;
 
   window.toggleGameDesc = function (btn) {
     var wrap = btn.closest('.game-card-desc-wrap');
@@ -1845,6 +1852,9 @@
     }
 
     cont.innerHTML = filtered.map(function (p) {
+      var isPotentiallyLong = !!(p.texto && (p.texto.length > 220 || p.texto.split('\n').length > 4));
+      var initialWrapClass = 'hn-post-text-wrap' + (isPotentiallyLong ? ' is-collapsed' : '');
+      var initialBtnStyle = isPotentiallyLong ? 'display:inline-flex;' : 'display:none;';
       var postUrl = getPostUrl(p.id);
       var shareText = p.autor + ': ' + (p.texto || '').substring(0, 110) + '...\n' + postUrl;
       var avatarSrc = p.avatar || 'img/escudo_paulo_freire.png';
@@ -1896,9 +1906,9 @@
           '</div>' +
         '</header>' +
         '<div class="hn-post-body">' +
-          '<div class="hn-post-text-wrap">' +
+          '<div class="' + initialWrapClass + '">' +
             '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
-            '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="display:none;" title="Ampliar texto de la publicación">' +
+            '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="' + initialBtnStyle + '" title="Ampliar texto de la publicación">' +
               '<span><i class="fas fa-book-open"></i> Ver más (ampliar crónica)</span> <i class="fas fa-chevron-down"></i>' +
             '</button>' +
           '</div>' +
@@ -1952,14 +1962,24 @@
   }
 
   function checkCollapsiblePosts(container) {
+    container = container || document.getElementById('hn-muro-feed');
     if (!container) return;
-    requestAnimationFrame(function () {
+
+    var runCheck = function () {
+      // Si el contenedor está dentro de una vista oculta (display: none),
+      // offsetWidth / offsetHeight son 0. En ese caso NO alteramos ni removemos
+      // las clases colapsadas porque scrollHeight no es medible con precisión.
+      var isHidden = !container.offsetParent && (container.offsetWidth === 0 && container.offsetHeight === 0);
+      if (isHidden) return;
+
       var wraps = container.querySelectorAll('.hn-post-text-wrap');
       wraps.forEach(function (wrap) {
+        if (wrap.classList.contains('is-expanded')) return;
         var textEl = wrap.querySelector('.hn-post-text');
         var btn = wrap.querySelector('.hn-post-readmore');
         if (!textEl || !btn) return;
-        // Si el contenido supera 10 líneas de código/texto (~255px), colapsar con botón amplio "Ver más"
+
+        // Si el contenido supera 10 líneas de texto/código (~255px), colapsar con botón "Ver más"
         if (textEl.scrollHeight > 255) {
           wrap.classList.add('is-collapsed');
           btn.style.display = 'inline-flex';
@@ -1969,8 +1989,13 @@
           btn.style.display = 'none';
         }
       });
-    });
+    };
+
+    requestAnimationFrame(runCheck);
+    setTimeout(runCheck, 60);
+    setTimeout(runCheck, 220);
   }
+  window.checkCollapsiblePosts = checkCollapsiblePosts;
 
   window.togglePostText = function (btn) {
     var wrap = btn.closest('.hn-post-text-wrap');
@@ -2481,6 +2506,23 @@
       renderHerramientas();
     }
 
+    // Si la vista seleccionada es Muro o Juegos, recalcular colapsables ahora que son visibles
+    if (viewName === 'muro') {
+      setTimeout(function () {
+        checkCollapsiblePosts(document.getElementById('hn-muro-feed'));
+      }, 50);
+      setTimeout(function () {
+        checkCollapsiblePosts(document.getElementById('hn-muro-feed'));
+      }, 250);
+    } else if (viewName === 'juegos') {
+      setTimeout(function () {
+        checkCollapsibleGameDescs(document.getElementById('hn-juegos-grid'));
+      }, 50);
+      setTimeout(function () {
+        checkCollapsibleGameDescs(document.getElementById('hn-juegos-grid'));
+      }, 250);
+    }
+
     // Notificar al cartel flotante de EN VIVO
     if (typeof window.updateGlobalLiveBadge === 'function') {
       window.updateGlobalLiveBadge();
@@ -2615,6 +2657,61 @@
     syncRemoteClaseActivities();
     syncRemoteCasaActivities();
     syncRemoteGames();
+
+    // Observar visibilidad de pestañas para activar 'Ver más' apenas se muestren sin necesidad de refrescar
+    if (typeof window.IntersectionObserver !== 'undefined') {
+      var muroView = document.getElementById('view-muro');
+      if (muroView) {
+        var muroObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              checkCollapsiblePosts(document.getElementById('hn-muro-feed'));
+            }
+          });
+        }, { threshold: [0, 0.05, 0.1] });
+        muroObs.observe(muroView);
+      }
+      var juegosView = document.getElementById('view-juegos');
+      if (juegosView) {
+        var juegosObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              checkCollapsibleGameDescs(document.getElementById('hn-juegos-grid'));
+            }
+          });
+        }, { threshold: [0, 0.05, 0.1] });
+        juegosObs.observe(juegosView);
+      }
+    }
+
+    if (typeof window.MutationObserver !== 'undefined') {
+      var muroViewEl = document.getElementById('view-muro');
+      if (muroViewEl) {
+        var mutObs = new MutationObserver(function (mutations) {
+          mutations.forEach(function (m) {
+            if (m.type === 'attributes' && m.attributeName === 'class' && muroViewEl.classList.contains('active')) {
+              checkCollapsiblePosts(document.getElementById('hn-muro-feed'));
+            }
+          });
+        });
+        mutObs.observe(muroViewEl, { attributes: true, attributeFilter: ['class', 'style'] });
+      }
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        checkCollapsiblePosts(document.getElementById('hn-muro-feed'));
+        checkCollapsibleGameDescs(document.getElementById('hn-juegos-grid'));
+      });
+    }
+
+    window.addEventListener('resize', function () {
+      clearTimeout(window._resizeCollapsibleTimer);
+      window._resizeCollapsibleTimer = setTimeout(function () {
+        checkCollapsiblePosts(document.getElementById('hn-muro-feed'));
+        checkCollapsibleGameDescs(document.getElementById('hn-juegos-grid'));
+      }, 180);
+    });
   }
 
   function syncRemoteClaseActivities() {
