@@ -2368,6 +2368,23 @@
       badge: 'Cuaderno con IA'
     },
     {
+      id: 'paperme',
+      name: 'PaperMe',
+      subtitle: 'Generador de Personajes & Robots en Papercraft 3D',
+      category: 'diseno',
+      tag: 'Papercraft 3D · Modelado & Plegado',
+      tagColor: '#C2410C',
+      tagBg: '#FFEDD5',
+      icon: '✂️',
+      faIcon: 'fas fa-cube',
+      author: 'PaperMe Online (paperme.de)',
+      url: 'https://www.paperme.de/paperme/default/',
+      description: 'Herramienta interactiva para diseñar personajes tridimensionales y robots en papel (Papercraft). Permite personalizar caras, expresiones, vestimenta, colores y texturas sobre un modelo 3D en tiempo real, generando automáticamente la plantilla desplegada con solapas lista para imprimir, recortar, doblar y pegar.',
+      projectUsage: 'Construcción física de robots de papel, maquetas de cartón, personajes articulados y prototipado táctil en el taller de robótica y bricolaje escolar.',
+      features: ['Editor 3D interactivo en navegador', 'Generación instantánea de plantilla desplegada con solapas', 'Plantilla descargable lista para imprimir y recortar'],
+      badge: 'Papercraft 3D'
+    },
+    {
       id: 'canva',
       name: 'Canva',
       subtitle: 'Diseño Gráfico, Láminas & Composición Visual',
