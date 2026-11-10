@@ -1,11 +1,14 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 CLIENTE_ALUMNO.PY — AGENTE DE MÁQUINA DE ALUMNO (PYTHON PURO)
 Colegio Paulo Freire · Taller de Robótica & Informática
 
 Se ejecuta en cada computadora de los alumnos.
-Descubre automáticamente la IP del docente por red local sin necesidad de configurar nada.
+Descubre automáticamente la IP del docente por:
+  1. Archivo local de configuración servidor_ip.txt
+  2. Faro UDP broadcast (puerto 5005)
+  3. Escaneo ultra-rápido multi-hilo de la subred local (puerto 5000)
+  4. Entrada manual como respaldo
 Ejecuta bloqueo de pantalla (Modo Atención), apertura de proyectos web, avisos y silencio.
 """
 
@@ -22,9 +25,18 @@ import webbrowser
 import urllib.request
 import urllib.error
 import urllib.parse
+import concurrent.futures
+import traceback
 
-# GUI con Tkinter nativo (incluido en Python estándar)
-import tkinter as tk
+# GUI con Tkinter nativo (modo seguro ante instalaciones mínimas de Python)
+TKINTER_OK = False
+tk_root = None
+try:
+    import tkinter as tk
+    TKINTER_OK = True
+except Exception as e:
+    tk = None
+    TKINTER_OK = False
 
 PUERTO_UDP = 5005
 PUERTO_WEB_DEFECTO = 5000
@@ -59,43 +71,49 @@ def guardar_numero_local(num):
         archivo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "numero_maquina.txt")
         with open(archivo, "w", encoding="utf-8") as f:
             f.write(NUMERO_MAQUINA)
-        print(f"  [+] Esta máquina ahora está identificada como: PC {NUMERO_MAQUINA}")
+        print(f"  [+] Esta máquina ahora está identificada como: PC {NUMERO_MAQUINA}", flush=True)
     except Exception as e:
-        print(f"  [!] Error guardando número de máquina: {e}")
+        print(f"  [!] Error guardando número de máquina: {e}", flush=True)
 
 NUMERO_MAQUINA = cargar_numero_local()
-
 
 # Estado local
 servidor_docente_url = None
 bloqueado = False
 ventana_bloqueo = None
-tk_root = None
 
-def descubrir_servidor():
-    """Escucha el faro UDP del docente para autodescubrir su IP."""
-    print("  [?] Buscando al docente en la red local...")
+def obtener_mi_subred():
+    """Detecta la IP local de esta máquina para escanear la subred."""
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        if hasattr(socket, "SO_REUSEPORT"):
-            try: s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-            except Exception: pass
-        s.bind(("", PUERTO_UDP))
-        s.settimeout(4.0)
-
-        data, addr = s.recvfrom(2048)
-        info = json.loads(data.decode("utf-8"))
-        if info.get("magic") == "FREIRE_AULA":
-            ip = info.get("docente_ip", addr[0])
-            puerto = info.get("puerto", PUERTO_WEB_DEFECTO)
-            s.close()
-            return f"http://{ip}:{puerto}"
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+        s.close()
+        partes = ip.split('.')
+        if len(partes) == 4:
+            return '.'.join(partes[:3]) + '.', ip
     except Exception:
         pass
+    return '192.168.1.', '127.0.0.1'
 
-    # Fallback: archivo de texto servidor_ip.txt si existe
+def verificar_servidor_docente(url):
+    """Verifica si una URL responde efectivamente al servidor docente Freire."""
+    try:
+        req = urllib.request.Request(f"{url}/api/status", headers={"User-Agent": "AgenteAlumnoFreire"})
+        with urllib.request.urlopen(req, timeout=0.8) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode("utf-8"))
+                if "maquinas" in data:
+                    return True
+    except Exception:
+        pass
+    return False
+
+def descubrir_servidor():
+    """Descubre automáticamente la IP del docente con 4 capas de respaldo."""
     archivo_cfg = os.path.join(os.path.dirname(os.path.abspath(__file__)), "servidor_ip.txt")
+
+    # 1. Probar archivo de configuración si existe
     if os.path.exists(archivo_cfg):
         try:
             with open(archivo_cfg, "r", encoding="utf-8") as f:
@@ -103,15 +121,71 @@ def descubrir_servidor():
                 if linea:
                     if not linea.startswith("http"):
                         linea = f"http://{linea}:{PUERTO_WEB_DEFECTO}"
-                    return linea
+                    if verificar_servidor_docente(linea):
+                        print(f"  [+] Docente encontrado en configuración: {linea}", flush=True)
+                        return linea
         except Exception:
             pass
 
-    # Si todo falla, probar localhost (para pruebas en la misma máquina)
+    # 2. Escuchar faro UDP broadcast (2.0 segundos)
+    print("  [?] Buscando al docente por anuncio de red...", flush=True)
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if hasattr(socket, "SO_REUSEPORT"):
+            try: s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            except Exception: pass
+        s.bind(("", PUERTO_UDP))
+        s.settimeout(2.0)
+        data, addr = s.recvfrom(2048)
+        info = json.loads(data.decode("utf-8"))
+        if info.get("magic") == "FREIRE_AULA":
+            ip = info.get("docente_ip", addr[0])
+            puerto = info.get("puerto", PUERTO_WEB_DEFECTO)
+            s.close()
+            url = f"http://{ip}:{puerto}"
+            print(f"  [+] ¡Docente detectado por faro en {url}!", flush=True)
+            try:
+                with open(archivo_cfg, "w", encoding="utf-8") as f: f.write(url)
+            except Exception: pass
+            return url
+    except Exception:
+        pass
+
+    # 3. Escaneo multi-hilo ultra rápido de la subred local (192.168.x.1..254 en ~1.5 seg)
+    prefijo_subred, mi_ip = obtener_mi_subred()
+    print(f"  [?] Escaneando red local ({prefijo_subred}*)...", flush=True)
+
+    encontrado = []
+    def _test_ip(ip):
+        if encontrado:
+            return
+        url = f"http://{ip}:{PUERTO_WEB_DEFECTO}"
+        if verificar_servidor_docente(url):
+            encontrado.append(url)
+
+    ips_a_probar = [f"{prefijo_subred}{i}" for i in range(1, 255)]
+    ips_a_probar.insert(0, "127.0.0.1")
+    if mi_ip not in ips_a_probar:
+        ips_a_probar.insert(0, mi_ip)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+        list(executor.map(_test_ip, ips_a_probar))
+
+    if encontrado:
+        url = encontrado[0]
+        print(f"  [+] ¡Docente detectado en la red: {url}!", flush=True)
+        try:
+            with open(archivo_cfg, "w", encoding="utf-8") as f: f.write(url)
+        except Exception: pass
+        return url
+
+    # 4. Fallback si no fue encontrado
+    print("  [!] No se pudo autodetectar la IP del docente. Reintentando en breve...", flush=True)
     return f"http://127.0.0.1:{PUERTO_WEB_DEFECTO}"
 
 # ══════════════════════════════════════════════════════════════
-# CONTROL DE PANTALLA Y VENTANAS (TKINTER PURO)
+# CONTROL DE PANTALLA Y VENTANAS (TKINTER NATIVO)
 # ══════════════════════════════════════════════════════════════
 
 def mostrar_pantalla_bloqueo():
@@ -120,6 +194,10 @@ def mostrar_pantalla_bloqueo():
     if bloqueado:
         return
     bloqueado = True
+
+    if not tk_root:
+        print("  [!] PANTALLA BLOQUEADA (Modo Atención activado por el docente)", flush=True)
+        return
 
     def _crear():
         global ventana_bloqueo
@@ -133,13 +211,11 @@ def mostrar_pantalla_bloqueo():
         w.attributes("-topmost", True)
         w.overrideredirect(True)
 
-        # Evitar que se cierre con Alt+F4 o teclas
         w.protocol("WM_DELETE_WINDOW", lambda: None)
         w.bind("<Escape>", lambda e: "break")
         w.bind("<Alt-F4>", lambda e: "break")
         w.bind("<Control-Alt-Delete>", lambda e: "break")
 
-        # Contenedor central
         frame = tk.Frame(w, bg="#0F172A")
         frame.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -162,13 +238,15 @@ def mostrar_pantalla_bloqueo():
         )
         lbl_sub.pack(pady=20)
 
-        # Barra decorativa inferior
         lbl_pie = tk.Label(frame, text="★ MODO ATENCIÓN ACTIVO ★", font=("Courier", 12, "bold"), bg="#1E293B", fg="#10B981", padx=16, pady=6)
         lbl_pie.pack(pady=10)
 
         w.update()
 
-    tk_root.after(0, _crear)
+    try:
+        tk_root.after(0, _crear)
+    except Exception as e:
+        print(f"  [!] Error abriendo pantalla de bloqueo: {e}", flush=True)
 
 def ocultar_pantalla_bloqueo():
     """Cierra la pantalla de bloqueo y devuelve el control al alumno."""
@@ -176,6 +254,10 @@ def ocultar_pantalla_bloqueo():
     if not bloqueado:
         return
     bloqueado = False
+
+    if not tk_root:
+        print("  [+] PANTALLA DESBLOQUEADA", flush=True)
+        return
 
     def _cerrar():
         global ventana_bloqueo
@@ -186,12 +268,18 @@ def ocultar_pantalla_bloqueo():
                 pass
             ventana_bloqueo = None
 
-    tk_root.after(0, _cerrar)
+    try:
+        tk_root.after(0, _cerrar)
+    except Exception as e:
+        print(f"  [!] Error cerrando pantalla de bloqueo: {e}", flush=True)
 
 def mostrar_mensaje_emergente(texto):
     """Muestra un aviso emergente en pantalla enviado por el docente."""
+    if not tk_root:
+        print(f"\n  📢 AVISO DEL PROFESOR: {texto}\n", flush=True)
+        return
+
     def _popup():
-        # Sonido de campana del sistema
         try:
             if SISTEMA_OPERATIVO == "Windows":
                 import winsound
@@ -208,7 +296,6 @@ def mostrar_mensaje_emergente(texto):
         pop.geometry("480x280")
         pop.resizable(False, False)
 
-        # Centrar en pantalla
         pop.update_idletasks()
         ancho = pop.winfo_width()
         alto = pop.winfo_height()
@@ -240,13 +327,15 @@ def mostrar_mensaje_emergente(texto):
         )
         btn.pack(anchor="e")
 
-    tk_root.after(0, _popup)
+    try:
+        tk_root.after(0, _popup)
+    except Exception as e:
+        print(f"  📢 AVISO DEL DOCENTE: {texto}", flush=True)
 
 def silenciar_audio():
     """Silencia el volumen del equipo."""
     try:
         if SISTEMA_OPERATIVO == "Windows":
-            # Envía la tecla VK_VOLUME_MUTE (173) de forma nativa por PowerShell
             subprocess.run(
                 ["powershell", "-Command", "(New-Object -ComObject WScript.Shell).SendKeys([char]173)"],
                 capture_output=True,
@@ -256,7 +345,7 @@ def silenciar_audio():
             subprocess.run(["amixer", "set", "Master", "mute"], capture_output=True)
             subprocess.run(["pactl", "set-sink-mute", "@DEFAULT_SINK@", "1"], capture_output=True)
     except Exception as e:
-        print(f"  [!] Error silenciando: {e}")
+        print(f"  [!] Error silenciando: {e}", flush=True)
 
 def lanzar_juego_offline(juego):
     """Lanza los juegos offline integrados en los navegadores (100% sin necesidad de internet)."""
@@ -264,18 +353,16 @@ def lanzar_juego_offline(juego):
     try:
         if juego == "surf":
             if SISTEMA_OPERATIVO == "Windows":
-                # Microsoft Edge Surf (100% offline nativo)
                 subprocess.Popen(["cmd", "/c", "start", "msedge", "edge://surf"], shell=False)
             else:
                 subprocess.Popen(["microsoft-edge", "edge://surf"])
         elif juego == "dino":
             if SISTEMA_OPERATIVO == "Windows":
-                # Google Chrome Dino (100% offline nativo)
                 subprocess.Popen(["cmd", "/c", "start", "chrome", "chrome://dino"], shell=False)
             else:
                 subprocess.Popen(["google-chrome", "chrome://dino"])
     except Exception as e:
-        print(f"  [!] Error lanzando juego offline: {e}")
+        print(f"  [!] Error lanzando juego offline: {e}", flush=True)
 
 def apagar_equipo():
     """Apaga la máquina de forma segura al finalizar la clase."""
@@ -285,7 +372,7 @@ def apagar_equipo():
         elif SISTEMA_OPERATIVO == "Linux":
             subprocess.run(["shutdown", "-h", "now"])
     except Exception as e:
-        print(f"  [!] Error apagando: {e}")
+        print(f"  [!] Error apagando: {e}", flush=True)
 
 # ══════════════════════════════════════════════════════════════
 # COMUNICACIÓN EN TIEMPO REAL CON EL DOCENTE
@@ -294,7 +381,7 @@ def apagar_equipo():
 def ejecutar_comando(cmd):
     action = cmd.get("action")
     params = cmd.get("params", {})
-    print(f"  [>] Ejecutando comando del docente: {action}")
+    print(f"  [>] Ejecutando comando del docente: {action}", flush=True)
 
     if action == "lock":
         mostrar_pantalla_bloqueo()
@@ -303,7 +390,6 @@ def ejecutar_comando(cmd):
     elif action == "open_url":
         url = params.get("url")
         if url:
-            # Si la pantalla estaba bloqueada, desbloquear para que el alumno pueda ver la web
             ocultar_pantalla_bloqueo()
             webbrowser.open(url)
     elif action == "message":
@@ -323,13 +409,14 @@ def ejecutar_comando(cmd):
         apagar_equipo()
 
 def ciclo_comunicacion():
-    """Hilo secundario que envía pings y consulta comandos periódicamente."""
+    """Hilo de red que envía pings y consulta comandos periódicamente."""
     global servidor_docente_url, bloqueado
+    conectado_previamente = False
 
     while True:
         if not servidor_docente_url:
+            conectado_previamente = False
             servidor_docente_url = descubrir_servidor()
-            print(f"  [+] Conectando a servidor docente: {servidor_docente_url}")
 
         try:
             # 1. Enviar Ping de presencia
@@ -349,6 +436,12 @@ def ciclo_comunicacion():
             with urllib.request.urlopen(req_ping, timeout=3.0) as resp:
                 pass
 
+            if not conectado_previamente:
+                print(f"  [OK] ¡Conectado exitosamente con el docente! ({servidor_docente_url})", flush=True)
+                print(f"  [OK] Esta PC es: PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(sin número asignado)'}", flush=True)
+                print("  [i] Podés minimizar esta ventana. El control está activo.\n", flush=True)
+                conectado_previamente = True
+
             # 2. Consultar si hay comandos pendientes
             url_poll = f"{servidor_docente_url}/api/poll?id={urllib.parse.quote(MACHINE_ID)}"
             with urllib.request.urlopen(url_poll, timeout=3.0) as resp:
@@ -358,37 +451,53 @@ def ciclo_comunicacion():
                     ejecutar_comando(cmd)
 
         except urllib.error.URLError:
-            # Si se desconectó el docente, volver a buscarlo
+            if conectado_previamente:
+                print("  [!] Conexión perdida con el docente. Reintentando reconectar...", flush=True)
             servidor_docente_url = None
         except Exception as e:
-            pass
+            print(f"  [!] Aviso de comunicación: {e}", flush=True)
 
         time.sleep(1.2)
 
 def main():
     global tk_root
-    print("=" * 60)
-    print("  COLEGIO PAULO FREIRE — AGENTE DE ALUMNO")
-    print("=" * 60)
-    print(f"  Equipo:    {HOSTNAME} ({SISTEMA_OPERATIVO})")
-    print(f"  ID:        {MACHINE_ID}")
-    print(f"  Número:    PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(Sin asignar - podés asignarlo desde el celular o asignar_numero.bat)'}")
-    print("=" * 60)
-    print("  Iniciando servicio de aula... Minimizá esta ventana.\n")
+    print("=" * 60, flush=True)
+    print("  COLEGIO PAULO FREIRE — AGENTE DE ALUMNO", flush=True)
+    print("=" * 60, flush=True)
+    print(f"  Equipo:    {HOSTNAME} ({SISTEMA_OPERATIVO})", flush=True)
+    print(f"  ID:        {MACHINE_ID}", flush=True)
+    print(f"  Número:    PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(Sin asignar - podés asignarlo desde el celular o asignar_numero.bat)'}", flush=True)
+    print("=" * 60, flush=True)
+    print("  Iniciando servicio de aula...\n", flush=True)
 
-    # Inicializar Tkinter en el hilo principal
-    tk_root = tk.Tk()
-    tk_root.withdraw()  # Ocultar ventana base invisible
+    # Inicializar Tkinter de manera segura
+    tk_disponible = False
+    try:
+        if TKINTER_OK and tk is not None:
+            tk_root = tk.Tk()
+            tk_root.withdraw()
+            tk_disponible = True
+    except Exception as e:
+        print(f"  [!] Tkinter no disponible ({e}). Operando en modo consola.", flush=True)
+        tk_root = None
 
-    # Lanzar hilo de comunicación con el docente
+    # Iniciar hilo de comunicación en segundo plano
     t = threading.Thread(target=ciclo_comunicacion, daemon=True)
     t.start()
 
-    # Bucle principal de eventos de interfaz
+    # Mantener vivo el programa sin cerrarse nunca
     try:
-        tk_root.mainloop()
+        if tk_disponible and tk_root:
+            tk_root.mainloop()
+        else:
+            while True:
+                time.sleep(1.0)
     except KeyboardInterrupt:
-        print("\n  Agente detenido.")
+        print("\n  Agente detenido por el usuario.", flush=True)
+    except Exception as e:
+        print(f"\n  [!] Excepción en bucle de interfaz: {e}", flush=True)
+        while True:
+            time.sleep(1.0)
 
 if __name__ == "__main__":
     main()

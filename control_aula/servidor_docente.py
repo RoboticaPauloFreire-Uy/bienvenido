@@ -93,6 +93,13 @@ def obtener_ip_local():
 IP_DOCENTE = obtener_ip_local()
 URL_MOVIL = f"http://{IP_DOCENTE}:{PUERTO_WEB}"
 
+# Guardar automáticamente la IP para autodescubrimiento inmediato de alumnos
+try:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "servidor_ip.txt"), "w", encoding="utf-8") as f:
+        f.write(URL_MOVIL)
+except Exception:
+    pass
+
 def generar_qr_base64(url):
     """Genera una imagen QR en Base64 para mostrar directamente en el panel sin dependencias de internet."""
     if not QR_AVAILABLE:

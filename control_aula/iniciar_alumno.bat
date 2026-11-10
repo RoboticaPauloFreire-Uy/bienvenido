@@ -5,7 +5,7 @@ echo ========================================================
 echo   INICIANDO AGENTE ALUMNO - COLEGIO PAULO FREIRE
 echo ========================================================
 echo.
-python "%~dp0cliente_alumno.py"
+python -u "%~dp0cliente_alumno.py"
 echo.
 echo ========================================================
 echo   El agente de alumno se ha detenido.
