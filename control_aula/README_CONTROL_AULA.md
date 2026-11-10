@@ -20,11 +20,15 @@ Controlá todas las computadoras del taller de robótica **directamente desde tu
 
 ## 🎛️ Experiencia en el Celular (Diseñada para una sola mano)
 
-* 🔴 **Barra Táctil Inferior (Bajo tu pulgar):**
-  * **BLOQUEAR (Rojo):** Congela de inmediato todas las pantallas del aula con el robot FreireBot y el cartel de atención para que escuchen tu explicación.
+* 🔴 **Barra Táctil Inferior (justo bajo tu pulgar):**
+  * **BLOQUEAR (Rojo):** Pausa todas las pantallas al instante con el robot FreireBot y el cartel *"¡Atención al Pizarrón!"*.
   * **AVISO (Amarillo):** Te abre un teclado para mandar un mensaje con sonido de timbre a todos *(ej: «¡Faltan 5 minutos para guardar!»)*.
   * **DESBLOQUEAR (Verde):** Devuelve las computadoras a su estado normal para seguir trabajando.
-* 📳 **Respuesta Háptica (Vibración):** El celular vibra brevemente al pulsar los botones para confirmarte que el comando se envió sin que tengas que mirar la pantalla fija.
+* 📳 **Respuesta Háptica (Vibración):** El celular vibra brevemente al tocar cada botón para confirmarte que el comando se envió sin que tengas que mirar la pantalla fija.
+* 🎮 **Juegos Offline (Recreo / Premio 100% Sin Internet):**
+  * 🏄‍♂️ **Surf (Edge):** Abre instantáneamente el juego del surf en Microsoft Edge en todas las máquinas.
+  * 🦖 **Dinosaurio (Chrome):** Abre instantáneamente el juego del T-Rex en Google Chrome en todas las máquinas.
+  * *¡Funcionan con o sin internet!* Los navegadores los tienen grabados en su propio código interno.
 * 🚀 **Lanzador de Proyectos en 1 Toque:** Botones grandes y coloridos para abrir:
   * El Diario del Taller
   * Scratch

@@ -224,6 +224,25 @@ def silenciar_audio():
     except Exception as e:
         print(f"  [!] Error silenciando: {e}")
 
+def lanzar_juego_offline(juego):
+    """Lanza los juegos offline integrados en los navegadores (100% sin necesidad de internet)."""
+    ocultar_pantalla_bloqueo()
+    try:
+        if juego == "surf":
+            if SISTEMA_OPERATIVO == "Windows":
+                # Microsoft Edge Surf (100% offline nativo)
+                subprocess.Popen(["cmd", "/c", "start", "msedge", "edge://surf"], shell=False)
+            else:
+                subprocess.Popen(["microsoft-edge", "edge://surf"])
+        elif juego == "dino":
+            if SISTEMA_OPERATIVO == "Windows":
+                # Google Chrome Dino (100% offline nativo)
+                subprocess.Popen(["cmd", "/c", "start", "chrome", "chrome://dino"], shell=False)
+            else:
+                subprocess.Popen(["google-chrome", "chrome://dino"])
+    except Exception as e:
+        print(f"  [!] Error lanzando juego offline: {e}")
+
 def apagar_equipo():
     """Apaga la máquina de forma segura al finalizar la clase."""
     try:
@@ -259,6 +278,9 @@ def ejecutar_comando(cmd):
             mostrar_mensaje_emergente(texto)
     elif action == "mute":
         silenciar_audio()
+    elif action == "launch_game":
+        juego = params.get("game", "surf")
+        lanzar_juego_offline(juego)
     elif action == "shutdown":
         apagar_equipo()
 

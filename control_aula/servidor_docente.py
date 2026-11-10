@@ -669,6 +669,19 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       <button onclick="lanzarUrlPersonalizada()"><i class="fas fa-paper-plane"></i> Abrir</button>
     </div>
 
+    <!-- Juegos Offline Integrados (100% Sin Internet) -->
+    <div class="section-title"><i class="fas fa-gamepad"></i> Recreo / Juegos Offline (Sin Internet)</div>
+    <div class="project-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 14px;">
+      <button class="proj-btn" style="background: linear-gradient(135deg, #0284C7, #0369A1); border-color: #38BDF8;" onclick="lanzarJuego('surf')">
+        <i class="fas fa-water" style="color:#FFF;"></i>
+        <span>🏄‍♂️ Surf (Edge)</span>
+      </button>
+      <button class="proj-btn" style="background: linear-gradient(135deg, #475569, #334155); border-color: #94A3B8;" onclick="lanzarJuego('dino')">
+        <i class="fas fa-dragon" style="color:#FBBF24;"></i>
+        <span>🦖 Dinosaurio (Chrome)</span>
+      </button>
+    </div>
+
     <!-- Acciones Rápidas Auxiliares -->
     <div class="aux-actions-row">
       <button class="aux-btn" onclick="enviarComando('all', 'mute')">
@@ -770,6 +783,13 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         window.navigator.vibrate([40, 60, 40]);
       }
       enviarComando(target, action, params);
+    }
+
+    function lanzarJuego(game) {
+      vibrar();
+      var label = game === 'surf' ? 'Juego Surf (Edge)' : 'Juego Dinosaurio (Chrome)';
+      toast('Lanzando ' + label);
+      enviarComando('all', 'launch_game', { game: game });
     }
 
     function lanzarUrl(url) {
