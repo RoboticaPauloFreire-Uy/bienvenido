@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-SERVIDORDOCENTE.PY — SERVIDOR DE CONTROL DE AULA LOCAL (PYTHON PURO)
+SERVIDORDOCENTE.PY — SERVIDOR DE CONTROL DE AULA LOCAL (OPTIMIZADO PARA CELULAR)
 Colegio Paulo Freire · Taller de Robótica & Informática
 
-No requiere dependencias externas (funciona con la biblioteca estándar de Python).
 Inicia el servidor web en el puerto 5000 y el faro de auto-descubrimiento UDP en el puerto 5005.
+Genera código QR en terminal y en web para escanear y controlar directamente desde el celular.
 """
 
 import http.server
@@ -16,7 +16,17 @@ import json
 import time
 import os
 import sys
+import io
+import base64
 import urllib.parse
+
+# Soporte opcional de QR nativo si está instalado
+QR_AVAILABLE = False
+try:
+    import qrcode
+    QR_AVAILABLE = True
+except ImportError:
+    pass
 
 PUERTO_WEB = 5000
 PUERTO_UDP = 5005
@@ -43,6 +53,21 @@ def obtener_ip_local():
             return "127.0.0.1"
 
 IP_DOCENTE = obtener_ip_local()
+URL_MOVIL = f"http://{IP_DOCENTE}:{PUERTO_WEB}"
+
+def generar_qr_base64(url):
+    """Genera una imagen QR en Base64 para mostrar directamente en el panel sin dependencias de internet."""
+    if not QR_AVAILABLE:
+        return ""
+    try:
+        img = qrcode.make(url)
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+    except Exception:
+        return ""
+
+QR_BASE64 = generar_qr_base64(URL_MOVIL)
 
 def faro_udp():
     """Emite un paquete UDP cada 2 segundos para que los alumnos descubran al docente sin configurar IP."""
@@ -73,14 +98,17 @@ def limpiar_maquinas_inactivas():
         time.sleep(3.0)
 
 # ══════════════════════════════════════════════════════════════
-# INTERFAZ GRÁFICA WEB DEL DOCENTE (HTML + CSS + JS EMBEBIDO)
+# INTERFAZ GRÁFICA WEB ADAPTADA 100% A CELULARES & ESCRITORIO
 # ══════════════════════════════════════════════════════════════
 DASHBOARD_HTML = """<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Control de Aula · Colegio Paulo Freire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Control de Aula · Paulo Freire</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Special+Elite&display=swap" rel="stylesheet">
   <style>
@@ -92,281 +120,263 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       --primary-hover: #2563EB;
       --success: #10B981;
       --danger: #EF4444;
-      --danger-hover: #DC2626;
       --warning: #F59E0B;
       --text: #F8FAFC;
       --text-muted: #94A3B8;
+      --thumb-bar-h: 74px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 16px;
+      padding: 12px 12px calc(var(--thumb-bar-h) + 24px) 12px;
+      user-select: none;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
-    /* Header */
+    /* Header Compacto */
     header {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 16px 24px;
+      border-radius: 14px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      gap: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
     }
 
     .brand-icon {
-      font-size: 2rem;
-      background: #3B82F6;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #3B82F6, #1D4ED8);
       color: #FFF;
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(59,130,246,0.4);
     }
 
     .brand-titles h1 {
-      font-size: 1.3rem;
+      font-size: 1.05rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
     }
 
     .brand-titles p {
-      font-size: 0.82rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
     }
 
-    .server-badge {
-      display: inline-flex;
+    .header-actions {
+      display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .btn-qr-modal {
       background: #0F172A;
       border: 1px solid var(--card-border);
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-family: 'Special Elite', monospace;
       color: #38BDF8;
-    }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background: #10B981;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #10B981;
-    }
-
-    /* Panel de Estadísticas */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .stat-info span {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-
-    .stat-info h2 {
-      font-size: 1.6rem;
-      font-weight: 900;
-      margin-top: 2px;
-    }
-
-    .stat-icon {
-      font-size: 1.8rem;
-      opacity: 0.8;
-    }
-
-    /* Barra de Acciones Globales */
-    .actions-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-    }
-
-    .section-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .big-actions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .action-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 14px 16px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: #FFF;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.18s ease;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-    }
-
-    .action-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
-    }
-
-    .action-btn:active {
-      transform: translateY(1px);
-    }
-
-    .action-btn i { font-size: 1.4rem; }
-
-    .btn-lock { background: linear-gradient(135deg, #EF4444, #B91C1C); }
-    .btn-unlock { background: linear-gradient(135deg, #10B981, #047857); }
-    .btn-msg { background: linear-gradient(135deg, #F59E0B, #B45309); }
-    .btn-mute { background: linear-gradient(135deg, #6366F1, #4338CA); }
-    .btn-off { background: linear-gradient(135deg, #475569, #1E293B); border: 1px solid #64748B; }
-
-    /* Lanzador Rápido de Sitios Web */
-    .quick-urls-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .quick-url-btn {
-      background: #0F172A;
-      border: 1px solid var(--card-border);
+      padding: 8px 12px;
       border-radius: 8px;
-      padding: 10px;
-      color: #F8FAFC;
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s ease;
-    }
-
-    .quick-url-btn:hover {
-      background: #334155;
-      border-color: #38BDF8;
-      transform: translateY(-1px);
-    }
-
-    .custom-url-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .custom-url-row input {
-      flex: 1;
-      background: #0F172A;
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: #FFF;
-      font-family: inherit;
-      font-size: 0.88rem;
-      outline: none;
-    }
-
-    .custom-url-row input:focus {
-      border-color: var(--primary);
-    }
-
-    .custom-url-row button {
-      background: var(--primary);
-      color: #FFF;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.15s;
     }
 
-    .custom-url-row button:hover { background: var(--primary-hover); }
+    /* Estado rápido de máquinas */
+    .status-summary {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
 
-    /* Lista de Máquinas */
+    .summary-pill {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .summary-pill i { font-size: 1.2rem; }
+    .sp-online i { color: #10B981; }
+    .sp-locked i { color: #EF4444; }
+
+    .summary-text span {
+      display: block;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .summary-text strong {
+      font-size: 1.15rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    /* Acciones Rápidas del Docente */
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin: 16px 0 8px 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Cuadrícula de Proyectos Web (Botones Grandes y Táctiles) */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .proj-btn {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 10px;
+      color: #FFF;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 70px;
+      transition: all 0.16s ease;
+      touch-action: manipulation;
+    }
+
+    .proj-btn:active {
+      transform: scale(0.95);
+      background: #334155;
+    }
+
+    .proj-btn i { font-size: 1.4rem; }
+    .proj-btn span { font-size: 0.82rem; font-weight: 800; text-align: center; }
+
+    /* Barra de Enlace Libre */
+    .custom-url-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .custom-url-box input {
+      flex: 1;
+      background: #0F172A;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #FFF;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .custom-url-box input:focus { border-color: var(--primary); }
+
+    .custom-url-box button {
+      background: var(--primary);
+      color: #FFF;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-url-box button:active { transform: scale(0.95); }
+
+    /* Acciones Auxiliares */
+    .aux-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .aux-btn {
+      flex: 1;
+      background: #1E293B;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 10px;
+      color: #FFF;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .aux-btn:active { transform: scale(0.96); background: #334155; }
+    .aux-btn i { font-size: 1rem; }
+
+    /* Lista de Máquinas de Alumnos */
     .machines-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .machine-card {
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      transition: all 0.2s ease;
+      gap: 8px;
     }
 
     .machine-card.online { border-color: #10B981; }
     .machine-card.locked { background: #26161C; border-color: #EF4444; }
-    .machine-card.offline { opacity: 0.5; border-color: #475569; }
+    .machine-card.offline { opacity: 0.45; border-color: #475569; }
 
     .machine-head {
       display: flex;
@@ -377,31 +387,19 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     .machine-title {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .machine-title i {
-      font-size: 1.3rem;
-      color: #38BDF8;
-    }
-
-    .machine-title h3 {
-      font-size: 0.98rem;
-      font-weight: 800;
-    }
-
-    .machine-title p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
+    .machine-title i { font-size: 1.15rem; color: #38BDF8; }
+    .machine-title h3 { font-size: 0.92rem; font-weight: 800; }
+    .machine-title p { font-size: 0.72rem; color: var(--text-muted); }
 
     .status-pill {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 999px;
-      letter-spacing: 0.04em;
     }
 
     .pill-online { background: #064E3B; color: #6EE7B7; border: 1px solid #059669; }
@@ -411,40 +409,102 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     .machine-actions {
       display: flex;
       gap: 6px;
-      margin-top: 4px;
     }
 
     .mini-btn {
       flex: 1;
-      padding: 6px 10px;
-      font-size: 0.76rem;
+      padding: 8px 6px;
+      font-size: 0.74rem;
       font-weight: 700;
       border-radius: 6px;
       border: none;
+      color: #FFF;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 4px;
-      color: #FFF;
-      transition: opacity 0.15s;
     }
 
-    .mini-btn:hover { opacity: 0.85; }
     .mb-lock { background: #EF4444; }
     .mb-unlock { background: #10B981; }
     .mb-msg { background: #F59E0B; }
 
-    /* Modal Mensaje */
+    /* ══════════════════════════════════════════════════════════════
+       BARRA TÁCTIL FIJA PARA EL PULGAR (THUMB BAR)
+       Diseñada especialmente para controlar el aula con una mano desde el celular
+       ══════════════════════════════════════════════════════════════ */
+    .thumb-control-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--thumb-bar-h);
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1.5px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)) 14px;
+      z-index: 500;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
+    }
+
+    .thumb-btn {
+      flex: 1;
+      height: 52px;
+      border: none;
+      border-radius: 12px;
+      color: #FFF;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.14s ease;
+      touch-action: manipulation;
+    }
+
+    .thumb-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .thumb-lock {
+      background: linear-gradient(135deg, #EF4444, #B91C1C);
+      border: 1px solid #F87171;
+    }
+
+    .thumb-msg {
+      flex: 0.6;
+      background: #334155;
+      border: 1px solid #475569;
+      color: #F8FAFC;
+    }
+
+    .thumb-unlock {
+      background: linear-gradient(135deg, #10B981, #047857);
+      border: 1px solid #34D399;
+    }
+
+    /* Modales */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      padding: 16px;
     }
 
     .modal-overlay.open { display: flex; }
@@ -452,34 +512,26 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     .modal-box {
       background: #1E293B;
       border: 1.5px solid var(--primary);
-      border-radius: 12px;
-      padding: 24px;
-      width: 90%;
-      max-width: 480px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border-radius: 14px;
+      padding: 20px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.6);
     }
 
-    .modal-box h3 {
-      font-size: 1.15rem;
-      margin-bottom: 8px;
-    }
-
-    .modal-box p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-    }
+    .modal-box h3 { font-size: 1.15rem; margin-bottom: 6px; }
+    .modal-box p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; }
 
     .modal-box textarea {
       width: 100%;
-      height: 90px;
+      height: 85px;
       background: #0F172A;
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 10px;
       color: #FFF;
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       resize: none;
       margin-bottom: 14px;
       outline: none;
@@ -494,9 +546,9 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     }
 
     .modal-btns button {
-      padding: 8px 16px;
-      font-weight: 700;
-      border-radius: 6px;
+      padding: 10px 18px;
+      font-weight: 800;
+      border-radius: 8px;
       border: none;
       cursor: pointer;
     }
@@ -504,135 +556,175 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     .mbtn-cancel { background: #475569; color: #FFF; }
     .mbtn-send { background: var(--primary); color: #FFF; }
 
-    /* Toast notificación */
+    /* Modal QR */
+    .qr-container {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .qr-container img {
+      width: 220px;
+      height: 220px;
+      border-radius: 10px;
+      background: #FFF;
+      padding: 8px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+
+    .qr-link {
+      margin-top: 12px;
+      font-family: 'Special Elite', monospace;
+      font-size: 1rem;
+      color: #38BDF8;
+      word-break: break-all;
+    }
+
+    /* Toast */
     #toast {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
       background: #10B981;
       color: #FFF;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.88rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
       display: none;
       z-index: 2000;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Encabezado -->
     <header>
       <div class="brand">
         <div class="brand-icon"><i class="fas fa-robot"></i></div>
         <div class="brand-titles">
           <h1>Control de Aula Maker</h1>
-          <p>Colegio Paulo Freire · Laboratorio de Informática & Robótica</p>
+          <p>Colegio Paulo Freire</p>
         </div>
       </div>
-      <div class="server-badge">
-        <span class="pulse-dot"></span>
-        <span>DOCENTE: <strong>__DOCENTE_IP__:__PUERTO__</strong></span>
+      <div class="header-actions">
+        <button class="btn-qr-modal" onclick="abrirModalQR()" title="Ver código QR para celular">
+          <i class="fas fa-qrcode"></i> <span>QR Celular</span>
+        </button>
       </div>
     </header>
 
-    <!-- Tarjetas de Estadísticas -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-info">
-          <span>Máquinas Activas</span>
-          <h2 id="stat-online">0</h2>
+    <!-- Resumen de Estado -->
+    <div class="status-summary">
+      <div class="summary-pill sp-online">
+        <i class="fas fa-desktop"></i>
+        <div class="summary-text">
+          <span>En Línea</span>
+          <strong id="stat-online">0</strong>
         </div>
-        <div class="stat-icon" style="color:#10B981;"><i class="fas fa-desktop"></i></div>
       </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <span>Modo Atención (Bloqueadas)</span>
-          <h2 id="stat-locked" style="color:#EF4444;">0</h2>
+      <div class="summary-pill sp-locked">
+        <i class="fas fa-lock"></i>
+        <div class="summary-text">
+          <span>Bloqueadas</span>
+          <strong id="stat-locked">0</strong>
         </div>
-        <div class="stat-icon" style="color:#EF4444;"><i class="fas fa-lock"></i></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <span>Total Registradas</span>
-          <h2 id="stat-total">0</h2>
-        </div>
-        <div class="stat-icon" style="color:#38BDF8;"><i class="fas fa-network-wired"></i></div>
       </div>
     </div>
 
-    <!-- Comandos Globales para Todo el Taller -->
-    <section class="actions-section">
-      <div class="section-title"><i class="fas fa-bolt"></i> Acciones para Todas las Máquinas</div>
-      <div class="big-actions-grid">
-        <button class="action-btn btn-lock" onclick="enviarComando('all', 'lock')">
-          <i class="fas fa-lock"></i>
-          <span>Modo Atención (Bloquear)</span>
-        </button>
-        <button class="action-btn btn-unlock" onclick="enviarComando('all', 'unlock')">
-          <i class="fas fa-lock-open"></i>
-          <span>Desbloquear Pantallas</span>
-        </button>
-        <button class="action-btn btn-msg" onclick="abrirModalMensaje('all')">
-          <i class="fas fa-comment-dots"></i>
-          <span>Enviar Mensaje</span>
-        </button>
-        <button class="action-btn btn-mute" onclick="enviarComando('all', 'mute')">
-          <i class="fas fa-volume-mute"></i>
-          <span>Silenciar Audio</span>
-        </button>
-        <button class="action-btn btn-off" onclick="confirmarApagado()">
-          <i class="fas fa-power-off"></i>
-          <span>Apagar Equipos</span>
-        </button>
-      </div>
+    <!-- Lanzador de Proyectos en 1 Clic -->
+    <div class="section-title"><i class="fas fa-rocket"></i> Abrir en Todo el Taller</div>
+    <div class="project-grid">
+      <button class="proj-btn" onclick="lanzarUrl('https://roboticapaulofreire-uy.github.io/bienvenido/')">
+        <i class="fas fa-newspaper" style="color:#F59E0B;"></i>
+        <span>El Diario</span>
+      </button>
+      <button class="proj-btn" onclick="lanzarUrl('https://scratch.mit.edu/projects/editor/')">
+        <i class="fas fa-cat" style="color:#F97316;"></i>
+        <span>Scratch</span>
+      </button>
+      <button class="proj-btn" onclick="lanzarUrl('https://makecode.microbit.org/')">
+        <i class="fas fa-microchip" style="color:#10B981;"></i>
+        <span>MakeCode</span>
+      </button>
+      <button class="proj-btn" onclick="lanzarUrl('https://www.paperme.de/paperme/default/')">
+        <i class="fas fa-cube" style="color:#EA580C;"></i>
+        <span>PaperMe</span>
+      </button>
+      <button class="proj-btn" onclick="lanzarUrl('https://sketch.metademolab.com/canvas')">
+        <i class="fas fa-running" style="color:#3B82F6;"></i>
+        <span>Animated</span>
+      </button>
+      <button class="proj-btn" onclick="lanzarUrl('https://www.canva.com')">
+        <i class="fas fa-palette" style="color:#8B5CF6;"></i>
+        <span>Canva</span>
+      </button>
+    </div>
 
-      <!-- Lanzador de URLs del Taller -->
-      <div class="section-title" style="margin-top:10px;"><i class="fas fa-rocket"></i> Abrir Proyecto / Web en Todo el Taller</div>
-      <div class="quick-urls-grid">
-        <button class="quick-url-btn" onclick="lanzarUrl('https://roboticapaulofreire-uy.github.io/bienvenido/')">
-          <i class="fas fa-newspaper" style="color:#F59E0B;"></i> El Diario
-        </button>
-        <button class="quick-url-btn" onclick="lanzarUrl('https://scratch.mit.edu/projects/editor/')">
-          <i class="fas fa-cat" style="color:#F97316;"></i> Scratch
-        </button>
-        <button class="quick-url-btn" onclick="lanzarUrl('https://makecode.microbit.org/')">
-          <i class="fas fa-microchip" style="color:#10B981;"></i> MakeCode
-        </button>
-        <button class="quick-url-btn" onclick="lanzarUrl('https://www.paperme.de/paperme/default/')">
-          <i class="fas fa-cube" style="color:#EA580C;"></i> PaperMe
-        </button>
-        <button class="quick-url-btn" onclick="lanzarUrl('https://sketch.metademolab.com/canvas')">
-          <i class="fas fa-running" style="color:#3B82F6;"></i> Animated Draw
-        </button>
-        <button class="quick-url-btn" onclick="lanzarUrl('https://www.canva.com')">
-          <i class="fas fa-palette" style="color:#8B5CF6;"></i> Canva
-        </button>
-      </div>
+    <!-- Pegar cualquier URL -->
+    <div class="custom-url-box">
+      <input type="url" id="inp-custom-url" placeholder="Pegá cualquier enlace web acá...">
+      <button onclick="lanzarUrlPersonalizada()"><i class="fas fa-paper-plane"></i> Abrir</button>
+    </div>
 
-      <div class="custom-url-row">
-        <input type="url" id="inp-custom-url" placeholder="Pegá cualquier enlace web acá (ej: https://wikipedia.org o video)">
-        <button onclick="lanzarUrlPersonalizada()"><i class="fas fa-paper-plane"></i> Abrir en Todas</button>
-      </div>
-    </section>
+    <!-- Acciones Rápidas Auxiliares -->
+    <div class="aux-actions-row">
+      <button class="aux-btn" onclick="enviarComando('all', 'mute')">
+        <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar Aula
+      </button>
+      <button class="aux-btn" onclick="confirmarApagado()">
+        <i class="fas fa-power-off" style="color:#EF4444;"></i> Apagar Todas
+      </button>
+    </div>
 
-    <!-- Lista de Máquinas de Alumnos -->
-    <div class="section-title"><i class="fas fa-laptop-code"></i> Computadoras del Aula Conectadas</div>
+    <!-- Computadoras de Alumnos Conectadas -->
+    <div class="section-title"><i class="fas fa-laptop-code"></i> Alumnos Conectados (<span id="stat-total">0</span>)</div>
     <div class="machines-grid" id="machines-container">
-      <p style="color:var(--text-muted);font-size:0.9rem;">Esperando computadoras de los alumnos... Asegurate de ejecutar cliente_alumno.py en ellas.</p>
+      <p style="color:var(--text-muted);font-size:0.85rem;padding:10px 4px;">Esperando que las computadoras del taller se enciendan...</p>
     </div>
   </div>
 
-  <!-- Modal de Mensaje -->
+  <!-- ══════════════════════════════════════════════════════════════
+       BARRA FIJA INFERIOR PARA CONTROLAR CON EL PULGAR DESDE EL CELULAR
+       ══════════════════════════════════════════════════════════════ -->
+  <div class="thumb-control-bar">
+    <button class="thumb-btn thumb-lock" onclick="enviarComandoConVibracion('all', 'lock')">
+      <i class="fas fa-lock"></i> BLOQUEAR
+    </button>
+    <button class="thumb-btn thumb-msg" onclick="abrirModalMensaje('all')">
+      <i class="fas fa-comment-dots"></i> AVISO
+    </button>
+    <button class="thumb-btn thumb-unlock" onclick="enviarComandoConVibracion('all', 'unlock')">
+      <i class="fas fa-lock-open"></i> DESBLOQUEAR
+    </button>
+  </div>
+
+  <!-- Modal Enviar Mensaje -->
   <div class="modal-overlay" id="modal-msg">
     <div class="modal-box">
-      <h3>📢 Enviar Mensaje a Pantalla</h3>
-      <p id="modal-msg-target">Destinatario: Todas las máquinas</p>
-      <textarea id="modal-msg-text" placeholder="Escribí acá tu aviso (ej: ¡Quedan 5 minutos para guardar el proyecto y apagar los kits!)..."></textarea>
+      <h3>📢 Enviar Aviso a Pantalla</h3>
+      <p id="modal-msg-target">Destinatario: Todas las computadoras</p>
+      <textarea id="modal-msg-text" placeholder="Ej: ¡Faltan 5 minutos para guardar el proyecto y ordenar el kit!..."></textarea>
       <div class="modal-btns">
         <button class="mbtn-cancel" onclick="cerrarModalMensaje()">Cancelar</button>
         <button class="mbtn-send" onclick="enviarMensajeModal()">Enviar Aviso</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Código QR para Conectar Celular -->
+  <div class="modal-overlay" id="modal-qr">
+    <div class="modal-box" style="text-align:center;">
+      <h3>📱 Escaneá con tu Celular</h3>
+      <p>Conectá tu celular al Wi-Fi del colegio y apuntá con la cámara:</p>
+      <div class="qr-container">
+        __QR_IMG_TAG__
+        <div class="qr-link">__DOCENTE_URL__</div>
+      </div>
+      <div class="modal-btns" style="justify-content:center;margin-top:14px;">
+        <button class="mbtn-send" onclick="cerrarModalQR()">Listo / Cerrar</button>
       </div>
     </div>
   </div>
@@ -642,28 +734,42 @@ DASHBOARD_HTML = """<!DOCTYPE html>
   <script>
     var currentTarget = 'all';
 
+    function vibrar() {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(60);
+      }
+    }
+
     function toast(txt, color) {
       var t = document.getElementById('toast');
       t.textContent = txt;
       t.style.background = color || '#10B981';
       t.style.display = 'block';
-      setTimeout(function() { t.style.display = 'none'; }, 2200);
+      setTimeout(function() { t.style.display = 'none'; }, 2000);
     }
 
     function enviarComando(target, action, params) {
+      vibrar();
       fetch('/api/comando', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ target: target, action: action, params: params || {} })
       })
       .then(function(r) { return r.json(); })
-      .then(function(res) {
-        toast('Comando «' + action + '» enviado a: ' + target);
+      .then(function() {
+        toast('Enviado: ' + action.toUpperCase());
         cargarEstado();
       })
       .catch(function(err) {
-        toast('Error enviando comando: ' + err, '#EF4444');
+        toast('Error de conexión', '#EF4444');
       });
+    }
+
+    function enviarComandoConVibracion(target, action, params) {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate([40, 60, 40]);
+      }
+      enviarComando(target, action, params);
     }
 
     function lanzarUrl(url) {
@@ -674,7 +780,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       var inp = document.getElementById('inp-custom-url');
       var val = (inp.value || '').trim();
       if (!val) {
-        alert('Ingresá una dirección web (ej: https://...)');
+        alert('Ingresá una dirección web (ej: wikipedia.org)');
         return;
       }
       if (!/^https?:\\/\\//i.test(val)) val = 'https://' + val;
@@ -684,10 +790,10 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
     function abrirModalMensaje(target) {
       currentTarget = target;
-      document.getElementById('modal-msg-target').textContent = 'Destinatario: ' + (target === 'all' ? 'Todas las computadoras' : target);
+      document.getElementById('modal-msg-target').textContent = 'Destinatario: ' + (target === 'all' ? 'Todo el taller' : target);
       document.getElementById('modal-msg-text').value = '';
       document.getElementById('modal-msg').classList.add('open');
-      setTimeout(function() { document.getElementById('modal-msg-text').focus(); }, 100);
+      setTimeout(function() { document.getElementById('modal-msg-text').focus(); }, 120);
     }
 
     function cerrarModalMensaje() {
@@ -701,8 +807,16 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       cerrarModalMensaje();
     }
 
+    function abrirModalQR() {
+      document.getElementById('modal-qr').classList.add('open');
+    }
+
+    function cerrarModalQR() {
+      document.getElementById('modal-qr').classList.remove('open');
+    }
+
     function confirmarApagado() {
-      if (confirm('¿Estás seguro de que deseás apagar todas las computadoras del aula al terminar la clase?')) {
+      if (confirm('¿Confirmás apagar todas las computadoras del taller?')) {
         enviarComando('all', 'shutdown', {});
       }
     }
@@ -726,14 +840,14 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
           var cont = document.getElementById('machines-container');
           if (!maquinas.length) {
-            cont.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;grid-column:1/-1;">Esperando computadoras... En cada máquina del alumno ejecutá <strong>iniciar_alumno.bat</strong>.</p>';
+            cont.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;padding:10px 4px;">Esperando que las computadoras del taller se enciendan...</p>';
             return;
           }
 
           cont.innerHTML = maquinas.map(function(m) {
             var stateClass = !m.online ? 'offline' : (m.locked ? 'locked' : 'online');
             var pillHtml = !m.online
-              ? '<span class="status-pill pill-offline">Desconectada</span>'
+              ? '<span class="status-pill pill-offline">Off</span>'
               : (m.locked ? '<span class="status-pill pill-locked">🔒 Bloqueada</span>' : '<span class="status-pill pill-online">🟢 Activa</span>');
 
             return '<div class="machine-card ' + stateClass + '">' +
@@ -742,7 +856,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                   '<i class="fas fa-desktop"></i>' +
                   '<div>' +
                     '<h3>' + m.hostname + '</h3>' +
-                    '<p>' + m.ip + ' · ' + (m.os || 'SO') + '</p>' +
+                    '<p>' + m.ip + '</p>' +
                   '</div>' +
                 '</div>' +
                 pillHtml +
@@ -756,13 +870,10 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             '</div>';
           }).join('');
         })
-        .catch(function(err) {
-          console.warn('Error leyendo estado:', err);
-        });
+        .catch(function(err) {});
     }
 
-    // Polling en vivo cada 1.5 segundos
-    setInterval(cargarEstado, 1500);
+    setInterval(cargarEstado, 1400);
     cargarEstado();
   </script>
 </body>
@@ -771,14 +882,14 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
 class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
     def log_message(self, format, *args):
-        # Silenciar logs http excesivos en terminal
         return
 
     def do_GET(self):
         url = urllib.parse.urlparse(self.path)
 
         if url.path == "/" or url.path == "/index.html":
-            html = DASHBOARD_HTML.replace("__DOCENTE_IP__", IP_DOCENTE).replace("__PUERTO__", str(PUERTO_WEB))
+            qr_tag = f'<img src="{QR_BASE64}" alt="Código QR">' if QR_BASE64 else f'<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data={urllib.parse.quote(URL_MOVIL)}" alt="QR">'
+            html = DASHBOARD_HTML.replace("__DOCENTE_URL__", URL_MOVIL).replace("__QR_IMG_TAG__", qr_tag)
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
@@ -879,7 +990,6 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                 if target == "all":
                     cmd["seq"] = len(cola_global) + 1
                     cola_global.append(cmd)
-                    # Actualizar estado proyectado
                     if action == "lock":
                         for m in maquinas.values(): m["locked"] = True
                     elif action == "unlock":
@@ -904,15 +1014,25 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
 
 def main():
     print("=" * 65)
-    print("  COLEGIO PAULO FREIRE — SERVIDOR DE CONTROL DE AULA")
+    print("  COLEGIO PAULO FREIRE — CONTROL DE AULA DESDE EL CELULAR")
     print("=" * 65)
-    print(f"  [+] IP del Docente detectada:  {IP_DOCENTE}")
-    print(f"  [+] Interfaz Web de Control:  http://localhost:{PUERTO_WEB}")
-    print(f"  [+] Acceso desde Móvil/Tablet: http://{IP_DOCENTE}:{PUERTO_WEB}")
+    print(f"  [+] Conectá tu celular al Wi-Fi del colegio y entrá a:")
+    print(f"      >> {URL_MOVIL} <<")
+    print("=" * 65)
+
+    if QR_AVAILABLE:
+        print("  [📱] O ESCANEÁ ESTE CÓDIGO QR DIRECTO DESDE TU CELULAR:\n")
+        try:
+            qr = qrcode.QRCode()
+            qr.add_data(URL_MOVIL)
+            qr.print_ascii(invert=True)
+        except Exception:
+            pass
+        print()
+
     print(f"  [+] Faro de auto-descubrimiento activo en UDP:{PUERTO_UDP}")
     print("=" * 65)
-    print("  Listo. Abrí el enlace en tu navegador para controlar el aula.")
-    print("  Presioná Ctrl + C para detener el servidor.\n")
+    print("  Listo para usar. Presioná Ctrl + C para detener el servidor.\n")
 
     # Iniciar hilo de faro UDP
     t_udp = threading.Thread(target=faro_udp, daemon=True)
@@ -928,7 +1048,7 @@ def main():
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
-            print("\n  Servidor detenido por el docente.")
+            print("\n  Servidor detenido.")
 
 if __name__ == "__main__":
     main()

@@ -1,40 +1,43 @@
-# 🎛️ Control de Aula Maker — Red Local (Python Puro)
+# 📱 Control de Aula Maker — Modo Móvil & Red Local
 **Colegio Paulo Freire · Laboratorio de Informática & Robótica**
 
-Este sistema permite al docente controlar todas las computadoras del laboratorio escolar **en tiempo real a través de la red local (Wi-Fi o cable), sin depender de internet ni de servicios externos como ntfy.sh**.
+Controlá todas las computadoras del taller de robótica **directamente desde tu teléfono celular mientras caminás entre los bancos**, 100% por red local sin internet ni intermediarios.
 
 ---
 
-## 🚀 Inicio Rápido
+## 📲 Cómo Conectar tu Celular en 5 Segundos
 
-### 1. En la Computadora del Profesor
-1. Hacé doble clic en **`iniciar_docente.bat`**.
-2. Se abrirá automáticamente la **Interfaz Gráfica Web** en tu navegador (`http://localhost:5000`).
-3. *(Opcional)* También podés abrir esa dirección desde tu **celular o tablet** conectado al mismo Wi-Fi del colegio para controlar el aula mientras caminás entre las mesas.
-
-### 2. En las Computadoras de los Alumnos
-1. Copiá la carpeta del cliente o hacé doble clic en **`iniciar_alumno.bat`**.
-2. **Auto-descubrimiento:** El alumno detecta automáticamente la IP de la máquina del docente mediante un faro local en la red. No requiere configurar IPs estáticas.
-3. *(Opcional)* Podés crear un acceso directo a `iniciar_alumno.bat` en la carpeta `Inicio` de Windows (`shell:startup`) para que arranque solo al encender la máquina.
-
----
-
-## 🛠️ Funciones del Panel de Control
-
-| Función | Descripción |
-| :--- | :--- |
-| 🔒 **Modo Atención (Bloqueo)** | Muestra una pantalla completa en el monitor del alumno con el robot FreireBot y el texto *"¡Atención al Pizarrón!"*, bloqueando la vista de juegos o distracciones para que escuchen la explicación. |
-| 🔓 **Desbloquear** | Cierra la pantalla de bloqueo y devuelve el control al estudiante al instante. |
-| 🚀 **Lanzador Rápido de Proyectos** | Abre en simultáneo en todas las máquinas: **El Diario del Taller**, **Scratch**, **MakeCode Micro:bit**, **PaperMe (3D)**, **Animated Drawings**, **Canva**, o cualquier enlace web que pegues en el recuadro. |
-| 📢 **Mensaje en Pantalla** | Muestra una ventana emergente en primer plano con sonido de campana *(ej: «¡Faltan 5 minutos para guardar el proyecto!»)* con botón de *«¡Entendido!»*. |
-| 🔇 **Silenciar Audio** | Silencia los parlantes/auriculares de todas las máquinas en caso de ruidos o videos superpuestos. |
-| ⚡ **Apagar Equipos** | Comando de fin de clase para apagar ordenadamente todas las máquinas del aula con un solo clic. |
-| 🖥️ **Control Individual** | En la grilla podés bloquear, desbloquear o mandar mensajes a una computadora específica *(ej: solo a PC-04)*. |
+1. **En la computadora principal del profesor:**
+   * Hacé doble clic en **`iniciar_docente.bat`**.
+   * Vas a ver en la pantalla de la PC un **Código QR grande** (tanto en la consola negra como en el navegador que se abre).
+2. **En tu celular:**
+   * Asegurate de que tu teléfono esté conectado al **Wi-Fi del colegio**.
+   * Abrí la cámara de fotos de tu celular y **apuntá a la pantalla de la computadora**.
+   * Tocá el enlace que aparece (ej: `http://192.168.1.X:5000`) ¡y listo! Ya tenés el control remoto en tu mano.
+   * *(Opcional)* En el navegador de tu celular (Chrome o Safari) podés seleccionar **«Agregar a la pantalla principal»** para que te quede como una app con icono de robot.
 
 ---
 
-## 🔒 Ventajas frente a ntfy.sh
+## 🎛️ Experiencia en el Celular (Diseñada para una sola mano)
 
-* **100% Privado:** Toda la comunicación ocurre adentro del taller. Nadie en internet puede ver qué páginas abrís ni mandar comandos a las computadoras del colegio.
-* **Funciona sin Internet:** Si se corta la fibra óptica o la conexión de la escuela, el control sigue funcionando a la perfección a través del router local.
-* **Sin librerías externas:** Funciona con Python estándar (Tkinter nativo, sockets y HTTP estándar). No requiere `pip install`.
+* 🔴 **Barra Táctil Inferior (Bajo tu pulgar):**
+  * **BLOQUEAR (Rojo):** Congela de inmediato todas las pantallas del aula con el robot FreireBot y el cartel de atención para que escuchen tu explicación.
+  * **AVISO (Amarillo):** Te abre un teclado para mandar un mensaje con sonido de timbre a todos *(ej: «¡Faltan 5 minutos para guardar!»)*.
+  * **DESBLOQUEAR (Verde):** Devuelve las computadoras a su estado normal para seguir trabajando.
+* 📳 **Respuesta Háptica (Vibración):** El celular vibra brevemente al pulsar los botones para confirmarte que el comando se envió sin que tengas que mirar la pantalla fija.
+* 🚀 **Lanzador de Proyectos en 1 Toque:** Botones grandes y coloridos para abrir:
+  * El Diario del Taller
+  * Scratch
+  * MakeCode Micro:bit
+  * PaperMe (Papercraft 3D)
+  * Animated Drawings (Meta AI)
+  * Canva
+* 💻 **Lista de Máquinas en Vivo:** Ves en tiempo real qué computadoras están encendidas, quién está bloqueado y podés actuar sobre una máquina específica si un alumno se distrae.
+
+---
+
+## 🖥️ En las Computadoras de los Alumnos
+
+1. En cada máquina de los chicos, ejecutás **`iniciar_alumno.bat`** (o colocás un acceso directo en `shell:startup` para que arranque solo con Windows).
+2. La máquina detecta sola al profesor por la red local sin configurar IPs.
+3. No requiere ninguna instalación externa (`Tkinter` viene incluido en Python).
