@@ -1,10 +1,13 @@
 @echo off
-title Agente de Aula Paulo Freire
-
-where pythonw >nul 2>nul
-if %ERRORLEVEL% equ 0 (
-    start "" pythonw "%~dp0cliente_alumno.py"
-) else (
-    start /min python "%~dp0cliente_alumno.py"
-)
-exit
+title Agente Alumno - Colegio Paulo Freire
+cls
+echo ========================================================
+echo   INICIANDO AGENTE ALUMNO - COLEGIO PAULO FREIRE
+echo ========================================================
+echo.
+python "%~dp0cliente_alumno.py"
+echo.
+echo ========================================================
+echo   El agente de alumno se ha detenido.
+echo ========================================================
+pause

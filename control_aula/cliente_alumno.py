@@ -13,6 +13,7 @@ import os
 import sys
 import time
 import json
+import re
 import socket
 import platform
 import threading
@@ -20,6 +21,7 @@ import subprocess
 import webbrowser
 import urllib.request
 import urllib.error
+import urllib.parse
 
 # GUI con Tkinter nativo (incluido en Python estándar)
 import tkinter as tk
