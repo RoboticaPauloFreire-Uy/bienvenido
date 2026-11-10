@@ -776,7 +776,10 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     </div>
 
     <!-- Computadoras de Alumnos Conectadas -->
-    <div class="section-title"><i class="fas fa-laptop-code"></i> Alumnos Conectados (<span id="stat-total">0</span>)</div>
+    <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span><i class="fas fa-laptop-code"></i> Alumnos Conectados (<span id="stat-total">0</span>)</span>
+      <button onclick="cargarEstado()" style="background:#1E293B;border:1px solid #334155;color:#38BDF8;border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;"><i class="fas fa-sync-alt"></i> Actualizar</button>
+    </div>
     <div class="machines-grid" id="machines-container">
       <p style="color:var(--text-muted);font-size:0.85rem;padding:10px 4px;">Esperando que las computadoras del taller se enciendan...</p>
     </div>
@@ -936,18 +939,23 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
     function enviarComando(target, action, params) {
       vibrar();
+      toast('Enviando: ' + action.toUpperCase() + '...', '#3B82F6');
       fetch('/api/comando', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ target: target, action: action, params: params || {} })
       })
-      .then(function(r) { return r.json(); })
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
       .then(function() {
-        toast('Enviado: ' + action.toUpperCase());
-        cargarEstado();
+        toast('¡Enviado: ' + action.toUpperCase() + '!', '#10B981');
+        setTimeout(cargarEstado, 300);
       })
       .catch(function(err) {
         toast('Error de conexión', '#EF4444');
+        alert('No se pudo comunicar con la PC docente (' + err.message + '). Verificá que tu celular esté conectado a la misma red Wi-Fi del aula y no a datos móviles.');
       });
     }
 
@@ -1015,8 +1023,11 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     }
 
     function cargarEstado() {
-      fetch('/api/status')
-        .then(function(r) { return r.json(); })
+      fetch('/api/status?t=' + Date.now(), { cache: 'no-store' })
+        .then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
         .then(function(data) {
           var maquinas = data.maquinas || [];
           var onlineCount = 0;
@@ -1102,7 +1113,8 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def log_message(self, format, *args):
-        return
+        sys.stdout.write(f"  [HTTP] {self.client_address[0]} {format % args}\n")
+        sys.stdout.flush()
 
     def responder_json(self, data, code=200):
         try:
@@ -1110,6 +1122,9 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
             self.send_response(code)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.send_header("Pragma", "no-cache")
+            self.send_header("Expires", "0")
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Connection", "close")
             self.end_headers()
