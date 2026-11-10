@@ -1075,15 +1075,15 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                 '</div>' +
                 '<div style="display:flex;align-items:center;gap:6px;">' +
                   pillHtml +
-                  '<button class="btn-renumber" onclick="abrirModalRenombrar(\'' + m.id + '\', \'' + padNum + '\')" title="Cambiar número de esta PC"><i class="fas fa-pen"></i></button>' +
+                  '<button class="btn-renumber" onclick="abrirModalRenombrar(\\'' + m.id + '\\', \\'' + padNum + '\\')" title="Cambiar número de esta PC"><i class="fas fa-pen"></i></button>' +
                 '</div>' +
               '</div>' +
               '<div class="machine-actions">' +
                 (m.locked
-                  ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\'' + m.id + '\', \'unlock\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
-                  : '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + m.id + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>') +
-                '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\'' + m.id + '\')"><i class="fas fa-comment"></i> Mensaje</button>' +
-                '<button class="mini-btn mb-more" onclick="abrirModalIndividual(\'' + m.id + '\', \'' + padNum + '\')" title="Más acciones"><i class="fas fa-ellipsis-v"></i></button>' +
+                  ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\\'' + m.id + '\\', \\'unlock\\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
+                  : '<button class="mini-btn mb-lock" onclick="enviarComando(\\'' + m.id + '\\', \\'lock\\')"><i class="fas fa-lock"></i> Bloquear</button>') +
+                '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\\'' + m.id + '\\')"><i class="fas fa-comment"></i> Mensaje</button>' +
+                '<button class="mini-btn mb-more" onclick="abrirModalIndividual(\\'' + m.id + '\\', \\'' + padNum + '\\')" title="Más acciones"><i class="fas fa-ellipsis-v"></i></button>' +
               '</div>' +
             '</div>';
           }).join('');
