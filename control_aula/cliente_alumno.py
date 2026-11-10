@@ -32,6 +32,38 @@ HOSTNAME = socket.gethostname()
 SISTEMA_OPERATIVO = platform.system()
 MACHINE_ID = f"{HOSTNAME}_{platform.node()}"
 
+def cargar_numero_local():
+    """Lee el número asignado a esta máquina desde numero_maquina.txt o del hostname."""
+    archivo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "numero_maquina.txt")
+    if os.path.exists(archivo):
+        try:
+            with open(archivo, "r", encoding="utf-8") as f:
+                val = f.read().strip()
+                if val:
+                    return val
+        except Exception:
+            pass
+    # Buscar si el nombre del equipo ya tiene número (ej: PC04 -> 4, ALUMNO-2 -> 2)
+    match = re.search(r'\d+', HOSTNAME)
+    if match:
+        return str(int(match.group()))
+    return ""
+
+def guardar_numero_local(num):
+    """Guarda el número de máquina asignado permanentemente en el disco."""
+    global NUMERO_MAQUINA
+    try:
+        NUMERO_MAQUINA = str(num).strip()
+        archivo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "numero_maquina.txt")
+        with open(archivo, "w", encoding="utf-8") as f:
+            f.write(NUMERO_MAQUINA)
+        print(f"  [+] Esta máquina ahora está identificada como: PC {NUMERO_MAQUINA}")
+    except Exception as e:
+        print(f"  [!] Error guardando número de máquina: {e}")
+
+NUMERO_MAQUINA = cargar_numero_local()
+
+
 # Estado local
 servidor_docente_url = None
 bloqueado = False
@@ -278,6 +310,10 @@ def ejecutar_comando(cmd):
             mostrar_mensaje_emergente(texto)
     elif action == "mute":
         silenciar_audio()
+    elif action == "set_number":
+        nuevo_num = params.get("number")
+        if nuevo_num is not None:
+            guardar_numero_local(nuevo_num)
     elif action == "launch_game":
         juego = params.get("game", "surf")
         lanzar_juego_offline(juego)
@@ -298,6 +334,7 @@ def ciclo_comunicacion():
             ping_data = json.dumps({
                 "id": MACHINE_ID,
                 "hostname": HOSTNAME,
+                "number": NUMERO_MAQUINA,
                 "os": SISTEMA_OPERATIVO,
                 "locked": bloqueado
             }).encode("utf-8")
@@ -333,6 +370,7 @@ def main():
     print("=" * 60)
     print(f"  Equipo:    {HOSTNAME} ({SISTEMA_OPERATIVO})")
     print(f"  ID:        {MACHINE_ID}")
+    print(f"  Número:    PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(Sin asignar - podés asignarlo desde el celular o asignar_numero.bat)'}")
     print("=" * 60)
     print("  Iniciando servicio de aula... Minimizá esta ventana.\n")
 

@@ -32,6 +32,44 @@ PUERTO_WEB = 5000
 PUERTO_UDP = 5005
 TIMEOUT_DESCONEXION = 8  # Segundos sin ping para marcar máquina como desconectada
 
+ARCHIVO_NUMEROS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "maquinas_numeros.json")
+
+def cargar_numeros_guardados():
+    if os.path.exists(ARCHIVO_NUMEROS):
+        try:
+            with open(ARCHIVO_NUMEROS, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def guardar_numeros_disco(nums):
+    try:
+        with open(ARCHIVO_NUMEROS, "w", encoding="utf-8") as f:
+            json.dump(nums, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"  [!] Error guardando numeros en disco: {e}")
+
+maquinas_numeros = cargar_numeros_guardados()
+
+def obtener_siguiente_numero_disponible():
+    usados = set()
+    for num in maquinas_numeros.values():
+        try:
+            usados.add(int(num))
+        except Exception:
+            pass
+    for m in maquinas.values():
+        if m.get("number"):
+            try:
+                usados.add(int(m["number"]))
+            except Exception:
+                pass
+    cand = 1
+    while cand in usados:
+        cand += 1
+    return str(cand)
+
 # Estado en memoria
 maquinas = {}
 colas_comandos = {}  # machine_id -> [comandos]
@@ -390,6 +428,44 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       gap: 8px;
     }
 
+        .machine-num-badge {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      color: #FFF;
+      font-size: 0.95rem;
+      font-weight: 900;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(2,132,199,0.4);
+      flex-shrink: 0;
+    }
+
+    .machine-card.locked .machine-num-badge {
+      background: linear-gradient(135deg, #DC2626, #991B1B);
+      box-shadow: 0 2px 6px rgba(220,38,38,0.4);
+    }
+
+    .btn-renumber {
+      background: #0F172A;
+      border: 1px solid var(--card-border);
+      color: #94A3B8;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+    }
+
+    .btn-renumber:hover { color: #38BDF8; border-color: #38BDF8; }
+
+    .mb-more { background: #475569; }
+
     .machine-title i { font-size: 1.15rem; color: #38BDF8; }
     .machine-title h3 { font-size: 0.92rem; font-weight: 800; }
     .machine-title p { font-size: 0.72rem; color: var(--text-muted); }
@@ -714,6 +790,44 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     </button>
   </div>
 
+  <!-- Modal Asignar / Cambiar Número de Máquina -->
+  <div class="modal-overlay" id="modal-renumber">
+    <div class="modal-box">
+      <h3>🔢 Asignar Número a esta Computadora</h3>
+      <p id="modal-renumber-info">Máquina seleccionada</p>
+      <input type="number" id="inp-new-number" min="1" max="99" style="width:100%;background:#0F172A;border:1.5px solid var(--primary);border-radius:8px;padding:12px;font-size:1.3rem;font-weight:900;color:#FFF;text-align:center;margin-bottom:14px;outline:none;" placeholder="Ej: 1, 2, 3...">
+      <div class="modal-btns">
+        <button class="mbtn-cancel" onclick="cerrarModalRenombrar()">Cancelar</button>
+        <button class="mbtn-send" onclick="guardarNuevoNumero()">Guardar Número</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Acciones Individuales para una PC -->
+  <div class="modal-overlay" id="modal-individual">
+    <div class="modal-box">
+      <h3 id="modal-indiv-title">⚙️ Control Individual: PC XX</h3>
+      <p>Acciones exclusivas para esta computadora:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+        <button class="aux-btn" style="background:#0284C7;border-color:#38BDF8;padding:12px;" onclick="enviarAccionIndividual('launch_game', {game:'surf'})">
+          <i class="fas fa-water"></i> Abrir Surf (Edge) solo a esta PC
+        </button>
+        <button class="aux-btn" style="background:#475569;border-color:#94A3B8;padding:12px;" onclick="enviarAccionIndividual('launch_game', {game:'dino'})">
+          <i class="fas fa-dragon" style="color:#FBBF24;"></i> Abrir Dino (Chrome) solo a esta PC
+        </button>
+        <button class="aux-btn" style="background:#334155;padding:12px;" onclick="enviarAccionIndividual('mute', {})">
+          <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar solo esta PC
+        </button>
+        <button class="aux-btn" style="background:#7F1D1D;border-color:#EF4444;padding:12px;" onclick="enviarAccionIndividual('shutdown', {})">
+          <i class="fas fa-power-off" style="color:#FCA5A5;"></i> Apagar solo esta PC
+        </button>
+      </div>
+      <div class="modal-btns">
+        <button class="mbtn-cancel" onclick="cerrarModalIndividual()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Enviar Mensaje -->
   <div class="modal-overlay" id="modal-msg">
     <div class="modal-box">
@@ -746,6 +860,58 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 
   <script>
     var currentTarget = 'all';
+    var renumberTargetId = null;
+    var indivTargetId = null;
+    var indivTargetNum = null;
+
+    function abrirModalRenombrar(id, currentNum) {
+      renumberTargetId = id;
+      document.getElementById('modal-renumber-info').textContent = 'Identificador: ' + id;
+      document.getElementById('inp-new-number').value = parseInt(currentNum) || '';
+      document.getElementById('modal-renumber').classList.add('open');
+      setTimeout(function() { document.getElementById('inp-new-number').focus(); }, 120);
+    }
+
+    function cerrarModalRenombrar() {
+      document.getElementById('modal-renumber').classList.remove('open');
+    }
+
+    function guardarNuevoNumero() {
+      var val = document.getElementById('inp-new-number').value.trim();
+      if (!val) return;
+      fetch('/api/set_number', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: renumberTargetId, number: val })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function() {
+        toast('Número guardado como PC ' + val);
+        cerrarModalRenombrar();
+        cargarEstado();
+      })
+      .catch(function(err) {
+        toast('Error guardando número', '#EF4444');
+      });
+    }
+
+    function abrirModalIndividual(id, padNum) {
+      indivTargetId = id;
+      indivTargetNum = padNum;
+      document.getElementById('modal-indiv-title').textContent = '⚙️ Opciones para PC ' + padNum;
+      document.getElementById('modal-individual').classList.add('open');
+    }
+
+    function cerrarModalIndividual() {
+      document.getElementById('modal-individual').classList.remove('open');
+    }
+
+    function enviarAccionIndividual(action, params) {
+      if (action === 'shutdown' && !confirm('¿Estás seguro de apagar la PC ' + indivTargetNum + '?')) return;
+      enviarComando(indivTargetId, action, params);
+      cerrarModalIndividual();
+    }
+
 
     function vibrar() {
       if (window.navigator && window.navigator.vibrate) {
@@ -965,13 +1131,48 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
         except Exception:
             data = {}
 
+        if url.path == "/api/set_number":
+            mid = data.get("id")
+            num = str(data.get("number", "")).strip()
+            if mid and num:
+                with lock_estado:
+                    maquinas_numeros[mid] = num
+                    guardar_numeros_disco(maquinas_numeros)
+                    if mid in maquinas:
+                        maquinas[mid]["number"] = num
+                    if mid not in colas_comandos:
+                        colas_comandos[mid] = []
+                    colas_comandos[mid].append({
+                        "action": "set_number",
+                        "params": {"number": num},
+                        "time": time.time()
+                    })
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "ok", "number": num}).encode("utf-8"))
+                return
+
         if url.path == "/api/ping":
             mid = data.get("id")
+            num_reportado = str(data.get("number", "")).strip()
             if mid:
                 with lock_estado:
+                    num_asignado = maquinas_numeros.get(mid)
+                    if not num_asignado and num_reportado:
+                        num_asignado = num_reportado
+                        maquinas_numeros[mid] = num_asignado
+                        guardar_numeros_disco(maquinas_numeros)
+                    elif not num_asignado:
+                        num_asignado = obtener_siguiente_numero_disponible()
+                        maquinas_numeros[mid] = num_asignado
+                        guardar_numeros_disco(maquinas_numeros)
+
                     if mid not in maquinas:
                         maquinas[mid] = {
                             "id": mid,
+                            "number": num_asignado,
                             "hostname": data.get("hostname", mid),
                             "ip": self.client_address[0],
                             "os": data.get("os", "Desconocido"),
@@ -985,6 +1186,7 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         m["last_seen"] = time.time()
                         m["online"] = True
                         m["ip"] = self.client_address[0]
+                        m["number"] = num_asignado
                         if "locked" in data:
                             m["locked"] = data["locked"]
 
