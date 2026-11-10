@@ -99,10 +99,14 @@ def obtener_mi_subred():
 def verificar_servidor_docente(url):
     """Verifica si una URL responde efectivamente al servidor docente Freire."""
     try:
-        req = urllib.request.Request(f"{url}/api/status", headers={"User-Agent": "AgenteAlumnoFreire"})
-        with urllib.request.urlopen(req, timeout=0.8) as resp:
+        req = urllib.request.Request(
+            f"{url}/api/status",
+            headers={"User-Agent": "AgenteAlumnoFreire", "Connection": "close"}
+        )
+        with urllib.request.urlopen(req, timeout=1.0) as resp:
             if resp.status == 200:
-                data = json.loads(resp.read().decode("utf-8"))
+                raw = resp.read().decode("utf-8")
+                data = json.loads(raw) if raw else {}
                 if "maquinas" in data:
                     return True
     except Exception:
@@ -431,10 +435,10 @@ def ciclo_comunicacion():
             req_ping = urllib.request.Request(
                 f"{servidor_docente_url}/api/ping",
                 data=ping_data,
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/json", "Connection": "close"}
             )
-            with urllib.request.urlopen(req_ping, timeout=3.0) as resp:
-                pass
+            with urllib.request.urlopen(req_ping, timeout=4.0) as resp:
+                _ = resp.read()
 
             if not conectado_previamente:
                 print(f"  [OK] ¡Conectado exitosamente con el docente! ({servidor_docente_url})", flush=True)
@@ -444,15 +448,20 @@ def ciclo_comunicacion():
 
             # 2. Consultar si hay comandos pendientes
             url_poll = f"{servidor_docente_url}/api/poll?id={urllib.parse.quote(MACHINE_ID)}"
-            with urllib.request.urlopen(url_poll, timeout=3.0) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
+            req_poll = urllib.request.Request(
+                url_poll,
+                headers={"Connection": "close"}
+            )
+            with urllib.request.urlopen(req_poll, timeout=4.0) as resp:
+                raw_poll = resp.read().decode("utf-8")
+                data = json.loads(raw_poll) if raw_poll else {}
                 comandos = data.get("comandos", [])
                 for cmd in comandos:
                     ejecutar_comando(cmd)
 
-        except urllib.error.URLError:
+        except urllib.error.URLError as e:
             if conectado_previamente:
-                print("  [!] Conexión perdida con el docente. Reintentando reconectar...", flush=True)
+                print(f"  [!] Conexión perdida con el docente. Reintentando reconectar...", flush=True)
             servidor_docente_url = None
         except Exception as e:
             print(f"  [!] Aviso de comunicación: {e}", flush=True)

@@ -30,7 +30,7 @@ except ImportError:
 
 PUERTO_WEB = 5000
 PUERTO_UDP = 5005
-TIMEOUT_DESCONEXION = 8  # Segundos sin ping para marcar máquina como desconectada
+TIMEOUT_DESCONEXION = 15  # Segundos sin ping para marcar máquina como desconectada
 
 ARCHIVO_NUMEROS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "maquinas_numeros.json")
 
@@ -1087,9 +1087,54 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 </html>
 """
 
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+    def handle_error(self, request, client_address):
+        # Ignorar desconexiones de socket normales de clientes web
+        err = sys.exc_info()[1]
+        if isinstance(err, (ConnectionAbortedError, ConnectionResetError, BrokenPipeError)):
+            return
+        super().handle_error(request, client_address)
+
 class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
     def log_message(self, format, *args):
         return
+
+    def responder_json(self, data, code=200):
+        try:
+            body = json.dumps(data, ensure_ascii=False).encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Connection", "close")
+            self.end_headers()
+            self.wfile.write(body)
+            self.wfile.flush()
+        except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
+            pass
+        except Exception:
+            pass
+
+    def responder_html(self, html_text, code=200):
+        try:
+            body = html_text.encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.send_header("Connection", "close")
+            self.end_headers()
+            self.wfile.write(body)
+            self.wfile.flush()
+        except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
+            pass
+        except Exception:
+            pass
 
     def do_GET(self):
         url = urllib.parse.urlparse(self.path)
@@ -1097,24 +1142,13 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
         if url.path == "/" or url.path == "/index.html":
             qr_tag = f'<img src="{QR_BASE64}" alt="Código QR">' if QR_BASE64 else f'<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data={urllib.parse.quote(URL_MOVIL)}" alt="QR">'
             html = DASHBOARD_HTML.replace("__DOCENTE_URL__", URL_MOVIL).replace("__QR_IMG_TAG__", qr_tag)
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-            self.send_header("Pragma", "no-cache")
-            self.send_header("Expires", "0")
-            self.end_headers()
-            self.wfile.write(html.encode("utf-8"))
+            self.responder_html(html)
             return
 
         if url.path == "/api/status":
             with lock_estado:
                 lista = list(maquinas.values())
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            self.wfile.write(json.dumps({"ip": IP_DOCENTE, "maquinas": lista}).encode("utf-8"))
+            self.responder_json({"ip": IP_DOCENTE, "maquinas": lista})
             return
 
         if url.path == "/api/poll":
@@ -1123,12 +1157,10 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
             comandos_a_ejecutar = []
 
             with lock_estado:
-                # Comandos individuales
                 if mid in colas_comandos and colas_comandos[mid]:
                     comandos_a_ejecutar.extend(colas_comandos[mid])
                     colas_comandos[mid] = []
 
-                # Comandos globales (cola_global)
                 if mid in maquinas:
                     last_global = maquinas[mid].get("last_global_seq", 0)
                     nuevos_globales = [c for c in cola_global if c["seq"] > last_global]
@@ -1136,14 +1168,12 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         comandos_a_ejecutar.extend(nuevos_globales)
                         maquinas[mid]["last_global_seq"] = cola_global[-1]["seq"]
 
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            self.wfile.write(json.dumps({"comandos": comandos_a_ejecutar}).encode("utf-8"))
+            self.responder_json({"comandos": comandos_a_ejecutar})
             return
 
         self.send_response(404)
+        self.send_header("Content-Length", "0")
+        self.send_header("Connection", "close")
         self.end_headers()
 
     def do_POST(self):
@@ -1172,11 +1202,7 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         "params": {"number": num},
                         "time": time.time()
                     })
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.send_header("Access-Control-Allow-Origin", "*")
-                self.end_headers()
-                self.wfile.write(json.dumps({"status": "ok", "number": num}).encode("utf-8"))
+                self.responder_json({"status": "ok", "number": num})
                 return
 
         if url.path == "/api/ping":
@@ -1215,11 +1241,7 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         if "locked" in data:
                             m["locked"] = data["locked"]
 
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            self.wfile.write(b'{"status": "ok"}')
+            self.responder_json({"status": "ok"})
             return
 
         if url.path == "/api/comando":
@@ -1249,14 +1271,12 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         if action == "lock": maquinas[target]["locked"] = True
                         elif action == "unlock": maquinas[target]["locked"] = False
 
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            self.wfile.write(b'{"status": "queued"}')
+            self.responder_json({"status": "queued"})
             return
 
         self.send_response(404)
+        self.send_header("Content-Length", "0")
+        self.send_header("Connection", "close")
         self.end_headers()
 
 def main():
@@ -1290,8 +1310,7 @@ def main():
     t_clean.start()
 
     # Iniciar servidor HTTP
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("0.0.0.0", PUERTO_WEB), ControlAulaHandler) as httpd:
+    with ThreadedHTTPServer(("0.0.0.0", PUERTO_WEB), ControlAulaHandler) as httpd:
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
