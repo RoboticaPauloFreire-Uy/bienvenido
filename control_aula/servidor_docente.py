@@ -1030,28 +1030,42 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             return;
           }
 
+                    // Ordenar numéricamente las máquinas (PC 01, PC 02, PC 03...)
+          maquinas.sort(function(a, b) {
+            var na = parseInt(a.number) || 999;
+            var nb = parseInt(b.number) || 999;
+            return na - nb;
+          });
+
           cont.innerHTML = maquinas.map(function(m) {
             var stateClass = !m.online ? 'offline' : (m.locked ? 'locked' : 'online');
             var pillHtml = !m.online
               ? '<span class="status-pill pill-offline">Off</span>'
               : (m.locked ? '<span class="status-pill pill-locked">🔒 Bloqueada</span>' : '<span class="status-pill pill-online">🟢 Activa</span>');
 
+            var nStr = m.number ? String(m.number) : '?';
+            var padNum = nStr.length === 1 ? '0' + nStr : nStr;
+
             return '<div class="machine-card ' + stateClass + '">' +
               '<div class="machine-head">' +
                 '<div class="machine-title">' +
-                  '<i class="fas fa-desktop"></i>' +
+                  '<div class="machine-num-badge">#' + padNum + '</div>' +
                   '<div>' +
-                    '<h3>' + m.hostname + '</h3>' +
-                    '<p>' + m.ip + '</p>' +
+                    '<h3>PC ' + padNum + '</h3>' +
+                    '<p>' + m.ip + ' · <span style="opacity:0.6;">' + m.hostname + '</span></p>' +
                   '</div>' +
                 '</div>' +
-                pillHtml +
+                '<div style="display:flex;align-items:center;gap:6px;">' +
+                  pillHtml +
+                  '<button class="btn-renumber" onclick="abrirModalRenombrar(\'' + m.id + '\', \'' + padNum + '\')" title="Cambiar número de esta PC"><i class="fas fa-pen"></i></button>' +
+                '</div>' +
               '</div>' +
               '<div class="machine-actions">' +
                 (m.locked
-                  ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\\'' + m.id + '\\', \\'unlock\\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
-                  : '<button class="mini-btn mb-lock" onclick="enviarComando(\\'' + m.id + '\\', \\'lock\\')"><i class="fas fa-lock"></i> Bloquear</button>') +
-                '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\\'' + m.id + '\\')"><i class="fas fa-comment"></i> Mensaje</button>' +
+                  ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\'' + m.id + '\', \'unlock\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
+                  : '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + m.id + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>') +
+                '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\'' + m.id + '\')"><i class="fas fa-comment"></i> Mensaje</button>' +
+                '<button class="mini-btn mb-more" onclick="abrirModalIndividual(\'' + m.id + '\', \'' + padNum + '\')" title="Más acciones"><i class="fas fa-ellipsis-v"></i></button>' +
               '</div>' +
             '</div>';
           }).join('');
@@ -1078,6 +1092,9 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
             html = DASHBOARD_HTML.replace("__DOCENTE_URL__", URL_MOVIL).replace("__QR_IMG_TAG__", qr_tag)
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.send_header("Pragma", "no-cache")
+            self.send_header("Expires", "0")
             self.end_headers()
             self.wfile.write(html.encode("utf-8"))
             return
@@ -1087,6 +1104,7 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                 lista = list(maquinas.values())
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             self.wfile.write(json.dumps({"ip": IP_DOCENTE, "maquinas": lista}).encode("utf-8"))
