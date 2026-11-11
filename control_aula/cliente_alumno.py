@@ -4,6 +4,7 @@ CLIENTE_ALUMNO.PY — AGENTE DE MÁQUINA DE ALUMNO (PYTHON PURO)
 Colegio Paulo Freire · Taller de Robótica & Informática
 
 Se ejecuta en cada computadora de los alumnos.
+Se oculta automáticamente en segundo plano (modo invisible sin ventana ni ícono en barra de tareas).
 Descubre automáticamente la IP del docente por:
   1. Archivo local de configuración servidor_ip.txt
   2. Faro UDP broadcast (puerto 5005)
@@ -30,6 +31,22 @@ import urllib.parse
 import concurrent.futures
 import traceback
 
+DIR_BASE = os.path.dirname(os.path.abspath(__file__))
+ARCHIVO_PID = os.path.join(DIR_BASE, "agente_alumno.pid")
+ARCHIVO_LOG = os.path.join(DIR_BASE, "agente_alumno.log")
+
+# Si corre en modo oculto (sin consola), redirigir stdout/stderr a archivo de log para evitar errores en print()
+MODO_OCULTO = ("--oculto" in sys.argv)
+MODO_VISIBLE_FORZADO = ("--visible" in sys.argv)
+
+if MODO_OCULTO or sys.stdout is None or sys.stderr is None:
+    try:
+        _log_fh = open(ARCHIVO_LOG, "a", encoding="utf-8", buffering=1)
+        sys.stdout = _log_fh
+        sys.stderr = _log_fh
+    except Exception:
+        pass
+
 # GUI con Tkinter nativo (modo seguro ante instalaciones mínimas de Python)
 TKINTER_OK = False
 tk_root = None
@@ -48,9 +65,71 @@ HOSTNAME = socket.gethostname()
 SISTEMA_OPERATIVO = platform.system()
 MACHINE_ID = f"{HOSTNAME}_{platform.node()}"
 
+def ocultar_consola_windows():
+    """Oculta la ventana de consola en Windows si existe."""
+    if SISTEMA_OPERATIVO != "Windows":
+        return
+    try:
+        import ctypes
+        hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+        if hwnd:
+            ctypes.windll.user32.ShowWindow(hwnd, 0)  # SW_HIDE = 0
+    except Exception:
+        pass
+
+def detener_instancia_previa():
+    """Si ya había un agente corriendo en segundo plano, lo detiene antes de iniciar el nuevo."""
+    if not os.path.exists(ARCHIVO_PID):
+        return
+    try:
+        with open(ARCHIVO_PID, "r", encoding="utf-8") as f:
+            old_pid = int(f.read().strip())
+        if old_pid and old_pid != os.getpid():
+            if SISTEMA_OPERATIVO == "Windows":
+                flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
+                subprocess.run(["taskkill", "/F", "/PID", str(old_pid)], capture_output=True, creationflags=flags)
+            else:
+                import signal
+                os.kill(old_pid, signal.SIGTERM)
+    except Exception:
+        pass
+
+def guardar_pid_actual():
+    """Registra el PID del proceso invisible actual."""
+    try:
+        with open(ARCHIVO_PID, "w", encoding="utf-8") as f:
+            f.write(str(os.getpid()))
+    except Exception:
+        pass
+
+def lanzar_en_segundo_plano_windows():
+    """Lanza este mismo script en modo 100% invisible (sin consola ni barra de tareas) y cierra la ventana actual."""
+    detener_instancia_previa()
+    ruta_script = os.path.abspath(__file__)
+    dir_python = os.path.dirname(sys.executable)
+    pythonw_exe = os.path.join(dir_python, "pythonw.exe")
+    ejecutable = pythonw_exe if os.path.exists(pythonw_exe) else sys.executable
+
+    CREATE_NO_WINDOW = 0x08000000
+    DETACHED_PROCESS = 0x00000008
+    CREATE_NEW_PROCESS_GROUP = 0x00000200
+
+    proc = subprocess.Popen(
+        [ejecutable, ruta_script, "--oculto"],
+        cwd=DIR_BASE,
+        creationflags=CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP,
+        close_fds=True
+    )
+    try:
+        with open(ARCHIVO_PID, "w", encoding="utf-8") as f:
+            f.write(str(proc.pid))
+    except Exception:
+        pass
+    return proc.pid
+
 def cargar_numero_local():
     """Lee el número asignado a esta máquina desde numero_maquina.txt o del hostname."""
-    archivo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "numero_maquina.txt")
+    archivo = os.path.join(DIR_BASE, "numero_maquina.txt")
     if os.path.exists(archivo):
         try:
             with open(archivo, "r", encoding="utf-8") as f:
@@ -70,7 +149,7 @@ def guardar_numero_local(num):
     global NUMERO_MAQUINA
     try:
         NUMERO_MAQUINA = str(num).strip()
-        archivo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "numero_maquina.txt")
+        archivo = os.path.join(DIR_BASE, "numero_maquina.txt")
         with open(archivo, "w", encoding="utf-8") as f:
             f.write(NUMERO_MAQUINA)
         print(f"  [+] Esta máquina ahora está identificada como: PC {NUMERO_MAQUINA}", flush=True)
@@ -120,7 +199,7 @@ def verificar_servidor_docente(url):
 
 def descubrir_servidor():
     """Descubre automáticamente la IP del docente con 4 capas de respaldo."""
-    archivo_cfg = os.path.join(os.path.dirname(os.path.abspath(__file__)), "servidor_ip.txt")
+    archivo_cfg = os.path.join(DIR_BASE, "servidor_ip.txt")
 
     # 1. Probar archivo de configuración si existe
     if os.path.exists(archivo_cfg):
@@ -439,12 +518,11 @@ def fijar_volumen(nivel=50):
         if SISTEMA_OPERATIVO == "Windows":
             import ctypes
             user32 = ctypes.windll.user32
-            VK_VOLUME_MUTE = 0xAD
             VK_VOLUME_DOWN = 0xAE
             VK_VOLUME_UP = 0xAF
             KEYEVENTF_KEYUP = 0x0002
 
-            # Si el nivel es 0, bajamos todo el volumen a 0
+            # Primero bajar 50 pasos (lleva el volumen a 0% exacto)
             for _ in range(50):
                 user32.keybd_event(VK_VOLUME_DOWN, 0, 0, 0)
                 user32.keybd_event(VK_VOLUME_DOWN, 0, KEYEVENTF_KEYUP, 0)
@@ -484,7 +562,6 @@ def extraer_busqueda_prohibida(titulo):
         query = m.group(1).strip()
         if query:
             return query
-    # También detectar si entraron a la portada de Google directamente para buscar
     t_low = t.lower()
     for sufijo in ("google - google chrome", "google - microsoft edge", "google — mozilla firefox", "google - brave", "google - opera"):
         if t_low == sufijo or t_low.startswith("google - microsoft​ edge"):
@@ -536,7 +613,6 @@ def obtener_ventana_activa_y_busqueda():
             from ctypes import wintypes
             user32 = ctypes.windll.user32
 
-            # 1. Leer la ventana en primer plano (lo que el alumno está viendo ahora mismo)
             hwnd_fg = user32.GetForegroundWindow()
             if hwnd_fg:
                 length = user32.GetWindowTextLengthW(hwnd_fg)
@@ -550,7 +626,6 @@ def obtener_ventana_activa_y_busqueda():
                         busqueda_detectada = q
                         busqueda_en_primer_plano = True
 
-            # 2. Si no está en primer plano, revisar otras ventanas abiertas por si tiene Google abierto atrás
             if not busqueda_detectada and vigilancia_google_activa:
                 encontradas = []
                 WNDENUMPROC = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
@@ -575,11 +650,9 @@ def obtener_ventana_activa_y_busqueda():
     alerta_para_enviar = None
     if vigilancia_google_activa and busqueda_detectada:
         ahora = time.time()
-        # Si la pestaña con la búsqueda está activa en primer plano, cerrarla con Ctrl+W
         if busqueda_en_primer_plano:
             cerrar_pestana_activa_windows()
 
-        # Evitar enviar la misma alerta repetida en menos de 12 segundos
         if busqueda_detectada != ultima_busqueda_alertada or (ahora - ultimo_tiempo_alerta) > 12.0:
             ultima_busqueda_alertada = busqueda_detectada
             ultimo_tiempo_alerta = ahora
@@ -675,10 +748,8 @@ def ciclo_comunicacion():
             servidor_docente_url = descubrir_servidor()
 
         try:
-            # Inspeccionar ventana activa y verificar si hay búsqueda no permitida en Google
             ventana_activa, alerta_google = obtener_ventana_activa_y_busqueda()
 
-            # 1. Enviar Ping de presencia + ventana activa + alerta de búsqueda si hubo
             ping_payload = {
                 "id": MACHINE_ID,
                 "hostname": HOSTNAME,
@@ -710,10 +781,8 @@ def ciclo_comunicacion():
             if not conectado_previamente:
                 print(f"  [OK] ¡Conectado exitosamente con el docente! ({servidor_docente_url})", flush=True)
                 print(f"  [OK] Esta PC es: PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(sin número asignado)'}", flush=True)
-                print("  [i] Podés minimizar esta ventana. El control está activo.\n", flush=True)
                 conectado_previamente = True
 
-            # 2. Consultar si hay comandos pendientes
             url_poll = f"{servidor_docente_url}/api/poll?id={urllib.parse.quote(MACHINE_ID)}"
             req_poll = urllib.request.Request(
                 url_poll,
@@ -741,13 +810,11 @@ def mantener_equipo_despierto():
         return
     try:
         import ctypes
-        # ES_CONTINUOUS (0x80000000) | ES_SYSTEM_REQUIRED (0x00000001) | ES_DISPLAY_REQUIRED (0x00000002)
         ctypes.windll.kernel32.SetThreadExecutionState(0x80000003)
     except Exception:
         pass
     try:
         flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
-        # Configurar "No hacer nada" al cerrar la tapa del laptop (corriente y batería) y desactivar suspensión por inactividad
         comandos = [
             ["powercfg", "/setacvalueindex", "SCHEME_CURRENT", "SUB_BUTTONS", "LIDACTION", "0"],
             ["powercfg", "/setdcvalueindex", "SCHEME_CURRENT", "SUB_BUTTONS", "LIDACTION", "0"],
@@ -761,16 +828,29 @@ def mantener_equipo_despierto():
         pass
 
 def main():
-    global tk_root
+    global tk_root, servidor_docente_url
     mantener_equipo_despierto()
-    print("=" * 60, flush=True)
-    print("  COLEGIO PAULO FREIRE — AGENTE DE ALUMNO", flush=True)
-    print("=" * 60, flush=True)
-    print(f"  Equipo:    {HOSTNAME} ({SISTEMA_OPERATIVO})", flush=True)
-    print(f"  ID:        {MACHINE_ID}", flush=True)
-    print(f"  Número:    PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(Sin asignar - podés asignarlo desde el celular o asignar_numero.bat)'}", flush=True)
-    print("=" * 60, flush=True)
-    print("  Iniciando servicio de aula...\n", flush=True)
+
+    # Si se abrió desde iniciar_alumno.bat en Windows (sin --oculto ni --visible),
+    # verificar conexión rápida, lanzar el proceso 100% invisible y cerrar la consola.
+    if SISTEMA_OPERATIVO == "Windows" and not MODO_OCULTO and not MODO_VISIBLE_FORZADO:
+        print("=" * 60, flush=True)
+        print("  COLEGIO PAULO FREIRE — AGENTE DE ALUMNO", flush=True)
+        print("=" * 60, flush=True)
+        print(f"  Equipo:    {HOSTNAME} ({SISTEMA_OPERATIVO})", flush=True)
+        print(f"  Número:    PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(Automático)'}", flush=True)
+        print("=" * 60, flush=True)
+        servidor_docente_url = descubrir_servidor()
+        pid_bg = lanzar_en_segundo_plano_windows()
+        print(f"\n  [OK] ¡Agente activado en MODO INVISIBLE (PID {pid_bg})!", flush=True)
+        print("  [i] Esta ventana se cerrará sola en 2 segundos para que no se vea...", flush=True)
+        time.sleep(1.8)
+        ocultar_consola_windows()
+        sys.exit(0)
+
+    if MODO_OCULTO:
+        guardar_pid_actual()
+        ocultar_consola_windows()
 
     # Inicializar Tkinter de manera segura
     tk_disponible = False

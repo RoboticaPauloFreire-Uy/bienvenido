@@ -6,8 +6,9 @@ echo   INICIANDO AGENTE ALUMNO - COLEGIO PAULO FREIRE
 echo ========================================================
 echo.
 python -u "%~dp0cliente_alumno.py"
+if %ERRORLEVEL% EQU 0 exit
 echo.
 echo ========================================================
-echo   El agente de alumno se ha detenido.
+echo   No se pudo iniciar Python. Verifica que este instalado.
 echo ========================================================
 pause
