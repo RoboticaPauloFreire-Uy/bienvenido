@@ -147,174 +147,548 @@ def limpiar_maquinas_inactivas():
 # ══════════════════════════════════════════════════════════════
 # INTERFAZ GRÁFICA WEB ADAPTADA 100% A CELULARES & ESCRITORIO
 # ══════════════════════════════════════════════════════════════
-DASHBOARD_HTML = """<!DOCTYPE html>
+DASHBOARD_HTML = r"""<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0F172A">
+  <meta name="theme-color" content="#0B1120">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Control de Aula · Paulo Freire</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Special+Elite&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Special+Elite&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0F172A;
+      --bg: #0B1120;
+      --bg-elevated: #111827;
       --card-bg: #1E293B;
+      --card-hover: #26354D;
       --card-border: #334155;
       --primary: #3B82F6;
-      --primary-hover: #2563EB;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      --accent: #38BDF8;
       --success: #10B981;
       --danger: #EF4444;
       --warning: #F59E0B;
+      --purple: #8B5CF6;
       --text: #F8FAFC;
       --text-muted: #94A3B8;
-      --thumb-bar-h: 74px;
+      --thumb-bar-h: 76px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
+      background: radial-gradient(circle at top, #172554 0%, var(--bg) 38%);
       color: var(--text);
       min-height: 100vh;
-      padding: 12px 12px calc(var(--thumb-bar-h) + 24px) 12px;
+      padding: 12px 12px calc(var(--thumb-bar-h) + 28px) 12px;
       user-select: none;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
     }
 
-    /* Header Compacto */
+    /* ══════════════ HEADER SUPERIOR ══════════════ */
     header {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
+      background: rgba(30, 41, 59, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
       padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      margin-bottom: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .brand-icon {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       background: linear-gradient(135deg, #3B82F6, #1D4ED8);
       color: #FFF;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(59,130,246,0.4);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.45);
+      flex-shrink: 0;
     }
 
     .brand-titles h1 {
       font-size: 1.05rem;
       font-weight: 800;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
       line-height: 1.2;
     }
 
-    .brand-titles p {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    .header-actions {
+    .brand-sub {
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+
+    .conn-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .conn-badge.offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FCA5A5;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .dot-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px #10B981;
+    }
+
+    .conn-badge.offline .dot-live {
+      background: #EF4444;
+      box-shadow: 0 0 8px #EF4444;
     }
 
     .btn-qr-modal {
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      border: 1px solid #38BDF8;
+      color: #38BDF8;
+      padding: 9px 13px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-qr-modal:active { transform: scale(0.95); }
+
+    /* ══════════════ TARJETAS DE RESUMEN (KPIs) ══════════════ */
+    .status-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .summary-pill {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .summary-pill:active { transform: scale(0.97); }
+    .summary-pill i {
+      font-size: 1.15rem;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sp-online i { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+    .sp-locked i { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
+    .sp-total i { background: rgba(56, 189, 248, 0.15); color: #38BDF8; }
+
+    .summary-text span {
+      display: block;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .summary-text strong {
+      font-size: 1.2rem;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    /* ══════════════ NAVEGACIÓN POR PESTAÑAS (TABS) ══════════════ */
+    .tabs-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
       background: #0F172A;
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 16px;
+      position: sticky;
+      top: 8px;
+      z-index: 400;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 10px 6px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.18s ease;
+      position: relative;
+    }
+
+    .tab-btn i { font-size: 1.1rem; }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      color: #FFF;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+    }
+
+    .tab-badge {
+      position: absolute;
+      top: 4px;
+      right: 8px;
+      background: #10B981;
+      color: #052E16;
+      font-size: 0.62rem;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 999px;
+      min-width: 17px;
+      text-align: center;
+    }
+
+    .tab-btn.active .tab-badge {
+      background: #FFF;
+      color: #1D4ED8;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.18s ease-out;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════ BARRA DE FILTROS EN PESTAÑA EQUIPOS ══════════════ */
+    .toolbar-equipos {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      background: rgba(56, 189, 248, 0.18);
+      color: #38BDF8;
+      border-color: #38BDF8;
+    }
+
+    .btn-refresh {
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: #38BDF8;
-      padding: 8px 12px;
       border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    /* Estado rápido de máquinas */
-    .status-summary {
-      display: flex;
-      gap: 8px;
+    .btn-refresh:active { transform: scale(0.95); }
+
+    /* ══════════════ TARJETAS DE COMPUTADORAS ══════════════ */
+    .machines-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      gap: 12px;
       margin-bottom: 14px;
     }
 
-    .summary-pill {
-      flex: 1;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 10px;
+    .machine-card {
+      background: linear-gradient(180deg, #1E293B 0%, #172033 100%);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      transition: transform 0.15s, border-color 0.2s;
+    }
+
+    .machine-card.online { border-color: rgba(16, 185, 129, 0.65); }
+    .machine-card.locked {
+      background: linear-gradient(180deg, #2A1219 0%, #1F0D13 100%);
+      border-color: rgba(239, 68, 68, 0.8);
+    }
+    .machine-card.offline { opacity: 0.48; border-color: #334155; }
+
+    .machine-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .machine-title {
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
     }
 
-    .summary-pill i { font-size: 1.2rem; }
-    .sp-online i { color: #10B981; }
-    .sp-locked i { color: #EF4444; }
-
-    .summary-text span {
-      display: block;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 800;
-    }
-
-    .summary-text strong {
-      font-size: 1.15rem;
+    .machine-num-badge {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      color: #FFF;
+      font-size: 1rem;
       font-weight: 900;
-      line-height: 1.1;
-    }
-
-    /* Acciones Rápidas del Docente */
-    .section-title {
-      font-size: 0.8rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin: 16px 0 8px 4px;
+      border-radius: 11px;
       display: flex;
       align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(2,132,199,0.4);
+      flex-shrink: 0;
+    }
+
+    .machine-card.locked .machine-num-badge {
+      background: linear-gradient(135deg, #DC2626, #991B1B);
+      box-shadow: 0 3px 10px rgba(220,38,38,0.4);
+    }
+
+    .machine-title h3 { font-size: 0.98rem; font-weight: 800; color: #FFF; }
+    .machine-title p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-renumber {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--card-border);
+      color: #94A3B8;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      transition: all 0.15s;
+    }
+
+    .btn-renumber:hover, .btn-renumber:active { color: #38BDF8; border-color: #38BDF8; }
+
+    .status-pill {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .pill-online { background: rgba(6, 78, 59, 0.85); color: #6EE7B7; border: 1px solid #059669; }
+    .pill-locked { background: rgba(127, 29, 29, 0.85); color: #FCA5A5; border: 1px solid #DC2626; }
+    .pill-offline { background: #334155; color: #94A3B8; }
+
+    .machine-actions {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr auto;
       gap: 6px;
     }
 
-    /* Cuadrícula de Proyectos Web (Botones Grandes y Táctiles) */
+    .mini-btn {
+      padding: 9px 8px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      border-radius: 8px;
+      border: none;
+      color: #FFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: transform 0.12s;
+    }
+
+    .mini-btn:active { transform: scale(0.95); }
+    .mb-lock { background: linear-gradient(135deg, #EF4444, #DC2626); }
+    .mb-unlock { background: linear-gradient(135deg, #10B981, #059669); }
+    .mb-msg { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    .mb-more { background: #334155; padding: 9px 12px; }
+
+    .empty-state {
+      background: rgba(30, 41, 59, 0.55);
+      border: 1.5px dashed var(--card-border);
+      border-radius: 16px;
+      padding: 34px 20px;
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+      font-size: 2.3rem;
+      color: #38BDF8;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+
+    .empty-state h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .empty-state p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.45;
+    }
+
+    /* ══════════════ PESTAÑA HERRAMIENTAS & PROYECTOS ══════════════ */
+    .section-card {
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-size: 0.84rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #E2E8F0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title i { color: #38BDF8; }
+
+    .target-selector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .target-selector select {
+      background: #0F172A;
+      color: #38BDF8;
+      border: 1px solid #38BDF8;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 800;
+      outline: none;
+    }
+
     .project-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-      gap: 8px;
-      margin-bottom: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
     }
 
     .proj-btn {
-      background: var(--card-bg);
+      background: linear-gradient(180deg, #1E293B, #151E2E);
       border: 1.5px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px 10px;
+      border-radius: 14px;
+      padding: 16px 12px;
       color: #FFF;
       font-family: inherit;
       cursor: pointer;
@@ -322,39 +696,34 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      min-height: 70px;
+      gap: 8px;
+      min-height: 92px;
       transition: all 0.16s ease;
       touch-action: manipulation;
+      text-align: center;
     }
 
-    .proj-btn:active {
-      transform: scale(0.95);
-      background: #334155;
-    }
-
-    .proj-btn i { font-size: 1.4rem; }
-    .proj-btn span { font-size: 0.82rem; font-weight: 800; text-align: center; }
+    .proj-btn:hover { border-color: #475569; background: var(--card-hover); }
+    .proj-btn:active { transform: scale(0.95); }
+    .proj-btn i { font-size: 1.65rem; }
+    .proj-btn span { font-size: 0.86rem; font-weight: 800; }
+    .proj-btn small { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
 
     /* Barra de Enlace Libre */
     .custom-url-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 10px 12px;
       display: flex;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-top: 8px;
     }
 
     .custom-url-box input {
       flex: 1;
       background: #0F172A;
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px 12px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 14px;
       color: #FFF;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-family: inherit;
       outline: none;
     }
@@ -362,170 +731,126 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     .custom-url-box input:focus { border-color: var(--primary); }
 
     .custom-url-box button {
-      background: var(--primary);
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
       color: #FFF;
       border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
+      border-radius: 10px;
+      padding: 12px 18px;
       font-weight: 800;
       font-size: 0.88rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
 
     .custom-url-box button:active { transform: scale(0.95); }
 
-    /* Acciones Auxiliares */
-    .aux-actions-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
+    /* ══════════════ PESTAÑA JUEGOS OFFLINE ══════════════ */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
     }
 
-    .aux-btn {
-      flex: 1;
-      background: #1E293B;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 12px 10px;
+    .game-card {
+      border-radius: 16px;
+      padding: 20px;
       color: #FFF;
-      font-size: 0.8rem;
-      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      gap: 16px;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      transition: transform 0.15s;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
     }
 
-    .aux-btn:active { transform: scale(0.96); background: #334155; }
-    .aux-btn i { font-size: 1rem; }
+    .game-card:active { transform: scale(0.97); }
+    .game-surf { background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); }
+    .game-dino { background: linear-gradient(135deg, #334155 0%, #1E293B 100%); }
 
-    /* Lista de Máquinas de Alumnos */
-    .machines-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .machine-card {
-      background: var(--card-bg);
-      border: 1.5px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .machine-card.online { border-color: #10B981; }
-    .machine-card.locked { background: #26161C; border-color: #EF4444; }
-    .machine-card.offline { opacity: 0.45; border-color: #475569; }
-
-    .machine-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .machine-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-        .machine-num-badge {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #0284C7, #0369A1);
-      color: #FFF;
-      font-size: 0.95rem;
-      font-weight: 900;
-      border-radius: 9px;
+    .game-icon {
+      font-size: 2.4rem;
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px rgba(2,132,199,0.4);
       flex-shrink: 0;
     }
 
-    .machine-card.locked .machine-num-badge {
-      background: linear-gradient(135deg, #DC2626, #991B1B);
-      box-shadow: 0 2px 6px rgba(220,38,38,0.4);
+    .game-info h4 { font-size: 1.05rem; font-weight: 900; margin-bottom: 4px; }
+    .game-info p { font-size: 0.76rem; opacity: 0.88; line-height: 1.35; }
+
+    /* ══════════════ PESTAÑA AULA & MENSAJES RÁPIDOS ══════════════ */
+    .preset-msgs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .btn-renumber {
+    .preset-msg-btn {
       background: #0F172A;
       border: 1px solid var(--card-border);
-      color: #94A3B8;
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.72rem;
-    }
-
-    .btn-renumber:hover { color: #38BDF8; border-color: #38BDF8; }
-
-    .mb-more { background: #475569; }
-
-    .machine-title i { font-size: 1.15rem; color: #38BDF8; }
-    .machine-title h3 { font-size: 0.92rem; font-weight: 800; }
-    .machine-title p { font-size: 0.72rem; color: var(--text-muted); }
-
-    .status-pill {
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 999px;
-    }
-
-    .pill-online { background: #064E3B; color: #6EE7B7; border: 1px solid #059669; }
-    .pill-locked { background: #7F1D1D; color: #FCA5A5; border: 1px solid #DC2626; }
-    .pill-offline { background: #334155; color: #94A3B8; }
-
-    .machine-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .mini-btn {
-      flex: 1;
-      padding: 8px 6px;
-      font-size: 0.74rem;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #F8FAFC;
+      font-family: inherit;
+      font-size: 0.82rem;
       font-weight: 700;
-      border-radius: 6px;
-      border: none;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s;
+    }
+
+    .preset-msg-btn:hover { border-color: #F59E0B; background: rgba(245, 158, 11, 0.08); }
+    .preset-msg-btn:active { transform: scale(0.97); }
+    .preset-msg-btn i { color: #F59E0B; font-size: 1.05rem; flex-shrink: 0; }
+
+    .aux-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+
+    .aux-btn {
+      background: #0F172A;
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 12px;
       color: #FFF;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 8px;
+      transition: all 0.15s;
     }
 
-    .mb-lock { background: #EF4444; }
-    .mb-unlock { background: #10B981; }
-    .mb-msg { background: #F59E0B; }
+    .aux-btn:active { transform: scale(0.96); }
 
-    /* ══════════════════════════════════════════════════════════════
-       BARRA TÁCTIL FIJA PARA EL PULGAR (THUMB BAR)
-       Diseñada especialmente para controlar el aula con una mano desde el celular
-       ══════════════════════════════════════════════════════════════ */
+    /* ══════════════ BARRA TÁCTIL FIJA INFERIOR ══════════════ */
     .thumb-control-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: var(--thumb-bar-h);
-      background: rgba(15, 23, 42, 0.94);
+      background: rgba(11, 17, 32, 0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-top: 1.5px solid #334155;
@@ -535,7 +860,14 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       gap: 10px;
       padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)) 14px;
       z-index: 500;
-      box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.55);
+    }
+
+    .thumb-bar-inner {
+      width: 100%;
+      max-width: 1120px;
+      display: flex;
+      gap: 10px;
     }
 
     .thumb-btn {
@@ -545,7 +877,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       border-radius: 12px;
       color: #FFF;
       font-family: inherit;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 900;
       cursor: pointer;
       display: flex;
@@ -557,29 +889,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       touch-action: manipulation;
     }
 
-    .thumb-btn:active {
-      transform: scale(0.95);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-    }
+    .thumb-btn:active { transform: scale(0.95); }
+    .thumb-lock { background: linear-gradient(135deg, #EF4444, #B91C1C); border: 1px solid #F87171; }
+    .thumb-msg { flex: 0.65; background: #1E293B; border: 1px solid #475569; color: #F8FAFC; }
+    .thumb-unlock { background: linear-gradient(135deg, #10B981, #047857); border: 1px solid #34D399; }
 
-    .thumb-lock {
-      background: linear-gradient(135deg, #EF4444, #B91C1C);
-      border: 1px solid #F87171;
-    }
-
-    .thumb-msg {
-      flex: 0.6;
-      background: #334155;
-      border: 1px solid #475569;
-      color: #F8FAFC;
-    }
-
-    .thumb-unlock {
-      background: linear-gradient(135deg, #10B981, #047857);
-      border: 1px solid #34D399;
-    }
-
-    /* Modales */
+    /* ══════════════ MODALES ══════════════ */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -597,22 +912,22 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     .modal-box {
       background: #1E293B;
       border: 1.5px solid var(--primary);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 20px;
       width: 100%;
       max-width: 440px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.6);
     }
 
-    .modal-box h3 { font-size: 1.15rem; margin-bottom: 6px; }
+    .modal-box h3 { font-size: 1.12rem; margin-bottom: 6px; }
     .modal-box p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; }
 
     .modal-box textarea {
       width: 100%;
-      height: 85px;
+      height: 88px;
       background: #0F172A;
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 10px;
       color: #FFF;
       font-family: inherit;
@@ -636,21 +951,17 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       border-radius: 8px;
       border: none;
       cursor: pointer;
+      font-family: inherit;
     }
 
     .mbtn-cancel { background: #475569; color: #FFF; }
     .mbtn-send { background: var(--primary); color: #FFF; }
 
-    /* Modal QR */
-    .qr-container {
-      text-align: center;
-      padding: 10px 0;
-    }
-
+    .qr-container { text-align: center; padding: 10px 0; }
     .qr-container img {
       width: 220px;
       height: 220px;
-      border-radius: 10px;
+      border-radius: 12px;
       background: #FFF;
       padding: 8px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.4);
@@ -664,7 +975,6 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       word-break: break-all;
     }
 
-    /* Toast */
     #toast {
       position: fixed;
       top: 14px;
@@ -672,11 +982,11 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       transform: translateX(-50%);
       background: #10B981;
       color: #FFF;
-      padding: 8px 18px;
+      padding: 9px 20px;
       border-radius: 999px;
       font-weight: 800;
-      font-size: 0.85rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      font-size: 0.84rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
       display: none;
       z-index: 2000;
       white-space: nowrap;
@@ -685,121 +995,260 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 </head>
 <body>
   <div class="container">
-    <!-- Encabezado -->
+    <!-- Encabezado Superior -->
     <header>
       <div class="brand">
         <div class="brand-icon"><i class="fas fa-robot"></i></div>
         <div class="brand-titles">
           <h1>Control de Aula Maker</h1>
-          <p>Colegio Paulo Freire</p>
+          <div class="brand-sub">
+            <span style="font-size:0.74rem;color:var(--text-muted);font-weight:600;">Colegio Paulo Freire</span>
+            <span class="conn-badge" id="conn-badge">
+              <span class="dot-live"></span>
+              <span id="conn-text">En línea</span>
+            </span>
+          </div>
         </div>
       </div>
       <div class="header-actions">
         <button class="btn-qr-modal" onclick="abrirModalQR()" title="Ver código QR para celular">
-          <i class="fas fa-qrcode"></i> <span>QR Celular</span>
+          <i class="fas fa-qrcode"></i> <span>Conectar Celular</span>
         </button>
       </div>
     </header>
 
-    <!-- Resumen de Estado -->
+    <!-- KPIs de Resumen Rápido -->
     <div class="status-summary">
-      <div class="summary-pill sp-online">
-        <i class="fas fa-desktop"></i>
+      <div class="summary-pill sp-online" onclick="cambiarTab('equipos'); filtrarEquipos('online');">
+        <i class="fas fa-signal"></i>
         <div class="summary-text">
           <span>En Línea</span>
           <strong id="stat-online">0</strong>
         </div>
       </div>
-      <div class="summary-pill sp-locked">
+      <div class="summary-pill sp-locked" onclick="cambiarTab('equipos'); filtrarEquipos('locked');">
         <i class="fas fa-lock"></i>
         <div class="summary-text">
           <span>Bloqueadas</span>
           <strong id="stat-locked">0</strong>
         </div>
       </div>
+      <div class="summary-pill sp-total" onclick="cambiarTab('equipos'); filtrarEquipos('all');">
+        <i class="fas fa-laptop-code"></i>
+        <div class="summary-text">
+          <span>Total PCs</span>
+          <strong id="stat-total">0</strong>
+        </div>
+      </div>
     </div>
 
-    <!-- Lanzador de Proyectos en 1 Clic -->
-    <div class="section-title"><i class="fas fa-rocket"></i> Abrir en Todo el Taller</div>
-    <div class="project-grid">
-      <button class="proj-btn" onclick="lanzarUrl('https://roboticapaulofreire-uy.github.io/bienvenido/')">
-        <i class="fas fa-newspaper" style="color:#F59E0B;"></i>
-        <span>El Diario</span>
+    <!-- Barra de Pestañas (Tabs) -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" id="tabbtn-equipos" onclick="cambiarTab('equipos')">
+        <i class="fas fa-desktop"></i>
+        <span>Equipos</span>
+        <span class="tab-badge" id="badge-equipos">0</span>
       </button>
-      <button class="proj-btn" onclick="lanzarUrl('https://scratch.mit.edu/projects/editor/')">
-        <i class="fas fa-cat" style="color:#F97316;"></i>
-        <span>Scratch</span>
+      <button class="tab-btn" id="tabbtn-herramientas" onclick="cambiarTab('herramientas')">
+        <i class="fas fa-rocket"></i>
+        <span>Web & Apps</span>
       </button>
-      <button class="proj-btn" onclick="lanzarUrl('https://makecode.microbit.org/')">
-        <i class="fas fa-microchip" style="color:#10B981;"></i>
-        <span>MakeCode</span>
+      <button class="tab-btn" id="tabbtn-juegos" onclick="cambiarTab('juegos')">
+        <i class="fas fa-gamepad"></i>
+        <span>Recreo</span>
       </button>
-      <button class="proj-btn" onclick="lanzarUrl('https://www.paperme.de/paperme/default/')">
-        <i class="fas fa-cube" style="color:#EA580C;"></i>
-        <span>PaperMe</span>
+      <button class="tab-btn" id="tabbtn-aula" onclick="cambiarTab('aula')">
+        <i class="fas fa-bullhorn"></i>
+        <span>Avisos & Aula</span>
       </button>
-      <button class="proj-btn" onclick="lanzarUrl('https://sketch.metademolab.com/canvas')">
-        <i class="fas fa-running" style="color:#3B82F6;"></i>
-        <span>Animated</span>
-      </button>
-      <button class="proj-btn" onclick="lanzarUrl('https://www.canva.com')">
-        <i class="fas fa-palette" style="color:#8B5CF6;"></i>
-        <span>Canva</span>
-      </button>
-    </div>
+    </nav>
 
-    <!-- Pegar cualquier URL -->
-    <div class="custom-url-box">
-      <input type="url" id="inp-custom-url" placeholder="Pegá cualquier enlace web acá...">
-      <button onclick="lanzarUrlPersonalizada()"><i class="fas fa-paper-plane"></i> Abrir</button>
-    </div>
+    <!-- ═══════════════════════════════════════════════════════════
+         PESTAÑA 1: EQUIPOS CONECTADOS
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="tab-panel active" id="panel-equipos">
+      <div class="toolbar-equipos">
+        <div class="filter-pills">
+          <button class="filter-btn active" id="flt-all" onclick="filtrarEquipos('all')">Todas</button>
+          <button class="filter-btn" id="flt-online" onclick="filtrarEquipos('online')">🟢 Activas</button>
+          <button class="filter-btn" id="flt-locked" onclick="filtrarEquipos('locked')">🔒 Bloqueadas</button>
+        </div>
+        <button class="btn-refresh" onclick="cargarEstado(true)">
+          <i class="fas fa-sync-alt"></i> Actualizar
+        </button>
+      </div>
 
-    <!-- Juegos Offline Integrados (100% Sin Internet) -->
-    <div class="section-title"><i class="fas fa-gamepad"></i> Recreo / Juegos Offline (Sin Internet)</div>
-    <div class="project-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 14px;">
-      <button class="proj-btn" style="background: linear-gradient(135deg, #0284C7, #0369A1); border-color: #38BDF8;" onclick="lanzarJuego('surf')">
-        <i class="fas fa-water" style="color:#FFF;"></i>
-        <span>🏄‍♂️ Surf (Edge)</span>
-      </button>
-      <button class="proj-btn" style="background: linear-gradient(135deg, #475569, #334155); border-color: #94A3B8;" onclick="lanzarJuego('dino')">
-        <i class="fas fa-dragon" style="color:#FBBF24;"></i>
-        <span>🦖 Dinosaurio (Chrome)</span>
-      </button>
-    </div>
+      <div class="machines-grid" id="machines-container">
+        <div class="empty-state">
+          <i class="fas fa-satellite-dish"></i>
+          <h4>Esperando computadoras del taller...</h4>
+          <p>Ejecutá <strong>iniciar_alumno.bat</strong> en las máquinas de los alumnos y aparecerán aquí automáticamente.</p>
+        </div>
+      </div>
+    </section>
 
-    <!-- Acciones Rápidas Auxiliares -->
-    <div class="aux-actions-row">
-      <button class="aux-btn" onclick="enviarComando('all', 'mute')">
-        <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar Aula
-      </button>
-      <button class="aux-btn" onclick="confirmarApagado()">
-        <i class="fas fa-power-off" style="color:#EF4444;"></i> Apagar Todas
-      </button>
-    </div>
+    <!-- ═══════════════════════════════════════════════════════════
+         PESTAÑA 2: HERRAMIENTAS & PLATAFORMAS WEB
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-herramientas">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-compass"></i> Plataformas del Taller</div>
+          <div class="target-selector">
+            <span>Abrir en:</span>
+            <select id="web-target-select">
+              <option value="all">🌍 Todas las PCs</option>
+            </select>
+          </div>
+        </div>
 
-    <!-- Computadoras de Alumnos Conectadas -->
-    <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
-      <span><i class="fas fa-laptop-code"></i> Alumnos Conectados (<span id="stat-total">0</span>)</span>
-      <button onclick="cargarEstado()" style="background:#1E293B;border:1px solid #334155;color:#38BDF8;border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;"><i class="fas fa-sync-alt"></i> Actualizar</button>
-    </div>
-    <div class="machines-grid" id="machines-container">
-      <p style="color:var(--text-muted);font-size:0.85rem;padding:10px 4px;">Esperando que las computadoras del taller se enciendan...</p>
-    </div>
+        <div class="project-grid">
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://roboticapaulofreire-uy.github.io/bienvenido/')">
+            <i class="fas fa-newspaper" style="color:#F59E0B;"></i>
+            <span>El Diario</span>
+            <small>Portal del Taller</small>
+          </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://scratch.mit.edu/projects/editor/')">
+            <i class="fas fa-cat" style="color:#F97316;"></i>
+            <span>Scratch</span>
+            <small>Bloques & Juegos</small>
+          </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://makecode.microbit.org/')">
+            <i class="fas fa-microchip" style="color:#10B981;"></i>
+            <span>MakeCode</span>
+            <small>Placa micro:bit</small>
+          </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://www.paperme.de/paperme/default/')">
+            <i class="fas fa-cube" style="color:#EA580C;"></i>
+            <span>PaperMe</span>
+            <small>Avatar Papercraft</small>
+          </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://sketch.metademolab.com/canvas')">
+            <i class="fas fa-running" style="color:#3B82F6;"></i>
+            <span>Animated</span>
+            <small>Animar Dibujos</small>
+          </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://www.tinkercad.com/')">
+            <i class="fas fa-cubes" style="color:#06B6D4;"></i>
+            <span>Tinkercad</span>
+            <small>3D & Arduino</small>
+          </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://www.canva.com')">
+            <i class="fas fa-palette" style="color:#8B5CF6;"></i>
+            <span>Canva</span>
+            <small>Diseño & Pósters</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-globe"></i> Enviar Cualquier Dirección Web</div>
+        </div>
+        <div class="custom-url-box">
+          <input type="url" id="inp-custom-url" placeholder="Pegá o escribí un enlace (ej: wikipedia.org)...">
+          <button onclick="lanzarUrlPersonalizada()"><i class="fas fa-paper-plane"></i> Abrir</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PESTAÑA 3: RECREO & JUEGOS SIN INTERNET
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-juegos">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-gamepad"></i> Juegos Nativos (Funcionan con o sin Internet)</div>
+          <div class="target-selector">
+            <span>Lanzar en:</span>
+            <select id="game-target-select">
+              <option value="all">🌍 Todas las PCs</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="games-grid">
+          <button class="game-card game-surf" onclick="lanzarJuegoSeleccion('surf')">
+            <div class="game-icon">🏄‍♂️</div>
+            <div class="game-info">
+              <h4>Surf en Microsoft Edge</h4>
+              <p>Abre <strong>edge://surf</strong> al instante en pantalla (carreras de olas, obstáculos y pulpo).</p>
+            </div>
+          </button>
+
+          <button class="game-card game-dino" onclick="lanzarJuegoSeleccion('dino')">
+            <div class="game-icon">🦖</div>
+            <div class="game-info">
+              <h4>Dinosaurio en Chrome</h4>
+              <p>Abre <strong>chrome://dino</strong> al instante para saltar cactus offline.</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PESTAÑA 4: AVISOS RÁPIDOS & CONTROL DEL AULA
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-aula">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-bolt"></i> Avisos Instantáneos en 1 Toque</div>
+        </div>
+        <div class="preset-msgs-grid">
+          <button class="preset-msg-btn" onclick="enviarComando('all', 'message', {texto: '👀 ¡Atención al pizarrón por favor! Soltamos el mouse un momento.'})">
+            <i class="fas fa-eye"></i>
+            <span>👀 ¡Atención al pizarrón por favor!</span>
+          </button>
+          <button class="preset-msg-btn" onclick="enviarComando('all', 'message', {texto: '⏳ ¡Quedan 5 minutos! Vayan guardando su proyecto y ordenando los componentes del kit.'})">
+            <i class="fas fa-hourglass-half"></i>
+            <span>⏳ Quedan 5 min (Guardar y ordenar kit)</span>
+          </button>
+          <button class="preset-msg-btn" onclick="enviarComando('all', 'message', {texto: '💾 ¡Importante! Recuerden guardar los avances de su proyecto ahora.'})">
+            <i class="fas fa-save"></i>
+            <span>💾 ¡Recuerden guardar su trabajo ahora!</span>
+          </button>
+          <button class="preset-msg-btn" onclick="enviarComando('all', 'message', {texto: '🔉 Bajemos un poquito el volumen de voz para escucharnos todos en el taller.'})">
+            <i class="fas fa-volume-down"></i>
+            <span>🔉 Bajemos el volumen de charla</span>
+          </button>
+        </div>
+        <button class="aux-btn" style="width:100%;border-color:#F59E0B;color:#FBBF24;" onclick="abrirModalMensaje('all')">
+          <i class="fas fa-pen"></i> Escribir un Aviso Personalizado...
+        </button>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-sliders-h"></i> Controles Generales de Sala</div>
+        </div>
+        <div class="aux-actions-grid">
+          <button class="aux-btn" onclick="enviarComando('all', 'mute')">
+            <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar Audio del Aula
+          </button>
+          <button class="aux-btn" onclick="confirmarApagado()" style="border-color:rgba(239,68,68,0.4);">
+            <i class="fas fa-power-off" style="color:#EF4444;"></i> Apagar Todas las PCs
+          </button>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════
        BARRA FIJA INFERIOR PARA CONTROLAR CON EL PULGAR DESDE EL CELULAR
        ══════════════════════════════════════════════════════════════ -->
   <div class="thumb-control-bar">
-    <button class="thumb-btn thumb-lock" onclick="enviarComandoConVibracion('all', 'lock')">
-      <i class="fas fa-lock"></i> BLOQUEAR
-    </button>
-    <button class="thumb-btn thumb-msg" onclick="abrirModalMensaje('all')">
-      <i class="fas fa-comment-dots"></i> AVISO
-    </button>
-    <button class="thumb-btn thumb-unlock" onclick="enviarComandoConVibracion('all', 'unlock')">
-      <i class="fas fa-lock-open"></i> DESBLOQUEAR
-    </button>
+    <div class="thumb-bar-inner">
+      <button class="thumb-btn thumb-lock" onclick="enviarComandoConVibracion('all', 'lock')">
+        <i class="fas fa-lock"></i> BLOQUEAR
+      </button>
+      <button class="thumb-btn thumb-msg" onclick="abrirModalMensaje('all')">
+        <i class="fas fa-comment-dots"></i> AVISO
+      </button>
+      <button class="thumb-btn thumb-unlock" onclick="enviarComandoConVibracion('all', 'unlock')">
+        <i class="fas fa-lock-open"></i> DESBLOQUEAR
+      </button>
+    </div>
   </div>
 
   <!-- Modal Asignar / Cambiar Número de Máquina -->
@@ -807,7 +1256,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     <div class="modal-box">
       <h3>🔢 Asignar Número a esta Computadora</h3>
       <p id="modal-renumber-info">Máquina seleccionada</p>
-      <input type="number" id="inp-new-number" min="1" max="99" style="width:100%;background:#0F172A;border:1.5px solid var(--primary);border-radius:8px;padding:12px;font-size:1.3rem;font-weight:900;color:#FFF;text-align:center;margin-bottom:14px;outline:none;" placeholder="Ej: 1, 2, 3...">
+      <input type="number" id="inp-new-number" min="1" max="99" style="width:100%;background:#0F172A;border:1.5px solid var(--primary);border-radius:10px;padding:12px;font-size:1.3rem;font-weight:900;color:#FFF;text-align:center;margin-bottom:14px;outline:none;" placeholder="Ej: 1, 2, 3...">
       <div class="modal-btns">
         <button class="mbtn-cancel" onclick="cerrarModalRenombrar()">Cancelar</button>
         <button class="mbtn-send" onclick="guardarNuevoNumero()">Guardar Número</button>
@@ -822,10 +1271,13 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       <p>Acciones exclusivas para esta computadora:</p>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
         <button class="aux-btn" style="background:#0284C7;border-color:#38BDF8;padding:12px;" onclick="enviarAccionIndividual('launch_game', {game:'surf'})">
-          <i class="fas fa-water"></i> Abrir Surf (Edge) solo a esta PC
+          <i class="fas fa-water"></i> Abrir Surf (Edge) solo en esta PC
         </button>
         <button class="aux-btn" style="background:#475569;border-color:#94A3B8;padding:12px;" onclick="enviarAccionIndividual('launch_game', {game:'dino'})">
-          <i class="fas fa-dragon" style="color:#FBBF24;"></i> Abrir Dino (Chrome) solo a esta PC
+          <i class="fas fa-dragon" style="color:#FBBF24;"></i> Abrir Dino (Chrome) solo en esta PC
+        </button>
+        <button class="aux-btn" style="background:#1E293B;border-color:#3B82F6;padding:12px;" onclick="enviarAccionIndividual('open_url', {url:'https://roboticapaulofreire-uy.github.io/bienvenido/'})">
+          <i class="fas fa-newspaper" style="color:#F59E0B;"></i> Abrir El Diario solo en esta PC
         </button>
         <button class="aux-btn" style="background:#334155;padding:12px;" onclick="enviarAccionIndividual('mute', {})">
           <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar solo esta PC
@@ -875,6 +1327,27 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     var renumberTargetId = null;
     var indivTargetId = null;
     var indivTargetNum = null;
+    var activeFilter = 'all';
+    var lastMachinesList = [];
+
+    function cambiarTab(tabName) {
+      var tabs = ['equipos', 'herramientas', 'juegos', 'aula'];
+      for (var i = 0; i < tabs.length; i++) {
+        var t = tabs[i];
+        var btn = document.getElementById('tabbtn-' + t);
+        var panel = document.getElementById('panel-' + t);
+        if (btn) btn.classList.toggle('active', t === tabName);
+        if (panel) panel.classList.toggle('active', t === tabName);
+      }
+    }
+
+    function filtrarEquipos(filtro) {
+      activeFilter = filtro;
+      document.getElementById('flt-all').classList.toggle('active', filtro === 'all');
+      document.getElementById('flt-online').classList.toggle('active', filtro === 'online');
+      document.getElementById('flt-locked').classList.toggle('active', filtro === 'locked');
+      renderizarEquipos(lastMachinesList);
+    }
 
     function abrirModalRenombrar(id, currentNum) {
       renumberTargetId = id;
@@ -902,7 +1375,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         cerrarModalRenombrar();
         cargarEstado();
       })
-      .catch(function(err) {
+      .catch(function() {
         toast('Error guardando número', '#EF4444');
       });
     }
@@ -924,7 +1397,6 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       cerrarModalIndividual();
     }
 
-
     function vibrar() {
       if (window.navigator && window.navigator.vibrate) {
         window.navigator.vibrate(60);
@@ -936,7 +1408,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       t.textContent = txt;
       t.style.background = color || '#10B981';
       t.style.display = 'block';
-      setTimeout(function() { t.style.display = 'none'; }, 2000);
+      setTimeout(function() { t.style.display = 'none'; }, 2200);
     }
 
     function enviarComando(target, action, params) {
@@ -952,12 +1424,12 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         return r.json();
       })
       .then(function() {
-        toast('¡Enviado: ' + action.toUpperCase() + '!', '#10B981');
+        toast('¡Listo: ' + action.toUpperCase() + '!', '#10B981');
         setTimeout(cargarEstado, 300);
       })
       .catch(function(err) {
         toast('Error de conexión', '#EF4444');
-        alert('No se pudo comunicar con la PC docente (' + err.message + '). Verificá que tu celular esté conectado a la misma red Wi-Fi del aula y no a datos móviles.');
+        alert('No se pudo comunicar con la PC docente (' + err.message + '). Verificá que tu celular esté conectado a la misma red Wi-Fi del aula.');
       });
     }
 
@@ -968,15 +1440,16 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       enviarComando(target, action, params);
     }
 
-    function lanzarJuego(game) {
-      vibrar();
-      var label = game === 'surf' ? 'Juego Surf (Edge)' : 'Juego Dinosaurio (Chrome)';
-      toast('Lanzando ' + label);
-      enviarComando('all', 'launch_game', { game: game });
+    function lanzarJuegoSeleccion(game) {
+      var sel = document.getElementById('game-target-select');
+      var target = sel ? sel.value : 'all';
+      enviarComando(target, 'launch_game', { game: game });
     }
 
-    function lanzarUrl(url) {
-      enviarComando('all', 'open_url', { url: url });
+    function lanzarUrlSeleccion(url) {
+      var sel = document.getElementById('web-target-select');
+      var target = sel ? sel.value : 'all';
+      enviarComando(target, 'open_url', { url: url });
     }
 
     function lanzarUrlPersonalizada() {
@@ -986,8 +1459,8 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         alert('Ingresá una dirección web (ej: wikipedia.org)');
         return;
       }
-      if (!/^https?:\\/\\//i.test(val)) val = 'https://' + val;
-      lanzarUrl(val);
+      if (!/^https?:\/\//i.test(val)) val = 'https://' + val;
+      lanzarUrlSeleccion(val);
       inp.value = '';
     }
 
@@ -1024,17 +1497,110 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       }
     }
 
-    function cargarEstado() {
+    function actualizarSelectoresDestino(maquinas) {
+      var ids = ['web-target-select', 'game-target-select'];
+      for (var k = 0; k < ids.length; k++) {
+        var sel = document.getElementById(ids[k]);
+        if (!sel) continue;
+        var currentVal = sel.value || 'all';
+        var html = '<option value="all">🌍 Todas las PCs (' + maquinas.length + ')</option>';
+        for (var i = 0; i < maquinas.length; i++) {
+          var m = maquinas[i];
+          var nStr = m.number ? String(m.number) : '?';
+          var padNum = nStr.length === 1 ? '0' + nStr : nStr;
+          html += '<option value="' + m.id + '">💻 PC ' + padNum + ' (' + m.hostname + ')</option>';
+        }
+        sel.innerHTML = html;
+        sel.value = currentVal;
+        if (!sel.value) sel.value = 'all';
+      }
+    }
+
+    function renderizarEquipos(maquinas) {
+      var cont = document.getElementById('machines-container');
+      var filtradas = maquinas.filter(function(m) {
+        if (activeFilter === 'online') return m.online;
+        if (activeFilter === 'locked') return m.locked;
+        return true;
+      });
+
+      if (!filtradas.length) {
+        if (!maquinas.length) {
+          cont.innerHTML = '<div class="empty-state">' +
+            '<i class="fas fa-satellite-dish"></i>' +
+            '<h4>Esperando computadoras del taller...</h4>' +
+            '<p>Ejecutá <strong>iniciar_alumno.bat</strong> en las máquinas de los alumnos y aparecerán aquí automáticamente.</p>' +
+          '</div>';
+        } else {
+          cont.innerHTML = '<div class="empty-state">' +
+            '<i class="fas fa-filter"></i>' +
+            '<h4>No hay equipos en este filtro</h4>' +
+            '<p>Tocá "Todas" arriba para ver el listado completo de computadoras.</p>' +
+          '</div>';
+        }
+        return;
+      }
+
+      cont.innerHTML = filtradas.map(function(m) {
+        var stateClass = !m.online ? 'offline' : (m.locked ? 'locked' : 'online');
+        var pillHtml = !m.online
+          ? '<span class="status-pill pill-offline">Desconectada</span>'
+          : (m.locked ? '<span class="status-pill pill-locked">🔒 Bloqueada</span>' : '<span class="status-pill pill-online">🟢 En línea</span>');
+
+        var nStr = m.number ? String(m.number) : '?';
+        var padNum = nStr.length === 1 ? '0' + nStr : nStr;
+
+        return '<div class="machine-card ' + stateClass + '">' +
+          '<div class="machine-head">' +
+            '<div class="machine-title">' +
+              '<div class="machine-num-badge">#' + padNum + '</div>' +
+              '<div>' +
+                '<h3>PC ' + padNum + '</h3>' +
+                '<p>' + m.ip + ' · ' + m.hostname + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px;">' +
+              pillHtml +
+              '<button class="btn-renumber" onclick="abrirModalRenombrar(\'' + m.id + '\', \'' + padNum + '\')" title="Cambiar número de esta PC"><i class="fas fa-pen"></i></button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="machine-actions">' +
+            (m.locked
+              ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\'' + m.id + '\', \'unlock\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
+              : '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + m.id + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>') +
+            '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\'' + m.id + '\')"><i class="fas fa-comment"></i> Aviso</button>' +
+            '<button class="mini-btn mb-more" onclick="abrirModalIndividual(\'' + m.id + '\', \'' + padNum + '\')" title="Más acciones"><i class="fas fa-ellipsis-v"></i></button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function cargarEstado(manual) {
+      if (manual) toast('Actualizando equipos...', '#3B82F6');
       fetch('/api/status?t=' + Date.now(), { cache: 'no-store' })
         .then(function(r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
           return r.json();
         })
         .then(function(data) {
+          var badge = document.getElementById('conn-badge');
+          var txt = document.getElementById('conn-text');
+          if (badge && txt) {
+            badge.classList.remove('offline');
+            txt.textContent = 'Activo · ' + (data.ip || '');
+          }
+
           var maquinas = data.maquinas || [];
+          maquinas.sort(function(a, b) {
+            var na = parseInt(a.number) || 999;
+            var nb = parseInt(b.number) || 999;
+            return na - nb;
+          });
+
+          lastMachinesList = maquinas;
+
           var onlineCount = 0;
           var lockedCount = 0;
-
           maquinas.forEach(function(m) {
             if (m.online) onlineCount++;
             if (m.locked) lockedCount++;
@@ -1043,54 +1609,19 @@ DASHBOARD_HTML = """<!DOCTYPE html>
           document.getElementById('stat-online').textContent = onlineCount;
           document.getElementById('stat-locked').textContent = lockedCount;
           document.getElementById('stat-total').textContent = maquinas.length;
+          document.getElementById('badge-equipos').textContent = onlineCount;
 
-          var cont = document.getElementById('machines-container');
-          if (!maquinas.length) {
-            cont.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;padding:10px 4px;">Esperando que las computadoras del taller se enciendan...</p>';
-            return;
-          }
-
-                    // Ordenar numéricamente las máquinas (PC 01, PC 02, PC 03...)
-          maquinas.sort(function(a, b) {
-            var na = parseInt(a.number) || 999;
-            var nb = parseInt(b.number) || 999;
-            return na - nb;
-          });
-
-          cont.innerHTML = maquinas.map(function(m) {
-            var stateClass = !m.online ? 'offline' : (m.locked ? 'locked' : 'online');
-            var pillHtml = !m.online
-              ? '<span class="status-pill pill-offline">Off</span>'
-              : (m.locked ? '<span class="status-pill pill-locked">🔒 Bloqueada</span>' : '<span class="status-pill pill-online">🟢 Activa</span>');
-
-            var nStr = m.number ? String(m.number) : '?';
-            var padNum = nStr.length === 1 ? '0' + nStr : nStr;
-
-            return '<div class="machine-card ' + stateClass + '">' +
-              '<div class="machine-head">' +
-                '<div class="machine-title">' +
-                  '<div class="machine-num-badge">#' + padNum + '</div>' +
-                  '<div>' +
-                    '<h3>PC ' + padNum + '</h3>' +
-                    '<p>' + m.ip + ' · <span style="opacity:0.6;">' + m.hostname + '</span></p>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:flex;align-items:center;gap:6px;">' +
-                  pillHtml +
-                  '<button class="btn-renumber" onclick="abrirModalRenombrar(\\'' + m.id + '\\', \\'' + padNum + '\\')" title="Cambiar número de esta PC"><i class="fas fa-pen"></i></button>' +
-                '</div>' +
-              '</div>' +
-              '<div class="machine-actions">' +
-                (m.locked
-                  ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\\'' + m.id + '\\', \\'unlock\\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
-                  : '<button class="mini-btn mb-lock" onclick="enviarComando(\\'' + m.id + '\\', \\'lock\\')"><i class="fas fa-lock"></i> Bloquear</button>') +
-                '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\\'' + m.id + '\\')"><i class="fas fa-comment"></i> Mensaje</button>' +
-                '<button class="mini-btn mb-more" onclick="abrirModalIndividual(\\'' + m.id + '\\', \\'' + padNum + '\\')" title="Más acciones"><i class="fas fa-ellipsis-v"></i></button>' +
-              '</div>' +
-            '</div>';
-          }).join('');
+          actualizarSelectoresDestino(maquinas);
+          renderizarEquipos(maquinas);
         })
-        .catch(function(err) {});
+        .catch(function() {
+          var badge = document.getElementById('conn-badge');
+          var txt = document.getElementById('conn-text');
+          if (badge && txt) {
+            badge.classList.add('offline');
+            txt.textContent = 'Sin conexión';
+          }
+        });
     }
 
     setInterval(cargarEstado, 1400);
