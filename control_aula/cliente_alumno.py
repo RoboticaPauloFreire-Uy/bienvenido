@@ -418,6 +418,12 @@ def ciclo_comunicacion():
     conectado_previamente = False
 
     while True:
+        try:
+            if SISTEMA_OPERATIVO == 'Windows':
+                import ctypes
+                ctypes.windll.kernel32.SetThreadExecutionState(0x80000003)
+        except Exception:
+            pass
         if not servidor_docente_url:
             conectado_previamente = False
             servidor_docente_url = descubrir_servidor()
@@ -468,8 +474,34 @@ def ciclo_comunicacion():
 
         time.sleep(1.2)
 
+def mantener_equipo_despierto():
+    """Evita que Windows active el protector de pantalla, apague el Wi-Fi o suspenda el equipo (incluso al cerrar la tapa)."""
+    if platform.system() != "Windows":
+        return
+    try:
+        import ctypes
+        # ES_CONTINUOUS (0x80000000) | ES_SYSTEM_REQUIRED (0x00000001) | ES_DISPLAY_REQUIRED (0x00000002)
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000003)
+    except Exception:
+        pass
+    try:
+        flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
+        # Configurar "No hacer nada" al cerrar la tapa del laptop (corriente y batería) y desactivar suspensión por inactividad
+        comandos = [
+            ["powercfg", "/setacvalueindex", "SCHEME_CURRENT", "SUB_BUTTONS", "LIDACTION", "0"],
+            ["powercfg", "/setdcvalueindex", "SCHEME_CURRENT", "SUB_BUTTONS", "LIDACTION", "0"],
+            ["powercfg", "/change", "standby-timeout-ac", "0"],
+            ["powercfg", "/change", "standby-timeout-dc", "0"],
+            ["powercfg", "/setactive", "SCHEME_CURRENT"],
+        ]
+        for cmd in comandos:
+            subprocess.run(cmd, capture_output=True, creationflags=flags)
+    except Exception:
+        pass
+
 def main():
     global tk_root
+    mantener_equipo_despierto()
     print("=" * 60, flush=True)
     print("  COLEGIO PAULO FREIRE — AGENTE DE ALUMNO", flush=True)
     print("=" * 60, flush=True)

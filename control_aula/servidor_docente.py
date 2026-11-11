@@ -19,6 +19,8 @@ import sys
 import io
 import base64
 import urllib.parse
+import platform
+import subprocess
 
 # Soporte opcional de QR nativo si está instalado
 QR_AVAILABLE = False
@@ -1294,7 +1296,33 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Connection", "close")
         self.end_headers()
 
+def mantener_equipo_despierto():
+    """Evita que Windows active el protector de pantalla, apague el Wi-Fi o suspenda el equipo (incluso al cerrar la tapa)."""
+    if platform.system() != "Windows":
+        return
+    try:
+        import ctypes
+        # ES_CONTINUOUS (0x80000000) | ES_SYSTEM_REQUIRED (0x00000001) | ES_DISPLAY_REQUIRED (0x00000002)
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000003)
+    except Exception:
+        pass
+    try:
+        flags = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
+        # Configurar "No hacer nada" al cerrar la tapa del laptop (corriente y batería) y desactivar suspensión por inactividad
+        comandos = [
+            ["powercfg", "/setacvalueindex", "SCHEME_CURRENT", "SUB_BUTTONS", "LIDACTION", "0"],
+            ["powercfg", "/setdcvalueindex", "SCHEME_CURRENT", "SUB_BUTTONS", "LIDACTION", "0"],
+            ["powercfg", "/change", "standby-timeout-ac", "0"],
+            ["powercfg", "/change", "standby-timeout-dc", "0"],
+            ["powercfg", "/setactive", "SCHEME_CURRENT"],
+        ]
+        for cmd in comandos:
+            subprocess.run(cmd, capture_output=True, creationflags=flags)
+    except Exception:
+        pass
+
 def main():
+    mantener_equipo_despierto()
     print("=" * 65)
     print("  COLEGIO PAULO FREIRE — CONTROL DE AULA DESDE EL CELULAR")
     print("=" * 65)
