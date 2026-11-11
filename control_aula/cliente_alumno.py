@@ -12,7 +12,7 @@ Descubre automáticamente la IP del docente por:
   4. Entrada manual como respaldo
 Ejecuta bloqueo de pantalla (Modo Atención), control de volumen (50%),
 detección de búsquedas no permitidas en Google, reporte de ventana activa en vivo,
-apertura de proyectos web, avisos y juegos offline.
+apertura de proyectos web, avisos y juegos offline (edge://surf y chrome://dino).
 """
 
 import os
@@ -20,6 +20,7 @@ import sys
 import time
 import json
 import re
+import shutil
 import socket
 import platform
 import threading
@@ -53,7 +54,7 @@ tk_root = None
 try:
     import tkinter as tk
     TKINTER_OK = True
-except Exception as e:
+except Exception:
     tk = None
     TKINTER_OK = False
 
@@ -103,23 +104,30 @@ def guardar_pid_actual():
         pass
 
 def lanzar_en_segundo_plano_windows():
-    """Lanza este mismo script en modo 100% invisible (sin consola ni barra de tareas) y cierra la ventana actual."""
+    """Lanza este mismo script en modo 100% invisible (pythonw sin consola) y cierra la ventana actual."""
     detener_instancia_previa()
     ruta_script = os.path.abspath(__file__)
     dir_python = os.path.dirname(sys.executable)
     pythonw_exe = os.path.join(dir_python, "pythonw.exe")
-    ejecutable = pythonw_exe if os.path.exists(pythonw_exe) else sys.executable
 
-    CREATE_NO_WINDOW = 0x08000000
-    DETACHED_PROCESS = 0x00000008
     CREATE_NEW_PROCESS_GROUP = 0x00000200
+    CREATE_NO_WINDOW = 0x08000000
 
-    proc = subprocess.Popen(
-        [ejecutable, ruta_script, "--oculto"],
-        cwd=DIR_BASE,
-        creationflags=CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP,
-        close_fds=True
-    )
+    if os.path.exists(pythonw_exe):
+        # pythonw.exe es subsistema GUI nativo: no abre ventana de consola pero permite abrir navegadores normalmente
+        proc = subprocess.Popen(
+            [pythonw_exe, ruta_script, "--oculto"],
+            cwd=DIR_BASE,
+            creationflags=CREATE_NEW_PROCESS_GROUP,
+            close_fds=True
+        )
+    else:
+        proc = subprocess.Popen(
+            [sys.executable, ruta_script, "--oculto"],
+            cwd=DIR_BASE,
+            creationflags=CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP,
+            close_fds=True
+        )
     try:
         with open(ARCHIVO_PID, "w", encoding="utf-8") as f:
             f.write(str(proc.pid))
@@ -138,7 +146,6 @@ def cargar_numero_local():
                     return val
         except Exception:
             pass
-    # Buscar si el nombre del equipo ya tiene número (ej: PC04 -> 4, ALUMNO-2 -> 2)
     match = re.search(r'\d+', HOSTNAME)
     if match:
         return str(int(match.group()))
@@ -201,7 +208,6 @@ def descubrir_servidor():
     """Descubre automáticamente la IP del docente con 4 capas de respaldo."""
     archivo_cfg = os.path.join(DIR_BASE, "servidor_ip.txt")
 
-    # 1. Probar archivo de configuración si existe
     if os.path.exists(archivo_cfg):
         try:
             with open(archivo_cfg, "r", encoding="utf-8") as f:
@@ -215,7 +221,6 @@ def descubrir_servidor():
         except Exception:
             pass
 
-    # 2. Escuchar faro UDP broadcast (2.0 segundos)
     print("  [?] Buscando al docente por anuncio de red...", flush=True)
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -240,7 +245,6 @@ def descubrir_servidor():
     except Exception:
         pass
 
-    # 3. Escaneo multi-hilo ultra rápido de la subred local (192.168.x.1..254 en ~1.5 seg)
     prefijo_subred, mi_ip = obtener_mi_subred()
     print(f"  [?] Escaneando red local ({prefijo_subred}*)...", flush=True)
 
@@ -268,7 +272,6 @@ def descubrir_servidor():
         except Exception: pass
         return url
 
-    # 4. Fallback si no fue encontrado
     print("  [!] No se pudo autodetectar la IP del docente. Reintentando en breve...", flush=True)
     return f"http://127.0.0.1:{PUERTO_WEB_DEFECTO}"
 
@@ -522,7 +525,6 @@ def fijar_volumen(nivel=50):
             VK_VOLUME_UP = 0xAF
             KEYEVENTF_KEYUP = 0x0002
 
-            # Primero bajar 50 pasos (lleva el volumen a 0% exacto)
             for _ in range(50):
                 user32.keybd_event(VK_VOLUME_DOWN, 0, 0, 0)
                 user32.keybd_event(VK_VOLUME_DOWN, 0, KEYEVENTF_KEYUP, 0)
@@ -662,22 +664,166 @@ def obtener_ventana_activa_y_busqueda():
 
     return ventana_activa, alerta_para_enviar
 
+# ══════════════════════════════════════════════════════════════
+# LANZADOR DE JUEGOS OFFLINE (SURF EN EDGE Y DINO EN CHROME)
+# ══════════════════════════════════════════════════════════════
+
+def buscar_ejecutable_navegador(nombre_exe):
+    """Busca la ruta real de msedge.exe o chrome.exe en Windows (App Paths y Program Files)."""
+    p = shutil.which(nombre_exe)
+    if p and os.path.exists(p):
+        return p
+    if SISTEMA_OPERATIVO == "Windows":
+        try:
+            import winreg
+            for root in (winreg.HKEY_LOCAL_MACHINE, winreg.HKEY_CURRENT_USER):
+                try:
+                    with winreg.OpenKey(root, rf"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\{nombre_exe}") as k:
+                        val, _ = winreg.QueryValueEx(k, "")
+                        if val and os.path.exists(val):
+                            return val
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+        rutas_comunes = []
+        if nombre_exe.lower() == "msedge.exe":
+            rutas_comunes = [
+                r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+                r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+                os.path.expandvars(r"%LOCALAPPDATA%\Microsoft\Edge\Application\msedge.exe"),
+            ]
+        elif nombre_exe.lower() == "chrome.exe":
+            rutas_comunes = [
+                r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+                os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe"),
+            ]
+        for r in rutas_comunes:
+            if os.path.exists(r):
+                return r
+    return None
+
+def _navegar_url_interna_windows(exe_path, url_interna, palabra_ventana):
+    """
+    Abre el navegador en una ventana nueva visible y navega a una URL interna (edge://surf o chrome://dino)
+    pegándola en la barra de direcciones (ya que Chromium bloquea URLs edge:// y chrome:// por línea de comandos).
+    """
+    try:
+        import ctypes
+        user32 = ctypes.windll.user32
+
+        # 1. Copiar la dirección (edge://surf o chrome://dino) al portapapeles de Windows
+        flags_clip = subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
+        p_clip = subprocess.Popen(["clip"], stdin=subprocess.PIPE, creationflags=flags_clip)
+        p_clip.communicate(input=url_interna.encode("ascii"))
+
+        # 2. Abrir ventana nueva del navegador forzando SW_SHOWNORMAL (1) para que sea visible
+        si = subprocess.STARTUPINFO()
+        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        si.wShowWindow = 1  # SW_SHOWNORMAL
+        subprocess.Popen([exe_path, "--new-window", "about:blank"], startupinfo=si)
+
+        # 3. Esperar a que la ventana del navegador esté activa en primer plano
+        for _ in range(25):
+            time.sleep(0.15)
+            hwnd = user32.GetForegroundWindow()
+            if hwnd:
+                l = user32.GetWindowTextLengthW(hwnd)
+                if l > 0:
+                    buf = ctypes.create_unicode_buffer(l + 1)
+                    user32.GetWindowTextW(hwnd, buf, l + 1)
+                    t_low = buf.value.lower()
+                    if palabra_ventana in t_low or "blank" in t_low or "pestaña" in t_low or "tab" in t_low:
+                        break
+
+        time.sleep(0.35)
+
+        # 4. Enviar Ctrl+L (foco en barra de direcciones), Ctrl+V (pegar edge://surf o chrome://dino) y Enter
+        VK_CONTROL = 0x11
+        VK_L = 0x4C
+        VK_V = 0x56
+        VK_RETURN = 0x0D
+        KEYEVENTF_KEYUP = 0x0002
+
+        # Ctrl + L
+        user32.keybd_event(VK_CONTROL, 0, 0, 0)
+        user32.keybd_event(VK_L, 0, 0, 0)
+        time.sleep(0.05)
+        user32.keybd_event(VK_L, 0, KEYEVENTF_KEYUP, 0)
+        user32.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0)
+        time.sleep(0.12)
+
+        # Ctrl + V
+        user32.keybd_event(VK_CONTROL, 0, 0, 0)
+        user32.keybd_event(VK_V, 0, 0, 0)
+        time.sleep(0.05)
+        user32.keybd_event(VK_V, 0, KEYEVENTF_KEYUP, 0)
+        user32.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0)
+        time.sleep(0.10)
+
+        # Enter
+        user32.keybd_event(VK_RETURN, 0, 0, 0)
+        time.sleep(0.05)
+        user32.keybd_event(VK_RETURN, 0, KEYEVENTF_KEYUP, 0)
+        print(f"  [🎮] Juego offline iniciado: {url_interna}", flush=True)
+    except Exception as e:
+        print(f"  [!] Error navegando a {url_interna}: {e}", flush=True)
+
 def lanzar_juego_offline(juego):
     """Lanza los juegos offline integrados en los navegadores (100% sin necesidad de internet)."""
     ocultar_pantalla_bloqueo()
     try:
-        if juego == "surf":
-            if SISTEMA_OPERATIVO == "Windows":
-                subprocess.Popen(["cmd", "/c", "start", "msedge", "edge://surf"], shell=False)
-            else:
+        if SISTEMA_OPERATIVO == "Windows":
+            if juego == "surf":
+                edge_exe = buscar_ejecutable_navegador("msedge.exe")
+                if edge_exe:
+                    threading.Thread(
+                        target=_navegar_url_interna_windows,
+                        args=(edge_exe, "edge://surf", "edge"),
+                        daemon=True
+                    ).start()
+                else:
+                    print("  [!] No se encontró Microsoft Edge instalado.", flush=True)
+            elif juego == "dino":
+                chrome_exe = buscar_ejecutable_navegador("chrome.exe")
+                if chrome_exe:
+                    threading.Thread(
+                        target=_navegar_url_interna_windows,
+                        args=(chrome_exe, "chrome://dino", "chrome"),
+                        daemon=True
+                    ).start()
+                else:
+                    # Si no tiene Chrome instalado, abrir Surf en Edge como respaldo
+                    edge_exe = buscar_ejecutable_navegador("msedge.exe")
+                    if edge_exe:
+                        threading.Thread(
+                            target=_navegar_url_interna_windows,
+                            args=(edge_exe, "edge://surf", "edge"),
+                            daemon=True
+                        ).start()
+        else:
+            if juego == "surf":
                 subprocess.Popen(["microsoft-edge", "edge://surf"])
-        elif juego == "dino":
-            if SISTEMA_OPERATIVO == "Windows":
-                subprocess.Popen(["cmd", "/c", "start", "chrome", "chrome://dino"], shell=False)
-            else:
+            elif juego == "dino":
                 subprocess.Popen(["google-chrome", "chrome://dino"])
     except Exception as e:
         print(f"  [!] Error lanzando juego offline: {e}", flush=True)
+
+def abrir_enlace_web(url):
+    """Abre un sitio web asegurando que la ventana del navegador sea visible en primer plano."""
+    ocultar_pantalla_bloqueo()
+    try:
+        if SISTEMA_OPERATIVO == "Windows":
+            os.startfile(url)
+        else:
+            webbrowser.open(url)
+    except Exception:
+        try:
+            webbrowser.open(url)
+        except Exception as e:
+            print(f"  [!] Error abriendo URL {url}: {e}", flush=True)
 
 def apagar_equipo():
     """Apaga la máquina de forma segura al finalizar la clase."""
@@ -706,8 +852,7 @@ def ejecutar_comando(cmd):
     elif action == "open_url":
         url = params.get("url")
         if url:
-            ocultar_pantalla_bloqueo()
-            webbrowser.open(url)
+            abrir_enlace_web(url)
     elif action == "message":
         texto = params.get("texto", "")
         if texto:
@@ -795,9 +940,9 @@ def ciclo_comunicacion():
                 for cmd in comandos:
                     ejecutar_comando(cmd)
 
-        except urllib.error.URLError as e:
+        except urllib.error.URLError:
             if conectado_previamente:
-                print(f"  [!] Conexión perdida con el docente. Reintentando reconectar...", flush=True)
+                print("  [!] Conexión perdida con el docente. Reintentando reconectar...", flush=True)
             servidor_docente_url = None
         except Exception as e:
             print(f"  [!] Aviso de comunicación: {e}", flush=True)
@@ -831,8 +976,6 @@ def main():
     global tk_root, servidor_docente_url
     mantener_equipo_despierto()
 
-    # Si se abrió desde iniciar_alumno.bat en Windows (sin --oculto ni --visible),
-    # verificar conexión rápida, lanzar el proceso 100% invisible y cerrar la consola.
     if SISTEMA_OPERATIVO == "Windows" and not MODO_OCULTO and not MODO_VISIBLE_FORZADO:
         print("=" * 60, flush=True)
         print("  COLEGIO PAULO FREIRE — AGENTE DE ALUMNO", flush=True)
@@ -852,7 +995,6 @@ def main():
         guardar_pid_actual()
         ocultar_consola_windows()
 
-    # Inicializar Tkinter de manera segura
     tk_disponible = False
     try:
         if TKINTER_OK and tk is not None:
@@ -863,11 +1005,9 @@ def main():
         print(f"  [!] Tkinter no disponible ({e}). Operando en modo consola.", flush=True)
         tk_root = None
 
-    # Iniciar hilo de comunicación en segundo plano
     t = threading.Thread(target=ciclo_comunicacion, daemon=True)
     t.start()
 
-    # Mantener vivo el programa sin cerrarse nunca
     try:
         if tk_disponible and tk_root:
             tk_root.mainloop()
