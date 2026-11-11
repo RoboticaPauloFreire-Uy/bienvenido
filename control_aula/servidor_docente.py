@@ -6,6 +6,10 @@ Colegio Paulo Freire · Taller de Robótica & Informática
 
 Inicia el servidor web en el puerto 5000 y el faro de auto-descubrimiento UDP en el puerto 5005.
 Genera código QR en terminal y en web para escanear y controlar directamente desde el celular.
+Incluye:
+  - Vista en vivo de qué ventana tiene abierta cada PC (Opción 3)
+  - Regla de la Sala: Volumen al 50% en 1 toque (global o por PC)
+  - Detector de búsquedas en Google con advertencia automática al alumno y alerta al docente
 """
 
 import http.server
@@ -74,8 +78,10 @@ def obtener_siguiente_numero_disponible():
 
 # Estado en memoria
 maquinas = {}
-colas_comandos = {}  # machine_id -> [comandos]
-cola_global = []     # Comandos para todas las máquinas
+colas_comandos = {}      # machine_id -> [comandos]
+cola_global = []         # Comandos para todas las máquinas
+alertas_busquedas = []   # Historial de búsquedas prohibidas detectadas
+vigilancia_google = True # Regla activa por defecto: no buscar en Google
 lock_estado = threading.Lock()
 
 def obtener_ip_local():
@@ -293,6 +299,83 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
     .btn-qr-modal:active { transform: scale(0.95); }
 
+    /* ══════════════ BANNER DE ALERTA DE BÚSQUEDA EN GOOGLE ══════════════ */
+    .google-alert-banner {
+      display: none;
+      background: linear-gradient(135deg, #7F1D1D 0%, #450A0A 100%);
+      border: 1.5px solid #EF4444;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .google-alert-banner.visible {
+      display: flex;
+    }
+
+    .gab-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .gab-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.25);
+      color: #FCA5A5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .gab-text h4 {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #FCA5A5;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .gab-text p {
+      font-size: 0.84rem;
+      color: #FFF;
+      font-weight: 700;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .gab-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .gab-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #FFF;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     /* ══════════════ TARJETAS DE RESUMEN (KPIs) ══════════════ */
     .status-summary {
       display: grid;
@@ -401,6 +484,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       text-align: center;
     }
 
+    .tab-badge.badge-danger {
+      background: #EF4444;
+      color: #FFF;
+    }
+
     .tab-btn.active .tab-badge {
       background: #FFF;
       color: #1D4ED8;
@@ -433,6 +521,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     .filter-pills {
       display: flex;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .filter-btn {
@@ -453,6 +542,29 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       border-color: #38BDF8;
     }
 
+    .toolbar-right-btns {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn-vol50-quick {
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      border: 1px solid #38BDF8;
+      color: #FFF;
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
+    }
+
+    .btn-vol50-quick:active { transform: scale(0.95); }
+
     .btn-refresh {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -472,7 +584,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     /* ══════════════ TARJETAS DE COMPUTADORAS ══════════════ */
     .machines-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 12px;
       margin-bottom: 14px;
     }
@@ -484,7 +596,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.25);
       transition: transform 0.15s, border-color 0.2s;
     }
@@ -537,6 +649,48 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    /* OPCIÓN 3: VISOR EN VIVO DE QUÉ TIENE ABIERTO CADA PC */
+    .machine-activity {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 9px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.75rem;
+      color: #E2E8F0;
+      min-width: 0;
+    }
+
+    .machine-activity i {
+      color: #38BDF8;
+      font-size: 0.78rem;
+      flex-shrink: 0;
+    }
+
+    .machine-activity span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .machine-alert-chip {
+      background: rgba(127, 29, 29, 0.85);
+      border: 1px solid #EF4444;
+      border-radius: 8px;
+      padding: 6px 9px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #FCA5A5;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-word;
     }
 
     .btn-renumber {
@@ -789,7 +943,116 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     .game-info h4 { font-size: 1.05rem; font-weight: 900; margin-bottom: 4px; }
     .game-info p { font-size: 0.76rem; opacity: 0.88; line-height: 1.35; }
 
-    /* ══════════════ PESTAÑA AULA & MENSAJES RÁPIDOS ══════════════ */
+    /* ══════════════ PESTAÑA AULA, VOLUMEN 50% & DETECTOR GOOGLE ══════════════ */
+    .volume-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .vol-btn {
+      border-radius: 12px;
+      padding: 14px 12px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #FFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1.5px solid transparent;
+      transition: transform 0.15s;
+    }
+
+    .vol-btn:active { transform: scale(0.96); }
+    .vol-50 {
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      border-color: #38BDF8;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+    .vol-25 {
+      background: #0F172A;
+      border-color: #38BDF8;
+      color: #38BDF8;
+    }
+    .vol-0 {
+      background: #0F172A;
+      border-color: #A78BFA;
+      color: #C4B5FD;
+    }
+
+    .guard-toggle-btn {
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guard-on {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34D399;
+      border: 1px solid #10B981;
+    }
+
+    .guard-off {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FCA5A5;
+      border: 1px solid #EF4444;
+    }
+
+    .alerts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .alert-item {
+      background: #0F172A;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      border-left: 4px solid #EF4444;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .alert-item-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .alert-item-info strong {
+      font-size: 0.84rem;
+      color: #FCA5A5;
+    }
+
+    .alert-item-info span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .alert-item-query {
+      font-size: 0.88rem;
+      color: #FDE047;
+      font-weight: 800;
+      margin-top: 3px;
+      word-break: break-word;
+    }
+
     .preset-msgs-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -1017,6 +1280,28 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       </div>
     </header>
 
+    <!-- Banner de Alerta Instantánea cuando alguien busca en Google -->
+    <div class="google-alert-banner" id="google-alert-banner">
+      <div class="gab-left">
+        <div class="gab-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="gab-text">
+          <h4 id="gab-title">🚫 Búsqueda en Google detectada</h4>
+          <p id="gab-desc">PC 01 buscó: "..."</p>
+        </div>
+      </div>
+      <div class="gab-actions">
+        <button class="gab-btn" style="background:#EF4444;" id="gab-lock-btn">
+          <i class="fas fa-lock"></i> Bloquear PC
+        </button>
+        <button class="gab-btn" style="background:#334155;" onclick="cambiarTab('aula')">
+          <i class="fas fa-list"></i> Ver Historial
+        </button>
+        <button class="gab-btn" style="background:#1E293B;" onclick="limpiarAlertasGoogle()" title="Descartar alertas">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
     <!-- KPIs de Resumen Rápido -->
     <div class="status-summary">
       <div class="summary-pill sp-online" onclick="cambiarTab('equipos'); filtrarEquipos('online');">
@@ -1058,13 +1343,14 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         <span>Recreo</span>
       </button>
       <button class="tab-btn" id="tabbtn-aula" onclick="cambiarTab('aula')">
-        <i class="fas fa-bullhorn"></i>
-        <span>Avisos & Aula</span>
+        <i class="fas fa-shield-alt"></i>
+        <span>Reglas & Aula</span>
+        <span class="tab-badge badge-danger" id="badge-alertas" style="display:none;">0</span>
       </button>
     </nav>
 
     <!-- ═══════════════════════════════════════════════════════════
-         PESTAÑA 1: EQUIPOS CONECTADOS
+         PESTAÑA 1: EQUIPOS CONECTADOS + VENTANA ACTIVA EN VIVO
          ═══════════════════════════════════════════════════════════ -->
     <section class="tab-panel active" id="panel-equipos">
       <div class="toolbar-equipos">
@@ -1073,9 +1359,14 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
           <button class="filter-btn" id="flt-online" onclick="filtrarEquipos('online')">🟢 Activas</button>
           <button class="filter-btn" id="flt-locked" onclick="filtrarEquipos('locked')">🔒 Bloqueadas</button>
         </div>
-        <button class="btn-refresh" onclick="cargarEstado(true)">
-          <i class="fas fa-sync-alt"></i> Actualizar
-        </button>
+        <div class="toolbar-right-btns">
+          <button class="btn-vol50-quick" onclick="enviarComando('all', 'set_volume', {level: 50})" title="Poner volumen de todas las PCs al 50% (Regla de la sala)">
+            <i class="fas fa-volume-down"></i> Vol 50%
+          </button>
+          <button class="btn-refresh" onclick="cargarEstado(true)">
+            <i class="fas fa-sync-alt"></i> Actualizar
+          </button>
+        </div>
       </div>
 
       <div class="machines-grid" id="machines-container">
@@ -1188,9 +1479,57 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════
-         PESTAÑA 4: AVISOS RÁPIDOS & CONTROL DEL AULA
+         PESTAÑA 4: REGLAS DE SALA (VOL 50%, ANTI-GOOGLE) & AVISOS
          ═══════════════════════════════════════════════════════════ -->
     <section class="tab-panel" id="panel-aula">
+      <!-- REGLA 1: VOLUMEN AL 50% -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-volume-up"></i> Regla de la Sala: Control de Volumen</div>
+        </div>
+        <div class="volume-grid">
+          <button class="vol-btn vol-50" onclick="enviarComando('all', 'set_volume', {level: 50})">
+            <i class="fas fa-volume-down"></i>
+            <span>🔊 Volumen al 50% (Regla de Sala)</span>
+          </button>
+          <button class="vol-btn vol-25" onclick="enviarComando('all', 'set_volume', {level: 25})">
+            <i class="fas fa-volume-off"></i>
+            <span>🔉 Volumen Bajo (25%)</span>
+          </button>
+          <button class="vol-btn vol-0" onclick="enviarComando('all', 'set_volume', {level: 0})">
+            <i class="fas fa-volume-mute"></i>
+            <span>🔇 Silenciar Todo (0%)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- REGLA 2: DETECTOR DE BÚSQUEDAS EN GOOGLE -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-shield-alt" style="color:#EF4444;"></i>
+            <span>Detector de Búsquedas en Google</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="guard-toggle-btn guard-on" id="btn-toggle-google" onclick="alternarVigilanciaGoogle()">
+              <i class="fas fa-check-circle"></i> Vigilancia Activa
+            </button>
+            <button class="btn-refresh" onclick="limpiarAlertasGoogle()" title="Limpiar historial">
+              <i class="fas fa-trash-alt"></i> Limpiar
+            </button>
+          </div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;">
+          Cuando un alumno intenta buscar en Google, se cierra la pestaña automáticamente, le aparece una advertencia en su pantalla y queda registrado aquí lo que buscó:
+        </p>
+        <div class="alerts-list" id="alerts-history-list">
+          <div style="text-align:center;padding:16px;color:var(--text-muted);font-size:0.8rem;">
+            ✅ Ninguna búsqueda prohibida detectada hasta el momento.
+          </div>
+        </div>
+      </div>
+
+      <!-- AVISOS INSTANTÁNEOS -->
       <div class="section-card">
         <div class="section-header">
           <div class="section-title"><i class="fas fa-bolt"></i> Avisos Instantáneos en 1 Toque</div>
@@ -1208,9 +1547,9 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             <i class="fas fa-save"></i>
             <span>💾 ¡Recuerden guardar su trabajo ahora!</span>
           </button>
-          <button class="preset-msg-btn" onclick="enviarComando('all', 'message', {texto: '🔉 Bajemos un poquito el volumen de voz para escucharnos todos en el taller.'})">
+          <button class="preset-msg-btn" onclick="enviarComando('all', 'message', {texto: '🔉 Recuerden la regla de la sala: volumen máximo al 50% y sin usar buscadores.'})">
             <i class="fas fa-volume-down"></i>
-            <span>🔉 Bajemos el volumen de charla</span>
+            <span>🔉 Recordar regla: Volumen 50% y sin Google</span>
           </button>
         </div>
         <button class="aux-btn" style="width:100%;border-color:#F59E0B;color:#FBBF24;" onclick="abrirModalMensaje('all')">
@@ -1220,14 +1559,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
       <div class="section-card">
         <div class="section-header">
-          <div class="section-title"><i class="fas fa-sliders-h"></i> Controles Generales de Sala</div>
+          <div class="section-title"><i class="fas fa-sliders-h"></i> Cierre de Clase</div>
         </div>
         <div class="aux-actions-grid">
-          <button class="aux-btn" onclick="enviarComando('all', 'mute')">
-            <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar Audio del Aula
-          </button>
           <button class="aux-btn" onclick="confirmarApagado()" style="border-color:rgba(239,68,68,0.4);">
-            <i class="fas fa-power-off" style="color:#EF4444;"></i> Apagar Todas las PCs
+            <i class="fas fa-power-off" style="color:#EF4444;"></i> Apagar Todas las PCs del Taller
           </button>
         </div>
       </div>
@@ -1270,6 +1606,12 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       <h3 id="modal-indiv-title">⚙️ Control Individual: PC XX</h3>
       <p>Acciones exclusivas para esta computadora:</p>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+        <button class="aux-btn" style="background:#0369A1;border-color:#38BDF8;padding:12px;" onclick="enviarAccionIndividual('set_volume', {level:50})">
+          <i class="fas fa-volume-down"></i> Poner Volumen al 50% en esta PC
+        </button>
+        <button class="aux-btn" style="background:#334155;padding:12px;" onclick="enviarAccionIndividual('set_volume', {level:0})">
+          <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar solo esta PC (0%)
+        </button>
         <button class="aux-btn" style="background:#0284C7;border-color:#38BDF8;padding:12px;" onclick="enviarAccionIndividual('launch_game', {game:'surf'})">
           <i class="fas fa-water"></i> Abrir Surf (Edge) solo en esta PC
         </button>
@@ -1278,9 +1620,6 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         </button>
         <button class="aux-btn" style="background:#1E293B;border-color:#3B82F6;padding:12px;" onclick="enviarAccionIndividual('open_url', {url:'https://roboticapaulofreire-uy.github.io/bienvenido/'})">
           <i class="fas fa-newspaper" style="color:#F59E0B;"></i> Abrir El Diario solo en esta PC
-        </button>
-        <button class="aux-btn" style="background:#334155;padding:12px;" onclick="enviarAccionIndividual('mute', {})">
-          <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar solo esta PC
         </button>
         <button class="aux-btn" style="background:#7F1D1D;border-color:#EF4444;padding:12px;" onclick="enviarAccionIndividual('shutdown', {})">
           <i class="fas fa-power-off" style="color:#FCA5A5;"></i> Apagar solo esta PC
@@ -1329,6 +1668,18 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     var indivTargetNum = null;
     var activeFilter = 'all';
     var lastMachinesList = [];
+    var lastAlertTimestamp = 0;
+    var googleGuardEnabled = true;
+
+    function escaparHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     function cambiarTab(tabName) {
       var tabs = ['equipos', 'herramientas', 'juegos', 'aula'];
@@ -1408,12 +1759,13 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       t.textContent = txt;
       t.style.background = color || '#10B981';
       t.style.display = 'block';
-      setTimeout(function() { t.style.display = 'none'; }, 2200);
+      setTimeout(function() { t.style.display = 'none'; }, 2400);
     }
 
     function enviarComando(target, action, params) {
       vibrar();
-      toast('Enviando: ' + action.toUpperCase() + '...', '#3B82F6');
+      var label = action === 'set_volume' ? ('VOLUMEN ' + (params && params.level !== undefined ? params.level + '%' : '')) : action.toUpperCase();
+      toast('Enviando: ' + label + '...', '#3B82F6');
       fetch('/api/comando', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1424,7 +1776,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         return r.json();
       })
       .then(function() {
-        toast('¡Listo: ' + action.toUpperCase() + '!', '#10B981');
+        toast('¡Listo: ' + label + '!', '#10B981');
         setTimeout(cargarEstado, 300);
       })
       .catch(function(err) {
@@ -1438,6 +1790,114 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         window.navigator.vibrate([40, 60, 40]);
       }
       enviarComando(target, action, params);
+    }
+
+    function alternarVigilanciaGoogle() {
+      var nuevoEstado = !googleGuardEnabled;
+      fetch('/api/toggle_google_guard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: nuevoEstado })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        googleGuardEnabled = !!res.vigilancia_google;
+        actualizarBotonVigilancia();
+        toast(googleGuardEnabled ? '🛡️ Vigilancia Google ACTIVADA' : 'Vigilancia Google desactivada', googleGuardEnabled ? '#10B981' : '#F59E0B');
+      })
+      .catch(function() {
+        toast('Error cambiando vigilancia', '#EF4444');
+      });
+    }
+
+    function actualizarBotonVigilancia() {
+      var btn = document.getElementById('btn-toggle-google');
+      if (!btn) return;
+      if (googleGuardEnabled) {
+        btn.className = 'guard-toggle-btn guard-on';
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Vigilancia Activa';
+      } else {
+        btn.className = 'guard-toggle-btn guard-off';
+        btn.innerHTML = '<i class="fas fa-pause-circle"></i> Vigilancia Pausada';
+      }
+    }
+
+    function limpiarAlertasGoogle() {
+      fetch('/api/clear_alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}'
+      })
+      .then(function() {
+        toast('Historial de alertas limpio');
+        cargarEstado();
+      });
+    }
+
+    function renderizarAlertasGoogle(alertas) {
+      var banner = document.getElementById('google-alert-banner');
+      var badge = document.getElementById('badge-alertas');
+      var listCont = document.getElementById('alerts-history-list');
+
+      if (!alertas || !alertas.length) {
+        if (banner) banner.classList.remove('visible');
+        if (badge) badge.style.display = 'none';
+        if (listCont) {
+          listCont.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:0.8rem;">' +
+            '✅ Ninguna búsqueda prohibida detectada hasta el momento.' +
+          '</div>';
+        }
+        return;
+      }
+
+      if (badge) {
+        badge.style.display = 'inline-block';
+        badge.textContent = alertas.length;
+      }
+
+      var ultima = alertas[0];
+      var nStr = ultima.number ? String(ultima.number) : '?';
+      var padNum = nStr.length === 1 ? '0' + nStr : nStr;
+
+      if (banner) {
+        banner.classList.add('visible');
+        document.getElementById('gab-title').textContent = '🚫 PC ' + padNum + ' intentó buscar en Google (' + (ultima.hora || '') + ')';
+        document.getElementById('gab-desc').textContent = 'Buscó: "' + (ultima.query || '') + '"';
+        var lockBtn = document.getElementById('gab-lock-btn');
+        if (lockBtn) {
+          lockBtn.onclick = function() {
+            enviarComando(ultima.id, 'lock', {});
+          };
+        }
+      }
+
+      if (ultima.ts && ultima.ts > lastAlertTimestamp) {
+        if (lastAlertTimestamp > 0) {
+          if (window.navigator && window.navigator.vibrate) {
+            window.navigator.vibrate([120, 80, 120]);
+          }
+          toast('🚫 PC ' + padNum + ' buscó en Google: ' + ultima.query, '#EF4444');
+        }
+        lastAlertTimestamp = ultima.ts;
+      }
+
+      if (listCont) {
+        listCont.innerHTML = alertas.map(function(a) {
+          var ns = a.number ? String(a.number) : '?';
+          var pn = ns.length === 1 ? '0' + ns : ns;
+          return '<div class="alert-item">' +
+            '<div class="alert-item-info">' +
+              '<strong>💻 PC ' + escaparHtml(pn) + ' (' + escaparHtml(a.hostname || '') + ')</strong>' +
+              '<span>🕒 ' + escaparHtml(a.hora || '') + '</span>' +
+              '<div class="alert-item-query">🔍 "' + escaparHtml(a.query || '') + '"</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px;">' +
+              '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + escaparHtml(a.id) + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>' +
+              '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\'' + escaparHtml(a.id) + '\')"><i class="fas fa-comment"></i> Aviso</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
     }
 
     function lanzarJuegoSeleccion(game) {
@@ -1549,6 +2009,15 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
         var nStr = m.number ? String(m.number) : '?';
         var padNum = nStr.length === 1 ? '0' + nStr : nStr;
+        var winTitle = m.active_window ? escaparHtml(m.active_window) : 'Escritorio / Sin ventana activa';
+
+        var alertChipHtml = '';
+        if (m.last_google_alert) {
+          alertChipHtml = '<div class="machine-alert-chip">' +
+            '<i class="fas fa-exclamation-circle"></i>' +
+            '<span>Última búsqueda bloqueada: "' + escaparHtml(m.last_google_alert) + '"</span>' +
+          '</div>';
+        }
 
         return '<div class="machine-card ' + stateClass + '">' +
           '<div class="machine-head">' +
@@ -1556,20 +2025,25 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
               '<div class="machine-num-badge">#' + padNum + '</div>' +
               '<div>' +
                 '<h3>PC ' + padNum + '</h3>' +
-                '<p>' + m.ip + ' · ' + m.hostname + '</p>' +
+                '<p>' + escaparHtml(m.ip) + ' · ' + escaparHtml(m.hostname) + '</p>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex;align-items:center;gap:6px;">' +
               pillHtml +
-              '<button class="btn-renumber" onclick="abrirModalRenombrar(\'' + m.id + '\', \'' + padNum + '\')" title="Cambiar número de esta PC"><i class="fas fa-pen"></i></button>' +
+              '<button class="btn-renumber" onclick="abrirModalRenombrar(\'' + escaparHtml(m.id) + '\', \'' + padNum + '\')" title="Cambiar número de esta PC"><i class="fas fa-pen"></i></button>' +
             '</div>' +
           '</div>' +
+          '<div class="machine-activity" title="' + winTitle + '">' +
+            '<i class="fas fa-eye"></i>' +
+            '<span>' + (m.online ? ('Viendo: ' + winTitle) : 'Sin señal reciente') + '</span>' +
+          '</div>' +
+          alertChipHtml +
           '<div class="machine-actions">' +
             (m.locked
-              ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\'' + m.id + '\', \'unlock\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
-              : '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + m.id + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>') +
-            '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\'' + m.id + '\')"><i class="fas fa-comment"></i> Aviso</button>' +
-            '<button class="mini-btn mb-more" onclick="abrirModalIndividual(\'' + m.id + '\', \'' + padNum + '\')" title="Más acciones"><i class="fas fa-ellipsis-v"></i></button>' +
+              ? '<button class="mini-btn mb-unlock" onclick="enviarComando(\'' + escaparHtml(m.id) + '\', \'unlock\')"><i class="fas fa-unlock"></i> Desbloquear</button>'
+              : '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + escaparHtml(m.id) + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>') +
+            '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\'' + escaparHtml(m.id) + '\')"><i class="fas fa-comment"></i> Aviso</button>' +
+            '<button class="mini-btn mb-more" onclick="abrirModalIndividual(\'' + escaparHtml(m.id) + '\', \'' + padNum + '\')" title="Más acciones (Volumen 50%, Juegos, Apagar)"><i class="fas fa-ellipsis-v"></i></button>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -1589,6 +2063,13 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             badge.classList.remove('offline');
             txt.textContent = 'Activo · ' + (data.ip || '');
           }
+
+          if (data.vigilancia_google !== undefined) {
+            googleGuardEnabled = !!data.vigilancia_google;
+            actualizarBotonVigilancia();
+          }
+
+          renderizarAlertasGoogle(data.alertas || []);
 
           var maquinas = data.maquinas || [];
           maquinas.sort(function(a, b) {
@@ -1696,7 +2177,14 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
         if url.path == "/api/status":
             with lock_estado:
                 lista = list(maquinas.values())
-            self.responder_json({"ip": IP_DOCENTE, "maquinas": lista})
+                alertas_copia = list(alertas_busquedas)
+                vg = vigilancia_google
+            self.responder_json({
+                "ip": IP_DOCENTE,
+                "maquinas": lista,
+                "alertas": alertas_copia,
+                "vigilancia_google": vg
+            })
             return
 
         if url.path == "/api/poll":
@@ -1725,6 +2213,7 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
+        global vigilancia_google
         url = urllib.parse.urlparse(self.path)
         length = int(self.headers.get("Content-Length", 0))
         body = self.rfile.read(length) if length > 0 else b"{}"
@@ -1733,6 +2222,30 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
             data = json.loads(body.decode("utf-8"))
         except Exception:
             data = {}
+
+        if url.path == "/api/toggle_google_guard":
+            with lock_estado:
+                if "enabled" in data:
+                    vigilancia_google = bool(data["enabled"])
+                else:
+                    vigilancia_google = not vigilancia_google
+                cola_global.append({
+                    "action": "set_google_guard",
+                    "params": {"enabled": vigilancia_google},
+                    "time": time.time(),
+                    "seq": len(cola_global) + 1
+                })
+                vg = vigilancia_google
+            self.responder_json({"status": "ok", "vigilancia_google": vg})
+            return
+
+        if url.path == "/api/clear_alerts":
+            with lock_estado:
+                alertas_busquedas.clear()
+                for m in maquinas.values():
+                    m["last_google_alert"] = ""
+            self.responder_json({"status": "ok"})
+            return
 
         if url.path == "/api/set_number":
             mid = data.get("id")
@@ -1756,6 +2269,9 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
         if url.path == "/api/ping":
             mid = data.get("id")
             num_reportado = str(data.get("number", "")).strip()
+            ventana_activa = str(data.get("active_window", "")).strip()
+            alerta_google = data.get("google_alert")
+
             if mid:
                 with lock_estado:
                     num_asignado = maquinas_numeros.get(mid)
@@ -1776,6 +2292,8 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                             "ip": self.client_address[0],
                             "os": data.get("os", "Desconocido"),
                             "locked": data.get("locked", False),
+                            "active_window": ventana_activa,
+                            "last_google_alert": "",
                             "online": True,
                             "last_seen": time.time(),
                             "last_global_seq": len(cola_global)
@@ -1786,10 +2304,30 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         m["online"] = True
                         m["ip"] = self.client_address[0]
                         m["number"] = num_asignado
+                        if ventana_activa:
+                            m["active_window"] = ventana_activa
                         if "locked" in data:
                             m["locked"] = data["locked"]
 
-            self.responder_json({"status": "ok"})
+                    if alerta_google and vigilancia_google:
+                        q_str = str(alerta_google).strip()
+                        maquinas[mid]["last_google_alert"] = q_str
+                        alerta_obj = {
+                            "id": mid,
+                            "number": num_asignado,
+                            "hostname": maquinas[mid].get("hostname", mid),
+                            "query": q_str,
+                            "hora": time.strftime("%H:%M:%S"),
+                            "ts": time.time()
+                        }
+                        alertas_busquedas.insert(0, alerta_obj)
+                        if len(alertas_busquedas) > 40:
+                            del alertas_busquedas[40:]
+                        print(f"  [🚨 ALERTA GOOGLE] PC {num_asignado} ({maquinas[mid]['hostname']}) buscó: \"{q_str}\"", flush=True)
+
+                    vg = vigilancia_google
+
+            self.responder_json({"status": "ok", "vigilancia_google": vg})
             return
 
         if url.path == "/api/comando":

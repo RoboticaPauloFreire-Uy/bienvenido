@@ -9,7 +9,9 @@ Descubre automáticamente la IP del docente por:
   2. Faro UDP broadcast (puerto 5005)
   3. Escaneo ultra-rápido multi-hilo de la subred local (puerto 5000)
   4. Entrada manual como respaldo
-Ejecuta bloqueo de pantalla (Modo Atención), apertura de proyectos web, avisos y silencio.
+Ejecuta bloqueo de pantalla (Modo Atención), control de volumen (50%),
+detección de búsquedas no permitidas en Google, reporte de ventana activa en vivo,
+apertura de proyectos web, avisos y juegos offline.
 """
 
 import os
@@ -81,6 +83,9 @@ NUMERO_MAQUINA = cargar_numero_local()
 servidor_docente_url = None
 bloqueado = False
 ventana_bloqueo = None
+vigilancia_google_activa = True
+ultima_busqueda_alertada = ""
+ultimo_tiempo_alerta = 0.0
 
 def obtener_mi_subred():
     """Detecta la IP local de esta máquina para escanear la subred."""
@@ -336,20 +341,253 @@ def mostrar_mensaje_emergente(texto):
     except Exception as e:
         print(f"  📢 AVISO DEL DOCENTE: {texto}", flush=True)
 
-def silenciar_audio():
-    """Silencia el volumen del equipo."""
+def mostrar_advertencia_busqueda(busqueda):
+    """Muestra una advertencia inmediata en pantalla cuando el alumno intenta buscar en Google."""
+    if not tk_root:
+        print(f"\n  🚫 BÚSQUEDA NO PERMITIDA: {busqueda}\n", flush=True)
+        return
+
+    def _popup_alerta():
+        try:
+            if SISTEMA_OPERATIVO == "Windows":
+                import winsound
+                winsound.MessageBeep(winsound.MB_ICONHAND)
+            else:
+                print("\a")
+        except Exception:
+            pass
+
+        pop = tk.Toplevel(tk_root)
+        pop.title("⚠️ Búsqueda No Permitida · Regla del Aula")
+        pop.configure(bg="#450A0A")
+        pop.attributes("-topmost", True)
+        pop.geometry("520x310")
+        pop.resizable(False, False)
+
+        pop.update_idletasks()
+        ancho = pop.winfo_width()
+        alto = pop.winfo_height()
+        x = (pop.winfo_screenwidth() // 2) - (ancho // 2)
+        y = (pop.winfo_screenheight() // 2) - (alto // 2)
+        pop.geometry(f"{ancho}x{alto}+{x}+{y}")
+
+        frame = tk.Frame(pop, bg="#450A0A", padx=22, pady=20)
+        frame.pack(fill="both", expand=True)
+
+        lbl_head = tk.Label(
+            frame,
+            text="🚫 BÚSQUEDA EN GOOGLE NO PERMITIDA",
+            font=("Arial", 15, "bold"),
+            bg="#450A0A",
+            fg="#FCA5A5"
+        )
+        lbl_head.pack(anchor="w", pady=(0, 10))
+
+        lbl_txt = tk.Label(
+            frame,
+            text="En esta clase no está permitido realizar búsquedas en Google.\nSe cerró la pestaña y se notificó al profesor tu búsqueda:",
+            font=("Arial", 12),
+            bg="#450A0A",
+            fg="#FEF2F2",
+            wraplength=470,
+            justify="left"
+        )
+        lbl_txt.pack(anchor="w", pady=(0, 12))
+
+        caja_query = tk.Label(
+            frame,
+            text=f'"{busqueda}"',
+            font=("Arial", 13, "bold"),
+            bg="#7F1D1D",
+            fg="#FDE047",
+            padx=12,
+            pady=8,
+            wraplength=450,
+            justify="center"
+        )
+        caja_query.pack(fill="x", pady=(0, 16))
+
+        btn = tk.Button(
+            frame,
+            text="Entendido, volver a la actividad",
+            font=("Arial", 11, "bold"),
+            bg="#EF4444",
+            fg="#FFF",
+            activebackground="#DC2626",
+            relief="flat",
+            padx=18,
+            pady=8,
+            cursor="hand2",
+            command=pop.destroy
+        )
+        btn.pack(anchor="e")
+
     try:
-        if SISTEMA_OPERATIVO == "Windows":
-            subprocess.run(
-                ["powershell", "-Command", "(New-Object -ComObject WScript.Shell).SendKeys([char]173)"],
-                capture_output=True,
-                creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, "CREATE_NO_WINDOW") else 0
-            )
-        elif SISTEMA_OPERATIVO == "Linux":
-            subprocess.run(["amixer", "set", "Master", "mute"], capture_output=True)
-            subprocess.run(["pactl", "set-sink-mute", "@DEFAULT_SINK@", "1"], capture_output=True)
+        tk_root.after(0, _popup_alerta)
     except Exception as e:
-        print(f"  [!] Error silenciando: {e}", flush=True)
+        print(f"  🚫 BÚSQUEDA NO PERMITIDA: {busqueda} ({e})", flush=True)
+
+# ══════════════════════════════════════════════════════════════
+# CONTROL DE VOLUMEN (50% REGLA DE LA SALA, 25%, 0%)
+# ══════════════════════════════════════════════════════════════
+
+def fijar_volumen(nivel=50):
+    """Ajusta el volumen maestro del sistema al porcentaje exacto indicado (ej: 50%)."""
+    try:
+        nivel_int = max(0, min(100, int(nivel)))
+        print(f"  [🔊] Ajustando volumen del equipo al {nivel_int}%...", flush=True)
+        if SISTEMA_OPERATIVO == "Windows":
+            import ctypes
+            user32 = ctypes.windll.user32
+            VK_VOLUME_MUTE = 0xAD
+            VK_VOLUME_DOWN = 0xAE
+            VK_VOLUME_UP = 0xAF
+            KEYEVENTF_KEYUP = 0x0002
+
+            # Si el nivel es 0, bajamos todo el volumen a 0
+            for _ in range(50):
+                user32.keybd_event(VK_VOLUME_DOWN, 0, 0, 0)
+                user32.keybd_event(VK_VOLUME_DOWN, 0, KEYEVENTF_KEYUP, 0)
+
+            pasos_subir = int(round(nivel_int / 2.0))
+            for _ in range(pasos_subir):
+                user32.keybd_event(VK_VOLUME_UP, 0, 0, 0)
+                user32.keybd_event(VK_VOLUME_UP, 0, KEYEVENTF_KEYUP, 0)
+        elif SISTEMA_OPERATIVO == "Linux":
+            subprocess.run(["pactl", "set-sink-mute", "@DEFAULT_SINK@", "0"], capture_output=True)
+            subprocess.run(["pactl", "set-sink-volume", "@DEFAULT_SINK@", f"{nivel_int}%"], capture_output=True)
+            subprocess.run(["amixer", "set", "Master", "unmute"], capture_output=True)
+            subprocess.run(["amixer", "set", "Master", f"{nivel_int}%"], capture_output=True)
+    except Exception as e:
+        print(f"  [!] Error ajustando volumen a {nivel}%: {e}", flush=True)
+
+def silenciar_audio():
+    """Silencia el volumen del equipo (0%)."""
+    fijar_volumen(0)
+
+# ══════════════════════════════════════════════════════════════
+# MONITOREO DE VENTANA ACTIVA Y DETECTOR DE BÚSQUEDAS EN GOOGLE
+# ══════════════════════════════════════════════════════════════
+
+PATRON_BUSQUEDA = re.compile(
+    r'^(.+?)\s*[-–—|]\s*(?:Buscar con Google|Búsqueda de Google|Google Search|Bing|Microsoft Bing|Yahoo Search|DuckDuckGo)',
+    re.IGNORECASE
+)
+
+def extraer_busqueda_prohibida(titulo):
+    """Si el título de una ventana corresponde a una búsqueda en Google/Bing/etc., devuelve lo que buscó."""
+    if not titulo:
+        return None
+    t = titulo.strip()
+    m = PATRON_BUSQUEDA.search(t)
+    if m:
+        query = m.group(1).strip()
+        if query:
+            return query
+    # También detectar si entraron a la portada de Google directamente para buscar
+    t_low = t.lower()
+    for sufijo in ("google - google chrome", "google - microsoft edge", "google — mozilla firefox", "google - brave", "google - opera"):
+        if t_low == sufijo or t_low.startswith("google - microsoft​ edge"):
+            return "(Abrió la página principal de Google)"
+    return None
+
+def limpiar_titulo_ventana(titulo):
+    """Limpia caracteres invisibles y acorta títulos largos para mostrar en la tarjeta del docente."""
+    if not titulo:
+        return "Escritorio / Sin ventana activa"
+    limpio = re.sub(r'[\u200b-\u200f\u202a-\u202e]', '', titulo).strip()
+    if not limpio:
+        return "Escritorio / Sin ventana activa"
+    if len(limpio) > 68:
+        limpio = limpio[:65] + "..."
+    return limpio
+
+def cerrar_pestana_activa_windows():
+    """Envía Ctrl+W a la ventana activa del navegador para cerrar la búsqueda no permitida."""
+    if SISTEMA_OPERATIVO != "Windows":
+        return
+    try:
+        import ctypes
+        user32 = ctypes.windll.user32
+        VK_CONTROL = 0x11
+        VK_W = 0x57
+        KEYEVENTF_KEYUP = 0x0002
+        user32.keybd_event(VK_CONTROL, 0, 0, 0)
+        user32.keybd_event(VK_W, 0, 0, 0)
+        time.sleep(0.04)
+        user32.keybd_event(VK_W, 0, KEYEVENTF_KEYUP, 0)
+        user32.keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0)
+    except Exception:
+        pass
+
+def obtener_ventana_activa_y_busqueda():
+    """
+    Obtiene el título de la ventana que el alumno está mirando en vivo y
+    detecta si realizó alguna búsqueda en Google.
+    """
+    global ultima_busqueda_alertada, ultimo_tiempo_alerta
+    ventana_activa = "Escritorio / Sin ventana activa"
+    busqueda_detectada = None
+    busqueda_en_primer_plano = False
+
+    if SISTEMA_OPERATIVO == "Windows":
+        try:
+            import ctypes
+            from ctypes import wintypes
+            user32 = ctypes.windll.user32
+
+            # 1. Leer la ventana en primer plano (lo que el alumno está viendo ahora mismo)
+            hwnd_fg = user32.GetForegroundWindow()
+            if hwnd_fg:
+                length = user32.GetWindowTextLengthW(hwnd_fg)
+                if length > 0:
+                    buf = ctypes.create_unicode_buffer(length + 1)
+                    user32.GetWindowTextW(hwnd_fg, buf, length + 1)
+                    titulo_fg = buf.value
+                    ventana_activa = limpiar_titulo_ventana(titulo_fg)
+                    q = extraer_busqueda_prohibida(titulo_fg)
+                    if q:
+                        busqueda_detectada = q
+                        busqueda_en_primer_plano = True
+
+            # 2. Si no está en primer plano, revisar otras ventanas abiertas por si tiene Google abierto atrás
+            if not busqueda_detectada and vigilancia_google_activa:
+                encontradas = []
+                WNDENUMPROC = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+                def _enum_cb(hwnd, lParam):
+                    if user32.IsWindowVisible(hwnd):
+                        l = user32.GetWindowTextLengthW(hwnd)
+                        if l > 0:
+                            b = ctypes.create_unicode_buffer(l + 1)
+                            user32.GetWindowTextW(hwnd, b, l + 1)
+                            q_win = extraer_busqueda_prohibida(b.value)
+                            if q_win:
+                                encontradas.append(q_win)
+                                return False
+                    return True
+                cb_func = WNDENUMPROC(_enum_cb)
+                user32.EnumWindows(cb_func, 0)
+                if encontradas:
+                    busqueda_detectada = encontradas[0]
+        except Exception:
+            pass
+
+    alerta_para_enviar = None
+    if vigilancia_google_activa and busqueda_detectada:
+        ahora = time.time()
+        # Si la pestaña con la búsqueda está activa en primer plano, cerrarla con Ctrl+W
+        if busqueda_en_primer_plano:
+            cerrar_pestana_activa_windows()
+
+        # Evitar enviar la misma alerta repetida en menos de 12 segundos
+        if busqueda_detectada != ultima_busqueda_alertada or (ahora - ultimo_tiempo_alerta) > 12.0:
+            ultima_busqueda_alertada = busqueda_detectada
+            ultimo_tiempo_alerta = ahora
+            alerta_para_enviar = busqueda_detectada
+            print(f"  [ALERTA] Búsqueda en Google detectada y bloqueada: '{busqueda_detectada}'", flush=True)
+            mostrar_advertencia_busqueda(busqueda_detectada)
+
+    return ventana_activa, alerta_para_enviar
 
 def lanzar_juego_offline(juego):
     """Lanza los juegos offline integrados en los navegadores (100% sin necesidad de internet)."""
@@ -383,6 +621,7 @@ def apagar_equipo():
 # ══════════════════════════════════════════════════════════════
 
 def ejecutar_comando(cmd):
+    global vigilancia_google_activa
     action = cmd.get("action")
     params = cmd.get("params", {})
     print(f"  [>] Ejecutando comando del docente: {action}", flush=True)
@@ -402,6 +641,13 @@ def ejecutar_comando(cmd):
             mostrar_mensaje_emergente(texto)
     elif action == "mute":
         silenciar_audio()
+    elif action == "set_volume":
+        nivel = params.get("level", 50)
+        fijar_volumen(nivel)
+    elif action == "set_google_guard":
+        vigilancia_google_activa = bool(params.get("enabled", True))
+        estado_str = "ACTIVADO" if vigilancia_google_activa else "DESACTIVADO"
+        print(f"  [🛡️] Detector de búsquedas en Google: {estado_str}", flush=True)
     elif action == "set_number":
         nuevo_num = params.get("number")
         if nuevo_num is not None:
@@ -414,7 +660,7 @@ def ejecutar_comando(cmd):
 
 def ciclo_comunicacion():
     """Hilo de red que envía pings y consulta comandos periódicamente."""
-    global servidor_docente_url, bloqueado
+    global servidor_docente_url, bloqueado, vigilancia_google_activa
     conectado_previamente = False
 
     while True:
@@ -429,14 +675,22 @@ def ciclo_comunicacion():
             servidor_docente_url = descubrir_servidor()
 
         try:
-            # 1. Enviar Ping de presencia
-            ping_data = json.dumps({
+            # Inspeccionar ventana activa y verificar si hay búsqueda no permitida en Google
+            ventana_activa, alerta_google = obtener_ventana_activa_y_busqueda()
+
+            # 1. Enviar Ping de presencia + ventana activa + alerta de búsqueda si hubo
+            ping_payload = {
                 "id": MACHINE_ID,
                 "hostname": HOSTNAME,
                 "number": NUMERO_MAQUINA,
                 "os": SISTEMA_OPERATIVO,
-                "locked": bloqueado
-            }).encode("utf-8")
+                "locked": bloqueado,
+                "active_window": ventana_activa
+            }
+            if alerta_google:
+                ping_payload["google_alert"] = alerta_google
+
+            ping_data = json.dumps(ping_payload).encode("utf-8")
 
             req_ping = urllib.request.Request(
                 f"{servidor_docente_url}/api/ping",
@@ -444,7 +698,14 @@ def ciclo_comunicacion():
                 headers={"Content-Type": "application/json", "Connection": "close"}
             )
             with urllib.request.urlopen(req_ping, timeout=4.0) as resp:
-                _ = resp.read()
+                raw_ping = resp.read().decode("utf-8")
+                if raw_ping:
+                    try:
+                        resp_ping = json.loads(raw_ping)
+                        if "vigilancia_google" in resp_ping:
+                            vigilancia_google_activa = bool(resp_ping["vigilancia_google"])
+                    except Exception:
+                        pass
 
             if not conectado_previamente:
                 print(f"  [OK] ¡Conectado exitosamente con el docente! ({servidor_docente_url})", flush=True)
