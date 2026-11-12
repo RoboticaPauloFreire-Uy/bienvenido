@@ -1429,6 +1429,16 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             <span>Canva</span>
             <small>Diseño & Pósters</small>
           </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://surf.jackbuehner.com/')">
+            <i class="fas fa-water" style="color:#38BDF8;"></i>
+            <span>Surf Edge</span>
+            <small>Juego con Internet</small>
+          </button>
+          <button class="proj-btn" onclick="lanzarUrlSeleccion('https://chromedino.com/')">
+            <i class="fas fa-dragon" style="color:#10B981;"></i>
+            <span>Dino Google</span>
+            <small>Juego con Internet</small>
+          </button>
         </div>
       </div>
 
@@ -1444,12 +1454,12 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════
-         PESTAÑA 3: RECREO & JUEGOS SIN INTERNET
+         PESTAÑA 3: RECREO (JUEGOS CON INTERNET Y SIN INTERNET)
          ═══════════════════════════════════════════════════════════ -->
     <section class="tab-panel" id="panel-juegos">
       <div class="section-card">
         <div class="section-header">
-          <div class="section-title"><i class="fas fa-gamepad"></i> Juegos Nativos (Funcionan con o sin Internet)</div>
+          <div class="section-title"><i class="fas fa-globe"></i> Juegos de Recreo CON Internet (Apertura Instantánea)</div>
           <div class="target-selector">
             <span>Lanzar en:</span>
             <select id="game-target-select">
@@ -1459,19 +1469,42 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         </div>
 
         <div class="games-grid">
-          <button class="game-card game-surf" onclick="lanzarJuegoSeleccion('surf')">
+          <button class="game-card game-surf" onclick="lanzarJuegoWebSeleccion('https://surf.jackbuehner.com/')">
             <div class="game-icon">🏄‍♂️</div>
             <div class="game-info">
-              <h4>Surf en Microsoft Edge</h4>
-              <p>Abre <strong>edge://surf</strong> al instante en pantalla (carreras de olas, obstáculos y pulpo).</p>
+              <h4>Surf Edge (Con Internet)</h4>
+              <p>Abre el juego de <strong>Surf de Edge</strong> directo por web en cualquier navegador.</p>
             </div>
           </button>
 
-          <button class="game-card game-dino" onclick="lanzarJuegoSeleccion('dino')">
+          <button class="game-card game-dino" style="background:linear-gradient(135deg, #059669 0%, #047857 100%);" onclick="lanzarJuegoWebSeleccion('https://chromedino.com/')">
             <div class="game-icon">🦖</div>
             <div class="game-info">
-              <h4>Dinosaurio en Chrome</h4>
-              <p>Abre <strong>chrome://dino</strong> al instante para saltar cactus offline.</p>
+              <h4>Dino de Google (Con Internet)</h4>
+              <p>Abre el <strong>Dinosaurio T-Rex de Google</strong> directo por web en 1 toque.</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title"><i class="fas fa-wifi-slash"></i> Modo Sin Internet (Internos del Navegador)</div>
+        </div>
+        <div class="games-grid">
+          <button class="game-card" style="background:#1E293B;" onclick="lanzarJuegoSeleccion('surf')">
+            <div class="game-icon">🌊</div>
+            <div class="game-info">
+              <h4>Surf Offline (edge://surf)</h4>
+              <p>Usa el juego interno de Microsoft Edge cuando no hay conexión a internet.</p>
+            </div>
+          </button>
+
+          <button class="game-card" style="background:#1E293B;" onclick="lanzarJuegoSeleccion('dino')">
+            <div class="game-icon">🌵</div>
+            <div class="game-info">
+              <h4>Dino Offline (chrome://dino)</h4>
+              <p>Usa el juego interno de Google Chrome cuando no hay conexión a internet.</p>
             </div>
           </button>
         </div>
@@ -1612,11 +1645,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         <button class="aux-btn" style="background:#334155;padding:12px;" onclick="enviarAccionIndividual('set_volume', {level:0})">
           <i class="fas fa-volume-mute" style="color:#A78BFA;"></i> Silenciar solo esta PC (0%)
         </button>
-        <button class="aux-btn" style="background:#0284C7;border-color:#38BDF8;padding:12px;" onclick="enviarAccionIndividual('launch_game', {game:'surf'})">
-          <i class="fas fa-water"></i> Abrir Surf (Edge) solo en esta PC
+        <button class="aux-btn" style="background:#0284C7;border-color:#38BDF8;padding:12px;" onclick="enviarAccionIndividual('open_url', {url:'https://surf.jackbuehner.com/'})">
+          <i class="fas fa-water"></i> Abrir Surf Edge (Con Internet) en esta PC
         </button>
-        <button class="aux-btn" style="background:#475569;border-color:#94A3B8;padding:12px;" onclick="enviarAccionIndividual('launch_game', {game:'dino'})">
-          <i class="fas fa-dragon" style="color:#FBBF24;"></i> Abrir Dino (Chrome) solo en esta PC
+        <button class="aux-btn" style="background:#059669;border-color:#34D399;padding:12px;" onclick="enviarAccionIndividual('open_url', {url:'https://chromedino.com/'})">
+          <i class="fas fa-dragon" style="color:#FDE047;"></i> Abrir Dino Google (Con Internet) en esta PC
         </button>
         <button class="aux-btn" style="background:#1E293B;border-color:#3B82F6;padding:12px;" onclick="enviarAccionIndividual('open_url', {url:'https://roboticapaulofreire-uy.github.io/bienvenido/'})">
           <i class="fas fa-newspaper" style="color:#F59E0B;"></i> Abrir El Diario solo en esta PC
@@ -1904,6 +1937,12 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
       var sel = document.getElementById('game-target-select');
       var target = sel ? sel.value : 'all';
       enviarComando(target, 'launch_game', { game: game });
+    }
+
+    function lanzarJuegoWebSeleccion(url) {
+      var sel = document.getElementById('game-target-select');
+      var target = sel ? sel.value : 'all';
+      enviarComando(target, 'open_url', { url: url });
     }
 
     function lanzarUrlSeleccion(url) {
