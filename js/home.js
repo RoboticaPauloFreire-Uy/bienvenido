@@ -1227,6 +1227,14 @@
         return !matchingRemote.some(function (rg) { return rg.id === bg.id; });
       }));
 
+      // Destacar primero Surf Edge y Dino de Google en la sección Juegos
+      var featuredIds = { 'g-edge-surf-online': 1, 'g-chrome-dino-online': 2 };
+      merged.sort(function (a, b) {
+        var pa = featuredIds[a && a.id] || 99;
+        var pb = featuredIds[b && b.id] || 99;
+        return pa - pb;
+      });
+
       cloned.games = merged;
       return cloned;
     });

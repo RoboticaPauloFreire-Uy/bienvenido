@@ -25,6 +25,8 @@
       case 'toxicode': return { label: 'Toxicode',      icon: '🔴', cls: 'pb-toxicode'  };
       case 'runmarco': return { label: 'Run Marco!',    icon: '🐒', cls: 'pb-runmarco'  };
       case 'grinch':   return { label: 'Hour of Code',  icon: '🎄', cls: 'pb-grinch'    };
+      case 'edgesurf': return { label: 'Edge Surf',     icon: '🏄‍♂️', cls: 'pb-web'       };
+      case 'chromedino': return { label: 'Google Dino', icon: '🦖', cls: 'pb-native'    };
       default:         return { label: 'Proyecto',      icon: '📁', cls: 'pb-default'  };
     }
   }

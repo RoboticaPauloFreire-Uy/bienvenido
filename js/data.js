@@ -35,6 +35,28 @@ const SCHOOL_DATA = {
       /* ---- JUEGOS PERMITIDOS (SALA DE 5 AÑOS) ---- */
       games: [
         {
+          id: "g-edge-surf-online",
+          title: "Surf de Microsoft Edge: Desafío en las Olas 🏄‍♂️🌊",
+          platform: "edgesurf",
+          externalUrl: "https://surf.jackbuehner.com/",
+          thumbnail: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
+          description: "¡El clásico juego de surf de Microsoft Edge disponible para jugar directo en el navegador con internet! Elegí tu surfista, navegá a toda velocidad por el océano usando las flechas del teclado, esquivá islas, rocas y boyas, saltá por las rampas y escapá del legendario Kraken.",
+          benefits: "Entrena los reflejos viso-motores, la coordinación con las flechas direccionales del teclado, el cálculo de trayectorias en movimiento continuo y la toma rápida de decisiones.",
+          tags: ["Edge Surf", "Olas", "Reflejos", "Teclado", "Recreo", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-chrome-dino-online",
+          title: "Dinosaurio de Google: Carrera T-Rex en el Desierto 🦖🌵",
+          platform: "chromedino",
+          externalUrl: "https://chromedino.com/",
+          thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+          description: "¡El famoso Dinosaurio T-Rex de Google Chrome listo para jugar con internet! Presioná la barra espaciadora o la flecha hacia arriba para saltar cactus y agachate con la flecha hacia abajo para esquivar los pterodáctilos a medida que la velocidad aumenta.",
+          benefits: "Desarrolla el ritmo, la sincronización ojo-mano con el teclado (barra espaciadora y flechas), la atención sostenida y la anticipación de obstáculos a velocidad creciente.",
+          tags: ["Google Dino", "T-Rex", "Arcade", "Teclado", "Reflejos", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
           id: "g-mix-move-ai-2025",
           title: "Mix & Move AI: Fiesta de Baile con IA 🤖💃",
           platform: "codeorg",
@@ -880,6 +902,28 @@ const SCHOOL_DATA = {
       description: "Títeres de cartón y personajes interactivos: unimos manualidades recicladas con primeras secuencias en bloques.",
 
       games: [
+        {
+          id: "g-edge-surf-online",
+          title: "Surf de Microsoft Edge: Desafío en las Olas 🏄‍♂️🌊",
+          platform: "edgesurf",
+          externalUrl: "https://surf.jackbuehner.com/",
+          thumbnail: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
+          description: "¡El clásico juego de surf de Microsoft Edge disponible para jugar directo en el navegador con internet! Elegí tu surfista, navegá a toda velocidad por el océano usando las flechas del teclado, esquivá islas, rocas y boyas, saltá por las rampas y escapá del legendario Kraken.",
+          benefits: "Entrena los reflejos viso-motores, la coordinación con las flechas direccionales del teclado, el cálculo de trayectorias en movimiento continuo y la toma rápida de decisiones.",
+          tags: ["Edge Surf", "Olas", "Reflejos", "Teclado", "Recreo", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-chrome-dino-online",
+          title: "Dinosaurio de Google: Carrera T-Rex en el Desierto 🦖🌵",
+          platform: "chromedino",
+          externalUrl: "https://chromedino.com/",
+          thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+          description: "¡El famoso Dinosaurio T-Rex de Google Chrome listo para jugar con internet! Presioná la barra espaciadora o la flecha hacia arriba para saltar cactus y agachate con la flecha hacia abajo para esquivar los pterodáctilos a medida que la velocidad aumenta.",
+          benefits: "Desarrolla el ritmo, la sincronización ojo-mano con el teclado (barra espaciadora y flechas), la atención sostenida y la anticipación de obstáculos a velocidad creciente.",
+          tags: ["Google Dino", "T-Rex", "Arcade", "Teclado", "Reflejos", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
         {
           id: "g-mix-move-ai-2025",
           title: "Mix & Move AI: Fiesta de Baile con IA 🤖💃",
@@ -1736,6 +1780,28 @@ const SCHOOL_DATA = {
 
       games: [
         {
+          id: "g-edge-surf-online",
+          title: "Surf de Microsoft Edge: Desafío en las Olas 🏄‍♂️🌊",
+          platform: "edgesurf",
+          externalUrl: "https://surf.jackbuehner.com/",
+          thumbnail: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
+          description: "¡El clásico juego de surf de Microsoft Edge disponible para jugar directo en el navegador con internet! Elegí tu surfista, navegá a toda velocidad por el océano usando las flechas del teclado, esquivá islas, rocas y boyas, saltá por las rampas y escapá del legendario Kraken.",
+          benefits: "Entrena los reflejos viso-motores, la coordinación con las flechas direccionales del teclado, el cálculo de trayectorias en movimiento continuo y la toma rápida de decisiones.",
+          tags: ["Edge Surf", "Olas", "Reflejos", "Teclado", "Recreo", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-chrome-dino-online",
+          title: "Dinosaurio de Google: Carrera T-Rex en el Desierto 🦖🌵",
+          platform: "chromedino",
+          externalUrl: "https://chromedino.com/",
+          thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+          description: "¡El famoso Dinosaurio T-Rex de Google Chrome listo para jugar con internet! Presioná la barra espaciadora o la flecha hacia arriba para saltar cactus y agachate con la flecha hacia abajo para esquivar los pterodáctilos a medida que la velocidad aumenta.",
+          benefits: "Desarrolla el ritmo, la sincronización ojo-mano con el teclado (barra espaciadora y flechas), la atención sostenida y la anticipación de obstáculos a velocidad creciente.",
+          tags: ["Google Dino", "T-Rex", "Arcade", "Teclado", "Reflejos", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
           id: "g-music-jam-2024",
           title: "Music Jam 2024 🎵🎧",
           platform: "codeorg",
@@ -1940,6 +2006,28 @@ const SCHOOL_DATA = {
       description: "Inventos con BBC micro:bit y cartón: guitarras con cables cocodrilo, botones táctiles y MakeCode.",
 
       games: [
+        {
+          id: "g-edge-surf-online",
+          title: "Surf de Microsoft Edge: Desafío en las Olas 🏄‍♂️🌊",
+          platform: "edgesurf",
+          externalUrl: "https://surf.jackbuehner.com/",
+          thumbnail: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
+          description: "¡El clásico juego de surf de Microsoft Edge disponible para jugar directo en el navegador con internet! Elegí tu surfista, navegá a toda velocidad por el océano usando las flechas del teclado, esquivá islas, rocas y boyas, saltá por las rampas y escapá del legendario Kraken.",
+          benefits: "Entrena los reflejos viso-motores, la coordinación con las flechas direccionales del teclado, el cálculo de trayectorias en movimiento continuo y la toma rápida de decisiones.",
+          tags: ["Edge Surf", "Olas", "Reflejos", "Teclado", "Recreo", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-chrome-dino-online",
+          title: "Dinosaurio de Google: Carrera T-Rex en el Desierto 🦖🌵",
+          platform: "chromedino",
+          externalUrl: "https://chromedino.com/",
+          thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+          description: "¡El famoso Dinosaurio T-Rex de Google Chrome listo para jugar con internet! Presioná la barra espaciadora o la flecha hacia arriba para saltar cactus y agachate con la flecha hacia abajo para esquivar los pterodáctilos a medida que la velocidad aumenta.",
+          benefits: "Desarrolla el ritmo, la sincronización ojo-mano con el teclado (barra espaciadora y flechas), la atención sostenida y la anticipación de obstáculos a velocidad creciente.",
+          tags: ["Google Dino", "T-Rex", "Arcade", "Teclado", "Reflejos", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
         {
           id: "g-music-jam-2024",
           title: "Music Jam 2024 🎵🎧",
@@ -2169,6 +2257,28 @@ const SCHOOL_DATA = {
 
       games: [
         {
+          id: "g-edge-surf-online",
+          title: "Surf de Microsoft Edge: Desafío en las Olas 🏄‍♂️🌊",
+          platform: "edgesurf",
+          externalUrl: "https://surf.jackbuehner.com/",
+          thumbnail: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
+          description: "¡El clásico juego de surf de Microsoft Edge disponible para jugar directo en el navegador con internet! Elegí tu surfista, navegá a toda velocidad por el océano usando las flechas del teclado, esquivá islas, rocas y boyas, saltá por las rampas y escapá del legendario Kraken.",
+          benefits: "Entrena los reflejos viso-motores, la coordinación con las flechas direccionales del teclado, el cálculo de trayectorias en movimiento continuo y la toma rápida de decisiones.",
+          tags: ["Edge Surf", "Olas", "Reflejos", "Teclado", "Recreo", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-chrome-dino-online",
+          title: "Dinosaurio de Google: Carrera T-Rex en el Desierto 🦖🌵",
+          platform: "chromedino",
+          externalUrl: "https://chromedino.com/",
+          thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+          description: "¡El famoso Dinosaurio T-Rex de Google Chrome listo para jugar con internet! Presioná la barra espaciadora o la flecha hacia arriba para saltar cactus y agachate con la flecha hacia abajo para esquivar los pterodáctilos a medida que la velocidad aumenta.",
+          benefits: "Desarrolla el ritmo, la sincronización ojo-mano con el teclado (barra espaciadora y flechas), la atención sostenida y la anticipación de obstáculos a velocidad creciente.",
+          tags: ["Google Dino", "T-Rex", "Arcade", "Teclado", "Reflejos", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
           id: "g-music-jam-2024",
           title: "Music Jam 2024 🎵🎧",
           platform: "codeorg",
@@ -2332,6 +2442,28 @@ const SCHOOL_DATA = {
 
       /* ---- JUEGOS ---- */
       games: [
+        {
+          id: "g-edge-surf-online",
+          title: "Surf de Microsoft Edge: Desafío en las Olas 🏄‍♂️🌊",
+          platform: "edgesurf",
+          externalUrl: "https://surf.jackbuehner.com/",
+          thumbnail: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
+          description: "¡El clásico juego de surf de Microsoft Edge disponible para jugar directo en el navegador con internet! Elegí tu surfista, navegá a toda velocidad por el océano usando las flechas del teclado, esquivá islas, rocas y boyas, saltá por las rampas y escapá del legendario Kraken.",
+          benefits: "Entrena los reflejos viso-motores, la coordinación con las flechas direccionales del teclado, el cálculo de trayectorias en movimiento continuo y la toma rápida de decisiones.",
+          tags: ["Edge Surf", "Olas", "Reflejos", "Teclado", "Recreo", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-chrome-dino-online",
+          title: "Dinosaurio de Google: Carrera T-Rex en el Desierto 🦖🌵",
+          platform: "chromedino",
+          externalUrl: "https://chromedino.com/",
+          thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+          description: "¡El famoso Dinosaurio T-Rex de Google Chrome listo para jugar con internet! Presioná la barra espaciadora o la flecha hacia arriba para saltar cactus y agachate con la flecha hacia abajo para esquivar los pterodáctilos a medida que la velocidad aumenta.",
+          benefits: "Desarrolla el ritmo, la sincronización ojo-mano con el teclado (barra espaciadora y flechas), la atención sostenida y la anticipación de obstáculos a velocidad creciente.",
+          tags: ["Google Dino", "T-Rex", "Arcade", "Teclado", "Reflejos", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
         {
           id: "g-music-jam-2024",
           title: "Music Jam 2024 🎵🎧",
@@ -2528,6 +2660,28 @@ const SCHOOL_DATA = {
       description: "Domótica y automatización: maquetas inteligentes de cartón, sensores de luz/temperatura y JavaScript.",
 
       games: [
+        {
+          id: "g-edge-surf-online",
+          title: "Surf de Microsoft Edge: Desafío en las Olas 🏄‍♂️🌊",
+          platform: "edgesurf",
+          externalUrl: "https://surf.jackbuehner.com/",
+          thumbnail: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
+          description: "¡El clásico juego de surf de Microsoft Edge disponible para jugar directo en el navegador con internet! Elegí tu surfista, navegá a toda velocidad por el océano usando las flechas del teclado, esquivá islas, rocas y boyas, saltá por las rampas y escapá del legendario Kraken.",
+          benefits: "Entrena los reflejos viso-motores, la coordinación con las flechas direccionales del teclado, el cálculo de trayectorias en movimiento continuo y la toma rápida de decisiones.",
+          tags: ["Edge Surf", "Olas", "Reflejos", "Teclado", "Recreo", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-chrome-dino-online",
+          title: "Dinosaurio de Google: Carrera T-Rex en el Desierto 🦖🌵",
+          platform: "chromedino",
+          externalUrl: "https://chromedino.com/",
+          thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+          description: "¡El famoso Dinosaurio T-Rex de Google Chrome listo para jugar con internet! Presioná la barra espaciadora o la flecha hacia arriba para saltar cactus y agachate con la flecha hacia abajo para esquivar los pterodáctilos a medida que la velocidad aumenta.",
+          benefits: "Desarrolla el ritmo, la sincronización ojo-mano con el teclado (barra espaciadora y flechas), la atención sostenida y la anticipación de obstáculos a velocidad creciente.",
+          tags: ["Google Dino", "T-Rex", "Arcade", "Teclado", "Reflejos", "Online"],
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
+        },
         {
           id: "g-music-jam-2024",
           title: "Music Jam 2024 🎵🎧",
