@@ -312,26 +312,67 @@
       display: block;
     }
 
+    .pv-desktop-tabs {
+      display: none;
+    }
+
     @media (min-width: 960px) {
       .pv-app-container {
-        max-width: 1320px;
-        display: grid;
-        grid-template-columns: 480px 1fr;
-        gap: 20px;
-        padding: 20px 20px 40px 20px;
-        align-items: start;
+        max-width: 1240px;
+        padding: 20px 20px 48px 20px;
       }
-      #pv-panel-remote {
-        display: block !important;
-      }
-      .pv-right-desktop-col {
+      .pv-desktop-tabs {
         display: flex;
-        flex-direction: column;
-        gap: 20px;
+        align-items: center;
+        gap: 10px;
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 6px;
+        width: fit-content;
+        margin: 0 auto 20px auto;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
       }
-      #pv-panel-library,
-      #pv-panel-upload {
-        display: block !important;
+      .pv-dtab-btn {
+        border: none;
+        background: transparent;
+        color: #94A3B8;
+        font-family: inherit;
+        font-size: 0.94rem;
+        font-weight: 800;
+        padding: 11px 22px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+      }
+      .pv-dtab-btn:hover {
+        color: #F8FAFC;
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .pv-dtab-btn.active {
+        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        color: #FFFFFF;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      }
+      .pv-dtab-btn[data-tab="library"].active {
+        background: linear-gradient(135deg, #0284C7, #0369A1);
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      }
+      .pv-dtab-btn[data-tab="upload"].active {
+        background: linear-gradient(135deg, #16A34A, #15803D);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+      }
+      #pv-panel-remote.active,
+      #pv-panel-upload.active {
+        max-width: 780px;
+        margin: 0 auto;
+      }
+      #pv-panel-library.active {
+        max-width: 1180px;
+        margin: 0 auto;
       }
       .pv-bottom-nav {
         display: none !important;
@@ -1605,7 +1646,23 @@
   <!-- ══════════════════════════════════════════════
        CONTENIDO PRINCIPAL (DISEÑO APP MÓVIL + PC)
   ══════════════════════════════════════════════ -->
-  <main class="pv-app-container">
+  <main class="pv-app-container" id="pv-app-container">
+
+    <!-- Pestañas de escritorio para separar Reproducir, Biblioteca y Dar de Alta -->
+    <div class="pv-desktop-tabs" role="tablist" aria-label="Secciones del Control de Videos">
+      <button type="button" class="pv-dtab-btn active" data-tab="remote" role="tab" aria-selected="true">
+        <i class="fas fa-play-circle"></i>
+        <span>Reproducir</span>
+      </button>
+      <button type="button" class="pv-dtab-btn" data-tab="library" role="tab" aria-selected="false">
+        <i class="fas fa-film"></i>
+        <span>Biblioteca</span>
+      </button>
+      <button type="button" class="pv-dtab-btn" data-tab="upload" role="tab" aria-selected="false">
+        <i class="fas fa-plus-circle"></i>
+        <span>Dar de Alta</span>
+      </button>
+    </div>
 
     <!-- ─────────────────────────────────────────────
          PESTAÑA 1: MANDO REMOTO EN VIVO (PULGAR)
@@ -2094,6 +2151,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=95"></script>
-  <script src="js/profesor_videos.js?v=7"></script>
+  <script src="js/profesor_videos.js?v=9"></script>
 </body>
 </html>

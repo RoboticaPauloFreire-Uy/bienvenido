@@ -351,7 +351,7 @@
   }
 
   function setupMobileTabs() {
-    document.querySelectorAll('.pv-bnav-btn[data-tab]').forEach(function (btn) {
+    document.querySelectorAll('.pv-bnav-btn[data-tab], .pv-dtab-btn[data-tab]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         vibrateTap(20);
         switchMobileTab(btn.getAttribute('data-tab'));
@@ -362,6 +362,12 @@
   function switchMobileTab(tabId) {
     document.querySelectorAll('.pv-bnav-btn[data-tab]').forEach(function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+    });
+
+    document.querySelectorAll('.pv-dtab-btn[data-tab]').forEach(function (btn) {
+      var active = btn.getAttribute('data-tab') === tabId;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
     });
 
     var pRemote = document.getElementById('pv-panel-remote');
