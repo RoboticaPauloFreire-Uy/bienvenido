@@ -365,7 +365,10 @@
         background: linear-gradient(135deg, #16A34A, #15803D);
         box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
       }
-      #pv-panel-remote.active,
+      #pv-panel-remote.active {
+        max-width: 1240px;
+        margin: 0 auto;
+      }
       #pv-panel-upload.active {
         max-width: 780px;
         margin: 0 auto;
@@ -374,9 +377,80 @@
         max-width: 1180px;
         margin: 0 auto;
       }
+      .pv-remote-workspace {
+        display: grid;
+        grid-template-columns: 205px minmax(420px, 480px) 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      .pv-remote-sidebar {
+        display: flex !important;
+        flex-direction: column;
+        gap: 8px;
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 18px;
+        padding: 10px;
+        position: sticky;
+        top: 76px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      }
+      .pv-sidebar-heading {
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #94A3B8;
+        padding: 4px 8px 2px 8px;
+      }
+      .pv-side-btn {
+        border: 1px solid transparent;
+        background: transparent;
+        color: #CBD5E1;
+        font-family: inherit;
+        font-size: 0.88rem;
+        font-weight: 700;
+        padding: 11px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+        transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+      }
+      .pv-side-btn i {
+        width: 18px;
+        text-align: center;
+        font-size: 1rem;
+      }
+      .pv-side-btn:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #FFFFFF;
+      }
+      .pv-side-btn.active {
+        background: rgba(37, 99, 235, 0.22);
+        border-color: #3B82F6;
+        color: #FFFFFF;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      }
+      .pv-remote-player-col {
+        position: sticky;
+        top: 76px;
+      }
+      .pv-remote-tool-col .pv-tool-panel {
+        display: none;
+      }
+      .pv-remote-tool-col .pv-tool-panel.active {
+        display: block;
+      }
       .pv-bottom-nav {
         display: none !important;
       }
+    }
+
+    .pv-remote-sidebar {
+      display: none;
     }
 
     /* ══════════════════════════════════════════════
@@ -1668,7 +1742,33 @@
          PESTAÑA 1: MANDO REMOTO EN VIVO (PULGAR)
     ───────────────────────────────────────────── -->
     <section id="pv-panel-remote" class="pv-tab-panel active">
-      <div class="pv-surface-card">
+      <div class="pv-remote-workspace">
+        <aside class="pv-remote-sidebar" aria-label="Herramientas en vivo">
+          <span class="pv-sidebar-heading">Herramientas</span>
+          <button type="button" class="pv-side-btn active" data-tool="prompt">
+            <i class="fas fa-comment-dots" style="color:#FBBF24;"></i>
+            <span>Cartel / Consigna</span>
+          </button>
+          <button type="button" class="pv-side-btn" data-tool="schema">
+            <i class="fas fa-drafting-compass" style="color:#38BDF8;"></i>
+            <span>Láminas / Esquemas</span>
+          </button>
+          <button type="button" class="pv-side-btn" data-tool="quiz">
+            <i class="fas fa-poll" style="color:#F43F5E;"></i>
+            <span>Mini-Preguntas</span>
+          </button>
+          <button type="button" class="pv-side-btn" data-tool="markers">
+            <i class="fas fa-map-marker-alt" style="color:#60A5FA;"></i>
+            <span>Pasos del Video</span>
+          </button>
+          <button type="button" class="pv-side-btn" data-tool="quick">
+            <i class="fas fa-bolt" style="color:#4ADE80;"></i>
+            <span>Cambio Rápido</span>
+          </button>
+        </aside>
+
+        <div class="pv-remote-player-col">
+          <div class="pv-surface-card">
 
         <!-- Información del Video Actual + Botón para ver/ocultar monitor en el celular -->
         <div class="pv-now-header">
@@ -1770,8 +1870,11 @@
 
       </div>
 
-      <!-- TARJETA 2: CARTEL DE CONSIGNA / PREGUNTA EN PANTALLA -->
-      <div class="pv-surface-card">
+        </div>
+
+        <div class="pv-remote-tool-col">
+          <!-- TARJETA 2: CARTEL DE CONSIGNA / PREGUNTA EN PANTALLA -->
+          <div class="pv-surface-card pv-tool-panel active" data-tool-panel="prompt">
         <div class="pv-quick-deck-head">
           <h3 class="pv-quick-deck-title"><i class="fas fa-comment-dots" style="color:#FBBF24;"></i> Cartel / Pregunta en las Pantallas</h3>
         </div>
@@ -1807,7 +1910,7 @@
       </div>
 
       <!-- TARJETA 3: LÁMINA / ESQUEMA DEL PROYECTO SOBRE EL VIDEO EN PAUSA -->
-      <div class="pv-surface-card">
+      <div class="pv-surface-card pv-tool-panel" data-tool-panel="schema">
         <div class="pv-quick-deck-head">
           <h3 class="pv-quick-deck-title"><i class="fas fa-drafting-compass" style="color:#38BDF8;"></i> Mostrar Lámina / Esquema en Pausa</h3>
         </div>
@@ -1846,7 +1949,7 @@
       </div>
 
       <!-- TARJETA 4: MINI-PREGUNTA INTERACTIVA (VOTACIÓN RÁPIDA A / B / C) -->
-      <div class="pv-surface-card">
+      <div class="pv-surface-card pv-tool-panel" data-tool-panel="quiz">
         <div class="pv-quick-deck-head">
           <h3 class="pv-quick-deck-title"><i class="fas fa-poll" style="color:#F43F5E;"></i> Mini-Pregunta Interactiva (Votación A / B / C)</h3>
         </div>
@@ -1907,7 +2010,7 @@
       </div>
 
       <!-- TARJETA 5: PASOS DEL VIDEO (MARCADORES Y AUTO-PAUSA) -->
-      <div class="pv-surface-card">
+      <div class="pv-surface-card pv-tool-panel" data-tool-panel="markers">
         <div class="pv-markers-header">
           <h3 class="pv-quick-deck-title"><i class="fas fa-map-marker-alt" style="color:#60A5FA;"></i> Saltar a Pasos del Video</h3>
           <label class="pv-autopause-label">
@@ -1926,8 +2029,8 @@
         </div>
       </div>
 
-      <!-- TARJETA 4: LANZADOR RÁPIDO DE VIDEOS POR GRADO DIRECTO EN EL MANDO -->
-      <div class="pv-surface-card">
+      <!-- TARJETA 6: LANZADOR RÁPIDO DE VIDEOS POR GRADO DIRECTO EN EL MANDO -->
+      <div class="pv-surface-card pv-tool-panel" data-tool-panel="quick">
         <div class="pv-quick-deck-head">
           <h3 class="pv-quick-deck-title"><i class="fas fa-bolt" style="color:#4ADE80;"></i> Cambio Rápido de Video por Grado</h3>
         </div>
@@ -1942,6 +2045,8 @@
           <button type="button" class="pv-grade-pill-btn" data-qgrade="grado6">6° Grado</button>
         </div>
         <div class="pv-quick-list" id="pv-quick-list"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2151,6 +2256,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=95"></script>
-  <script src="js/profesor_videos.js?v=9"></script>
+  <script src="js/profesor_videos.js?v=10"></script>
 </body>
 </html>

@@ -357,6 +357,19 @@
         switchMobileTab(btn.getAttribute('data-tab'));
       });
     });
+
+    document.querySelectorAll('.pv-side-btn[data-tool]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        vibrateTap(15);
+        var toolId = btn.getAttribute('data-tool');
+        document.querySelectorAll('.pv-side-btn[data-tool]').forEach(function (b) {
+          b.classList.toggle('active', b.getAttribute('data-tool') === toolId);
+        });
+        document.querySelectorAll('.pv-remote-tool-col .pv-tool-panel[data-tool-panel]').forEach(function (panel) {
+          panel.classList.toggle('active', panel.getAttribute('data-tool-panel') === toolId);
+        });
+      });
+    });
   }
 
   function switchMobileTab(tabId) {
