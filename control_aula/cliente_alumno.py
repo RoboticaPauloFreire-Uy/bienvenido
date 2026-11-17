@@ -172,6 +172,8 @@ ventana_bloqueo = None
 vigilancia_google_activa = True
 ultima_busqueda_alertada = ""
 ultimo_tiempo_alerta = 0.0
+ultima_foto_base64 = ""
+DIR_EVIDENCIAS = os.path.join(DIR_BASE, "evidencias_busquedas")
 
 def obtener_mi_subred():
     """Detecta la IP local de esta máquina para escanear la subred."""
@@ -423,8 +425,69 @@ def mostrar_mensaje_emergente(texto):
     except Exception as e:
         print(f"  📢 AVISO DEL DOCENTE: {texto}", flush=True)
 
+def capturar_foto_evidencia(busqueda):
+    """
+    Toma una fotografía silenciosa con la cámara web del alumno (si cuenta con cámara)
+    y estampa la fecha, hora, máquina y la búsqueda detectada.
+    Guarda la imagen en DIR_EVIDENCIAS y almacena una versión en base64 para el docente.
+    """
+    global ultima_foto_base64
+    try:
+        import cv2
+        import base64
+
+        os.makedirs(DIR_EVIDENCIAS, exist_ok=True)
+
+        cap = cv2.VideoCapture(0)
+        if not cap or not cap.isOpened():
+            return None
+
+        ret = False
+        frame = None
+        for _ in range(2):
+            ret, frame = cap.read()
+        cap.release()
+
+        if not ret or frame is None:
+            return None
+
+        h, w = frame.shape[:2]
+
+        # Franja oscura inferior para texto informativo
+        overlay = frame.copy()
+        cv2.rectangle(overlay, (0, max(0, h - 60)), (w, h), (15, 23, 42), -1)
+        cv2.addWeighted(overlay, 0.8, frame, 0.2, 0, frame)
+
+        ts_str = time.strftime("%d/%m/%Y %H:%M:%S")
+        num_str = f"PC {NUMERO_MAQUINA}" if NUMERO_MAQUINA else HOSTNAME
+        txt1 = f"{num_str} | {ts_str}"
+        txt2 = f"Busqueda: {busqueda[:40]}"
+
+        cv2.putText(frame, txt1, (12, max(20, h - 36)), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 1, cv2.LINE_AA)
+        cv2.putText(frame, txt2, (12, max(36, h - 14)), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 215, 255), 1, cv2.LINE_AA)
+
+        # Guardar archivo local
+        nombre_limpio = "".join(c for c in busqueda[:25] if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
+        filename = f"evidencia_{time.strftime('%Y%m%d_%H%M%S')}_{num_str.replace(' ', '_')}_{nombre_limpio}.jpg"
+        filepath = os.path.join(DIR_EVIDENCIAS, filename)
+        cv2.imwrite(filepath, frame, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
+        print(f"  📸 Evidencia fotográfica guardada en: {filepath}", flush=True)
+
+        # Generar thumbnail en base64 para transmitir al panel del docente
+        ratio = 240.0 / w
+        thumb = cv2.resize(frame, (240, int(h * ratio)), interpolation=cv2.INTER_AREA)
+        _, buffer = cv2.imencode('.jpg', thumb, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
+        ultima_foto_base64 = base64.b64encode(buffer).decode('utf-8')
+        return ultima_foto_base64
+    except Exception as e:
+        print(f"  [!] No se pudo capturar foto de evidencia: {e}", flush=True)
+        return None
+
 def mostrar_advertencia_busqueda(busqueda):
-    """Muestra una advertencia inmediata en pantalla cuando el alumno intenta buscar en Google."""
+    """Muestra la advertencia visual oficial con la imagen del robot Paulo Freire cuando el alumno intenta buscar en Google."""
+    # Disparar captura fotográfica de evidencia en segundo plano
+    threading.Thread(target=capturar_foto_evidencia, args=(busqueda,), daemon=True).start()
+
     if not tk_root:
         print(f"\n  🚫 BÚSQUEDA NO PERMITIDA: {busqueda}\n", flush=True)
         return
@@ -440,69 +503,84 @@ def mostrar_advertencia_busqueda(busqueda):
             pass
 
         pop = tk.Toplevel(tk_root)
-        pop.title("⚠️ Búsqueda No Permitida · Regla del Aula")
-        pop.configure(bg="#450A0A")
+        pop.title("🚫 Búsqueda No Permitida · Colegio Paulo Freire")
+        pop.configure(bg="#0B132B")
         pop.attributes("-topmost", True)
-        pop.geometry("520x310")
         pop.resizable(False, False)
+
+        # Ruta de la imagen oficial del robot con el cartel de prohibido búsqueda
+        ruta_img = os.path.join(DIR_BASE, "prohibido_busqueda.jpg")
+        img_cargada = False
+
+        if os.path.exists(ruta_img):
+            try:
+                from PIL import Image, ImageTk
+                im = Image.open(ruta_img)
+                # Escalar proporcionalmente a 480x400
+                im_resized = im.resize((480, 400), Image.Resampling.LANCZOS)
+                foto = ImageTk.PhotoImage(im_resized)
+
+                frame_img = tk.Frame(pop, bg="#0B132B")
+                frame_img.pack(padx=10, pady=(10, 4))
+
+                lbl_img = tk.Label(frame_img, image=foto, bg="#0B132B", cursor="hand2")
+                lbl_img.image = foto  # Mantener referencia viva
+                lbl_img.pack()
+                lbl_img.bind("<Button-1>", lambda e: pop.destroy())
+                img_cargada = True
+            except Exception as ex_img:
+                print(f"  [!] No se pudo cargar imagen prohibido_busqueda.jpg: {ex_img}", flush=True)
+
+        if not img_cargada:
+            # Fallback en caso de no poder cargar la imagen
+            frame_fallback = tk.Frame(pop, bg="#450A0A", padx=22, pady=20)
+            frame_fallback.pack(fill="both", expand=True)
+            lbl_head = tk.Label(frame_fallback, text="🚫 BÚSQUEDA EN INTERNET NO PERMITIDA", font=("Arial", 15, "bold"), bg="#450A0A", fg="#FCA5A5")
+            lbl_head.pack(anchor="w", pady=(0, 10))
+            lbl_txt = tk.Label(frame_fallback, text="En esta clase no está permitido realizar búsquedas en Google.\nSe cerró la pestaña y se notificó al profesor.", font=("Arial", 12), bg="#450A0A", fg="#FEF2F2", wraplength=470, justify="left")
+            lbl_txt.pack(anchor="w", pady=(0, 12))
+
+        # Franja inferior con la búsqueda detectada y botón entendido
+        frame_bottom = tk.Frame(pop, bg="#0B132B", padx=14, pady=8)
+        frame_bottom.pack(fill="x", expand=True)
+
+        lbl_query = tk.Label(
+            frame_bottom,
+            text=f'Búsqueda detectada: "{busqueda}"',
+            font=("Arial", 11, "bold"),
+            bg="#1E293B",
+            fg="#FDE047",
+            padx=10,
+            pady=6,
+            wraplength=340,
+            justify="left"
+        )
+        lbl_query.pack(side="left", fill="x", expand=True, padx=(0, 8))
+
+        btn = tk.Button(
+            frame_bottom,
+            text="Entendido ✓",
+            font=("Arial", 11, "bold"),
+            bg="#10B981",
+            fg="#FFFFFF",
+            activebackground="#059669",
+            relief="flat",
+            padx=14,
+            pady=6,
+            cursor="hand2",
+            command=pop.destroy
+        )
+        btn.pack(side="right")
+
+        pop.bind("<Escape>", lambda e: pop.destroy())
+        pop.bind("<Return>", lambda e: pop.destroy())
 
         pop.update_idletasks()
         ancho = pop.winfo_width()
         alto = pop.winfo_height()
-        x = (pop.winfo_screenwidth() // 2) - (ancho // 2)
-        y = (pop.winfo_screenheight() // 2) - (alto // 2)
+        x = max(0, (pop.winfo_screenwidth() // 2) - (ancho // 2))
+        y = max(0, (pop.winfo_screenheight() // 2) - (alto // 2))
         pop.geometry(f"{ancho}x{alto}+{x}+{y}")
-
-        frame = tk.Frame(pop, bg="#450A0A", padx=22, pady=20)
-        frame.pack(fill="both", expand=True)
-
-        lbl_head = tk.Label(
-            frame,
-            text="🚫 BÚSQUEDA EN GOOGLE NO PERMITIDA",
-            font=("Arial", 15, "bold"),
-            bg="#450A0A",
-            fg="#FCA5A5"
-        )
-        lbl_head.pack(anchor="w", pady=(0, 10))
-
-        lbl_txt = tk.Label(
-            frame,
-            text="En esta clase no está permitido realizar búsquedas en Google.\nSe cerró la pestaña y se notificó al profesor tu búsqueda:",
-            font=("Arial", 12),
-            bg="#450A0A",
-            fg="#FEF2F2",
-            wraplength=470,
-            justify="left"
-        )
-        lbl_txt.pack(anchor="w", pady=(0, 12))
-
-        caja_query = tk.Label(
-            frame,
-            text=f'"{busqueda}"',
-            font=("Arial", 13, "bold"),
-            bg="#7F1D1D",
-            fg="#FDE047",
-            padx=12,
-            pady=8,
-            wraplength=450,
-            justify="center"
-        )
-        caja_query.pack(fill="x", pady=(0, 16))
-
-        btn = tk.Button(
-            frame,
-            text="Entendido, volver a la actividad",
-            font=("Arial", 11, "bold"),
-            bg="#EF4444",
-            fg="#FFF",
-            activebackground="#DC2626",
-            relief="flat",
-            padx=18,
-            pady=8,
-            cursor="hand2",
-            command=pop.destroy
-        )
-        btn.pack(anchor="e")
 
     try:
         tk_root.after(0, _popup_alerta)
@@ -905,6 +983,9 @@ def ciclo_comunicacion():
             }
             if alerta_google:
                 ping_payload["google_alert"] = alerta_google
+                if ultima_foto_base64:
+                    ping_payload["google_alert_foto"] = ultima_foto_base64
+                    ultima_foto_base64 = ""
 
             ping_data = json.dumps(ping_payload).encode("utf-8")
 

@@ -1918,11 +1918,14 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         listCont.innerHTML = alertas.map(function(a) {
           var ns = a.number ? String(a.number) : '?';
           var pn = ns.length === 1 ? '0' + ns : ns;
+          var fotoHtml = a.foto ? 
+            ('<div style="margin-top:6px;"><img src="data:image/jpeg;base64,' + a.foto + '" style="height:64px;border-radius:6px;border:1px solid #EF4444;cursor:pointer;object-fit:cover;" onclick="window.open(this.src)" title="Foto tomada al alumno (clic para ampliar)"></div>') : '';
           return '<div class="alert-item">' +
             '<div class="alert-item-info">' +
               '<strong>💻 PC ' + escaparHtml(pn) + ' (' + escaparHtml(a.hostname || '') + ')</strong>' +
               '<span>🕒 ' + escaparHtml(a.hora || '') + '</span>' +
               '<div class="alert-item-query">🔍 "' + escaparHtml(a.query || '') + '"</div>' +
+              fotoHtml +
             '</div>' +
             '<div style="display:flex;gap:6px;">' +
               '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + escaparHtml(a.id) + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>' +
@@ -2052,9 +2055,12 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
         var alertChipHtml = '';
         if (m.last_google_alert) {
-          alertChipHtml = '<div class="machine-alert-chip">' +
+          var fotoMini = m.last_alert_foto ? 
+            ('<img src="data:image/jpeg;base64,' + m.last_alert_foto + '" style="width:28px;height:28px;border-radius:4px;object-fit:cover;margin-left:6px;cursor:pointer;border:1px solid #EF4444;" onclick="event.stopPropagation();window.open(this.src)" title="Foto del alumno (clic para ver)">') : '';
+          alertChipHtml = '<div class="machine-alert-chip" style="display:flex;align-items:center;">' +
             '<i class="fas fa-exclamation-circle"></i>' +
             '<span>Última búsqueda bloqueada: "' + escaparHtml(m.last_google_alert) + '"</span>' +
+            fotoMini +
           '</div>';
         }
 
@@ -2348,14 +2354,18 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         if "locked" in data:
                             m["locked"] = data["locked"]
 
+                    alerta_foto = data.get("google_alert_foto", "")
                     if alerta_google and vigilancia_google:
                         q_str = str(alerta_google).strip()
                         maquinas[mid]["last_google_alert"] = q_str
+                        if alerta_foto:
+                            maquinas[mid]["last_alert_foto"] = alerta_foto
                         alerta_obj = {
                             "id": mid,
                             "number": num_asignado,
                             "hostname": maquinas[mid].get("hostname", mid),
                             "query": q_str,
+                            "foto": alerta_foto,
                             "hora": time.strftime("%H:%M:%S"),
                             "ts": time.time()
                         }
