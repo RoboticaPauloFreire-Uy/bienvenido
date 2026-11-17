@@ -38,7 +38,29 @@ PUERTO_WEB = 5000
 PUERTO_UDP = 5005
 TIMEOUT_DESCONEXION = 15  # Segundos sin ping para marcar máquina como desconectada
 
-ARCHIVO_NUMEROS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "maquinas_numeros.json")
+DIR_BASE = os.path.dirname(os.path.abspath(__file__))
+ARCHIVO_NUMEROS = os.path.join(DIR_BASE, "maquinas_numeros.json")
+ARCHIVO_PALABRAS = os.path.join(DIR_BASE, "palabras_prohibidas.txt")
+_palabras_cache_servidor = []
+_palabras_mtime_servidor = 0
+
+def cargar_palabras_prohibidas_servidor():
+    global _palabras_cache_servidor, _palabras_mtime_servidor
+    try:
+        if os.path.exists(ARCHIVO_PALABRAS):
+            mt = os.path.getmtime(ARCHIVO_PALABRAS)
+            if mt != _palabras_mtime_servidor:
+                lista = []
+                with open(ARCHIVO_PALABRAS, "r", encoding="utf-8") as f:
+                    for linea in f:
+                        l = linea.strip()
+                        if l and not l.startswith("#"):
+                            lista.append(l)
+                _palabras_cache_servidor = lista
+                _palabras_mtime_servidor = mt
+    except Exception:
+        pass
+    return _palabras_cache_servidor
 
 def cargar_numeros_guardados():
     if os.path.exists(ARCHIVO_NUMEROS):
@@ -1906,10 +1928,17 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
       if (ultima.ts && ultima.ts > lastAlertTimestamp) {
         if (lastAlertTimestamp > 0) {
-          if (window.navigator && window.navigator.vibrate) {
-            window.navigator.vibrate([120, 80, 120]);
+          if (ultima.grave) {
+            toast('🚨 [FALTA DESUBICADA] PC ' + padNum + ' buscó: "' + ultima.query + '"', '#DC2626');
+            if (window.navigator && window.navigator.vibrate) {
+              window.navigator.vibrate([200, 100, 200, 100, 200]);
+            }
+          } else {
+            toast('🚫 PC ' + padNum + ' buscó en Google: ' + ultima.query, '#EF4444');
+            if (window.navigator && window.navigator.vibrate) {
+              window.navigator.vibrate([120, 80, 120]);
+            }
           }
-          toast('🚫 PC ' + padNum + ' buscó en Google: ' + ultima.query, '#EF4444');
         }
         lastAlertTimestamp = ultima.ts;
       }
@@ -1918,16 +1947,21 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         listCont.innerHTML = alertas.map(function(a) {
           var ns = a.number ? String(a.number) : '?';
           var pn = ns.length === 1 ? '0' + ns : ns;
+          var isGrave = !!a.grave;
+          var itemStyle = isGrave ? 'border: 2px solid #EF4444; background: rgba(239, 68, 68, 0.14);' : '';
+          var badgeGrave = isGrave ? '<span style="background:#EF4444;color:#FFF;font-size:10px;font-weight:bold;padding:2px 7px;border-radius:4px;margin-left:6px;">🚨 FALTA DESUBICADA</span>' : '';
+          var detallePalabra = a.palabra_clave ? ('<div style="font-size:11px;color:#FCA5A5;margin-top:2px;">⚠️ Término clave detectado: <strong>"' + escaparHtml(a.palabra_clave) + '"</strong></div>') : '';
           var fotoHtml = a.foto ? 
-            ('<div style="margin-top:6px;"><img src="data:image/jpeg;base64,' + a.foto + '" style="height:64px;border-radius:6px;border:1px solid #EF4444;cursor:pointer;object-fit:cover;" onclick="window.open(this.src)" title="Foto tomada al alumno (clic para ampliar)"></div>') : '';
-          return '<div class="alert-item">' +
+            ('<div style="margin-top:8px;"><div style="font-size:11px;color:#94A3B8;margin-bottom:3px;"><i class="fas fa-camera"></i> Foto capturada al alumno:</div><img src="data:image/jpeg;base64,' + a.foto + '" style="height:76px;border-radius:6px;border:1px solid #EF4444;cursor:pointer;object-fit:cover;" onclick="window.open(this.src)" title="Foto tomada al alumno (clic para ampliar)"></div>') : '';
+          return '<div class="alert-item" style="' + itemStyle + '">' +
             '<div class="alert-item-info">' +
-              '<strong>💻 PC ' + escaparHtml(pn) + ' (' + escaparHtml(a.hostname || '') + ')</strong>' +
+              '<div><strong>💻 PC ' + escaparHtml(pn) + ' (' + escaparHtml(a.hostname || '') + ')</strong>' + badgeGrave + '</div>' +
               '<span>🕒 ' + escaparHtml(a.hora || '') + '</span>' +
               '<div class="alert-item-query">🔍 "' + escaparHtml(a.query || '') + '"</div>' +
+              detallePalabra +
               fotoHtml +
             '</div>' +
-            '<div style="display:flex;gap:6px;">' +
+            '<div style="display:flex;gap:6px;align-items:flex-start;">' +
               '<button class="mini-btn mb-lock" onclick="enviarComando(\'' + escaparHtml(a.id) + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>' +
               '<button class="mini-btn mb-msg" onclick="abrirModalMensaje(\'' + escaparHtml(a.id) + '\')"><i class="fas fa-comment"></i> Aviso</button>' +
             '</div>' +
@@ -2055,11 +2089,14 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
         var alertChipHtml = '';
         if (m.last_google_alert) {
+          var isGrave = !!m.last_alert_grave;
+          var chipBg = isGrave ? 'background:rgba(239, 68, 68, 0.22);border:1px solid #EF4444;color:#FCA5A5;' : '';
+          var chipIcon = isGrave ? '<i class="fas fa-exclamation-triangle" style="color:#EF4444;"></i>' : '<i class="fas fa-exclamation-circle"></i>';
           var fotoMini = m.last_alert_foto ? 
             ('<img src="data:image/jpeg;base64,' + m.last_alert_foto + '" style="width:28px;height:28px;border-radius:4px;object-fit:cover;margin-left:6px;cursor:pointer;border:1px solid #EF4444;" onclick="event.stopPropagation();window.open(this.src)" title="Foto del alumno (clic para ver)">') : '';
-          alertChipHtml = '<div class="machine-alert-chip" style="display:flex;align-items:center;">' +
-            '<i class="fas fa-exclamation-circle"></i>' +
-            '<span>Última búsqueda bloqueada: "' + escaparHtml(m.last_google_alert) + '"</span>' +
+          alertChipHtml = '<div class="machine-alert-chip" style="display:flex;align-items:center;' + chipBg + '">' +
+            chipIcon +
+            '<span>' + (isGrave ? '🚨 DESUBICADA: "' : 'Última búsqueda: "') + escaparHtml(m.last_google_alert) + '"</span>' +
             fotoMini +
           '</div>';
         }
@@ -2355,9 +2392,15 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                             m["locked"] = data["locked"]
 
                     alerta_foto = data.get("google_alert_foto", "")
-                    if alerta_google and vigilancia_google:
+                    alerta_grave = bool(data.get("google_alert_grave", False))
+                    alerta_palabra = str(data.get("google_alert_palabra", "")).strip()
+
+                    # Se registra si es búsqueda desubicada (SIEMPRE) o si vigilancia_google está activa
+                    if alerta_google and (vigilancia_google or alerta_grave):
                         q_str = str(alerta_google).strip()
                         maquinas[mid]["last_google_alert"] = q_str
+                        maquinas[mid]["last_alert_grave"] = alerta_grave
+                        maquinas[mid]["last_alert_palabra"] = alerta_palabra
                         if alerta_foto:
                             maquinas[mid]["last_alert_foto"] = alerta_foto
                         alerta_obj = {
@@ -2365,6 +2408,8 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                             "number": num_asignado,
                             "hostname": maquinas[mid].get("hostname", mid),
                             "query": q_str,
+                            "grave": alerta_grave,
+                            "palabra_clave": alerta_palabra,
                             "foto": alerta_foto,
                             "hora": time.strftime("%H:%M:%S"),
                             "ts": time.time()
@@ -2372,11 +2417,19 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         alertas_busquedas.insert(0, alerta_obj)
                         if len(alertas_busquedas) > 40:
                             del alertas_busquedas[40:]
-                        print(f"  [🚨 ALERTA GOOGLE] PC {num_asignado} ({maquinas[mid]['hostname']}) buscó: \"{q_str}\"", flush=True)
+                        if alerta_grave:
+                            print(f"  [🚨 ALERTA ROJA · BÚSQUEDA DESUBICADA] PC {num_asignado} ({maquinas[mid]['hostname']}) buscó: \"{q_str}\" (Término: {alerta_palabra})", flush=True)
+                        else:
+                            print(f"  [🚨 ALERTA GOOGLE] PC {num_asignado} ({maquinas[mid]['hostname']}) buscó: \"{q_str}\"", flush=True)
 
                     vg = vigilancia_google
+                    palabras_sync = cargar_palabras_prohibidas_servidor()
 
-            self.responder_json({"status": "ok", "vigilancia_google": vg})
+            self.responder_json({
+                "status": "ok",
+                "vigilancia_google": vg,
+                "palabras_prohibidas": palabras_sync
+            })
             return
 
         if url.path == "/api/comando":

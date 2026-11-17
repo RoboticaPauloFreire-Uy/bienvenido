@@ -1,0 +1,82 @@
+# ==============================================================================
+# COLEGIO PAULO FREIRE · LISTA DE PALABRAS PROHIBIDAS / CONTENIDO DESUBICADO
+# ==============================================================================
+# Cada línea sin '#' representa una palabra o frase clave monitoreada.
+# El sistema compara palabras completas (no letras sueltas) sin distinguir mayúsculas ni tildes.
+# Podés agregar, editar o borrar términos según las necesidades del aula.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. CONTENIDO PARA ADULTOS / NO APTO PARA MENORES
+# ------------------------------------------------------------------------------
+porno
+porn
+pornografia
+xxx
+xvideos
+xnxx
+xhamster
+redtube
+onlyfans
+sexo
+sexual
+erotico
+erotica
+desnudos
+desnudas
+hentai
+tetas
+culoroto
+pack de fotos
+
+# ------------------------------------------------------------------------------
+# 2. CASINOS, APUESTAS Y JUEGOS DE AZAR
+# ------------------------------------------------------------------------------
+casino
+casinos
+ruleta online
+apuestas
+apuestas online
+stake
+bet365
+1xbet
+jugadas online
+tragamonedas
+slots online
+plinko
+
+# ------------------------------------------------------------------------------
+# 3. VIOLENCIA, ARMAS Y DROGAS
+# ------------------------------------------------------------------------------
+comprar armas
+como hacer bombas
+como fabricar armas
+drogas
+cocaina
+marihuana comprar
+como suicidarse
+gore
+decapitacion
+
+# ------------------------------------------------------------------------------
+# 4. EVASIÓN DEL CONTROL ESCOLAR Y HACKS
+# ------------------------------------------------------------------------------
+como saltar bloqueo
+desactivar control de aula
+desactivar profesor
+proxy para escuela
+vpn gratis para saltar
+descargar hacks
+como desinstalar agente
+bypass escolar
+
+# ------------------------------------------------------------------------------
+# 5. CIBERACOSO, DISCRIMINACIÓN E INSULTOS GRAVES
+# ------------------------------------------------------------------------------
+hijo de puta
+pelotudo de mierda
+forro de mierda
+matate
+maricon
+puto de mierda
+negro de mierda

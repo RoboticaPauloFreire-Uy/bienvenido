@@ -31,6 +31,7 @@ import urllib.error
 import urllib.parse
 import concurrent.futures
 import traceback
+import unicodedata
 
 DIR_BASE = os.path.dirname(os.path.abspath(__file__))
 ARCHIVO_PID = os.path.join(DIR_BASE, "agente_alumno.pid")
@@ -174,6 +175,68 @@ ultima_busqueda_alertada = ""
 ultimo_tiempo_alerta = 0.0
 ultima_foto_base64 = ""
 DIR_EVIDENCIAS = os.path.join(DIR_BASE, "evidencias_busquedas")
+ARCHIVO_PALABRAS_PROHIBIDAS = os.path.join(DIR_BASE, "palabras_prohibidas.txt")
+_palabras_prohibidas_cache = []
+_palabras_prohibidas_mtime = 0
+
+def normalizar_texto(texto):
+    if not texto:
+        return ""
+    n = "".join(c for c in unicodedata.normalize('NFD', str(texto)) if unicodedata.category(c) != 'Mn')
+    return n.lower().strip()
+
+def cargar_palabras_prohibidas():
+    global _palabras_prohibidas_cache, _palabras_prohibidas_mtime
+    try:
+        if os.path.exists(ARCHIVO_PALABRAS_PROHIBIDAS):
+            mt = os.path.getmtime(ARCHIVO_PALABRAS_PROHIBIDAS)
+            if mt != _palabras_prohibidas_mtime:
+                lista = []
+                with open(ARCHIVO_PALABRAS_PROHIBIDAS, "r", encoding="utf-8") as f:
+                    for linea in f:
+                        l = linea.strip()
+                        if l and not l.startswith("#"):
+                            lista.append(l)
+                _palabras_prohibidas_cache = lista
+                _palabras_prohibidas_mtime = mt
+    except Exception:
+        pass
+    return _palabras_prohibidas_cache
+
+def es_busqueda_desubicada(query):
+    """
+    Verifica con límites de palabra (\\b) si la búsqueda coincide con términos prohibidos/desubicados.
+    Evita falsos positivos educativos como 'armadura' ante 'arma'.
+    Devuelve (es_desubicada: bool, palabra_coincidente: str o None).
+    """
+    if not query:
+        return False, None
+    qn = normalizar_texto(query)
+    palabras = cargar_palabras_prohibidas()
+    for p in palabras:
+        pn = normalizar_texto(p)
+        if not pn:
+            continue
+        if " " in pn:
+            if pn in qn:
+                return True, p
+        else:
+            patron = r'\b' + re.escape(pn) + r'(?:s|es)?\b'
+            if re.search(patron, qn):
+                return True, p
+    return False, None
+
+def _sincronizar_palabras_desde_docente(nuevas_palabras):
+    global _palabras_prohibidas_cache
+    if nuevas_palabras and set(nuevas_palabras) != set(_palabras_prohibidas_cache):
+        _palabras_prohibidas_cache = list(nuevas_palabras)
+        try:
+            with open(ARCHIVO_PALABRAS_PROHIBIDAS, "w", encoding="utf-8") as f:
+                f.write("# Sincronizado automáticamente desde el Servidor Docente\n")
+                for p in nuevas_palabras:
+                    f.write(f"{p}\n")
+        except Exception:
+            pass
 
 def obtener_mi_subred():
     """Detecta la IP local de esta máquina para escanear la subred."""
@@ -425,7 +488,7 @@ def mostrar_mensaje_emergente(texto):
     except Exception as e:
         print(f"  📢 AVISO DEL DOCENTE: {texto}", flush=True)
 
-def capturar_foto_evidencia(busqueda):
+def capturar_foto_evidencia(busqueda, es_desubicada=False):
     """
     Toma una fotografía silenciosa con la cámara web del alumno (si cuenta con cámara)
     y estampa la fecha, hora, máquina y la búsqueda detectada.
@@ -460,15 +523,18 @@ def capturar_foto_evidencia(busqueda):
 
         ts_str = time.strftime("%d/%m/%Y %H:%M:%S")
         num_str = f"PC {NUMERO_MAQUINA}" if NUMERO_MAQUINA else HOSTNAME
-        txt1 = f"{num_str} | {ts_str}"
+        etiqueta = " [FALTA DESUBICADA]" if es_desubicada else ""
+        txt1 = f"{num_str} | {ts_str}{etiqueta}"
         txt2 = f"Busqueda: {busqueda[:40]}"
 
-        cv2.putText(frame, txt1, (12, max(20, h - 36)), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 1, cv2.LINE_AA)
+        color_txt1 = (0, 0, 255) if es_desubicada else (255, 255, 255)
+        cv2.putText(frame, txt1, (12, max(20, h - 36)), cv2.FONT_HERSHEY_SIMPLEX, 0.55, color_txt1, 1, cv2.LINE_AA)
         cv2.putText(frame, txt2, (12, max(36, h - 14)), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 215, 255), 1, cv2.LINE_AA)
 
         # Guardar archivo local
+        prefijo = "desubicada" if es_desubicada else "busqueda"
         nombre_limpio = "".join(c for c in busqueda[:25] if c.isalnum() or c in (" ", "_", "-")).strip().replace(" ", "_")
-        filename = f"evidencia_{time.strftime('%Y%m%d_%H%M%S')}_{num_str.replace(' ', '_')}_{nombre_limpio}.jpg"
+        filename = f"{prefijo}_{time.strftime('%Y%m%d_%H%M%S')}_{num_str.replace(' ', '_')}_{nombre_limpio}.jpg"
         filepath = os.path.join(DIR_EVIDENCIAS, filename)
         cv2.imwrite(filepath, frame, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
         print(f"  📸 Evidencia fotográfica guardada en: {filepath}", flush=True)
@@ -483,13 +549,14 @@ def capturar_foto_evidencia(busqueda):
         print(f"  [!] No se pudo capturar foto de evidencia: {e}", flush=True)
         return None
 
-def mostrar_advertencia_busqueda(busqueda):
+def mostrar_advertencia_busqueda(busqueda, es_desubicada=False):
     """Muestra la advertencia visual oficial con la imagen del robot Paulo Freire cuando el alumno intenta buscar en Google."""
     # Disparar captura fotográfica de evidencia en segundo plano
-    threading.Thread(target=capturar_foto_evidencia, args=(busqueda,), daemon=True).start()
+    threading.Thread(target=capturar_foto_evidencia, args=(busqueda, es_desubicada), daemon=True).start()
 
     if not tk_root:
-        print(f"\n  🚫 BÚSQUEDA NO PERMITIDA: {busqueda}\n", flush=True)
+        tipo = "🚫 BÚSQUEDA DESUBICADA" if es_desubicada else "🚫 BÚSQUEDA NO PERMITIDA"
+        print(f"\n  {tipo}: {busqueda}\n", flush=True)
         return
 
     def _popup_alerta():
@@ -503,7 +570,8 @@ def mostrar_advertencia_busqueda(busqueda):
             pass
 
         pop = tk.Toplevel(tk_root)
-        pop.title("🚫 Búsqueda No Permitida · Colegio Paulo Freire")
+        titulo_win = "🚨 Búsqueda Inapropiada · Colegio Paulo Freire" if es_desubicada else "🚫 Búsqueda No Permitida · Colegio Paulo Freire"
+        pop.title(titulo_win)
         pop.configure(bg="#0B132B")
         pop.attributes("-topmost", True)
         pop.resizable(False, False)
@@ -533,22 +601,28 @@ def mostrar_advertencia_busqueda(busqueda):
 
         if not img_cargada:
             # Fallback en caso de no poder cargar la imagen
-            frame_fallback = tk.Frame(pop, bg="#450A0A", padx=22, pady=20)
+            bg_col = "#5C0000" if es_desubicada else "#450A0A"
+            frame_fallback = tk.Frame(pop, bg=bg_col, padx=22, pady=20)
             frame_fallback.pack(fill="both", expand=True)
-            lbl_head = tk.Label(frame_fallback, text="🚫 BÚSQUEDA EN INTERNET NO PERMITIDA", font=("Arial", 15, "bold"), bg="#450A0A", fg="#FCA5A5")
+            txt_head = "🚨 BÚSQUEDA INAPROPIADA DETECTADA" if es_desubicada else "🚫 BÚSQUEDA EN INTERNET NO PERMITIDA"
+            lbl_head = tk.Label(frame_fallback, text=txt_head, font=("Arial", 15, "bold"), bg=bg_col, fg="#FCA5A5")
             lbl_head.pack(anchor="w", pady=(0, 10))
-            lbl_txt = tk.Label(frame_fallback, text="En esta clase no está permitido realizar búsquedas en Google.\nSe cerró la pestaña y se notificó al profesor.", font=("Arial", 12), bg="#450A0A", fg="#FEF2F2", wraplength=470, justify="left")
+            txt_exp = "El término buscado no está permitido en el colegio.\nSe notificó al profesor de tu búsqueda." if es_desubicada else "En esta clase no está permitido realizar búsquedas en Google.\nSe cerró la pestaña y se notificó al profesor."
+            lbl_txt = tk.Label(frame_fallback, text=txt_exp, font=("Arial", 12), bg=bg_col, fg="#FEF2F2", wraplength=470, justify="left")
             lbl_txt.pack(anchor="w", pady=(0, 12))
 
-        # Franja inferior con la búsqueda detectada y botón entendido
+        # Franja inferior con la búsqueda detectada y botón entendido (Opción A: Informativo, sin bloqueo total)
         frame_bottom = tk.Frame(pop, bg="#0B132B", padx=14, pady=8)
         frame_bottom.pack(fill="x", expand=True)
 
+        texto_query = f'🚨 Búsqueda inapropiada: "{busqueda}"' if es_desubicada else f'Búsqueda detectada: "{busqueda}"'
+        bg_badge = "#7F1D1D" if es_desubicada else "#1E293B"
+
         lbl_query = tk.Label(
             frame_bottom,
-            text=f'Búsqueda detectada: "{busqueda}"',
+            text=texto_query,
             font=("Arial", 11, "bold"),
-            bg="#1E293B",
+            bg=bg_badge,
             fg="#FDE047",
             padx=10,
             pady=6,
@@ -706,7 +780,7 @@ def obtener_ventana_activa_y_busqueda():
                         busqueda_detectada = q
                         busqueda_en_primer_plano = True
 
-            if not busqueda_detectada and vigilancia_google_activa:
+            if not busqueda_detectada:
                 encontradas = []
                 WNDENUMPROC = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
                 def _enum_cb(hwnd, lParam):
@@ -728,19 +802,30 @@ def obtener_ventana_activa_y_busqueda():
             pass
 
     alerta_para_enviar = None
-    if vigilancia_google_activa and busqueda_detectada:
-        ahora = time.time()
-        if busqueda_en_primer_plano:
-            cerrar_pestana_activa_windows()
+    alerta_es_grave = False
+    alerta_palabra_detectada = ""
 
-        if busqueda_detectada != ultima_busqueda_alertada or (ahora - ultimo_tiempo_alerta) > 12.0:
-            ultima_busqueda_alertada = busqueda_detectada
-            ultimo_tiempo_alerta = ahora
-            alerta_para_enviar = busqueda_detectada
-            print(f"  [ALERTA] Búsqueda en Google detectada y bloqueada: '{busqueda_detectada}'", flush=True)
-            mostrar_advertencia_busqueda(busqueda_detectada)
+    if busqueda_detectada:
+        es_grave, palabra_clave = es_busqueda_desubicada(busqueda_detectada)
+        # Se bloquea si es desubicada (SIEMPRE, incluso si Google está habilitado en clase)
+        # o si la vigilancia general de Google está activa
+        debe_bloquear = es_grave or vigilancia_google_activa
+        if debe_bloquear:
+            ahora = time.time()
+            if busqueda_en_primer_plano:
+                cerrar_pestana_activa_windows()
 
-    return ventana_activa, alerta_para_enviar
+            if busqueda_detectada != ultima_busqueda_alertada or (ahora - ultimo_tiempo_alerta) > 10.0:
+                ultima_busqueda_alertada = busqueda_detectada
+                ultimo_tiempo_alerta = ahora
+                alerta_para_enviar = busqueda_detectada
+                alerta_es_grave = es_grave
+                alerta_palabra_detectada = palabra_clave or ""
+                tipo_str = "DESUBICADA (FALTA GRAVE)" if es_grave else "BÚSQUEDA NO PERMITIDA"
+                print(f"  [ALERTA - {tipo_str}] '{busqueda_detectada}' (Término: {palabra_clave})", flush=True)
+                mostrar_advertencia_busqueda(busqueda_detectada, es_desubicada=es_grave)
+
+    return ventana_activa, alerta_para_enviar, alerta_es_grave, alerta_palabra_detectada
 
 # ══════════════════════════════════════════════════════════════
 # LANZADOR DE JUEGOS OFFLINE (SURF EN EDGE Y DINO EN CHROME)
@@ -971,7 +1056,7 @@ def ciclo_comunicacion():
             servidor_docente_url = descubrir_servidor()
 
         try:
-            ventana_activa, alerta_google = obtener_ventana_activa_y_busqueda()
+            ventana_activa, alerta_google, alerta_grave, alerta_palabra = obtener_ventana_activa_y_busqueda()
 
             ping_payload = {
                 "id": MACHINE_ID,
@@ -983,6 +1068,8 @@ def ciclo_comunicacion():
             }
             if alerta_google:
                 ping_payload["google_alert"] = alerta_google
+                ping_payload["google_alert_grave"] = alerta_grave
+                ping_payload["google_alert_palabra"] = alerta_palabra
                 if ultima_foto_base64:
                     ping_payload["google_alert_foto"] = ultima_foto_base64
                     ultima_foto_base64 = ""
@@ -1001,6 +1088,8 @@ def ciclo_comunicacion():
                         resp_ping = json.loads(raw_ping)
                         if "vigilancia_google" in resp_ping:
                             vigilancia_google_activa = bool(resp_ping["vigilancia_google"])
+                        if "palabras_prohibidas" in resp_ping and isinstance(resp_ping["palabras_prohibidas"], list):
+                            _sincronizar_palabras_desde_docente(resp_ping["palabras_prohibidas"])
                     except Exception:
                         pass
 
