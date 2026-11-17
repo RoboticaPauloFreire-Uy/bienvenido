@@ -6,6 +6,20 @@
   <title>Panel Administrativo de Alumnos — Robótica Paulo Freire</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css?v=130">
+  <link rel="stylesheet" href="css/themes.css?v=30anios">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('pf_selected_theme');
+        if (!t || t === 'halloween') {
+          t = 'aniversario30';
+          localStorage.setItem('pf_selected_theme', t);
+        }
+        document.documentElement.setAttribute('data-theme', t);
+        if (document.body) document.body.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       --admin-primary: #1565C0;
@@ -851,6 +865,11 @@
         <span>Catálogo de Juegos Educativos</span>
         <span class="nav-count nav-count-juegos" id="pill-count-juegos">38</span>
       </button>
+      <button type="button" class="admin-nav-pill" id="btn-sec-temas" onclick="cambiarSeccion('temas')">
+        <i class="fas fa-palette"></i>
+        <span>Diseño & Template 30 Años</span>
+        <span class="nav-count nav-count-temas" id="pill-count-temas" style="background:#FEF3C7; color:#B45309; font-weight:800;">🎉 30 Años</span>
+      </button>
       <a href="../pagina-admin/index.html" target="_blank" class="admin-nav-pill pill-external" title="Abrir Panel Central con sincronización en la nube">
         <i class="fas fa-sliders-h"></i>
         <span>Panel de Control Avanzado (Nube Firestore)</span>
@@ -1002,6 +1021,63 @@
         </div>
       </div>
     </div><!-- FIN admin-section-juegos -->
+
+    <!-- SECCIÓN: TEMAS Y TEMPLATE 30 AÑOS -->
+    <div id="admin-section-temas" style="display:none;">
+      <!-- BANNER HERO FESTEJO 30 AÑOS -->
+      <div class="admin-controls-card" style="background: linear-gradient(135deg, #0A192F 0%, #064E3B 50%, #451A03 100%); color:#FFFFFF; border: 2.5px solid #F59E0B; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.25); border-radius: 20px; padding: 26px 30px; margin-bottom: 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+          <div style="max-width:700px;">
+            <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(245, 158, 11, 0.2); border:1.5px solid #FDE047; padding:4px 12px; border-radius:999px; font-size:0.82rem; font-weight:800; color:#FDE047; margin-bottom:12px;">
+              <span>👑 EDICIÓN ESPECIAL CONMEMORATIVA</span>
+              <span>·</span>
+              <span>1996 - 2026</span>
+            </div>
+            <h2 style="font-size:1.8rem; font-weight:900; margin:0 0 10px; color:#FFFFFF; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+              🎉 Festejo de los 30 Años · Colegio Paulo Freire
+            </h2>
+            <p style="font-size:0.95rem; color:#E2E8F0; margin:0 0 16px; line-height:1.5;">
+              Activá el template conmemorativo de los 30 años con un solo clic. Esta plantilla transformará instantáneamente la estética de la <strong>página pública</strong>, el <strong>aula tecnológica</strong> y este <strong>panel administrativo</strong> con la paleta de gala dorada y esmeralda, cintas festivas, escudos conmemorativos y distintivos de aniversario.
+            </p>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+              <span style="font-size:0.90rem; font-weight:700; color:#FDE047;">
+                <i class="fas fa-signal"></i> Estado en Vivo en Todo el Colegio:
+              </span>
+              <span id="admin-theme-live-badge" class="badge-30-anios">
+                Cargando estado...
+              </span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px; min-width:280px;">
+            <button type="button" id="btn-hero-toggle-30" onclick="toggleTema30DesdeHero()" class="atc-btn-activate btn-gold-30" style="padding:14px 22px; font-size:1.02rem; border-radius:14px;">
+              <i class="fas fa-crown"></i> <span>Activar Template 30 Años</span>
+            </button>
+            <button type="button" onclick="window.resetToDefaultTheme && window.resetToDefaultTheme()" class="atc-btn-activate" style="background:rgba(255,255,255,0.12); color:#FFFFFF; border:1px solid rgba(255,255,255,0.25); font-size:0.86rem; padding:9px 16px;">
+              <i class="fas fa-undo"></i> Restablecer Tema Clásico Institucional
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRILLA DE PLANTILLAS Y TEMAS DISPONIBLES -->
+      <div class="admin-controls-card" style="padding:26px 28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+          <div>
+            <h3 style="margin:0 0 4px; font-size:1.3rem; font-weight:800; color:#1E293B;">
+              <i class="fas fa-swatchbook text-primary"></i> Catálogo Completo de Plantillas y Diseños
+            </h3>
+            <p style="margin:0; font-size:0.90rem; color:#64748B;">
+              Al elegir un tema, la configuración se guarda en Firebase Firestore y en la memoria local, actualizando todas las pantallas de alumnos y docentes en tiempo real.
+            </p>
+          </div>
+        </div>
+
+        <div id="admin-themes-catalog-grid" class="admin-theme-grid">
+          <!-- Renderizado dinámicamente por renderAdminThemeCards() -->
+        </div>
+      </div>
+    </div><!-- FIN admin-section-temas -->
 
   </div>
 
@@ -1609,25 +1685,33 @@
     function cambiarSeccion(seccion) {
       seccionActiva = seccion;
       const isAlumnos = (seccion === 'alumnos');
+      const isJuegos = (seccion === 'juegos');
+      const isTemas = (seccion === 'temas');
       
       const secAlum = document.getElementById('admin-section-alumnos');
       const secJueg = document.getElementById('admin-section-juegos');
+      const secTemas = document.getElementById('admin-section-temas');
       if (secAlum) secAlum.style.display = isAlumnos ? 'block' : 'none';
-      if (secJueg) secJueg.style.display = isAlumnos ? 'none' : 'block';
+      if (secJueg) secJueg.style.display = isJuegos ? 'block' : 'none';
+      if (secTemas) secTemas.style.display = isTemas ? 'block' : 'none';
       
       const btnAlum = document.getElementById('btn-sec-alumnos');
       const btnJueg = document.getElementById('btn-sec-juegos');
+      const btnTemas = document.getElementById('btn-sec-temas');
       if (btnAlum) btnAlum.classList.toggle('active', isAlumnos);
-      if (btnJueg) btnJueg.classList.toggle('active', !isAlumnos);
+      if (btnJueg) btnJueg.classList.toggle('active', isJuegos);
+      if (btnTemas) btnTemas.classList.toggle('active', isTemas);
 
       const toggleText = document.getElementById('header-btn-toggle-text');
       if (toggleText) {
         toggleText.textContent = isAlumnos ? 'Ver Juegos (' + catalogoJuegosCache.length + ')' : 'Ver Alumnos';
       }
 
-      if (!isAlumnos) {
+      if (isJuegos) {
         if (!catalogoJuegosCache.length) cargarCatalogoJuegos();
         else filtrarJuegosAdmin();
+      } else if (isTemas) {
+        if (typeof renderAdminThemeCards === 'function') renderAdminThemeCards();
       }
     }
 
@@ -1754,17 +1838,128 @@
       }).join('');
     }
 
+    // Funciones para Administración del Template y Temas
+    function renderAdminThemeCards() {
+      const grid = document.getElementById('admin-themes-catalog-grid');
+      if (!grid) return;
+      const currentId = (window.getTheme && window.getTheme()) || localStorage.getItem('pf_selected_theme') || 'aniversario30';
+      const themesList = window.THEMES || [
+        { id: 'aniversario30', name: '🎉 Festejo 30 Años (1996 - 2026)', emoji: '🎂', badge: '👑 30° Aniversario', desc: 'Plantilla de gala por los 30 años del Colegio Paulo Freire. Paleta oro y esmeralda con cintas y sellos de celebración.', iconBg: 'linear-gradient(135deg, #B45309 0%, #F59E0B 50%, #FDE047 100%)' },
+        { id: 'default', name: 'Normal / Institucional', emoji: '🌱', badge: '🏫 Clásico', desc: 'Diseño institucional verde y amarillo del Colegio Paulo Freire. Limpio, clásico y maker.', iconBg: 'linear-gradient(135deg, #15803D 0%, #F59E0B 100%)' },
+        { id: 'halloween', name: 'Halloween Maker', emoji: '🎃', badge: '🎃 Noche de Brujas', desc: 'Calabazas, murciélagos, noche mágica y desafíos de robótica y programación de terror.', iconBg: 'linear-gradient(135deg, #EA580C 0%, #7E22CE 100%)' },
+        { id: 'diadelnino', name: 'Día de la Niñez', emoji: '🎈', badge: '🎉 Especial', desc: 'Globos, confeti, colores vibrantes y juegos dedicados a la diversión y creatividad infantil.', iconBg: 'linear-gradient(135deg, #0284C7 0%, #EC4899 100%)' },
+        { id: 'diadelamadre', name: 'Día de la Madre', emoji: '🌸', badge: '💖 En Familia', desc: 'Flores, tarjetas interactivas pop-up y regalos tecnológicos hechos con amor en el taller.', iconBg: 'linear-gradient(135deg, #BE185D 0%, #FB7185 100%)' },
+        { id: 'navidad', name: 'Navidad & Fin de Año', emoji: '🎄', badge: '❄️ Diciembre', desc: 'Luces LED festivas, nieve mágica y proyectos de cierre de ciclo lectivo.', iconBg: 'linear-gradient(135deg, #15803D 0%, #DC2626 100%)' }
+      ];
+
+      grid.innerHTML = themesList.map(t => {
+        const isCurrent = (t.id === currentId);
+        const isGold = (t.id === 'aniversario30');
+        return '<div class="admin-theme-card ' + (isCurrent ? 'is-active-theme' : '') + '">' +
+          '<div class="atc-top">' +
+            '<div class="atc-icon-wrap" style="background:' + t.iconBg + ';">' + t.emoji + '</div>' +
+            '<div class="atc-meta">' +
+              '<h4>' + t.name + '</h4>' +
+              '<span class="badge-30-anios" style="font-size:0.75rem; padding:2px 8px;">' + (t.badge || 'Tema') + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<p class="atc-desc">' + t.desc + '</p>' +
+          '<button type="button" class="atc-btn-activate ' + (isCurrent ? 'btn-is-current' : (isGold ? 'btn-gold-30' : 'btn-not-current')) + '" onclick="activarTemaDesdeAdmin(\'' + t.id + '\')">' +
+            (isCurrent ? '<i class="fas fa-check-circle"></i> Tema Activo en el Colegio' : (isGold ? '<i class="fas fa-crown"></i> Activar Festejo 30 Años' : '<i class="fas fa-magic"></i> Activar este Tema')) +
+          '</button>' +
+        '</div>';
+      }).join('');
+
+      actualizarUIAdminTemas(currentId);
+    }
+
+    function actualizarUIAdminTemas(currentId) {
+      const badge = document.getElementById('admin-theme-live-badge');
+      const btnHero = document.getElementById('btn-hero-toggle-30');
+      const is30 = (currentId === 'aniversario30');
+
+      if (badge) {
+        if (is30) {
+          badge.innerHTML = '👑 <strong>Festejo 30 Años Activo</strong>';
+          badge.style.background = '#FEF3C7';
+          badge.style.color = '#78350F';
+          badge.style.borderColor = '#F59E0B';
+        } else {
+          badge.innerHTML = '🌱 Tema Actual: ' + currentId;
+          badge.style.background = '#F1F5F9';
+          badge.style.color = '#334155';
+          badge.style.borderColor = '#CBD5E1';
+        }
+      }
+
+      if (btnHero) {
+        if (is30) {
+          btnHero.className = 'atc-btn-activate btn-is-current';
+          btnHero.innerHTML = '<i class="fas fa-check-circle"></i> <span>Template 30 Años Activo (Clic para cambiar a Clásico)</span>';
+          btnHero.style.background = '#FEF3C7';
+          btnHero.style.color = '#78350F';
+          btnHero.style.borderColor = '#F59E0B';
+        } else {
+          btnHero.className = 'atc-btn-activate btn-gold-30';
+          btnHero.innerHTML = '<i class="fas fa-crown"></i> <span>Activar Template 30 Años en Todo el Colegio</span>';
+          btnHero.style.background = 'linear-gradient(135deg, #B45309 0%, #F59E0B 100%)';
+          btnHero.style.color = '#FFFFFF';
+          btnHero.style.borderColor = '#FDE047';
+        }
+      }
+    }
+
+    function toggleTema30DesdeHero() {
+      const current = (window.getTheme && window.getTheme()) || localStorage.getItem('pf_selected_theme') || 'aniversario30';
+      const target = (current === 'aniversario30') ? 'default' : 'aniversario30';
+      activarTemaDesdeAdmin(target);
+    }
+
+    function activarTemaDesdeAdmin(themeId) {
+      localStorage.setItem('pf_selected_theme', themeId);
+      document.documentElement.setAttribute('data-theme', themeId);
+      document.body.setAttribute('data-theme', themeId);
+
+      if (window.setTheme) {
+        window.setTheme(themeId);
+      }
+
+      if (window.saveThemeToFirestore) {
+        window.saveThemeToFirestore(themeId).then(() => {
+          mostrarToast('👑 ¡Template "' + themeId + '" activado en todo el colegio!');
+        }).catch((err) => {
+          console.warn('Firestore theme notice:', err);
+          mostrarToast('👑 Template "' + themeId + '" activado localmente.');
+        });
+      } else {
+        mostrarToast('👑 Template "' + themeId + '" activado.');
+      }
+
+      renderAdminThemeCards();
+    }
+    window.actualizarUIAdminTemas = actualizarUIAdminTemas;
+    window.renderAdminThemeCards = renderAdminThemeCards;
+    window.toggleTema30DesdeHero = toggleTema30DesdeHero;
+    window.activarTemaDesdeAdmin = activarTemaDesdeAdmin;
+
     // Inicialización al cargar la página
     document.addEventListener('DOMContentLoaded', () => {
       inicializarAdmin();
       cargarCatalogoJuegos();
+      renderAdminThemeCards();
       if (window.location.hash === '#juegos') {
         cambiarSeccion('juegos');
+      } else if (window.location.hash === '#temas') {
+        cambiarSeccion('temas');
       }
     });
   </script>
   <!-- Scripts de Datos y Metadatos de Plataformas para Juegos -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js?v=95"></script>
   <script src="js/data.js?v=96"></script>
   <script src="js/modal.js?v=2"></script>
+  <script src="js/theme.js?v=30anios"></script>
 </body>
 </html>

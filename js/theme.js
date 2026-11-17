@@ -20,29 +20,38 @@
   'use strict';
 
   // ⚙️ TEMA ACTIVO POR DEFECTO PARA EL COLEGIO
-  // (El usuario solicitó 'halloween' para este mes, y 'default' para noviembre en adelante)
-  window.CURRENT_THEME = 'halloween';
+  window.CURRENT_THEME = 'aniversario30';
 
   var THEMES = [
     {
-      id: 'halloween',
-      name: 'Halloween Maker',
-      emoji: '🎃',
-      label: 'Halloween',
-      badge: '🎃 Activo este mes',
-      badgeColor: '#EA580C',
-      desc: 'Calabazas, murciélagos, noche mágica y desafíos de robótica y programación de terror.',
-      iconBg: 'linear-gradient(135deg, #EA580C 0%, #7E22CE 100%)'
+      id: 'aniversario30',
+      name: '🎉 Festejo 30 Años (1996 - 2026)',
+      emoji: '🎂',
+      label: '30 Años',
+      badge: '👑 30° Aniversario',
+      badgeColor: '#D97706',
+      desc: 'Plantilla de gala por los 30 años del Colegio Paulo Freire. Paleta oro y esmeralda con cintas y sellos de celebración.',
+      iconBg: 'linear-gradient(135deg, #B45309 0%, #F59E0B 50%, #FDE047 100%)'
     },
     {
       id: 'default',
       name: 'Normal / Institucional',
       emoji: '🌱',
       label: 'Normal',
-      badge: '🏫 Desde Noviembre',
+      badge: '🏫 Clásico',
       badgeColor: '#16A34A',
       desc: 'Diseño institucional verde y amarillo del Colegio Paulo Freire. Limpio, clásico y maker.',
       iconBg: 'linear-gradient(135deg, #15803D 0%, #F59E0B 100%)'
+    },
+    {
+      id: 'halloween',
+      name: 'Halloween Maker',
+      emoji: '🎃',
+      label: 'Halloween',
+      badge: '🎃 Noche de Brujas',
+      badgeColor: '#EA580C',
+      desc: 'Calabazas, murciélagos, noche mágica y desafíos de robótica y programación de terror.',
+      iconBg: 'linear-gradient(135deg, #EA580C 0%, #7E22CE 100%)'
     },
     {
       id: 'diadelnino',
@@ -76,24 +85,56 @@
     }
   ];
 
-  var activeThemeId = 'halloween';
+  var activeThemeId = 'aniversario30';
 
   function getStoredTheme() {
     try {
-      return localStorage.getItem('pf_selected_theme');
+      var s = localStorage.getItem('pf_selected_theme');
+      if (!s || s === 'halloween') {
+        localStorage.setItem('pf_selected_theme', 'aniversario30');
+        return 'aniversario30';
+      }
+      return s;
     } catch (e) {
-      return null;
+      return 'aniversario30';
     }
   }
 
   function saveStoredTheme(id) {
     try {
-      if (!id || id === window.CURRENT_THEME) {
+      if (!id) {
         localStorage.removeItem('pf_selected_theme');
       } else {
         localStorage.setItem('pf_selected_theme', id);
       }
     } catch (e) {}
+  }
+
+  function updateCelebrationBanner(isAnniversary) {
+    var existing = document.getElementById('anniversary-celebration-banner');
+    if (isAnniversary) {
+      if (!existing) {
+        var banner = document.createElement('div');
+        banner.id = 'anniversary-celebration-banner';
+        banner.className = 'anniversary-celebration-banner';
+        banner.innerHTML =
+          '<div class="acb-content">' +
+            '<span class="acb-sparkle">👑</span>' +
+            '<span class="acb-text"><strong>¡FESTEJO 30° ANIVERSARIO · 1996 - 2026!</strong> Tres décadas formando el futuro tecnológico en el Colegio Paulo Freire</span>' +
+            '<span class="acb-sparkle">✨</span>' +
+          '</div>';
+        var topbar = document.querySelector('.topbar') || document.querySelector('.admin-header') || document.body.firstChild;
+        if (topbar && topbar.parentNode) {
+          topbar.parentNode.insertBefore(banner, topbar);
+        } else {
+          document.body.insertBefore(banner, document.body.firstChild);
+        }
+      } else {
+        existing.style.display = 'block';
+      }
+    } else if (existing) {
+      existing.style.display = 'none';
+    }
   }
 
   function getThemeObj(id) {
@@ -111,6 +152,9 @@
     document.documentElement.setAttribute('data-theme', theme.id);
     document.body.setAttribute('data-theme', theme.id);
 
+    // Banner de celebración 30 Años
+    updateCelebrationBanner(theme.id === 'aniversario30');
+
     // Actualizar píldora en la barra superior
     var pillIcon = document.querySelector('.topbar-theme-pill .ttp-icon');
     var pillLabel = document.querySelector('.topbar-theme-pill .ttp-label');
@@ -125,6 +169,11 @@
     document.querySelectorAll('.theme-option-card').forEach(function (card) {
       card.classList.toggle('active', card.dataset.themeId === theme.id);
     });
+
+    // Actualizar sección de temas en el panel admin si está presente
+    if (typeof window.actualizarUIAdminTemas === 'function') {
+      try { window.actualizarUIAdminTemas(theme.id); } catch(e) {}
+    }
 
     // Disparar evento para que otros módulos puedan reaccionar si lo desean
     window.dispatchEvent(new CustomEvent('theme_changed', { detail: theme }));
@@ -280,12 +329,21 @@
   window.openThemeModal = openThemeModal;
   window.closeThemeModal = closeThemeModal;
   window.saveThemeToFirestore = function (themeId) {
+    saveStoredTheme(themeId);
     if (window.db && window.db.collection) {
       return window.db.collection('config').doc('site_theme').set({
         activeTheme: themeId,
         updatedAt: (window.firebase && firebase.firestore) ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
       }, { merge: true });
     }
-    return Promise.reject(new Error('Firebase DB no inicializado'));
+    return Promise.resolve({ localOnly: true, activeTheme: themeId });
+  };
+  window.activateAnniversaryTheme = function () {
+    applyTheme('aniversario30', true);
+    return window.saveThemeToFirestore('aniversario30');
+  };
+  window.resetToDefaultTheme = function () {
+    applyTheme('default', true);
+    return window.saveThemeToFirestore('default');
   };
 })();
