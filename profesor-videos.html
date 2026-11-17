@@ -2091,10 +2091,21 @@
       ───────────────────────────────────────────── -->
       <section id="pv-panel-upload" class="pv-tab-panel">
         <div class="pv-surface-card">
-          <div class="pv-quick-deck-head" style="margin-bottom:14px;">
+          <div class="pv-quick-deck-head" style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
             <h2 class="pv-quick-deck-title" id="pv-form-heading" style="font-size:1.1rem;">
               <i class="fas fa-plus-circle" style="color:#4ADE80;"></i> Dar de Alta Nuevo Video
             </h2>
+            <button type="button" id="pv-btn-import-org" style="background:linear-gradient(135deg,#D97706,#B45309);color:#FFF;border:none;border-radius:10px;padding:8px 13px;font-weight:800;font-size:0.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              <i class="fas fa-lightbulb"></i> Importar desde El Organizador
+            </button>
+          </div>
+
+          <div id="pv-org-import-box" style="display:none;background:#0F172A;border:1px solid #334155;border-radius:14px;padding:12px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:0.84rem;font-weight:800;color:#FBBF24;"><i class="fas fa-lightbulb"></i> Videos en El Organizador (tocá uno para cargar):</span>
+              <button type="button" id="pv-btn-close-org-import" style="background:transparent;border:none;color:#94A3B8;font-weight:800;cursor:pointer;">✕</button>
+            </div>
+            <div id="pv-org-import-list" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;"></div>
           </div>
 
           <form id="pv-video-form">
@@ -2256,6 +2267,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=95"></script>
-  <script src="js/profesor_videos.js?v=10"></script>
+  <script src="js/profesor_videos.js?v=11"></script>
 </body>
 </html>

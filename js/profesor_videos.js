@@ -1145,6 +1145,59 @@
       });
     }
 
+    var importOrgBtn = document.getElementById('pv-btn-import-org');
+    var importOrgBox = document.getElementById('pv-org-import-box');
+    var importOrgList = document.getElementById('pv-org-import-list');
+    var closeOrgBtn = document.getElementById('pv-btn-close-org-import');
+    if (closeOrgBtn && importOrgBox) {
+      closeOrgBtn.addEventListener('click', function () {
+        importOrgBox.style.display = 'none';
+      });
+    }
+    if (importOrgBtn && importOrgBox && importOrgList) {
+      importOrgBtn.addEventListener('click', function () {
+        vibrateTap(15);
+        importOrgBox.style.display = 'block';
+        importOrgList.innerHTML = '<div style="color:#94A3B8;font-size:0.82rem;padding:8px;">Cargando videos de El Organizador...</div>';
+        var apiUrl = (location.port === '8090') ? '/api/organizador/videos' : 'http://127.0.0.1:8090/api/organizador/videos';
+        fetch(apiUrl, { cache: 'no-store' })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (!data || !data.ok || !Array.isArray(data.items) || !data.items.length) {
+              importOrgList.innerHTML = '<div style="color:#F87171;font-size:0.82rem;padding:8px;">' +
+                escapeHtml((data && data.message) || 'No hay videos disponibles en El Organizador.') + '</div>';
+              return;
+            }
+            importOrgList.innerHTML = '';
+            data.items.forEach(function (it) {
+              var row = document.createElement('button');
+              row.type = 'button';
+              row.style.cssText = 'text-align:left;background:#1E293B;border:1px solid #334155;border-radius:10px;padding:8px 10px;color:#F8FAFC;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;';
+              var info = (it.platform || 'video') + (it.markers && it.markers.length ? (' · ' + it.markers.length + ' pasos') : '');
+              row.innerHTML = '<span style="font-weight:700;font-size:0.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' +
+                escapeHtml(it.title || 'Video') + '</span>' +
+                '<span style="font-size:0.74rem;color:#FBBF24;white-space:nowrap;">' + escapeHtml(info) + '</span>';
+              row.addEventListener('click', function () {
+                var tEl = document.getElementById('pv-input-title');
+                var uEl = document.getElementById('pv-input-url');
+                var sEl = document.getElementById('pv-input-subtitle');
+                if (tEl) tEl.value = it.title || '';
+                if (uEl) uEl.value = it.url || '';
+                if (sEl && it.subtitle) sEl.value = it.subtitle;
+                formMarkersDraft = Array.isArray(it.markers) ? it.markers.slice() : [];
+                renderFormMarkersDraft();
+                importOrgBox.style.display = 'none';
+                showToast('💡 Video importado desde El Organizador');
+              });
+              importOrgList.appendChild(row);
+            });
+          })
+          .catch(function () {
+            importOrgList.innerHTML = '<div style="color:#F87171;font-size:0.82rem;padding:8px;">No se pudo conectar con Centro_Colegio (:8090) o El Organizador (:8000).</div>';
+          });
+      });
+    }
+
     var filterGradesWrap = document.getElementById('pv-filter-grades');
     if (filterGradesWrap) {
       filterGradesWrap.querySelectorAll('[data-filter-grade]').forEach(function (btn) {
