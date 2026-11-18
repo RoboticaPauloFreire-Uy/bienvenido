@@ -106,6 +106,40 @@ alertas_busquedas = []   # Historial de búsquedas prohibidas detectadas
 vigilancia_google = True # Regla activa por defecto: no buscar en Google
 lock_estado = threading.Lock()
 
+DIR_EVIDENCIAS_DOCENTE = os.path.join(DIR_BASE, "evidencias_docente")
+os.makedirs(DIR_EVIDENCIAS_DOCENTE, exist_ok=True)
+
+# Estado de Modo Foco (Lista Blanca de Navegación)
+modo_foco = {
+    "activo": False,
+    "nombre": "Scratch y Robótica",
+    "permitidos": ["scratch", "tinkercad", "paulofreire", "roboticapaulofreire-uy.github.io"]
+}
+
+def cargar_evidencias_guardadas():
+    """Restaura las evidencias fotográficas guardadas en disco al reiniciar el servidor."""
+    evidencias = []
+    if os.path.exists(DIR_EVIDENCIAS_DOCENTE):
+        archivos = [f for f in os.listdir(DIR_EVIDENCIAS_DOCENTE) if f.endswith(".json")]
+        # Ordenar por fecha descendente
+        archivos.sort(reverse=True)
+        for f in archivos:
+            try:
+                with open(os.path.join(DIR_EVIDENCIAS_DOCENTE, f), "r", encoding="utf-8") as jf:
+                    meta = json.load(jf)
+                foto_f = meta.get("foto_file")
+                if foto_f:
+                    fpath = os.path.join(DIR_EVIDENCIAS_DOCENTE, foto_f)
+                    if os.path.exists(fpath):
+                        with open(fpath, "rb") as img_f:
+                            meta["foto"] = base64.b64encode(img_f.read()).decode("ascii")
+                evidencias.append(meta)
+            except Exception:
+                pass
+    return evidencias[:60]
+
+alertas_busquedas = cargar_evidencias_guardadas()
+
 def obtener_ip_local():
     """Detecta la IP local de la máquina del docente en la red escolar."""
     try:
@@ -586,6 +620,218 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     }
 
     .btn-vol50-quick:active { transform: scale(0.95); }
+
+    .btn-power-quick {
+      background: linear-gradient(135deg, #DC2626, #991B1B);
+      border: 1px solid #EF4444;
+      color: #FFF;
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 3px 10px rgba(220, 38, 38, 0.35);
+    }
+    .btn-power-quick:active { transform: scale(0.95); }
+
+    /* ══════════════ MODO FOCO (LISTA BLANCA) ══════════════ */
+    .focus-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .focus-preset-btn {
+      background: #0F172A;
+      border: 1.5px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .focus-preset-btn:hover {
+      border-color: #38BDF8;
+      color: #FFF;
+    }
+    .focus-preset-btn.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: #38BDF8;
+      color: #38BDF8;
+    }
+
+    /* ══════════════ GALERÍA VISUAL DE EVIDENCIAS ══════════════ */
+    .evidence-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .evidence-stats {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ev-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: #94A3B8;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: bold;
+    }
+    .ev-pill.ev-grave {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #EF4444;
+      color: #FCA5A5;
+    }
+    .evidence-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-report-print {
+      background: linear-gradient(135deg, #059669, #047857);
+      border: 1px solid #10B981;
+      color: #FFF;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35);
+    }
+    .btn-clear-ev {
+      background: #1E293B;
+      border: 1px solid var(--card-border);
+      color: #94A3B8;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .evidence-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .evidence-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .ev-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .ev-card:hover {
+      transform: translateY(-2px);
+      border-color: #38BDF8;
+    }
+    .ev-card.grave {
+      border-color: #EF4444;
+      background: linear-gradient(180deg, rgba(239,68,68,0.1) 0%, var(--card-bg) 40%);
+    }
+    .ev-card-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 165px;
+      background: #020617;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .ev-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s;
+    }
+    .ev-card-img-wrap:hover .ev-card-img {
+      transform: scale(1.05);
+    }
+    .ev-card-zoom-overlay {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: #FFF;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      pointer-events: none;
+    }
+    .ev-card-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+    .ev-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ev-badge-pc {
+      background: #1E293B;
+      color: #38BDF8;
+      border: 1px solid #38BDF8;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    .ev-card-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .ev-card-query {
+      font-size: 0.86rem;
+      color: #F8FAFC;
+      font-weight: 700;
+      word-break: break-word;
+      margin: 4px 0;
+    }
+    .ev-card-keyword {
+      font-size: 0.72rem;
+      color: #FCA5A5;
+      background: rgba(239, 68, 68, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .ev-card-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
 
     .btn-refresh {
       background: var(--card-bg);
@@ -1369,6 +1615,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         <span>Reglas & Aula</span>
         <span class="tab-badge badge-danger" id="badge-alertas" style="display:none;">0</span>
       </button>
+      <button class="tab-btn" id="tabbtn-evidencias" onclick="cambiarTab('evidencias')">
+        <i class="fas fa-camera"></i>
+        <span>Evidencias</span>
+        <span class="tab-badge badge-danger" id="badge-evidencias" style="display:none;">0</span>
+      </button>
     </nav>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -1382,6 +1633,9 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
           <button class="filter-btn" id="flt-locked" onclick="filtrarEquipos('locked')">🔒 Bloqueadas</button>
         </div>
         <div class="toolbar-right-btns">
+          <button class="btn-power-quick" onclick="abrirModalEnergia()" title="Apagar o reiniciar las computadoras del taller">
+            <i class="fas fa-power-off"></i> Energía
+          </button>
           <button class="btn-vol50-quick" onclick="enviarComando('all', 'set_volume', {level: 50})" title="Poner volumen de todas las PCs al 50% (Regla de la sala)">
             <i class="fas fa-volume-down"></i> Vol 50%
           </button>
@@ -1558,6 +1812,51 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         </div>
       </div>
 
+      <!-- REGLA NUEVA: MODO FOCO (LISTA BLANCA DE NAVEGACIÓN) -->
+      <div class="section-card" style="border: 1.5px solid rgba(56, 189, 248, 0.4);">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-bullseye" style="color:#38BDF8;"></i>
+            <span>Modo Foco: Lista Blanca de Navegación</span>
+          </div>
+          <button class="guard-toggle-btn" id="btn-toggle-foco" onclick="alternarModoFoco()">
+            <i class="fas fa-circle"></i> Foco Desactivado
+          </button>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;">
+          Permite únicamente los sitios y programas de la clase. Si un alumno abre YouTube, Roblox o juegos, la ventana se minimiza automáticamente y el robot le avisa que vuelva a la tarea.
+        </p>
+        <div style="font-size:0.78rem;font-weight:bold;color:#38BDF8;margin-bottom:6px;">
+          🎯 Seleccionar programa o sitio para la clase de hoy:
+        </div>
+        <div class="focus-presets-grid">
+          <button class="focus-preset-btn active" id="fpreset-scratch" onclick="aplicarPresetFoco('Scratch y Programación', ['scratch', 'scratch.mit.edu', 'mit.edu'])">
+            🐱 Scratch
+          </button>
+          <button class="focus-preset-btn" id="fpreset-tinkercad" onclick="aplicarPresetFoco('Tinkercad 3D y Circuitos', ['tinkercad', 'tinkercad.com', 'autodesk'])">
+            🤖 Tinkercad
+          </button>
+          <button class="focus-preset-btn" id="fpreset-microbit" onclick="aplicarPresetFoco('Micro:bit y Robótica', ['makecode', 'microbit', 'microbit.org'])">
+            💻 Micro:bit
+          </button>
+          <button class="focus-preset-btn" id="fpreset-freire" onclick="aplicarPresetFoco('Portal Paulo Freire', ['roboticapaulofreire-uy.github.io', 'paulofreire', 'bienvenido'])">
+            🏫 Portal Freire
+          </button>
+          <button class="focus-preset-btn" id="fpreset-ceibal" onclick="aplicarPresetFoco('Ceibal y Educación', ['ceibal.edu.uy', 'uruguayeduca', 'wikipedia.org'])">
+            📖 Ceibal / Educa
+          </button>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;">
+          <input type="text" id="inp-foco-custom" placeholder="O escribe palabras clave o dominios permitidos (ej: canva, geogebra)..." style="flex:1;background:#0F172A;border:1px solid var(--card-border);border-radius:8px;padding:8px 12px;color:#FFF;font-size:0.8rem;outline:none;">
+          <button class="aux-btn" style="padding:8px 14px;background:#0284C7;color:#FFF;border:none;" onclick="guardarFocoPersonalizado()">
+            Aplicar
+          </button>
+        </div>
+        <div id="foco-status-msg" style="margin-top:8px;font-size:0.75rem;color:#94A3B8;">
+          Estado actual: Libre navegación (solo vigilando búsquedas indebidas)
+        </div>
+      </div>
+
       <!-- REGLA 2: DETECTOR DE BÚSQUEDAS EN GOOGLE -->
       <div class="section-card">
         <div class="section-header">
@@ -1614,31 +1913,82 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
       <div class="section-card">
         <div class="section-header">
-          <div class="section-title"><i class="fas fa-sliders-h"></i> Cierre de Clase</div>
+          <div class="section-title"><i class="fas fa-sliders-h"></i> Cierre de Clase & Control de Energía</div>
         </div>
-        <div class="aux-actions-grid">
-          <button class="aux-btn" onclick="confirmarApagado()" style="border-color:rgba(239,68,68,0.4);">
-            <i class="fas fa-power-off" style="color:#EF4444;"></i> Apagar Todas las PCs del Taller
+        <div class="aux-actions-grid" style="grid-template-columns: 1fr 1fr; gap:10px;">
+          <button class="aux-btn" onclick="confirmarAccionEnergia('shutdown')" style="background:rgba(239,68,68,0.12);border-color:#EF4444;color:#FCA5A5;padding:14px;">
+            <i class="fas fa-power-off" style="color:#EF4444;"></i> 🔴 Apagar Todas las PCs (Fin de Día)
           </button>
+          <button class="aux-btn" onclick="confirmarAccionEnergia('reboot')" style="background:rgba(56,189,248,0.12);border-color:#38BDF8;color:#7DD3FC;padding:14px;">
+            <i class="fas fa-sync-alt" style="color:#38BDF8;"></i> 🔄 Reiniciar Todas (Cambio de Grupo)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PESTAÑA 5: GALERÍA VISUAL DE EVIDENCIAS FOTOGRÁFICAS
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-evidencias">
+      <div class="evidence-toolbar">
+        <div class="evidence-stats">
+          <div class="ev-pill"><i class="fas fa-camera"></i> <span id="ev-total-count">0</span> evidencias registradas</div>
+          <div class="ev-pill ev-grave"><i class="fas fa-exclamation-triangle"></i> <span id="ev-grave-count">0</span> faltas desubicadas</div>
+        </div>
+        <div class="evidence-actions">
+          <button class="btn-report-print" onclick="window.open('/api/reporte_evidencias', '_blank')">
+            <i class="fas fa-print"></i> Imprimir Acta para Dirección
+          </button>
+          <button class="btn-clear-ev" onclick="confirmarBorradoTodasEvidencias()">
+            <i class="fas fa-trash-alt"></i> Limpiar Todo
+          </button>
+        </div>
+      </div>
+
+      <div class="evidence-filter-bar">
+        <span>Filtrar:</span>
+        <button class="filter-btn active" id="evflt-all" onclick="filtrarEvidencias('all')">Todas</button>
+        <button class="filter-btn" id="evflt-grave" onclick="filtrarEvidencias('grave')">🚨 Solo Desubicadas</button>
+        <button class="filter-btn" id="evflt-foto" onclick="filtrarEvidencias('foto')">📸 Con Fotografía</button>
+      </div>
+
+      <div class="evidence-gallery-grid" id="evidence-gallery-container">
+        <div class="empty-state">
+          <i class="fas fa-camera"></i>
+          <h4>No hay evidencias fotográficas registradas</h4>
+          <p>Cuando un alumno intente realizar una búsqueda indebida, la cámara web capturará la fotografía automáticamente y aparecerá aquí.</p>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════
-       BARRA FIJA INFERIOR PARA CONTROLAR CON EL PULGAR DESDE EL CELULAR
-       ══════════════════════════════════════════════════════════════ -->
-  <div class="thumb-control-bar">
-    <div class="thumb-bar-inner">
-      <button class="thumb-btn thumb-lock" onclick="enviarComandoConVibracion('all', 'lock')">
-        <i class="fas fa-lock"></i> BLOQUEAR
-      </button>
-      <button class="thumb-btn thumb-msg" onclick="abrirModalMensaje('all')">
-        <i class="fas fa-comment-dots"></i> AVISO
-      </button>
-      <button class="thumb-btn thumb-unlock" onclick="enviarComandoConVibracion('all', 'unlock')">
-        <i class="fas fa-lock-open"></i> DESBLOQUEAR
-      </button>
+  <!-- Modal Control de Energía Masivo -->
+  <div class="modal-overlay" id="modal-energia">
+    <div class="modal-box" style="border-color:#EF4444;max-width:460px;">
+      <h3 style="color:#EF4444;"><i class="fas fa-power-off"></i> Control de Energía Masivo</h3>
+      <p id="modal-energia-desc" style="color:#FCA5A5;font-size:0.85rem;">
+        ¿Qué acción deseas realizar en las computadoras conectadas del aula?
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+        <button class="aux-btn" style="background:linear-gradient(135deg, #DC2626, #991B1B);color:#FFF;padding:12px;font-size:0.92rem;font-weight:bold;border:none;border-radius:10px;text-align:left;" onclick="ejecutarEnergia('shutdown')">
+          <i class="fas fa-power-off"></i> 🔴 Apagar Todas las PCs (Fin de Jornada)
+        </button>
+        <button class="aux-btn" style="background:linear-gradient(135deg, #0284C7, #0369A1);color:#FFF;padding:12px;font-size:0.92rem;font-weight:bold;border:none;border-radius:10px;text-align:left;" onclick="ejecutarEnergia('reboot')">
+          <i class="fas fa-sync-alt"></i> 🔄 Reiniciar Todas las PCs (Cambio de Turno)
+        </button>
+      </div>
+      <div class="modal-btns">
+        <button class="mbtn-cancel" onclick="cerrarModalEnergia()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Lightbox para Ampliar Fotografía -->
+  <div class="modal-overlay" id="modal-lightbox" onclick="cerrarLightbox()">
+    <div style="position:relative;max-width:85vw;max-height:85vh;text-align:center;" onclick="event.stopPropagation()">
+      <button style="position:absolute;top:-12px;right:-12px;background:#EF4444;color:#FFF;border:none;border-radius:50%;width:34px;height:34px;font-weight:bold;cursor:pointer;font-size:16px;box-shadow:0 3px 10px rgba(0,0,0,0.5);" onclick="cerrarLightbox()">✕</button>
+      <img id="lightbox-img" src="" style="max-width:100%;max-height:80vh;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.8);border:2px solid #38BDF8;">
+      <div id="lightbox-caption" style="margin-top:10px;color:#FFF;font-size:0.9rem;font-weight:bold;background:rgba(15,23,42,0.85);padding:8px 16px;border-radius:8px;"></div>
     </div>
   </div>
 
@@ -1675,6 +2025,9 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         </button>
         <button class="aux-btn" style="background:#1E293B;border-color:#3B82F6;padding:12px;" onclick="enviarAccionIndividual('open_url', {url:'https://roboticapaulofreire-uy.github.io/bienvenido/'})">
           <i class="fas fa-newspaper" style="color:#F59E0B;"></i> Abrir El Diario solo en esta PC
+        </button>
+        <button class="aux-btn" style="background:#0284C7;border-color:#38BDF8;padding:12px;" onclick="enviarAccionIndividual('reboot', {})">
+          <i class="fas fa-sync-alt" style="color:#7DD3FC;"></i> Reiniciar solo esta PC
         </button>
         <button class="aux-btn" style="background:#7F1D1D;border-color:#EF4444;padding:12px;" onclick="enviarAccionIndividual('shutdown', {})">
           <i class="fas fa-power-off" style="color:#FCA5A5;"></i> Apagar solo esta PC
@@ -1737,7 +2090,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     }
 
     function cambiarTab(tabName) {
-      var tabs = ['equipos', 'herramientas', 'juegos', 'aula'];
+      var tabs = ['equipos', 'herramientas', 'juegos', 'aula', 'evidencias'];
       for (var i = 0; i < tabs.length; i++) {
         var t = tabs[i];
         var btn = document.getElementById('tabbtn-' + t);
@@ -1799,8 +2152,244 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
     function enviarAccionIndividual(action, params) {
       if (action === 'shutdown' && !confirm('¿Estás seguro de apagar la PC ' + indivTargetNum + '?')) return;
+      if (action === 'reboot' && !confirm('¿Estás seguro de reiniciar la PC ' + indivTargetNum + '?')) return;
       enviarComando(indivTargetId, action, params);
       cerrarModalIndividual();
+    }
+
+    function abrirModalEnergia() {
+      var cant = lastMachinesList ? lastMachinesList.filter(function(m){return m.online;}).length : 0;
+      document.getElementById('modal-energia-desc').textContent = 'Hay ' + cant + ' computadoras activas conectadas en el aula.';
+      document.getElementById('modal-energia').classList.add('open');
+    }
+
+    function cerrarModalEnergia() {
+      document.getElementById('modal-energia').classList.remove('open');
+    }
+
+    function ejecutarEnergia(tipo) {
+      cerrarModalEnergia();
+      if (tipo === 'shutdown') {
+        if (confirm('🚨 ¿Estás completamente seguro de APAGAR todas las computadoras del taller?\nLos alumnos verán un aviso de despedida de 10 segundos.')) {
+          enviarComando('all', 'shutdown', {});
+        }
+      } else if (tipo === 'reboot') {
+        if (confirm('🔄 ¿Estás seguro de REINICIAR todas las computadoras del taller para el cambio de turno?\nLos equipos se reiniciarán en 10 segundos.')) {
+          enviarComando('all', 'reboot', {});
+        }
+      }
+    }
+
+    /* ══════════════ MODO FOCO JS ══════════════ */
+    var modoFocoData = { activo: false, nombre: 'Scratch y Programación', permitidos: ['scratch', 'scratch.mit.edu'] };
+
+    function actualizarUIModoFoco(mf) {
+      if (!mf) return;
+      modoFocoData = mf;
+      var btn = document.getElementById('btn-toggle-foco');
+      var statusMsg = document.getElementById('foco-status-msg');
+      if (btn) {
+        if (mf.activo) {
+          btn.className = 'guard-toggle-btn guard-on';
+          btn.innerHTML = '<i class="fas fa-check-circle"></i> Foco Activo';
+        } else {
+          btn.className = 'guard-toggle-btn';
+          btn.innerHTML = '<i class="fas fa-circle"></i> Foco Desactivado';
+        }
+      }
+      if (statusMsg) {
+        if (mf.activo) {
+          statusMsg.innerHTML = '🟢 <strong>MODO FOCO ACTIVO:</strong> Solo permitido <em>"' + escaparHtml(mf.nombre) + '"</em> (' + escaparHtml(mf.permitidos.join(', ')) + '). Si abren otra página, se minimiza sola.';
+          statusMsg.style.color = '#38BDF8';
+        } else {
+          statusMsg.innerHTML = '⚪ Estado actual: Libre navegación (solo vigilando búsquedas indebidas)';
+          statusMsg.style.color = '#94A3B8';
+        }
+      }
+    }
+
+    function alternarModoFoco() {
+      var nuevoEstado = !modoFocoData.activo;
+      fetch('/api/set_focus_mode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          activo: nuevoEstado,
+          nombre: modoFocoData.nombre || 'Scratch y Programación',
+          permitidos: modoFocoData.permitidos || ['scratch', 'scratch.mit.edu']
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.modo_foco) actualizarUIModoFoco(d.modo_foco);
+        toast(nuevoEstado ? '🎯 Modo Foco Activado' : '🔓 Modo Foco Desactivado', nuevoEstado ? '#0284C7' : '#64748B');
+      });
+    }
+
+    function aplicarPresetFoco(nombre, permitidos) {
+      var presets = ['scratch', 'tinkercad', 'microbit', 'freire', 'ceibal'];
+      presets.forEach(function(p) {
+        var el = document.getElementById('fpreset-' + p);
+        if (el) el.classList.remove('active');
+      });
+      fetch('/api/set_focus_mode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          activo: true,
+          nombre: nombre,
+          permitidos: permitidos
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.modo_foco) actualizarUIModoFoco(d.modo_foco);
+        toast('🎯 Foco asignado: ' + nombre, '#0284C7');
+      });
+    }
+
+    function guardarFocoPersonalizado() {
+      var val = document.getElementById('inp-foco-custom').value.trim();
+      if (!val) return;
+      var lista = val.split(',').map(function(s){ return s.trim().toLowerCase(); }).filter(Boolean);
+      fetch('/api/set_focus_mode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          activo: true,
+          nombre: 'Sitios Personalizados',
+          permitidos: lista
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.modo_foco) actualizarUIModoFoco(d.modo_foco);
+        toast('🎯 Foco personalizado activo', '#0284C7');
+      });
+    }
+
+    /* ══════════════ GALERÍA DE EVIDENCIAS JS ══════════════ */
+    var filtroEvidenciasActivo = 'all';
+    var listaEvidenciasGlobal = [];
+
+    function filtrarEvidencias(filtro) {
+      filtroEvidenciasActivo = filtro;
+      document.getElementById('evflt-all').classList.toggle('active', filtro === 'all');
+      document.getElementById('evflt-grave').classList.toggle('active', filtro === 'grave');
+      document.getElementById('evflt-foto').classList.toggle('active', filtro === 'foto');
+      renderizarGaleriaEvidencias(listaEvidenciasGlobal);
+    }
+
+    function renderizarGaleriaEvidencias(alertas) {
+      listaEvidenciasGlobal = alertas || [];
+      var badge = document.getElementById('badge-evidencias');
+      if (badge) {
+        if (alertas.length > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = alertas.length;
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      var totalCount = document.getElementById('ev-total-count');
+      var graveCount = document.getElementById('ev-grave-count');
+      var graves = alertas.filter(function(a){ return !!a.grave; }).length;
+      if (totalCount) totalCount.textContent = alertas.length;
+      if (graveCount) graveCount.textContent = graves;
+
+      var cont = document.getElementById('evidence-gallery-container');
+      if (!cont) return;
+
+      var filtradas = alertas.filter(function(a) {
+        if (filtroEvidenciasActivo === 'grave') return !!a.grave;
+        if (filtroEvidenciasActivo === 'foto') return !!a.foto;
+        return true;
+      });
+
+      if (filtradas.length === 0) {
+        cont.innerHTML = '<div class="empty-state">' +
+          '<i class="fas fa-camera"></i>' +
+          '<h4>No hay evidencias fotográficas registradas</h4>' +
+          '<p>Cuando un alumno realice una búsqueda indebida, la cámara web capturará la fotografía automáticamente y aparecerá aquí.</p>' +
+        '</div>';
+        return;
+      }
+
+      cont.innerHTML = filtradas.map(function(a) {
+        var isGrave = !!a.grave;
+        var ns = a.number ? String(a.number) : '?';
+        var pn = ns.length === 1 ? '0' + ns : ns;
+        var imgSrc = a.foto ? ('data:image/jpeg;base64,' + a.foto) : '';
+        var imgHtml = imgSrc ? (
+          '<div class="ev-card-img-wrap" onclick="abrirLightbox(\'' + imgSrc + '\', \'PC ' + pn + ' · ' + escaparHtml(a.query || '') + '\')">' +
+            '<img class="ev-card-img" src="' + imgSrc + '" alt="Foto Alumno">' +
+            '<div class="ev-card-zoom-overlay"><i class="fas fa-search-plus"></i> Ampliar</div>' +
+          '</div>'
+        ) : (
+          '<div class="ev-card-img-wrap" style="display:flex;align-items:center;justify-content:center;color:#64748B;font-size:12px;">' +
+            '<i class="fas fa-video-slash" style="font-size:24px;margin-right:8px;"></i> Sin cámara web' +
+          '</div>'
+        );
+
+        var cardClass = isGrave ? 'ev-card grave' : 'ev-card';
+        var badgeTipo = isGrave ? '<span class="ev-card-keyword" style="background:#EF4444;color:#FFF;font-weight:bold;">🚨 FALTA DESUBICADA</span>' : '<span class="ev-card-keyword" style="background:#D97706;color:#FFF;font-weight:bold;">🟡 BÚSQUEDA NO AUTORIZADA</span>';
+
+        return '<div class="' + cardClass + '">' +
+          imgHtml +
+          '<div class="ev-card-body">' +
+            '<div class="ev-card-header">' +
+              '<span class="ev-badge-pc">💻 PC ' + escaparHtml(pn) + '</span>' +
+              '<span class="ev-card-time"><i class="far fa-clock"></i> ' + escaparHtml(a.hora || '') + ' (' + escaparHtml(a.fecha || '') + ')</span>' +
+            '</div>' +
+            '<div>' + badgeTipo + '</div>' +
+            '<div class="ev-card-query">🔍 "' + escaparHtml(a.query || '') + '"</div>' +
+            (a.palabra_clave ? ('<div style="font-size:11px;color:#FCA5A5;">Término detectado: <strong>"' + escaparHtml(a.palabra_clave) + '"</strong></div>') : '') +
+            '<div class="ev-card-footer">' +
+              '<button class="mini-btn mb-lock" style="padding:6px 10px;" onclick="enviarComando(\'' + escaparHtml(a.id) + '\', \'lock\')"><i class="fas fa-lock"></i> Bloquear</button>' +
+              '<button class="mini-btn" style="background:#334155;color:#F87171;padding:6px 10px;" onclick="borrarEvidencia(\'' + escaparHtml(a.foto_file || '') + '\', ' + (a.ts || 0) + ')" title="Borrar evidencia"><i class="fas fa-trash-alt"></i></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function abrirLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-caption').textContent = caption;
+      document.getElementById('modal-lightbox').classList.add('open');
+    }
+
+    function cerrarLightbox() {
+      document.getElementById('modal-lightbox').classList.remove('open');
+    }
+
+    function borrarEvidencia(fotoFile, ts) {
+      if (!confirm('¿Eliminar esta evidencia fotográfica?')) return;
+      fetch('/api/borrar_evidencia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ foto_file: fotoFile, ts: ts })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(){
+        toast('Evidencia eliminada');
+        cargarEstado();
+      });
+    }
+
+    function confirmarBorradoTodasEvidencias() {
+      if (!confirm('⚠️ ¿Estás seguro de vaciar todo el registro de evidencias fotográficas de la clase?')) return;
+      fetch('/api/clear_alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ borrar_archivos: true })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(){
+        toast('Todas las evidencias fueron eliminadas');
+        cargarEstado();
+      });
     }
 
     function vibrar() {
@@ -2151,7 +2740,12 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             actualizarBotonVigilancia();
           }
 
+          if (data.modo_foco !== undefined) {
+            actualizarUIModoFoco(data.modo_foco);
+          }
+
           renderizarAlertasGoogle(data.alertas || []);
+          renderizarGaleriaEvidencias(data.alertas || []);
 
           var maquinas = data.maquinas || [];
           maquinas.sort(function(a, b) {
@@ -2261,12 +2855,114 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                 lista = list(maquinas.values())
                 alertas_copia = list(alertas_busquedas)
                 vg = vigilancia_google
+                mf = dict(modo_foco)
             self.responder_json({
                 "ip": IP_DOCENTE,
                 "maquinas": lista,
                 "alertas": alertas_copia,
-                "vigilancia_google": vg
+                "vigilancia_google": vg,
+                "modo_foco": mf
             })
+            return
+
+        if url.path == "/api/evidencias":
+            with lock_estado:
+                alertas_copia = list(alertas_busquedas)
+            self.responder_json({"status": "ok", "evidencias": alertas_copia})
+            return
+
+        if url.path == "/api/reporte_evidencias":
+            with lock_estado:
+                alertas_copia = list(alertas_busquedas)
+            filas_html = ""
+            for idx, a in enumerate(alertas_copia, 1):
+                es_g = a.get("grave", False)
+                badge = '<span style="background:#DC2626;color:#FFF;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:bold;">🚨 FALTA DESUBICADA</span>' if es_g else '<span style="background:#D97706;color:#FFF;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:bold;">🟡 BÚSQUEDA NO PERMITIDA</span>'
+                foto_img = f'<img src="data:image/jpeg;base64,{a["foto"]}" style="width:120px;height:90px;object-fit:cover;border-radius:4px;border:1px solid #CBD5E1;">' if a.get("foto") else '<span style="color:#94A3B8;font-size:11px;">Sin fotografía</span>'
+                filas_html += f"""
+                <tr>
+                  <td style="text-align:center;font-weight:bold;">{idx}</td>
+                  <td><strong>PC {a.get('number', '?')}</strong><br><small style="color:#64748B;">{a.get('hostname', '')}</small></td>
+                  <td>{a.get('fecha', time.strftime('%d/%m/%Y'))}<br><small style="color:#64748B;">{a.get('hora', '')}</small></td>
+                  <td>{badge}<br><strong style="font-size:13px;display:block;margin-top:4px;">"{a.get('query', '')}"</strong><small style="color:#EF4444;">Término detectado: {a.get('palabra_clave', '-')}</small></td>
+                  <td style="text-align:center;">{foto_img}</td>
+                  <td style="width:130px;border-bottom:1px dotted #94A3B8;"></td>
+                </tr>
+                """
+            if not filas_html:
+                filas_html = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#64748B;">No hay incidencias registradas en la sesión.</td></tr>'
+
+            doc_html = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acta de Incidencias Digitales - Colegio Paulo Freire</title>
+  <style>
+    body {{ font-family: 'Segoe UI', Arial, sans-serif; color: #1E293B; margin: 25px; line-height: 1.4; }}
+    .header {{ display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #059669; padding-bottom: 12px; margin-bottom: 20px; }}
+    .header h2 {{ margin: 0; color: #065F46; font-size: 20px; }}
+    .header h4 {{ margin: 4px 0 0 0; color: #64748B; font-size: 13px; font-weight: normal; }}
+    .meta-box {{ background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px 14px; font-size: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; }}
+    table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+    th, td {{ border: 1px solid #CBD5E1; padding: 9px; text-align: left; font-size: 12px; vertical-align: middle; }}
+    th {{ background: #F1F5F9; color: #334155; font-size: 12px; text-transform: uppercase; }}
+    .firmas {{ margin-top: 55px; display: flex; justify-content: space-around; text-align: center; }}
+    .linea-firma {{ width: 220px; border-top: 1.5px solid #334155; padding-top: 6px; font-weight: bold; font-size: 12px; }}
+    .no-print {{ margin-bottom: 15px; display: flex; gap: 10px; }}
+    .btn-print {{ background: #059669; color: #FFF; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; }}
+    @media print {{
+      .no-print {{ display: none !important; }}
+      body {{ margin: 10mm; }}
+    }}
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar en PDF</button>
+    <button class="btn-print" style="background:#475569;" onclick="window.close()">Cerrar</button>
+  </div>
+  <div class="header">
+    <div>
+      <h2>COLEGIO PAULO FREIRE · TALLER DE ROBÓTICA E INFORMÁTICA</h2>
+      <h4>Acta Oficial de Registro de Incidencias Digitales y Búsquedas No Autorizadas</h4>
+    </div>
+    <div style="text-align:right;font-size:12px;color:#64748B;">
+      Fecha de emisión: <strong>{time.strftime('%d/%m/%Y %H:%M')}</strong>
+    </div>
+  </div>
+  <div class="meta-box">
+    <div><strong>Docente responsable:</strong> Control de Aula Maker</div>
+    <div><strong>Total de incidencias registradas:</strong> {len(alertas_copia)}</div>
+    <div><strong>Estado del guardián:</strong> Activo con captura fotográfica</div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:30px;text-align:center;">#</th>
+        <th style="width:90px;">Equipo</th>
+        <th style="width:90px;">Fecha/Hora</th>
+        <th>Búsqueda realizada & Infracción</th>
+        <th style="width:130px;text-align:center;">Fotografía</th>
+        <th style="width:130px;">Firma Alumno / Observación</th>
+      </tr>
+    </thead>
+    <tbody>
+      {filas_html}
+    </tbody>
+  </table>
+  <div class="firmas">
+    <div>
+      <div class="linea-firma">Firma del Docente de Taller</div>
+      <small style="color:#64748B;">Colegio Paulo Freire</small>
+    </div>
+    <div>
+      <div class="linea-firma">Firma de Dirección / Adscripción</div>
+      <small style="color:#64748B;">Constancia de Notificación</small>
+    </div>
+  </div>
+</body>
+</html>"""
+            self.responder_html(doc_html)
             return
 
         if url.path == "/api/poll":
@@ -2321,11 +3017,51 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
             self.responder_json({"status": "ok", "vigilancia_google": vg})
             return
 
+        if url.path == "/api/set_focus_mode":
+            with lock_estado:
+                modo_foco["activo"] = bool(data.get("activo", False))
+                if "nombre" in data:
+                    modo_foco["nombre"] = str(data["nombre"])
+                if "permitidos" in data:
+                    modo_foco["permitidos"] = [str(x).strip().lower() for x in data["permitidos"] if str(x).strip()]
+                cola_global.append({
+                    "action": "set_focus_mode",
+                    "params": dict(modo_foco),
+                    "time": time.time(),
+                    "seq": len(cola_global) + 1
+                })
+                mf_copy = dict(modo_foco)
+            print(f"  [🎯 MODO FOCO DOCENTE] {'ACTIVADO' if mf_copy['activo'] else 'DESACTIVADO'}: {mf_copy['nombre']} -> {mf_copy['permitidos']}", flush=True)
+            self.responder_json({"status": "ok", "modo_foco": mf_copy})
+            return
+
+        if url.path == "/api/borrar_evidencia":
+            foto_f = data.get("foto_file", "")
+            ts = data.get("ts", 0)
+            with lock_estado:
+                if foto_f:
+                    p1 = os.path.join(DIR_EVIDENCIAS_DOCENTE, foto_f)
+                    p2 = os.path.join(DIR_EVIDENCIAS_DOCENTE, foto_f.replace(".jpg", ".json"))
+                    for p in (p1, p2):
+                        if os.path.exists(p):
+                            try: os.remove(p)
+                            except Exception: pass
+                alertas_busquedas[:] = [a for a in alertas_busquedas if a.get("foto_file") != foto_f and a.get("ts") != ts]
+            self.responder_json({"status": "ok"})
+            return
+
         if url.path == "/api/clear_alerts":
             with lock_estado:
                 alertas_busquedas.clear()
                 for m in maquinas.values():
                     m["last_google_alert"] = ""
+                # Si se solicita borrar también de disco
+                if data.get("borrar_archivos", False):
+                    try:
+                        for f in os.listdir(DIR_EVIDENCIAS_DOCENTE):
+                            os.remove(os.path.join(DIR_EVIDENCIAS_DOCENTE, f))
+                    except Exception:
+                        pass
             self.responder_json({"status": "ok"})
             return
 
@@ -2393,6 +3129,9 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                     alerta_foto = data.get("google_alert_foto", "")
                     alerta_grave = bool(data.get("google_alert_grave", False))
                     alerta_palabra = str(data.get("google_alert_palabra", "")).strip()
+                    alerta_foco_msg = str(data.get("focus_alert", "")).strip()
+                    if alerta_foco_msg:
+                        print(f"  [🎯 MODO FOCO] PC {num_asignado} ({maquinas[mid]['hostname']}): {alerta_foco_msg}", flush=True)
 
                     # Se registra si es búsqueda desubicada (SIEMPRE) o si vigilancia_google está activa
                     if alerta_google and (vigilancia_google or alerta_grave):
@@ -2400,8 +3139,33 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         maquinas[mid]["last_google_alert"] = q_str
                         maquinas[mid]["last_alert_grave"] = alerta_grave
                         maquinas[mid]["last_alert_palabra"] = alerta_palabra
+                        foto_fname = ""
                         if alerta_foto:
                             maquinas[mid]["last_alert_foto"] = alerta_foto
+                            try:
+                                ts_sec = int(time.time())
+                                foto_fname = f"evidencia_PC{num_asignado}_{ts_sec}.jpg"
+                                meta_fname = f"evidencia_PC{num_asignado}_{ts_sec}.json"
+                                fpath = os.path.join(DIR_EVIDENCIAS_DOCENTE, foto_fname)
+                                mpath = os.path.join(DIR_EVIDENCIAS_DOCENTE, meta_fname)
+                                with open(fpath, "wb") as fh:
+                                    fh.write(base64.b64decode(alerta_foto))
+                                with open(mpath, "w", encoding="utf-8") as fh:
+                                    json.dump({
+                                        "id": mid,
+                                        "number": num_asignado,
+                                        "hostname": maquinas[mid].get("hostname", mid),
+                                        "query": q_str,
+                                        "grave": alerta_grave,
+                                        "palabra_clave": alerta_palabra,
+                                        "hora": time.strftime("%H:%M:%S"),
+                                        "fecha": time.strftime("%d/%m/%Y"),
+                                        "ts": time.time(),
+                                        "foto_file": foto_fname
+                                    }, fh, indent=2, ensure_ascii=False)
+                            except Exception as e:
+                                print(f"  [!] Error guardando evidencia fotográfica: {e}", flush=True)
+
                         alerta_obj = {
                             "id": mid,
                             "number": num_asignado,
@@ -2410,12 +3174,14 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                             "grave": alerta_grave,
                             "palabra_clave": alerta_palabra,
                             "foto": alerta_foto,
+                            "foto_file": foto_fname,
                             "hora": time.strftime("%H:%M:%S"),
+                            "fecha": time.strftime("%d/%m/%Y"),
                             "ts": time.time()
                         }
                         alertas_busquedas.insert(0, alerta_obj)
-                        if len(alertas_busquedas) > 40:
-                            del alertas_busquedas[40:]
+                        if len(alertas_busquedas) > 60:
+                            del alertas_busquedas[60:]
                         if alerta_grave:
                             print(f"  [🚨 ALERTA ROJA · BÚSQUEDA DESUBICADA] PC {num_asignado} ({maquinas[mid]['hostname']}) buscó: \"{q_str}\" (Término: {alerta_palabra})", flush=True)
                         else:
@@ -2423,12 +3189,14 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
 
                     vg = vigilancia_google
                     palabras_sync = cargar_palabras_prohibidas_servidor()
+                    mf_status = dict(modo_foco)
 
             self.responder_json({
                 "status": "ok",
                 "vigilancia_google": vg,
                 "palabras_prohibidas": palabras_sync,
-                "force_lock": debe_bloquear
+                "force_lock": debe_bloquear,
+                "modo_foco": mf_status
             })
             return
 

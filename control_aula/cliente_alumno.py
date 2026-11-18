@@ -182,6 +182,21 @@ ARCHIVO_PALABRAS_PROHIBIDAS = os.path.join(DIR_BASE, "palabras_prohibidas.txt")
 _palabras_prohibidas_cache = []
 _palabras_prohibidas_mtime = 0
 
+# Estado de Modo Foco (Lista Blanca de Navegación)
+modo_foco_activo = False
+modo_foco_nombre = "Scratch y Robótica"
+modo_foco_permitidos = ["scratch", "tinkercad", "paulofreire", "roboticapaulofreire-uy.github.io"]
+ultimo_aviso_foco = 0.0
+alerta_foco_pendiente = ""
+
+PROGRAMAS_SISTEMA_SEGUROS = [
+    "escritorio", "desktop", "explorador de archivos", "file explorer", 
+    "program manager", "barra de tareas", "taskbar", "calculadora", "calculator",
+    "bloc de notas", "notepad", "paint", "cmd", "powershell", "python",
+    "agente_alumno", "agente alumno", "iniciar_alumno", "configuración", "settings",
+    "aviso del docente", "aviso del profesor", "modo foco activo", "control de aula"
+]
+
 def normalizar_texto(texto):
     if not texto:
         return ""
@@ -551,6 +566,140 @@ def mostrar_mensaje_emergente(texto):
     except Exception as e:
         print(f"  📢 AVISO DEL DOCENTE: {texto}", flush=True)
 
+def mostrar_aviso_cierre_clase(mensaje="👋 ¡Clase Finalizada!\nApagando equipo... ¡Buen trabajo hoy!", duracion_segundos=10):
+    """Muestra un mensaje visual de cierre de clase o reinicio con aviso al alumno."""
+    if not tk_root:
+        print(f"\n{mensaje}\n", flush=True)
+        return
+
+    def _anim():
+        try:
+            pop = tk.Toplevel(tk_root)
+            registrar_ventana_emergente(pop)
+            pop.title("Cierre de Clase · Colegio Paulo Freire")
+            pop.configure(bg="#0F172A")
+            pop.attributes("-topmost", True)
+            pop.overrideredirect(True)
+
+            w, h = 540, 260
+            x = (pop.winfo_screenwidth() // 2) - (w // 2)
+            y = (pop.winfo_screenheight() // 2) - (h // 2)
+            pop.geometry(f"{w}x{h}+{x}+{y}")
+
+            frame = tk.Frame(pop, bg="#0F172A", highlightbackground="#38BDF8", highlightthickness=2, padx=24, pady=24)
+            frame.pack(fill="both", expand=True)
+
+            lbl_tit = tk.Label(frame, text="COLEGIO PAULO FREIRE", font=("Arial", 16, "bold"), fg="#38BDF8", bg="#0F172A")
+            lbl_tit.pack(pady=(0, 10))
+
+            lbl_msg = tk.Label(frame, text=mensaje, font=("Arial", 13), fg="#F8FAFC", bg="#0F172A", justify="center")
+            lbl_msg.pack(pady=(0, 14), expand=True)
+
+            lbl_cuenta = tk.Label(frame, text=f"Ejecutando en {duracion_segundos} segundos...", font=("Arial", 11, "bold"), fg="#F59E0B", bg="#0F172A")
+            lbl_cuenta.pack(side="bottom")
+
+            pop.update()
+        except Exception:
+            pass
+
+    try:
+        tk_root.after(0, _anim)
+    except Exception:
+        pass
+
+def mostrar_aviso_modo_foco(titulo_ventana, nombre_foco):
+    """Muestra una notificación flotante no intrusiva avisando que la ventana fue minimizada por Modo Foco."""
+    if not tk_root:
+        return
+
+    def _popup():
+        try:
+            pop = tk.Toplevel(tk_root)
+            registrar_ventana_emergente(pop)
+            pop.title("Modo Foco Activo")
+            pop.configure(bg="#0F172A")
+            pop.attributes("-topmost", True)
+            pop.overrideredirect(True)
+
+            w, h = 480, 120
+            x = (pop.winfo_screenwidth() // 2) - (w // 2)
+            y = 25
+            pop.geometry(f"{w}x{h}+{x}+{y}")
+
+            frame = tk.Frame(pop, bg="#0F172A", highlightbackground="#0284C7", highlightthickness=2, padx=16, pady=12)
+            frame.pack(fill="both", expand=True)
+
+            lbl_tit = tk.Label(
+                frame,
+                text="🎯 MODO FOCO ACTIVO · COLEGIO PAULO FREIRE",
+                font=("Arial", 11, "bold"),
+                fg="#38BDF8",
+                bg="#0F172A"
+            )
+            lbl_tit.pack(anchor="w")
+
+            msg = f"En esta clase solo se permite usar: {nombre_foco}.\nLa ventana no permitida fue minimizada para que continúes tu tarea."
+            lbl_desc = tk.Label(
+                frame,
+                text=msg,
+                font=("Arial", 10),
+                fg="#E2E8F0",
+                bg="#0F172A",
+                justify="left"
+            )
+            lbl_desc.pack(anchor="w", pady=(4, 0))
+
+            pop.after(3500, pop.destroy)
+        except Exception:
+            pass
+
+    try:
+        tk_root.after(0, _popup)
+    except Exception:
+        pass
+
+def verificar_modo_foco(titulo_ventana, hwnd):
+    """
+    Si el modo foco está activo, comprueba si la ventana actual está permitida.
+    Si no está permitida, la minimiza y muestra una notificación no invasiva del robot.
+    """
+    global ultimo_aviso_foco, alerta_foco_pendiente
+    if not modo_foco_activo or not titulo_ventana or not hwnd:
+        return None
+
+    t_low = titulo_ventana.strip().lower()
+    if not t_low or t_low == "escritorio / sin ventana activa":
+        return None
+
+    # 1. Comprobar si es un programa del sistema seguro
+    for seguro in PROGRAMAS_SISTEMA_SEGUROS:
+        if seguro in t_low:
+            return None
+
+    # 2. Comprobar si coincide con alguno de los sitios o programas permitidos
+    for permitido in modo_foco_permitidos:
+        if permitido and permitido in t_low:
+            return None
+
+    # 3. Ventana no permitida
+    try:
+        if SISTEMA_OPERATIVO == "Windows":
+            import ctypes
+            user32 = ctypes.windll.user32
+            # SW_MINIMIZE = 6
+            user32.ShowWindow(hwnd, 6)
+    except Exception:
+        pass
+
+    ahora = time.time()
+    if ahora - ultimo_aviso_foco > 4.0:
+        ultimo_aviso_foco = ahora
+        alerta_foco_pendiente = f"Ventana minimizada: {titulo_ventana}"
+        print(f"  [🎯 MODO FOCO] Ventana no autorizada minimizada: \"{titulo_ventana}\"", flush=True)
+        mostrar_aviso_modo_foco(titulo_ventana, modo_foco_nombre)
+
+    return f"Minimizada por Modo Foco: {titulo_ventana}"
+
 def capturar_foto_evidencia(busqueda, es_desubicada=False):
     """
     Toma una fotografía silenciosa con la cámara web del alumno (si cuenta con cámara)
@@ -839,6 +988,8 @@ def obtener_ventana_activa_y_busqueda():
                     user32.GetWindowTextW(hwnd_fg, buf, length + 1)
                     titulo_fg = buf.value
                     ventana_activa = limpiar_titulo_ventana(titulo_fg)
+                    # Comprobar si Modo Foco (Lista Blanca) está activo
+                    verificar_modo_foco(titulo_fg, hwnd_fg)
                     q = extraer_busqueda_prohibida(titulo_fg)
                     if q:
                         busqueda_detectada = q
@@ -1053,21 +1204,41 @@ def abrir_enlace_web(url):
             print(f"  [!] Error abriendo URL {url}: {e}", flush=True)
 
 def apagar_equipo():
-    """Apaga la máquina de forma segura al finalizar la clase."""
+    """Apaga la máquina de forma segura al finalizar la clase mostrando aviso."""
+    print("  [⚡] Apagado solicitado por el docente al finalizar la clase...", flush=True)
+    mostrar_aviso_cierre_clase(
+        mensaje="👋 ¡Clase de Robótica Finalizada!\nApagando el equipo... ¡Excelente trabajo hoy!",
+        duracion_segundos=10
+    )
     try:
         if SISTEMA_OPERATIVO == "Windows":
-            subprocess.run(["shutdown", "/s", "/t", "10", "/c", "Fin del taller de robótica"])
+            subprocess.run(["shutdown", "/s", "/t", "10", "/c", "Fin del taller de robótica - Colegio Paulo Freire"])
         elif SISTEMA_OPERATIVO == "Linux":
             subprocess.run(["shutdown", "-h", "now"])
     except Exception as e:
         print(f"  [!] Error apagando: {e}", flush=True)
+
+def reiniciar_equipo():
+    """Reinicia la máquina de forma segura para cambio de grupo mostrando aviso."""
+    print("  [🔄] Reinicio solicitado por el docente para cambio de turno...", flush=True)
+    mostrar_aviso_cierre_clase(
+        mensaje="🔄 Cambiando de grupo...\nReiniciando equipo para la próxima clase.",
+        duracion_segundos=10
+    )
+    try:
+        if SISTEMA_OPERATIVO == "Windows":
+            subprocess.run(["shutdown", "/r", "/t", "10", "/c", "Cambio de grupo - Taller de Robótica Paulo Freire"])
+        elif SISTEMA_OPERATIVO == "Linux":
+            subprocess.run(["reboot"])
+    except Exception as e:
+        print(f"  [!] Error reiniciando: {e}", flush=True)
 
 # ══════════════════════════════════════════════════════════════
 # COMUNICACIÓN EN TIEMPO REAL CON EL DOCENTE
 # ══════════════════════════════════════════════════════════════
 
 def ejecutar_comando(cmd):
-    global vigilancia_google_activa
+    global vigilancia_google_activa, modo_foco_activo, modo_foco_nombre, modo_foco_permitidos
     action = cmd.get("action")
     params = cmd.get("params", {})
     print(f"  [>] Ejecutando comando del docente: {action}", flush=True)
@@ -1093,6 +1264,11 @@ def ejecutar_comando(cmd):
         vigilancia_google_activa = bool(params.get("enabled", True))
         estado_str = "ACTIVADO" if vigilancia_google_activa else "DESACTIVADO"
         print(f"  [🛡️] Detector de búsquedas en Google: {estado_str}", flush=True)
+    elif action == "set_focus_mode":
+        modo_foco_activo = bool(params.get("activo", False))
+        modo_foco_nombre = params.get("nombre", "Sitios permitidos")
+        modo_foco_permitidos = [str(x).strip().lower() for x in params.get("permitidos", []) if str(x).strip()]
+        print(f"  [🎯 MODO FOCO RECIBIDO] {'ACTIVADO' if modo_foco_activo else 'DESACTIVADO'}: {modo_foco_nombre} -> {modo_foco_permitidos}", flush=True)
     elif action == "set_number":
         nuevo_num = params.get("number")
         if nuevo_num is not None:
@@ -1102,6 +1278,8 @@ def ejecutar_comando(cmd):
         lanzar_juego_offline(juego)
     elif action == "shutdown":
         apagar_equipo()
+    elif action == "reboot":
+        reiniciar_equipo()
 
 def ciclo_comunicacion():
     """Hilo de red resiliente con guardián Fail-Safe (auto-desbloqueo a los 5s) y detector de reapertura de tapa."""
@@ -1170,6 +1348,9 @@ def ciclo_comunicacion():
                 if ultima_foto_base64:
                     ping_payload["google_alert_foto"] = ultima_foto_base64
                     ultima_foto_base64 = ""
+            if alerta_foco_pendiente:
+                ping_payload["focus_alert"] = alerta_foco_pendiente
+                alerta_foco_pendiente = ""
 
             ping_data = json.dumps(ping_payload).encode("utf-8")
 
@@ -1185,6 +1366,13 @@ def ciclo_comunicacion():
                         resp_ping = json.loads(raw_ping)
                         if "vigilancia_google" in resp_ping:
                             vigilancia_google_activa = bool(resp_ping["vigilancia_google"])
+                        if "modo_foco" in resp_ping and isinstance(resp_ping["modo_foco"], dict):
+                            mf_data = resp_ping["modo_foco"]
+                            modo_foco_activo = bool(mf_data.get("activo", False))
+                            if "nombre" in mf_data:
+                                modo_foco_nombre = mf_data["nombre"]
+                            if "permitidos" in mf_data and isinstance(mf_data["permitidos"], list):
+                                modo_foco_permitidos = [str(x).strip().lower() for x in mf_data["permitidos"] if str(x).strip()]
                         if "palabras_prohibidas" in resp_ping and isinstance(resp_ping["palabras_prohibidas"], list):
                             _sincronizar_palabras_desde_docente(resp_ping["palabras_prohibidas"])
                         if "force_lock" in resp_ping:
