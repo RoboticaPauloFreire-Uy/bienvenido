@@ -168,8 +168,11 @@ NUMERO_MAQUINA = cargar_numero_local()
 
 # Estado local
 servidor_docente_url = None
+ultima_ip_docente_valida = None
+ultimo_contacto_exitoso = time.time()
 bloqueado = False
 ventana_bloqueo = None
+ventanas_emergentes = []
 vigilancia_google_activa = True
 ultima_busqueda_alertada = ""
 ultimo_tiempo_alerta = 0.0
@@ -270,9 +273,15 @@ def verificar_servidor_docente(url):
     return False
 
 def descubrir_servidor():
-    """Descubre automáticamente la IP del docente con 4 capas de respaldo."""
+    """Descubre automáticamente la IP del docente con 4 capas de respaldo resilientes."""
+    global ultima_ip_docente_valida
     archivo_cfg = os.path.join(DIR_BASE, "servidor_ip.txt")
 
+    # 1. Probar última IP válida recordada
+    if ultima_ip_docente_valida and verificar_servidor_docente(ultima_ip_docente_valida):
+        return ultima_ip_docente_valida
+
+    # 2. Archivo local de configuración servidor_ip.txt
     if os.path.exists(archivo_cfg):
         try:
             with open(archivo_cfg, "r", encoding="utf-8") as f:
@@ -282,11 +291,12 @@ def descubrir_servidor():
                         linea = f"http://{linea}:{PUERTO_WEB_DEFECTO}"
                     if verificar_servidor_docente(linea):
                         print(f"  [+] Docente encontrado en configuración: {linea}", flush=True)
+                        ultima_ip_docente_valida = linea
                         return linea
         except Exception:
             pass
 
-    print("  [?] Buscando al docente por anuncio de red...", flush=True)
+    # 3. Faro UDP broadcast
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -294,7 +304,7 @@ def descubrir_servidor():
             try: s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
             except Exception: pass
         s.bind(("", PUERTO_UDP))
-        s.settimeout(2.0)
+        s.settimeout(1.5)
         data, addr = s.recvfrom(2048)
         info = json.loads(data.decode("utf-8"))
         if info.get("magic") == "FREIRE_AULA":
@@ -303,6 +313,7 @@ def descubrir_servidor():
             s.close()
             url = f"http://{ip}:{puerto}"
             print(f"  [+] ¡Docente detectado por faro en {url}!", flush=True)
+            ultima_ip_docente_valida = url
             try:
                 with open(archivo_cfg, "w", encoding="utf-8") as f: f.write(url)
             except Exception: pass
@@ -310,43 +321,93 @@ def descubrir_servidor():
     except Exception:
         pass
 
+    # 4. Escaneo de subred local (solo si tenemos IP válida de red, evitando escanear a ciegas si el Wi-Fi está apagado)
     prefijo_subred, mi_ip = obtener_mi_subred()
-    print(f"  [?] Escaneando red local ({prefijo_subred}*)...", flush=True)
+    if mi_ip != "127.0.0.1":
+        encontrado = []
+        def _test_ip(ip):
+            if encontrado:
+                return
+            url = f"http://{ip}:{PUERTO_WEB_DEFECTO}"
+            if verificar_servidor_docente(url):
+                encontrado.append(url)
 
-    encontrado = []
-    def _test_ip(ip):
+        ips_a_probar = [f"{prefijo_subred}{i}" for i in range(1, 255)]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+            list(executor.map(_test_ip, ips_a_probar))
+
         if encontrado:
-            return
-        url = f"http://{ip}:{PUERTO_WEB_DEFECTO}"
-        if verificar_servidor_docente(url):
-            encontrado.append(url)
+            url = encontrado[0]
+            print(f"  [+] ¡Docente detectado en la red: {url}!", flush=True)
+            ultima_ip_docente_valida = url
+            try:
+                with open(archivo_cfg, "w", encoding="utf-8") as f: f.write(url)
+            except Exception: pass
+            return url
 
-    ips_a_probar = [f"{prefijo_subred}{i}" for i in range(1, 255)]
-    ips_a_probar.insert(0, "127.0.0.1")
-    if mi_ip not in ips_a_probar:
-        ips_a_probar.insert(0, mi_ip)
+    # 5. Localhost solo si el docente realmente corre en este equipo (modo prueba local)
+    if verificar_servidor_docente(f"http://127.0.0.1:{PUERTO_WEB_DEFECTO}"):
+        return f"http://127.0.0.1:{PUERTO_WEB_DEFECTO}"
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
-        list(executor.map(_test_ip, ips_a_probar))
-
-    if encontrado:
-        url = encontrado[0]
-        print(f"  [+] ¡Docente detectado en la red: {url}!", flush=True)
-        try:
-            with open(archivo_cfg, "w", encoding="utf-8") as f: f.write(url)
-        except Exception: pass
-        return url
-
-    print("  [!] No se pudo autodetectar la IP del docente. Reintentando en breve...", flush=True)
-    return f"http://127.0.0.1:{PUERTO_WEB_DEFECTO}"
+    return None
 
 # ══════════════════════════════════════════════════════════════
 # CONTROL DE PANTALLA Y VENTANAS (TKINTER NATIVO)
 # ══════════════════════════════════════════════════════════════
 
+def registrar_ventana_emergente(w):
+    global ventanas_emergentes
+    if w and w not in ventanas_emergentes:
+        ventanas_emergentes.append(w)
+
+def limpiar_todos_los_bloqueos_y_carteles():
+    """
+    FAIL-SAFE: Cierra de forma inmediata cualquier pantalla de bloqueo, cartel o popup,
+    y devuelve el control absoluto e incondicional de la máquina al alumno.
+    """
+    global ventana_bloqueo, bloqueado, ventanas_emergentes, tk_root
+    bloqueado = False
+
+    def _limpiar():
+        global ventana_bloqueo, ventanas_emergentes
+        if ventana_bloqueo:
+            try:
+                ventana_bloqueo.destroy()
+            except Exception:
+                pass
+            ventana_bloqueo = None
+
+        for pop in list(ventanas_emergentes):
+            try:
+                pop.destroy()
+            except Exception:
+                pass
+        ventanas_emergentes.clear()
+
+        if SISTEMA_OPERATIVO == "Windows":
+            try:
+                import ctypes
+                ctypes.windll.user32.RedrawWindow(0, 0, 0, 0x0085)
+            except Exception:
+                pass
+
+    if tk_root:
+        try:
+            tk_root.after(0, _limpiar)
+        except Exception:
+            pass
+    print("  [🛡️ FAIL-SAFE] Todos los bloqueos y carteles eliminados. Máquina liberada.", flush=True)
+
 def mostrar_pantalla_bloqueo():
     """Crea una pantalla completa en primer plano para el modo atención."""
-    global ventana_bloqueo, bloqueado, tk_root
+    global ventana_bloqueo, bloqueado, tk_root, ultimo_contacto_exitoso
+
+    # FAIL-SAFE: Si pasaron más de 5 segundos sin contacto con el docente, rechazar el bloqueo
+    ahora = time.time()
+    if (ahora - ultimo_contacto_exitoso) > 5.0:
+        print("  [!] Bloqueo rechazado: Sin conexión reciente con el docente (Fail-Safe activo).", flush=True)
+        return
+
     if bloqueado:
         return
     bloqueado = True
@@ -407,13 +468,7 @@ def mostrar_pantalla_bloqueo():
 def ocultar_pantalla_bloqueo():
     """Cierra la pantalla de bloqueo y devuelve el control al alumno."""
     global ventana_bloqueo, bloqueado, tk_root
-    if not bloqueado:
-        return
     bloqueado = False
-
-    if not tk_root:
-        print("  [+] PANTALLA DESBLOQUEADA", flush=True)
-        return
 
     def _cerrar():
         global ventana_bloqueo
@@ -423,11 +478,18 @@ def ocultar_pantalla_bloqueo():
             except Exception:
                 pass
             ventana_bloqueo = None
+        if SISTEMA_OPERATIVO == "Windows":
+            try:
+                import ctypes
+                ctypes.windll.user32.RedrawWindow(0, 0, 0, 0x0085)
+            except Exception:
+                pass
 
-    try:
-        tk_root.after(0, _cerrar)
-    except Exception as e:
-        print(f"  [!] Error cerrando pantalla de bloqueo: {e}", flush=True)
+    if tk_root:
+        try:
+            tk_root.after(0, _cerrar)
+        except Exception as e:
+            print(f"  [!] Error cerrando pantalla de bloqueo: {e}", flush=True)
 
 def mostrar_mensaje_emergente(texto):
     """Muestra un aviso emergente en pantalla enviado por el docente."""
@@ -446,6 +508,7 @@ def mostrar_mensaje_emergente(texto):
             pass
 
         pop = tk.Toplevel(tk_root)
+        registrar_ventana_emergente(pop)
         pop.title("Aviso del Docente · Colegio Paulo Freire")
         pop.configure(bg="#1E293B")
         pop.attributes("-topmost", True)
@@ -570,6 +633,7 @@ def mostrar_advertencia_busqueda(busqueda, es_desubicada=False):
             pass
 
         pop = tk.Toplevel(tk_root)
+        registrar_ventana_emergente(pop)
         titulo_win = "🚨 Búsqueda Inapropiada · Colegio Paulo Freire" if es_desubicada else "🚫 Búsqueda No Permitida · Colegio Paulo Freire"
         pop.title(titulo_win)
         pop.configure(bg="#0B132B")
@@ -1040,21 +1104,54 @@ def ejecutar_comando(cmd):
         apagar_equipo()
 
 def ciclo_comunicacion():
-    """Hilo de red que envía pings y consulta comandos periódicamente."""
+    """Hilo de red resiliente con guardián Fail-Safe (auto-desbloqueo a los 5s) y detector de reapertura de tapa."""
     global servidor_docente_url, bloqueado, vigilancia_google_activa
+    global ultimo_contacto_exitoso, ultima_ip_docente_valida
     conectado_previamente = False
+    ultimo_loop_time = time.time()
+    ultimo_contacto_exitoso = time.time()
 
     while True:
+        ahora = time.time()
+
+        # ── 1. DETECTOR DE SUSPENSIÓN / REAPERTURA DE TAPA ──
+        salto_tiempo = ahora - ultimo_loop_time
+        if salto_tiempo > 3.0:
+            # Si el bucle tardó más de 3 segundos (cuando el sleep es de 1s),
+            # la laptop estuvo con la tapa cerrada / suspendida en modo sleep.
+            print(f"  [⚡ WAKE-UP] Reapertura de tapa o suspensión detectada ({salto_tiempo:.1f}s).", flush=True)
+            print("  [🛡️ FAIL-SAFE] Desbloqueando pantalla y liberando PC automáticamente...", flush=True)
+            limpiar_todos_los_bloqueos_y_carteles()
+            ultimo_contacto_exitoso = ahora  # Dar ventana de gracia para reconectar
+            time.sleep(1.5)
+            ahora = time.time()
+
+        ultimo_loop_time = ahora
+
+        # ── 2. FAIL-SAFE POR PÉRDIDA DE SEÑAL (> 5 SEGUNDOS) ──
+        # Si pasaron más de 5 segundos sin poder comunicarse con el docente,
+        # NUNCA dejar la máquina bloqueada ni con carteles. Liberar inmediatamente todo.
+        tiempo_sin_docente = ahora - ultimo_contacto_exitoso
+        if tiempo_sin_docente >= 5.0 and (bloqueado or ventana_bloqueo):
+            print(f"  [🛡️ FAIL-SAFE] Sin señal del docente por {tiempo_sin_docente:.1f}s. Liberando pantalla automáticamente.", flush=True)
+            limpiar_todos_los_bloqueos_y_carteles()
+
         try:
             if SISTEMA_OPERATIVO == 'Windows':
                 import ctypes
                 ctypes.windll.kernel32.SetThreadExecutionState(0x80000003)
         except Exception:
             pass
+
+        # ── 3. RESOLVER SERVIDOR DOCENTE RESILIENTE ──
         if not servidor_docente_url:
             conectado_previamente = False
             servidor_docente_url = descubrir_servidor()
+            if not servidor_docente_url:
+                time.sleep(1.0)
+                continue
 
+        # ── 4. PING & POLL AL DOCENTE ──
         try:
             ventana_activa, alerta_google, alerta_grave, alerta_palabra = obtener_ventana_activa_y_busqueda()
 
@@ -1081,7 +1178,7 @@ def ciclo_comunicacion():
                 data=ping_data,
                 headers={"Content-Type": "application/json", "Connection": "close"}
             )
-            with urllib.request.urlopen(req_ping, timeout=4.0) as resp:
+            with urllib.request.urlopen(req_ping, timeout=3.0) as resp:
                 raw_ping = resp.read().decode("utf-8")
                 if raw_ping:
                     try:
@@ -1093,6 +1190,10 @@ def ciclo_comunicacion():
                     except Exception:
                         pass
 
+            # Contacto exitoso con el docente
+            ultimo_contacto_exitoso = time.time()
+            ultima_ip_docente_valida = servidor_docente_url
+
             if not conectado_previamente:
                 print(f"  [OK] ¡Conectado exitosamente con el docente! ({servidor_docente_url})", flush=True)
                 print(f"  [OK] Esta PC es: PC {NUMERO_MAQUINA if NUMERO_MAQUINA else '(sin número asignado)'}", flush=True)
@@ -1103,7 +1204,7 @@ def ciclo_comunicacion():
                 url_poll,
                 headers={"Connection": "close"}
             )
-            with urllib.request.urlopen(req_poll, timeout=4.0) as resp:
+            with urllib.request.urlopen(req_poll, timeout=3.0) as resp:
                 raw_poll = resp.read().decode("utf-8")
                 data = json.loads(raw_poll) if raw_poll else {}
                 comandos = data.get("comandos", [])
@@ -1111,13 +1212,16 @@ def ciclo_comunicacion():
                     ejecutar_comando(cmd)
 
         except urllib.error.URLError:
-            if conectado_previamente:
-                print("  [!] Conexión perdida con el docente. Reintentando reconectar...", flush=True)
-            servidor_docente_url = None
+            ahora_err = time.time()
+            if conectado_previamente and (ahora_err - ultimo_contacto_exitoso) > 3.0:
+                print("  [!] Señal con el docente en pausa. Reintentando...", flush=True)
+            # Solo descartar URL si pasaron más de 8 segundos sin respuesta, para no reiniciar escaneo ante un hipo de red
+            if (ahora_err - ultimo_contacto_exitoso) > 8.0:
+                servidor_docente_url = None
         except Exception as e:
             print(f"  [!] Aviso de comunicación: {e}", flush=True)
 
-        time.sleep(1.2)
+        time.sleep(1.0)
 
 def mantener_equipo_despierto():
     """Evita que Windows active el protector de pantalla, apague el Wi-Fi o suspenda el equipo (incluso al cerrar la tapa)."""
