@@ -1187,6 +1187,14 @@ def ciclo_comunicacion():
                             vigilancia_google_activa = bool(resp_ping["vigilancia_google"])
                         if "palabras_prohibidas" in resp_ping and isinstance(resp_ping["palabras_prohibidas"], list):
                             _sincronizar_palabras_desde_docente(resp_ping["palabras_prohibidas"])
+                        if "force_lock" in resp_ping:
+                            debe_bloquear = bool(resp_ping["force_lock"])
+                            if debe_bloquear and not bloqueado:
+                                print("  [🔒] Restaurando bloqueo ordenado por el docente tras reconectar Wi-Fi.", flush=True)
+                                mostrar_pantalla_bloqueo()
+                            elif not debe_bloquear and bloqueado:
+                                print("  [🔓] Desbloqueando máquina según estado del docente.", flush=True)
+                                ocultar_pantalla_bloqueo()
                     except Exception:
                         pass
 

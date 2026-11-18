@@ -2388,9 +2388,8 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         m["number"] = num_asignado
                         if ventana_activa:
                             m["active_window"] = ventana_activa
-                        if "locked" in data:
-                            m["locked"] = data["locked"]
 
+                    debe_bloquear = m.get("locked", False)
                     alerta_foto = data.get("google_alert_foto", "")
                     alerta_grave = bool(data.get("google_alert_grave", False))
                     alerta_palabra = str(data.get("google_alert_palabra", "")).strip()
@@ -2428,7 +2427,8 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
             self.responder_json({
                 "status": "ok",
                 "vigilancia_google": vg,
-                "palabras_prohibidas": palabras_sync
+                "palabras_prohibidas": palabras_sync,
+                "force_lock": debe_bloquear
             })
             return
 
