@@ -1234,6 +1234,310 @@ def reiniciar_equipo():
         print(f"  [!] Error reiniciando: {e}", flush=True)
 
 # ══════════════════════════════════════════════════════════════
+# REPARTIR Y RECOLECTAR ARCHIVOS Y TRABAJOS (OPCIÓN 4)
+# ══════════════════════════════════════════════════════════════
+
+EXTS_TRABAJOS = {".sb3", ".sb2", ".sb", ".ino", ".py", ".pdf", ".docx", ".pptx", ".txt", ".png", ".jpg", ".jpeg"}
+
+def obtener_ruta_escritorio():
+    p = os.path.join(os.path.expanduser("~"), "Desktop")
+    if not os.path.exists(p):
+        onedrive = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
+        if os.path.exists(onedrive):
+            return onedrive
+    return p
+
+def obtener_ruta_mis_trabajos():
+    esc = obtener_ruta_escritorio()
+    p = os.path.join(esc, "Mis Trabajos")
+    os.makedirs(p, exist_ok=True)
+    return p
+
+def obtener_ruta_descargas():
+    p = os.path.join(os.path.expanduser("~"), "Downloads")
+    return p
+
+def mostrar_aviso_archivo_recibido(filename, ruta_final, dir_destino):
+    if not tk_root:
+        return
+    def _popup():
+        try:
+            if SISTEMA_OPERATIVO == "Windows":
+                import winsound
+                winsound.MessageBeep(winsound.MB_ICONASTERISK)
+        except Exception:
+            pass
+
+        pop = tk.Toplevel(tk_root)
+        registrar_ventana_emergente(pop)
+        pop.title("📁 Archivo del Profesor Recibido · Paulo Freire")
+        pop.configure(bg="#0F172A")
+        pop.attributes("-topmost", True)
+        pop.geometry("490x320")
+        pop.resizable(False, False)
+
+        pop.update_idletasks()
+        ancho = pop.winfo_width()
+        alto = pop.winfo_height()
+        x = max(0, (pop.winfo_screenwidth() // 2) - (ancho // 2))
+        y = max(0, (pop.winfo_screenheight() // 2) - (alto // 2))
+        pop.geometry(f"{ancho}x{alto}+{x}+{y}")
+
+        frame = tk.Frame(pop, bg="#0F172A", padx=20, pady=18)
+        frame.pack(fill="both", expand=True)
+
+        lbl_head = tk.Label(frame, text="📥 ARCHIVO DEL PROFESOR RECIBIDO", font=("Arial", 15, "bold"), bg="#0F172A", fg="#10B981")
+        lbl_head.pack(anchor="w", pady=(0, 6))
+
+        lbl_txt = tk.Label(
+            frame,
+            text="El profesor ha compartido un archivo de trabajo con tu computadora:",
+            font=("Arial", 11),
+            bg="#0F172A",
+            fg="#CBD5E1",
+            justify="left"
+        )
+        lbl_txt.pack(anchor="w", pady=(0, 10))
+
+        # Caja con el nombre del archivo
+        f_box = tk.Frame(frame, bg="#1E293B", padx=12, pady=10, relief="flat", highlightbackground="#10B981", highlightthickness=1)
+        f_box.pack(fill="x", pady=(0, 8))
+
+        lbl_f = tk.Label(f_box, text=f"📄 {filename}", font=("Arial", 13, "bold"), bg="#1E293B", fg="#38BDF8")
+        lbl_f.pack(anchor="w")
+
+        dest_label = "Escritorio" if "Desktop" in dir_destino else ("Mis Trabajos" if "Mis Trabajos" in dir_destino else "Descargas")
+        lbl_loc = tk.Label(f_box, text=f"Guardado en: {dest_label}", font=("Arial", 10), bg="#1E293B", fg="#94A3B8")
+        lbl_loc.pack(anchor="w", pady=(2, 0))
+
+        # Botones de acción
+        btn_frame = tk.Frame(frame, bg="#0F172A")
+        btn_frame.pack(fill="x", pady=(12, 0))
+
+        def _abrir_archivo():
+            try:
+                if SISTEMA_OPERATIVO == "Windows":
+                    os.startfile(ruta_final)
+                else:
+                    subprocess.run(["xdg-open", ruta_final])
+            except Exception as e:
+                print(f"  [!] Error abriendo archivo {ruta_final}: {e}", flush=True)
+            pop.destroy()
+
+        def _abrir_carpeta():
+            try:
+                if SISTEMA_OPERATIVO == "Windows":
+                    os.startfile(dir_destino)
+                else:
+                    subprocess.run(["xdg-open", dir_destino])
+            except Exception as e:
+                print(f"  [!] Error abriendo carpeta {dir_destino}: {e}", flush=True)
+            pop.destroy()
+
+        btn_open = tk.Button(
+            btn_frame,
+            text="🚀 Abrir Archivo",
+            font=("Arial", 10, "bold"),
+            bg="#10B981",
+            fg="#FFFFFF",
+            activebackground="#059669",
+            relief="flat",
+            padx=12,
+            pady=7,
+            cursor="hand2",
+            command=_abrir_archivo
+        )
+        btn_open.pack(side="left", padx=(0, 6))
+
+        btn_folder = tk.Button(
+            btn_frame,
+            text="📁 Ver Carpeta",
+            font=("Arial", 10),
+            bg="#334155",
+            fg="#F8FAFC",
+            activebackground="#475569",
+            relief="flat",
+            padx=10,
+            pady=7,
+            cursor="hand2",
+            command=_abrir_carpeta
+        )
+        btn_folder.pack(side="left")
+
+        btn_ok = tk.Button(
+            btn_frame,
+            text="Listo ✓",
+            font=("Arial", 10, "bold"),
+            bg="#1E293B",
+            fg="#94A3B8",
+            activebackground="#334155",
+            relief="flat",
+            padx=14,
+            pady=7,
+            cursor="hand2",
+            command=pop.destroy
+        )
+        btn_ok.pack(side="right")
+
+    try:
+        tk_root.after(0, _popup)
+    except Exception as e:
+        print(f"  [!] Error mostrando aviso de archivo recibido: {e}", flush=True)
+
+def mostrar_aviso_recoleccion_completada(cant_archivos):
+    if not tk_root:
+        return
+    def _popup():
+        pop = tk.Toplevel(tk_root)
+        registrar_ventana_emergente(pop)
+        pop.title("Entregas de Clase · Paulo Freire")
+        pop.configure(bg="#0F172A")
+        pop.attributes("-topmost", True)
+        pop.geometry("420x220")
+        pop.resizable(False, False)
+
+        pop.update_idletasks()
+        ancho = pop.winfo_width()
+        alto = pop.winfo_height()
+        x = max(0, (pop.winfo_screenwidth() // 2) - (ancho // 2))
+        y = max(0, (pop.winfo_screenheight() // 2) - (alto // 2))
+        pop.geometry(f"{ancho}x{alto}+{x}+{y}")
+
+        frame = tk.Frame(pop, bg="#0F172A", padx=20, pady=20)
+        frame.pack(fill="both", expand=True)
+
+        lbl_head = tk.Label(frame, text="✅ TRABAJOS ENTREGADOS AL PROFESOR", font=("Arial", 13, "bold"), bg="#0F172A", fg="#38BDF8")
+        lbl_head.pack(anchor="w", pady=(0, 8))
+
+        msg = f"Se han entregado {cant_archivos} archivo(s) de tu proyecto al profesor con éxito." if cant_archivos > 0 else "El profesor solicitó entrega de trabajos. No se encontraron archivos nuevos hoy en el Escritorio."
+        lbl_txt = tk.Label(frame, text=msg, font=("Arial", 11), bg="#0F172A", fg="#CBD5E1", wraplength=380, justify="left")
+        lbl_txt.pack(anchor="w", pady=(0, 16))
+
+        btn = tk.Button(
+            frame,
+            text="Entendido ✓",
+            font=("Arial", 10, "bold"),
+            bg="#10B981",
+            fg="#FFFFFF",
+            relief="flat",
+            padx=14,
+            pady=6,
+            cursor="hand2",
+            command=pop.destroy
+        )
+        btn.pack(side="right")
+
+        pop.after(7000, lambda: pop.destroy() if pop.winfo_exists() else None)
+
+    try:
+        tk_root.after(0, _popup)
+    except Exception:
+        pass
+
+def descargar_archivo_docente(params):
+    try:
+        url = params.get("url")
+        filename = os.path.basename(params.get("filename", "archivo_docente"))
+        dest = params.get("dest", "escritorio")
+        if not url or not filename:
+            return
+
+        if dest == "mis_trabajos":
+            dir_destino = obtener_ruta_mis_trabajos()
+        elif dest == "descargas":
+            dir_destino = obtener_ruta_descargas()
+        else:
+            dir_destino = obtener_ruta_escritorio()
+
+        os.makedirs(dir_destino, exist_ok=True)
+        ruta_final = os.path.join(dir_destino, filename)
+
+        print(f"  [📥 DESCARGANDO ARCHIVO DOCENTE] {filename} desde {url}...", flush=True)
+        req = urllib.request.Request(url, headers={"User-Agent": "ControlAulaAlumno/1.0"})
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            contenido = resp.read()
+
+        with open(ruta_final, "wb") as f:
+            f.write(contenido)
+
+        print(f"  [✅ ARCHIVO GUARDADO] {ruta_final} ({len(contenido)} bytes)", flush=True)
+        mostrar_aviso_archivo_recibido(filename, ruta_final, dir_destino)
+    except Exception as e:
+        print(f"  [!] Error descargando archivo del docente: {e}", flush=True)
+
+def recolectar_y_subir_trabajos(params):
+    upload_url = params.get("upload_url")
+    if not upload_url:
+        return
+
+    print(f"  [📤 INICIANDO RECOLECCIÓN DE TRABAJOS] Destino: {upload_url}...", flush=True)
+    rutas_a_escanear = [
+        obtener_ruta_escritorio(),
+        obtener_ruta_mis_trabajos()
+    ]
+
+    ahora = time.time()
+    archivos_encontrados = []
+    rutas_vistas = set()
+
+    for dir_padre in rutas_a_escanear:
+        if not os.path.exists(dir_padre):
+            continue
+        try:
+            for root, dirs, files in os.walk(dir_padre):
+                rel = os.path.relpath(root, dir_padre)
+                if rel.count(os.sep) > 2:
+                    continue
+                for f in files:
+                    if f.startswith(".") or f.startswith("~$") or f.endswith(".lnk") or f.endswith(".ini"):
+                        continue
+                    ext = os.path.splitext(f)[1].lower()
+                    if ext in EXTS_TRABAJOS:
+                        fpath = os.path.join(root, f)
+                        if fpath in rutas_vistas:
+                            continue
+                        rutas_vistas.add(fpath)
+                        try:
+                            st = os.stat(fpath)
+                            if (ahora - st.st_mtime) < (48 * 3600) and st.st_size < (35 * 1024 * 1024):
+                                archivos_encontrados.append((fpath, f, st.st_size, st.st_mtime))
+                        except Exception:
+                            pass
+        except Exception:
+            pass
+
+    archivos_encontrados.sort(key=lambda x: x[3], reverse=True)
+    archivos_subir = archivos_encontrados[:8]
+
+    subidos = 0
+    for fpath, fname, fsize, _ in archivos_subir:
+        try:
+            with open(fpath, "rb") as fh:
+                raw = fh.read()
+            b64 = base64.b64encode(raw).decode("ascii")
+            payload = {
+                "id": IDENTIFICADOR_LOCAL,
+                "number": NUMERO_MAQUINA,
+                "hostname": HOSTNAME,
+                "filename": fname,
+                "file_b64": b64
+            }
+            body = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                upload_url,
+                data=body,
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                if resp.status == 200:
+                    subidos += 1
+                    print(f"  [✅ TRABAJO ENTREGADO] {fname} ({fsize//1024} KB)", flush=True)
+        except Exception as e:
+            print(f"  [!] Error subiendo trabajo {fname}: {e}", flush=True)
+
+    mostrar_aviso_recoleccion_completada(subidos)
+
+# ══════════════════════════════════════════════════════════════
 # COMUNICACIÓN EN TIEMPO REAL CON EL DOCENTE
 # ══════════════════════════════════════════════════════════════
 
@@ -1255,6 +1559,10 @@ def ejecutar_comando(cmd):
         texto = params.get("texto", "")
         if texto:
             mostrar_mensaje_emergente(texto)
+    elif action == "receive_file":
+        threading.Thread(target=descargar_archivo_docente, args=(params,), daemon=True).start()
+    elif action == "collect_files":
+        threading.Thread(target=recolectar_y_subir_trabajos, args=(params,), daemon=True).start()
     elif action == "mute":
         silenciar_audio()
     elif action == "set_volume":

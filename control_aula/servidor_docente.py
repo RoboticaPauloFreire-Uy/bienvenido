@@ -25,6 +25,7 @@ import base64
 import urllib.parse
 import platform
 import subprocess
+import zipfile
 
 # Soporte opcional de QR nativo si está instalado
 QR_AVAILABLE = False
@@ -139,6 +140,58 @@ def cargar_evidencias_guardadas():
     return evidencias[:60]
 
 alertas_busquedas = cargar_evidencias_guardadas()
+
+# ══════════════════════════════════════════════════════════════
+# GESTIÓN DE ARCHIVOS Y TRABAJOS DE ALUMNOS (OPCIÓN 4)
+# ══════════════════════════════════════════════════════════════
+DIR_DISTRIBUCION = os.path.join(DIR_BASE, "archivos_distribuir")
+DIR_RECOLECCION = os.path.join(DIR_BASE, "trabajos_recolectados")
+os.makedirs(DIR_DISTRIBUCION, exist_ok=True)
+os.makedirs(DIR_RECOLECCION, exist_ok=True)
+
+def cargar_trabajos_disco():
+    """Escanea y restaura los trabajos previamente recolectados desde el disco."""
+    items = []
+    if os.path.exists(DIR_RECOLECCION):
+        for root, dirs, files in os.walk(DIR_RECOLECCION):
+            for file in files:
+                if file.endswith(".meta.json"):
+                    continue
+                filepath = os.path.join(root, file)
+                rel = os.path.relpath(filepath, DIR_RECOLECCION)
+                carpetas = rel.split(os.sep)
+                pc_nom = carpetas[0] if len(carpetas) > 1 else "PC"
+                try:
+                    st = os.stat(filepath)
+                    meta_path = filepath + ".meta.json"
+                    hostname = ""
+                    hora_str = time.strftime("%H:%M:%S", time.localtime(st.st_mtime))
+                    fecha_str = time.strftime("%d/%m/%Y", time.localtime(st.st_mtime))
+                    if os.path.exists(meta_path):
+                        try:
+                            with open(meta_path, "r", encoding="utf-8") as mf:
+                                mdata = json.load(mf)
+                                hostname = mdata.get("hostname", "")
+                                hora_str = mdata.get("hora", hora_str)
+                                fecha_str = mdata.get("fecha", fecha_str)
+                        except Exception:
+                            pass
+                    items.append({
+                        "pc": pc_nom,
+                        "hostname": hostname,
+                        "filename": file,
+                        "tam_kb": max(1, st.st_size // 1024),
+                        "hora": hora_str,
+                        "fecha": fecha_str,
+                        "rel_path": rel.replace(os.sep, "/"),
+                        "mtime": st.st_mtime
+                    })
+                except Exception:
+                    pass
+        items.sort(key=lambda x: x.get("mtime", 0), reverse=True)
+    return items[:120]
+
+trabajos_recibidos = cargar_trabajos_disco()
 
 def obtener_ip_local():
     """Detecta la IP local de la máquina del docente en la red escolar."""
@@ -1620,6 +1673,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         <span>Evidencias</span>
         <span class="tab-badge badge-danger" id="badge-evidencias" style="display:none;">0</span>
       </button>
+      <button class="tab-btn" id="tabbtn-archivos" onclick="cambiarTab('archivos')">
+        <i class="fas fa-folder-open"></i>
+        <span>Archivos</span>
+        <span class="tab-badge" id="badge-trabajos" style="display:none;background:#10B981;">0</span>
+      </button>
     </nav>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -1960,6 +2018,88 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         </div>
       </div>
     </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PESTAÑA 6: REPARTIR Y RECOLECTAR TRABAJOS (OPCIÓN 4)
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-archivos">
+      <!-- SECCIÓN A: REPARTIR ARCHIVO A LOS ALUMNOS -->
+      <div class="section-card" style="border:1.5px solid rgba(16, 185, 129, 0.4);">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-paper-plane" style="color:#10B981;"></i>
+            <span>📤 Repartir Archivo a los Alumnos</span>
+          </div>
+          <div class="target-selector">
+            <span>Enviar a:</span>
+            <select id="file-dist-target-select">
+              <option value="all">🌍 Todas las computadoras</option>
+            </select>
+          </div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:12px;">
+          Selecciona un archivo de tu PC (guía PDF, plantilla de Scratch <code>.sb3</code>, imagen o código) y se enviará directo al Escritorio de los alumnos con un aviso en sus pantallas.
+        </p>
+        <div style="background:#0F172A;border:2px dashed #334155;border-radius:12px;padding:18px;text-align:center;margin-bottom:12px;" id="dropzone-dist">
+          <i class="fas fa-cloud-upload-alt" style="font-size:2rem;color:#10B981;margin-bottom:8px;"></i>
+          <div style="font-size:0.86rem;font-weight:700;color:#FFF;margin-bottom:4px;">Haz clic para seleccionar el archivo a repartir</div>
+          <div style="font-size:0.74rem;color:#64748B;" id="file-dist-selected-name">Ningún archivo seleccionado todavía</div>
+          <input type="file" id="inp-file-dist" style="display:none;" onchange="onArchivoSeleccionado(this)">
+          <button class="aux-btn" style="margin-top:10px;background:#1E293B;color:#38BDF8;border-color:#38BDF8;padding:8px 16px;" onclick="document.getElementById('inp-file-dist').click()">
+            <i class="fas fa-file-upload"></i> Explorar Archivos...
+          </button>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div style="font-size:0.78rem;color:#94A3B8;">Guardar en los alumnos:</div>
+          <select id="file-dist-dest" style="background:#0F172A;border:1px solid var(--card-border);border-radius:6px;padding:6px 10px;color:#FFF;font-size:0.78rem;outline:none;">
+            <option value="escritorio">🖥️ Escritorio (Desktop)</option>
+            <option value="mis_trabajos">📁 Carpeta "Mis Trabajos"</option>
+            <option value="descargas">📥 Carpeta Descargas</option>
+          </select>
+          <button class="btn-report-print" style="margin-left:auto;padding:10px 20px;font-size:0.82rem;" id="btn-enviar-archivo" onclick="enviarArchivoAlumnos()" disabled>
+            <i class="fas fa-paper-plane"></i> 🚀 Enviar Archivo Ahora
+          </button>
+        </div>
+      </div>
+
+      <!-- SECCIÓN B: RECOLECTAR TRABAJOS DE LOS ALUMNOS -->
+      <div class="section-card" style="border:1.5px solid rgba(56, 189, 248, 0.4);">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-inbox" style="color:#38BDF8;"></i>
+            <span>📥 Recolectar Trabajos de los Alumnos</span>
+          </div>
+          <div class="evidence-actions">
+            <button class="btn-report-print" style="background:#0284C7;border-color:#38BDF8;" onclick="abrirCarpetaTrabajos()" title="Abre la carpeta en tu computadora">
+              <i class="fas fa-folder-open"></i> Abrir Carpeta en PC
+            </button>
+            <button class="btn-report-print" onclick="window.open('/api/descargar_trabajos_zip', '_blank')" title="Descarga un ZIP con todos los trabajos">
+              <i class="fas fa-file-archive"></i> Descargar Todo en ZIP
+            </button>
+          </div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;">
+          Pide automáticamente a las netbooks de los alumnos que entreguen sus proyectos creados hoy. Se organizan automáticamente en carpetas por número de PC.
+        </p>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+          <button class="aux-btn" style="background:linear-gradient(135deg, #0284C7, #0369A1);color:#FFF;border:none;padding:10px 18px;font-weight:bold;" onclick="iniciarRecoleccion()">
+            <i class="fas fa-download"></i> 📥 Recolectar Trabajos Ahora
+          </button>
+          <button class="aux-btn" style="background:#1E293B;color:#94A3B8;border:1px solid var(--card-border);" onclick="cargarTrabajosRecibidos(true)">
+            <i class="fas fa-sync-alt"></i> Actualizar Lista
+          </button>
+        </div>
+
+        <div style="font-size:0.78rem;font-weight:bold;color:#38BDF8;margin-bottom:8px;">
+          📋 Trabajos Entregados por los Alumnos:
+        </div>
+        <div class="alerts-list" id="trabajos-list-container">
+          <div style="text-align:center;padding:18px;color:var(--text-muted);font-size:0.8rem;">
+            Ningún trabajo recolectado aún. Presiona <strong>"Recolectar Trabajos Ahora"</strong> para pedir los archivos de las máquinas.
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- Modal Control de Energía Masivo -->
@@ -2090,7 +2230,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     }
 
     function cambiarTab(tabName) {
-      var tabs = ['equipos', 'herramientas', 'juegos', 'aula', 'evidencias'];
+      var tabs = ['equipos', 'herramientas', 'juegos', 'aula', 'evidencias', 'archivos'];
       for (var i = 0; i < tabs.length; i++) {
         var t = tabs[i];
         var btn = document.getElementById('tabbtn-' + t);
@@ -2623,7 +2763,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
     }
 
     function actualizarSelectoresDestino(maquinas) {
-      var ids = ['web-target-select', 'game-target-select'];
+      var ids = ['web-target-select', 'game-target-select', 'file-dist-target-select'];
       for (var k = 0; k < ids.length; k++) {
         var sel = document.getElementById(ids[k]);
         if (!sel) continue;
@@ -2639,6 +2779,165 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         sel.value = currentVal;
         if (!sel.value) sel.value = 'all';
       }
+    }
+
+    /* ══════════════ REPARTIR Y RECOLECTAR ARCHIVOS JS (OPCIÓN 4) ══════════════ */
+    var archivoDistribuirBase64 = null;
+    var archivoDistribuirNombre = null;
+
+    function onArchivoSeleccionado(input) {
+      if (!input.files || input.files.length === 0) return;
+      var file = input.files[0];
+      archivoDistribuirNombre = file.name;
+      var tamKb = Math.max(1, Math.round(file.size / 1024));
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var res = e.target.result;
+        archivoDistribuirBase64 = res.indexOf(',') !== -1 ? res.split(',')[1] : res;
+        var info = document.getElementById('file-dist-selected-name');
+        if (info) {
+          info.innerHTML = '📄 <strong>' + escaparHtml(file.name) + '</strong> (' + tamKb + ' KB) listo para enviar';
+          info.style.color = '#10B981';
+        }
+        var btn = document.getElementById('btn-enviar-archivo');
+        if (btn) btn.disabled = false;
+        toast('Archivo cargado listo para repartir', '#10B981');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function enviarArchivoAlumnos() {
+      if (!archivoDistribuirBase64 || !archivoDistribuirNombre) {
+        alert('Por favor selecciona primero un archivo para repartir.');
+        return;
+      }
+      var selTarget = document.getElementById('file-dist-target-select');
+      var target = selTarget ? selTarget.value : 'all';
+      var selDest = document.getElementById('file-dist-dest');
+      var dest = selDest ? selDest.value : 'escritorio';
+
+      var btn = document.getElementById('btn-enviar-archivo');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+      }
+
+      toast('📤 Repartiendo archivo a los alumnos...', '#3B82F6');
+
+      fetch('/api/repartir_archivo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          target: target,
+          filename: archivoDistribuirNombre,
+          file_b64: archivoDistribuirBase64,
+          dest_folder: dest
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        toast('🚀 ¡Archivo repartido exitosamente!', '#10B981');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-paper-plane"></i> 🚀 Enviar Archivo Ahora';
+        }
+      })
+      .catch(function(err) {
+        toast('Error repartiendo archivo', '#EF4444');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-paper-plane"></i> 🚀 Enviar Archivo Ahora';
+        }
+      });
+    }
+
+    function iniciarRecoleccion() {
+      if (!confirm('¿Deseas solicitar a todos los alumnos que entreguen sus trabajos creados hoy?')) return;
+      toast('📥 Solicitando entrega de trabajos a los alumnos...', '#0284C7');
+      fetch('/api/solicitar_recoleccion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      .then(function(r) { return r.json(); })
+      .then(function() {
+        toast('Solicitud enviada a las netbooks', '#10B981');
+        setTimeout(function() { cargarTrabajosRecibidos(true); }, 2500);
+      })
+      .catch(function() {
+        toast('Error solicitando recolección', '#EF4444');
+      });
+    }
+
+    function abrirCarpetaTrabajos() {
+      fetch('/api/abrir_carpeta_recoleccion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      .then(function(r) { return r.json(); })
+      .then(function() {
+        toast('Carpeta abierta en tu computadora', '#10B981');
+      })
+      .catch(function() {
+        toast('No se pudo abrir la carpeta', '#EF4444');
+      });
+    }
+
+    function cargarTrabajosRecibidos(manual) {
+      if (manual) toast('Actualizando lista de trabajos...', '#3B82F6');
+      fetch('/api/listar_trabajos?t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        renderizarListaTrabajos(data.trabajos || []);
+      });
+    }
+
+    function renderizarListaTrabajos(trabajos) {
+      var badge = document.getElementById('badge-trabajos');
+      if (badge) {
+        if (trabajos && trabajos.length > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = trabajos.length;
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      var cont = document.getElementById('trabajos-list-container');
+      if (!cont) return;
+
+      if (!trabajos || trabajos.length === 0) {
+        cont.innerHTML = '<div style="text-align:center;padding:18px;color:var(--text-muted);font-size:0.8rem;">' +
+          'Ningún trabajo recolectado aún. Presiona <strong>"Recolectar Trabajos Ahora"</strong> para pedir los archivos de las máquinas.' +
+        '</div>';
+        return;
+      }
+
+      cont.innerHTML = trabajos.map(function(t) {
+        var pcLabel = t.pc || 'PC';
+        var fn = escaparHtml(t.filename || 'archivo');
+        var tam = t.tam_kb ? (t.tam_kb + ' KB') : '';
+        var hora = escaparHtml(t.hora || '');
+        var fecha = escaparHtml(t.fecha || '');
+        var host = escaparHtml(t.hostname || '');
+        var rel = encodeURIComponent(t.rel_path || '');
+
+        return '<div class="alert-item" style="border-left:4px solid #38BDF8;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;">' +
+          '<div style="display:flex;align-items:center;gap:10px;min-width:0;">' +
+            '<span class="ev-badge-pc" style="background:#0369A1;font-size:0.75rem;padding:4px 8px;border-radius:6px;font-weight:bold;white-space:nowrap;">💻 ' + escaparHtml(pcLabel) + '</span>' +
+            '<div style="min-width:0;">' +
+              '<div style="font-weight:bold;font-size:0.84rem;color:#F8FAFC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📁 ' + fn + '</div>' +
+              '<div style="font-size:0.72rem;color:#94A3B8;">' + tam + ' · Entregado a las ' + hora + ' (' + fecha + ')' + (host ? (' · ' + host) : '') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+            '<a href="/api/descargar_trabajo?rel=' + rel + '" class="mini-btn" style="background:#0284C7;color:#FFF;text-decoration:none;padding:6px 10px;border-radius:6px;font-size:0.75rem;display:inline-flex;align-items:center;gap:4px;" download="' + fn + '">' +
+              '<i class="fas fa-download"></i> Descargar' +
+            '</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
     }
 
     function renderizarEquipos(maquinas) {
@@ -2746,6 +3045,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
           renderizarAlertasGoogle(data.alertas || []);
           renderizarGaleriaEvidencias(data.alertas || []);
+          renderizarListaTrabajos(data.trabajos || []);
 
           var maquinas = data.maquinas || [];
           maquinas.sort(function(a, b) {
@@ -2854,16 +3154,87 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
             with lock_estado:
                 lista = list(maquinas.values())
                 alertas_copia = list(alertas_busquedas)
+                trabajos_copia = list(trabajos_recibidos)
                 vg = vigilancia_google
                 mf = dict(modo_foco)
             self.responder_json({
                 "ip": IP_DOCENTE,
                 "maquinas": lista,
                 "alertas": alertas_copia,
+                "trabajos": trabajos_copia,
                 "vigilancia_google": vg,
                 "modo_foco": mf
             })
             return
+
+        if url.path == "/api/listar_trabajos":
+            with lock_estado:
+                trabajos_copia = list(trabajos_recibidos)
+            self.responder_json({"status": "ok", "trabajos": trabajos_copia})
+            return
+
+        if url.path.startswith("/api/descargar_distribuido/"):
+            fname = os.path.basename(urllib.parse.unquote(url.path.replace("/api/descargar_distribuido/", "")))
+            fpath = os.path.join(DIR_DISTRIBUCION, fname)
+            if os.path.exists(fpath) and os.path.isfile(fpath):
+                with open(fpath, "rb") as f:
+                    contenido = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Content-Disposition", f'attachment; filename="{fname}"')
+                self.send_header("Content-Length", str(len(contenido)))
+                self.send_header("Connection", "close")
+                self.end_headers()
+                self.wfile.write(contenido)
+                return
+            else:
+                self.send_response(404)
+                self.end_headers()
+                return
+
+        if url.path == "/api/descargar_trabajos_zip":
+            import io
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                for root, dirs, files in os.walk(DIR_RECOLECCION):
+                    for file in files:
+                        if file.endswith(".meta.json"):
+                            continue
+                        fpath = os.path.join(root, file)
+                        arcname = os.path.relpath(fpath, DIR_RECOLECCION)
+                        zip_file.write(fpath, arcname)
+            zip_data = zip_buffer.getvalue()
+            nombre_zip = f"Trabajos_Alumnos_{time.strftime('%Y%m%d_%H%M')}.zip"
+            self.send_response(200)
+            self.send_header("Content-Type", "application/zip")
+            self.send_header("Content-Disposition", f'attachment; filename="{nombre_zip}"')
+            self.send_header("Content-Length", str(len(zip_data)))
+            self.send_header("Connection", "close")
+            self.end_headers()
+            self.wfile.write(zip_data)
+            return
+
+        if url.path == "/api/descargar_trabajo":
+            params = urllib.parse.parse_qs(url.query)
+            rel = params.get("rel", [""])[0]
+            rel_sanitizado = rel.replace("..", "").lstrip("/\\")
+            fpath = os.path.join(DIR_RECOLECCION, rel_sanitizado)
+            if os.path.exists(fpath) and os.path.isfile(fpath):
+                with open(fpath, "rb") as f:
+                    contenido = f.read()
+                fname = os.path.basename(fpath)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Content-Disposition", f'attachment; filename="{fname}"')
+                self.send_header("Content-Length", str(len(contenido)))
+                self.send_header("Connection", "close")
+                self.end_headers()
+                self.wfile.write(contenido)
+                return
+            else:
+                self.send_response(404)
+                self.end_headers()
+                return
 
         if url.path == "/api/evidencias":
             with lock_estado:
@@ -3228,6 +3599,136 @@ class ControlAulaHandler(http.server.BaseHTTPRequestHandler):
                         elif action == "unlock": maquinas[target]["locked"] = False
 
             self.responder_json({"status": "queued"})
+            return
+
+        if url.path == "/api/repartir_archivo":
+            target = data.get("target", "all")
+            filename = os.path.basename(data.get("filename", "archivo_docente"))
+            file_b64 = data.get("file_b64", "")
+            dest_folder = data.get("dest_folder", "escritorio")
+
+            if not filename or not file_b64:
+                self.responder_json({"status": "error", "message": "Datos incompletos"}, 400)
+                return
+
+            fpath = os.path.join(DIR_DISTRIBUCION, filename)
+            try:
+                with open(fpath, "wb") as f:
+                    f.write(base64.b64decode(file_b64))
+            except Exception as e:
+                self.responder_json({"status": "error", "message": str(e)}, 500)
+                return
+
+            download_url = f"http://{IP_DOCENTE}:{PUERTO_WEB}/api/descargar_distribuido/{urllib.parse.quote(filename)}"
+            cmd = {
+                "action": "receive_file",
+                "params": {
+                    "filename": filename,
+                    "url": download_url,
+                    "dest": dest_folder
+                },
+                "time": time.time()
+            }
+
+            with lock_estado:
+                if target == "all":
+                    cmd["seq"] = len(cola_global) + 1
+                    cola_global.append(cmd)
+                else:
+                    if target not in colas_comandos:
+                        colas_comandos[target] = []
+                    colas_comandos[target].append(cmd)
+
+            print(f"  [📤 REPARTIR ARCHIVO] '{filename}' enviado a: {target} (Destino: {dest_folder})", flush=True)
+            self.responder_json({"status": "ok", "url": download_url})
+            return
+
+        if url.path == "/api/solicitar_recoleccion":
+            upload_url = f"http://{IP_DOCENTE}:{PUERTO_WEB}/api/subir_trabajo"
+            cmd = {
+                "action": "collect_files",
+                "params": {
+                    "upload_url": upload_url
+                },
+                "time": time.time()
+            }
+            with lock_estado:
+                cmd["seq"] = len(cola_global) + 1
+                cola_global.append(cmd)
+            print(f"  [📥 SOLICITAR RECOLECCIÓN] Orden masiva enviada a todas las máquinas", flush=True)
+            self.responder_json({"status": "ok"})
+            return
+
+        if url.path == "/api/subir_trabajo":
+            mid = data.get("id", "PC")
+            num = data.get("number")
+            if not num:
+                with lock_estado:
+                    num = maquinas_numeros.get(mid, "?")
+            num_str = str(num).zfill(2) if str(num).isdigit() else str(num)
+            hostname = data.get("hostname", mid)
+            filename = os.path.basename(data.get("filename", "trabajo"))
+            file_b64 = data.get("file_b64", "")
+
+            if file_b64:
+                pc_folder = os.path.join(DIR_RECOLECCION, f"PC_{num_str}")
+                os.makedirs(pc_folder, exist_ok=True)
+                dst_file = os.path.join(pc_folder, filename)
+                raw_bytes = base64.b64decode(file_b64)
+                with open(dst_file, "wb") as f:
+                    f.write(raw_bytes)
+
+                meta_file = dst_file + ".meta.json"
+                hora_str = time.strftime("%H:%M:%S")
+                fecha_str = time.strftime("%d/%m/%Y")
+                with open(meta_file, "w", encoding="utf-8") as mf:
+                    json.dump({
+                        "id": mid,
+                        "number": num,
+                        "hostname": hostname,
+                        "filename": filename,
+                        "hora": hora_str,
+                        "fecha": fecha_str,
+                        "tam_bytes": len(raw_bytes)
+                    }, mf, indent=2, ensure_ascii=False)
+
+                rel = f"PC_{num_str}/{filename}"
+                item = {
+                    "pc": f"PC_{num_str}",
+                    "hostname": hostname,
+                    "filename": filename,
+                    "tam_kb": max(1, len(raw_bytes) // 1024),
+                    "hora": hora_str,
+                    "fecha": fecha_str,
+                    "rel_path": rel,
+                    "mtime": time.time()
+                }
+                with lock_estado:
+                    trabajos_recibidos[:] = [t for t in trabajos_recibidos if not (t.get("pc") == f"PC_{num_str}" and t.get("filename") == filename)]
+                    trabajos_recibidos.insert(0, item)
+                    if len(trabajos_recibidos) > 120:
+                        del trabajos_recibidos[120:]
+                print(f"  [📥 TRABAJO RECIBIDO] PC_{num_str} ({hostname}) entregó: {filename} ({len(raw_bytes)//1024} KB)", flush=True)
+            self.responder_json({"status": "ok"})
+            return
+
+        if url.path == "/api/abrir_carpeta_recoleccion":
+            try:
+                if platform.system() == "Windows":
+                    os.startfile(DIR_RECOLECCION)
+                elif platform.system() == "Darwin":
+                    subprocess.run(["open", DIR_RECOLECCION])
+                else:
+                    subprocess.run(["xdg-open", DIR_RECOLECCION])
+                self.responder_json({"status": "ok"})
+            except Exception as e:
+                self.responder_json({"status": "error", "message": str(e)}, 500)
+            return
+
+        if url.path == "/api/limpiar_trabajos":
+            with lock_estado:
+                trabajos_recibidos.clear()
+            self.responder_json({"status": "ok"})
             return
 
         self.send_response(404)
