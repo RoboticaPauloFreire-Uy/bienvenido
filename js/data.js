@@ -2118,13 +2118,25 @@ const SCHOOL_DATA = {
         },
         {
           id: "g3-g2",
-          title: "Minecraft: Aventura con Código ⛏️",
+          title: "Minecraft: Viaje Acuático 🌊⛏️",
           platform: "codeorg",
-          externalUrl: "https://studio.code.org/s/aquatic/lessons/1/levels/1",
+          externalUrl: "https://studio.code.org/courses/aquatic/units/1/lessons/1/levels/1",
           thumbnail: "https://images.unsplash.com/photo-1627856013091-fed6e4e30025?auto=format&fit=crop&w=600&q=80",
-          description: "Programá a Steve y Alex para explorar arrecifes, recolectar recursos y construir refugios con bucles.",
+          description: "Programá a Steve y Alex para explorar arrecifes submarinos, encontrar tesoros y construir con bucles en el océano de Minecraft.",
           benefits: "Desarrolla el pensamiento algorítmico y la descomposición de problemas en un entorno de juego sumamente motivador.",
-          tags: ["Code.org", "Minecraft", "Bucles"]
+          tags: ["Code.org", "Minecraft", "Acuático", "Bucles"],
+          grades: ["grado3", "grado4", "grado5", "grado6"]
+        },
+        {
+          id: "g-minecraft-hero",
+          title: "Minecraft: El Viaje del Héroe ⛏️🛡️",
+          platform: "codeorg",
+          externalUrl: "https://studio.code.org/courses/hero/units/1/lessons/1/levels/1",
+          thumbnail: "img/minecraft.png",
+          description: "¡Aventura de programación con Minecraft! Guiá al Agente robot con bloques y funciones para abrir caminos, superar trampas y ayudar a Alex o Steve en su misión.",
+          benefits: "Introduce el uso de funciones, bucles, lógica condicional y planificación espacial guiando a un agente programable.",
+          tags: ["Code.org", "Minecraft", "Agente", "Funciones", "Bucles"],
+          grades: ["grado2", "grado3", "grado4", "grado5", "grado6"]
         },
                 {
           id: "g3-g4",
