@@ -806,7 +806,7 @@
       '<article class="casa-featured-hero ' + cardTypeCls + '">' +
         '<div class="casa-hero-media">' +
           heroImg +
-          '<span class="casa-hero-star"><i class="fas fa-star"></i> MISIÓN ESTRELLA DE LA SEMANA</span>' +
+          '<span class="casa-hero-star"><i class="fas fa-star"></i> MISIÓN ESTRELLA DEL MES</span>' +
         '</div>' +
         '<div class="casa-hero-body">' +
           '<div class="casa-hero-pills">' +
