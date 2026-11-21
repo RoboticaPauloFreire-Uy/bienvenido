@@ -1918,73 +1918,166 @@
     }
   };
 
-  /* ───────────── Agenda (Solo Proyectos en Clase: Título, Imagen, Día de Presentación y Grado) ───────────── */
-  function renderAgenda() {
+  /* ───────────── Agenda: Mapa de Ideas y Presentaciones del Taller ───────────── */
+  var filtroGradoAgenda = 'todos';
+
+  function initAgendaGradeTabs() {
+    var tabsEl = document.getElementById('hn-agenda-grade-tabs');
+    if (!tabsEl || tabsEl.dataset.initialized) return;
+    var st = alumno();
+    if (st && st.gradeId) {
+      filtroGradoAgenda = normalizarGrado(st.gradeId);
+    }
+    var tabsList = [
+      { id: 'todos', label: '🌟 Todos' },
+      { id: 'sala5', label: '🎨 Sala 5' },
+      { id: 'grado1', label: '1.°' },
+      { id: 'grado2', label: '2.°' },
+      { id: 'grado3', label: '3.°' },
+      { id: 'grado4', label: '4.°' },
+      { id: 'grado5', label: '5.°' },
+      { id: 'grado6', label: '6.°' }
+    ];
+    tabsEl.innerHTML = tabsList.map(function (t) {
+      var act = (filtroGradoAgenda === t.id);
+      return '<button type="button" class="fb-mochila-tab' + (act ? ' active' : '') + '" role="tab" data-agenda-grade="' + esc(t.id) + '" aria-selected="' + (act ? 'true' : 'false') + '">' + esc(t.label) + '</button>';
+    }).join('');
+    tabsEl.querySelectorAll('.fb-mochila-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        filtroGradoAgenda = btn.getAttribute('data-agenda-grade') || 'todos';
+        renderAgenda(filtroGradoAgenda);
+      });
+    });
+    tabsEl.dataset.initialized = 'true';
+  }
+
+  window.openAgendaProject = function (id) {
+    if (!id) return;
+    var list = (C.actividades || []);
+    var proj = list.filter(function (a) { return String(a.id) === String(id); })[0];
+    if (proj && typeof abrirModalClasePeriodico === 'function') {
+      abrirModalClasePeriodico(proj, { a: proj, estado: estadoActividad(proj) });
+    }
+  };
+
+  function renderAgenda(gradoFiltro) {
     var cont = document.getElementById('hn-agenda-list');
     if (!cont) return;
-    var h = hoy();
+    initAgendaGradeTabs();
 
-    // La agenda muestra únicamente los proyectos y actividades de clase
-    var proyectosClase = (C.actividades || []).filter(function (a) {
-      return (a.tipo === 'clase' || seccionDe(a) === 'clase') && (a.desde || a.fecha);
+    if (gradoFiltro) {
+      filtroGradoAgenda = normalizarGrado(gradoFiltro);
+    }
+
+    document.querySelectorAll('#hn-agenda-grade-tabs .fb-mochila-tab').forEach(function (btn) {
+      var act = btn.getAttribute('data-agenda-grade') === filtroGradoAgenda;
+      btn.classList.toggle('active', act);
+      btn.setAttribute('aria-selected', act ? 'true' : 'false');
     });
 
+    var h = hoy();
+    var normFiltro = normalizarGrado(filtroGradoAgenda);
+
+    var proyectosClase = (C.actividades || []).filter(function (a) {
+      if (!(a.tipo === 'clase' || seccionDe(a) === 'clase')) return false;
+      if (!(a.desde || a.fecha)) return false;
+      if (normFiltro === 'todos') return true;
+      var grs = (a.grados || [a.grado || 'todos']).map(normalizarGrado);
+      return grs.indexOf('todos') !== -1 || grs.indexOf(normFiltro) !== -1;
+    });
+
+    var sumEl = document.getElementById('hn-agenda-summary');
+    if (sumEl) {
+      sumEl.textContent = proyectosClase.length === 1
+        ? '🌟 1 presentación e idea en el taller'
+        : '🌟 ' + proyectosClase.length + ' presentaciones e ideas en el taller';
+    }
+
     if (!proyectosClase.length) {
-      cont.innerHTML = '<div class="hn-empty small"><span>📅</span>No hay presentaciones de proyectos de clase cargadas.</div>';
+      cont.innerHTML = '<div class="hn-empty" style="padding:28px;"><span>💡</span>Todavía no hay presentaciones cargadas para este grupo.</div>';
       return;
     }
 
-    // Ordenar cronológicamente por día de presentación
+    // Ordenar del más reciente al más antiguo
     proyectosClase.sort(function (a, b) {
-      var da = parseFecha(a.desde || a.fecha) || 0;
-      var db = parseFecha(b.desde || b.fecha) || 0;
-      return da - db;
+      var da = parseFecha(a.desde || a.fecha);
+      var db = parseFecha(b.desde || b.fecha);
+      return (db ? db.getTime() : 0) - (da ? da.getTime() : 0);
     });
 
-    cont.innerHTML = proyectosClase.map(function (p) {
-      var fechaStr = p.desde || p.fecha;
-      var d = parseFecha(fechaStr);
-      var diaNum = d ? d.getDate() : '--';
-      var mesTxt = d ? MESES_CORTOS[d.getMonth()] : '';
+    // Agrupar por Mes y Año
+    var gruposMap = {};
+    var gruposOrden = [];
+    proyectosClase.forEach(function (p) {
+      var d = parseFecha(p.desde || p.fecha);
+      var key = d ? (d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2)) : 'sin-fecha';
+      var label = d ? (MESES[d.getMonth()].charAt(0).toUpperCase() + MESES[d.getMonth()].slice(1) + ' ' + d.getFullYear()) : 'Otras Ideas';
+      if (!gruposMap[key]) {
+        gruposMap[key] = { label: label, items: [] };
+        gruposOrden.push(gruposMap[key]);
+      }
+      gruposMap[key].items.push(p);
+    });
 
-      var n = d ? diasEntre(h, d) : null;
-      var estadoTiempo = '';
-      var isSoon = false;
-      if (n !== null) {
-        if (n === 0) {
-          estadoTiempo = '¡Hoy!';
-          isSoon = true;
-        } else if (n === 1) {
-          estadoTiempo = 'Mañana';
-          isSoon = true;
-        } else if (n > 1) {
-          estadoTiempo = 'En ' + n + ' días';
-          if (n <= 7) isSoon = true;
-        } else {
-          estadoTiempo = 'Presentado';
+    cont.innerHTML = gruposOrden.map(function (grupo) {
+      var cardsHtml = grupo.items.map(function (p) {
+        var fechaStr = p.desde || p.fecha;
+        var d = parseFecha(fechaStr);
+        var diaNum = d ? d.getDate() : '--';
+        var mesTxt = d ? MESES_CORTOS[d.getMonth()] : '';
+
+        var n = d ? diasEntre(h, d) : null;
+        var estadoTiempo = '🌟 ¡Presentado en el Taller!';
+        var statusCls = 'st-done';
+        if (n !== null) {
+          if (n === 0) {
+            estadoTiempo = '🎉 ¡Presentamos Hoy!';
+            statusCls = 'st-today';
+          } else if (n === 1 || (n > 1 && n <= 7)) {
+            estadoTiempo = '⚡ ¡Creando Ahora!';
+            statusCls = 'st-soon';
+          } else if (n > 7) {
+            estadoTiempo = '💡 ¡Próxima Idea!';
+            statusCls = 'st-upcoming';
+          }
         }
-      }
 
-      var gr = p.grados || [p.grado || 'todos'];
-      var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
+        var gr = p.grados || [p.grado || 'todos'];
+        var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
 
-      // Imagen en miniatura si hay, o ícono representativo
-      var thumbHtml = '';
-      if (p.imagen) {
-        thumbHtml = '<img src="' + esc(p.imagen) + '" alt="" style="width:48px; height:48px; object-fit:cover; border-radius:10px; flex-shrink:0; border:1px solid #E2E8F0;" onerror="this.style.display=\'none\';">';
-      } else {
-        thumbHtml = '<div style="width:48px; height:48px; border-radius:10px; background:#F8FAFC; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">' + esc(p.icono || '🤖') + '</div>';
-      }
+        var thumbHtml = p.imagen
+          ? '<img src="' + esc(p.imagen) + '" alt="' + esc(p.titulo) + '" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><div class="fb-ag-thumb-emoji" style="display:none;">' + esc(p.icono || '🤖') + '</div>'
+          : '<div class="fb-ag-thumb-emoji">' + esc(p.icono || '🤖') + '</div>';
 
-      return '<li class="hn-ag-item' + (isSoon ? ' soon' : '') + '" style="display:flex; align-items:center; gap:14px; padding:12px 14px;">' +
-        '<div class="hn-ag-date"><span class="d">' + diaNum + '</span><span class="m">' + mesTxt + '</span></div>' +
-        thumbHtml +
-        '<div class="hn-ag-body" style="flex:1; min-width:0;">' +
-          '<strong style="font-size:0.95rem; color:#0F172A; display:block; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + esc(p.titulo) + '">' + esc(p.titulo) + '</strong>' +
-          '<span style="font-size:0.82rem; color:#64748B;"><i class="fas fa-chalkboard-teacher" style="color:#15803D; margin-right:4px;"></i>' + esc(grTxt) + '</span>' +
+        var chipsArr = (p.chips && p.chips.length) ? p.chips.slice(0, 3) : (p.subtitulo ? [p.subtitulo] : ['Proyecto Maker']);
+        var chipsHtml = chipsArr.map(function (c) {
+          return '<span class="fb-ag-chip">' + esc(c) + '</span>';
+        }).join('');
+
+        return '<article class="fb-ag-card ' + statusCls + '" onclick="window.openAgendaProject(\'' + esc(p.id) + '\')" tabindex="0" role="button" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.openAgendaProject(\'' + esc(p.id) + '\');}" aria-label="Ver proyecto: ' + esc(p.titulo) + '">' +
+          '<div class="fb-ag-card-left">' +
+            '<div class="fb-ag-date"><span class="d">' + diaNum + '</span><span class="m">' + mesTxt + '</span></div>' +
+            '<div class="fb-ag-thumb">' + thumbHtml + '</div>' +
+          '</div>' +
+          '<div class="fb-ag-info">' +
+            '<div class="fb-ag-meta">' +
+              '<span class="fb-ag-grade">🎓 ' + esc(grTxt) + '</span>' +
+              '<span class="fb-ag-badge ' + statusCls + '">' + estadoTiempo + '</span>' +
+            '</div>' +
+            '<h3 class="fb-ag-title">' + esc(p.titulo) + '</h3>' +
+            '<div class="fb-ag-chips">' + chipsHtml + '</div>' +
+            '<div class="fb-ag-foot"><span class="fb-ag-cta">👀 ¡Ver proyecto e ideas! ➔</span></div>' +
+          '</div>' +
+        '</article>';
+      }).join('');
+
+      return '<div class="fb-ag-month-block">' +
+        '<div class="fb-ag-month-head">' +
+          '<span class="fb-ag-month-title">🗓️ ' + esc(grupo.label) + '</span>' +
+          '<span class="fb-ag-month-count">' + grupo.items.length + (grupo.items.length === 1 ? ' proyecto' : ' proyectos') + '</span>' +
         '</div>' +
-        '<span class="hn-ag-left" style="font-weight:700; font-size:0.8rem;">' + estadoTiempo + '</span>' +
-      '</li>';
+        '<div class="fb-ag-cards-grid">' + cardsHtml + '</div>' +
+      '</div>';
     }).join('');
   }
 
@@ -4002,7 +4095,7 @@
       renderActividades();
       renderJuegos();
       renderVitrinaTop();
-      if (st && st.gradeId) { filtroGradoValija = st.gradeId; renderValijaMaker(st.gradeId); }
+      if (st && st.gradeId) { filtroGradoValija = st.gradeId; renderValijaMaker(st.gradeId); renderAgenda(st.gradeId); }
       if (window.renderGDriveDashboard && st && document.getElementById('student-drive-dashboard-container')) {
         window.renderGDriveDashboard('student-drive-dashboard-container');
       }

@@ -9,7 +9,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=157">
+  <link rel="stylesheet" href="css/style.css?v=158">
   <link rel="stylesheet" href="css/games.css?v=95">
   <link rel="stylesheet" href="css/home.css?v=40">
   <link rel="stylesheet" href="css/themes.css?v=30anios">
@@ -639,51 +639,35 @@
       </div>
 
       <!-- ══════════════════════════════════════════
-           VISTA 7: AGENDA (PÁG. 07)
+           VISTA 7: AGENDA — MAPA DE IDEAS Y PRESENTACIONES
       ══════════════════════════════════════════ -->
       <div id="view-agenda" class="hn-view">
         <section class="hn-section np-paper-sheet fb-station-sheet" id="agenda">
-          <div class="np-page-folio" aria-hidden="true">
-            <div class="np-folio-left"><i class="fas fa-newspaper"></i> EL DIARIO DEL TALLER · COLEGIO PAULO FREIRE</div>
-            <div class="np-folio-center">SECCIÓN VII · BOLETÍN OFICIAL & EFEMÉRIDES</div>
-            <div class="np-folio-right">PÁG. 07</div>
-          </div>
-
           <div class="hn-section-head np-section-head">
             <div>
-              <span class="hn-kicker np-kicker"><i class="fas fa-calendar-day"></i> Gaceta Oficial</span>
-              <h2 class="hn-section-title np-section-title">Calendario Oficial de Entregas</h2>
-              <p class="hn-section-sub np-section-sub">Fechas de presentación de proyectos por grado y efemérides del taller escolar.</p>
+              <span class="hn-kicker np-kicker">🚀 MAPA DE AVENTURAS DEL TALLER</span>
+              <h2 class="hn-section-title np-section-title">Ideas y Presentaciones en Clase 💡🤖</h2>
+              <p class="hn-section-sub np-section-sub">¡Explorá mes a mes los inventos, experimentos y proyectos que creamos y compartimos en cada grupo! Tocá cualquier tarjeta para ver cómo lo hicimos.</p>
             </div>
           </div>
 
-          <div class="hn-agenda-full-layout np-agenda-layout">
-            <div class="hn-box hn-agenda-main-box np-agenda-box">
-              <div class="hn-box-title np-box-title"><i class="fas fa-calendar-alt"></i> Convocatorias & Presentaciones en Clase</div>
-              <ul class="hn-agenda-list np-agenda-list" id="hn-agenda-list"></ul>
-            </div>
-
-            <aside class="hn-agenda-side np-agenda-side">
-              <div class="hn-box hn-login-box np-login-box">
-                <div class="hn-box-title np-box-title"><i class="fas fa-user-astronaut"></i> Despacho del Alumno</div>
-                <p>Ingresá para acceder a tu carpeta oficial de Drive con tus proyectos calificados.</p>
-                <button type="button" class="hn-login-btn np-login-btn" onclick="if(window.openLoginModal) window.openLoginModal();">
-                  <i class="fas fa-user-circle"></i> Ingreso Alumnos
-                </button>
-              </div>
-
-              <div class="hn-box np-quick-box">
-                <div class="hn-box-title np-box-title"><i class="fas fa-rocket"></i> Herramientas de Redacción & Código</div>
-                <div class="hn-quick np-quick">
-                  <a href="https://makecode.microbit.org/" target="_blank" rel="noopener noreferrer"><span>⚡</span>MakeCode</a>
-                  <a href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener noreferrer"><span>🐱</span>Scratch</a>
-                  <a href="https://code.org/minecraft" target="_blank" rel="noopener noreferrer"><span>⛏️</span>Code.org</a>
-                  <a href="https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/" target="_blank" rel="noopener noreferrer"><span>🎬</span>Luces, Cámara, IA</a>
-                  <a href="https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html" target="_blank" rel="noopener noreferrer"><span>🗝️</span>Escape Room</a>
-                </div>
-              </div>
-            </aside>
+          <!-- Tira de Insignias de Ideas del Taller -->
+          <div class="fb-agenda-ideas-strip" aria-label="Temas e ideas que exploramos">
+            <span class="fb-idea-pill idea-elec">⚡ Circuitos &amp; Luces</span>
+            <span class="fb-idea-pill idea-robo">🤖 Robótica &amp; micro:bit</span>
+            <span class="fb-idea-pill idea-ai">🔮 Inteligencia Artificial</span>
+            <span class="fb-idea-pill idea-game">🎮 Juegos &amp; Programación</span>
+            <span class="fb-idea-pill idea-art">🎨 Diseño, Papel &amp; 3D</span>
           </div>
+
+          <!-- Filtro por grado y resumen vivo -->
+          <div class="fb-agenda-toolbar">
+            <div class="fb-mochila-tabs" id="hn-agenda-grade-tabs" role="tablist" aria-label="Filtrar presentaciones por grado"></div>
+            <div class="fb-agenda-summary" id="hn-agenda-summary">🌟 0 presentaciones e ideas en el taller</div>
+          </div>
+
+          <!-- Contenedor de Meses y Tarjetas 3D -->
+          <div class="fb-agenda-months-wrap" id="hn-agenda-list"></div>
         </section>
       </div>
 
@@ -999,7 +983,7 @@
   <script src="js/news.js?v=26"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=79"></script>
+  <script src="js/home.js?v=80"></script>
   <script src="js/class_video_sync.js?v=6"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->
