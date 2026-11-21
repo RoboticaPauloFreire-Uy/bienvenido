@@ -569,14 +569,13 @@
 
       return '<article class="comic-panel ' + themeCls + (isSplash ? ' is-splash' : '') + '" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
         '<div class="comic-caption-bar">' +
-          '<span class="comic-panel-num"><i class="fas fa-bolt"></i> VIÑETA #' + numFormateado + '</span>' +
+          '<span class="comic-panel-num">' + cat.icono + ' ¡' + esc((cat.nombre || 'TALLER').toUpperCase()) + '!</span>' +
           '<span class="comic-panel-grade"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</span>' +
         '</div>' +
         '<div class="comic-art-wrap">' +
           '<img src="' + esc(n.imagen || 'img/bienvenida_taller.jpg') + '" alt="' + esc(n.titulo) + '" loading="lazy" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
           '<div class="comic-halftone-overlay" aria-hidden="true"></div>' +
           '<span class="comic-burst-sticker">' + burstTxt + '</span>' +
-          '<span class="comic-cat-badge">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
         '</div>' +
         '<div class="comic-panel-body">' +
           '<h3 class="comic-headline" title="' + esc(n.titulo) + '">' + esc(n.titulo) + '</h3>' +
@@ -1215,9 +1214,11 @@
           ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><div class="comic-emoji-stage" style="display:none;">' + esc(a.icono || '🏠') + '</div>'
           : '<div class="comic-emoji-stage">' + esc(a.icono || '🏠') + '</div>';
 
+        var casaCaptionTxt = isJuego ? '🎲 ¡EN FAMILIA!' : (isIA ? '🔮 ¡IA EN CASA!' : '🏠 ¡MISIÓN EN CASA!');
+
         return '<article class="comic-panel ' + themeCls + (it.mia ? ' es-mia' : '') + '">' +
           '<div class="comic-caption-bar">' +
-            '<span class="comic-panel-num"><i class="fas fa-bolt"></i> VIÑETA #' + numStr + '</span>' +
+            '<span class="comic-panel-num">' + casaCaptionTxt + '</span>' +
             '<span class="comic-panel-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
           '</div>' +
           '<div class="comic-art-wrap">' +
@@ -1225,7 +1226,6 @@
             '<div class="comic-halftone-overlay" aria-hidden="true"></div>' +
             '<span class="comic-burst-sticker">' + burstTxt + '</span>' +
             (it.mia ? '<span class="comic-mine-sticker">⭐ ¡Tu grado!</span>' : '') +
-            '<span class="comic-cat-badge">' + catLabel + '</span>' +
           '</div>' +
           '<div class="comic-panel-body">' +
             '<h3 class="comic-headline" title="' + esc(a.titulo) + '">' + esc(a.titulo) + '</h3>' +
@@ -1256,9 +1256,11 @@
         ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><div class="comic-emoji-stage" style="display:none;">' + esc(a.icono || '🤖') + '</div>'
         : '<div class="comic-emoji-stage">' + esc(a.icono || '🤖') + '</div>';
 
+      var claseCaptionTxt = it.estado.clave === 'curso' ? '⚡ ¡EN CURSO!' : (it.estado.clave === 'proxima' ? '🚀 ¡PRÓXIMA!' : '✅ ¡PRESENTADO!');
+
       return '<article class="comic-panel ' + themeCls + (it.mia ? ' es-mia' : '') + '" data-act-idx="' + idx + '" role="button" tabindex="0" onclick="window.abrirModalClasePorIndice(' + idx + ');" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.abrirModalClasePorIndice(' + idx + ');}" title="Clic para abrir el proyecto completo">' +
         '<div class="comic-caption-bar">' +
-          '<span class="comic-panel-num"><i class="fas fa-chalkboard-teacher"></i> CLASE #' + numStr + ' · ' + esc(it.estado.texto) + '</span>' +
+          '<span class="comic-panel-num">' + claseCaptionTxt + '</span>' +
           '<span class="comic-panel-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
         '</div>' +
         '<div class="comic-art-wrap">' +
@@ -1266,7 +1268,6 @@
           '<div class="comic-halftone-overlay" aria-hidden="true"></div>' +
           '<span class="comic-burst-sticker">' + burstTxt + '</span>' +
           (it.mia ? '<span class="comic-mine-sticker">⭐ ¡Tu grado!</span>' : '') +
-          '<span class="comic-cat-badge">🏫 En el Aula</span>' +
         '</div>' +
         '<div class="comic-panel-body">' +
           '<h3 class="comic-headline" title="' + esc(a.titulo) + '">' + esc(a.titulo) + '</h3>' +
