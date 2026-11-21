@@ -8818,123 +8818,128 @@
         '<div class="apm-panes-container">' +
           (isHalloween ?
             // ── PESTAÑA HALLOWEEN 1: PASOS DEL PROYECTO ──
-            '<div class="apm-tab-pane pane-pasos ' + (activeTab === 'pasos' ? 'active' : '') + '" style="overflow-y:auto;padding:16px 20px;background:#0F172A;scrollbar-width:thin;color:#F8FAFC;display:' + (activeTab === 'pasos' ? 'flex' : 'none') + ';flex-direction:column;">' +
-              '<div style="background:linear-gradient(135deg, #2A0800 0%, #581C0C 40%, #3B0764 100%);border-radius:18px;padding:24px;border:1.5px solid rgba(249,115,22,0.45);margin-bottom:24px;box-shadow:0 12px 30px rgba(0,0,0,0.5);display:flex;gap:24px;align-items:center;flex-wrap:wrap;">' +
+            '<div class="apm-tab-pane pane-pasos ' + (activeTab === 'pasos' ? 'active' : '') + '" style="overflow-y:auto;padding:20px 24px;background:#0F172A;scrollbar-width:thin;color:#F8FAFC;display:' + (activeTab === 'pasos' ? 'flex' : 'none') + ';flex-direction:column;gap:22px;">' +
+              '<div style="background:linear-gradient(135deg, #1E1B4B 0%, #3B0764 55%, #431407 100%);border-radius:20px;padding:24px 28px;border:2px solid rgba(249,115,22,0.55);box-shadow:0 12px 30px rgba(0,0,0,0.45);display:flex;gap:24px;align-items:center;flex-wrap:wrap;">' +
                 '<div style="flex-shrink:0;text-align:center;margin:0 auto;">' +
                   '<a href="img/proyectos/halloween_ia_cover.jpg?v=2" target="_blank" rel="noopener noreferrer" title="Ver portada oficial en tamaño completo">' +
-                    '<img src="img/proyectos/halloween_ia_cover.jpg?v=2" alt="Portada Oficial: Proyecto Halloween Foto a Monstruo" style="width:190px;max-width:100%;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2.5px solid #F97316;display:block;">' +
+                    '<img src="img/proyectos/halloween_ia_cover.jpg?v=2" alt="Portada Oficial: Proyecto Halloween Foto a Monstruo" style="width:190px;max-width:100%;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.6);border:3px solid #F97316;display:block;">' +
                   '</a>' +
-                  '<span style="display:inline-block;margin-top:6px;font-size:0.75rem;color:#FDBA74;font-weight:700;"><i class="fas fa-search-plus"></i> Clic para ampliar</span>' +
+                  '<span style="display:inline-block;margin-top:8px;font-size:0.82rem;color:#FDE68A;font-weight:700;"><i class="fas fa-search-plus"></i> Tocá para ampliar</span>' +
                 '</div>' +
                 '<div style="flex:1;min-width:280px;">' +
-                  '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">' +
-                    '<span style="background:#EA580C;color:#FFF;padding:5px 14px;border-radius:999px;font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;box-shadow:0 2px 8px rgba(234,88,12,0.4);"><i class="fas fa-ghost"></i> Proyecto Oficial Halloween 2026</span>' +
-                    '<span style="background:rgba(255,255,255,0.15);color:#FDBA74;padding:5px 12px;border-radius:999px;font-size:0.78rem;font-weight:700;"><i class="fas fa-graduation-cap"></i> 5° y 6° de Primaria</span>' +
-                    '<span style="background:rgba(124,58,237,0.45);color:#DDD6FE;padding:5px 12px;border-radius:999px;font-size:0.78rem;font-weight:700;"><i class="fas fa-clock"></i> 3 Clases Consecutivas</span>' +
+                  '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">' +
+                    '<span style="background:#EA580C;color:#FFF;padding:5px 14px;border-radius:999px;font-size:0.82rem;font-weight:900;letter-spacing:0.03em;"><i class="fas fa-ghost"></i> HALLOWEEN 2026</span>' +
+                    '<span style="background:rgba(255,255,255,0.16);color:#FFF;padding:5px 12px;border-radius:999px;font-size:0.82rem;font-weight:700;"><i class="fas fa-graduation-cap"></i> 5° y 6° Primaria</span>' +
+                    '<span style="background:rgba(139,92,246,0.45);color:#F3E8FF;padding:5px 12px;border-radius:999px;font-size:0.82rem;font-weight:700;"><i class="fas fa-clock"></i> 3 Clases</span>' +
                   '</div>' +
-                  '<h2 style="font-size:1.85rem;font-weight:900;color:#FFF;margin:0 0 10px;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.5);">PROYECTO HALLOWEEN: FOTO A MONSTRUO 🎃👻🎬</h2>' +
-                  '<div style="font-size:1.05rem;font-weight:700;color:#FDBA74;margin-bottom:10px;">Transformación con IA y Generación de Video</div>' +
-                  '<p style="color:#FED7AA;font-size:0.92rem;margin:0;line-height:1.55;">' +
-                    'Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller: captura con prompt de 5 capas en Gemini, postal Polaroid en Canva para impresión física de recuerdo familiar y animación cinemática de video en Flow.' +
+                  '<h2 style="font-size:1.9rem;font-weight:900;color:#FFFFFF;margin:0 0 8px;line-height:1.2;">PROYECTO HALLOWEEN: FOTO A MONSTRUO 🎃👻🎬</h2>' +
+                  '<p style="color:#F8FAFC;font-size:1.05rem;font-weight:600;margin:0 0 14px;line-height:1.5;">' +
+                    '¡Convertite en un monstruo usando Inteligencia Artificial! Seguí estas 3 clases:' +
                   '</p>' +
+                  '<div style="display:flex;flex-wrap:wrap;gap:10px;">' +
+                    '<div style="background:rgba(15,23,42,0.75);border:1.5px solid #FB923C;border-radius:12px;padding:10px 14px;font-size:0.92rem;font-weight:700;color:#FFFFFF;">📸 1. Foto + Monstruo en Gemini</div>' +
+                    '<div style="background:rgba(15,23,42,0.75);border:1.5px solid #38BDF8;border-radius:12px;padding:10px 14px;font-size:0.92rem;font-weight:700;color:#FFFFFF;">🖼️ 2. Polaroid en Canva (Impresa)</div>' +
+                    '<div style="background:rgba(15,23,42,0.75);border:1.5px solid #C084FC;border-radius:12px;padding:10px 14px;font-size:0.92rem;font-weight:700;color:#FFFFFF;">🎬 3. Video Animado en Flow</div>' +
+                  '</div>' +
                 '</div>' +
               '</div>' +
 
-              '<div style="display:flex;flex-direction:column;gap:20px;">' +
+              '<div style="display:flex;flex-direction:column;gap:22px;">' +
 
                 // ETAPA 1: FOTO & GEMINI
-                '<div style="background:#1E293B;border-radius:14px;border-left:5px solid #F97316;padding:22px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 4px 14px rgba(0,0,0,0.2);">' +
-                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
-                    '<div style="display:flex;align-items:center;gap:12px;">' +
-                      '<span style="background:#EA580C;color:#FFF;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;">1</span>' +
+                '<div style="background:#1E293B;border-radius:18px;border-left:6px solid #F97316;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">' +
+                    '<div style="display:flex;align-items:center;gap:14px;">' +
+                      '<span style="background:#EA580C;color:#FFF;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0;">1</span>' +
                       '<div>' +
-                        '<h3 style="margin:0;font-size:1.2rem;font-weight:800;color:#FFF;">Clase 1: Foto en la Computadora y Creación del Monstruo con Google Gemini</h3>' +
-                        '<span style="font-size:0.8rem;color:#94A3B8;">Inteligencia Artificial Multimodal • Técnica de las 5 Capas de Hechizo</span>' +
+                        '<h3 style="margin:0;font-size:1.25rem;font-weight:900;color:#FFFFFF;">Clase 1: Tu Foto y Monstruo en Google Gemini</h3>' +
+                        '<span style="font-size:0.92rem;color:#FDBA74;font-weight:600;">Sacate una foto y armá tu hechizo en 5 capas</span>' +
                       '</div>' +
                     '</div>' +
-                    '<div style="display:flex;gap:8px;">' +
-                      '<a href="https://gemini.google.com/app" target="_blank" rel="noopener" style="background:#2563EB;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-brain"></i> Abrir Gemini ↗</a>' +
-                      '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener" style="background:#7C3AED;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-book-skull"></i> Libro de Hechizos ↗</a>' +
+                    '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+                      '<a href="https://gemini.google.com/app" target="_blank" rel="noopener" style="background:#2563EB;color:#FFF;padding:10px 16px;border-radius:10px;font-size:0.92rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-brain"></i> Abrir Gemini ↗</a>' +
+                      '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener" style="background:#7C3AED;color:#FFF;padding:10px 16px;border-radius:10px;font-size:0.92rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-book-skull"></i> Libro de Hechizos ↗</a>' +
                     '</div>' +
                   '</div>' +
-                  '<p style="color:#CBD5E1;font-size:0.9rem;line-height:1.55;margin-bottom:14px;">' +
-                    '<strong>1.</strong> Sentate frente a la computadora del taller y tomate una foto nítida de tu rostro con la webcam.<br>' +
-                    '<strong>2.</strong> Ingresá a <strong>Google Gemini</strong>, subí la fotografía y redactá el prompt aplicando la fórmula de las <strong>5 Capas del Hechizo</strong> que vimos en clase y en el manual oficial del colegio (<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" style="color:#38BDF8;">El Libro de los Hechizos de IA</a>):' +
-                  '</p>' +
-                  '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:10px;margin-bottom:14px;">' +
-                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
-                      '<span style="color:#F97316;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 1: Sujeto</span>' +
-                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Quién aparece y qué postura tiene (primer plano de estudiante sonriendo).</p>' +
+                  '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#FB923C;">Paso 1:</strong> Sentate frente a la compu y sacate una foto clara de tu cara con la cámara web.</div>' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#FB923C;">Paso 2:</strong> Entrá a <strong>Google Gemini</strong>, subí tu foto y escribí el pedido usando estas <strong>5 Capas</strong>:</div>' +
+                  '</div>' +
+                  '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:12px;margin-bottom:16px;">' +
+                    '<div style="background:#0F172A;padding:14px;border-radius:12px;border:1.5px solid #475569;">' +
+                      '<span style="color:#FB923C;font-size:0.85rem;font-weight:900;text-transform:uppercase;">1. Sujeto</span>' +
+                      '<p style="margin:6px 0 0;font-size:0.95rem;color:#F1F5F9;line-height:1.45;">Quién aparece en la foto (ej. estudiante sonriendo).</p>' +
                     '</div>' +
-                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
-                      '<span style="color:#C084FC;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 2: Transformación</span>' +
-                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Criatura o rasgos: vampiro victoriano, zombi cibernético, hechicero oscuro.</p>' +
+                    '<div style="background:#0F172A;padding:14px;border-radius:12px;border:1.5px solid #475569;">' +
+                      '<span style="color:#C084FC;font-size:0.85rem;font-weight:900;text-transform:uppercase;">2. Transformación</span>' +
+                      '<p style="margin:6px 0 0;font-size:0.95rem;color:#F1F5F9;line-height:1.45;">En qué monstruo te convertís (vampiro, zombi, brujo).</p>' +
                     '</div>' +
-                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
-                      '<span style="color:#38BDF8;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 3: Entorno</span>' +
-                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Castillo gótico a medianoche, niebla baja, laboratorio o calabazas ardientes.</p>' +
+                    '<div style="background:#0F172A;padding:14px;border-radius:12px;border:1.5px solid #475569;">' +
+                      '<span style="color:#38BDF8;font-size:0.85rem;font-weight:900;text-transform:uppercase;">3. Lugar</span>' +
+                      '<p style="margin:6px 0 0;font-size:0.95rem;color:#F1F5F9;line-height:1.45;">Dónde estás (castillo, bosque con niebla, laboratorio).</p>' +
                     '</div>' +
-                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
-                      '<span style="color:#FACC15;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 4: Iluminación</span>' +
-                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Sombras dramáticas, luz lunar plateada, neón morado y fuego naranja.</p>' +
+                    '<div style="background:#0F172A;padding:14px;border-radius:12px;border:1.5px solid #475569;">' +
+                      '<span style="color:#FACC15;font-size:0.85rem;font-weight:900;text-transform:uppercase;">4. Luces</span>' +
+                      '<p style="margin:6px 0 0;font-size:0.95rem;color:#F1F5F9;line-height:1.45;">Colores y ambiente (luna llena, neón violeta, velas).</p>' +
                     '</div>' +
-                    '<div style="background:#0F172A;padding:12px;border-radius:8px;border:1px solid #334155;">' +
-                      '<span style="color:#34D399;font-size:0.75rem;font-weight:900;text-transform:uppercase;">Capa 5: Estilo Visual</span>' +
-                      '<p style="margin:4px 0 0;font-size:0.83rem;color:#E2E8F0;">Fotografía hiperrealista 8k, claroscuro cinematográfico y alta definición.</p>' +
+                    '<div style="background:#0F172A;padding:14px;border-radius:12px;border:1.5px solid #475569;">' +
+                      '<span style="color:#34D399;font-size:0.85rem;font-weight:900;text-transform:uppercase;">5. Estilo</span>' +
+                      '<p style="margin:6px 0 0;font-size:0.95rem;color:#F1F5F9;line-height:1.45;">Cómo se ve (foto realista de película o estilo cómic).</p>' +
                     '</div>' +
                   '</div>' +
-                  '<div style="background:#0F172A;padding:10px 14px;border-radius:8px;font-size:0.84rem;color:#CBD5E1;border-left:3px solid #38BDF8;">' +
-                    '💡 <strong>Tip de clase:</strong> Si algún rasgo no te convence, ajustá los adjetivos de las 5 capas hasta lograr el monstruo que más te guste y descargalo en tu computadora.' +
+                  '<div style="background:rgba(56,189,248,0.12);padding:12px 16px;border-radius:12px;font-size:0.95rem;color:#E0F2FE;border-left:4px solid #38BDF8;line-height:1.5;">' +
+                    '💡 <strong>Tip:</strong> Si algo no te gusta, cambiá algunas palabras del pedido hasta lograr tu monstruo favorito y descargalo.' +
                   '</div>' +
                 '</div>' +
 
                 // ETAPA 2: CANVA POLAROID
-                '<div style="background:#1E293B;border-radius:14px;border-left:5px solid #06B6D4;padding:22px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 4px 14px rgba(0,0,0,0.2);">' +
-                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
-                    '<div style="display:flex;align-items:center;gap:12px;">' +
-                      '<span style="background:#0891B2;color:#FFF;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;">2</span>' +
+                '<div style="background:#1E293B;border-radius:18px;border-left:6px solid #06B6D4;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">' +
+                    '<div style="display:flex;align-items:center;gap:14px;">' +
+                      '<span style="background:#0891B2;color:#FFF;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0;">2</span>' +
                       '<div>' +
-                        '<h3 style="margin:0;font-size:1.2rem;font-weight:800;color:#FFF;">Clase 2: Foto Estilo Polaroid en Canva para Impresión Física</h3>' +
-                        '<span style="font-size:0.8rem;color:#94A3B8;">Diseño Gráfico Editorial • Impresión Tangible para la Familia</span>' +
+                        '<h3 style="margin:0;font-size:1.25rem;font-weight:900;color:#FFFFFF;">Clase 2: Foto Polaroid en Canva para Imprimir</h3>' +
+                        '<span style="font-size:0.92rem;color:#7DD3FC;font-weight:600;">Decorá tu postal y llevate la foto impresa a casa</span>' +
                       '</div>' +
                     '</div>' +
-                    '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="background:#0284C7;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-palette"></i> Abrir Plantilla en Canva ↗</a>' +
+                    '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="background:#0284C7;color:#FFF;padding:10px 16px;border-radius:10px;font-size:0.92rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-palette"></i> Abrir Plantilla en Canva ↗</a>' +
                   '</div>' +
-                  '<p style="color:#CBD5E1;font-size:0.9rem;line-height:1.55;margin-bottom:14px;">' +
-                    '<strong>1.</strong> En la siguiente clase abrimos la <a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="color:#38BDF8;font-weight:700;">Plantilla Oficial de la Foto Polaroid en Canva (https://canva.link/polaroid-freirebotuy)</a>.<br>' +
-                    '<strong>2.</strong> Colocamos la foto del monstruo de Gemini en el centro del marco.<br>' +
-                    '<strong>3.</strong> Escribimos en el borde inferior tu nombre, el curso ("Halloween 2026 - Taller de Robótica") y sumamos adornos temáticos de murciélagos, telas de araña y calabazas.' +
-                  '</p>' +
-                  '<div style="background:linear-gradient(135deg, rgba(16,185,129,0.18) 0%, rgba(6,95,70,0.3) 100%);border:2px dashed #10B981;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;">' +
+                  '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#38BDF8;">Paso 1:</strong> Abrí la plantilla oficial de Polaroid en Canva.</div>' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#38BDF8;">Paso 2:</strong> Poné la imagen de tu monstruo adentro del marco.</div>' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#38BDF8;">Paso 3:</strong> Escribí abajo tu nombre y "Halloween 2026", y decorala con murciélagos o calabazas.</div>' +
+                  '</div>' +
+                  '<div style="background:linear-gradient(135deg, rgba(16,185,129,0.22) 0%, rgba(6,95,70,0.35) 100%);border:2px dashed #10B981;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;">' +
                     '<div style="font-size:2.2rem;color:#34D399;flex-shrink:0;"><i class="fas fa-print"></i></div>' +
                     '<div>' +
-                      '<h4 style="margin:0 0 4px;color:#6EE7B7;font-size:1.05rem;font-weight:900;">⭐ ¡Entrega Física en Papel Fotográfico de Alta Calidad!</h4>' +
-                      '<p style="margin:0;color:#D1FAE5;font-size:0.88rem;line-height:1.5;">' +
-                        'Tu foto Polaroid terminada será <strong>impresa físicamente por el profesor en papel fotográfico profesional</strong> en el colegio. Cada estudiante la recibirá en mano para llevarla a su hogar y compartirla con su familia como recuerdo del taller.' +
+                      '<h4 style="margin:0 0 4px;color:#6EE7B7;font-size:1.08rem;font-weight:900;">⭐ ¡Te llevás tu foto impresa en papel fotográfico!</h4>' +
+                      '<p style="margin:0;color:#ECFDF5;font-size:0.96rem;line-height:1.5;">' +
+                        'El profe va a imprimir tu Polaroid en papel especial para que te la lleves de recuerdo a tu casa.' +
                       '</p>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
 
                 // ETAPA 3: FLOW & DRIVE
-                '<div style="background:#1E293B;border-radius:14px;border-left:5px solid #8B5CF6;padding:22px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 4px 14px rgba(0,0,0,0.2);">' +
-                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
-                    '<div style="display:flex;align-items:center;gap:12px;">' +
-                      '<span style="background:#7C3AED;color:#FFF;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;">3</span>' +
+                '<div style="background:#1E293B;border-radius:18px;border-left:6px solid #8B5CF6;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
+                  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">' +
+                    '<div style="display:flex;align-items:center;gap:14px;">' +
+                      '<span style="background:#7C3AED;color:#FFF;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0;">3</span>' +
                       '<div>' +
-                        '<h3 style="margin:0;font-size:1.2rem;font-weight:800;color:#FFF;">Clase 3: Video Animado con Flow y Guardado en Google Drive</h3>' +
-                        '<span style="font-size:0.8rem;color:#94A3B8;">Inteligencia Artificial de Video • Prompts Cinemáticos de Movimiento</span>' +
+                        '<h3 style="margin:0;font-size:1.25rem;font-weight:900;color:#FFFFFF;">Clase 3: Video Animado en Flow y Subida a Drive</h3>' +
+                        '<span style="font-size:0.92rem;color:#DDD6FE;font-weight:600;">Dale movimiento a tu monstruo y compartilo en el muro</span>' +
                       '</div>' +
                     '</div>' +
-                    '<div style="display:flex;gap:8px;">' +
-                      '<button type="button" class="apm-quick-tab-btn" data-target-tab="entrega" style="background:#10B981;color:#FFF;padding:7px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-cloud-upload-alt"></i> Subir Entrega a Drive ↗</button>' +
+                    '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+                      '<a href="https://flow.google.com" target="_blank" rel="noopener" style="background:#D97706;color:#FFF;padding:10px 16px;border-radius:10px;font-size:0.92rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-film"></i> Abrir Flow ↗</a>' +
+                      '<button type="button" class="apm-quick-tab-btn" data-target-tab="entrega" style="background:#10B981;color:#FFF;padding:10px 16px;border-radius:10px;font-size:0.92rem;font-weight:800;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-cloud-upload-alt"></i> Subir Entrega a Drive ↗</button>' +
                     '</div>' +
                   '</div>' +
-                  '<p style="color:#CBD5E1;font-size:0.9rem;line-height:1.55;margin-bottom:14px;">' +
-                    '<strong>1.</strong> Subimos la imagen del monstruo a <strong>Flow</strong>.<br>' +
-                    '<strong>2.</strong> Aprendemos a redactar prompts para video: movimiento de cámara (zoom in lento, paneo sutil), gestos del personaje (ojos brillantes parpadeando, sonrisa misteriosa) y atmósfera dinámica (humo avanzando sobre el suelo).<br>' +
-                    '<strong>3.</strong> Descargamos el video MP4 terminado y lo subimos a la carpeta <strong>fotos/2026/halloween</strong> de Google Drive para verlo en el muro interactivo del colegio con el logo oficial.' +
-                  '</p>' +
+                  '<div style="display:flex;flex-direction:column;gap:10px;">' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#C084FC;">Paso 1:</strong> Subí la imagen de tu monstruo a <strong>Flow</strong>.</div>' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#C084FC;">Paso 2:</strong> Escribí un pedido corto de movimiento (por ejemplo: <em>"la cámara se acerca lento, el monstruo parpadea y se mueve la niebla"</em>).</div>' +
+                    '<div style="background:#0F172A;padding:12px 16px;border-radius:12px;color:#F8FAFC;font-size:1rem;line-height:1.5;"><strong style="color:#C084FC;">Paso 3:</strong> Descargá tu video MP4 y subilo a la carpeta de <strong>Halloween</strong> en Google Drive para verlo en el muro del colegio.</div>' +
+                  '</div>' +
                 '</div>' +
 
               '</div>' +
