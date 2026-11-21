@@ -41695,10 +41695,11 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   margin-top: 22px !important;
 }
 
-.hn-news-grid.comic-page-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-  gap: 22px;
+.hn-news-grid.comic-page-grid,
+.hn-act-grid.comic-page-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)) !important;
+  gap: 22px !important;
   padding: 6px 2px 14px;
 }
 
@@ -41974,4 +41975,80 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
     border-right: none;
     border-bottom: 3px solid #0F172A;
   }
+}
+
+.comic-emoji-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4.2rem;
+  background: radial-gradient(circle at 35% 35%, #334155, #0F172A);
+}
+
+.comic-mine-sticker {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #FACC15;
+  color: #0F172A;
+  border: 2px solid #0F172A;
+  box-shadow: 2px 2px 0 #0F172A;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.comic-equip-bar {
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid #0F172A;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.comic-actions-row {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.comic-action-btn {
+  flex: 1;
+  border: 2.5px solid #0F172A !important;
+  box-shadow: 3px 3px 0 #0F172A !important;
+  border-radius: 10px !important;
+  font-weight: 900 !important;
+  font-size: 0.8rem !important;
+  padding: 6px 11px !important;
+  justify-content: center;
+}
+
+.comic-detail-btn {
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 2.5px solid #0F172A;
+  box-shadow: 3px 3px 0 #0F172A;
+  border-radius: 10px;
+  padding: 6px 11px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.comic-detail-btn:hover {
+  background: #F1F5F9;
+  transform: translate(-1px, -1px);
 }
