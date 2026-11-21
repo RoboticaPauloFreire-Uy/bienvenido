@@ -9,7 +9,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=153">
+  <link rel="stylesheet" href="css/style.css?v=154">
   <link rel="stylesheet" href="css/games.css?v=95">
   <link rel="stylesheet" href="css/home.css?v=40">
   <link rel="stylesheet" href="css/themes.css?v=30anios">
@@ -218,6 +218,12 @@
             </div>
           </div>
 
+          <!-- Novedades Destacadas -->
+          <div class="hn-featured fb-featured-grid">
+            <div id="hn-featured-main" class="np-featured-main fb-featured-main"></div>
+            <aside class="hn-featured-side np-featured-side fb-featured-side" id="hn-featured-side"></aside>
+          </div>
+
           <!-- Vitrina Visual: Lo Nuevo en Cada Sección (4 Tarjetas con Foto) -->
           <header class="fb-vitrina-wrap" aria-label="Lo nuevo esta semana en el taller">
             <div class="fb-vitrina-head">
@@ -241,7 +247,44 @@
             </div>
           </div>
 
-          <!-- Portales Tipo Consola (Acceso inmediato sin scroll) -->
+          <!-- ══════════════════════════════════════════
+               MOCHILA MAKER INTERACTIVA (SIN CAJÓN ENVOLVENTE)
+          ══════════════════════════════════════════ -->
+          <div class="hn-valija-box fb-mochila-section" id="hn-valija-box">
+            <div class="fb-mochila-topbar">
+              <div class="fb-section-head fb-mochila-title-pill">
+                <span>🎒 ¡MOCHILA MAKER · PRÓXIMA CLASE!</span>
+              </div>
+
+              <div class="fb-mochila-status-bar">
+                <div class="fb-mochila-mini-progress">
+                  <div class="np-valija-progress-info fb-mochila-progress-info" id="hn-valija-progress-info">
+                    <span>🎒 0 de 0 listos</span>
+                  </div>
+                  <div class="fb-mochila-meter" aria-hidden="true">
+                    <div class="fb-mochila-meter-fill" id="hn-valija-meter-fill" style="width:0%"></div>
+                  </div>
+                </div>
+                <button type="button" class="fb-mochila-print-btn" onclick="window.imprimirValijaMaker()" title="Imprimir lista para la heladera">
+                  <i class="fas fa-print"></i> <span>Imprimir</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Pestañas directas por grado (sin caja blanca envolvente) -->
+            <div class="fb-mochila-tabs" id="hn-valija-grade-tabs" role="tablist" aria-label="Filtrar materiales por grado"></div>
+            <select id="valija-grade-filter" style="display:none;" aria-hidden="true"></select>
+
+            <!-- Grilla de fichas 3D sueltas estilo Portal -->
+            <div class="np-valija-grid fb-mochila-grid" id="hn-valija-grid"></div>
+
+            <!-- Nota breve en una sola línea limpia -->
+            <div class="fb-mochila-note">
+              <span>🔌 <strong>Electrónica 100% del cole:</strong> placas micro:bit, motores, sensores y LEDs los brinda el taller · ♻️ ¡En casa vale cualquier reemplazo creativo!</span>
+            </div>
+          </div>
+
+          <!-- Portales Tipo Consola (Abajo de todo) -->
           <div class="fb-portals-wrap">
             <div class="fb-section-head">
               <span>🎮 ¡ELEGÍ TU PORTAL DE AVENTURA!</span>
@@ -306,49 +349,6 @@
                 </div>
                 <span class="fb-portal-arrow"><i class="fas fa-arrow-right"></i></span>
               </a>
-            </div>
-          </div>
-
-          <!-- Novedades Destacadas -->
-          <div class="hn-featured fb-featured-grid">
-            <div id="hn-featured-main" class="np-featured-main fb-featured-main"></div>
-            <aside class="hn-featured-side np-featured-side fb-featured-side" id="hn-featured-side"></aside>
-          </div>
-
-          <!-- ══════════════════════════════════════════
-               MOCHILA MAKER INTERACTIVA (SIN CAJÓN ENVOLVENTE)
-          ══════════════════════════════════════════ -->
-          <div class="hn-valija-box fb-mochila-section" id="hn-valija-box">
-            <div class="fb-mochila-topbar">
-              <div class="fb-section-head fb-mochila-title-pill">
-                <span>🎒 ¡MOCHILA MAKER · PRÓXIMA CLASE!</span>
-              </div>
-
-              <div class="fb-mochila-status-bar">
-                <div class="fb-mochila-mini-progress">
-                  <div class="np-valija-progress-info fb-mochila-progress-info" id="hn-valija-progress-info">
-                    <span>🎒 0 de 0 listos</span>
-                  </div>
-                  <div class="fb-mochila-meter" aria-hidden="true">
-                    <div class="fb-mochila-meter-fill" id="hn-valija-meter-fill" style="width:0%"></div>
-                  </div>
-                </div>
-                <button type="button" class="fb-mochila-print-btn" onclick="window.imprimirValijaMaker()" title="Imprimir lista para la heladera">
-                  <i class="fas fa-print"></i> <span>Imprimir</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Pestañas directas por grado (sin caja blanca envolvente) -->
-            <div class="fb-mochila-tabs" id="hn-valija-grade-tabs" role="tablist" aria-label="Filtrar materiales por grado"></div>
-            <select id="valija-grade-filter" style="display:none;" aria-hidden="true"></select>
-
-            <!-- Grilla de fichas 3D sueltas estilo Portal -->
-            <div class="np-valija-grid fb-mochila-grid" id="hn-valija-grid"></div>
-
-            <!-- Nota breve en una sola línea limpia -->
-            <div class="fb-mochila-note">
-              <span>🔌 <strong>Electrónica 100% del cole:</strong> placas micro:bit, motores, sensores y LEDs los brinda el taller · ♻️ ¡En casa vale cualquier reemplazo creativo!</span>
             </div>
           </div>
 
