@@ -42927,11 +42927,12 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 /* ── Marquesina Presentación (Tapa de Revista Kids / Gamer) ── */
 .fb-kids-masthead {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-  padding: 2px 4px 12px;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  padding: 4px 4px 14px;
   margin-bottom: 14px;
   border-bottom: 2px dashed #CBD5E1;
 }
@@ -42939,6 +42940,8 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 .fb-km-brand {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 14px;
   min-width: 0;
 }
@@ -42978,6 +42981,8 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 .fb-km-titles {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 4px;
   min-width: 0;
 }
@@ -42998,6 +43003,8 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   line-height: 1.2;
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   flex-wrap: wrap;
   gap: 6px;
 }
@@ -43027,6 +43034,7 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 .fb-km-stickers {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
 }
@@ -43076,6 +43084,10 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   .fb-kids-masthead {
     gap: 10px;
     padding-bottom: 10px;
+  }
+  .fb-km-brand {
+    flex-direction: column;
+    gap: 8px;
   }
   .fb-km-crest {
     width: 46px;
