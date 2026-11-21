@@ -1411,9 +1411,14 @@
             '<div class="arcade-monitor-bezel">' +
               '<div class="arcade-monitor-topbar">' +
                 '<span class="arcade-marquee"><i class="fas fa-gamepad"></i> ARCADE DEL TALLER</span>' +
-                '<button type="button" id="arcade-btn-parent-info" class="arcade-btn-parent-info" title="Ver por qué elegimos este juego y qué habilidades mejora">' +
-                  '<i class="fas fa-users"></i> <span>Info Padres</span>' +
-                '</button>' +
+                '<div class="arcade-topbar-btns">' +
+                  '<button type="button" id="arcade-btn-game-info" class="arcade-btn-game-info" title="Ver título y descripción completa del juego">' +
+                    '<i class="fas fa-info-circle"></i> <span>Info Juego</span>' +
+                  '</button>' +
+                  '<button type="button" id="arcade-btn-parent-info" class="arcade-btn-parent-info" title="Ver por qué elegimos este juego y qué habilidades mejora">' +
+                    '<i class="fas fa-users"></i> <span>Info Padres</span>' +
+                  '</button>' +
+                '</div>' +
                 '<span class="arcade-counter" id="arcade-counter">1 / ' + items.length + '</span>' +
               '</div>' +
               '<div class="arcade-screen-img-wrap" id="arcade-screen-img-wrap">' +
@@ -1462,11 +1467,13 @@
     var elBtnPrev = document.getElementById('arcade-btn-prev');
     var elBtnNext = document.getElementById('arcade-btn-next');
     var elBtnRand = document.getElementById('arcade-btn-random');
+    var elBtnGameInfo = document.getElementById('arcade-btn-game-info');
     var elBtnParentInfo = document.getElementById('arcade-btn-parent-info');
 
-    function openArcadeParentModal(m) {
+    function openArcadeInfoModal(m, mode) {
       if (!m || !m.gm) return;
       var gm = m.gm;
+      var isParents = (mode === 'parents');
       var modal = document.getElementById('arcade-parent-modal');
       if (!modal) {
         modal = document.createElement('div');
@@ -1475,15 +1482,24 @@
         document.body.appendChild(modal);
       }
 
-      var benefitsBlock = gm.benefits
-        ? '<div class="apm-info-box is-benefits">' +
+      var badgeHtml = isParents
+        ? '<span class="apm-modal-badge"><i class="fas fa-users"></i> Información para Familias y Docentes</span>'
+        : '<span class="apm-modal-badge"><i class="fas fa-gamepad"></i> Ficha Completa del Juego</span>';
+
+      var extraHtml = '';
+      if (isParents) {
+        extraHtml =
+          '<div class="apm-info-box is-benefits">' +
             '<h4><i class="fas fa-lightbulb"></i> ¿Por qué este juego y qué habilidades mejora?</h4>' +
-            '<p>' + esc(gm.benefits) + '</p>' +
-          '</div>'
-        : '<div class="apm-info-box is-benefits">' +
-            '<h4><i class="fas fa-lightbulb"></i> ¿Por qué este juego y qué habilidades mejora?</h4>' +
-            '<p>Fomenta el pensamiento lógico, la atención, la coordinación y la resolución de problemas de forma lúdica acorde a la edad escolar.</p>' +
+            '<p>' + esc(gm.benefits || 'Fomenta el pensamiento lógico, la atención, la coordinación y la resolución de problemas de forma lúdica acorde a la edad escolar.') + '</p>' +
           '</div>';
+      } else if (gm.controls || gm.instructions) {
+        extraHtml =
+          '<div class="apm-info-box is-benefits">' +
+            '<h4><i class="fas fa-keyboard"></i> ¿Cómo se juega?</h4>' +
+            '<p>' + esc(gm.controls || gm.instructions) + '</p>' +
+          '</div>';
+      }
 
       var tagsBlock = (gm.tags && gm.tags.length)
         ? '<div class="apm-info-tags">' +
@@ -1495,7 +1511,7 @@
         '<div class="arcade-parent-modal-card" role="dialog" aria-modal="true" aria-labelledby="apm-modal-title">' +
           '<div class="apm-modal-head">' +
             '<div class="apm-modal-head-left">' +
-              '<span class="apm-modal-badge"><i class="fas fa-users"></i> Información para Familias y Docentes</span>' +
+              badgeHtml +
               '<h3 id="apm-modal-title">' + esc(gm.title || 'Juego del Taller') + '</h3>' +
             '</div>' +
             '<button type="button" class="apm-modal-close" aria-label="Cerrar">&times;</button>' +
@@ -1509,10 +1525,10 @@
               '</div>' +
             '</div>' +
             '<div class="apm-info-box">' +
-              '<h4><i class="fas fa-gamepad"></i> ¿De qué trata este juego?</h4>' +
+              '<h4><i class="fas fa-book-open"></i> ¿De qué trata este juego?</h4>' +
               '<p>' + esc(gm.description || 'Actividad interactiva seleccionada para el taller.') + '</p>' +
             '</div>' +
-            benefitsBlock +
+            extraHtml +
             tagsBlock +
           '</div>' +
           '<div class="apm-modal-foot">' +
@@ -1530,10 +1546,17 @@
       modal.onclick = function (e) { if (e.target === modal) closeFn(); };
     }
 
+    if (elBtnGameInfo) {
+      elBtnGameInfo.addEventListener('click', function () {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        openArcadeInfoModal(getItemMeta(items[activeIdx]), 'game');
+      });
+    }
+
     if (elBtnParentInfo) {
       elBtnParentInfo.addEventListener('click', function () {
         if (window.sounds && window.sounds.playClick) window.sounds.playClick();
-        openArcadeParentModal(getItemMeta(items[activeIdx]));
+        openArcadeInfoModal(getItemMeta(items[activeIdx]), 'parents');
       });
     }
 

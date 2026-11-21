@@ -40649,6 +40649,34 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   }
 }
 
+.arcade-topbar-btns {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.arcade-btn-game-info {
+  background: rgba(167, 139, 250, 0.18);
+  color: #DDD6FE;
+  border: 1.5px solid rgba(167, 139, 250, 0.45);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.arcade-btn-game-info:hover {
+  background: rgba(167, 139, 250, 0.32);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
 .arcade-btn-parent-info {
   background: rgba(56, 189, 248, 0.16);
   color: #BAE6FD;
