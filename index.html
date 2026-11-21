@@ -9,7 +9,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=146">
+  <link rel="stylesheet" href="css/style.css?v=147">
   <link rel="stylesheet" href="css/games.css?v=95">
   <link rel="stylesheet" href="css/home.css?v=40">
   <link rel="stylesheet" href="css/themes.css?v=30anios">
@@ -194,104 +194,142 @@
            VISTA 1: INICIO (TAPA DE PERIÓDICO DE PAPEL)
       ══════════════════════════════════════════ -->
       <div id="view-inicio" class="hn-view active">
-        <section id="inicio" class="np-paper-sheet">
+        <section id="inicio" class="np-paper-sheet fb-station-sheet">
 
-          <!-- Timbre / Sello de tinta en esquina de periódico -->
-          <div class="np-rubber-stamp" aria-hidden="true">
-            <span class="np-stamp-text">★ TALLER ★</span>
-            <span class="np-stamp-sub">COLEGIO<br>PAULO FREIRE</span>
-            <span class="np-stamp-year">2026</span>
-          </div>
-
-          <!-- Cabecera de periódico tradicional (Masthead) -->
-          <header class="np-masthead">
-            <!-- Orejas superiores: metadatos editoriales -->
-            <div class="np-ear-bar">
-              <div class="np-ear-left">
-                <span class="np-ear-item"><i class="fas fa-feather-alt"></i> FUNDADO EN 2026</span>
-                <span class="np-ear-sep">|</span>
-                <span class="np-ear-item">EDICIÓN MATUTINA</span>
-                <span class="np-ear-sep">|</span>
-                <span class="np-ear-item">PRECIO: $0 (CURIOSIDAD)</span>
+          <!-- Cabecera Interactiva: Estación de Mando FreireBot -->
+          <header class="fb-cmd-hero">
+            <div class="fb-cmd-welcome">
+              <div class="fb-cmd-avatars">
+                <img src="img/escudo_paulo_freire.png?v=2" alt="Colegio Paulo Freire" class="fb-cmd-crest">
+                <div class="fb-cmd-bot" aria-hidden="true">🤖</div>
               </div>
-              <div class="np-ear-right">
-                <span class="np-ear-item" id="hn-masthead-date"></span>
-                <span class="np-ear-sep">|</span>
-                <span class="np-ear-item">AÑO I — Nº 2026</span>
-                <span class="np-ear-sep">|</span>
-                <span class="np-ear-item np-weather"><i class="fas fa-sun"></i> 22°C · BUEN CLIMA</span>
-              </div>
-            </div>
-
-            <!-- Placa central con nombre del periódico (Nameplate) -->
-            <div class="np-nameplate">
-              <div class="np-crest-side left">
-                <img src="img/escudo_paulo_freire.png?v=2" alt="Colegio Paulo Freire" class="np-crest-img">
-              </div>
-              <div class="np-title-block">
-                <h1 class="np-main-title">El Diario del Taller</h1>
-                <p class="np-motto">« CIENCIA, ROBÓTICA, PROGRAMACIÓN Y CULTURA MAKER · SALA DE 5 A 6° GRADO »</p>
-              </div>
-              <div class="np-crest-side right" aria-hidden="true">
-                <div class="np-lead-seal">
-                  <i class="fas fa-robot"></i>
-                  <span>INVENTORES</span>
+              <div class="fb-cmd-copy">
+                <span class="fb-cmd-kicker">🚀 ESTACIÓN DE MANDO · ROBÓTICA Y PROGRAMACIÓN</span>
+                <h1 class="fb-cmd-title">¡Hola, Inventores del Paulo Freire! 👋✨</h1>
+                <div class="fb-cmd-bubble">
+                  <p>¡Bienvenidos a nuestra base digital! 🤖💡 Elegí un portal abajo para girar la Ruleta Arcade, leer nuestras historietas en la micro:bit, ver el Cine del Muro o armar tu mochila.</p>
                 </div>
               </div>
             </div>
 
-            <!-- Cinta de tirada y resumen -->
-            <div class="np-sub-bar">
-              <div class="np-sub-bar-left">
-                <span class="np-bullet">◆</span>
-                <span>ÓRGANO INFORMATIVO OFICIAL DE LOS LABORATORIOS ESCOLARES</span>
-                <span class="np-bullet">◆</span>
+            <div class="fb-cmd-status">
+              <div class="fb-cmd-date-pill">
+                <span>📅</span> <span id="hn-masthead-date"></span>
               </div>
-              <div class="hn-mh-stats np-stats" id="hn-masthead-stats"></div>
+              <div class="hn-mh-stats fb-cmd-stats" id="hn-masthead-stats"></div>
+              <button type="button" class="fb-cmd-play-btn" onclick="window.switchView('juegos')">🕹️ ¡Ir a la Ruleta Arcade!</button>
             </div>
           </header>
 
-          <!-- Teletipo de Última Hora (Ticker) -->
-          <div class="hn-ticker np-ticker" id="hn-ticker" aria-label="Avisos de última hora">
-            <div class="hn-ticker-label np-ticker-label">
+          <!-- Radar de Novedades (Ticker) -->
+          <div class="hn-ticker np-ticker fb-radar-ticker" id="hn-ticker" aria-label="Avisos de última hora">
+            <div class="hn-ticker-label np-ticker-label fb-radar-label">
               <span class="np-ticker-pulse"></span>
-              <span class="txt">CABLE DE ÚLTIMA HORA</span>
+              <span class="txt">📡 ¡RADAR FREIREBOT!</span>
             </div>
             <div class="hn-ticker-viewport">
               <div class="hn-ticker-track np-ticker-track" id="hn-ticker-track"></div>
             </div>
           </div>
 
-          <!-- Primera Plana: Gran Titular + Crónicas del día -->
-          <div class="hn-featured np-featured">
-            <div id="hn-featured-main" class="np-featured-main"></div>
-            <aside class="hn-featured-side np-featured-side" id="hn-featured-side"></aside>
+          <!-- Portales Tipo Consola (Acceso inmediato sin scroll) -->
+          <div class="fb-portals-wrap">
+            <div class="fb-section-head">
+              <span>🎮 ¡ELEGÍ TU PORTAL DE AVENTURA!</span>
+            </div>
+            <div class="hn-home-shortcuts fb-portals-grid">
+              <a href="#noticias" class="fb-portal-card theme-news" onclick="window.switchView('noticias'); return false;">
+                <span class="fb-portal-badge">💥 ¡CÓMIC!</span>
+                <div class="fb-portal-icon">📰</div>
+                <div class="fb-portal-text">
+                  <span class="fb-portal-title">Historietas y Noticias</span>
+                  <span class="fb-portal-desc">¡Leé las novedades en la placa micro:bit!</span>
+                </div>
+                <span class="fb-portal-arrow"><i class="fas fa-arrow-right"></i></span>
+              </a>
+
+              <a href="#clase" class="fb-portal-card theme-clase" onclick="window.switchView('clase'); return false;">
+                <span class="fb-portal-badge">⚡ ¡TALLER!</span>
+                <div class="fb-portal-icon">🔬</div>
+                <div class="fb-portal-text">
+                  <span class="fb-portal-title">Misiones en Clase</span>
+                  <span class="fb-portal-desc">Proyectos paso a paso y herramientas</span>
+                </div>
+                <span class="fb-portal-arrow"><i class="fas fa-arrow-right"></i></span>
+              </a>
+
+              <a href="#casa" class="fb-portal-card theme-casa" onclick="window.switchView('casa'); return false;">
+                <span class="fb-portal-badge">🌟 ¡FAMILIA!</span>
+                <div class="fb-portal-icon">🏠</div>
+                <div class="fb-portal-text">
+                  <span class="fb-portal-title">Retos en Casa</span>
+                  <span class="fb-portal-desc">Desafíos divertidos y juegos con IA</span>
+                </div>
+                <span class="fb-portal-arrow"><i class="fas fa-arrow-right"></i></span>
+              </a>
+
+              <a href="#juegos" class="fb-portal-card theme-juegos" onclick="window.switchView('juegos'); return false;">
+                <span class="fb-portal-badge">🕹️ ¡ARCADE!</span>
+                <div class="fb-portal-icon">🎮</div>
+                <div class="fb-portal-text">
+                  <span class="fb-portal-title">Ruleta de Juegos</span>
+                  <span class="fb-portal-desc">¡Girá la rueda y jugá con tu grado!</span>
+                </div>
+                <span class="fb-portal-arrow"><i class="fas fa-arrow-right"></i></span>
+              </a>
+
+              <a href="#muro" class="fb-portal-card theme-muro" onclick="window.switchView('muro'); return false;">
+                <span class="fb-portal-badge">🍿 ¡CINE!</span>
+                <div class="fb-portal-icon">🎬</div>
+                <div class="fb-portal-text">
+                  <span class="fb-portal-title">Cine y Fotos (Muro)</span>
+                  <span class="fb-portal-desc">Videos y recuerdos en la línea de tiempo</span>
+                </div>
+                <span class="fb-portal-arrow"><i class="fas fa-arrow-right"></i></span>
+              </a>
+
+              <a href="#agenda" class="fb-portal-card theme-agenda" onclick="window.switchView('agenda'); return false;">
+                <span class="fb-portal-badge">📅 ¡FECHAS!</span>
+                <div class="fb-portal-icon">🚀</div>
+                <div class="fb-portal-text">
+                  <span class="fb-portal-title">Calendario Maker</span>
+                  <span class="fb-portal-desc">Próximas misiones y eventos del año</span>
+                </div>
+                <span class="fb-portal-arrow"><i class="fas fa-arrow-right"></i></span>
+              </a>
+            </div>
           </div>
 
-                    <!-- ══════════════════════════════════════════
-               LA VALIJA MAKER (MATERIALES PARA LA PRÓXIMA CLASE)
+          <!-- Novedades Destacadas -->
+          <div class="hn-featured fb-featured-grid">
+            <div id="hn-featured-main" class="np-featured-main fb-featured-main"></div>
+            <aside class="hn-featured-side np-featured-side fb-featured-side" id="hn-featured-side"></aside>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               MOCHILA MAKER INTERACTIVA (MATERIALES PARA LA PRÓXIMA CLASE)
           ══════════════════════════════════════════ -->
-          <div class="hn-valija-box np-valija-box" id="hn-valija-box">
-            <div class="np-valija-header">
+          <div class="hn-valija-box np-valija-box fb-mochila-box" id="hn-valija-box">
+            <div class="np-valija-header fb-mochila-header">
               <div class="np-valija-title-wrap">
-                <div class="np-valija-badge-tag"><i class="fas fa-suitcase"></i> PREPARANDO LA MOCHILA MAKER</div>
-                <h3 class="np-valija-headline"><i class="fas fa-tools"></i> La Valija Maker: Materiales para la Próxima Clase</h3>
-                <p class="np-valija-sub">¿Qué cosas reciclables y de la cartuchera traemos al taller esta semana? Marcá con un visto lo que ya tenés listo en casa para tu grado.</p>
+                <div class="np-valija-badge-tag fb-mochila-badge">🎒 ¡MISIÓN MOCHILA MAKER!</div>
+                <h3 class="np-valija-headline fb-mochila-headline">🧰 ¡Prepará tu Mochila para la Próxima Clase!</h3>
+                <p class="np-valija-sub fb-mochila-sub">¿Qué materiales traemos al taller esta semana? ¡Elegí tu grado y tocá cada tarjeta cuando ya la tengas lista en tu mochila! ✨</p>
               </div>
               <div class="np-valija-actions">
-                <button type="button" class="np-valija-btn-print" onclick="window.imprimirValijaMaker()" title="Imprimir lista para pegar en la heladera">
+                <button type="button" class="np-valija-btn-print fb-mochila-print" onclick="window.imprimirValijaMaker()" title="Imprimir lista para pegar en la heladera">
                   <i class="fas fa-print"></i> <span>Imprimir lista</span>
                 </button>
               </div>
             </div>
 
             <!-- Barra de filtro de grado y aviso oficial del taller -->
-            <div class="np-valija-toolbar">
+            <div class="np-valija-toolbar fb-mochila-toolbar">
               <div class="np-valija-grade-select-wrap">
                 <label for="valija-grade-filter" class="np-valija-filter-label"><i class="fas fa-graduation-cap"></i> Tu Grupo / Grado:</label>
                 <select id="valija-grade-filter" class="np-valija-select"></select>
               </div>
-              <div class="np-valija-taller-notice">
+              <div class="np-valija-taller-notice fb-mochila-notice">
                 <i class="fas fa-microchip"></i> <span><strong>Aviso a las familias:</strong> Todos los componentes electrónicos (motores, LEDs, placas micro:bit, sensores y pilas) son 100% provistos por el colegio.</span>
               </div>
             </div>
@@ -299,101 +337,29 @@
             <!-- Grilla dinámica de materiales -->
             <div class="np-valija-grid" id="hn-valija-grid"></div>
 
-            <!-- Barra inferior con resumen de avance -->
-            <div class="np-valija-footer">
-              <div class="np-valija-progress-info" id="hn-valija-progress-info">
-                <i class="fas fa-clipboard-check"></i> <span>0 de 0 materiales listos en la mochila</span>
+            <!-- Barra inferior con barra de progreso animada y resumen -->
+            <div class="np-valija-footer fb-mochila-footer">
+              <div class="fb-mochila-progress-wrap">
+                <div class="np-valija-progress-info fb-mochila-progress-info" id="hn-valija-progress-info">
+                  <span>🎒 0 de 0 materiales en tu mochila</span>
+                </div>
+                <div class="fb-mochila-meter" aria-hidden="true">
+                  <div class="fb-mochila-meter-fill" id="hn-valija-meter-fill" style="width:0%"></div>
+                </div>
               </div>
-              <div class="np-valija-tip">
+              <div class="np-valija-tip fb-mochila-tip">
                 <i class="fas fa-recycle"></i> <span>¡Reutilicemos en familia! Si no tenés un material exacto, ¡un reemplazo creativo siempre es bienvenido en el laboratorio!</span>
               </div>
             </div>
           </div>
 
-          <!-- Separador con pliegue de periódico (Fold) -->
-          <div class="np-fold-divider" aria-hidden="true">
-            <span class="np-fold-line"></span>
-            <span class="np-fold-badge"><i class="fas fa-newspaper"></i> SUMARIO DE LA EDICIÓN — ÍNDICE DE SECCIONES</span>
-            <span class="np-fold-line"></span>
-          </div>
-
-          <!-- Bloque de accesos directos estilo Índice / Sumario de Páginas -->
-          <div class="hn-home-shortcuts np-home-shortcuts">
-            <a href="#noticias" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('noticias'); return false;">
-              <div class="np-sc-page">PÁG. 02</div>
-              <div class="hsc-icon np-sc-icon" style="background:#FFF0EB;color:#C0392B;"><i class="fas fa-newspaper"></i></div>
-              <div class="hsc-text np-sc-text">
-                <span class="hsc-title np-sc-title">Revista de Noticias</span>
-                <span class="hsc-desc np-sc-desc">Crónicas, notas de tapa y proyectos de los alumnos</span>
-              </div>
-              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
-            </a>
-
-            <a href="#clase" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('clase'); return false;">
-              <div class="np-sc-page">PÁG. 03</div>
-              <div class="hsc-icon np-sc-icon" style="background:#EBF5FB;color:#2980B9;"><i class="fas fa-drafting-compass"></i></div>
-              <div class="hsc-text np-sc-text">
-                <span class="hsc-title np-sc-title">Mesa de Clase</span>
-                <span class="hsc-desc np-sc-desc">Planos de ingeniería, retos semanales y laboratorio</span>
-              </div>
-              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
-            </a>
-
-            <a href="#casa" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('casa'); return false;">
-              <div class="np-sc-page">PÁG. 04</div>
-              <div class="hsc-icon np-sc-icon" style="background:#FEF9E7;color:#D35400;"><i class="fas fa-tools"></i></div>
-              <div class="hsc-text np-sc-text">
-                <span class="hsc-title np-sc-title">Tablero en Casa</span>
-                <span class="hsc-desc np-sc-desc">Herramientas, simuladores interactivos y retos en familia</span>
-              </div>
-              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
-            </a>
-
-            <a href="#juegos" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('juegos'); return false;">
-              <div class="np-sc-page">PÁG. 05</div>
-              <div class="hsc-icon np-sc-icon" style="background:#F5EEF8;color:#8E44AD;"><i class="fas fa-gamepad"></i></div>
-              <div class="hsc-text np-sc-text">
-                <span class="hsc-title np-sc-title">Pasatiempos & Juegos</span>
-                <span class="hsc-desc np-sc-desc">Puzzles lógicos, acertijos y arcade de programación</span>
-              </div>
-              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
-            </a>
-
-            <a href="#muro" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('muro'); return false;">
-              <div class="np-sc-page">PÁG. 06</div>
-              <div class="hsc-icon np-sc-icon" style="background:#E8F8F5;color:#16A085;"><i class="fas fa-camera-retro"></i></div>
-              <div class="hsc-text np-sc-text">
-                <span class="hsc-title np-sc-title">Fotoproyecciones (Muro)</span>
-                <span class="hsc-desc np-sc-desc">Galería visual de fotos y videos de las clases</span>
-              </div>
-              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
-            </a>
-
-            <a href="#agenda" class="hn-shortcut-card np-shortcut-card" onclick="window.switchView('agenda'); return false;">
-              <div class="np-sc-page">PÁG. 07</div>
-              <div class="hsc-icon np-sc-icon" style="background:#FDEDEC;color:#C0392B;"><i class="fas fa-calendar-alt"></i></div>
-              <div class="hsc-text np-sc-text">
-                <span class="hsc-title np-sc-title">Agenda & Efemérides</span>
-                <span class="hsc-desc np-sc-desc">Calendario de entregas y fechas clave por grado</span>
-              </div>
-              <div class="np-sc-arrow"><i class="fas fa-arrow-right"></i></div>
-            </a>
-          </div>
-
-          <!-- Colofón y pie de imprenta del periódico -->
-          <footer class="np-colophon" aria-hidden="true">
-            <div class="np-barcode">
-              <span class="np-barcode-lines">||||| | |||| ||| || |||||| | ||| ||||</span>
-              <span class="np-barcode-num">ISSN 2026-PF-ROBOTICA</span>
+          <!-- Pie de la Estación -->
+          <footer class="fb-station-footer">
+            <div class="fb-footer-bot">🤖</div>
+            <div class="fb-footer-text">
+              <strong>Estación Digital FreireBot</strong> · Taller de Robótica y Programación · Colegio Paulo Freire
             </div>
-            <div class="np-colophon-text">
-              <strong>EL DIARIO DEL TALLER</strong> · Edición Escolar Registrada · Colegio Paulo Freire<br>
-              Publicación periódica realizada en el Taller de Robótica y Computación · Montevideo, Uruguay
-            </div>
-            <div class="np-page-number">
-              <span>PÁG. 1</span>
-              <small>PORTADA</small>
-            </div>
+            <div class="fb-footer-badge">✨ SALA 5 A 6.º GRADO ✨</div>
           </footer>
         </section>
       </div>
@@ -1035,7 +1001,7 @@
   <script src="js/news.js?v=26"></script>
   <!-- Parser de Markdown para publicaciones y actividades -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="js/home.js?v=75"></script>
+  <script src="js/home.js?v=76"></script>
   <script src="js/class_video_sync.js?v=6"></script>
 
   <!-- Splash Screen: se oculta automáticamente después de 3.2s o al hacer clic -->

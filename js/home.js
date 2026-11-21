@@ -349,7 +349,7 @@
   }
   refrescarNoticias();
 
-  /* ───────────── Cabecera tipo diario ───────────── */
+  /* ───────────── Cabecera Estación de Mando ───────────── */
   function renderMasthead() {
     var el = document.getElementById('hn-masthead-date');
     if (el) {
@@ -362,13 +362,13 @@
     if (stats) {
       var activas = (C.actividades || []).filter(function (a) { var s = estadoActividad(a).clave; return s === 'nueva' || s === 'curso'; }).length;
       stats.innerHTML =
-        '<span class="np-stat-item"><i class="fas fa-newspaper"></i> <strong>' + noticias.length + '</strong> NOTICIAS</span>' +
-        '<span class="np-stat-sep">/</span>' +
-        '<span class="np-stat-item"><i class="fas fa-cogs"></i> <strong>' + activas + '</strong> RETOS ACTIVOS</span>';
+        '<span class="fb-stat-pill">📰 <strong>' + noticias.length + '</strong> Historias</span>' +
+        '<span class="np-stat-sep">·</span>' +
+        '<span class="fb-stat-pill">⚡ <strong>' + activas + '</strong> Misiones Activas</span>';
     }
   }
 
-  /* ───────────── Cable de Última Hora (ticker con noticias y avisos) ───────────── */
+  /* ───────────── Radar FreireBot (ticker con noticias y avisos) ───────────── */
   function renderTicker() {
     var wrap = document.getElementById('hn-ticker');
     var track = document.getElementById('hn-ticker-track');
@@ -378,22 +378,22 @@
 
     var itemsHtml = [];
 
-    // 1. Titulares de las últimas noticias (haciendo clic se abre la nota directamente)
+    // 1. Titulares de las últimas noticias (haciendo clic se abre en la micro:bit)
     noticias.slice(0, 6).forEach(function (n) {
       itemsHtml.push(
-        '<span class="hn-ticker-item np-ticker-news" data-noticia="' + esc(n.id) + '" role="button" tabindex="0" title="Leer: ' + esc(n.titulo) + '">' +
-          '<i class="fas fa-newspaper" style="color:#991B1B;"></i> ' +
+        '<span class="hn-ticker-item np-ticker-news fb-radar-item" data-noticia="' + esc(n.id) + '" role="button" tabindex="0" title="Leer: ' + esc(n.titulo) + '">' +
+          '🤖 ' +
           '<strong>[' + esc(nombreGrado(n.grado)).toUpperCase() + ']</strong> ' +
           esc(n.titulo) +
         '</span>'
       );
     });
 
-    // 2. Avisos de último momento del taller
+    // 2. Avisos del taller
     avisos.forEach(function (a) {
       itemsHtml.push(
-        '<span class="hn-ticker-item np-ticker-aviso">' +
-          '<i class="fas fa-bolt" style="color:#D97706;"></i> ' +
+        '<span class="hn-ticker-item np-ticker-aviso fb-radar-item">' +
+          '⚡ ' +
           esc(a) +
         '</span>'
       );
@@ -406,96 +406,80 @@
     track.style.animationDuration = duracion + 's';
   }
 
-  /* ───────────── Destacada + secundarias (Tapa de Periódico) ───────────── */
+  /* ───────────── Destacada + más aventuras (Estación FreireBot) ───────────── */
   function renderDestacada() {
     var main = document.getElementById('hn-featured-main');
     var side = document.getElementById('hn-featured-side');
     if (!main || !side) return;
     if (!noticias.length) {
-      main.innerHTML = '<div class="hn-empty">Todavía no hay crónicas publicadas en esta edición.</div>';
+      main.innerHTML = '<div class="hn-empty"><span>🤖</span>Todavía no hay historias publicadas en la estación.</div>';
       side.innerHTML = '';
       return;
     }
-    // 1. Noticia Destacada (Gran Titular de Portada): la más reciente con estrella o la primera
+    // 1. Historia Estrella: la más reciente marcada como destacada o la primera
     var dest = noticias.filter(function (n) { return n.destacada; })[0] || noticias[0];
-    var cat = CATEGORIAS[dest.categoria] || { nombre: dest.categoria, icono: 'fas fa-newspaper', color: '#8B0000' };
+    var cat = CATEGORIAS[dest.categoria] || { nombre: dest.categoria || 'Taller', icono: '📰', color: '#2563EB' };
 
     var primerTexto = '';
-    if (Array.isArray(dest.cuerpo) && dest.cuerpo.length > 0) {
-      primerTexto = dest.cuerpo[0];
-    } else if (dest.bajada) {
+    if (dest.bajada) {
       primerTexto = dest.bajada;
+    } else if (Array.isArray(dest.cuerpo) && dest.cuerpo.length > 0) {
+      primerTexto = dest.cuerpo[0];
+    } else if (typeof dest.cuerpo === 'string') {
+      primerTexto = dest.cuerpo;
     }
-    var textoLimpio = primerTexto.replace(/<[^>]*>?/gm, '').trim();
-    if (textoLimpio.length > 210) {
-      textoLimpio = textoLimpio.substring(0, 210) + '...';
+    var textoLimpio = stripMarkdown(String(primerTexto).replace(/<[^>]*>?/gm, '')).trim();
+    if (textoLimpio.length > 185) {
+      textoLimpio = textoLimpio.substring(0, 185).trim() + '...';
     }
 
     main.innerHTML =
-      '<article class="np-hero-article" data-noticia="' + esc(dest.id) + '" tabindex="0" role="button" aria-label="Leer: ' + esc(dest.titulo) + '">' +
-        '<div class="np-kicker-bar">' +
-          '<span class="np-kicker-label"><i class="fas fa-star"></i> CRÓNICA PRINCIPAL</span>' +
-          '<span class="np-kicker-dot">•</span>' +
-          '<span class="np-kicker-cat">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
-          '<span class="np-kicker-dot">•</span>' +
-          '<span class="np-kicker-grade"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(dest.grado)) + '</span>' +
+      '<article class="fb-hero-card" data-noticia="' + esc(dest.id) + '" tabindex="0" role="button" aria-label="Leer: ' + esc(dest.titulo) + '">' +
+        '<div class="fb-hero-top">' +
+          '<span class="fb-hero-badge">🌟 ¡HISTORIA ESTRELLA!</span>' +
+          '<span class="fb-hero-cat">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
+          '<span class="fb-hero-grade">🎓 ' + esc(nombreGrado(dest.grado)) + '</span>' +
         '</div>' +
-        '<h2 class="np-hero-headline">' + esc(dest.titulo) + '</h2>' +
-        '<div class="np-hero-byline">' +
-          '<span class="np-byline-item"><i class="fas fa-pen-nib"></i> Por Redacción Alumnos Paulo Freire</span>' +
-          '<span class="np-byline-sep">|</span>' +
-          '<span class="np-byline-item"><i class="far fa-calendar-alt"></i> ' + esc(fechaLarga(dest.fecha) || fechaRelativa(dest.fecha)) + '</span>' +
-          '<span class="np-byline-sep">|</span>' +
-          '<span class="np-byline-item"><i class="far fa-clock"></i> Lectura 2 min</span>' +
+        '<div class="fb-hero-media">' +
+          '<img class="fb-hero-img" src="' + esc(dest.imagen || 'img/bienvenida_taller.jpg') + '" alt="' + esc(dest.titulo) + '" loading="eager" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
+          '<span class="fb-hero-sticker">🤖 ¡Tocá para abrir en la micro:bit!</span>' +
         '</div>' +
-        (dest.bajada ? '<div class="np-hero-deck">' + esc(dest.bajada) + '</div>' : '') +
-        '<div class="np-hero-media">' +
-          '<div class="np-photo-box">' +
-            '<img class="np-hero-img" src="' + esc(dest.imagen) + '" alt="' + esc(dest.titulo) + '" loading="eager">' +
+        '<div class="fb-hero-body">' +
+          '<h2 class="fb-hero-title">' + esc(dest.titulo) + '</h2>' +
+          '<div class="fb-hero-bubble">' +
+            '<div class="fb-hero-bot-avatar" aria-hidden="true">🤖</div>' +
+            '<div class="fb-hero-speech"><p>' + esc(textoLimpio || '¡Descubrí esta aventura del taller!') + '</p></div>' +
           '</div>' +
-          '<div class="np-photo-caption">' +
-            '<strong>GRABADO OFICIAL:</strong> Momento cumbre de experimentación en los talleres del colegio. ' +
-            '<span class="np-caption-credit">— Archivo Periodístico Freire</span>' +
+          '<div class="fb-hero-foot">' +
+            '<span class="fb-hero-date">🕒 ' + esc(fechaLarga(dest.fecha) || fechaRelativa(dest.fecha)) + '</span>' +
+            '<span class="fb-hero-cta">🚀 ¡Leer Historia Completa!</span>' +
           '</div>' +
-        '</div>' +
-        '<div class="np-hero-prose">' +
-          '<p class="np-dropcap-p">' + esc(textoLimpio) + '</p>' +
-        '</div>' +
-        '<div class="np-hero-footer">' +
-          '<span class="np-read-link">CONTINÚA LEYENDO LA NOTA COMPLETA <i class="fas fa-arrow-right"></i></span>' +
-          '<span class="np-page-ref">[ Véase en Pág. 02 ]</span>' +
         '</div>' +
       '</article>';
 
-    // 2. Columna lateral (Despachos y crónicas breves del día)
+    // 2. Columna lateral: más aventuras del taller
     var otras = noticias.filter(function (n) { return n !== dest; }).slice(0, 3);
-    var romanos = ['I', 'II', 'III'];
 
     side.innerHTML =
-      '<div class="np-side-header">' +
-        '<div class="np-side-rule-top"></div>' +
-        '<h3 class="np-side-title"><i class="fas fa-feather-alt"></i> DESPACHOS DEL DÍA</h3>' +
-        '<div class="np-side-subtitle">NOVEDADES DESTACADAS DE OTROS GRADOS</div>' +
-        '<div class="np-side-rule-btm"></div>' +
+      '<div class="fb-side-head">' +
+        '<h3 class="fb-side-title">⚡ ¡MÁS AVENTURAS DEL TALLER!</h3>' +
+        '<p class="fb-side-sub">Tocá cualquier tarjeta para abrirla en la placa micro:bit</p>' +
       '</div>' +
-      '<div class="np-side-list">' +
-        otras.map(function (n, idx) {
-          var nCat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper' };
-          return '<article class="np-side-article" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
-            '<div class="np-side-meta">' +
-              '<span class="np-side-badge">DESPACHO Nº ' + (romanos[idx] || (idx + 1)) + '</span>' +
-              '<span class="np-side-grade">' + esc(nombreGrado(n.grado)) + '</span>' +
+      '<div class="fb-side-list">' +
+        otras.map(function (n) {
+          return '<article class="fb-side-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button" aria-label="Leer: ' + esc(n.titulo) + '">' +
+            '<div class="fb-side-thumb">' +
+              '<img src="' + esc(n.imagen || 'img/bienvenida_taller.jpg') + '" alt="" loading="lazy" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
             '</div>' +
-            '<h4 class="np-side-headline">' + esc(n.titulo) + '</h4>' +
-            '<div class="np-side-columns">' +
-              '<div class="np-side-thumb-box">' +
-                '<img src="' + esc(n.imagen) + '" alt="" loading="lazy">' +
+            '<div class="fb-side-info">' +
+              '<div class="fb-side-meta">' +
+                '<span class="fb-side-grade">🎓 ' + esc(nombreGrado(n.grado)) + '</span>' +
+                '<span class="fb-side-date">🕒 ' + esc(fechaRelativa(n.fecha)) + '</span>' +
               '</div>' +
-              '<p class="np-side-desc">' + esc(n.bajada || '') + '</p>' +
-            '</div>' +
-            '<div class="np-side-footer">' +
-              '<span class="np-side-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
-              '<span class="np-side-action">LEER DESPACHO ➔</span>' +
+              '<h4 class="fb-side-card-title">' + esc(n.titulo) + '</h4>' +
+              '<div class="fb-side-foot">' +
+                '<span class="fb-side-btn">¡Ver! ➔</span>' +
+              '</div>' +
             '</div>' +
           '</article>';
         }).join('') +
@@ -3625,9 +3609,12 @@
       if (sel) sel.value = gradoFiltro;
     }
 
+    var fillEl = document.getElementById('hn-valija-meter-fill');
+
     var items = (C.valijaMaker || (window.HOME_CONTENT && window.HOME_CONTENT.valijaMaker) || []);
     if (!items.length) {
-      grid.innerHTML = '<p style="color:#786C5E;font-size:0.9rem;grid-column:1/-1;">No hay materiales programados para esta semana.</p>';
+      grid.innerHTML = '<p style="color:#475569;font-size:0.95rem;grid-column:1/-1;font-weight:600;">🎒 No hay materiales programados para esta semana.</p>';
+      if (fillEl) { fillEl.style.width = '0%'; fillEl.classList.remove('is-complete'); }
       return;
     }
 
@@ -3639,12 +3626,13 @@
     });
 
     if (!filtrados.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;padding:16px;text-align:center;color:#786C5E;background:#FFF;border-radius:6px;border:1px dashed #D5C9B1;">' +
-        '<i class="fas fa-check-circle" style="color:#16A34A;font-size:1.4rem;margin-bottom:6px;display:block;"></i>' +
-        '<strong>¡Todo listo para este grupo!</strong> No se requieren materiales adicionales de casa para la próxima clase.' +
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:18px;text-align:center;color:#15803D;background:#F0FDF4;border-radius:14px;border:2px dashed #86EFAC;">' +
+        '<span style="font-size:1.6rem;display:block;margin-bottom:6px;">🎉</span>' +
+        '<strong>¡Todo listo para este grupo!</strong> No necesitás traer materiales extra de casa para la próxima clase.' +
       '</div>';
       var elProg0 = document.getElementById('hn-valija-progress-info');
-      if (elProg0) elProg0.innerHTML = '<i class="fas fa-check-circle"></i> <span>Sin pedidos pendientes para este grado</span>';
+      if (elProg0) elProg0.innerHTML = '<span>✅ ¡Sin pedidos pendientes para este grado! ⭐</span>';
+      if (fillEl) { fillEl.style.width = '100%'; fillEl.classList.add('is-complete'); }
       return;
     }
 
@@ -3672,7 +3660,7 @@
           '<p class="np-valija-card-detail">' + esc(m.detalle) + '</p>' +
           (m.uso ? '<div class="np-valija-card-uso"><i class="fas fa-wrench"></i> <strong>Para qué se usa:</strong> ' + esc(m.uso) + '</div>' : '') +
           '<div class="np-valija-card-status-text">' +
-            '<i class="fas fa-check-circle"></i> <span>' + (isChecked ? '¡Listo en la mochila!' : 'Tocar para marcar como listo') + '</span>' +
+            '<span>' + (isChecked ? '✅ ¡Guardado en mi mochila!' : '👆 ¡Tocá cuando lo tengas listo!') + '</span>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -3680,12 +3668,23 @@
 
     grid.innerHTML = html;
 
+    var pct = total > 0 ? Math.round((listos / total) * 100) : 0;
+    var completa = total > 0 && listos === total;
+    if (fillEl) {
+      fillEl.style.width = pct + '%';
+      if (completa) {
+        fillEl.classList.add('is-complete');
+      } else {
+        fillEl.classList.remove('is-complete');
+      }
+    }
+
     var elProgress = document.getElementById('hn-valija-progress-info');
     if (elProgress) {
-      if (total > 0 && listos === total) {
-        elProgress.innerHTML = '<i class="fas fa-check-double" style="color:#16A34A;"></i> <strong style="color:#15803D;">' + listos + ' de ' + total + ' materiales listos 🎉 ¡Mochila completa!</strong>';
+      if (completa) {
+        elProgress.innerHTML = '<strong style="color:#15803D;">🎉 ¡Mochila 100% completa! ¡Sos un/a crack! ⭐</strong>';
       } else {
-        elProgress.innerHTML = '<i class="fas fa-clipboard-check"></i> <span>' + listos + ' de ' + total + ' materiales listos en la mochila</span>';
+        elProgress.innerHTML = '<span>🎒 ' + listos + ' de ' + total + ' materiales en tu mochila (' + pct + '%)</span>';
       }
     }
   }
