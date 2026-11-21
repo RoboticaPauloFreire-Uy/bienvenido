@@ -1668,6 +1668,65 @@
     var elBtnGameInfo = document.getElementById('arcade-btn-game-info');
     var elBtnParentInfo = document.getElementById('arcade-btn-parent-info');
 
+    function openBrowserProtocolModal(url, title) {
+      var isEdge = /^edge:\/\//i.test(url);
+      var browserName = isEdge ? 'Microsoft Edge' : 'Google Chrome';
+      var browserIcon = isEdge ? '🌊' : '🦖';
+      var modal = document.getElementById('arcade-protocol-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'arcade-protocol-modal';
+        modal.className = 'arcade-parent-modal-backdrop';
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML =
+        '<div class="arcade-parent-modal-card" role="dialog" aria-modal="true" style="max-width:480px;">' +
+          '<div class="apm-modal-head">' +
+            '<div class="apm-modal-head-left">' +
+              '<span class="apm-modal-badge" style="background:#FEF3C7;color:#B45309;border-color:#FCD34D;"><i class="fas fa-exclamation-triangle"></i> Advertencia de Navegador</span>' +
+              '<h3>' + browserIcon + ' ' + esc(title || 'Juego del Navegador') + '</h3>' +
+            '</div>' +
+            '<button type="button" class="apm-modal-close" aria-label="Cerrar">&times;</button>' +
+          '</div>' +
+          '<div class="apm-modal-body">' +
+            '<div class="apm-info-box" style="background:#FFFBEB;border:2px solid #F59E0B;">' +
+              '<h4 style="color:#B45309;"><i class="fas fa-info-circle"></i> Este juego se ejecuta únicamente en ' + esc(browserName) + '</h4>' +
+              '<p>Por seguridad de los navegadores, los enlaces internos como <code>' + esc(url) + '</code> no se pueden abrir directo con un clic desde una página web.</p>' +
+              '<p style="margin-top:8px;"><strong>¿Cómo jugarlo?</strong> Abrí <strong>' + esc(browserName) + '</strong>, pegá <code>' + esc(url) + '</code> en la barra de direcciones arriba y presioná <strong>Enter</strong>.</p>' +
+            '</div>' +
+            '<p id="apm-proto-copied-msg" style="display:none;margin-top:10px;color:#059669;font-weight:800;text-align:center;">✅ ¡Dirección copiada! Pegala en ' + esc(browserName) + '.</p>' +
+          '</div>' +
+          '<div class="apm-modal-foot">' +
+            '<button type="button" class="apm-modal-btn-sec">Cerrar</button>' +
+            '<button type="button" id="apm-proto-copy-btn" class="apm-modal-btn-play" style="border:none;cursor:pointer;">' +
+              '<i class="fas fa-copy"></i> Copiar ' + esc(url) +
+            '</button>' +
+          '</div>' +
+        '</div>';
+
+      modal.style.display = 'flex';
+      var closeFn = function () { modal.style.display = 'none'; };
+      modal.querySelector('.apm-modal-close').onclick = closeFn;
+      modal.querySelector('.apm-modal-btn-sec').onclick = closeFn;
+      modal.onclick = function (e) { if (e.target === modal) closeFn(); };
+      var copyBtn = document.getElementById('apm-proto-copy-btn');
+      var copiedMsg = document.getElementById('apm-proto-copied-msg');
+      if (copyBtn) {
+        copyBtn.onclick = function () {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function () {
+              if (copiedMsg) copiedMsg.style.display = 'block';
+            }).catch(function () {
+              if (copiedMsg) copiedMsg.style.display = 'block';
+            });
+          } else {
+            if (copiedMsg) copiedMsg.style.display = 'block';
+          }
+        };
+      }
+    }
+
     function openArcadeInfoModal(m, mode) {
       if (!m || !m.gm) return;
       var gm = m.gm;
@@ -1742,6 +1801,28 @@
       modal.querySelector('.apm-modal-close').onclick = closeFn;
       modal.querySelector('.apm-modal-btn-sec').onclick = closeFn;
       modal.onclick = function (e) { if (e.target === modal) closeFn(); };
+      var modalPlayBtn = modal.querySelector('.apm-modal-btn-play');
+      if (modalPlayBtn) {
+        modalPlayBtn.onclick = function (e) {
+          if (/^(chrome|edge):\/\//i.test(m.url || '')) {
+            e.preventDefault();
+            closeFn();
+            openBrowserProtocolModal(m.url, gm.title);
+          }
+        };
+      }
+    }
+
+    if (elPlay) {
+      elPlay.addEventListener('click', function (e) {
+        var cur = items[activeIdx];
+        if (!cur) return;
+        var m = getItemMeta(cur);
+        if (/^(chrome|edge):\/\//i.test(m.url || '')) {
+          e.preventDefault();
+          openBrowserProtocolModal(m.url, m.gm && m.gm.title);
+        }
+      });
     }
 
     if (elBtnGameInfo) {
