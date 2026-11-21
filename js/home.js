@@ -2859,7 +2859,7 @@
           '</a>';
         }).join('') + '</div>' : '';
 
-    // Construir pestañas sin scroll para el lector micro:bit
+    // Construir páginas sin scroll para el lector micro:bit
     var readerTabs = [];
     var paras = Array.isArray(n.cuerpo) ? n.cuerpo.slice() : (n.cuerpo ? [n.cuerpo] : []);
     if (n.bajada && (!paras.length || paras[0] !== n.bajada)) {
@@ -2868,16 +2868,16 @@
 
     var chunk = [];
     var chunkLen = 0;
-    var partNum = 1;
+    var pageNum = 1;
     paras.forEach(function (pr) {
       var s = String(pr || '').trim();
       if (!s) return;
-      if (chunk.length && chunkLen + s.length > 360) {
+      if (chunk.length && chunkLen + s.length > 320) {
         readerTabs.push({
-          label: partNum === 1 ? '📖 Resumen' : ('📖 Parte ' + partNum),
+          label: '📄 Página ' + pageNum,
           html: '<div class="hn-reader-body-text">' + formatMarkdown(chunk.join('\n\n')) + '</div>'
         });
-        partNum++;
+        pageNum++;
         chunk = [s];
         chunkLen = s.length;
       } else {
@@ -2887,21 +2887,21 @@
     });
     if (chunk.length) {
       readerTabs.push({
-        label: partNum === 1 ? '📖 Historia' : ('📖 Parte ' + partNum),
+        label: '📄 Página ' + pageNum,
         html: '<div class="hn-reader-body-text">' + formatMarkdown(chunk.join('\n\n')) + '</div>'
       });
     }
     if (specsHtml) {
-      readerTabs.push({ label: '⚡ Datos Clave', html: specsHtml });
+      readerTabs.push({ label: '⚡ Datos', html: specsHtml });
     }
     if (galeria) {
-      readerTabs.push({ label: '🖼️ Galería', html: galeria });
+      readerTabs.push({ label: '🖼️ Fotos', html: galeria });
     }
     if (links) {
       readerTabs.push({ label: '🔗 Enlaces', html: links });
     }
     if (!readerTabs.length) {
-      readerTabs.push({ label: '📖 Historia', html: '<p>Sin contenido adicional.</p>' });
+      readerTabs.push({ label: '📄 Página 1', html: '<p>Sin contenido adicional.</p>' });
     }
 
     var mbTabsNav = readerTabs.length > 1
@@ -2920,11 +2920,13 @@
       '</div>';
 
     readerBody.innerHTML =
+      '<div class="mb-reader-top-header">' +
+        chipsHtml +
+        '<h2 id="hn-reader-title" class="hn-reader-headline">' + esc(n.titulo) + '</h2>' +
+      '</div>' +
       '<div class="mb-reader-grid">' +
         '<div class="mb-reader-left">' +
           coverHtml +
-          chipsHtml +
-          '<h2 id="hn-reader-title" class="hn-reader-headline">' + esc(n.titulo) + '</h2>' +
         '</div>' +
         '<div class="mb-reader-right">' +
           mbTabsNav +
@@ -4167,6 +4169,18 @@
           return rn.id === bn.id || (rn.titulo && bn.titulo && rn.titulo.trim().toLowerCase() === bn.titulo.trim().toLowerCase());
         }) && deletedIdsList.indexOf(bn.id) === -1;
       }));
+
+      // Adaptar bienvenida del portal a lenguaje amigable para niños con emoticones
+      mergedNews.forEach(function (item) {
+        if (/bienvenidos al nuevo portal digital del taller/i.test(item.titulo || '')) {
+          item.bajada = '🤖✨ ¡Hola chicos! Estrenamos nuestra nueva página del Taller de Robótica y Programación para jugar, crear y compartir tus inventos.';
+          item.cuerpo = [
+            '🎉 **¡Qué alegría tenerte acá!** Este espacio es tuyo para que explores todo lo que hacemos en el cole: robots, videojuegos, inteligencia artificial y proyectos súper divertidos. 🚀',
+            '🕹️ **¿Qué podés hacer en el portal?**\n- **Juegos:** Girá la Ruleta Arcade y probá desafíos de programación.\n- **En Clase y En Casa:** Descubrí misiones nuevas con viñetas de historieta.\n- **El Muro:** Mirá las fotos y videos de tus amigos en el taller. 📸🎬',
+            '💡 **¡Manos a la obra!** Entrá con tu usuario y PIN para ver tus archivos, subir tus creaciones y mostrarle a tu familia todo lo que sabés hacer. 🌟'
+          ];
+        }
+      });
 
       C.noticias = mergedNews;
 

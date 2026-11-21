@@ -42778,26 +42778,45 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   max-height: none !important;
 }
 
+.mb-reader-top-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1.5px solid #E2E8F0;
+  background: #F8FAFC;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mb-reader-top-header .hn-reader-chips-bar {
+  margin: 0 !important;
+}
+
+.mb-reader-top-header .hn-reader-headline {
+  margin: 0 !important;
+  font-size: 1.38rem !important;
+  line-height: 1.25 !important;
+  color: #0F172A;
+}
+
 .mb-reader-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   gap: 18px;
-  padding: 16px;
+  padding: 14px 18px 16px;
   align-items: stretch;
 }
 
 .mb-reader-left {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: center;
 }
 
 .mb-reader-left .hn-reader-cover {
   margin: 0 !important;
   border-radius: 14px;
   overflow: hidden;
-  aspect-ratio: 16 / 9;
-  max-height: 230px;
+  height: 280px;
 }
 
 .mb-reader-left .hn-reader-cover img {
@@ -42806,25 +42825,22 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   object-fit: cover;
 }
 
-.mb-reader-left .hn-reader-headline {
-  margin: 0 !important;
-  font-size: 1.32rem !important;
-  line-height: 1.25 !important;
-}
-
 .mb-reader-right {
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-width: 0;
+  height: 280px;
 }
 
 .mb-reader-tabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 6px;
   padding-bottom: 8px;
   border-bottom: 1.5px solid #E2E8F0;
+  flex-shrink: 0;
 }
 
 .mb-reader-tab-btn {
@@ -42832,10 +42848,12 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   color: #334155;
   border: 1.5px solid #CBD5E1;
   border-radius: 999px;
-  padding: 6px 13px;
-  font-size: 0.82rem;
+  padding: 5px 12px;
+  font-size: 0.78rem;
   font-weight: 800;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
@@ -42852,6 +42870,10 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 
 .mb-reader-panes {
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .mb-reader-pane {
@@ -42860,6 +42882,11 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 
 .mb-reader-pane.active {
   display: block;
+}
+
+.mb-reader-pane .hn-reader-body-text {
+  font-size: 0.96rem !important;
+  line-height: 1.52 !important;
 }
 
 .mb-reader-right .hn-reader-footer-bar {
