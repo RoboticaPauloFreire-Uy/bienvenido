@@ -42924,6 +42924,168 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   color: #0F172A;
 }
 
+/* ── Marquesina Presentación (Tapa de Revista Kids / Gamer) ── */
+.fb-kids-masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 2px 4px 12px;
+  margin-bottom: 14px;
+  border-bottom: 2px dashed #CBD5E1;
+}
+
+.fb-km-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.fb-km-crest-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.fb-km-crest {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  background: #FFFFFF;
+  padding: 5px;
+  border-radius: 15px;
+  border: 2.5px solid #FBBF24;
+  box-shadow: 0 4px 0 #D97706, 0 8px 16px rgba(217, 119, 6, 0.16);
+}
+
+.fb-km-crest-tag {
+  margin-top: -8px;
+  background: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+  color: #FFFFFF;
+  font-size: 0.58rem;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1.5px solid #FFFFFF;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.2);
+}
+
+.fb-km-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fb-km-kicker {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #2563EB;
+  text-transform: uppercase;
+}
+
+.fb-km-title {
+  margin: 0;
+  font-size: clamp(1.18rem, 2.05vw, 1.65rem);
+  font-weight: 900;
+  color: #0F172A;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.km-word-robo,
+.km-word-prog {
+  display: inline-block;
+  padding: 2px 11px 3px;
+  border-radius: 12px;
+  color: #FFFFFF;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.km-word-robo {
+  background: linear-gradient(135deg, #0EA5E9 0%, #2563EB 100%);
+  box-shadow: 0 4px 0 #1E3A8A;
+  transform: rotate(-1.5deg);
+}
+
+.km-word-prog {
+  background: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+  box-shadow: 0 4px 0 #9A3412;
+  transform: rotate(1deg);
+}
+
+.fb-km-stickers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fb-km-sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  border: 2px solid transparent;
+  transition: transform 0.16s ease;
+  user-select: none;
+}
+
+.fb-km-sticker:hover {
+  transform: translateY(-2px) rotate(0deg) scale(1.04);
+}
+
+.fb-km-sticker.st-robo {
+  background: #FFF1F2;
+  color: #BE123C;
+  border-color: #FDA4AF;
+  box-shadow: 0 3px 0 #FB7185;
+  transform: rotate(-2deg);
+}
+
+.fb-km-sticker.st-game {
+  background: #FAF5FF;
+  color: #7E22CE;
+  border-color: #D8B4FE;
+  box-shadow: 0 3px 0 #C084FC;
+  transform: rotate(1.5deg);
+}
+
+.fb-km-sticker.st-maker {
+  background: #ECFDF5;
+  color: #047857;
+  border-color: #6EE7B7;
+  box-shadow: 0 3px 0 #34D399;
+  transform: rotate(-1deg);
+}
+
+@media (max-width: 720px) {
+  .fb-kids-masthead {
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+  .fb-km-crest {
+    width: 46px;
+    height: 46px;
+  }
+  .fb-km-stickers {
+    width: 100%;
+  }
+}
+
 /* ── Vitrina Visual Superior (4 Tarjetas con Foto) ── */
 .fb-vitrina-wrap {
   margin: 0;
