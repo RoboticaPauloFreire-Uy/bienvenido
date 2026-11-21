@@ -736,8 +736,29 @@
   function renderActividades() {
     var todas = C.actividades || [];
     var clase = todas.filter(function (a) { return seccionDe(a) === 'clase' && pasaGrado(a); });
-    var casa = todas.filter(function (a) {
-      if (seccionDe(a) !== 'casa' || !pasaGrado(a)) return false;
+    var casaPorGrado = todas.filter(function (a) { return seccionDe(a) === 'casa' && pasaGrado(a); });
+    var st = alumno();
+    var miGrado = st && st.gradeId;
+
+    // Ordenar casaPorGrado para elegir la Misión Estrella de la Semana (#1)
+    var casaOrdenada = casaPorGrado.map(function (a) {
+      var gr = a.grados || ['todos'];
+      return { a: a, estado: estadoActividad(a), mia: !!(miGrado && gr.indexOf(miGrado) > -1) };
+    }).sort(function (x, y) {
+      var fX = obtenerFechaActividad(x.a);
+      var fY = obtenerFechaActividad(y.a);
+      if (fY !== fX) return fY - fX;
+      if (x.mia !== y.mia) return x.mia ? -1 : 1;
+      var ex = ORDEN_ESTADO[x.estado.clave] - ORDEN_ESTADO[y.estado.clave];
+      if (ex) return ex;
+      return String(y.a.id || '').localeCompare(String(x.a.id || ''));
+    });
+
+    var estrellaItem = (casaOrdenada.length > 1) ? casaOrdenada[0] : null;
+    renderCasaFeaturedHero(estrellaItem);
+
+    var casa = casaPorGrado.filter(function (a) {
+      if (estrellaItem && filtroCasa === 'todas' && a.id === estrellaItem.a.id) return false;
       if (filtroCasa === 'todas') return true;
       var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
       if (filtroCasa === 'maker') return !isJuego;
@@ -747,6 +768,122 @@
 
     renderGridActividades('hn-act-grid-clase', clase, '🏫', 'No hay actividades de clase para este grado.');
     renderGridActividades('hn-act-grid-casa', casa, '🏠', 'No hay desafíos en casa para este filtro.');
+  }
+
+  function renderCasaFeaturedHero(it) {
+    var cont = document.getElementById('hn-casa-featured');
+    if (!cont) return;
+    if (!it || !it.a) {
+      cont.innerHTML = '';
+      cont.style.display = 'none';
+      return;
+    }
+    cont.style.display = 'block';
+    var a = it.a;
+    var gr = a.grados || ['todos'];
+    var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
+    var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
+    var isMaker = a.modalidad === 'maker' || !isJuego;
+    var catBadge = isMaker ? '🛠️ Misión Maker' : '🎲 Juego en Familia';
+    var matIcon = isMaker ? '🧰' : '📱';
+    var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
+    var cardTypeCls = isMaker ? 'is-maker' : 'is-juego';
+    var heroImg = a.imagen
+      ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="casa-hero-img" loading="lazy" onerror="this.style.display=\'none\'">'
+      : '<div class="casa-hero-emoji">' + esc(a.icono || '⭐') + '</div>';
+
+    var botones = (a.botones || []).map(function (b, bi) {
+      var cls = 'hn-act-btn' + (b.principal ? ' primary' : '');
+      var icon = b.icono ? '<i class="' + esc(b.icono) + '"></i> ' : '';
+      if (b.imagenModal) {
+        return '<button type="button" class="' + cls + '" data-featured-btn="' + bi + '">' + icon + esc(b.texto) + '</button>';
+      }
+      var ext = /^https?:/i.test(b.url || '');
+      return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
+    }).join('');
+
+    cont.innerHTML =
+      '<article class="casa-featured-hero ' + cardTypeCls + '">' +
+        '<div class="casa-hero-media">' +
+          heroImg +
+          '<span class="casa-hero-star"><i class="fas fa-star"></i> MISIÓN ESTRELLA DE LA SEMANA</span>' +
+        '</div>' +
+        '<div class="casa-hero-body">' +
+          '<div class="casa-hero-pills">' +
+            '<span class="casa-pill-cat">' + catBadge + '</span>' +
+            '<span class="casa-pill-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
+            (it.mia ? '<span class="casa-pill-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
+          '</div>' +
+          '<h3 class="casa-hero-title">' + esc(a.titulo) + '</h3>' +
+          '<p class="casa-hero-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
+          '<div class="casa-mat-pill"><span>' + matIcon + '</span> <strong>Necesitás:</strong> ' + esc(matText) + '</div>' +
+          '<div class="casa-hero-actions">' +
+            botones +
+            '<button type="button" class="casa-btn-detail" id="casa-featured-detail-btn"><i class="fas fa-info-circle"></i> Ver detalle</button>' +
+          '</div>' +
+        '</div>' +
+      '</article>';
+
+    cont.querySelectorAll('button[data-featured-btn]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var b = a.botones[+btn.dataset.featuredBtn];
+        if (!b) return;
+        if (window.openImageModal) window.openImageModal(b.imagenModal, a.titulo, b.descarga);
+        else window.open(b.imagenModal, '_blank', 'noopener');
+      });
+    });
+
+    var detBtn = document.getElementById('casa-featured-detail-btn');
+    if (detBtn) {
+      detBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openCasaDetailModal(a);
+      });
+    }
+  }
+
+  function openCasaDetailModal(a) {
+    if (!a) return;
+    var isJ = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
+    var matT = a.materiales || (!isJ ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
+    var grL = (a.grados && a.grados.indexOf('todos') === -1) ? a.grados.map(nombreGrado).join(' · ') : 'Todos los grados';
+    var modal = document.getElementById('arcade-parent-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'arcade-parent-modal';
+      modal.className = 'arcade-parent-modal-backdrop';
+      document.body.appendChild(modal);
+    }
+    var btnsHtml = (a.botones || []).map(function (b) {
+      if (b.imagenModal) return '';
+      var ext = /^https?:/i.test(b.url || '');
+      return '<a href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + ' class="apm-modal-btn-play">' + (b.icono ? '<i class="' + esc(b.icono) + '"></i> ' : '') + esc(b.texto) + '</a>';
+    }).join('');
+    modal.innerHTML =
+      '<div class="arcade-parent-modal-card" role="dialog" aria-modal="true">' +
+        '<div class="apm-modal-head">' +
+          '<div class="apm-modal-head-left">' +
+            '<span class="apm-modal-badge">' + (isJ ? '🎲 Juego en Familia' : '🛠️ Misión Maker en Casa') + ' · ' + esc(grL) + '</span>' +
+            '<h3>' + esc(a.titulo) + '</h3>' +
+          '</div>' +
+          '<button type="button" class="apm-modal-close" aria-label="Cerrar">&times;</button>' +
+        '</div>' +
+        '<div class="apm-modal-body">' +
+          (a.imagen ? '<img src="' + esc(a.imagen) + '" alt="" style="width:100%;max-height:220px;object-fit:cover;border-radius:14px;border:2px solid #E2E8F0;" onerror="this.style.display=\'none\'">' : '') +
+          '<div class="apm-info-box"><h4><i class="fas fa-rocket"></i> ¿Qué hay que hacer?</h4><p>' + esc(stripMarkdown(a.descripcion || '')) + '</p></div>' +
+          '<div class="apm-info-box is-benefits"><h4><i class="fas fa-toolbox"></i> ¿Qué necesitás?</h4><p>' + esc(matT) + '</p></div>' +
+        '</div>' +
+        '<div class="apm-modal-foot">' +
+          '<button type="button" class="apm-modal-btn-sec">Cerrar</button>' +
+          btnsHtml +
+        '</div>' +
+      '</div>';
+    modal.style.display = 'flex';
+    var closeFn = function () { modal.style.display = 'none'; };
+    modal.querySelector('.apm-modal-close').onclick = closeFn;
+    modal.querySelector('.apm-modal-btn-sec').onclick = closeFn;
+    modal.onclick = function (ev) { if (ev.target === modal) closeFn(); };
   }
 
   /* ───────────── Modal Estilo Periódico (Actividades de Clase) ───────────── */
@@ -1046,42 +1183,15 @@
         return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
       }).join('');
 
-      // ── CASO CASA: MISIONES MAKER MODERNAS + BANNER ESTRELLA ──
+      // ── CASO CASA: CARTAS MISIONES MAKER ──
       if (isCasa) {
         var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
         var isMaker = a.modalidad === 'maker' || !isJuego;
-        var isFeaturedHero = (curPage === 1 && pageIdx === 0 && lista.length > 1);
         var catBadge = isMaker ? '🛠️ Misión Maker' : '🎲 Juego en Familia';
         var diffBadge = isMaker ? '⭐⭐ Desafío Creativo' : '⭐ Reto Familiar';
         var matIcon = isMaker ? '🧰' : '📱';
         var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
         var cardTypeCls = isMaker ? 'is-maker' : 'is-juego';
-        var heroImg = a.imagen
-          ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="casa-hero-img" loading="lazy" onerror="this.style.display=\'none\'">'
-          : '<div class="casa-hero-emoji">' + esc(a.icono || '⭐') + '</div>';
-
-        if (isFeaturedHero) {
-          return '<article class="casa-featured-hero ' + cardTypeCls + '">' +
-            '<div class="casa-hero-media">' +
-              heroImg +
-              '<span class="casa-hero-star"><i class="fas fa-star"></i> MISIÓN ESTRELLA DE LA SEMANA</span>' +
-            '</div>' +
-            '<div class="casa-hero-body">' +
-              '<div class="casa-hero-pills">' +
-                '<span class="casa-pill-cat">' + catBadge + '</span>' +
-                '<span class="casa-pill-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
-                (it.mia ? '<span class="casa-pill-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
-              '</div>' +
-              '<h3 class="casa-hero-title">' + esc(a.titulo) + '</h3>' +
-              '<p class="casa-hero-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
-              '<div class="casa-mat-pill"><span>' + matIcon + '</span> <strong>Necesitás:</strong> ' + esc(matText) + '</div>' +
-              '<div class="casa-hero-actions">' +
-                (botones || '<span class="casa-pill-diff">' + diffBadge + '</span>') +
-                '<button type="button" class="casa-btn-detail" data-casa-detail="' + idx + '"><i class="fas fa-info-circle"></i> Ver detalle</button>' +
-              '</div>' +
-            '</div>' +
-          '</article>';
-        }
 
         return '<article class="casa-mission-card ' + cardTypeCls + (it.mia ? ' es-mia' : '') + '">' +
           '<div class="casa-card-top">' +
@@ -1171,47 +1281,7 @@
         btn.addEventListener('click', function (e) {
           e.stopPropagation();
           var it = lista[+btn.dataset.casaDetail];
-          if (!it || !it.a) return;
-          var a = it.a;
-          var isJ = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
-          var matT = a.materiales || (!isJ ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
-          var grL = (a.grados && a.grados.indexOf('todos') === -1) ? a.grados.map(nombreGrado).join(' · ') : 'Todos los grados';
-          var modal = document.getElementById('arcade-parent-modal');
-          if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'arcade-parent-modal';
-            modal.className = 'arcade-parent-modal-backdrop';
-            document.body.appendChild(modal);
-          }
-          var btnsHtml = (a.botones || []).map(function (b) {
-            if (b.imagenModal) return '';
-            var ext = /^https?:/i.test(b.url || '');
-            return '<a href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + ' class="apm-modal-btn-play">' + (b.icono ? '<i class="' + esc(b.icono) + '"></i> ' : '') + esc(b.texto) + '</a>';
-          }).join('');
-          modal.innerHTML =
-            '<div class="arcade-parent-modal-card" role="dialog" aria-modal="true">' +
-              '<div class="apm-modal-head">' +
-                '<div class="apm-modal-head-left">' +
-                  '<span class="apm-modal-badge">' + (isJ ? '🎲 Juego en Familia' : '🛠️ Misión Maker en Casa') + ' · ' + esc(grL) + '</span>' +
-                  '<h3>' + esc(a.titulo) + '</h3>' +
-                '</div>' +
-                '<button type="button" class="apm-modal-close" aria-label="Cerrar">&times;</button>' +
-              '</div>' +
-              '<div class="apm-modal-body">' +
-                (a.imagen ? '<img src="' + esc(a.imagen) + '" alt="" style="width:100%;max-height:220px;object-fit:cover;border-radius:14px;border:2px solid #E2E8F0;" onerror="this.style.display=\'none\'">' : '') +
-                '<div class="apm-info-box"><h4><i class="fas fa-rocket"></i> ¿Qué hay que hacer?</h4><p>' + esc(stripMarkdown(a.descripcion || '')) + '</p></div>' +
-                '<div class="apm-info-box is-benefits"><h4><i class="fas fa-toolbox"></i> ¿Qué necesitás?</h4><p>' + esc(matT) + '</p></div>' +
-              '</div>' +
-              '<div class="apm-modal-foot">' +
-                '<button type="button" class="apm-modal-btn-sec">Cerrar</button>' +
-                btnsHtml +
-              '</div>' +
-            '</div>';
-          modal.style.display = 'flex';
-          var closeFn = function () { modal.style.display = 'none'; };
-          modal.querySelector('.apm-modal-close').onclick = closeFn;
-          modal.querySelector('.apm-modal-btn-sec').onclick = closeFn;
-          modal.onclick = function (ev) { if (ev.target === modal) closeFn(); };
+          if (it && it.a) openCasaDetailModal(it.a);
         });
       });
     }

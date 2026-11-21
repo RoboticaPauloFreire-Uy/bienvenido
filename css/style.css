@@ -40885,6 +40885,10 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   margin-top: 24px !important;
 }
 
+.casa-featured-slot {
+  margin-bottom: 18px;
+}
+
 .casa-featured-hero {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, #1E1B4B 0%, #312E81 55%, #4C1D95 100%);
