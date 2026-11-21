@@ -1183,24 +1183,26 @@
         return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
       }).join('');
 
-      // ── CASO CASA: CARTAS COLECCIONABLES ESTILO POKÉMON ──
+      // ── CASO CASA: CARTAS COLECCIONABLES ESTILO POKÉMON TERACRISTAL EX ──
       if (isCasa) {
         var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
         var isIA = /ia|gemini|cine|hechizo|libro|album|álbum/i.test((a.titulo || '') + ' ' + (a.id || ''));
         var pkTypeCls = isJuego ? 'pk-type-juego' : (isIA ? 'pk-type-ia' : 'pk-type-maker');
         var energyIcon = isJuego ? '💧' : (isIA ? '🔮' : '⚡');
         var catLabel = isJuego ? 'Juego en Familia' : (isIA ? 'IA & Creatividad' : 'Misión Maker');
-        var xpVal = isIA ? '120' : (isJuego ? '90' : '100');
+        var xpVal = isIA ? '220' : (isJuego ? '180' : '200');
         var numStr = (idx + 1) < 10 ? '0' + (idx + 1) : String(idx + 1);
         var matText = a.materiales || (!isJuego ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
 
-        return '<article class="pk-card ' + pkTypeCls + (it.mia ? ' es-mia' : '') + '">' +
+        return '<article class="pk-card pk-tera-ex ' + pkTypeCls + (it.mia ? ' es-mia' : '') + '">' +
           '<div class="pk-holo-sheen" aria-hidden="true"></div>' +
+          '<div class="pk-tera-facets" aria-hidden="true"></div>' +
           '<div class="pk-card-inner">' +
             '<div class="pk-card-header">' +
               '<div class="pk-header-left">' +
-                '<span class="pk-stage-tag">MISIÓN</span>' +
+                '<span class="pk-stage-tag">BÁSICO</span>' +
                 '<h3 class="pk-card-title" title="' + esc(a.titulo) + '">' + esc(a.titulo) + '</h3>' +
+                '<span class="pk-ex-badge">ex</span>' +
               '</div>' +
               '<div class="pk-header-right">' +
                 '<span class="pk-hp"><small>PS</small><strong>' + xpVal + '</strong></span>' +
@@ -1208,41 +1210,46 @@
               '</div>' +
             '</div>' +
 
+            '<div class="pk-tera-ribbon">' +
+              '<span class="pk-tera-label">Teracristal</span>' +
+              '<span class="pk-tera-sub">' + catLabel + ' · ' + esc(grTxt) + '</span>' +
+            '</div>' +
+
             '<div class="pk-art-frame">' +
               (a.imagen
                 ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="pk-art-img" loading="lazy" onerror="this.style.display=\'none\'">'
                 : '<div class="pk-art-emoji">' + esc(a.icono || energyIcon) + '</div>') +
+              '<div class="pk-art-prism" aria-hidden="true"></div>' +
               (it.mia ? '<span class="pk-mine-badge"><i class="fas fa-star"></i> Tu grado</span>' : '') +
             '</div>' +
 
-            '<div class="pk-silver-bar">' +
-              '<span>N° ' + numStr + '</span>' +
-              '<span>·</span>' +
-              '<span>' + esc(grTxt) + '</span>' +
-              '<span>·</span>' +
-              '<span>' + catLabel + '</span>' +
-            '</div>' +
-
-            '<div class="pk-powers">' +
-              '<div class="pk-power-row">' +
-                '<span class="pk-power-icon">' + energyIcon + '</span>' +
-                '<div class="pk-power-text">' +
-                  '<div class="pk-power-name">Tu Misión</div>' +
-                  '<p class="pk-power-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
+            '<div class="pk-ex-body">' +
+              '<div class="pk-ability-block">' +
+                '<div class="pk-ability-head">' +
+                  '<span class="pk-ability-pill">Habilidad</span>' +
+                  '<span class="pk-ability-name">Misión Creativa</span>' +
                 '</div>' +
+                '<p class="pk-power-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
               '</div>' +
-              '<div class="pk-power-row is-equip">' +
-                '<span class="pk-power-icon">🧰</span>' +
-                '<div class="pk-power-text">' +
-                  '<div class="pk-power-name">Equipamiento</div>' +
-                  '<p class="pk-power-mat" title="' + esc(matText) + '">' + esc(matText) + '</p>' +
+
+              '<div class="pk-attack-block">' +
+                '<div class="pk-attack-head">' +
+                  '<div class="pk-attack-orbs">' +
+                    '<span>🔥</span><span>💧</span><span>⚡</span>' +
+                  '</div>' +
+                  '<span class="pk-attack-name">Equipamiento</span>' +
+                  '<span class="pk-attack-dmg">' + xpVal + '</span>' +
                 '</div>' +
+                '<p class="pk-power-mat" title="' + esc(matText) + '">' + esc(matText) + '</p>' +
               '</div>' +
             '</div>' +
 
-            '<div class="pk-card-foot">' +
-              (botones ? '<div class="pk-card-actions">' + botones + '</div>' : '') +
-              '<button type="button" class="casa-btn-detail pk-btn-detail" data-casa-detail="' + idx + '" title="Ver información completa"><i class="fas fa-info-circle"></i> Detalle</button>' +
+            '<div class="pk-rule-bar">' +
+              '<span class="pk-rule-pill">N° ' + numStr + '</span>' +
+              '<div class="pk-card-foot">' +
+                (botones ? '<div class="pk-card-actions">' + botones + '</div>' : '') +
+                '<button type="button" class="casa-btn-detail pk-btn-detail" data-casa-detail="' + idx + '" title="Ver información completa"><i class="fas fa-info-circle"></i> Detalle</button>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</article>';
