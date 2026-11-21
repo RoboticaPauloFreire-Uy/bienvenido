@@ -1401,6 +1401,9 @@
             '<div class="arcade-monitor-bezel">' +
               '<div class="arcade-monitor-topbar">' +
                 '<span class="arcade-marquee"><i class="fas fa-gamepad"></i> ARCADE DEL TALLER</span>' +
+                '<button type="button" id="arcade-btn-parent-info" class="arcade-btn-parent-info" title="Ver por qué elegimos este juego y qué habilidades mejora">' +
+                  '<i class="fas fa-users"></i> <span>Info Padres</span>' +
+                '</button>' +
                 '<span class="arcade-counter" id="arcade-counter">1 / ' + items.length + '</span>' +
               '</div>' +
               '<div class="arcade-screen-img-wrap" id="arcade-screen-img-wrap">' +
@@ -1449,6 +1452,80 @@
     var elBtnPrev = document.getElementById('arcade-btn-prev');
     var elBtnNext = document.getElementById('arcade-btn-next');
     var elBtnRand = document.getElementById('arcade-btn-random');
+    var elBtnParentInfo = document.getElementById('arcade-btn-parent-info');
+
+    function openArcadeParentModal(m) {
+      if (!m || !m.gm) return;
+      var gm = m.gm;
+      var modal = document.getElementById('arcade-parent-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'arcade-parent-modal';
+        modal.className = 'arcade-parent-modal-backdrop';
+        document.body.appendChild(modal);
+      }
+
+      var benefitsBlock = gm.benefits
+        ? '<div class="apm-info-box is-benefits">' +
+            '<h4><i class="fas fa-lightbulb"></i> ¿Por qué este juego y qué habilidades mejora?</h4>' +
+            '<p>' + esc(gm.benefits) + '</p>' +
+          '</div>'
+        : '<div class="apm-info-box is-benefits">' +
+            '<h4><i class="fas fa-lightbulb"></i> ¿Por qué este juego y qué habilidades mejora?</h4>' +
+            '<p>Fomenta el pensamiento lógico, la atención, la coordinación y la resolución de problemas de forma lúdica acorde a la edad escolar.</p>' +
+          '</div>';
+
+      var tagsBlock = (gm.tags && gm.tags.length)
+        ? '<div class="apm-info-tags">' +
+            gm.tags.map(function (t) { return '<span class="post-tag">#' + esc(t) + '</span>'; }).join('') +
+          '</div>'
+        : '';
+
+      modal.innerHTML =
+        '<div class="arcade-parent-modal-card" role="dialog" aria-modal="true" aria-labelledby="apm-modal-title">' +
+          '<div class="apm-modal-head">' +
+            '<div class="apm-modal-head-left">' +
+              '<span class="apm-modal-badge"><i class="fas fa-users"></i> Información para Familias y Docentes</span>' +
+              '<h3 id="apm-modal-title">' + esc(gm.title || 'Juego del Taller') + '</h3>' +
+            '</div>' +
+            '<button type="button" class="apm-modal-close" aria-label="Cerrar">&times;</button>' +
+          '</div>' +
+          '<div class="apm-modal-body">' +
+            '<div class="apm-modal-hero">' +
+              '<img src="' + esc(m.thumb) + '" alt="' + esc(gm.title) + '" class="apm-modal-thumb" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80\'">' +
+              '<div class="apm-modal-pills">' +
+                '<span class="game-card-badge ' + esc(m.pm.cls) + '" style="position:static;">' + m.pm.icon + ' ' + esc(m.pm.label) + '</span>' +
+                '<span class="hn-game-grade-pill" style="position:static;background:' + esc(m.gradePillBg) + ';">' + esc(m.gradePillText) + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="apm-info-box">' +
+              '<h4><i class="fas fa-gamepad"></i> ¿De qué trata este juego?</h4>' +
+              '<p>' + esc(gm.description || 'Actividad interactiva seleccionada para el taller.') + '</p>' +
+            '</div>' +
+            benefitsBlock +
+            tagsBlock +
+          '</div>' +
+          '<div class="apm-modal-foot">' +
+            '<button type="button" class="apm-modal-btn-sec">Cerrar</button>' +
+            '<a href="' + esc(m.url) + '"' + (m.ext ? ' target="_blank" rel="noopener noreferrer"' : '') + ' class="apm-modal-btn-play">' +
+              '<i class="fas fa-play"></i> ¡Jugar ahora!' +
+            '</a>' +
+          '</div>' +
+        '</div>';
+
+      modal.style.display = 'flex';
+      var closeFn = function () { modal.style.display = 'none'; };
+      modal.querySelector('.apm-modal-close').onclick = closeFn;
+      modal.querySelector('.apm-modal-btn-sec').onclick = closeFn;
+      modal.onclick = function (e) { if (e.target === modal) closeFn(); };
+    }
+
+    if (elBtnParentInfo) {
+      elBtnParentInfo.addEventListener('click', function () {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        openArcadeParentModal(getItemMeta(items[activeIdx]));
+      });
+    }
 
     function updateArcadeView(playSound) {
       if (!items.length) return;

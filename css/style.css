@@ -40644,3 +40644,194 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
     right: 34px;
   }
 }
+
+.arcade-btn-parent-info {
+  background: rgba(56, 189, 248, 0.16);
+  color: #BAE6FD;
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.arcade-btn-parent-info:hover {
+  background: rgba(56, 189, 248, 0.28);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.arcade-parent-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.arcade-parent-modal-card {
+  background: #FFFFFF;
+  color: #1E293B;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid #E2E8F0;
+}
+
+.apm-modal-head {
+  background: linear-gradient(135deg, #1E1B4B, #312E81);
+  color: #FFFFFF;
+  padding: 18px 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.apm-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #E0E7FF;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.apm-modal-head h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1.25;
+}
+
+.apm-modal-close {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.apm-modal-close:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.apm-modal-body {
+  padding: 20px 22px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.apm-modal-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.apm-modal-thumb {
+  width: 120px;
+  height: 74px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #CBD5E1;
+}
+
+.apm-modal-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.apm-info-box {
+  background: #F8FAFC;
+  border-radius: 14px;
+  padding: 14px 16px;
+  border-left: 4px solid #3B82F6;
+}
+
+.apm-info-box.is-benefits {
+  background: #FEFCE8;
+  border-left-color: #F59E0B;
+}
+
+.apm-info-box h4 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.apm-info-box p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.apm-info-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.apm-modal-foot {
+  padding: 14px 22px;
+  background: #F8FAFC;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.apm-modal-btn-sec {
+  background: #E2E8F0;
+  color: #334155;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.apm-modal-btn-play {
+  background: #10B981;
+  color: #FFFFFF !important;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
