@@ -1183,35 +1183,66 @@
         return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
       }).join('');
 
-      // ── CASO CASA: CARTAS MISIONES MAKER ──
+      // ── CASO CASA: CARTAS COLECCIONABLES ESTILO POKÉMON ──
       if (isCasa) {
         var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
-        var isMaker = a.modalidad === 'maker' || !isJuego;
-        var catBadge = isMaker ? '🛠️ Misión Maker' : '🎲 Juego en Familia';
-        var diffBadge = isMaker ? '⭐⭐ Desafío Creativo' : '⭐ Reto Familiar';
-        var matIcon = isMaker ? '🧰' : '📱';
-        var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
-        var cardTypeCls = isMaker ? 'is-maker' : 'is-juego';
+        var isIA = /ia|gemini|cine|hechizo|libro|album|álbum/i.test((a.titulo || '') + ' ' + (a.id || ''));
+        var pkTypeCls = isJuego ? 'pk-type-juego' : (isIA ? 'pk-type-ia' : 'pk-type-maker');
+        var energyIcon = isJuego ? '💧' : (isIA ? '🔮' : '⚡');
+        var catLabel = isJuego ? 'Juego en Familia' : (isIA ? 'IA & Creatividad' : 'Misión Maker');
+        var xpVal = isIA ? '120' : (isJuego ? '90' : '100');
+        var numStr = (idx + 1) < 10 ? '0' + (idx + 1) : String(idx + 1);
+        var matText = a.materiales || (!isJuego ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
 
-        return '<article class="casa-mission-card ' + cardTypeCls + (it.mia ? ' es-mia' : '') + '">' +
-          '<div class="casa-card-top">' +
-            '<span class="casa-pill-cat">' + catBadge + '</span>' +
-            '<span class="casa-pill-diff">' + diffBadge + '</span>' +
-          '</div>' +
-          '<div class="casa-card-media">' +
-            (a.imagen
-              ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="casa-card-img" loading="lazy" onerror="this.style.display=\'none\'">'
-              : '<div class="casa-card-emoji-bg">' + esc(a.icono || '⭐') + '</div>') +
-            '<span class="casa-card-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
-            (it.mia ? '<span class="casa-card-mine"><i class="fas fa-star"></i> Tu grado</span>' : '') +
-          '</div>' +
-          '<div class="casa-card-body">' +
-            '<h3 class="casa-card-title" title="' + esc(a.titulo) + '">' + esc(a.titulo) + '</h3>' +
-            '<p class="casa-card-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
-            '<div class="casa-mat-pill" title="' + esc(matText) + '"><span>' + matIcon + '</span> ' + esc(matText) + '</div>' +
-            '<div class="casa-card-foot">' +
-              (botones ? '<div class="casa-card-actions">' + botones + '</div>' : '') +
-              '<button type="button" class="casa-btn-detail" data-casa-detail="' + idx + '" title="Ver información completa"><i class="fas fa-info-circle"></i> Detalle</button>' +
+        return '<article class="pk-card ' + pkTypeCls + (it.mia ? ' es-mia' : '') + '">' +
+          '<div class="pk-holo-sheen" aria-hidden="true"></div>' +
+          '<div class="pk-card-inner">' +
+            '<div class="pk-card-header">' +
+              '<div class="pk-header-left">' +
+                '<span class="pk-stage-tag">MISIÓN</span>' +
+                '<h3 class="pk-card-title" title="' + esc(a.titulo) + '">' + esc(a.titulo) + '</h3>' +
+              '</div>' +
+              '<div class="pk-header-right">' +
+                '<span class="pk-hp"><small>PS</small><strong>' + xpVal + '</strong></span>' +
+                '<span class="pk-energy" title="' + catLabel + '">' + energyIcon + '</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="pk-art-frame">' +
+              (a.imagen
+                ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="pk-art-img" loading="lazy" onerror="this.style.display=\'none\'">'
+                : '<div class="pk-art-emoji">' + esc(a.icono || energyIcon) + '</div>') +
+              (it.mia ? '<span class="pk-mine-badge"><i class="fas fa-star"></i> Tu grado</span>' : '') +
+            '</div>' +
+
+            '<div class="pk-silver-bar">' +
+              '<span>N° ' + numStr + '</span>' +
+              '<span>·</span>' +
+              '<span>' + esc(grTxt) + '</span>' +
+              '<span>·</span>' +
+              '<span>' + catLabel + '</span>' +
+            '</div>' +
+
+            '<div class="pk-powers">' +
+              '<div class="pk-power-row">' +
+                '<span class="pk-power-icon">' + energyIcon + '</span>' +
+                '<div class="pk-power-text">' +
+                  '<div class="pk-power-name">Tu Misión</div>' +
+                  '<p class="pk-power-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="pk-power-row is-equip">' +
+                '<span class="pk-power-icon">🧰</span>' +
+                '<div class="pk-power-text">' +
+                  '<div class="pk-power-name">Equipamiento</div>' +
+                  '<p class="pk-power-mat" title="' + esc(matText) + '">' + esc(matText) + '</p>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="pk-card-foot">' +
+              (botones ? '<div class="pk-card-actions">' + botones + '</div>' : '') +
+              '<button type="button" class="casa-btn-detail pk-btn-detail" data-casa-detail="' + idx + '" title="Ver información completa"><i class="fas fa-info-circle"></i> Detalle</button>' +
             '</div>' +
           '</div>' +
         '</article>';
