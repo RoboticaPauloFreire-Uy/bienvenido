@@ -42918,23 +42918,23 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   border: 2.5px solid #CBD5E1 !important;
   border-radius: 24px !important;
   box-shadow: 0 18px 42px rgba(15, 23, 42, 0.11) !important;
-  padding: 22px 24px 24px !important;
-  margin: 18px auto 36px auto !important;
+  padding: 16px 20px 22px !important;
+  margin: 12px auto 36px auto !important;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   color: #0F172A;
 }
 
-/* ── Banner Superior con FreireBot ── */
+/* ── Banner Superior Compacto y Luminoso 3D con FreireBot ── */
 .fb-cmd-hero {
-  background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 58%, #312E81 100%);
-  border: 3px solid #38BDF8;
+  background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 50%, #FEF9C3 100%);
+  border: 2.5px solid #60A5FA;
   border-radius: 20px;
-  padding: 22px 24px;
+  padding: 12px 18px;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 20px;
+  gap: 16px;
   align-items: center;
-  box-shadow: 0 12px 28px rgba(30, 58, 138, 0.25);
+  box-shadow: 0 5px 0 #3B82F6, 0 10px 22px rgba(37, 99, 235, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -42942,45 +42942,45 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 .fb-cmd-welcome {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   min-width: 0;
 }
 
 .fb-cmd-avatars {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .fb-cmd-crest {
-  width: 58px;
-  height: 58px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
   background: #FFFFFF;
-  padding: 5px;
-  border-radius: 15px;
-  border: 2.5px solid #FDE047;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.24);
+  padding: 4px;
+  border-radius: 13px;
+  border: 2px solid #60A5FA;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.14);
 }
 
 .fb-cmd-bot {
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #FACC15 0%, #F97316 100%);
-  border: 3px solid #FFFFFF;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #E0F2FE 0%, #FEF08A 100%);
+  border: 2.5px solid #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.35rem;
-  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.45);
+  font-size: 1.85rem;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.16);
   animation: fbBotFloat 3.2s ease-in-out infinite;
 }
 
 @keyframes fbBotFloat {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-5px) rotate(2deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
 }
 
 .fb-cmd-copy {
@@ -42988,63 +42988,63 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   flex: 1;
 }
 
+.fb-cmd-top-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .fb-cmd-kicker {
-  display: inline-block;
-  background: rgba(56, 189, 248, 0.18);
-  border: 1.5px solid #38BDF8;
-  color: #7DD3FC;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #DBEAFE;
+  border: 1.5px solid #93C5FD;
+  color: #1D4ED8;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .fb-cmd-title {
-  margin: 8px 0 10px;
-  color: #FFFFFF;
-  font-size: clamp(1.3rem, 2.3vw, 1.85rem);
+  margin: 4px 0 2px;
+  color: #0F172A;
+  font-size: clamp(1.18rem, 1.9vw, 1.48rem);
   font-weight: 900;
   line-height: 1.15;
 }
 
-.fb-cmd-bubble {
-  background: #FFFFFF;
-  color: #0F172A;
-  border: 2.5px solid #7DD3FC;
-  border-radius: 16px;
-  padding: 10px 15px;
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
-}
-
-.fb-cmd-bubble p {
+.fb-cmd-sub {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   font-weight: 600;
-  line-height: 1.45;
-  color: #1E293B;
+  line-height: 1.35;
+  color: #475569;
 }
 
 .fb-cmd-status {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .fb-cmd-date-pill {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #E2E8F0;
+  background: #FEF3C7;
+  border: 1.5px solid #FCD34D;
+  color: #B45309;
   border-radius: 999px;
-  padding: 5px 12px;
-  font-size: 0.78rem;
-  font-weight: 700;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .fb-cmd-stats {
@@ -43055,91 +43055,97 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   justify-content: flex-end;
 }
 
+.fb-cmd-stats .np-stat-sep {
+  color: #64748B;
+  font-weight: 900;
+}
+
 .fb-stat-pill {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(125, 211, 252, 0.4);
-  color: #F8FAFC;
+  background: #FFFFFF;
+  border: 2px solid #BFDBFE;
+  color: #1E3A8A;
   border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
+  padding: 3px 10px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  box-shadow: 0 2px 0 #93C5FD;
 }
 
 .fb-cmd-play-btn {
   background: linear-gradient(180deg, #FBBF24 0%, #F97316 100%);
   color: #1E1B4B;
   border: 2.5px solid #FEF08A;
-  border-radius: 14px;
-  padding: 10px 18px;
-  font-size: 0.92rem;
+  border-radius: 13px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
   font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 5px 0 #B45309, 0 10px 20px rgba(249, 115, 22, 0.35);
+  box-shadow: 0 4px 0 #B45309, 0 8px 16px rgba(249, 115, 22, 0.25);
   transition: transform 0.14s ease, box-shadow 0.14s ease;
   white-space: nowrap;
 }
 
 .fb-cmd-play-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 7px 0 #B45309, 0 14px 24px rgba(249, 115, 22, 0.45);
+  box-shadow: 0 6px 0 #B45309, 0 12px 20px rgba(249, 115, 22, 0.35);
 }
 
 .fb-cmd-play-btn:active {
   transform: translateY(2px);
-  box-shadow: 0 3px 0 #B45309;
+  box-shadow: 0 2px 0 #B45309;
 }
 
-/* ── Radar FreireBot (Ticker moderno) ── */
+/* ── Radar FreireBot (Ticker Luminoso) ── */
 [data-theme] #view-inicio .fb-radar-ticker,
 #view-inicio .fb-radar-ticker {
-  background: #0F172A !important;
-  border: 2.5px solid #0EA5E9 !important;
-  border-radius: 16px !important;
-  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.18) !important;
-  margin-top: 16px;
+  background: linear-gradient(90deg, #F0F9FF 0%, #FFFFFF 50%, #FFFBEB 100%) !important;
+  border: 2px solid #7DD3FC !important;
+  border-radius: 14px !important;
+  box-shadow: 0 3px 0 #38BDF8 !important;
+  margin-top: 10px;
 }
 
 [data-theme] #view-inicio .fb-radar-label,
 #view-inicio .fb-radar-label {
-  background: linear-gradient(135deg, #0284C7 0%, #2563EB 100%) !important;
+  background: linear-gradient(135deg, #0EA5E9 0%, #2563EB 100%) !important;
   color: #FFFFFF !important;
   font-family: 'Inter', 'Segoe UI', sans-serif !important;
   font-weight: 900 !important;
-  font-size: 0.78rem !important;
+  font-size: 0.76rem !important;
   letter-spacing: 0.04em;
-  padding: 10px 16px !important;
+  padding: 8px 14px !important;
 }
 
 [data-theme] #view-inicio .fb-radar-item,
 #view-inicio .fb-radar-item {
   font-family: 'Inter', 'Segoe UI', sans-serif !important;
-  font-size: 0.88rem !important;
+  font-size: 0.84rem !important;
   font-weight: 700 !important;
-  color: #F8FAFC !important;
+  color: #0F172A !important;
 }
 
 [data-theme] #view-inicio .fb-radar-item.np-ticker-news:hover,
 #view-inicio .fb-radar-item.np-ticker-news:hover {
-  color: #FDE047 !important;
+  color: #2563EB !important;
 }
 
 [data-theme] #view-inicio .np-ticker-track .hn-ticker-item::after,
 #view-inicio .np-ticker-track .hn-ticker-item::after {
   content: '★' !important;
-  color: #38BDF8 !important;
+  color: #0EA5E9 !important;
   font-size: 0.72rem;
 }
 
 /* ── Portales Tipo Consola ── */
 .fb-portals-wrap {
-  margin-top: 22px;
+  margin-top: 14px;
 }
 
 .fb-section-head {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .fb-section-head span {
@@ -43167,8 +43173,8 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 18px 14px 14px;
+  gap: 12px;
+  padding: 14px 14px 12px;
   border-radius: 18px;
   border: 2.5px solid #CBD5E1;
   background: #FFFFFF;
@@ -43200,13 +43206,13 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 }
 
 .fb-portal-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.85rem;
+  font-size: 1.65rem;
   flex-shrink: 0;
   background: #FFFFFF;
   border: 2px solid rgba(15, 23, 42, 0.08);
