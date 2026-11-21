@@ -2907,53 +2907,241 @@
     });
 
     if (!filtered.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#64748B;">No hay herramientas en esta categoría.</div>';
+      grid.classList.add('is-arcade-wheel');
+      grid.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#64748B;">No hay herramientas en esta categoría.</div>';
       return;
     }
 
-    grid.innerHTML = filtered.map(function (t) {
-      return (
-        '<article class="hn-tool-card" id="tool-' + esc(t.id) + '">' +
-          '<div class="hn-tool-header">' +
-            '<div class="hn-tool-icon-box" style="background:' + esc(t.tagBg) + ';color:' + esc(t.tagColor) + ';">' +
-              esc(t.icon) +
-            '</div>' +
-            '<div class="hn-tool-titles">' +
-              '<span class="hn-tool-tag" style="background:' + esc(t.tagBg) + ';color:' + esc(t.tagColor) + ';">' +
-                esc(t.tag) +
-              '</span>' +
-              '<h3 class="hn-tool-name">' + esc(t.name) + '</h3>' +
-              '<span class="hn-tool-author"><i class="fas fa-certificate" style="color:' + esc(t.tagColor) + ';"></i> ' + esc(t.author) + '</span>' +
+    grid.classList.add('is-arcade-wheel');
+
+    var activeToolIdx = 0;
+
+    grid.innerHTML =
+      '<div class="arcade-cabinet arcade-tools-cabinet" tabindex="0" aria-label="Ruleta de Herramientas del Taller">' +
+        '<div class="arcade-stage">' +
+          '<div class="arcade-monitor-col">' +
+            '<div class="arcade-monitor-bezel">' +
+              '<div class="arcade-monitor-topbar">' +
+                '<span class="arcade-marquee"><i class="fas fa-toolbox"></i> HERRAMIENTAS DEL TALLER</span>' +
+                '<div class="arcade-topbar-btns">' +
+                  '<button type="button" id="arcade-tool-btn-info" class="arcade-btn-game-info" title="Ver cómo la usamos en el taller y sus funciones">' +
+                    '<i class="fas fa-info-circle"></i> <span>Ver Info</span>' +
+                  '</button>' +
+                '</div>' +
+                '<span class="arcade-counter" id="arcade-tool-counter">1 / ' + filtered.length + '</span>' +
+              '</div>' +
+              '<div class="arcade-tool-stage" id="arcade-tool-stage">' +
+                '<div class="arcade-tool-orb" id="arcade-tool-orb">🧰</div>' +
+                '<span class="arcade-tool-tag" id="arcade-tool-tag"></span>' +
+                '<span class="arcade-tool-author" id="arcade-tool-author"></span>' +
+              '</div>' +
+              '<div class="arcade-screen-info">' +
+                '<h3 class="arcade-screen-title" id="arcade-tool-title"></h3>' +
+                '<p class="arcade-screen-desc" id="arcade-tool-desc"></p>' +
+              '</div>' +
+              '<div class="arcade-screen-actions">' +
+                '<a id="arcade-tool-btn-open" href="#" target="_blank" rel="noopener noreferrer" class="arcade-btn-play">' +
+                  '<i class="fas fa-external-link-alt"></i> <span>¡ABRIR HERRAMIENTA!</span>' +
+                '</a>' +
+                '<a id="arcade-tool-btn-sec" href="#" target="_blank" rel="noopener noreferrer" class="arcade-btn-tool-sec" style="display:none;"></a>' +
+              '</div>' +
             '</div>' +
           '</div>' +
-
-          '<div class="hn-tool-body">' +
-            '<p class="hn-tool-desc">' + esc(t.description) + '</p>' +
-
-            '<div class="hn-tool-project-box">' +
-              '<strong><i class="fas fa-project-diagram"></i> En nuestros proyectos del taller:</strong>' +
-              esc(t.projectUsage) +
+          '<div class="arcade-wheel-col">' +
+            '<div class="arcade-wheel-controls">' +
+              '<button type="button" class="arcade-nav-btn" id="arcade-tool-prev" aria-label="Herramienta anterior"><i class="fas fa-chevron-up"></i> Subir</button>' +
+              '<span class="arcade-wheel-hint">🎡 Girá la ruleta o usá ↑ ↓</span>' +
+              '<button type="button" class="arcade-nav-btn" id="arcade-tool-next" aria-label="Siguiente herramienta">Bajar <i class="fas fa-chevron-down"></i></button>' +
             '</div>' +
-
-            '<div class="hn-tool-features">' +
-              t.features.map(function (f) {
-                return '<span class="hn-tool-feat-pill"><i class="fas fa-check" style="color:#10B981;"></i> ' + esc(f) + '</span>';
-              }).join('') +
+            '<div class="arcade-wheel-viewport" id="arcade-tool-viewport">' +
+              '<div class="arcade-wheel-disc"></div>' +
+              '<div class="arcade-wheel-pointer">◀</div>' +
+              '<div class="arcade-wheel-slots" id="arcade-tool-slots"></div>' +
             '</div>' +
           '</div>' +
+        '</div>' +
+      '</div>';
 
-          '<div class="hn-tool-footer">' +
-            '<a href="' + esc(t.url) + '" target="_blank" rel="noopener noreferrer" class="hn-tool-btn-primary">' +
-              '<i class="fas fa-external-link-alt"></i> <span>Abrir Herramienta</span>' +
-            '</a>' +
-            (t.secondaryUrl ?
-              '<a href="' + esc(t.secondaryUrl) + '" target="_blank" rel="noopener noreferrer" class="hn-tool-btn-secondary" title="' + esc(t.secondaryText || 'Enlace alternativo') + '">' +
-                '<span>' + esc(t.secondaryText || 'Explorar') + '</span> <i class="fas fa-arrow-right" style="font-size:0.75rem;"></i>' +
-              '</a>' : '') +
+    var elOrb = document.getElementById('arcade-tool-orb');
+    var elTag = document.getElementById('arcade-tool-tag');
+    var elAuthor = document.getElementById('arcade-tool-author');
+    var elTitle = document.getElementById('arcade-tool-title');
+    var elDesc = document.getElementById('arcade-tool-desc');
+    var elOpen = document.getElementById('arcade-tool-btn-open');
+    var elSec = document.getElementById('arcade-tool-btn-sec');
+    var elCounter = document.getElementById('arcade-tool-counter');
+    var elSlots = document.getElementById('arcade-tool-slots');
+    var elViewport = document.getElementById('arcade-tool-viewport');
+    var elPrev = document.getElementById('arcade-tool-prev');
+    var elNext = document.getElementById('arcade-tool-next');
+    var elInfoBtn = document.getElementById('arcade-tool-btn-info');
+
+    function openToolInfoModal(t) {
+      if (!t) return;
+      var modal = document.getElementById('arcade-parent-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'arcade-parent-modal';
+        modal.className = 'arcade-parent-modal-backdrop';
+        document.body.appendChild(modal);
+      }
+      var featHtml = (t.features && t.features.length)
+        ? '<div class="apm-info-tags">' + t.features.map(function (f) {
+            return '<span class="post-tag"><i class="fas fa-check" style="color:#10B981;"></i> ' + esc(f) + '</span>';
+          }).join('') + '</div>'
+        : '';
+
+      modal.innerHTML =
+        '<div class="arcade-parent-modal-card" role="dialog" aria-modal="true">' +
+          '<div class="apm-modal-head">' +
+            '<div class="apm-modal-head-left">' +
+              '<span class="apm-modal-badge">' + esc(t.icon + ' ' + t.tag) + ' · ' + esc(t.author) + '</span>' +
+              '<h3>' + esc(t.name) + '</h3>' +
+            '</div>' +
+            '<button type="button" class="apm-modal-close" aria-label="Cerrar">&times;</button>' +
           '</div>' +
-        '</article>'
-      );
-    }).join('');
+          '<div class="apm-modal-body">' +
+            '<div class="apm-info-box"><h4><i class="fas fa-toolbox"></i> ¿Para qué sirve?</h4><p>' + esc(t.description) + '</p></div>' +
+            '<div class="apm-info-box is-benefits"><h4><i class="fas fa-project-diagram"></i> ¿Cómo la usamos en el taller?</h4><p>' + esc(t.projectUsage) + '</p></div>' +
+            featHtml +
+          '</div>' +
+          '<div class="apm-modal-foot">' +
+            '<button type="button" class="apm-modal-btn-sec">Cerrar</button>' +
+            '<a href="' + esc(t.url) + '" target="_blank" rel="noopener noreferrer" class="apm-modal-btn-play"><i class="fas fa-external-link-alt"></i> Abrir Herramienta</a>' +
+          '</div>' +
+        '</div>';
+      modal.style.display = 'flex';
+      var closeFn = function () { modal.style.display = 'none'; };
+      modal.querySelector('.apm-modal-close').onclick = closeFn;
+      modal.querySelector('.apm-modal-btn-sec').onclick = closeFn;
+      modal.onclick = function (e) { if (e.target === modal) closeFn(); };
+    }
+
+    function updateToolWheel(playSound) {
+      var total = filtered.length;
+      if (!total) return;
+      activeToolIdx = ((activeToolIdx % total) + total) % total;
+      var t = filtered[activeToolIdx];
+
+      if (playSound && window.sounds && window.sounds.playClick) {
+        window.sounds.playClick();
+      }
+
+      elCounter.textContent = (activeToolIdx + 1) + ' / ' + total;
+      elOrb.textContent = t.icon || '🧰';
+      elOrb.style.background = t.tagBg || '#1E293B';
+      elOrb.style.color = t.tagColor || '#FFFFFF';
+      elTag.textContent = t.tag || t.badge || 'Herramienta';
+      elTag.style.background = t.tagBg || '#E0E7FF';
+      elTag.style.color = t.tagColor || '#1E293B';
+      elAuthor.textContent = t.author || 'Taller Maker';
+      elTitle.textContent = t.name || 'Herramienta';
+      elTitle.title = t.name || 'Herramienta';
+      elDesc.textContent = t.description || '';
+      elOpen.href = t.url || '#';
+
+      if (t.secondaryUrl) {
+        elSec.style.display = 'inline-flex';
+        elSec.href = t.secondaryUrl;
+        elSec.innerHTML = '<span>' + esc(t.secondaryText || 'Explorar') + '</span> <i class="fas fa-arrow-right"></i>';
+      } else {
+        elSec.style.display = 'none';
+      }
+
+      var maxOffset = Math.min(4, Math.floor((total - 1) / 2));
+      var slotsHtml = '';
+      for (var d = -maxOffset; d <= maxOffset; d++) {
+        var idx = ((activeToolIdx + d) % total + total) % total;
+        var item = filtered[idx];
+        var absD = Math.abs(d);
+        var xShift = absD * absD * 14 + absD * 12;
+        var yShift = d * 64;
+        var scale = d === 0 ? 1.06 : Math.max(0.64, 1 - absD * 0.1);
+        var opacity = d === 0 ? 1 : Math.max(0.24, 1 - absD * 0.2);
+        var rot = d * 4.5;
+        var z = 20 - absD;
+
+        slotsHtml +=
+          '<button type="button" class="arcade-wheel-item' + (d === 0 ? ' is-center' : '') + '" ' +
+            'data-idx="' + idx + '" ' +
+            'style="transform:translate3d(' + xShift + 'px, ' + yShift + 'px, 0) scale(' + scale + ') rotate(' + rot + 'deg);opacity:' + opacity + ';z-index:' + z + ';" ' +
+            'title="' + esc(item.name) + '">' +
+            '<span class="awi-emoji-box" style="background:' + esc(item.tagBg || '#334155') + ';color:' + esc(item.tagColor || '#FFF') + ';">' + esc(item.icon || '🧰') + '</span>' +
+            '<div class="awi-text">' +
+              '<span class="awi-title">' + esc(item.name) + '</span>' +
+              '<span class="awi-sub">' + esc(item.tag || item.author) + '</span>' +
+            '</div>' +
+          '</button>';
+      }
+      elSlots.innerHTML = slotsHtml;
+
+      elSlots.querySelectorAll('.arcade-wheel-item').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var clickedIdx = parseInt(btn.dataset.idx, 10);
+          if (isNaN(clickedIdx)) return;
+          if (clickedIdx === activeToolIdx) {
+            elOpen.click();
+          } else {
+            activeToolIdx = clickedIdx;
+            updateToolWheel(true);
+          }
+        });
+      });
+    }
+
+    if (elInfoBtn) {
+      elInfoBtn.addEventListener('click', function () {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        openToolInfoModal(filtered[activeToolIdx]);
+      });
+    }
+    elPrev.addEventListener('click', function () { activeToolIdx--; updateToolWheel(true); });
+    elNext.addEventListener('click', function () { activeToolIdx++; updateToolWheel(true); });
+
+    var wheelLock = false;
+    elViewport.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      if (wheelLock) return;
+      wheelLock = true;
+      if (e.deltaY > 0) activeToolIdx++;
+      else activeToolIdx--;
+      updateToolWheel(true);
+      setTimeout(function () { wheelLock = false; }, 85);
+    }, { passive: false });
+
+    var touchStartY = null;
+    elViewport.addEventListener('touchstart', function (e) {
+      if (e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    elViewport.addEventListener('touchend', function (e) {
+      if (touchStartY === null || !e.changedTouches || !e.changedTouches[0]) return;
+      var dy = e.changedTouches[0].clientY - touchStartY;
+      touchStartY = null;
+      if (Math.abs(dy) > 24) {
+        if (dy < 0) activeToolIdx++;
+        else activeToolIdx--;
+        updateToolWheel(true);
+      }
+    }, { passive: true });
+
+    var cabinet = grid.querySelector('.arcade-cabinet');
+    if (cabinet) {
+      cabinet.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          activeToolIdx++;
+          updateToolWheel(true);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          activeToolIdx--;
+          updateToolWheel(true);
+        } else if (e.key === 'Enter') {
+          elOpen.click();
+        }
+      });
+    }
+
+    updateToolWheel(false);
   }
   window.renderHerramientas = renderHerramientas;
 
