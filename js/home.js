@@ -1262,7 +1262,17 @@
     var tabsCont = document.getElementById('hn-juegos-grade-tabs');
     if (!tabsCont || !grades.length) return;
 
-    var totalJuegos = grades.reduce(function (acc, g) { return acc + (g.games ? g.games.length : 0); }, 0);
+    var seenTotalIds = {};
+    var totalJuegos = 0;
+    grades.forEach(function (g) {
+      (g.games || []).forEach(function (gm) {
+        if (gm.id) {
+          if (seenTotalIds[gm.id]) return;
+          seenTotalIds[gm.id] = true;
+        }
+        totalJuegos++;
+      });
+    });
 
     // Si el alumno está logueado y aún no se seleccionó grupo, sugerir su grado
     var st = alumno();
