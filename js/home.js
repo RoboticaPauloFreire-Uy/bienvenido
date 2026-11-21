@@ -542,6 +542,8 @@
     var grid = document.getElementById('hn-news-grid');
     var more = document.getElementById('hn-news-more');
     if (!grid) return;
+    grid.classList.add('comic-page-grid');
+
     var lista = noticias.filter(function (n) {
       var okCat = filtroCat === 'todas' || n.categoria === filtroCat;
       var okGr = filtroGradoNews === 'todos' || n.grado === filtroGradoNews || n.grado === 'todos';
@@ -549,29 +551,45 @@
     });
 
     if (!lista.length) {
-      grid.innerHTML = '<div class="hn-empty"><span>🔎</span>No hay noticias con ese filtro todavía.</div>';
+      grid.innerHTML = '<div class="hn-empty" style="grid-column:1/-1;"><span>🔎</span>No hay noticias con ese filtro todavía.</div>';
       if (more) more.style.display = 'none';
       return;
     }
 
-    grid.innerHTML = lista.slice(0, visibles).map(function (n, idx) {
-      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: 'fas fa-newspaper', color: '#991B1B' };
-      var numFormateado = (idx + 1 < 10 ? '0' : '') + (idx + 1);
+    var comicThemes = ['comic-theme-yellow', 'comic-theme-cyan', 'comic-theme-magenta', 'comic-theme-emerald'];
+    var comicBursts = ['💥 ¡ESTRENO!', '⚡ ¡MIRÁ!', '🚀 ¡GENIAL!', '🏆 ¡ÉPICO!', '🤖 ¡WOW!', '🎉 ¡NUEVO!'];
 
-      return '<article class="np-gazette-card" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
-        '<div class="np-gz-head">' +
-          '<span class="np-gz-vol"><i class="fas fa-newspaper"></i> CRÓNICA Nº ' + numFormateado + '</span>' +
-          '<span class="np-gz-grade"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</span>' +
+    grid.innerHTML = lista.slice(0, visibles).map(function (n, idx) {
+      var cat = CATEGORIAS[n.categoria] || { nombre: n.categoria, icono: '📰', color: '#991B1B' };
+      var numFormateado = (idx + 1 < 10 ? '0' : '') + (idx + 1);
+      var isSplash = (idx === 0);
+      var themeCls = comicThemes[idx % comicThemes.length];
+      var burstTxt = comicBursts[idx % comicBursts.length];
+      var resumenTxt = n.bajada || (Array.isArray(n.cuerpo) ? n.cuerpo[0] : (n.cuerpo || '¡Descubrí esta historia del taller!'));
+
+      return '<article class="comic-panel ' + themeCls + (isSplash ? ' is-splash' : '') + '" data-noticia="' + esc(n.id) + '" tabindex="0" role="button">' +
+        '<div class="comic-caption-bar">' +
+          '<span class="comic-panel-num"><i class="fas fa-bolt"></i> VIÑETA #' + numFormateado + '</span>' +
+          '<span class="comic-panel-grade"><i class="fas fa-graduation-cap"></i> ' + esc(nombreGrado(n.grado)) + '</span>' +
         '</div>' +
-        '<h3 class="np-gz-title">' + esc(n.titulo) + '</h3>' +
-        '<div class="np-gz-photo-frame">' +
-          '<img src="' + esc(n.imagen) + '" alt="' + esc(n.titulo) + '" loading="lazy">' +
-          '<span class="np-gz-cat-tag">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
+        '<div class="comic-art-wrap">' +
+          '<img src="' + esc(n.imagen || 'img/bienvenida_taller.jpg') + '" alt="' + esc(n.titulo) + '" loading="lazy" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
+          '<div class="comic-halftone-overlay" aria-hidden="true"></div>' +
+          '<span class="comic-burst-sticker">' + burstTxt + '</span>' +
+          '<span class="comic-cat-badge">' + cat.icono + ' ' + esc(cat.nombre) + '</span>' +
         '</div>' +
-        '<p class="np-gz-desc">' + esc(n.bajada) + '</p>' +
-        '<div class="np-gz-foot">' +
-          '<span class="np-gz-date"><i class="far fa-calendar-alt"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
-          '<span class="np-gz-read-btn">LEER NOTA COMPLETA ➔</span>' +
+        '<div class="comic-panel-body">' +
+          '<h3 class="comic-headline" title="' + esc(n.titulo) + '">' + esc(n.titulo) + '</h3>' +
+          '<div class="comic-speech-wrap">' +
+            '<div class="comic-bot-avatar" title="FreireBot te cuenta">🤖</div>' +
+            '<div class="comic-speech-bubble">' +
+              '<p>' + esc(resumenTxt) + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="comic-panel-foot">' +
+            '<span class="comic-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(n.fecha)) + '</span>' +
+            '<span class="comic-read-btn">¡LEER HISTORIA! 💥</span>' +
+          '</div>' +
         '</div>' +
       '</article>';
     }).join('');
@@ -754,7 +772,8 @@
       return String(y.a.id || '').localeCompare(String(x.a.id || ''));
     });
 
-    var estrellaItem = (casaOrdenada.length > 1) ? casaOrdenada[0] : null;
+    var estrellaCustom = casaOrdenada.find(function (x) { return !!x.a.destacada; });
+    var estrellaItem = (casaOrdenada.length > 1) ? (estrellaCustom || casaOrdenada[0]) : null;
     renderCasaFeaturedHero(estrellaItem);
 
     var casa = casaPorGrado.filter(function (a) {
@@ -783,8 +802,9 @@
     var gr = a.grados || ['todos'];
     var grTxt = gr.indexOf('todos') > -1 ? 'Todos los grados' : gr.map(nombreGrado).join(' · ');
     var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
-    var isMaker = a.modalidad === 'maker' || !isJuego;
-    var catBadge = isMaker ? '🛠️ Misión Maker' : '🎲 Juego en Familia';
+    var isIA = a.modalidad === 'ia' || /ia|gemini|cine|hechizo|libro|album|álbum/i.test((a.titulo || '') + ' ' + (a.id || ''));
+    var isMaker = !isJuego;
+    var catBadge = isJuego ? '🎲 Juego en Familia' : (isIA ? '🔮 IA & Creatividad' : '🛠️ Misión Maker');
     var matIcon = isMaker ? '🧰' : '📱';
     var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
     var cardTypeCls = isMaker ? 'is-maker' : 'is-juego';
@@ -1186,7 +1206,7 @@
       // ── CASO CASA: CARTAS COLECCIONABLES ESTILO POKÉMON TERACRISTAL EX ──
       if (isCasa) {
         var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
-        var isIA = /ia|gemini|cine|hechizo|libro|album|álbum/i.test((a.titulo || '') + ' ' + (a.id || ''));
+        var isIA = a.modalidad === 'ia' || /ia|gemini|cine|hechizo|libro|album|álbum/i.test((a.titulo || '') + ' ' + (a.id || ''));
         var pkTypeCls = isJuego ? 'pk-type-juego' : (isIA ? 'pk-type-ia' : 'pk-type-maker');
         var energyIcon = isJuego ? '💧' : (isIA ? '🔮' : '⚡');
         var catLabel = isJuego ? 'Juego en Familia' : (isIA ? 'IA & Creatividad' : 'Misión Maker');
@@ -2914,6 +2934,56 @@
     }
   ];
 
+  window.BASE_WORKSHOP_TOOLS = WORKSHOP_TOOLS.slice();
+  var _remoteToolsMap = {};
+
+  function getActiveWorkshopTools() {
+    var map = {};
+    WORKSHOP_TOOLS.forEach(function (t) { map[t.id] = Object.assign({}, t); });
+    Object.keys(_remoteToolsMap).forEach(function (id) {
+      var rt = _remoteToolsMap[id];
+      if (!rt) return;
+      if (rt.deleted) delete map[id];
+      else map[id] = Object.assign(map[id] || {}, rt);
+    });
+    try {
+      var rawOv = localStorage.getItem('pf_admin_tools_overrides');
+      if (rawOv) {
+        var ov = JSON.parse(rawOv);
+        Object.keys(ov).forEach(function (id) {
+          var item = ov[id];
+          if (!item) return;
+          if (item.deleted) delete map[id];
+          else map[id] = Object.assign(map[id] || {}, item, { id: id });
+        });
+      }
+    } catch (e) {}
+    return Object.keys(map).map(function (k) { return map[k]; });
+  }
+
+  function syncRemoteTools() {
+    try {
+      if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
+        window.db.collection('workshop_tools').onSnapshot(function (snapshot) {
+          if (!snapshot) return;
+          _remoteToolsMap = {};
+          snapshot.forEach(function (doc) {
+            var d = doc.data();
+            d.id = doc.id;
+            _remoteToolsMap[doc.id] = d;
+          });
+          if (document.getElementById('hn-tools-grid')) {
+            renderHerramientas();
+          }
+        }, function (err) {
+          console.warn('Sync tools notice:', err);
+        });
+      } else {
+        setTimeout(syncRemoteTools, 800);
+      }
+    } catch (e) {}
+  }
+
   var filtroCategoriaHerramientas = 'todas';
 
   function renderHerramientas(filtro) {
@@ -2921,7 +2991,8 @@
     var grid = document.getElementById('hn-tools-grid');
     if (!grid) return;
 
-    var filtered = WORKSHOP_TOOLS.filter(function (t) {
+    var activeTools = getActiveWorkshopTools();
+    var filtered = activeTools.filter(function (t) {
       if (filtroCategoriaHerramientas === 'todas') return true;
       return t.category === filtroCategoriaHerramientas;
     });
@@ -3588,6 +3659,7 @@
     syncRemoteClaseActivities();
     syncRemoteCasaActivities();
     syncRemoteGames();
+    syncRemoteTools();
     syncRemoteValijaMaker();
 
     // Observar visibilidad de pestañas para activar 'Ver más' apenas se muestren sin necesidad de refrescar
@@ -3647,6 +3719,65 @@
   }
 
   function syncRemoteClaseActivities() {
+    function applyClaseMerge(remoteClaseList, deletedIdsList) {
+      remoteClaseList = remoteClaseList || [];
+      deletedIdsList = deletedIdsList || [];
+
+      try {
+        var rawOv = localStorage.getItem('pf_admin_clase_overrides');
+        if (rawOv) {
+          var ovMap = JSON.parse(rawOv);
+          Object.keys(ovMap).forEach(function (k) {
+            var ov = ovMap[k];
+            if (!ov) return;
+            if (ov.deleted) {
+              if (deletedIdsList.indexOf(k) === -1) deletedIdsList.push(k);
+              remoteClaseList = remoteClaseList.filter(function (it) { return it.id !== k; });
+            } else {
+              var eIdx = remoteClaseList.findIndex(function (it) { return it.id === k; });
+              if (eIdx !== -1) {
+                remoteClaseList[eIdx] = Object.assign(remoteClaseList[eIdx], ov);
+              } else {
+                remoteClaseList.push(ov);
+              }
+            }
+          });
+        }
+      } catch (eOv) {
+        console.warn('Error fusionando overrides locales de clase:', eOv);
+      }
+
+      var baseActivities = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
+      var currentOtras = (C.actividades || []).filter(function (a) { return a.tipo !== 'clase'; });
+      if (!currentOtras.length) {
+        currentOtras = baseActivities.filter(function (a) { return a.tipo !== 'clase'; });
+      }
+      var baseClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
+
+      var mergedClase = remoteClaseList.concat(baseClase.filter(function (ba) {
+        return !remoteClaseList.some(function (rc) {
+          return rc.id === ba.id || (rc.titulo && ba.titulo && rc.titulo.trim().toLowerCase() === ba.titulo.trim().toLowerCase());
+        }) && deletedIdsList.indexOf(ba.id) === -1;
+      }));
+
+      C.actividades = currentOtras.concat(mergedClase);
+      window.CLASE_ACTIVITIES_CACHE = mergedClase;
+      if (window.HOME_CONTENT) {
+        window.HOME_CONTENT.actividades = C.actividades;
+      }
+
+      renderFiltrosActividades();
+      renderActividades();
+      renderMasthead();
+      renderAgenda();
+
+      if (typeof window.renderGDriveDashboard === 'function' && document.getElementById('student-drive-dashboard-container')) {
+        window.renderGDriveDashboard('student-drive-dashboard-container');
+      }
+    }
+
+    applyClaseMerge([], []);
+
     try {
       if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
         window.db.collection('clase_activities').onSnapshot(function (snapshot) {
@@ -3672,41 +3803,14 @@
               color: cleanD.color || '#2E7D32',
               imagen: cleanD.imagen || '',
               galeria: cleanD.galeria || [],
+              chips: cleanD.chips || [],
               desde: cleanD.desde || '',
               hasta: cleanD.hasta || '',
               botones: cleanD.botones || []
             });
           });
 
-          // Obtener actividades iniciales de news.js
-          var baseActivities = (window.HOME_CONTENT && window.HOME_CONTENT.actividades) || [];
-          var currentOtras = (C.actividades || []).filter(function (a) { return a.tipo !== 'clase'; });
-          if (!currentOtras.length) {
-            currentOtras = baseActivities.filter(function (a) { return a.tipo !== 'clase'; });
-          }
-          var baseClase = baseActivities.filter(function (a) { return a.tipo === 'clase'; });
-
-          // Unir las de clase: Firestore prevalece sobre base y se descartan las eliminadas o duplicadas
-          var mergedClase = remoteClase.concat(baseClase.filter(function (ba) {
-            return !remoteClase.some(function (rc) {
-              return rc.id === ba.id || (rc.titulo && ba.titulo && rc.titulo.trim().toLowerCase() === ba.titulo.trim().toLowerCase());
-            }) && deletedIds.indexOf(ba.id) === -1;
-          }));
-
-          C.actividades = currentOtras.concat(mergedClase);
-          window.CLASE_ACTIVITIES_CACHE = mergedClase;
-          if (window.HOME_CONTENT) {
-            window.HOME_CONTENT.actividades = C.actividades;
-          }
-
-          renderFiltrosActividades();
-          renderActividades();
-          renderMasthead();
-          renderAgenda();
-
-          if (typeof window.renderGDriveDashboard === 'function' && document.getElementById('student-drive-dashboard-container')) {
-            window.renderGDriveDashboard('student-drive-dashboard-container');
-          }
+          applyClaseMerge(remoteClase, deletedIds);
         }, function (err) {
           console.warn('Sync clase activities notice:', err);
         });
@@ -3813,6 +3917,7 @@
               icono: cleanD.icono || (cleanD.tipo === 'familia' ? '👨‍👩‍👧‍👦' : '🏠'),
               color: cleanD.color || '#1D4ED8',
               imagen: cleanD.imagen || '',
+              destacada: !!cleanD.destacada,
               desde: cleanD.desde || '',
               hasta: cleanD.hasta || '',
               chips: cleanD.chips || [],
@@ -3833,6 +3938,52 @@
   }
 
   function syncRemoteNews() {
+    function applyNewsMerge(remoteNewsList, deletedIdsList) {
+      remoteNewsList = remoteNewsList || [];
+      deletedIdsList = deletedIdsList || [];
+
+      try {
+        var rawOv = localStorage.getItem('pf_admin_news_overrides');
+        if (rawOv) {
+          var ovMap = JSON.parse(rawOv);
+          Object.keys(ovMap).forEach(function (k) {
+            var ov = ovMap[k];
+            if (!ov) return;
+            if (ov.deleted) {
+              if (deletedIdsList.indexOf(k) === -1) deletedIdsList.push(k);
+              remoteNewsList = remoteNewsList.filter(function (it) { return it.id !== k; });
+            } else {
+              var eIdx = remoteNewsList.findIndex(function (it) { return it.id === k; });
+              if (eIdx !== -1) {
+                remoteNewsList[eIdx] = Object.assign(remoteNewsList[eIdx], ov);
+              } else {
+                remoteNewsList.push(ov);
+              }
+            }
+          });
+        }
+      } catch (eOv) {
+        console.warn('Error fusionando overrides locales de news:', eOv);
+      }
+
+      var baseNews = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.noticias) || (window.HOME_CONTENT && window.HOME_CONTENT.noticias) || [];
+      var mergedNews = remoteNewsList.concat(baseNews.filter(function (bn) {
+        return !remoteNewsList.some(function (rn) {
+          return rn.id === bn.id || (rn.titulo && bn.titulo && rn.titulo.trim().toLowerCase() === bn.titulo.trim().toLowerCase());
+        }) && deletedIdsList.indexOf(bn.id) === -1;
+      }));
+
+      C.noticias = mergedNews;
+
+      refrescarNoticias();
+      renderMasthead();
+      renderDestacada();
+      renderFiltrosNoticias();
+      renderNoticias();
+    }
+
+    applyNewsMerge([], []);
+
     try {
       if (typeof window.db !== 'undefined' && window.db && typeof window.db.collection === 'function') {
         window.db.collection('news').onSnapshot(function (snapshot) {
@@ -3862,21 +4013,7 @@
             });
           });
 
-          // Unir con las noticias base de news.js (dando prioridad a las de Firestore, excluyendo eliminadas o sustituidas por título/id)
-          var baseNews = (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.noticias) || (window.HOME_CONTENT && window.HOME_CONTENT.noticias) || [];
-          var mergedNews = remoteNews.concat(baseNews.filter(function (bn) {
-            return !remoteNews.some(function (rn) {
-              return rn.id === bn.id || (rn.titulo && bn.titulo && rn.titulo.trim().toLowerCase() === bn.titulo.trim().toLowerCase());
-            }) && deletedIds.indexOf(bn.id) === -1;
-          }));
-
-          C.noticias = mergedNews;
-
-          refrescarNoticias();
-          renderMasthead();
-          renderDestacada();
-          renderFiltrosNoticias();
-          renderNoticias();
+          applyNewsMerge(remoteNews, deletedIds);
         }, function (err) {
           console.warn('Sync news notice:', err);
         });
