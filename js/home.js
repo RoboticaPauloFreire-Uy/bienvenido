@@ -1356,20 +1356,25 @@
     });
 
     if (!items.length) {
+      grid.classList.add('is-arcade-wheel');
       grid.innerHTML = '<div class="hn-empty" style="grid-column:1/-1;"><span>⏳</span>Los juegos para este grupo se están preparando para la próxima clase.</div>';
       return;
     }
 
-    grid.innerHTML = items.map(function (it) {
+    grid.classList.add('is-arcade-wheel');
+
+    var activeIdx = 0;
+    var isSpinningRandom = false;
+
+    function getItemMeta(it) {
       var gm = it.game;
       var gr = it.grade;
       var pm = (window.platformMeta && window.platformMeta(gm.platform)) || { label: 'Juego', icon: '🎮', cls: 'pb-default' };
       var url = (window.getGameUrl && window.getGameUrl(gm)) || gm.externalUrl || '#';
       var ext = /^https?:/i.test(url);
       var thumb = gm.thumbnail || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80';
-
-      var gradePillText = esc(gr.icon + ' ' + (gr.shortName || gr.name));
-      var gradePillBg = esc(gr.color || '#4F46E5');
+      var gradePillText = (gr.icon || '🎮') + ' ' + (gr.shortName || gr.name);
+      var gradePillBg = gr.color || '#4F46E5';
       if (gm.grades && (gm.grades.indexOf('todos') !== -1 || gm.grades.length >= 7)) {
         gradePillText = '🌟 Todo el Colegio';
         gradePillBg = '#7C3AED';
@@ -1377,49 +1382,225 @@
         gradePillText = '👥 ' + gm.grades.length + ' Grados';
         gradePillBg = '#2563EB';
       }
+      return {
+        gm: gm,
+        gr: gr,
+        pm: pm,
+        url: url,
+        ext: ext,
+        thumb: thumb,
+        gradePillText: gradePillText,
+        gradePillBg: gradePillBg
+      };
+    }
 
-      var benefitsHtml = gm.benefits
-        ? '<div class="game-card-benefits">' +
-            '<div class="benefits-label"><i class="fas fa-lightbulb"></i> ¿Qué aprendemos?</div>' +
-            '<p class="benefits-text">' + esc(gm.benefits) + '</p>' +
-          '</div>'
-        : '';
-
-      var tagsHtml = (gm.tags && gm.tags.length)
-        ? '<div class="game-card-tags">' +
-            gm.tags.map(function (t) { return '<span class="post-tag">#' + esc(t) + '</span>'; }).join('') +
-          '</div>'
-        : '';
-
-      var descHtml =
-        '<div class="game-card-desc-wrap">' +
-          '<p class="game-card-desc">' + esc(gm.description || '') + '</p>' +
-          '<button type="button" class="btn-game-desc-toggle" onclick="window.toggleGameDesc(this)" style="display:none;" title="Ampliar descripción del juego">' +
-            '<span><i class="fas fa-chevron-down"></i> Ver más</span>' +
-          '</button>' +
-        '</div>';
-
-      return '<article class="game-grid-card">' +
-        '<div class="game-card-thumb-wrap">' +
-          '<img src="' + esc(thumb) + '" alt="' + esc(gm.title) + '" class="game-card-thumb" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80\'">' +
-          '<span class="game-card-badge ' + esc(pm.cls) + '">' + pm.icon + ' ' + esc(pm.label) + '</span>' +
-          '<span class="hn-game-grade-pill" style="background:' + gradePillBg + '">' + gradePillText + '</span>' +
+    grid.innerHTML =
+      '<div class="arcade-cabinet" tabindex="0" aria-label="Ruleta Arcade de Juegos">' +
+        '<div class="arcade-stage">' +
+          '<div class="arcade-monitor-col">' +
+            '<div class="arcade-monitor-bezel">' +
+              '<div class="arcade-monitor-topbar">' +
+                '<span class="arcade-marquee"><i class="fas fa-gamepad"></i> ARCADE DEL TALLER</span>' +
+                '<span class="arcade-counter" id="arcade-counter">1 / ' + items.length + '</span>' +
+              '</div>' +
+              '<div class="arcade-screen-img-wrap" id="arcade-screen-img-wrap">' +
+                '<img id="arcade-screen-img" src="" alt="" class="arcade-screen-img">' +
+                '<span id="arcade-screen-platform" class="game-card-badge"></span>' +
+                '<span id="arcade-screen-grade" class="hn-game-grade-pill"></span>' +
+              '</div>' +
+              '<div class="arcade-screen-info">' +
+                '<h3 class="arcade-screen-title" id="arcade-screen-title"></h3>' +
+                '<p class="arcade-screen-desc" id="arcade-screen-desc"></p>' +
+              '</div>' +
+              '<div class="arcade-screen-actions">' +
+                '<a id="arcade-btn-play" href="#" class="arcade-btn-play">' +
+                  '<i class="fas fa-play"></i> <span>¡JUGAR AHORA!</span>' +
+                '</a>' +
+                '<button type="button" id="arcade-btn-random" class="arcade-btn-random" title="Elegir un juego al azar">' +
+                  '<i class="fas fa-dice"></i> <span>¡Sorpresa!</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="arcade-wheel-col" id="arcade-wheel-col">' +
+            '<div class="arcade-wheel-controls">' +
+              '<button type="button" class="arcade-nav-btn" id="arcade-btn-prev" aria-label="Juego anterior"><i class="fas fa-chevron-up"></i> Subir</button>' +
+              '<span class="arcade-wheel-hint">🎡 Girá la ruleta o usá ↑ ↓</span>' +
+              '<button type="button" class="arcade-nav-btn" id="arcade-btn-next" aria-label="Siguiente juego">Bajar <i class="fas fa-chevron-down"></i></button>' +
+            '</div>' +
+            '<div class="arcade-wheel-viewport" id="arcade-wheel-viewport">' +
+              '<div class="arcade-wheel-disc"></div>' +
+              '<div class="arcade-wheel-pointer">◀</div>' +
+              '<div class="arcade-wheel-slots" id="arcade-wheel-slots"></div>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
-        '<div class="game-card-body">' +
-          '<h3 class="game-card-title">' + esc(gm.title) + '</h3>' +
-          descHtml +
-          benefitsHtml +
-          tagsHtml +
-        '</div>' +
-        '<div class="game-card-footer">' +
-          '<a href="' + esc(url) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + ' class="btn-start-game" style="background:' + esc(gr.color) + ';" title="Jugar a ' + esc(gm.title) + '">' +
-            '<span>Jugar ahora</span> <i class="fas fa-play"></i>' +
-          '</a>' +
-        '</div>' +
-      '</article>';
-    }).join('');
+      '</div>';
 
-    checkCollapsibleGameDescs(grid);
+    var elImg = document.getElementById('arcade-screen-img');
+    var elPlat = document.getElementById('arcade-screen-platform');
+    var elGrade = document.getElementById('arcade-screen-grade');
+    var elTitle = document.getElementById('arcade-screen-title');
+    var elDesc = document.getElementById('arcade-screen-desc');
+    var elPlay = document.getElementById('arcade-btn-play');
+    var elCounter = document.getElementById('arcade-counter');
+    var elSlots = document.getElementById('arcade-wheel-slots');
+    var elViewport = document.getElementById('arcade-wheel-viewport');
+    var elBtnPrev = document.getElementById('arcade-btn-prev');
+    var elBtnNext = document.getElementById('arcade-btn-next');
+    var elBtnRand = document.getElementById('arcade-btn-random');
+
+    function updateArcadeView(playSound) {
+      if (!items.length) return;
+      var total = items.length;
+      activeIdx = ((activeIdx % total) + total) % total;
+      var m = getItemMeta(items[activeIdx]);
+
+      if (playSound && window.sounds && window.sounds.playClick) {
+        window.sounds.playClick();
+      }
+
+      // Actualizar Monitor
+      elCounter.textContent = (activeIdx + 1) + ' / ' + total;
+      elImg.src = m.thumb;
+      elImg.alt = m.gm.title || 'Juego';
+      elImg.onerror = function () {
+        this.src = 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80';
+      };
+      elPlat.className = 'game-card-badge ' + m.pm.cls;
+      elPlat.textContent = m.pm.icon + ' ' + m.pm.label;
+      elGrade.style.background = m.gradePillBg;
+      elGrade.textContent = m.gradePillText;
+      elTitle.textContent = m.gm.title || 'Juego';
+      elDesc.textContent = m.gm.description || '¡Divertite jugando y aprendiendo en el taller!';
+      elPlay.href = m.url;
+      if (m.ext) {
+        elPlay.target = '_blank';
+        elPlay.rel = 'noopener noreferrer';
+      } else {
+        elPlay.removeAttribute('target');
+        elPlay.removeAttribute('rel');
+      }
+
+      // Renderizar hasta 9 ranuras curvas (-4 a +4) en la rueda
+      var maxOffset = Math.min(4, Math.floor((total - 1) / 2));
+      var slotsHtml = '';
+      for (var d = -maxOffset; d <= maxOffset; d++) {
+        var idx = ((activeIdx + d) % total + total) % total;
+        var itemMeta = getItemMeta(items[idx]);
+        var absD = Math.abs(d);
+        var xShift = absD * absD * 14 + absD * 12; // Curva parabólica hacia la derecha
+        var yShift = d * 64;
+        var scale = d === 0 ? 1.06 : Math.max(0.64, 1 - absD * 0.1);
+        var opacity = d === 0 ? 1 : Math.max(0.24, 1 - absD * 0.2);
+        var rot = d * 4.5;
+        var z = 20 - absD;
+
+        slotsHtml +=
+          '<button type="button" class="arcade-wheel-item' + (d === 0 ? ' is-center' : '') + '" ' +
+            'data-idx="' + idx + '" data-offset="' + d + '" ' +
+            'style="transform:translate3d(' + xShift + 'px, ' + yShift + 'px, 0) scale(' + scale + ') rotate(' + rot + 'deg);opacity:' + opacity + ';z-index:' + z + ';" ' +
+            'title="' + esc(itemMeta.gm.title) + '">' +
+            '<img src="' + esc(itemMeta.thumb) + '" alt="" class="awi-thumb" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=200&q=60\'">' +
+            '<div class="awi-text">' +
+              '<span class="awi-title">' + esc(itemMeta.gm.title) + '</span>' +
+              '<span class="awi-sub">' + esc(itemMeta.pm.icon + ' ' + itemMeta.pm.label) + '</span>' +
+            '</div>' +
+          '</button>';
+      }
+      elSlots.innerHTML = slotsHtml;
+
+      elSlots.querySelectorAll('.arcade-wheel-item').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var clickedIdx = parseInt(btn.dataset.idx, 10);
+          if (isNaN(clickedIdx)) return;
+          if (clickedIdx === activeIdx) {
+            elPlay.click();
+          } else {
+            activeIdx = clickedIdx;
+            updateArcadeView(true);
+          }
+        });
+      });
+    }
+
+    elBtnPrev.addEventListener('click', function () {
+      activeIdx--;
+      updateArcadeView(true);
+    });
+    elBtnNext.addEventListener('click', function () {
+      activeIdx++;
+      updateArcadeView(true);
+    });
+
+    elBtnRand.addEventListener('click', function () {
+      if (isSpinningRandom || items.length < 2) return;
+      isSpinningRandom = true;
+      elBtnRand.disabled = true;
+      var steps = 10 + Math.floor(Math.random() * 8);
+      var currentStep = 0;
+      function tick() {
+        activeIdx++;
+        updateArcadeView(true);
+        currentStep++;
+        if (currentStep < steps) {
+          var delay = 55 + Math.floor((currentStep / steps) * 140);
+          setTimeout(tick, delay);
+        } else {
+          isSpinningRandom = false;
+          elBtnRand.disabled = false;
+        }
+      }
+      tick();
+    });
+
+    // Rueda del mouse sobre la ruleta
+    var wheelLock = false;
+    elViewport.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      if (wheelLock) return;
+      wheelLock = true;
+      if (e.deltaY > 0) activeIdx++;
+      else activeIdx--;
+      updateArcadeView(true);
+      setTimeout(function () { wheelLock = false; }, 85);
+    }, { passive: false });
+
+    // Deslizar con el dedo en tablet / celular
+    var touchStartY = null;
+    elViewport.addEventListener('touchstart', function (e) {
+      if (e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    elViewport.addEventListener('touchend', function (e) {
+      if (touchStartY === null || !e.changedTouches || !e.changedTouches[0]) return;
+      var dy = e.changedTouches[0].clientY - touchStartY;
+      touchStartY = null;
+      if (Math.abs(dy) > 24) {
+        if (dy < 0) activeIdx++;
+        else activeIdx--;
+        updateArcadeView(true);
+      }
+    }, { passive: true });
+
+    // Teclado arriba / abajo cuando el foco está en el gabinete
+    var cabinet = grid.querySelector('.arcade-cabinet');
+    if (cabinet) {
+      cabinet.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          activeIdx++;
+          updateArcadeView(true);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          activeIdx--;
+          updateArcadeView(true);
+        } else if (e.key === 'Enter') {
+          elPlay.click();
+        }
+      });
+    }
+
+    updateArcadeView(false);
   }
 
   function checkCollapsibleGameDescs(container) {
