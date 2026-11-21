@@ -103,6 +103,18 @@
   let captainTablePage           = 1;
   const CAPTAIN_TABLE_PAGE_SIZE  = 6;
   let isRoadmapGridMode          = false;
+  let radialMissionIdx           = null;
+  let radialAreaKey              = null;
+  let radialDetailIdx            = null;
+  let radialLastGradeId          = null;
+  let radialLastLevelKey         = null;
+  let radialTextPageIdx          = 0;
+  let isGamesGridMode            = false;
+  let radialGameIdx              = 0;
+  let radialGamePageIdx          = 0;
+  let isFamiliarGridMode         = false;
+  let radialFamiliarIdx          = 0;
+  let radialFamiliarPageIdx      = 0;
   let fbMediaFilter              = 'all'; // 'all' | 'videos' | 'photos' | 'grid' | 'albums'
   let fbSelectedYear             = 'all'; // 'all' | '2026' | '2025' | ...
   let fbSelectedAlbum            = 'all'; // 'all' | 'Halloween' | ...
@@ -1028,6 +1040,1130 @@
   // ──────────────────────────────────────────────────
   // RENDER HTML DE RUTA DE AVENTURAS (MODO 3)
   // ──────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────
+  // MENÚ RADIAL 360° DE 3 NIVELES (PROYECTOS → ÁREA → DETALLE)
+  // ──────────────────────────────────────────────────
+  var RADIAL_PALETTE = ['#047857', '#D97706', '#0284C7', '#7C3AED', '#E11D48', '#0D9488', '#EA580C', '#2563EB'];
+
+  function escapeRadialHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function getFriendlyLinkLabel(url) {
+    var u = String(url || '').toLowerCase();
+    if (u.indexOf('libro_hechizos') !== -1) return '📖 Abrir Libro de Hechizos';
+    if (u.indexOf('canva') !== -1) return '🎨 Abrir Plantilla en Canva';
+    if (u.indexOf('flow.google') !== -1) return '🎬 Abrir Flow';
+    if (u.indexOf('gemini') !== -1) return '✨ Abrir Google Gemini';
+    if (u.indexOf('makecode') !== -1) return '🔌 Abrir MakeCode';
+    if (u.indexOf('scratch') !== -1) return '🐱 Abrir Scratch';
+    if (u.indexOf('drive.google') !== -1) return '📁 Abrir Google Drive';
+    return '🔗 Abrir enlace';
+  }
+
+  function linkifyRadialText(s) {
+    var escaped = escapeRadialHtml(s);
+    return escaped.replace(/(https?:\/\/[^\s<>"']+)/gi, function(url) {
+      var cleanUrl = url.replace(/[.,;:!?)]+$/, '');
+      var trail = url.slice(cleanUrl.length);
+      var label = getFriendlyLinkLabel(cleanUrl);
+      return '<a href="' + cleanUrl + '" target="_blank" rel="noopener noreferrer" class="pf-rdp-inline-link" title="' + cleanUrl + '">' + label + ' <i class="fas fa-external-link-alt"></i></a>' + trail;
+    });
+  }
+
+  function pickKidEmojiForText(txt, idx) {
+    var t = String(txt || '').toLowerCase();
+    if (/foto|cámara|camara|retrato|selfie/.test(t)) return '📸';
+    if (/canva|polaroid|diseñ|dibuj|color|postal|marco/.test(t)) return '🎨';
+    if (/video|flow|anim|película|mp4|escena/.test(t)) return '🎬';
+    if (/gemini|ia|inteligencia|hechizo|prompt|mágic/.test(t)) return '🪄';
+    if (/código|codigo|program|scratch|makecode|bloque/.test(t)) return '💻';
+    if (/circuit|led|cobre|batería|pila|robot|sensor|motor/.test(t)) return '⚡';
+    if (/imprim|papel|tijera|cartón|pegamento/.test(t)) return '✂️';
+    var pool = ['🌟', '✨', '🚀', '🎯', '🧩', '🎒'];
+    return pool[(idx || 0) % pool.length];
+  }
+
+  function splitRadialTextIntoPages(rawText) {
+    var txt = String(rawText || '').trim();
+    if (!txt) return [];
+    // Detect numbered sections like "1) ... 2) ... 3) ..."
+    if (/\b1\)\s+/.test(txt) && /\b2\)\s+/.test(txt)) {
+      var parts = txt.split(/(?=\b\d+\)\s+)/).map(function(p) { return p.trim(); }).filter(Boolean);
+      if (parts.length >= 2) {
+        // If first part is short intro (no "1)"), prepend it as intro or merge with part 1 if tiny
+        if (!/^1\)/.test(parts[0]) && parts[0].length < 90 && parts.length > 1) {
+          parts[1] = parts[0] + '\n' + parts[1];
+          parts.shift();
+        }
+        return parts;
+      }
+    }
+    if (txt.length <= 210) return [txt];
+    // Protect URLs and numbered list items (e.g. "1. ") from sentence splitting on dots
+    var savedUrls = [];
+    var masked = txt.replace(/https?:\/\/[^\s]+/gi, function(u) {
+      var key = '__URLTOKEN_' + savedUrls.length + '__';
+      savedUrls.push(u);
+      return key;
+    }).replace(/(\b\d+)\.\s+/g, '$1__NUMDOT__ ');
+
+    var sentences = masked.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g) || [masked];
+    var unmask = function(s) {
+      return s.replace(/__NUMDOT__/g, '.').replace(/__URLTOKEN_(\d+)__/g, function(_, i) {
+        return savedUrls[parseInt(i, 10)] || '';
+      });
+    };
+
+    var pages = [];
+    var buf = '';
+    sentences.forEach(function(sent) {
+      var s = unmask(sent.trim());
+      if (!s) return;
+      if (buf && (buf.length + s.length + 1) > 220) {
+        pages.push(buf.trim());
+        buf = s;
+      } else {
+        buf = buf ? (buf + ' ' + s) : s;
+      }
+    });
+    if (buf.trim()) pages.push(buf.trim());
+    return pages.length ? pages : [txt];
+  }
+
+  function formatKidFriendlyPageHtml(pageText, pageIdx) {
+    var lines = String(pageText || '').split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
+    var htmlParts = lines.map(function(line, lIdx) {
+      var emoji = pickKidEmojiForText(line, (pageIdx || 0) + lIdx);
+      // Clean leading "1) " or "2) " into friendly pill + bold heading if it has ":"
+      var mNum = line.match(/^(\d+)\)\s*([^:]{3,65}):\s*(.+)$/);
+      if (mNum) {
+        return '<div class="pf-rdp-kid-block">' +
+          '<div class="pf-rdp-kid-heading"><span class="pf-rdp-kid-emoji">' + emoji + '</span> <strong>' + escapeRadialHtml(mNum[2].trim()) + '</strong></div>' +
+          '<p class="pf-rdp-desc pf-rdp-kid-text">' + linkifyRadialText(mNum[3].trim()) + '</p>' +
+        '</div>';
+      }
+      var hasLeadEmoji = /^[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/u.test(line);
+      return '<p class="pf-rdp-desc pf-rdp-kid-text">' + (hasLeadEmoji ? '' : ('<span class="pf-rdp-kid-emoji">' + emoji + '</span> ')) + linkifyRadialText(line) + '</p>';
+    });
+    return htmlParts.join('');
+  }
+
+  function stripEmojisAndTruncate(str, maxLen) {
+    var clean = String(str || '')
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!clean) clean = String(str || '').trim();
+    if (maxLen && clean.length > maxLen) {
+      return clean.substring(0, maxLen - 1).trim() + '…';
+    }
+    return clean;
+  }
+
+  function getMissionRadialIconSvg(m) {
+    var t = (m && m.type ? String(m.type) : '').toLowerCase();
+    var title = (m && m.title ? String(m.title) : '').toLowerCase();
+    if (t === 'halloween' || /halloween|hechiz|monstruo/.test(title)) {
+      return '<path d="M12 2a7 7 0 0 0-7 7v9l2.5-2 2.5 2 2-2 2 2 2.5-2 2.5 2V9a7 7 0 0 0-7-7z"/><circle cx="9.5" cy="10" r="1"/><circle cx="14.5" cy="10" r="1"/>';
+    }
+    if (t === 'electronica' || /led|sombrero|varita|tarjeta|fantasma|circuito/.test(title)) {
+      return '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>';
+    }
+    if (t === 'makecode' || /servo|joystick|micro:?bit|makecode/.test(title)) {
+      return '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>';
+    }
+    if (t === 'scratch' || t === 'codejr' || /scratch|codejr/.test(title)) {
+      return '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>';
+    }
+    if (t === 'paint' || t === 'canva' || /paint|canva|dibuj/.test(title)) {
+      return '<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>';
+    }
+    if (t === 'codeorg' || /angry|frozen|minecraft|code/.test(title)) {
+      return '<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M17 13v8M13 17h8"/>';
+    }
+    return '<path d="M12 2l3 7h7l-5.5 4.2L18.5 21 12 16.8 5.5 21l2-7.8L2 9h7z"/>';
+  }
+
+  function getMissionResourcesList(m) {
+    var list = [];
+    if (!m) return list;
+    if (Array.isArray(m.botones) && m.botones.length > 0) {
+      m.botones.forEach(function(b) {
+        list.push({
+          label: b.texto || 'Abrir Actividad',
+          shortLabel: stripEmojisAndTruncate(b.texto || 'Abrir', 13),
+          url: b.url,
+          actionType: 'url',
+          color: '#047857',
+          icon: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>'
+        });
+      });
+    }
+    if (m.makecodeUrl) {
+      list.push({
+        label: 'Abrir en MakeCode',
+        shortLabel: 'MakeCode',
+        url: m.makecodeUrl,
+        actionType: 'url',
+        color: '#0D9488',
+        icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>'
+      });
+    }
+    if (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '')) {
+      list.push({
+        label: /libro_hechizos/i.test(m.gameUrl) ? 'Libro de Hechizos' : (/canva/i.test(m.gameUrl) ? 'Abrir Canva' : 'Jugar / Explorar'),
+        shortLabel: /libro_hechizos/i.test(m.gameUrl) ? 'Hechizos' : (/canva/i.test(m.gameUrl) ? 'Canva' : 'Explorar'),
+        url: m.gameUrl,
+        actionType: 'url',
+        color: '#D97706',
+        icon: '<polygon points="5 3 19 12 5 21 5 3"/>'
+      });
+    } else if (m.externalUrl && m.type !== 'paint' && m.externalUrl !== m.gameUrl) {
+      list.push({
+        label: m.type === 'gemini_notebooks' ? 'Abrir NotebookLM' : 'Abrir Enlace',
+        shortLabel: m.type === 'gemini_notebooks' ? 'NotebookLM' : 'Abrir Web',
+        url: m.externalUrl,
+        actionType: 'url',
+        color: '#0284C7',
+        icon: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>'
+      });
+    }
+    list.push({
+      label: 'Ver Presentación Guiada',
+      shortLabel: 'Presentación',
+      actionType: 'presentation',
+      color: '#7C3AED',
+      icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'
+    });
+    if (m.pdfUrl) {
+      list.push({
+        label: 'Ver Guía PDF',
+        shortLabel: 'Guía PDF',
+        url: m.pdfUrl,
+        actionType: 'pdf',
+        color: '#E11D48',
+        icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>'
+      });
+    }
+    return list;
+  }
+
+  function getRadialAreasForMission(m) {
+    if (!m) return [];
+    var areas = [];
+    areas.push({
+      id: 'resumen',
+      label: 'Qué es y Objetivo',
+      shortLabel: 'Qué es',
+      color: '#047857',
+      pillText: 'Resumen',
+      icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'
+    });
+    var steps = Array.isArray(m.instructions) ? m.instructions : [];
+    if (steps.length > 0) {
+      areas.push({
+        id: 'pasos',
+        label: 'Paso a Paso',
+        shortLabel: 'Paso a paso',
+        color: '#D97706',
+        pillText: steps.length + (steps.length === 1 ? ' paso' : ' pasos'),
+        icon: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>'
+      });
+    }
+    var mats = Array.isArray(m.materials) ? m.materials : [];
+    if (mats.length > 0) {
+      areas.push({
+        id: 'materiales',
+        label: 'Materiales y Herramientas',
+        shortLabel: 'Materiales',
+        color: '#0284C7',
+        pillText: mats.length + ' items',
+        icon: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'
+      });
+    }
+    var resList = getMissionResourcesList(m);
+    if (resList.length > 0) {
+      areas.push({
+        id: 'recursos',
+        label: 'Links y Recursos',
+        shortLabel: 'Recursos',
+        color: '#7C3AED',
+        pillText: resList.length + (resList.length === 1 ? ' link' : ' links'),
+        icon: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>'
+      });
+    }
+    var gal = Array.isArray(m.gallery) ? m.gallery : [];
+    if (gal.length > 0) {
+      areas.push({
+        id: 'galeria',
+        label: 'Fotos y Láminas',
+        shortLabel: 'Fotos',
+        color: '#EC4899',
+        pillText: gal.length + (gal.length === 1 ? ' foto' : ' fotos'),
+        icon: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>'
+      });
+    }
+    return areas;
+  }
+
+  function getRadialDetailsForArea(m, areaKey) {
+    if (!m) return [];
+    if (areaKey === 'resumen') {
+      var resItems = [
+        {
+          id: 'desc',
+          label: '¿De qué trata?',
+          shortLabel: '¿De qué trata?',
+          color: '#047857',
+          pillText: 'Info',
+          icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+          text: m.description || 'Proyecto del taller maker.'
+        }
+      ];
+      if (m.objective) {
+        resItems.push({
+          id: 'obj',
+          label: 'Objetivo de aprendizaje',
+          shortLabel: 'Objetivo',
+          color: '#0284C7',
+          pillText: 'Meta',
+          icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+          text: m.objective
+        });
+      }
+      if (m.benefits) {
+        resItems.push({
+          id: 'ben',
+          label: 'Habilidades Maker',
+          shortLabel: 'Habilidades',
+          color: '#7C3AED',
+          pillText: 'Logros',
+          icon: '<path d="M12 2l3 7h7l-5.5 4.2L18.5 21 12 16.8 5.5 21l2-7.8L2 9h7z"/>',
+          text: m.benefits
+        });
+      }
+      return resItems;
+    }
+    if (areaKey === 'pasos') {
+      var steps = Array.isArray(m.instructions) ? m.instructions : [];
+      return steps.slice(0, 10).map(function(st, i) {
+        var stepNum = st.step || (i + 1);
+        return {
+          id: 'step-' + i,
+          label: st.title || ('Paso ' + stepNum),
+          shortLabel: 'Paso ' + stepNum,
+          color: RADIAL_PALETTE[i % RADIAL_PALETTE.length],
+          pillText: stripEmojisAndTruncate(st.title || ('Etapa ' + stepNum), 11),
+          icon: '<text x="12" y="12.5" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="900" fill="#ffffff" stroke="none">' + stepNum + '</text>',
+          stepObj: st,
+          stepNum: stepNum
+        };
+      });
+    }
+    if (areaKey === 'materiales') {
+      var mats = Array.isArray(m.materials) ? m.materials : [];
+      return mats.slice(0, 10).map(function(mat, i) {
+        var matTitle = mat.title || (typeof mat === 'string' ? mat : 'Material');
+        return {
+          id: 'mat-' + i,
+          label: matTitle,
+          shortLabel: stripEmojisAndTruncate(matTitle, 13),
+          color: RADIAL_PALETTE[i % RADIAL_PALETTE.length],
+          pillText: 'Item ' + (i + 1),
+          icon: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+          matObj: typeof mat === 'string' ? { title: mat, description: '' } : mat
+        };
+      });
+    }
+    if (areaKey === 'recursos') {
+      return getMissionResourcesList(m).map(function(r, i) {
+        return {
+          id: 'res-' + i,
+          label: r.label,
+          shortLabel: r.shortLabel,
+          color: r.color || RADIAL_PALETTE[i % RADIAL_PALETTE.length],
+          pillText: 'Abrir',
+          icon: r.icon,
+          resourceObj: r
+        };
+      });
+    }
+    if (areaKey === 'galeria') {
+      var gal = Array.isArray(m.gallery) ? m.gallery : [];
+      return gal.slice(0, 8).map(function(imgUrl, i) {
+        return {
+          id: 'img-' + i,
+          label: 'Foto #' + (i + 1),
+          shortLabel: 'Foto ' + (i + 1),
+          color: RADIAL_PALETTE[i % RADIAL_PALETTE.length],
+          pillText: 'Ver',
+          icon: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+          imgUrl: imgUrl
+        };
+      });
+    }
+    return [];
+  }
+
+  function radialPolarToCartesian(cx, cy, radius, angleDeg) {
+    var rad = ((angleDeg - 90) * Math.PI) / 180;
+    return {
+      x: cx + radius * Math.cos(rad),
+      y: cy + radius * Math.sin(rad)
+    };
+  }
+
+  function radialDescribeSector(cx, cy, rIn, rOut, startAngle, endAngle) {
+    if (endAngle - startAngle >= 359.9) {
+      var oTop = radialPolarToCartesian(cx, cy, rOut, 0);
+      var oBot = radialPolarToCartesian(cx, cy, rOut, 180);
+      var iTop = radialPolarToCartesian(cx, cy, rIn, 0);
+      var iBot = radialPolarToCartesian(cx, cy, rIn, 180);
+      return [
+        'M ' + oTop.x.toFixed(2) + ' ' + oTop.y.toFixed(2),
+        'A ' + rOut + ' ' + rOut + ' 0 1 1 ' + oBot.x.toFixed(2) + ' ' + oBot.y.toFixed(2),
+        'A ' + rOut + ' ' + rOut + ' 0 1 1 ' + oTop.x.toFixed(2) + ' ' + oTop.y.toFixed(2),
+        'M ' + iTop.x.toFixed(2) + ' ' + iTop.y.toFixed(2),
+        'A ' + rIn + ' ' + rIn + ' 0 1 0 ' + iBot.x.toFixed(2) + ' ' + iBot.y.toFixed(2),
+        'A ' + rIn + ' ' + rIn + ' 0 1 0 ' + iTop.x.toFixed(2) + ' ' + iTop.y.toFixed(2),
+        'Z'
+      ].join(' ');
+    }
+    var outerStart = radialPolarToCartesian(cx, cy, rOut, startAngle);
+    var outerEnd = radialPolarToCartesian(cx, cy, rOut, endAngle);
+    var innerEnd = radialPolarToCartesian(cx, cy, rIn, endAngle);
+    var innerStart = radialPolarToCartesian(cx, cy, rIn, startAngle);
+    var largeArc = (endAngle - startAngle <= 180) ? '0' : '1';
+    return [
+      'M ' + outerStart.x.toFixed(2) + ' ' + outerStart.y.toFixed(2),
+      'A ' + rOut + ' ' + rOut + ' 0 ' + largeArc + ' 1 ' + outerEnd.x.toFixed(2) + ' ' + outerEnd.y.toFixed(2),
+      'L ' + innerEnd.x.toFixed(2) + ' ' + innerEnd.y.toFixed(2),
+      'A ' + rIn + ' ' + rIn + ' 0 ' + largeArc + ' 0 ' + innerStart.x.toFixed(2) + ' ' + innerStart.y.toFixed(2),
+      'Z'
+    ].join(' ');
+  }
+
+  function radialDescribeStepTextArc(cx, cy, radius, startAngle, endAngle, isBottomHalf) {
+    var padAngle = 8;
+    var a0 = startAngle + padAngle;
+    var a1 = endAngle - padAngle;
+    if (isBottomHalf) {
+      var pStartB = radialPolarToCartesian(cx, cy, radius, a1);
+      var pEndB = radialPolarToCartesian(cx, cy, radius, a0);
+      return 'M ' + pStartB.x.toFixed(2) + ' ' + pStartB.y.toFixed(2) + ' A ' + radius + ' ' + radius + ' 0 0 0 ' + pEndB.x.toFixed(2) + ' ' + pEndB.y.toFixed(2);
+    }
+    var pStart = radialPolarToCartesian(cx, cy, radius, a0);
+    var pEnd = radialPolarToCartesian(cx, cy, radius, a1);
+    return 'M ' + pStart.x.toFixed(2) + ' ' + pStart.y.toFixed(2) + ' A ' + radius + ' ' + radius + ' 0 0 1 ' + pEnd.x.toFixed(2) + ' ' + pEnd.y.toFixed(2);
+  }
+
+  function radialCreateSvgEl(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function(k) {
+        el.setAttribute(k, String(attrs[k]));
+      });
+    }
+    return el;
+  }
+
+  function mountAdventureRadialMenu(rootEl, student, missions) {
+    var section = rootEl ? rootEl.querySelector('#pf-radial-wheel-section') : null;
+    if (!section || !missions || missions.length === 0) return;
+
+    if (radialMissionIdx !== null && (radialMissionIdx < 0 || radialMissionIdx >= missions.length)) {
+      radialMissionIdx = null;
+      radialAreaKey = null;
+      radialDetailIdx = null;
+    }
+
+    var selectedMission = (radialMissionIdx !== null) ? missions[radialMissionIdx] : null;
+    var areas = selectedMission ? getRadialAreasForMission(selectedMission) : [];
+    var selectedArea = (selectedMission && radialAreaKey) ? areas.find(function(a) { return a.id === radialAreaKey; }) : null;
+    if (radialAreaKey && !selectedArea) {
+      radialAreaKey = null;
+      radialDetailIdx = null;
+    }
+    var details = (selectedMission && selectedArea) ? getRadialDetailsForArea(selectedMission, selectedArea.id) : [];
+    if (radialDetailIdx !== null && (radialDetailIdx < 0 || radialDetailIdx >= details.length)) {
+      radialDetailIdx = details.length > 0 ? 0 : null;
+    }
+
+    // Nivel activo: 0 = Proyectos, 1 = Áreas del proyecto, 2 = Detalles del área
+    var activeLevelIdx = !selectedMission ? 0 : (!selectedArea ? 1 : 2);
+    var activeLevelKey = activeLevelIdx === 0 ? 'proyectos' : (activeLevelIdx === 1 ? 'area-' + radialMissionIdx : 'det-' + radialMissionIdx + '-' + radialAreaKey);
+    var levelChanged = radialLastLevelKey !== activeLevelKey;
+    radialLastLevelKey = activeLevelKey;
+
+    var levelItems = [];
+    var activeTitle = '';
+    if (activeLevelIdx === 0) {
+      activeTitle = 'Proyectos';
+      levelItems = missions.map(function(m, idx) {
+        return {
+          id: 'm-' + idx,
+          idx: idx,
+          shortLabel: stripEmojisAndTruncate(m.title, missions.length >= 7 ? 12 : 15),
+          label: m.title,
+          color: m.color || RADIAL_PALETTE[idx % RADIAL_PALETTE.length],
+          icon: getMissionRadialIconSvg(m),
+          pillText: m.status === 'completado' ? '✓ Listo' : (m.status === 'activo' ? '★ En curso' : 'Nivel ' + (m.level || (idx + 1)))
+        };
+      });
+    } else if (activeLevelIdx === 1) {
+      activeTitle = 'Áreas';
+      levelItems = areas;
+    } else {
+      activeTitle = selectedArea.shortLabel;
+      levelItems = details;
+    }
+
+    // ── Header / Breadcrumb arriba de la rueda ──
+    var crumbsHtml = '<button type="button" class="crumb-btn ' + (activeLevelIdx === 0 ? 'is-current' : '') + '" data-radial-crumb="0"><i class="fas fa-layer-group"></i> Proyectos</button>';
+    if (selectedMission) {
+      var mShort = stripEmojisAndTruncate(selectedMission.title, 22);
+      crumbsHtml += '<span class="crumb-sep">›</span>' +
+        '<button type="button" class="crumb-btn ' + (activeLevelIdx === 1 ? 'is-current' : '') + '" data-radial-crumb="1" style="--crumb-color:' + (selectedMission.color || '#047857') + ';">' +
+          '<span class="crumb-dot" style="background:' + (selectedMission.color || '#047857') + ';"></span>' + escapeRadialHtml(mShort) +
+        '</button>';
+    }
+    if (selectedArea) {
+      crumbsHtml += '<span class="crumb-sep">›</span>' +
+        '<button type="button" class="crumb-btn is-current" data-radial-crumb="2" style="--crumb-color:' + selectedArea.color + ';">' +
+          '<span class="crumb-dot" style="background:' + selectedArea.color + ';"></span>' + escapeRadialHtml(selectedArea.shortLabel) +
+        '</button>';
+    }
+
+    var wheelHeaderHtml =
+      '<div class="wheel-header">' +
+        '<div class="pf-school-wheel-brand">' +
+          '<span class="pf-school-wheel-tag">✏️ Mi Carpeta</span>' +
+          '<nav class="breadcrumb" aria-label="Ruta del menú radial">' + crumbsHtml + '</nav>' +
+        '</div>' +
+        '<div class="wheel-actions">' +
+          (activeLevelIdx > 0
+            ? '<button type="button" class="btn-back" id="pf-radial-back-btn"><i class="fas fa-arrow-left"></i> Volver</button>' +
+              '<button type="button" class="btn-reset" id="pf-radial-reset-btn"><i class="fas fa-undo"></i> Reiniciar</button>'
+            : '') +
+          (selectedMission
+            ? '<button type="button" class="pf-radial-open-modal-btn" id="pf-radial-full-btn"><i class="fas fa-expand-alt"></i> Ficha Completa</button>'
+            : '') +
+        '</div>' +
+      '</div>';
+
+    section.innerHTML =
+      wheelHeaderHtml +
+      '<div class="pf-radial-stage">' +
+        '<div class="radial-menu-container" id="pf-radial-svg-wrap"></div>' +
+        '<div class="pf-radial-detail-panel" id="pf-radial-detail-panel"></div>' +
+      '</div>';
+
+    var svgWrap = section.querySelector('#pf-radial-svg-wrap');
+    var svg = radialCreateSvgEl('svg', {
+      viewBox: '-265 -265 530 530',
+      class: 'radial-svg',
+      role: 'navigation',
+      'aria-label': 'Menú radial de proyectos: nivel ' + (activeLevelIdx + 1)
+    });
+
+    var defs = radialCreateSvgEl('defs');
+    var defsParts = [
+      '<filter id="pf-hub-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.14"/></filter>',
+      '<filter id="pf-wheel-shadow" x="-15%" y="-15%" width="130%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.10"/></filter>'
+    ];
+
+    levelItems.forEach(function(item, idx) {
+      var gId = 'pf-sec-grad-' + activeLevelIdx + '-' + idx;
+      var gHoverId = 'pf-sec-grad-act-' + activeLevelIdx + '-' + idx;
+      defsParts.push(
+        '<radialGradient id="' + gId + '" cx="0" cy="0" r="250" gradientUnits="userSpaceOnUse">' +
+          '<stop offset="50%" stop-color="' + item.color + '" stop-opacity="0.06"/>' +
+          '<stop offset="100%" stop-color="' + item.color + '" stop-opacity="0.22"/>' +
+        '</radialGradient>' +
+        '<radialGradient id="' + gHoverId + '" cx="0" cy="0" r="250" gradientUnits="userSpaceOnUse">' +
+          '<stop offset="50%" stop-color="' + item.color + '" stop-opacity="0.15"/>' +
+          '<stop offset="100%" stop-color="' + item.color + '" stop-opacity="0.36"/>' +
+        '</radialGradient>'
+      );
+    });
+
+    // Corona 2: 3 pasos de 120° cada uno, simétrico desde arriba (-60° a 60°, 60° a 180°, 180° a 300°)
+    var stepRIn = 78;
+    var stepROut = 122;
+    var stepRMid = (stepRIn + stepROut) / 2;
+    var stepDefs = [
+      { key: 'proyecto', title: 'Proyecto', selectedItem: selectedMission ? { shortLabel: stripEmojisAndTruncate(selectedMission.title, 12), color: selectedMission.color || '#047857' } : null },
+      { key: 'area', title: 'Área', selectedItem: selectedArea ? { shortLabel: selectedArea.shortLabel, color: selectedArea.color } : null },
+      { key: 'detalle', title: 'Detalle', selectedItem: (radialDetailIdx !== null && details[radialDetailIdx]) ? { shortLabel: stripEmojisAndTruncate(details[radialDetailIdx].shortLabel, 11), color: details[radialDetailIdx].color } : null }
+    ];
+
+    stepDefs.forEach(function(sd, idx) {
+      var sA = -60 + idx * 120;
+      var eA = sA + 120;
+      var isBottomHalf = idx >= 1;
+      defsParts.push('<path id="pf-step-arc-' + idx + '" d="' + radialDescribeStepTextArc(0, 0, stepRMid, sA, eA, isBottomHalf) + '"/>');
+    });
+
+    defs.innerHTML = defsParts.join('');
+    svg.appendChild(defs);
+
+    var defaultHubIcon = '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>';
+    var defaultStepText = 'Nivel ' + (activeLevelIdx + 1) + ' · ' + activeTitle;
+    var defaultHubTitle = selectedMission ? 'Ficha Completa' : 'Elegí Proyecto';
+    var defaultHubSub = selectedMission
+      ? stripEmojisAndTruncate(selectedMission.title, 18)
+      : (missions.length + (missions.length === 1 ? ' proyecto' : ' proyectos'));
+
+    var hubCircle, hubStepLabel, hubIcon, hubTitle, hubSub;
+
+    function showHubPreview(item, stepLabel) {
+      if (!hubCircle) return;
+      hubCircle.style.stroke = item.color;
+      hubCircle.setAttribute('stroke-width', '3.5');
+      hubIcon.style.stroke = item.color;
+      hubIcon.innerHTML = item.icon;
+      hubStepLabel.textContent = stepLabel;
+      hubStepLabel.style.fill = item.color;
+      hubTitle.textContent = stripEmojisAndTruncate(item.shortLabel, 14);
+      hubSub.textContent = item.pillText || '';
+      hubSub.style.fill = item.color;
+    }
+
+    function showStepBackPreview(sd) {
+      if (!hubCircle || !sd.selectedItem) return;
+      hubCircle.style.stroke = sd.selectedItem.color;
+      hubCircle.setAttribute('stroke-width', '3');
+      hubIcon.style.stroke = sd.selectedItem.color;
+      hubIcon.innerHTML = '<polyline points="15 18 9 12 15 6"/>';
+      hubStepLabel.textContent = 'Elegido: ' + sd.selectedItem.shortLabel;
+      hubStepLabel.style.fill = sd.selectedItem.color;
+      hubTitle.textContent = 'Cambiar ' + sd.title;
+      hubSub.textContent = 'Clic para volver';
+      hubSub.style.fill = sd.selectedItem.color;
+    }
+
+    function resetHubPreview() {
+      if (!hubCircle) return;
+      hubCircle.style.stroke = '';
+      hubCircle.setAttribute('stroke-width', '2');
+      hubIcon.style.stroke = '';
+      hubIcon.innerHTML = defaultHubIcon;
+      hubStepLabel.textContent = defaultStepText;
+      hubStepLabel.style.fill = '';
+      hubTitle.textContent = defaultHubTitle;
+      hubSub.textContent = defaultHubSub;
+      hubSub.style.fill = '';
+    }
+
+    // ── CORONA 3: Anillo Principal Activo (360°) ──
+    var mainRIn = 128;
+    var mainROut = 250;
+    var mainRMid = (mainRIn + mainROut) / 2;
+    var stepDeg = 360 / levelItems.length;
+    var startOffset = -90;
+
+    var mainRingGroup = radialCreateSvgEl('g', {
+      class: 'radial-ring-main' + (levelChanged ? ' is-entering' : ''),
+      filter: 'url(#pf-wheel-shadow)'
+    });
+
+    mainRingGroup.appendChild(radialCreateSvgEl('circle', {
+      cx: '0', cy: '0', r: mainRMid, fill: 'none',
+      'stroke-width': mainROut - mainRIn, class: 'main-ring-backdrop'
+    }));
+    mainRingGroup.appendChild(radialCreateSvgEl('circle', {
+      cx: '0', cy: '0', r: (mainROut - 12), fill: 'none',
+      'stroke-dasharray': '5 6', 'stroke-width': '1.2', class: 'main-ring-stitch'
+    }));
+
+    levelItems.forEach(function(item, idx) {
+      var sA = startOffset + idx * stepDeg;
+      var eA = sA + stepDeg;
+      var midA = levelItems.length === 1 ? 0 : (sA + eA) / 2;
+      var isSelected = (activeLevelIdx === 2 && radialDetailIdx === idx);
+
+      var sectorGroup = radialCreateSvgEl('g', {
+        class: 'radial-sector' + (isSelected ? ' is-selected' : ''),
+        style: '--sector-color: ' + item.color,
+        tabindex: '0',
+        role: 'button',
+        'aria-label': item.label
+      });
+
+      var sectorD = radialDescribeSector(0, 0, mainRIn, mainROut, sA, eA);
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: sectorD, class: 'sector-wedge', 'stroke-width': '2.4'
+      }));
+
+      var gradName = isSelected ? ('pf-sec-grad-act-' + activeLevelIdx + '-' + idx) : ('pf-sec-grad-' + activeLevelIdx + '-' + idx);
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: sectorD, fill: 'url(#' + gradName + ')', class: 'sector-tint'
+      }));
+
+      var accentD = levelItems.length === 1
+        ? radialDescribeSector(0, 0, mainROut - 6, mainROut, 0, 360)
+        : radialDescribeSector(0, 0, mainROut - (isSelected ? 7 : 5), mainROut, sA + 0.6, eA - 0.6);
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: accentD, fill: item.color, class: 'sector-accent'
+      }));
+
+      var sectorCenter = radialPolarToCartesian(0, 0, mainRMid, midA);
+      var badgePos = { x: sectorCenter.x, y: sectorCenter.y - 20 };
+
+      sectorGroup.appendChild(radialCreateSvgEl('circle', {
+        cx: badgePos.x.toFixed(2), cy: badgePos.y.toFixed(2), r: '26.5',
+        fill: item.color, class: 'sector-halo'
+      }));
+      sectorGroup.appendChild(radialCreateSvgEl('circle', {
+        cx: badgePos.x.toFixed(2), cy: badgePos.y.toFixed(2), r: '21',
+        fill: item.color, class: 'sector-badge'
+      }));
+
+      var iconSvg = radialCreateSvgEl('svg', {
+        x: (badgePos.x - 11).toFixed(2), y: (badgePos.y - 11).toFixed(2),
+        width: '22', height: '22', viewBox: '0 0 24 24',
+        fill: 'none', stroke: '#ffffff', 'stroke-width': '2.1',
+        'stroke-linecap': 'round', 'stroke-linejoin': 'round', class: 'sector-icon'
+      });
+      iconSvg.innerHTML = item.icon;
+      sectorGroup.appendChild(iconSvg);
+
+      var fontSize = levelItems.length >= 8 ? '11.5' : (levelItems.length >= 6 ? '12.8' : '14.5');
+      var labelEl = radialCreateSvgEl('text', {
+        x: sectorCenter.x.toFixed(2), y: (sectorCenter.y + 13).toFixed(2),
+        'text-anchor': 'middle', 'dominant-baseline': 'central',
+        'font-size': fontSize, 'font-weight': '700', class: 'sector-label'
+      });
+      labelEl.textContent = item.shortLabel;
+      sectorGroup.appendChild(labelEl);
+
+      if (item.pillText) {
+        var pillPos = { x: sectorCenter.x, y: sectorCenter.y + 34 };
+        var pillG = radialCreateSvgEl('g', { class: 'sector-count-pill' });
+        var pillW = 74;
+        var pillH = 18;
+        pillG.appendChild(radialCreateSvgEl('rect', {
+          x: (pillPos.x - pillW / 2).toFixed(2), y: (pillPos.y - pillH / 2).toFixed(2),
+          width: pillW, height: pillH, rx: '9', class: 'sector-pill-bg'
+        }));
+        var pillTxt = radialCreateSvgEl('text', {
+          x: pillPos.x.toFixed(2), y: pillPos.y.toFixed(2),
+          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          'font-size': '10.2', 'font-weight': '700', class: 'sector-pill-text'
+        });
+        pillTxt.textContent = item.pillText;
+        pillG.appendChild(pillTxt);
+        sectorGroup.appendChild(pillG);
+      }
+
+      var onSectorActivate = function(e) {
+        e.preventDefault();
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        if (activeLevelIdx === 0) {
+          radialMissionIdx = idx;
+          radialAreaKey = null;
+          radialDetailIdx = null;
+          radialTextPageIdx = 0;
+          mountAdventureRadialMenu(rootEl, student, missions);
+        } else if (activeLevelIdx === 1) {
+          radialAreaKey = item.id;
+          radialDetailIdx = 0;
+          radialTextPageIdx = 0;
+          mountAdventureRadialMenu(rootEl, student, missions);
+        } else {
+          radialDetailIdx = idx;
+          radialTextPageIdx = 0;
+          if (selectedArea.id === 'recursos' && item.resourceObj) {
+            var r = item.resourceObj;
+            if (r.actionType === 'presentation') {
+              openAdventureProjectModal(selectedMission, 'presentacion');
+            } else if (r.actionType === 'pdf' && r.url) {
+              openPdfModal(r.url, selectedMission.title);
+            } else if (r.url) {
+              window.open(r.url, '_blank', 'noopener,noreferrer');
+            }
+          } else if (selectedArea.id === 'galeria' && item.imgUrl) {
+            if (window.openImageModal) window.openImageModal(item.imgUrl, selectedMission.title, item.imgUrl);
+          }
+          mountAdventureRadialMenu(rootEl, student, missions);
+          var updatedPanel = rootEl.querySelector('#pf-radial-detail-panel');
+          if (updatedPanel && window.innerWidth < 960) {
+            updatedPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      };
+
+      sectorGroup.addEventListener('click', onSectorActivate);
+      sectorGroup.addEventListener('mouseenter', function() { showHubPreview(item, 'Nivel ' + (activeLevelIdx + 1)); });
+      sectorGroup.addEventListener('mouseleave', resetHubPreview);
+      sectorGroup.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') onSectorActivate(e);
+      });
+
+      mainRingGroup.appendChild(sectorGroup);
+    });
+
+    svg.appendChild(mainRingGroup);
+
+    // ── CORONA 2: Anillo Interior de Niveles (3 pasos de 120°) ──
+    var stepRingGroup = radialCreateSvgEl('g', { class: 'radial-step-ring' });
+    stepDefs.forEach(function(sd, idx) {
+      var sA = -60 + idx * 120;
+      var eA = sA + 120;
+      var isDone = Boolean(sd.selectedItem) && idx < activeLevelIdx;
+      var isActive = (idx === activeLevelIdx);
+      var canClick = isDone || (idx < activeLevelIdx);
+
+      var stepAttrs = {
+        class: ['inner-step-sector', isDone ? 'is-done' : '', isActive ? 'is-active-step' : '', (!isDone && !isActive) ? 'is-pending' : ''].filter(Boolean).join(' '),
+        style: sd.selectedItem ? ('--step-color: ' + sd.selectedItem.color) : '',
+        role: canClick ? 'button' : 'presentation'
+      };
+      if (canClick) stepAttrs.tabindex = '0';
+      else stepAttrs['aria-disabled'] = 'true';
+      var stepG = radialCreateSvgEl('g', stepAttrs);
+
+      stepG.appendChild(radialCreateSvgEl('path', {
+        d: radialDescribeSector(0, 0, stepRIn, stepROut, sA, eA),
+        class: 'inner-step-wedge', 'stroke-width': '2'
+      }));
+
+      if (isDone && sd.selectedItem) {
+        stepG.appendChild(radialCreateSvgEl('path', {
+          d: radialDescribeSector(0, 0, stepROut - 4, stepROut, sA + 1.2, eA - 1.2),
+          fill: sd.selectedItem.color, class: 'inner-step-accent'
+        }));
+      } else if (isActive) {
+        stepG.appendChild(radialCreateSvgEl('path', {
+          d: radialDescribeSector(0, 0, stepROut - 4, stepROut, sA + 1.2, eA - 1.2),
+          class: 'inner-step-accent-primary'
+        }));
+      }
+
+      var stepLbl = radialCreateSvgEl('text', {
+        class: 'inner-step-label', 'font-size': '11',
+        'font-weight': (isActive || isDone) ? '700' : '600', dy: '0.35em'
+      });
+      var tp = radialCreateSvgEl('textPath', {
+        href: '#pf-step-arc-' + idx, startOffset: '50%', 'text-anchor': 'middle'
+      });
+      tp.textContent = (isDone && sd.selectedItem) ? ((idx + 1) + ' · ' + sd.selectedItem.shortLabel) : ((idx + 1) + ' · ' + sd.title);
+      stepLbl.appendChild(tp);
+      stepG.appendChild(stepLbl);
+
+      if (canClick) {
+        var jumpToStep = function(e) {
+          e.preventDefault();
+          if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+          if (idx === 0) {
+            radialMissionIdx = null; radialAreaKey = null; radialDetailIdx = null;
+          radialTextPageIdx = 0;
+          } else if (idx === 1) {
+            radialAreaKey = null; radialDetailIdx = null;
+          }
+          mountAdventureRadialMenu(rootEl, student, missions);
+        };
+        stepG.addEventListener('click', jumpToStep);
+        stepG.addEventListener('mouseenter', function() { showStepBackPreview(sd); });
+        stepG.addEventListener('mouseleave', resetHubPreview);
+        stepG.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') jumpToStep(e);
+        });
+      }
+
+      stepRingGroup.appendChild(stepG);
+    });
+    svg.appendChild(stepRingGroup);
+
+    // ── CORONA 1: Hub Central ──
+    var hubG = radialCreateSvgEl('g', {
+      class: 'radial-hub', tabindex: '0', role: 'button',
+      'aria-label': selectedMission ? 'Abrir ficha completa del proyecto' : 'Explorar primer proyecto'
+    });
+
+    hubCircle = radialCreateSvgEl('circle', {
+      cx: '0', cy: '0', r: '70', class: 'hub-circle',
+      'stroke-width': '2', filter: 'url(#pf-hub-shadow)'
+    });
+    hubG.appendChild(hubCircle);
+
+    hubStepLabel = radialCreateSvgEl('text', {
+      x: '0', y: '-36', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '9.5', 'font-weight': '700', class: 'hub-step-label'
+    });
+    hubStepLabel.textContent = defaultStepText;
+    hubG.appendChild(hubStepLabel);
+
+    hubIcon = radialCreateSvgEl('svg', {
+      x: '-13', y: '-23', width: '26', height: '26', viewBox: '0 0 24 24',
+      fill: 'none', 'stroke-width': '2.2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', class: 'hub-icon'
+    });
+    hubIcon.innerHTML = defaultHubIcon;
+    hubG.appendChild(hubIcon);
+
+    hubTitle = radialCreateSvgEl('text', {
+      x: '0', y: '17', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '13.5', 'font-weight': '800', class: 'hub-title'
+    });
+    hubTitle.textContent = defaultHubTitle;
+    hubG.appendChild(hubTitle);
+
+    hubSub = radialCreateSvgEl('text', {
+      x: '0', y: '37', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '11', 'font-weight': '700', class: 'hub-sub'
+    });
+    hubSub.textContent = defaultHubSub;
+    hubG.appendChild(hubSub);
+
+    hubG.addEventListener('click', function() {
+      if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+      if (selectedMission) {
+        openAdventureProjectModal(selectedMission, 'presentacion');
+      } else if (missions.length > 0) {
+        radialMissionIdx = 0;
+        radialAreaKey = null;
+        radialDetailIdx = null;
+        mountAdventureRadialMenu(rootEl, student, missions);
+      }
+    });
+    svg.appendChild(hubG);
+    svgWrap.appendChild(svg);
+
+    // ── Panel de Detalle debajo de la rueda ──
+    var detailPanel = section.querySelector('#pf-radial-detail-panel');
+    if (detailPanel) {
+      if (!selectedMission) {
+        detailPanel.innerHTML =
+          '<div class="pf-rdp-empty">' +
+            '<i class="fas fa-hand-pointer"></i> Tocá cualquier <strong>proyecto</strong> en la rueda para explorar sus secciones, materiales y paso a paso.' +
+          '</div>';
+      } else if (!selectedArea) {
+        detailPanel.innerHTML =
+          '<div class="pf-rdp-card">' +
+            '<div class="pf-rdp-top">' +
+              '<div>' +
+                '<span class="pf-rdp-kicker">' + escapeRadialHtml(selectedMission.badge || 'Proyecto Maker') + '</span>' +
+                '<h4 class="pf-rdp-title">' + escapeRadialHtml(selectedMission.title) + '</h4>' +
+              '</div>' +
+              '<button type="button" class="pf-rdp-primary-btn" id="pf-rdp-open-full"><i class="fas fa-chalkboard-teacher"></i> Abrir Guía Interactiva</button>' +
+            '</div>' +
+            '<p class="pf-rdp-desc pf-rdp-kid-text"><span class="pf-rdp-kid-emoji">🌟</span> ' + linkifyRadialText(splitRadialTextIntoPages(selectedMission.description || '')[0] || '') + '</p>' +
+            '<div class="pf-rdp-hint"><i class="fas fa-compass"></i> Elegí un área en la rueda (<strong>Qué es</strong>, <strong>Paso a paso</strong>, <strong>Materiales</strong> o <strong>Recursos</strong>) para ver el detalle.</div>' +
+          '</div>';
+      } else {
+        var curDet = (radialDetailIdx !== null && details[radialDetailIdx]) ? details[radialDetailIdx] : details[0];
+        var detHtml = '';
+        var buildPagedBody = function(rawTxt) {
+          var pages = splitRadialTextIntoPages(rawTxt);
+          if (radialTextPageIdx >= pages.length) radialTextPageIdx = 0;
+          if (radialTextPageIdx < 0) radialTextPageIdx = 0;
+          var pageStr = pages[radialTextPageIdx] || '';
+          var bodyHtml = formatKidFriendlyPageHtml(pageStr, radialTextPageIdx);
+          if (pages.length > 1) {
+            bodyHtml +=
+              '<div class="pf-rdp-pager">' +
+                '<button type="button" class="pf-rdp-page-btn" id="pf-rdp-page-prev" ' + (radialTextPageIdx > 0 ? '' : 'disabled') + '>⬅️ Anterior</button>' +
+                '<div class="pf-rdp-page-dots">' +
+                  pages.map(function(_, pIdx) {
+                    return '<button type="button" class="pf-rdp-page-dot ' + (pIdx === radialTextPageIdx ? 'active' : '') + '" data-rdp-page="' + pIdx + '" aria-label="Página ' + (pIdx + 1) + '"></button>';
+                  }).join('') +
+                  '<span class="pf-rdp-page-count">Pág. ' + (radialTextPageIdx + 1) + ' de ' + pages.length + '</span>' +
+                '</div>' +
+                '<button type="button" class="pf-rdp-page-btn" id="pf-rdp-page-next" ' + (radialTextPageIdx < pages.length - 1 ? '' : 'disabled') + '>Siguiente ➡️</button>' +
+              '</div>';
+          }
+          return bodyHtml;
+        };
+
+        if (selectedArea.id === 'resumen' && curDet) {
+          detHtml =
+            '<div class="pf-rdp-card">' +
+              '<div class="pf-rdp-top"><div><span class="pf-rdp-kicker">✨ Resumen del Proyecto</span><h4 class="pf-rdp-title">' + escapeRadialHtml(curDet.label) + '</h4></div>' +
+              '<button type="button" class="pf-rdp-primary-btn" id="pf-rdp-open-full"><i class="fas fa-chalkboard-teacher"></i> Guía Interactiva</button></div>' +
+              buildPagedBody(curDet.text) +
+            '</div>';
+        } else if (selectedArea.id === 'pasos' && curDet && curDet.stepObj) {
+          var st = curDet.stepObj;
+          var hasPrev = radialDetailIdx > 0;
+          var hasNext = radialDetailIdx < details.length - 1;
+          detHtml =
+            '<div class="pf-rdp-card">' +
+              '<div class="pf-rdp-top">' +
+                '<div><span class="pf-rdp-kicker">Paso ' + curDet.stepNum + ' de ' + details.length + '</span><h4 class="pf-rdp-title">' + escapeRadialHtml(st.title || '') + '</h4></div>' +
+                '<div class="pf-rdp-nav-btns">' +
+                  '<button type="button" class="pf-rdp-step-btn" id="pf-rdp-prev" ' + (hasPrev ? '' : 'disabled') + '><i class="fas fa-chevron-left"></i> Anterior</button>' +
+                  '<button type="button" class="pf-rdp-step-btn" id="pf-rdp-next" ' + (hasNext ? '' : 'disabled') + '>Siguiente <i class="fas fa-chevron-right"></i></button>' +
+                '</div>' +
+              '</div>' +
+              buildPagedBody(st.desc || st.description || st.text || 'Seguí este paso en clase junto con tu profe.') +
+              (st.tip ? '<div class="pf-rdp-tip">💡 <strong>Tip Maker:</strong> ' + linkifyRadialText(st.tip) + '</div>' : '') +
+            '</div>';
+        } else if (selectedArea.id === 'materiales' && curDet && curDet.matObj) {
+          var matHasPrev = radialDetailIdx > 0;
+          var matHasNext = radialDetailIdx < details.length - 1;
+          detHtml =
+            '<div class="pf-rdp-card">' +
+              '<div class="pf-rdp-top">' +
+                '<div><span class="pf-rdp-kicker">Material ' + (radialDetailIdx + 1) + ' de ' + details.length + '</span><h4 class="pf-rdp-title">' + escapeRadialHtml(curDet.matObj.title) + '</h4></div>' +
+                (details.length > 1
+                  ? '<div class="pf-rdp-nav-btns">' +
+                      '<button type="button" class="pf-rdp-step-btn" id="pf-rdp-prev" ' + (matHasPrev ? '' : 'disabled') + '><i class="fas fa-chevron-left"></i> Anterior</button>' +
+                      '<button type="button" class="pf-rdp-step-btn" id="pf-rdp-next" ' + (matHasNext ? '' : 'disabled') + '>Siguiente <i class="fas fa-chevron-right"></i></button>' +
+                    '</div>'
+                  : '') +
+              '</div>' +
+              buildPagedBody(curDet.matObj.description || 'Material o herramienta que vamos a usar en el taller para construir este proyecto.') +
+            '</div>';
+        } else if (selectedArea.id === 'recursos') {
+          detHtml =
+            '<div class="pf-rdp-card">' +
+              '<div class="pf-rdp-top"><div><span class="pf-rdp-kicker">Recursos del Proyecto</span><h4 class="pf-rdp-title">' + escapeRadialHtml(selectedMission.title) + '</h4></div></div>' +
+              '<div class="pf-rdp-actions-row">' +
+                details.map(function(d, idx) {
+                  var r = d.resourceObj;
+                  if (r.actionType === 'url' && r.url) {
+                    return '<a href="' + escapeRadialHtml(r.url) + '" target="_blank" rel="noopener noreferrer" class="pf-rdp-res-btn"><i class="fas fa-external-link-alt"></i> ' + escapeRadialHtml(r.label) + '</a>';
+                  }
+                  return '<button type="button" class="pf-rdp-res-btn" data-rdp-res-idx="' + idx + '"><i class="fas ' + (r.actionType === 'pdf' ? 'fa-file-pdf' : 'fa-chalkboard-teacher') + '"></i> ' + escapeRadialHtml(r.label) + '</button>';
+                }).join('') +
+              '</div>' +
+            '</div>';
+        } else if (selectedArea.id === 'galeria') {
+          detHtml =
+            '<div class="pf-rdp-card">' +
+              '<div class="pf-rdp-top"><div><span class="pf-rdp-kicker">Fotos y Láminas</span><h4 class="pf-rdp-title">' + escapeRadialHtml(selectedMission.title) + '</h4></div></div>' +
+              '<div class="pf-rdp-gallery">' +
+                details.map(function(d, idx) {
+                  return '<button type="button" class="pf-rdp-thumb" data-rdp-gal-idx="' + idx + '" title="Ver imagen"><img src="' + escapeRadialHtml(d.imgUrl) + '" alt="Foto ' + (idx + 1) + '" loading="lazy"></button>';
+                }).join('') +
+              '</div>' +
+            '</div>';
+        }
+        detailPanel.innerHTML = detHtml;
+      }
+    }
+
+    // ── Listeners de Header y Panel de Detalle ──
+    section.querySelectorAll('[data-radial-crumb]').forEach(function(btn) {
+      btn.onclick = function() {
+        var lvl = parseInt(btn.dataset.radialCrumb, 10);
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        if (lvl === 0) { radialMissionIdx = null; radialAreaKey = null; radialDetailIdx = null; }
+        else if (lvl === 1) { radialAreaKey = null; radialDetailIdx = null; }
+          radialTextPageIdx = 0;
+        mountAdventureRadialMenu(rootEl, student, missions);
+      };
+    });
+
+    var backBtn = section.querySelector('#pf-radial-back-btn');
+    if (backBtn) {
+      backBtn.onclick = function() {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        if (radialAreaKey) { radialAreaKey = null; radialDetailIdx = null; }
+        else if (radialMissionIdx !== null) { radialMissionIdx = null; }
+          radialTextPageIdx = 0;
+        mountAdventureRadialMenu(rootEl, student, missions);
+      };
+    }
+
+    var resetBtn = section.querySelector('#pf-radial-reset-btn');
+    if (resetBtn) {
+      resetBtn.onclick = function() {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        radialMissionIdx = null; radialAreaKey = null; radialDetailIdx = null;
+        mountAdventureRadialMenu(rootEl, student, missions);
+      };
+    }
+
+    var pagePrevBtn = section.querySelector('#pf-rdp-page-prev');
+    if (pagePrevBtn) {
+      pagePrevBtn.onclick = function() {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        if (radialTextPageIdx > 0) {
+          radialTextPageIdx--;
+          mountAdventureRadialMenu(rootEl, student, missions);
+        }
+      };
+    }
+    var pageNextBtn = section.querySelector('#pf-rdp-page-next');
+    if (pageNextBtn) {
+      pageNextBtn.onclick = function() {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        radialTextPageIdx++;
+        mountAdventureRadialMenu(rootEl, student, missions);
+      };
+    }
+    section.querySelectorAll('[data-rdp-page]').forEach(function(dot) {
+      dot.onclick = function() {
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        radialTextPageIdx = parseInt(dot.dataset.rdpPage, 10) || 0;
+        mountAdventureRadialMenu(rootEl, student, missions);
+      };
+    });
+
+    var fullBtn = section.querySelector('#pf-radial-full-btn');
+    if (fullBtn && selectedMission) {
+      fullBtn.onclick = function() { openAdventureProjectModal(selectedMission, 'presentacion'); };
+    }
+    var rdpOpenFull = section.querySelector('#pf-rdp-open-full');
+    if (rdpOpenFull && selectedMission) {
+      rdpOpenFull.onclick = function() { openAdventureProjectModal(selectedMission, 'presentacion'); };
+    }
+    var rdpPrev = section.querySelector('#pf-rdp-prev');
+    if (rdpPrev) {
+      rdpPrev.onclick = function() {
+        if (radialDetailIdx > 0) {
+          radialDetailIdx--;
+          radialTextPageIdx = 0;
+          mountAdventureRadialMenu(rootEl, student, missions);
+        }
+      };
+    }
+    var rdpNext = section.querySelector('#pf-rdp-next');
+    if (rdpNext) {
+      rdpNext.onclick = function() {
+        if (radialDetailIdx < details.length - 1) {
+          radialDetailIdx++;
+          radialTextPageIdx = 0;
+          mountAdventureRadialMenu(rootEl, student, missions);
+        }
+      };
+    }
+    section.querySelectorAll('[data-rdp-idx]').forEach(function(chip) {
+      chip.onclick = function() {
+        radialDetailIdx = parseInt(chip.dataset.rdpIdx, 10);
+          radialTextPageIdx = 0;
+        mountAdventureRadialMenu(rootEl, student, missions);
+      };
+    });
+    section.querySelectorAll('[data-rdp-res-idx]').forEach(function(btn) {
+      btn.onclick = function() {
+        var rIdx = parseInt(btn.dataset.rdpResIdx, 10);
+        var d = details[rIdx];
+        if (!d || !d.resourceObj || !selectedMission) return;
+        if (d.resourceObj.actionType === 'pdf' && d.resourceObj.url) {
+          openPdfModal(d.resourceObj.url, selectedMission.title);
+        } else {
+          openAdventureProjectModal(selectedMission, 'presentacion');
+        }
+      };
+    });
+    section.querySelectorAll('[data-rdp-gal-idx]').forEach(function(btn) {
+      btn.onclick = function() {
+        var gIdx = parseInt(btn.dataset.rdpGalIdx, 10);
+        var d = details[gIdx];
+        if (d && d.imgUrl && window.openImageModal) {
+          window.openImageModal(d.imgUrl, selectedMission.title, d.imgUrl);
+        }
+      };
+    });
+  }
+
   function renderAdventureRoadmapHtml(student, missions, isGrid) {
     var isLegacy = isLegacyTheme(student);
     var isCyber = isCyberTheme(student);
@@ -1040,18 +2176,26 @@
     var completedCount = missions.filter(function(m){ return m.status === 'completado'; }).length;
     var progressPercent = missions.length > 0 ? Math.min(100, Math.round((completedCount / missions.length) * 100)) : 0;
 
+    if (student && radialLastGradeId !== student.gradeId) {
+      radialLastGradeId = student.gradeId;
+      radialMissionIdx = null;
+      radialAreaKey = null;
+      radialDetailIdx = null;
+      radialLastLevelKey = null;
+    }
+
     var headerHtml =
       '<div class="arm-toolbar-compact ' + (isLegacy ? 'legacy-toolbar' : (isCyber ? 'cyber-toolbar' : (isSpace ? 'space-toolbar' : ''))) + '">' +
         '<div class="atc-left">' +
-          '<span class="atc-badge"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-compass'))) + '"></i> ' + (isLegacy ? 'ANUARIO DE EGRESADOS 2026' : (isCyber ? 'RED NEURONAL MAKER 2026' : (isSpace ? 'CARTA ESTELAR MAKER 2026' : 'CARTA NÁUTICA MAKER 2026'))) + '</span>' +
-          '<h3 class="atc-title">' + (isLegacy ? '🎓 Camino del Egresado &bull; ' : (isCyber ? '🔌 Circuito Central &bull; ' : (isSpace ? '🪐 Mapa Estelar &bull; ' : '🗺️ Mapa del Tesoro &bull; '))) + student.gradeName + '</h3>' +
+          '<span class="atc-badge"><i class="fas fa-graduation-cap"></i> TALLER ESCOLAR</span>' +
+          '<h3 class="atc-title">Proyectos del Taller &bull; ' + student.gradeName + '</h3>' +
         '</div>' +
         '<div class="arm-view-toggle">' +
-          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="' + (isLegacy ? 'Ver como Camino del Egresado' : (isCyber ? 'Ver como Circuito de Nodos Cyber' : (isSpace ? 'Ver como Mapa Estelar Galáctico' : 'Ver como Mapa Pirata del Tesoro'))) + '">' +
-            '<i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-map-marked-alt'))) + '"></i> <span>' + (isLegacy ? 'Libro de Hitos' : (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa Pirata'))) + '</span>' +
+          '<button type="button" class="arm-vt-btn ' + (!isGrid ? 'active' : '') + '" data-arm-mode="trail" title="Ver como Ruleta de Proyectos">' +
+            '<i class="fas fa-compass"></i> <span>Ruleta</span>' +
           '</button>' +
-          '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Cuadrícula">' +
-            '<i class="fas fa-th-large"></i> <span>Cuadrícula</span>' +
+          '<button type="button" class="arm-vt-btn ' + (isGrid ? 'active' : '') + '" data-arm-mode="grid" title="Ver como Tarjetas">' +
+            '<i class="fas fa-th-large"></i> <span>Tarjetas</span>' +
           '</button>' +
         '</div>' +
       '</div>';
@@ -1470,916 +2614,7 @@
       '</div>';
 
     if (!isGrid) {
-      // ── MAPA DEL TESORO PIRATA CON BARCO Y SENDERO CURVADO ──
-      var pirateShipSvg =
-        '<svg class="pirate-ship-svg" viewBox="0 0 260 210" width="150" height="120" xmlns="http://www.w3.org/2000/svg" aria-label="Galeón Paulo Freire">' +
-          '<defs>' +
-            '<linearGradient id="shipWoodGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#8B4513"/>' +
-              '<stop offset="50%" stop-color="#5C2C16"/>' +
-              '<stop offset="100%" stop-color="#3B1D0E"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="sailGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#FFFDF5"/>' +
-              '<stop offset="100%" stop-color="#EEDBB7"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="goldTrimGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#FDE047"/>' +
-              '<stop offset="100%" stop-color="#D97706"/>' +
-            '</linearGradient>' +
-            '<filter id="shipShadow" x="-10%" y="-10%" width="130%" height="130%">' +
-              '<feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity="0.35"/>' +
-            '</filter>' +
-          '</defs>' +
-          '<g class="pirate-ship-bobbing" filter="url(#shipShadow)">' +
-            '<ellipse cx="130" cy="186" rx="85" ry="10" fill="rgba(14, 116, 144, 0.28)"/>' +
-            '<line x1="205" y1="125" x2="255" y2="100" stroke="#5C2C16" stroke-width="4" stroke-linecap="round"/>' +
-            '<line x1="200" y1="127" x2="245" y2="105" stroke="#D97706" stroke-width="1.5"/>' +
-            '<line x1="60" y1="125" x2="125" y2="35" stroke="#78350F" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.65"/>' +
-            '<line x1="190" y1="125" x2="125" y2="35" stroke="#78350F" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.65"/>' +
-            '<line x1="130" y1="125" x2="175" y2="55" stroke="#78350F" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.65"/>' +
-            '<line x1="240" y1="105" x2="175" y2="55" stroke="#78350F" stroke-width="1.5" opacity="0.5"/>' +
-            '<rect x="75" y="60" width="6" height="75" fill="#451A03" rx="2"/>' +
-            '<rect x="122" y="25" width="8" height="110" fill="#451A03" rx="3"/>' +
-            '<rect x="172" y="48" width="6" height="85" fill="#451A03" rx="2"/>' +
-            '<path d="M 116 40 L 136 40 L 133 50 L 119 50 Z" fill="#78350F" stroke="#3B1D0E" stroke-width="1.5"/>' +
-            '<line x1="116" y1="45" x2="136" y2="45" stroke="#D97706" stroke-width="1"/>' +
-            '<g class="pirate-flag-wave">' +
-              '<path d="M 126 22 L 96 16 C 102 22, 96 28, 100 32 L 126 30 Z" fill="#0F172A"/>' +
-              '<circle cx="111" cy="23" r="3.5" fill="#FFFFFF"/>' +
-              '<path d="M 108 25.5 L 114 25.5 L 113 28 L 109 28 Z" fill="#FFFFFF"/>' +
-              '<line x1="106" y1="21" x2="116" y2="27" stroke="#FFFFFF" stroke-width="1"/>' +
-              '<line x1="106" y1="27" x2="116" y2="21" stroke="#FFFFFF" stroke-width="1"/>' +
-            '</g>' +
-            '<path d="M 170 55 C 190 65, 192 90, 172 95 C 185 85, 185 70, 170 55 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="1.5"/>' +
-            '<path d="M 105 52 C 126 48, 142 48, 147 52 C 144 72, 110 72, 105 52 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="1.5"/>' +
-            '<path d="M 120 52 L 128 52 L 128 70 L 120 70 Z" fill="none" stroke="#DC2626" stroke-width="2"/>' +
-            '<path d="M 98 78 C 126 72, 150 72, 154 78 C 152 118, 102 118, 98 78 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="2"/>' +
-            '<path d="M 112 80 C 114 96, 114 105, 113 115" stroke="#DC2626" stroke-width="3" fill="none"/>' +
-            '<path d="M 138 80 C 137 96, 137 105, 138 115" stroke="#DC2626" stroke-width="3" fill="none"/>' +
-            '<circle cx="125" cy="97" r="7" fill="none" stroke="#1E293B" stroke-width="2"/>' +
-            '<circle cx="125" cy="97" r="3" fill="#D97706"/>' +
-            '<path d="M 58 70 C 74 65, 84 68, 80 82 C 70 95, 60 90, 58 70 Z" fill="url(#sailGrad)" stroke="#B45309" stroke-width="1.5"/>' +
-            '<path d="M 46 128 C 48 165, 80 182, 130 182 C 185 182, 212 162, 222 135 C 226 128, 220 125, 208 125 L 48 125 C 42 125, 43 126, 46 128 Z" fill="url(#shipWoodGrad)" stroke="#3B1D0E" stroke-width="2.5"/>' +
-            '<path d="M 48 138 C 90 148, 170 148, 218 138" stroke="#3B1D0E" stroke-width="1.2" fill="none" opacity="0.6"/>' +
-            '<path d="M 54 150 C 95 162, 165 162, 210 150" stroke="#3B1D0E" stroke-width="1.2" fill="none" opacity="0.6"/>' +
-            '<path d="M 68 164 C 100 174, 155 174, 195 164" stroke="#3B1D0E" stroke-width="1.2" fill="none" opacity="0.6"/>' +
-            '<path d="M 44 126 L 216 126 L 214 130 L 46 130 Z" fill="url(#goldTrimGrad)"/>' +
-            '<circle cx="82" cy="144" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
-            '<circle cx="112" cy="146" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
-            '<circle cx="142" cy="146" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
-            '<circle cx="172" cy="144" r="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.8"/>' +
-            '<g transform="translate(195, 142)">' +
-              '<circle cx="6" cy="4" r="3" fill="none" stroke="#64748B" stroke-width="1.5"/>' +
-              '<line x1="6" y1="7" x2="6" y2="20" stroke="#475569" stroke-width="2"/>' +
-              '<line x1="2" y1="10" x2="10" y2="10" stroke="#475569" stroke-width="1.5"/>' +
-              '<path d="M 1 17 C 3 22, 9 22, 11 17" fill="none" stroke="#475569" stroke-width="2"/>' +
-            '</g>' +
-            '<rect x="42" y="112" width="22" height="15" fill="#5C2C16" stroke="#3B1D0E" stroke-width="1.5"/>' +
-            '<rect x="46" y="116" width="5" height="7" fill="#FEF08A" stroke="#D97706" stroke-width="1"/>' +
-            '<rect x="54" y="116" width="5" height="7" fill="#FEF08A" stroke="#D97706" stroke-width="1"/>' +
-            '<circle cx="39" cy="114" r="3" fill="#FDE047" stroke="#D97706" stroke-width="1"/>' +
-          '</g>' +
-          '<path class="pirate-ship-front-wave" d="M 20 180 C 60 174, 90 186, 130 180 C 170 174, 200 186, 240 180 C 250 182, 250 195, 230 195 C 190 195, 70 195, 20 195 Z" fill="#0284C7" opacity="0.55"/>' +
-          '<path class="pirate-ship-foam" d="M 40 178 Q 70 184 100 178 Q 130 184 160 178 Q 190 184 220 178" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
-        '</svg>';
-
-      var spaceShuttleSvg =
-        '<svg class="pirate-ship-svg space-shuttle-svg" viewBox="0 0 260 210" width="150" height="120" xmlns="http://www.w3.org/2000/svg" aria-label="Nave Espacial Paulo Freire">' +
-          '<defs>' +
-            '<linearGradient id="hullGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#F8FAFC"/>' +
-              '<stop offset="55%" stop-color="#E2E8F0"/>' +
-              '<stop offset="100%" stop-color="#94A3B8"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#38BDF8"/>' +
-              '<stop offset="50%" stop-color="#0284C7"/>' +
-              '<stop offset="100%" stop-color="#1E3A8A"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="thrusterGrad" x1="0%" y1="0%" x2="100%" y2="0%">' +
-              '<stop offset="0%" stop-color="#22D3EE"/>' +
-              '<stop offset="50%" stop-color="#FDE047"/>' +
-              '<stop offset="100%" stop-color="#F97316"/>' +
-            '</linearGradient>' +
-          '</defs>' +
-          '<g class="pirate-ship-bobbing">' +
-            '<!-- Halo de propulsión antigravedad -->' +
-            '<ellipse cx="130" cy="182" rx="82" ry="12" fill="rgba(56, 189, 248, 0.28)"/>' +
-            '<!-- Estela de plasma del motor -->' +
-            '<path d="M 55 128 L 10 116 L 26 132 L 6 142 L 55 144 Z" fill="url(#thrusterGrad)" opacity="0.9"/>' +
-            '<!-- Aleta dorsal superior -->' +
-            '<path d="M 75 102 L 48 64 L 88 74 L 112 104 Z" fill="url(#wingGrad)" stroke="#38BDF8" stroke-width="1.8"/>' +
-            '<!-- Alas delta espaciales -->' +
-            '<path d="M 82 135 L 48 168 L 115 162 L 155 138 Z" fill="url(#wingGrad)" stroke="#7DD3FC" stroke-width="2"/>' +
-            '<!-- Fuselaje principal de la nave -->' +
-            '<path d="M 52 118 C 52 96, 110 88, 175 96 C 212 101, 238 116, 245 128 C 238 140, 212 151, 175 154 C 110 158, 52 146, 52 118 Z" fill="url(#hullGrad)" stroke="#0284C7" stroke-width="2.5"/>' +
-            '<!-- Franja tecnológica cian/violeta -->' +
-            '<path d="M 62 126 L 228 126 L 220 134 L 62 134 Z" fill="#0284C7"/>' +
-            '<!-- Cabina panorámica iluminada -->' +
-            '<path d="M 172 103 C 196 105, 218 114, 226 123 C 210 125, 186 124, 168 118 Z" fill="#22D3EE" stroke="#0369A1" stroke-width="1.8"/>' +
-            '<!-- Escotillas iluminadas -->' +
-            '<circle cx="102" cy="116" r="6.5" fill="#0F172A" stroke="#38BDF8" stroke-width="2"/>' +
-            '<circle cx="126" cy="116" r="6.5" fill="#0F172A" stroke="#38BDF8" stroke-width="2"/>' +
-            '<circle cx="150" cy="116" r="6.5" fill="#0F172A" stroke="#38BDF8" stroke-width="2"/>' +
-            '<circle cx="100" cy="114" r="2" fill="#BAE6FD"/>' +
-            '<circle cx="124" cy="114" r="2" fill="#BAE6FD"/>' +
-            '<circle cx="148" cy="114" r="2" fill="#BAE6FD"/>' +
-            '<!-- Toberas traseras -->' +
-            '<rect x="44" y="112" width="10" height="14" rx="3" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5"/>' +
-            '<rect x="44" y="128" width="10" height="14" rx="3" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5"/>' +
-          '</g>' +
-          '<path class="pirate-ship-foam" d="M 35 178 Q 75 170 115 178 Q 155 186 195 178 Q 220 172 240 178" stroke="#38BDF8" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.8"/>' +
-        '</svg>';
-
-      var cyberCoreBotSvg =
-        '<svg class="pirate-ship-svg cyber-bot-svg" viewBox="0 0 260 210" width="150" height="120" xmlns="http://www.w3.org/2000/svg" aria-label="Núcleo Robótico Cyber Paulo Freire">' +
-          '<defs>' +
-            '<linearGradient id="cyChassisGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#1E293B"/>' +
-              '<stop offset="55%" stop-color="#0F172A"/>' +
-              '<stop offset="100%" stop-color="#020617"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="cyNeonGreen" x1="0%" y1="0%" x2="100%" y2="0%">' +
-              '<stop offset="0%" stop-color="#10B981"/>' +
-              '<stop offset="50%" stop-color="#34D399"/>' +
-              '<stop offset="100%" stop-color="#059669"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="cyMagentaGlow" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#EC4899"/>' +
-              '<stop offset="100%" stop-color="#8B5CF6"/>' +
-            '</linearGradient>' +
-          '</defs>' +
-          '<g class="pirate-ship-bobbing">' +
-            '<!-- Plataforma magnética de circuito -->' +
-            '<ellipse cx="130" cy="182" rx="88" ry="12" fill="rgba(16, 185, 129, 0.28)"/>' +
-            '<ellipse cx="130" cy="182" rx="64" ry="7" fill="none" stroke="#34D399" stroke-width="1.8" stroke-dasharray="6 4"/>' +
-            '<!-- Antenas receptoras de IA -->' +
-            '<line x1="95" y1="52" x2="80" y2="22" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>' +
-            '<circle cx="80" cy="20" r="5" fill="#34D399"/>' +
-            '<line x1="165" y1="52" x2="180" y2="22" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>' +
-            '<circle cx="180" cy="20" r="5" fill="#F472B6"/>' +
-            '<!-- Brazos robóticos articulados laterales -->' +
-            '<path d="M 68 106 L 38 92 L 30 118 L 54 132" fill="none" stroke="#10B981" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>' +
-            '<circle cx="38" cy="92" r="5" fill="#FACC15" stroke="#0F172A" stroke-width="1.5"/>' +
-            '<path d="M 192 106 L 222 92 L 230 118 L 206 132" fill="none" stroke="#EC4899" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>' +
-            '<circle cx="222" cy="92" r="5" fill="#FACC15" stroke="#0F172A" stroke-width="1.5"/>' +
-            '<!-- Chasis Central de Procesador / Robot -->' +
-            '<rect x="68" y="48" width="124" height="108" rx="22" fill="url(#cyChassisGrad)" stroke="#10B981" stroke-width="3"/>' +
-            '<!-- Visor Digital LED del Robot -->' +
-            '<rect x="82" y="62" width="96" height="36" rx="10" fill="#020617" stroke="#34D399" stroke-width="2"/>' +
-            '<circle cx="108" cy="80" r="8" fill="#10B981"/>' +
-            '<circle cx="106" cy="78" r="2.5" fill="#ECFDF5"/>' +
-            '<circle cx="152" cy="80" r="8" fill="#10B981"/>' +
-            '<circle cx="150" cy="78" r="2.5" fill="#ECFDF5"/>' +
-            '<path d="M 122 86 Q 130 92 138 86" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round"/>' +
-            '<!-- Matriz Micro:bit / Núcleo Cuántico en el pecho -->' +
-            '<rect x="92" y="108" width="76" height="36" rx="6" fill="#090D1E" stroke="url(#cyMagentaGlow)" stroke-width="2"/>' +
-            '<circle cx="106" cy="120" r="3" fill="#F43F5E"/><circle cx="118" cy="120" r="3" fill="#34D399"/><circle cx="130" cy="120" r="3" fill="#FACC15"/><circle cx="142" cy="120" r="3" fill="#34D399"/><circle cx="154" cy="120" r="3" fill="#F43F5E"/>' +
-            '<circle cx="106" cy="132" r="3" fill="#34D399"/><circle cx="118" cy="132" r="3" fill="#EC4899"/><circle cx="130" cy="132" r="3" fill="#34D399"/><circle cx="142" cy="132" r="3" fill="#EC4899"/><circle cx="154" cy="132" r="3" fill="#34D399"/>' +
-            '<!-- Pines dorados inferiores tipo Microchip -->' +
-            '<rect x="88" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
-            '<rect x="106" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
-            '<rect x="126" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
-            '<rect x="146" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
-            '<rect x="164" y="156" width="8" height="14" rx="2" fill="#FACC15"/>' +
-          '</g>' +
-          '<path class="pirate-ship-foam" d="M 30 178 L 70 178 L 80 170 L 110 184 L 130 172 L 150 184 L 180 170 L 190 178 L 230 178" stroke="#10B981" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
-        '</svg>';
-
-      var legacyGradArchSvg =
-        '<svg class="pirate-ship-svg legacy-arch-svg" viewBox="0 0 260 210" width="150" height="120" xmlns="http://www.w3.org/2000/svg" aria-label="Portal de Graduados Paulo Freire">' +
-          '<defs>' +
-            '<linearGradient id="legGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#FDE047"/>' +
-              '<stop offset="50%" stop-color="#F59E0B"/>' +
-              '<stop offset="100%" stop-color="#B45309"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="legCapGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#1E1B4B"/>' +
-              '<stop offset="60%" stop-color="#0F172A"/>' +
-              '<stop offset="100%" stop-color="#020617"/>' +
-            '</linearGradient>' +
-            '<linearGradient id="legRibbonRed" x1="0%" y1="0%" x2="100%" y2="100%">' +
-              '<stop offset="0%" stop-color="#EF4444"/>' +
-              '<stop offset="100%" stop-color="#991B1B"/>' +
-            '</linearGradient>' +
-            '<filter id="legGoldGlow" x="-20%" y="-20%" width="140%" height="140%">' +
-              '<feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(245,158,11,0.5)"/>' +
-            '</filter>' +
-          '</defs>' +
-          '<g class="pirate-ship-bobbing" filter="url(#legGoldGlow)">' +
-            '<!-- Base y sombra pedestal -->' +
-            '<ellipse cx="130" cy="184" rx="86" ry="12" fill="rgba(245, 158, 11, 0.28)"/>' +
-            '<rect x="65" y="162" width="130" height="18" rx="5" fill="#1E1B4B" stroke="url(#legGoldGrad)" stroke-width="2.5"/>' +
-            '<rect x="75" y="152" width="110" height="12" rx="3" fill="#312E81" stroke="url(#legGoldGrad)" stroke-width="1.8"/>' +
-            '<!-- Columnas y Arco de Triunfo con Laureles -->' +
-            '<path d="M 68 152 L 68 70 Q 130 20 192 70 L 192 152" fill="none" stroke="url(#legGoldGrad)" stroke-width="5" stroke-linecap="round"/>' +
-            '<path d="M 78 152 L 78 78 Q 130 38 182 78 L 182 152" fill="none" stroke="#FDE047" stroke-width="1.8" stroke-dasharray="5 3"/>' +
-            '<!-- Hojas de Laurel en el arco -->' +
-            '<circle cx="85" cy="62" r="5" fill="#F59E0B"/><circle cx="102" cy="46" r="5" fill="#FDE047"/><circle cx="130" cy="38" r="6" fill="#F59E0B"/><circle cx="158" cy="46" r="5" fill="#FDE047"/><circle cx="175" cy="62" r="5" fill="#F59E0B"/>' +
-            '<!-- Birrete de Graduación Central -->' +
-            '<polygon points="130,55 184,78 130,101 76,78" fill="url(#legCapGrad)" stroke="url(#legGoldGrad)" stroke-width="2.5"/>' +
-            '<rect x="108" y="94" width="44" height="24" rx="4" fill="url(#legCapGrad)" stroke="url(#legGoldGrad)" stroke-width="2"/>' +
-            '<!-- Borla Dorada -->' +
-            '<line x1="130" y1="78" x2="168" y2="92" stroke="#FDE047" stroke-width="2.2"/>' +
-            '<circle cx="168" cy="95" r="4.5" fill="#F59E0B"/>' +
-            '<line x1="168" y1="99" x2="170" y2="114" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>' +
-            '<!-- Rollo de Diploma de Honor con Lazo -->' +
-            '<rect x="90" y="128" width="80" height="18" rx="9" fill="#FFFDF5" stroke="#B45309" stroke-width="2"/>' +
-            '<line x1="94" y1="137" x2="166" y2="137" stroke="#FDE047" stroke-width="1.2"/>' +
-            '<rect x="122" y="125" width="16" height="24" rx="3" fill="url(#legRibbonRed)" stroke="#B45309" stroke-width="1"/>' +
-            '<polygon points="122,149 130,144 138,149 135,138 125,138" fill="url(#legRibbonRed)"/>' +
-            '<!-- Estrella Dorada de Excelencia -->' +
-            '<circle cx="130" cy="136" r="3.5" fill="#FDE047"/>' +
-          '</g>' +
-          '<path class="pirate-ship-foam" d="M 35 180 Q 80 172 130 180 Q 180 188 225 180" stroke="#F59E0B" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.8"/>' +
-        '</svg>';
-
-      var pirateStartPortHtml = isLegacy
-        ? '<div class="pirate-start-port legacy-start-port">' +
-            '<div class="pirate-port-sky">' +
-              '<span class="pirate-sun-icon">👑</span>' +
-              '<span class="pirate-seagull s1">🎓</span>' +
-              '<span class="pirate-seagull s2">✨</span>' +
-            '</div>' +
-            '<div class="pirate-ship-stage">' +
-              '<div class="pirate-ship-wrapper" title="Portal de Egresados: Generación Maker Paulo Freire">' +
-                legacyGradArchSvg +
-              '</div>' +
-              '<div class="pirate-ocean-waves-wrap">' +
-                '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
-                  '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
-                  '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
-                '</svg>' +
-              '</div>' +
-            '</div>' +
-            '<div class="pirate-port-banner">' +
-              '<div class="ppb-anchor"><i class="fas fa-graduation-cap"></i></div>' +
-              '<div class="ppb-text">' +
-                '<h3 class="ppb-title">PORTAL DE EGRESADOS &bull; GENERACIÓN MAKER PAULO FREIRE</h3>' +
-                '<p class="ppb-sub">El Camino de <strong>6.° Grado</strong> reúne los proyectos cumbre de tu paso por la escuela: Inteligencia Artificial en Canva, Gemini NotebookLM y Robótica con Servomotores. Recorré cada hito de honor para sellar tu Libro de Recuerdos y desbloquear el Gran Diploma de Graduación.</p>' +
-              '</div>' +
-              '<div class="ppb-compass"><i class="fas fa-award"></i></div>' +
-            '</div>' +
-          '</div>'
-        : (isCyber
-        ? '<div class="pirate-start-port cyber-start-port">' +
-            '<div class="pirate-port-sky">' +
-              '<span class="pirate-sun-icon">⚡</span>' +
-              '<span class="pirate-seagull s1">🤖</span>' +
-              '<span class="pirate-seagull s2">🧠</span>' +
-            '</div>' +
-            '<div class="pirate-ship-stage">' +
-              '<div class="pirate-ship-wrapper" title="Núcleo Robótico Paulo Freire: ¡Sistema en línea!">' +
-                cyberCoreBotSvg +
-              '</div>' +
-              '<div class="pirate-ocean-waves-wrap">' +
-                '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
-                  '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
-                  '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
-                '</svg>' +
-              '</div>' +
-            '</div>' +
-            '<div class="pirate-port-banner">' +
-              '<div class="ppb-anchor"><i class="fas fa-microchip"></i></div>' +
-              '<div class="ppb-text">' +
-                '<h3 class="ppb-title">SERVIDOR CENTRAL &bull; LABORATORIO DE ROBÓTICA E IA PAULO FREIRE</h3>' +
-                '<p class="ppb-sub">El Núcleo Robótico <strong>Paulo Freire</strong> inicia la compilación en la placa madre de <strong>' + student.gradeName + '</strong>. Seguí las pistas de cobre y fibra óptica, tocá cada nodo para abrir su terminal de código y desbloqueá la Supercomputadora Central de IA.</p>' +
-              '</div>' +
-              '<div class="ppb-compass"><i class="fas fa-network-wired"></i></div>' +
-            '</div>' +
-          '</div>'
-        : (isSpace
-          ? '<div class="pirate-start-port space-start-port">' +
-              '<div class="pirate-port-sky">' +
-                '<span class="pirate-sun-icon">🪐</span>' +
-                '<span class="pirate-seagull s1">🛰️</span>' +
-                '<span class="pirate-seagull s2">✨</span>' +
-              '</div>' +
-              '<div class="pirate-ship-stage">' +
-                '<div class="pirate-ship-wrapper" title="Nave Exploradora Paulo Freire: ¡Lista para el despegue!">' +
-                  spaceShuttleSvg +
-                '</div>' +
-                '<div class="pirate-ocean-waves-wrap">' +
-                  '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
-                    '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
-                    '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
-                  '</svg>' +
-                '</div>' +
-              '</div>' +
-              '<div class="pirate-port-banner">' +
-                '<div class="ppb-anchor"><i class="fas fa-rocket"></i></div>' +
-                '<div class="ppb-text">' +
-                  '<h3 class="ppb-title">BASE DE LANZAMIENTO &bull; ESTACIÓN ESPACIAL PAULO FREIRE</h3>' +
-                  '<p class="ppb-sub">La Nave Exploradora <strong>Paulo Freire</strong> inicia su misión orbital por la galaxia de <strong>' + student.gradeName + '</strong>. Seguí la ruta de constelaciones, tocá cada planeta para abrir su transmisión holográfica y alcanzá el Núcleo Galáctico Maker.</p>' +
-                '</div>' +
-                '<div class="ppb-compass"><i class="fas fa-satellite"></i></div>' +
-              '</div>' +
-            '</div>'
-          : '<div class="pirate-start-port">' +
-              '<div class="pirate-port-sky">' +
-                '<span class="pirate-sun-icon">☀️</span>' +
-                '<span class="pirate-seagull s1">🕊️</span>' +
-                '<span class="pirate-seagull s2">🕊️</span>' +
-              '</div>' +
-              '<div class="pirate-ship-stage">' +
-                '<div class="pirate-ship-wrapper" title="Galeón Paulo Freire: ¡Listo para zarpar!">' +
-                  pirateShipSvg +
-                '</div>' +
-                '<div class="pirate-ocean-waves-wrap">' +
-                  '<svg class="pirate-ocean-waves-svg" viewBox="0 0 600 45" preserveAspectRatio="none">' +
-                    '<path class="wave wave-back" d="M0,18 C150,35 350,5 500,20 C650,35 850,5 1000,20 L1000,45 L0,45 Z" />' +
-                    '<path class="wave wave-front" d="M0,25 C120,10 320,35 520,18 C720,5 920,35 1120,18 L1120,45 L0,45 Z" />' +
-                  '</svg>' +
-                '</div>' +
-              '</div>' +
-              '<div class="pirate-port-banner">' +
-                '<div class="ppb-anchor"><i class="fas fa-anchor"></i></div>' +
-                '<div class="ppb-text">' +
-                  '<h3 class="ppb-title">PUERTO DE ZARPE &bull; BAHÍA DE LOS CREADORES</h3>' +
-                  '<p class="ppb-sub">El Galeón <strong>Paulo Freire</strong> inicia su travesía por el archipiélago de <strong>' + student.gradeName + '</strong>. Seguí el sendero curvado, tocá cada isla para abrir su pergamino y alcanzá el Gran Tesoro Maker.</p>' +
-                '</div>' +
-                '<div class="ppb-compass"><i class="fas fa-compass"></i></div>' +
-              '</div>' +
-            '</div>'));
-
-      function buildPirateStationHtml(m, idx, sideClass) {
-        var statusSeal = '';
-        var statusBadgeClass = m.status;
-        var statusLabel = '';
-        if (isLegacy) {
-          if (m.status === 'completado') {
-            statusLabel = 'Hito Cumplido';
-            statusSeal = '<div class="pirate-seal-badge completado" title="¡Hito cumplido con honor!"><i class="fas fa-award"></i> Cumplido</div>';
-          } else if (m.status === 'activo') {
-            statusLabel = 'Hito en Curso';
-            statusSeal = '<div class="pirate-seal-badge activo" title="¡Hito cumbre en curso!"><i class="fas fa-graduation-cap"></i> En Curso</div>';
-          } else {
-            statusLabel = 'Hito de Honor';
-            statusSeal = '<div class="pirate-seal-badge desafio" title="Hito por desbloquear"><i class="fas fa-lock"></i> Por Desbloquear</div>';
-          }
-        } else if (isCyber) {
-          if (m.status === 'completado') {
-            statusLabel = 'Nodo Compilado';
-            statusSeal = '<div class="pirate-seal-badge completado" title="¡Nodo compilado con éxito!"><i class="fas fa-check-double"></i> Compilado</div>';
-          } else if (m.status === 'activo') {
-            statusLabel = 'En Compilación';
-            statusSeal = '<div class="pirate-seal-badge activo" title="¡Nodo activo en compilación!"><i class="fas fa-bolt"></i> En Línea</div>';
-          } else {
-            statusLabel = 'Nodo Encriptado';
-            statusSeal = '<div class="pirate-seal-badge desafio" title="Nodo por desencriptar"><i class="fas fa-lock"></i> Encriptado</div>';
-          }
-        } else if (isSpace) {
-          if (m.status === 'completado') {
-            statusLabel = 'Planeta Explorado';
-            statusSeal = '<div class="pirate-seal-badge completado" title="¡Planeta explorado!"><i class="fas fa-satellite"></i> Explorado</div>';
-          } else if (m.status === 'activo') {
-            statusLabel = 'En Órbita';
-            statusSeal = '<div class="pirate-seal-badge activo" title="¡Planeta actual en órbita!"><i class="fas fa-rocket"></i> En Órbita</div>';
-          } else {
-            statusLabel = 'Planeta Misterioso';
-            statusSeal = '<div class="pirate-seal-badge desafio" title="Planeta por explorar"><i class="fas fa-lock"></i> Por Explorar</div>';
-          }
-        } else {
-          if (m.status === 'completado') {
-            statusLabel = 'Isla Conquistada';
-            statusSeal = '<div class="pirate-seal-badge completado" title="¡Isla superada!"><i class="fas fa-award"></i> Conquistada</div>';
-          } else if (m.status === 'activo') {
-            statusLabel = 'En Exploración';
-            statusSeal = '<div class="pirate-seal-badge activo" title="¡Isla actual en exploración!"><i class="fas fa-compass fa-spin-slow"></i> En Exploración</div>';
-          } else {
-            statusLabel = 'Isla Misteriosa';
-            statusSeal = '<div class="pirate-seal-badge desafio" title="Isla por descubrir"><i class="fas fa-lock"></i> Por Descubrir</div>';
-          }
-        }
-
-        var isInitiallyOpen = false;
-        var isHalloweenM = (m.id === 'g5-p1' || m.id === 'g6-p1' || m.type === 'halloween' || /halloween|hechizos|monstruo/i.test((m.title || '') + ' ' + (m.id || '')));
-        var coverImgSrc = isHalloweenM ? (m.coverImage || 'img/proyectos/halloween_ia_cover.jpg?v=3') : (m.coverImage || (m.type === 'circuito' || m.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png'));
-        var islandFallbackImg = isHalloweenM ? 'img/proyectos/halloween_ia_cover.png' : 'img/scratchjr.png';
-
-        var toolBtnHtml = '';
-        if (m.botones && m.botones.length > 0) {
-          toolBtnHtml = m.botones.map(function(b) {
-            return '<a href="' + b.url + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool" title="' + (b.texto || 'Abrir Actividad').replace(/"/g, '&quot;') + '"><i class="' + (b.icono || 'fas fa-external-link-alt') + '"></i> ' + (b.texto || 'Abrir Actividad') + '</a>';
-          }).join('');
-        } else if (m.type === 'gemini_notebooks') {
-          toolBtnHtml = '<a href="' + (m.externalUrl || 'https://notebooklm.google.com') + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-notebook" title="Abrir NotebookLM"><i class="fas fa-brain"></i> Abrir NotebookLM</a>';
-        } else if (m.type === 'canva' || /canva/i.test(m.gameUrl || '')) {
-          toolBtnHtml = '<a href="' + (m.gameUrl || 'https://www.canva.com/es_419/crear/animaciones/') + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-canva" title="Abrir Canva"><i class="fas fa-palette"></i> Abrir Canva</a>';
-        } else if (m.gameUrl && m.type !== 'paint' && !/cancha|paint/i.test(m.title || '')) {
-          toolBtnHtml = '<a href="' + m.gameUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool tool-game" title="Jugar"><i class="fas fa-gamepad"></i> Jugar Desafío</a>';
-        } else if (m.externalUrl && m.type !== 'paint') {
-          toolBtnHtml = '<a href="' + m.externalUrl + '" target="_blank" rel="noopener noreferrer" class="pirate-btn-tool" title="Abrir Enlace"><i class="fas fa-external-link-alt"></i> Abrir Actividad</a>';
-        }
-
-        var stationTitleText = isLegacy ? ('🎓 Hito ' + m.level + ': ' + m.title) : (isCyber ? ('🔌 Nodo ' + m.level + ': ' + m.title) : (isSpace ? ('🪐 Planeta ' + m.level + ': ' + m.title) : ('🏝️ Isla ' + m.level + ': ' + m.title)));
-        var ctaOpenText = isLegacy ? 'Cerrar hito' : (isCyber ? 'Cerrar terminal' : (isSpace ? 'Ocultar transmisión' : 'Ocultar pergamino'));
-        var ctaClosedText = isLegacy ? 'Tocá el hito para ver el registro' : (isCyber ? 'Tocá el nodo para abrir terminal' : (isSpace ? 'Tocá el planeta para ver transmisión' : 'Tocá la isla para ver pergamino'));
-        var ctaIconClass = isLegacy ? 'fa-scroll' : (isCyber ? 'fa-terminal' : (isSpace ? 'fa-satellite-dish' : 'fa-scroll'));
-        var stampHtml = isLegacy
-          ? '<i class="fas fa-award"></i> Registro del Egresado &bull; Hito #' + m.level
-          : (isCyber
-            ? '<i class="fas fa-terminal"></i> Terminal de Ingeniería &bull; Nodo #' + m.level
-            : (isSpace
-              ? '<i class="fas fa-satellite-dish"></i> Transmisión de Comando &bull; Planeta #' + m.level
-              : '<i class="fas fa-feather-alt"></i> Pergamino del Capitán &bull; Isla #' + m.level));
-        var objHeaderHtml = isLegacy ? 'Objetivo Cumbre del Egresado' : (isCyber ? 'Especificación Técnica del Nodo' : (isSpace ? 'Objetivo de la Misión Orbital' : 'Objetivo del Tesoro'));
-        var benHeaderHtml = isLegacy ? 'Competencias Maker de Graduación' : (isCyber ? 'Upgrade de Ingeniería (Lógica, Robótica e IA)' : (isSpace ? 'Superpoderes de Astronauta (Razonamiento y Lógica)' : 'Poderes Piratas (Razonamiento y Lógica)'));
-        var mainActionText = isLegacy ? '<i class="fas fa-graduation-cap"></i> ¡Explorar Proyecto de Honor!' : (isCyber ? '<i class="fas fa-bolt"></i> ¡Ejecutar Nodo de Misión!' : (isSpace ? '<i class="fas fa-rocket"></i> ¡Iniciar Misión Planetaria!' : '<i class="fas fa-compass"></i> ¡Iniciar Misión en la Isla!'));
-        var stationThemeClass = isLegacy ? 'legacy-landmark-station ' : (isCyber ? 'cyber-node-station ' : (isSpace ? 'space-planet-station ' : ''));
-
-        return '<div class="pirate-island-station ' + stationThemeClass + sideClass + ' ' + statusBadgeClass + ' ' + (isInitiallyOpen ? 'is-expanded' : '') + '" data-mission-idx="' + idx + '" id="pirate-island-st-' + idx + '">' +
-          // Landmark interactivo de la Isla / Planeta / Nodo Cyber / Hito de Graduados
-          '<div class="pirate-island-landmark" role="button" tabindex="0" data-mission-idx="' + idx + '" aria-expanded="' + (isInitiallyOpen ? 'true' : 'false') + '" title="' + (isLegacy ? '¡Tocá el hito para ver el registro de honor!' : (isCyber ? '¡Tocá el nodo para abrir su terminal!' : (isSpace ? '¡Tocá el planeta para abrir su transmisión!' : '¡Tocá la isla para desplegar su pergamino de misión!'))) + '">' +
-            '<div class="pirate-medallion-wrap">' +
-              '<div class="pirate-medallion-ring ' + statusBadgeClass + '">' +
-                '<div class="pirate-compass-ticks">' +
-                  '<span class="pct-tick pct-n">N</span>' +
-                  '<span class="pct-tick pct-e">E</span>' +
-                  '<span class="pct-tick pct-s">S</span>' +
-                  '<span class="pct-tick pct-o">O</span>' +
-                '</div>' +
-                '<div class="pirate-medallion-inner">' +
-                  '<img src="' + coverImgSrc + '" alt="' + m.title.replace(/"/g, '&quot;') + '" class="pirate-island-cover-img" loading="lazy" onerror="this.onerror=null;this.src=\'' + islandFallbackImg + '\';">' +
-                  '<div class="pirate-level-coin">' +
-                    '<span>' + (isLegacy ? '👑 H' : (isCyber ? '⚡ N' : (isSpace ? '🌟 N' : '🪙 L'))) + m.level + '</span>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-              statusSeal +
-            '</div>' +
-
-            '<div class="pirate-island-info-block">' +
-              '<div class="pirate-tag-row">' +
-                '<span class="pirate-type-badge" style="background:' + m.color + '22;color:' + m.color + ';border-color:' + m.color + '55;">' +
-                  '<i class="fas ' + m.icon + '"></i> ' + m.badge +
-                '</span>' +
-                '<span class="pirate-status-pill ' + m.status + '">' + statusLabel + '</span>' +
-              '</div>' +
-              '<h4 class="pirate-island-title">' + stationTitleText + '</h4>' +
-              '<div class="pirate-landmark-touch-cta">' +
-                '<span class="ptp-text"><i class="fas ' + ctaIconClass + '"></i> ' + (isInitiallyOpen ? ctaOpenText : ctaClosedText) + '</span>' +
-                '<span class="ptp-arrow"><i class="fas fa-chevron-down"></i></span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-
-          // Pergamino / Transmisión Holográfica / Terminal Cyber desplegable
-          '<div class="pirate-scroll-drawer ' + (isInitiallyOpen ? 'is-open' : '') + '">' +
-            '<div class="pirate-scroll-wood-rod top"></div>' +
-            '<div class="pirate-scroll-parchment">' +
-              '<div class="pirate-scroll-top-seal">' +
-                '<span class="psts-stamp">' + stampHtml + '</span>' +
-                '<span class="psts-status ' + m.status + '">' + statusLabel + '</span>' +
-              '</div>' +
-              '<h4 class="pirate-scroll-title">' + m.title + '</h4>' +
-              '<div class="pirate-scroll-narrative">' +
-                '<i class="fas fa-quote-left pirate-quote-icon"></i> ' + m.description +
-              '</div>' +
-              (m.objective ?
-                '<div class="pirate-scroll-box objective">' +
-                  '<div class="psb-header"><i class="fas fa-bullseye"></i> <strong>' + objHeaderHtml + '</strong></div>' +
-                  '<p class="psb-body">' + m.objective + '</p>' +
-                '</div>' : '') +
-              (m.benefits ?
-                '<div class="pirate-scroll-box benefits">' +
-                  '<div class="psb-header"><i class="fas fa-brain"></i> <strong>' + benHeaderHtml + '</strong></div>' +
-                  '<p class="psb-body">' + m.benefits + '</p>' +
-                '</div>' : '') +
-              '<div class="pirate-scroll-actions">' +
-                '<button type="button" class="pirate-btn-action pirate-btn-main arm-btn-open-modal" data-mission-idx="' + idx + '" title="Abrir y comenzar la misión">' +
-                  mainActionText +
-                '</button>' +
-                toolBtnHtml +
-                '<button type="button" class="pirate-btn-action pirate-btn-sec arm-btn-open-presentation" data-mission-idx="' + idx + '" title="Ver Modo Presentación">' +
-                  '<i class="fas fa-chalkboard-teacher"></i> Presentación' +
-                '</button>' +
-                '<button type="button" class="pirate-btn-action pirate-btn-ghost arm-btn-open-pdf" data-mission-idx="' + idx + '" title="Ver Guía PDF">' +
-                  '<i class="fas fa-file-pdf"></i> Guía PDF' +
-                '</button>' +
-              '</div>' +
-            '</div>' +
-            '<div class="pirate-scroll-wood-rod bottom"></div>' +
-          '</div>' +
-        '</div>';
-      }
-
-      var pirateIslandsHtml = '';
-      for (var r = 0; r < missions.length; r += 2) {
-        var mLeft = missions[r];
-        var idxLeft = r;
-        var mRight = (r + 1 < missions.length) ? missions[r + 1] : null;
-        var idxRight = r + 1;
-
-        // Conector que llega a esta fila
-        var incomingConnectorHtml = '';
-        if (r === 0) {
-          // Desde el puerto (centro 50) hacia la Isla 1 (izquierda 25)
-          incomingConnectorHtml =
-            '<div class="pirate-trail-connector connector-start">' +
-              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 48" preserveAspectRatio="none">' +
-                '<path class="ptc-glow" d="M 50,0 C 50,26 25,22 25,48" />' +
-                '<path class="ptc-dash" d="M 50,0 C 50,26 25,22 25,48" />' +
-              '</svg>' +
-              '<div class="pirate-waypoint-marker wp-start" title="' + (isLegacy ? 'Camino de honor hacia Hito 1' : (isCyber ? 'Bus de datos hacia Nodo 1' : (isSpace ? 'Órbita hacia Planeta 1' : 'Rumbo a la Isla 1'))) + '"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-bolt' : (isSpace ? 'fa-rocket' : 'fa-compass'))) + '"></i></div>' +
-            '</div>';
-        } else {
-          // Curva desde la isla derecha de la fila previa (75) hacia la isla izquierda de esta fila (25)
-          incomingConnectorHtml =
-            '<div class="pirate-trail-connector connector-turn-down">' +
-              '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 52" preserveAspectRatio="none">' +
-                '<path class="ptc-glow" d="M 75,0 C 75,32 25,20 25,52" />' +
-                '<path class="ptc-dash" d="M 75,0 C 75,32 25,20 25,52" />' +
-              '</svg>' +
-              '<div class="pirate-waypoint-marker wp-mid" title="' + (isLegacy ? 'Sendero de laureles hacia Hito ' : (isCyber ? 'Enlace de fibra hacia Nodo ' : (isSpace ? 'Salto hiperespacial al Planeta ' : 'Travesía náutica hacia la Isla '))) + mLeft.level + '"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : 'fa-water'))) + '"></i></div>' +
-            '</div>';
-        }
-
-        var leftStationHtml = buildPirateStationHtml(mLeft, idxLeft, 'island-left');
-        var rightStationHtml = '';
-        var bridgeConnectorHtml = '';
-
-        if (mRight) {
-          bridgeConnectorHtml =
-            '<div class="pirate-row-bridge">' +
-              '<svg class="pirate-bridge-svg" viewBox="0 0 100 40" preserveAspectRatio="none">' +
-                '<path class="ptc-glow" d="M 0,20 C 35,5 65,35 100,20" />' +
-                '<path class="ptc-dash" d="M 0,20 C 35,5 65,35 100,20" />' +
-              '</svg>' +
-              '<div class="pirate-waypoint-marker wp-bridge" title="' + (isLegacy ? 'Paso de honor hacia Hito ' : (isCyber ? 'Puente lógico hacia Nodo ' : (isSpace ? 'Rumbo orbital al Planeta ' : 'Rumbo a la Isla '))) + mRight.level + '"><i class="fas ' + (isLegacy ? 'fa-scroll' : (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-user-astronaut' : 'fa-anchor'))) + '"></i></div>' +
-            '</div>';
-          rightStationHtml = buildPirateStationHtml(mRight, idxRight, 'island-right');
-        }
-
-        pirateIslandsHtml += incomingConnectorHtml +
-          '<div class="pirate-map-row' + (mRight ? ' has-pair' : ' single-left') + '">' +
-            leftStationHtml +
-            (mRight ? bridgeConnectorHtml + rightStationHtml : '') +
-          '</div>';
-      }
-
-      // Connector final hacia el Cofre del Tesoro / Núcleo Galáctico / Supercomputadora IA / Diploma de Honor (centro)
-      var lastIdx = missions.length - 1;
-      var lastSide = (lastIdx % 2 === 0) ? 'left' : 'right';
-      var finishConnectorHtml = '';
-      if (lastSide === 'left') {
-        finishConnectorHtml =
-          '<div class="pirate-trail-connector connector-to-finish">' +
-            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 48" preserveAspectRatio="none">' +
-              '<path class="ptc-glow" d="M 25,0 C 25,26 50,22 50,48" />' +
-              '<path class="ptc-dash" d="M 25,0 C 25,26 50,22 50,48" />' +
-            '</svg>' +
-            '<div class="pirate-waypoint-marker wp-finish" title="' + (isLegacy ? '¡Cerca del Diploma de Graduación!' : (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!'))) + '"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem'))) + '"></i></div>' +
-          '</div>';
-      } else {
-        finishConnectorHtml =
-          '<div class="pirate-trail-connector connector-to-finish">' +
-            '<svg class="pirate-trail-curve-svg" viewBox="0 0 100 48" preserveAspectRatio="none">' +
-              '<path class="ptc-glow" d="M 75,0 C 75,26 50,22 50,48" />' +
-              '<path class="ptc-dash" d="M 75,0 C 75,26 50,22 50,48" />' +
-            '</svg>' +
-            '<div class="pirate-waypoint-marker wp-finish" title="' + (isLegacy ? '¡Cerca del Diploma de Graduación!' : (isCyber ? '¡Cerca del Núcleo de IA!' : (isSpace ? '¡Cerca del Núcleo Galáctico!' : '¡Cerca del tesoro!'))) + '"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-brain' : (isSpace ? 'fa-star' : 'fa-gem'))) + '"></i></div>' +
-          '</div>';
-      }
-
-      var safeGradeName = (student.gradeName || '').replace(/'/g, "\\'");
-      var pirateFinishHtml =
-        finishConnectorHtml +
-        '<div class="pirate-finish-station ' + (isLegacy ? 'legacy-finish-station' : (isCyber ? 'cyber-finish-station' : (isSpace ? 'space-finish-station' : ''))) + '" id="pirate-finish-station">' +
-          '<div class="pirate-x-marks-spot">' +
-            '<div class="pirate-x-symbol">' + (isLegacy ? '🎓' : (isCyber ? '🧠' : (isSpace ? '🌌' : '❌'))) + '</div>' +
-            '<div class="pirate-x-title">' + (isLegacy ? '¡DIPLOMA DE HONOR Y GRADUACIÓN MAKER DESBLOQUEADO!' : (isCyber ? '¡SUPERCOMPUTADORA CENTRAL DE IA DESBLOQUEADA!' : (isSpace ? '¡NÚCLEO DE LA GALAXIA MAKER ALCANZADO!' : '¡X MARCA EL LUGAR DEL GRAN TESORO!'))) + '</div>' +
-          '</div>' +
-          '<div class="pirate-chest-stage" role="button" tabindex="0" onclick="window.openPirateTreasureModal && window.openPirateTreasureModal({ gradeName: \'' + safeGradeName + '\', completedCount: ' + completedCount + ', totalCount: ' + missions.length + ' });" title="' + (isLegacy ? '¡Hacé click para abrir la Celebración de Graduación y Diploma!' : (isCyber ? '¡Hacé click para activar el Núcleo Cyber y festejar!' : (isSpace ? '¡Hacé click para abrir la Cápsula Galáctica y festejar!' : '¡Hacé click para abrir el Cofre del Tesoro y festejar!'))) + '">' +
-            '<div class="pirate-chest-glow"></div>' +
-            '<div class="pirate-chest-visual">' +
-              '<div class="pc-chest-lid"></div>' +
-              '<div class="pc-chest-base">' +
-                '<div class="pc-chest-lock"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-bolt' : 'fa-key'))) + '"></i></div>' +
-                '<div class="pc-chest-coins">' +
-                  (isLegacy
-                    ? '<span>🎓</span><span>🏆</span><span>👑</span><span>📜</span><span>⭐</span>'
-                    : (isCyber
-                      ? '<span>⚡</span><span>🤖</span><span>🧠</span><span>🔌</span><span>💎</span>'
-                      : (isSpace
-                        ? '<span>🌟</span><span>⚡</span><span>🪐</span><span>💎</span><span>🚀</span>'
-                        : '<span>🪙</span><span>💎</span><span>👑</span><span>💎</span><span>🪙</span>'))) +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="pirate-chest-touch-hint">' +
-              '<i class="fas fa-hand-pointer"></i> ' + (isLegacy ? '¡Tocá el Diploma y la Medalla para abrir la Celebración de Graduación! 🎓✨' : (isCyber ? '¡Tocá el Núcleo para compilar la Recompensa Cyber! ⚡' : (isSpace ? '¡Tocá la Cápsula para abrir la Recompensa Estelar! ✨' : '¡Tocá el Cofre para abrir el Tesoro! ✨'))) +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      var legacyMapBackgroundHtml =
-        '<div class="pirate-map-background legacy-map-background" aria-hidden="true">' +
-          '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
-            '<defs>' +
-              '<radialGradient id="legGlowGold" cx="50%" cy="50%" r="50%">' +
-                '<stop offset="0%" stop-color="#FDE047" stop-opacity="0.32"/>' +
-                '<stop offset="60%" stop-color="#F59E0B" stop-opacity="0.14"/>' +
-                '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
-              '</radialGradient>' +
-              '<radialGradient id="legGlowNavy" cx="50%" cy="50%" r="50%">' +
-                '<stop offset="0%" stop-color="#312E81" stop-opacity="0.45"/>' +
-                '<stop offset="70%" stop-color="#1E1B4B" stop-opacity="0.2"/>' +
-                '<stop offset="100%" stop-color="#0B0F19" stop-opacity="0"/>' +
-              '</radialGradient>' +
-              '<linearGradient id="legGoldRibbon" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                '<stop offset="0%" stop-color="#FDE047" stop-opacity="0.25"/>' +
-                '<stop offset="50%" stop-color="#F59E0B" stop-opacity="0.35"/>' +
-                '<stop offset="100%" stop-color="#B45309" stop-opacity="0.25"/>' +
-              '</linearGradient>' +
-            '</defs>' +
-            '<!-- Líneas doradas de honor y constelación de hitos -->' +
-            '<g stroke="rgba(245, 158, 11, 0.16)" stroke-width="1.2" stroke-dasharray="6,8" fill="none">' +
-              '<circle cx="500" cy="600" r="260" />' +
-              '<circle cx="500" cy="600" r="440" />' +
-              '<line x1="0" y1="250" x2="1000" y2="950" />' +
-              '<line x1="1000" y1="250" x2="0" y2="950" />' +
-            '</g>' +
-            '<!-- Halos dorados majestuosos -->' +
-            '<ellipse cx="500" cy="300" rx="300" ry="180" fill="url(#legGlowGold)" />' +
-            '<ellipse cx="500" cy="900" rx="320" ry="180" fill="url(#legGlowNavy)" />' +
-            '<ellipse cx="800" cy="600" rx="220" ry="150" fill="url(#legGlowGold)" />' +
-            '<ellipse cx="200" cy="600" rx="220" ry="150" fill="url(#legGlowGold)" />' +
-          '</svg>' +
-          '<!-- Decoraciones flotantes del anuario -->' +
-          '<div class="pm-deco pm-deco-compass" title="Birrete de Graduación">🎓</div>' +
-          '<div class="pm-deco pm-deco-kraken" title="Medalla de Honor">🎖️</div>' +
-          '<div class="pm-deco pm-deco-sea-dragon" title="Gran Trofeo Maker">🏆</div>' +
-          '<div class="pm-deco pm-deco-shipwreck" title="Diploma de Honor">📜</div>' +
-          '<div class="pm-deco pm-deco-palm1">✨</div>' +
-          '<div class="pm-deco pm-deco-palm2">👑</div>' +
-          '<div class="pm-deco pm-deco-palm3">🎓</div>' +
-          '<div class="pm-deco pm-deco-palm4">⭐</div>' +
-          '<div class="pm-deco pm-deco-treasure-cove" title="Libro de Recuerdos">📖</div>' +
-          '<div class="pm-deco pm-deco-bottle" title="Cápsula del Tiempo">⏳</div>' +
-          '<div class="pm-deco pm-deco-anchor" title="Sello de la Promoción">🏛️</div>' +
-          '<!-- Rótulos conmemorativos -->' +
-          '<div class="pm-map-label label-sea">CAMINO DE LOS EGRESADOS</div>' +
-          '<div class="pm-map-label label-bay">Pabellón Canva & IA</div>' +
-          '<div class="pm-map-label label-river">Alameda Robótica & Servomotores</div>' +
-          '<div class="pm-map-label label-island1">Espacio Gemini Notebook</div>' +
-          '<div class="pm-map-label label-island2">Salón del Diploma Maker</div>' +
-        '</div>';
-
-      var pirateMapBackgroundHtml = isLegacy
-        ? legacyMapBackgroundHtml
-        : (isCyber
-        ? '<div class="pirate-map-background cyber-map-background" aria-hidden="true">' +
-            '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
-              '<defs>' +
-                '<radialGradient id="cyGlowEmerald" cx="50%" cy="50%" r="50%">' +
-                  '<stop offset="0%" stop-color="#10B981" stop-opacity="0.28"/>' +
-                  '<stop offset="60%" stop-color="#059669" stop-opacity="0.12"/>' +
-                  '<stop offset="100%" stop-color="#020617" stop-opacity="0"/>' +
-                '</radialGradient>' +
-                '<radialGradient id="cyGlowMagenta" cx="50%" cy="50%" r="50%">' +
-                  '<stop offset="0%" stop-color="#EC4899" stop-opacity="0.26"/>' +
-                  '<stop offset="60%" stop-color="#8B5CF6" stop-opacity="0.12"/>' +
-                  '<stop offset="100%" stop-color="#020617" stop-opacity="0"/>' +
-                '</radialGradient>' +
-                '<linearGradient id="cyDataBus" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                  '<stop offset="0%" stop-color="#10B981" stop-opacity="0.22"/>' +
-                  '<stop offset="50%" stop-color="#06B6D4" stop-opacity="0.28"/>' +
-                  '<stop offset="100%" stop-color="#EC4899" stop-opacity="0.22"/>' +
-                '</linearGradient>' +
-              '</defs>' +
-              '<!-- Grilla de Placa Madre (PCB) -->' +
-              '<g stroke="rgba(16, 185, 129, 0.12)" stroke-width="1" fill="none">' +
-                '<line x1="0" y1="200" x2="1000" y2="200" />' +
-                '<line x1="0" y1="450" x2="1000" y2="450" />' +
-                '<line x1="0" y1="700" x2="1000" y2="700" />' +
-                '<line x1="0" y1="950" x2="1000" y2="950" />' +
-                '<line x1="200" y1="0" x2="200" y2="1200" />' +
-                '<line x1="500" y1="0" x2="500" y2="1200" />' +
-                '<line x1="800" y1="0" x2="800" y2="1200" />' +
-              '</g>' +
-              '<!-- Halos de energía de procesadores -->' +
-              '<ellipse cx="820" cy="180" rx="220" ry="140" fill="url(#cyGlowEmerald)" />' +
-              '<ellipse cx="160" cy="480" rx="230" ry="150" fill="url(#cyGlowMagenta)" />' +
-              '<ellipse cx="840" cy="720" rx="220" ry="150" fill="url(#cyGlowEmerald)" />' +
-              '<ellipse cx="180" cy="960" rx="220" ry="140" fill="url(#cyGlowMagenta)" />' +
-              '<!-- Bus Principal de Fibra Óptica -->' +
-              '<path d="M 1000,300 L 760,300 L 620,440 L 380,440 L 260,560 L 260,760 L 440,940 L 440,1200 L 510,1200 L 510,910 L 330,730 L 330,590 L 420,500 L 660,500 L 800,360 L 1000,360 Z" fill="url(#cyDataBus)" stroke="rgba(52, 211, 153, 0.4)" stroke-width="1.5" />' +
-              '<!-- Pistas de Cobre y Nodos de Soldadura PCB -->' +
-              '<g stroke="rgba(52, 211, 153, 0.42)" stroke-width="2" fill="#0F172A">' +
-                '<polyline points="680,70 760,70 810,120 920,120" fill="none"/>' +
-                '<circle cx="680" cy="70" r="5" stroke="#10B981"/><circle cx="920" cy="120" r="5" stroke="#10B981"/>' +
-                '<polyline points="60,360 150,360 210,420 290,420" fill="none" stroke="rgba(236, 72, 153, 0.45)"/>' +
-                '<circle cx="60" cy="360" r="5" stroke="#EC4899"/><circle cx="290" cy="420" r="5" stroke="#EC4899"/>' +
-                '<polyline points="720,610 810,610 860,660 950,660" fill="none"/>' +
-                '<circle cx="720" cy="610" r="5" stroke="#10B981"/><circle cx="950" cy="660" r="5" stroke="#10B981"/>' +
-                '<polyline points="70,880 160,880 220,940 310,940" fill="none" stroke="rgba(250, 204, 21, 0.45)"/>' +
-                '<circle cx="70" cy="880" r="5" stroke="#FACC15"/><circle cx="310" cy="940" r="5" stroke="#FACC15"/>' +
-              '</g>' +
-            '</svg>' +
-            '<div class="pm-deco pm-deco-compass" title="Microprocesador Central">🔌</div>' +
-            '<div class="pm-deco pm-deco-kraken" title="Brazo Robótico Industrial">🦾</div>' +
-            '<div class="pm-deco pm-deco-sea-dragon" title="Red Neuronal IA">🧠</div>' +
-            '<div class="pm-deco pm-deco-shipwreck" title="Placa Micro:bit">📟</div>' +
-            '<div class="pm-deco pm-deco-palm1">⚡</div>' +
-            '<div class="pm-deco pm-deco-palm2">🔋</div>' +
-            '<div class="pm-deco pm-deco-palm3">🤖</div>' +
-            '<div class="pm-deco pm-deco-palm4">⚡</div>' +
-            '<div class="pm-deco pm-deco-treasure-cove" title="Servidor Cuántico">🖥️</div>' +
-            '<div class="pm-deco pm-deco-bottle" title="Sensor Ultrasónico">📡</div>' +
-            '<div class="pm-deco pm-deco-anchor" title="Engranaje Mecatrónico">⚙️</div>' +
-            '<div class="pm-map-label label-sea">PLACA MADRE DE LAS IDEAS</div>' +
-            '<div class="pm-map-label label-bay">Bus de Datos IA</div>' +
-            '<div class="pm-map-label label-river">Circuito Micro:bit</div>' +
-            '<div class="pm-map-label label-island1">Sector Sensores</div>' +
-            '<div class="pm-map-label label-island2">Núcleo Robótico</div>' +
-          '</div>'
-        : (isSpace
-          ? '<div class="pirate-map-background space-map-background" aria-hidden="true">' +
-              '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
-                '<defs>' +
-                  '<radialGradient id="spNebulaCyan" cx="50%" cy="50%" r="50%">' +
-                    '<stop offset="0%" stop-color="#22D3EE" stop-opacity="0.32"/>' +
-                    '<stop offset="60%" stop-color="#0284C7" stop-opacity="0.14"/>' +
-                    '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
-                  '</radialGradient>' +
-                  '<radialGradient id="spNebulaPurple" cx="50%" cy="50%" r="50%">' +
-                    '<stop offset="0%" stop-color="#A855F7" stop-opacity="0.32"/>' +
-                    '<stop offset="60%" stop-color="#6366F1" stop-opacity="0.14"/>' +
-                    '<stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>' +
-                  '</radialGradient>' +
-                  '<linearGradient id="spMilkyWay" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                    '<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.18"/>' +
-                    '<stop offset="50%" stop-color="#818CF8" stop-opacity="0.26"/>' +
-                    '<stop offset="100%" stop-color="#C084FC" stop-opacity="0.18"/>' +
-                  '</linearGradient>' +
-                '</defs>' +
-                '<!-- Anillos de radar estelar y coordenadas galácticas -->' +
-                '<g stroke="rgba(56, 189, 248, 0.14)" stroke-width="1" stroke-dasharray="6,8" fill="none">' +
-                  '<circle cx="500" cy="600" r="240" />' +
-                  '<circle cx="500" cy="600" r="420" />' +
-                  '<line x1="0" y1="300" x2="1000" y2="900" />' +
-                  '<line x1="1000" y1="250" x2="0" y2="850" />' +
-                '</g>' +
-                '<!-- Nebulosas cósmicas -->' +
-                '<ellipse cx="820" cy="160" rx="220" ry="140" fill="url(#spNebulaCyan)" />' +
-                '<ellipse cx="160" cy="480" rx="240" ry="150" fill="url(#spNebulaPurple)" />' +
-                '<ellipse cx="840" cy="700" rx="210" ry="150" fill="url(#spNebulaPurple)" />' +
-                '<ellipse cx="180" cy="960" rx="220" ry="140" fill="url(#spNebulaCyan)" />' +
-                '<!-- Corriente de la Vía Láctea -->' +
-                '<path d="M 1000,320 C 820,360 720,440 580,520 C 420,600 280,680 340,860 C 400,1000 500,1100 520,1200 L 460,1200 C 430,1080 330,980 270,840 C 210,660 360,560 520,480 C 680,400 780,320 1000,270 Z" fill="url(#spMilkyWay)" />' +
-                '<!-- Constelaciones conectadas -->' +
-                '<g stroke="rgba(125, 211, 252, 0.35)" stroke-width="1.5" fill="#FEF08A">' +
-                  '<polyline points="720,80 780,55 850,90 890,60" fill="none"/>' +
-                  '<circle cx="720" cy="80" r="3.5"/><circle cx="780" cy="55" r="4"/><circle cx="850" cy="90" r="3.5"/><circle cx="890" cy="60" r="4.5"/>' +
-                  '<polyline points="80,390 140,360 200,400 170,460" fill="none"/>' +
-                  '<circle cx="80" cy="390" r="4"/><circle cx="140" cy="360" r="3.5"/><circle cx="200" cy="400" r="4.5"/><circle cx="170" cy="460" r="3.5"/>' +
-                  '<polyline points="780,620 840,590 910,630 880,700" fill="none"/>' +
-                  '<circle cx="780" cy="620" r="3.5"/><circle cx="840" cy="590" r="4.5"/><circle cx="910" cy="630" r="3.5"/><circle cx="880" cy="700" r="4"/>' +
-                '</g>' +
-              '</svg>' +
-              '<div class="pm-deco pm-deco-compass" title="Radar Galáctico">🛰️</div>' +
-              '<div class="pm-deco pm-deco-kraken" title="Nave Nodriza">🛸</div>' +
-              '<div class="pm-deco pm-deco-sea-dragon" title="Cometa Halley">☄️</div>' +
-              '<div class="pm-deco pm-deco-shipwreck" title="Telescopio Espacial">🔭</div>' +
-              '<div class="pm-deco pm-deco-palm1">✨</div>' +
-              '<div class="pm-deco pm-deco-palm2">🌟</div>' +
-              '<div class="pm-deco pm-deco-palm3">🪐</div>' +
-              '<div class="pm-deco pm-deco-palm4">✨</div>' +
-              '<div class="pm-deco pm-deco-treasure-cove" title="Base Lunar">🌕</div>' +
-              '<div class="pm-deco pm-deco-bottle" title="Sonda Voyager">📡</div>' +
-              '<div class="pm-deco pm-deco-anchor" title="Astronauta en EVA">👨‍🚀</div>' +
-              '<div class="pm-map-label label-sea">GALAXIA DE LAS IDEAS</div>' +
-              '<div class="pm-map-label label-bay">Nebulosa del Código</div>' +
-              '<div class="pm-map-label label-river">Vía Láctea Maker</div>' +
-              '<div class="pm-map-label label-island1">Sector Robótica</div>' +
-              '<div class="pm-map-label label-island2">Órbita Alfa</div>' +
-            '</div>'
-          : '<div class="pirate-map-background" aria-hidden="true">' +
-              '<svg class="pirate-map-bg-svg" viewBox="0 0 1000 1200" preserveAspectRatio="none">' +
-                '<defs>' +
-                  '<linearGradient id="pmRiverGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                    '<stop offset="0%" stop-color="#38BDF8" stop-opacity="0.36"/>' +
-                    '<stop offset="50%" stop-color="#0284C7" stop-opacity="0.45"/>' +
-                    '<stop offset="100%" stop-color="#0369A1" stop-opacity="0.42"/>' +
-                  '</linearGradient>' +
-                  '<radialGradient id="pmLagoonGrad" cx="50%" cy="50%" r="50%">' +
-                    '<stop offset="0%" stop-color="#67E8F9" stop-opacity="0.45"/>' +
-                    '<stop offset="70%" stop-color="#38BDF8" stop-opacity="0.25"/>' +
-                    '<stop offset="100%" stop-color="#0284C7" stop-opacity="0.05"/>' +
-                  '</radialGradient>' +
-                  '<linearGradient id="pmIslandSand1" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                    '<stop offset="0%" stop-color="#FEF08A" stop-opacity="0.75"/>' +
-                    '<stop offset="40%" stop-color="#86EFAC" stop-opacity="0.55"/>' +
-                    '<stop offset="70%" stop-color="#BBF7D0" stop-opacity="0.55"/>' +
-                    '<stop offset="100%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
-                  '</linearGradient>' +
-                  '<linearGradient id="pmIslandSand2" x1="100%" y1="0%" x2="0%" y2="100%">' +
-                    '<stop offset="0%" stop-color="#FDE68A" stop-opacity="0.80"/>' +
-                    '<stop offset="45%" stop-color="#A7F3D0" stop-opacity="0.55"/>' +
-                    '<stop offset="100%" stop-color="#FEF08A" stop-opacity="0.70"/>' +
-                  '</linearGradient>' +
-                '</defs>' +
-
-                // Líneas de Rumbo Náuticas de Navegación
-                '<g class="pm-rhumb-lines" stroke="rgba(180, 83, 9, 0.12)" stroke-width="1" stroke-dasharray="4,6">' +
-                  '<line x1="880" y1="120" x2="0" y2="1000" />' +
-                  '<line x1="880" y1="120" x2="200" y2="1200" />' +
-                  '<line x1="880" y1="120" x2="0" y2="500" />' +
-                  '<line x1="880" y1="120" x2="500" y2="1200" />' +
-                  '<line x1="120" y1="950" x2="1000" y2="200" />' +
-                  '<line x1="120" y1="950" x2="800" y2="0" />' +
-                  '<line x1="120" y1="950" x2="1000" y2="600" />' +
-                  '<line x1="120" y1="950" x2="400" y2="0" />' +
-                '</g>' +
-
-                // Isla 1: Cayo Noreste
-                '<path d="M 680,20 C 720,15 820,30 900,15 C 980,0 1020,40 1000,140 C 980,220 890,260 820,240 C 750,220 700,200 660,150 C 620,100 640,25 680,20 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-                '<path d="M 690,30 C 730,25 820,38 890,25 C 960,12 1000,50 990,135 C 970,210 885,245 820,230 C 755,210 710,190 670,145 C 635,100 655,35 690,30 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
-
-                // Isla 2: Cayo de los Arrecifes con Laguna Interior
-                '<path d="M 20,340 C 90,320 180,330 230,380 C 280,430 270,520 220,570 C 170,620 80,630 20,590 C -20,550 -10,480 0,420 C 10,380 -10,350 20,340 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-                '<path d="M 30,350 C 95,335 175,342 220,390 C 265,435 255,510 210,555 C 165,600 85,615 30,580 C -10,540 0,480 10,425 C 18,385 0,360 30,350 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
-                '<path d="M 70,430 C 110,410 150,430 160,470 C 170,510 130,540 90,535 C 60,530 45,500 50,465 C 55,445 60,435 70,430 Z" fill="url(#pmLagoonGrad)" stroke="rgba(2, 132, 199, 0.4)" stroke-width="1.2" />' +
-
-                // Isla 3: Península Montañosa Sureste
-                '<path d="M 760,540 C 830,520 920,530 970,580 C 1020,630 1000,720 960,780 C 920,840 820,870 760,840 C 700,810 680,750 690,680 C 700,610 710,555 760,540 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-                '<path d="M 770,550 C 835,532 915,540 960,588 C 1005,635 985,712 950,768 C 912,825 820,855 765,828 C 710,800 692,745 700,680 C 710,615 722,565 770,550 Z" fill="url(#pmIslandSand1)" stroke="#B45309" stroke-width="1.8" />' +
-
-                // Isla 4: Atolón del Tesoro
-                '<path d="M 80,820 C 150,800 240,830 260,900 C 280,970 230,1050 160,1080 C 90,1110 20,1080 0,1020 C -20,960 10,890 40,850 C 55,830 65,825 80,820 Z" fill="none" stroke="rgba(2, 132, 199, 0.25)" stroke-width="3" stroke-dasharray="6,4" />' +
-                '<path d="M 90,830 C 155,812 230,840 248,905 C 265,968 220,1038 155,1065 C 92,1092 30,1065 12,1012 C -5,958 20,895 50,860 C 62,842 75,835 90,830 Z" fill="url(#pmIslandSand2)" stroke="#B45309" stroke-width="1.8" />' +
-
-                // Río Serpentino Principal que atraviesa el mapa
-                '<path d="M 1000,320 C 860,340 780,390 710,430 C 640,470 590,520 540,530 C 490,540 440,510 390,530 C 330,560 300,620 280,690 C 260,760 290,820 340,870 C 390,920 440,960 480,1020 C 520,1080 500,1150 490,1200 L 535,1200 C 550,1140 570,1070 525,1005 C 480,945 425,905 385,860 C 345,815 315,765 330,705 C 345,645 375,595 425,570 C 475,545 525,575 575,565 C 625,550 675,505 745,465 C 815,425 885,385 1000,370 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.6" />' +
-                '<path d="M 980,345 C 850,365 770,410 725,450 C 655,490 605,535 555,545 C 505,555 455,530 405,550 C 350,578 315,635 305,695 C 295,755 315,815 360,865 C 405,912 455,950 500,1015 C 535,1065 525,1135 512,1190" fill="none" stroke="rgba(255, 255, 255, 0.65)" stroke-width="2" stroke-dasharray="10,8" />' +
-
-                // Afluente del río (brazo izquierdo)
-                '<path d="M 0,210 C 80,225 150,260 210,295 C 265,330 310,355 350,390 L 335,410 C 295,375 250,350 195,315 C 140,280 70,250 0,235 Z" fill="url(#pmRiverGrad)" stroke="#0284C7" stroke-width="1.2" />' +
-
-                // Ondas de agua marina
-                '<g stroke="rgba(2, 132, 199, 0.35)" stroke-width="1.4" fill="none" stroke-linecap="round">' +
-                  '<path d="M 320,110 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
-                  '<path d="M 380,125 c 8,-4 16,-4 24,0 c 8,4 16,4 24,0" />' +
-                  '<path d="M 120,680 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
-                  '<path d="M 820,440 c 9,-4 18,-4 27,0 c 9,4 18,4 27,0" />' +
-                  '<path d="M 620,920 c 10,-4 20,-4 30,0 c 10,4 20,4 30,0" />' +
-                '</g>' +
-
-                // Cordilleras / Montañas
-                '<g fill="#FDE68A" stroke="#78350F" stroke-width="1.4" stroke-linejoin="round">' +
-                  '<polygon points="760,110 780,75 800,110" />' +
-                  '<polygon points="790,115 815,70 840,115" />' +
-                  '<polygon points="830,120 850,85 870,120" />' +
-                  '<polygon points="810,680 835,635 860,680" />' +
-                  '<polygon points="850,685 875,640 900,685" />' +
-                  '<polygon points="890,690 910,655 930,690" />' +
-                '</g>' +
-
-                // Profundidades náuticas (Soundings)
-                '<g font-family="Georgia, serif" font-size="11" font-weight="bold" fill="rgba(120, 53, 15, 0.35)" font-style="italic">' +
-                  '<text x="450" y="80">14</text>' +
-                  '<text x="610" y="240">8</text>' +
-                  '<text x="180" y="230">12</text>' +
-                  '<text x="490" y="420">18</text>' +
-                  '<text x="660" y="600">9</text>' +
-                  '<text x="210" y="740">22</text>' +
-                  '<text x="620" y="860">15</text>' +
-                  '<text x="400" y="1120">7</text>' +
-                  '<text x="710" y="1150">16</text>' +
-                '</g>' +
-              '</svg>' +
-
-              // Elementos decorativos náuticos flotantes
-              '<div class="pm-deco pm-deco-compass" title="Rosa de los Vientos">🧭</div>' +
-              '<div class="pm-deco pm-deco-kraken" title="Monstruo Marino Kraken">🐙</div>' +
-              '<div class="pm-deco pm-deco-sea-dragon" title="Serpiente Marina">🐉</div>' +
-              '<div class="pm-deco pm-deco-shipwreck" title="Naufragio del Galeón">⛵</div>' +
-              '<div class="pm-deco pm-deco-palm1">🌴</div>' +
-              '<div class="pm-deco pm-deco-palm2">🌴</div>' +
-              '<div class="pm-deco pm-deco-palm3">🌴</div>' +
-              '<div class="pm-deco pm-deco-palm4">🌴</div>' +
-              '<div class="pm-deco pm-deco-treasure-cove" title="Cala de Piratas">🏝️</div>' +
-              '<div class="pm-deco pm-deco-bottle" title="Mensaje en Botella">🍾</div>' +
-              '<div class="pm-deco pm-deco-anchor" title="Fondeadero Real">⚓</div>' +
-
-              // Rótulos cartográficos antiguos
-              '<div class="pm-map-label label-sea">MAR DE LAS IDEAS</div>' +
-              '<div class="pm-map-label label-bay">Bahía del Código</div>' +
-              '<div class="pm-map-label label-river">Río Circuitos</div>' +
-              '<div class="pm-map-label label-island1">Cayo Robótica</div>' +
-              '<div class="pm-map-label label-island2">Isla Calavera</div>' +
-            '</div>'));
-
-      bodyHtml =
-        '<div class="pirate-map-canvas ' + (isLegacy ? 'legacy-map-canvas' : (isCyber ? 'cyber-map-canvas' : (isSpace ? 'space-map-canvas' : ''))) + '">' +
-          pirateMapBackgroundHtml +
-          pirateStartPortHtml +
-          pirateIslandsHtml +
-          pirateFinishHtml +
-        '</div>';
+      bodyHtml = '<div class="pf-radial-wheel-section" id="pf-radial-wheel-section"></div>';
     } else {
       // ── Cuadrícula (Grid Mode) ──
       bodyHtml = '<div class="arm-grid-view">' +
@@ -2459,7 +2694,7 @@
       '</div>';
     }
 
-    return '<div class="adventure-roadmap-wrapper">' + headerHtml + sala5SpecialBannerHtml + bodyHtml + '</div>';
+    return '<div class="adventure-roadmap-wrapper">' + headerHtml + (isGrid ? sala5SpecialBannerHtml : '') + bodyHtml + '</div>';
   }
 
   function fallbackCopyText(text, callback) {
@@ -3137,6 +3372,30 @@
         var isLast = (selectedClassProjectIdx === classProjects.length - 1);
         var projTypeBadge = currentProj.badge || (currentProj.type === 'electronica' ? '⚡ Circuito Electrónico' : (currentProj.type === 'paint' ? '🎨 Arte Digital & Paint' : (currentProj.type === 'makecode' ? '💻 MakeCode Micro:bit' : (currentProj.type === 'scratch' ? '🐱 Scratch Jr' : (isGemini ? '🧠 Gemini & NotebookLM' : (isCanva ? '🎨 Canva & Animación IA' : '🚀 Proyecto Maker'))))));
 
+        // Helper para formatear saltos de línea y convertir URLs en botones/enlaces amigables para niños
+        var formatProjInlineLinks = function(txt) {
+          if (!txt) return '';
+          return String(txt).replace(/(https?:\/\/[^\s)<>"']+)/g, function(url) {
+            var cleanUrl = url.replace(/[.,;:!?]+$/, '');
+            var trailing = url.slice(cleanUrl.length);
+            var label = 'Abrir enlace';
+            if (cleanUrl.indexOf('libro_hechizos') !== -1) label = 'Abrir Libro de Hechizos';
+            else if (cleanUrl.indexOf('canva') !== -1) label = 'Abrir Plantilla en Canva';
+            else if (cleanUrl.indexOf('flow.google') !== -1) label = 'Abrir Flow';
+            else if (cleanUrl.indexOf('gemini') !== -1) label = 'Abrir Gemini';
+            else if (cleanUrl.indexOf('scratch') !== -1) label = 'Abrir Scratch';
+            else if (cleanUrl.indexOf('makecode') !== -1) label = 'Abrir MakeCode';
+            return '<a href="' + cleanUrl + '" target="_blank" rel="noopener noreferrer" class="cpfc-inline-link"><i class="fas fa-external-link-alt"></i> ' + label + '</a>' + trailing;
+          });
+        };
+        var formatProjRichText = function(txt) {
+          if (!txt) return '';
+          var parts = String(txt).split(/\n\s*\n|\n/).map(function(p){ return p.trim(); }).filter(Boolean);
+          return parts.map(function(p){
+            return '<p class="cpfc-desc-para">' + formatProjInlineLinks(p) + '</p>';
+          }).join('');
+        };
+
         // Pasos de clase
         var instructionsList = currentProj.instructions || currentProj.steps || [];
         var instructionsHtml = '';
@@ -3150,7 +3409,7 @@
               '<div class="cpfc-step-num">' + stNum + '</div>' +
               '<div class="cpfc-step-content">' +
                 '<h5 class="cpfc-step-title">' + stTitle + '</h5>' +
-                '<p class="cpfc-step-desc">' + stDesc + '</p>' +
+                '<p class="cpfc-step-desc">' + formatProjInlineLinks(stDesc) + '</p>' +
                 (stTip ? '<div class="cpfc-step-tip">💡 <strong>Tip Maker:</strong> ' + stTip + '</div>' : '') +
               '</div>' +
             '</div>';
@@ -3177,7 +3436,7 @@
               '<div class="cpfc-mat-icon"><i class="fas ' + mIcon + '"></i></div>' +
               '<div class="cpfc-mat-info">' +
                 '<strong>' + mTitle + '</strong>' +
-                (mDesc ? '<span>' + mDesc + '</span>' : '') +
+                (mDesc ? '<span>' + formatProjInlineLinks(mDesc) + '</span>' : '') +
               '</div>' +
             '</div>';
           }).join('');
@@ -3281,20 +3540,8 @@
               '<div class="cpfc-info-col">' +
                 '<div class="cpfc-desc-box">' +
                   '<h4><i class="fas fa-info-circle"></i> ¿De qué trata este proyecto?</h4>' +
-                  '<p>' + (currentProj.description || 'Proyecto interactivo del taller maker.') + '</p>' +
+                  formatProjRichText(currentProj.description || 'Proyecto interactivo del taller maker.') +
                 '</div>' +
-
-                (currentProj.objective ?
-                  '<div class="cpfc-objective-box">' +
-                    '<h4><i class="fas fa-bullseye"></i> Objetivo de Aprendizaje</h4>' +
-                    '<p>' + currentProj.objective + '</p>' +
-                  '</div>' : '') +
-
-                (currentProj.benefits ?
-                  '<div class="cpfc-benefits-box">' +
-                    '<h4><i class="fas fa-brain"></i> Habilidades y Pensamiento Computacional</h4>' +
-                    '<p>' + currentProj.benefits + '</p>' +
-                  '</div>' : '') +
 
                 '<div class="cpfc-actions">' +
                   '<button type="button" class="cpfc-btn-primary btn-open-class-project" data-class-idx="' + selectedClassProjectIdx + '" title="Abrir presentación interactiva, simulador y paso a paso">' +
@@ -3312,6 +3559,23 @@
                       '<i class="fas fa-code"></i> <span>' + codeLabel + '</span>' +
                     '</a>' : '') +
                 '</div>' +
+
+                ((currentProj.objective || currentProj.benefits) ?
+                  '<details class="cpfc-extra-details">' +
+                    '<summary><i class="fas fa-bullseye"></i> Ver objetivo y habilidades del taller (para docentes y familias)</summary>' +
+                    '<div class="cpfc-extra-details-body">' +
+                      (currentProj.objective ?
+                        '<div class="cpfc-objective-box">' +
+                          '<h4><i class="fas fa-bullseye"></i> Objetivo de Aprendizaje</h4>' +
+                          '<p>' + currentProj.objective + '</p>' +
+                        '</div>' : '') +
+                      (currentProj.benefits ?
+                        '<div class="cpfc-benefits-box">' +
+                          '<h4><i class="fas fa-brain"></i> Habilidades y Pensamiento Computacional</h4>' +
+                          '<p>' + currentProj.benefits + '</p>' +
+                        '</div>' : '') +
+                    '</div>' +
+                  '</details>' : '') +
               '</div>' +
             '</div>' +
 
@@ -3338,12 +3602,38 @@
 
       uploadZoneHtml = '';
 
-    // ═══ CARPETA: ACTIVIDAD FAMILIAR (Escape Rooms Nostálgico) ═══
+    // ═══ CARPETA: ACTIVIDAD FAMILIAR (Escape Rooms Nostálgico + Álbum Mundial) ═══
     } else if (activeFolderKey === 'familiar') {
       var escapeRoomUrl = 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html';
       var mundialUrl = 'https://roboticapaulofreire-uy.github.io/mundial/';
       var albumThumb = 'https://roboticapaulofreire-uy.github.io/mundial/img/tapa-album-robotica.jpg';
       var figObj = (typeof window.getStudentFigurita === 'function') ? window.getStudentFigurita(student) : null;
+      var escapeSvgThumb = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360">' +
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#312E81"/><stop offset="60%" stop-color="#1E1B4B"/><stop offset="100%" stop-color="#0F172A"/></linearGradient></defs>' +
+        '<rect width="600" height="360" fill="url(#g)"/>' +
+        '<circle cx="110" cy="80" r="3" fill="#FDE68A" opacity="0.8"/><circle cx="490" cy="70" r="4" fill="#38BDF8" opacity="0.8"/><circle cx="520" cy="270" r="3" fill="#FDE68A" opacity="0.7"/>' +
+        '<text x="300" y="170" text-anchor="middle" font-size="110">🗝️</text>' +
+        '<text x="300" y="255" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="28" fill="#FDE68A">ESCAPE ROOM EN FAMILIA</text>' +
+        '<text x="300" y="290" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="18" fill="#93C5FD">Enigmas y Pistas Interactivas</text>' +
+        '</svg>'
+      );
+
+      var familiarHeaderHtml =
+        '<div class="arm-toolbar-compact ' + (isLegacy ? 'legacy-toolbar' : (isCyber ? 'cyber-toolbar' : (isSpace ? 'space-toolbar' : ''))) + '">' +
+          '<div class="atc-left">' +
+            '<span class="atc-badge"><i class="fas fa-users"></i> CON LA FAMILIA</span>' +
+            '<h3 class="atc-title">Experiencias para Compartir &bull; ' + student.gradeName + '</h3>' +
+          '</div>' +
+          '<div class="arm-view-toggle">' +
+            '<button type="button" class="arm-vt-btn ' + (!isFamiliarGridMode ? 'active' : '') + '" data-familiar-mode="radial" title="Ver como Ruleta">' +
+              '<i class="fas fa-compass"></i> <span>Ruleta</span>' +
+            '</button>' +
+            '<button type="button" class="arm-vt-btn ' + (isFamiliarGridMode ? 'active' : '') + '" data-familiar-mode="grid" title="Ver como Tarjetas">' +
+              '<i class="fas fa-th-large"></i> <span>Tarjetas</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
 
       var albumMundialCardHtml =
         '<div class="grade-game-card ptb-card" style="max-width: 480px; margin: 0 auto;">' +
@@ -3412,7 +3702,10 @@
           '</div>' +
         '</div>';
 
-      mainDisplayHtml = buildPirateTavernBoard({
+      if (!isFamiliarGridMode) {
+        mainDisplayHtml = '<div class="adventure-roadmap-wrapper">' + familiarHeaderHtml + '<div class="pf-radial-wheel-section" id="pf-familiar-radial-section"></div></div>';
+      } else {
+      mainDisplayHtml = '<div class="adventure-roadmap-wrapper">' + familiarHeaderHtml + buildPirateTavernBoard({
         sealIcon: isLegacy ? '🎓' : (isCyber ? '🤖' : (isSpace ? '🚀' : '🗝️')),
         tag: isLegacy
           ? 'LIBRO DE RECUERDOS · HOMENAJE Y DESAFÍO EN FAMILIA'
@@ -3432,7 +3725,8 @@
               ? '¡Despegá junto a la tripulación de tu hogar! Descifrá enigmas nostálgicos, acertijos interactivos y códigos secretos para completar la misión.'
               : '¡Zarpá junto a tu tripulación familiar! Descifrá enigmas nostálgicos, acertijos interactivos y secretos ocultos para escapar con el botín.')),
         contentHtml: '<div class="grade-games-grid ptb-games-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 440px)); justify-content: center; gap: 20px;">' + albumMundialCardHtml + escapeRoomCardHtml + '</div>'
-      });
+      }) + '</div>';
+      }
 
       uploadZoneHtml = '';
 
@@ -3505,8 +3799,8 @@
 
     container.innerHTML =
       '<section class="gdrive-dashboard-centered gamer-dashboard-container ' + dashboardThemeClass + '" id="student-drive-dashboard">' +
-        // 1. HERO HEADER: PERFIL DEL CAPITÁN / ASTRONAUTA / MAESTRO CYBER / EGRESADO
-        '<div class="gamer-hero-card ' + heroCardClass + '">' +
+        // 1. HEADER COMPACTO INTEGRADO: PERFIL + PROGRESO + PESTAÑAS
+        '<div class="gamer-hero-card compact-integrated-header ' + heroCardClass + '">' +
           '<div class="gh-main-row">' +
             '<div class="gh-player-profile">' +
               '<div class="gh-avatar-container">' +
@@ -3514,12 +3808,25 @@
                 '<span class="gh-status-dot" title="' + (isLegacy ? 'Egresado de Honor de la Generación Maker Paulo Freire' : (isCyber ? 'Conectado a la Red Neuronal Paulo Freire' : (isSpace ? 'En órbita en la Estación Espacial Paulo Freire' : 'A bordo del Navío Paulo Freire'))) + '"></span>' +
               '</div>' +
               '<div class="gh-player-meta">' +
-                '<div class="gh-tag-row">' +
-                  '<span class="gh-badge grade"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-anchor'))) + '"></i> ' + (isLegacy ? 'Promoción ' : (isCyber ? 'División ' : (isSpace ? 'Nave ' : 'Navío '))) + student.gradeName + '</span>' +
-                  '<span class="gh-badge level"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-robot' : (isSpace ? 'fa-user-astronaut' : 'fa-skull-crossbones'))) + '"></i> ' + pirateRank + ' · Nivel ' + studentLevel + '</span>' +
+                '<div class="gh-title-line">' +
+                  '<h2 class="gh-player-name">' + (isLegacy ? ('¡Honor y Gloria, ' + student.name.split(' ')[0] + '! 🎓✨') : (isCyber ? ('¡Sistema en línea, ' + student.name.split(' ')[0] + '! 🤖⚡') : (isSpace ? ('¡Despegamos, ' + student.name.split(' ')[0] + '! 🚀👨‍🚀') : ('¡A la mar, ' + student.name.split(' ')[0] + '! 🏴‍☠️')))) + '</h2>' +
+                  '<div class="gh-tag-row">' +
+                    '<span class="gh-badge grade"><i class="fas ' + (isLegacy ? 'fa-graduation-cap' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-rocket' : 'fa-anchor'))) + '"></i> ' + (isLegacy ? 'Promoción ' : (isCyber ? 'División ' : (isSpace ? 'Nave ' : 'Navío '))) + student.gradeName + '</span>' +
+                    '<span class="gh-badge level"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-robot' : (isSpace ? 'fa-user-astronaut' : 'fa-skull-crossbones'))) + '"></i> ' + pirateRank + ' · Nvl ' + studentLevel + '</span>' +
+                    '<span class="gh-xp-badge"><span class="gh-xp-spark">' + (isLegacy ? '👑' : (isCyber ? '⚡' : (isSpace ? '🌟' : '🪙'))) + '</span><span class="gh-xp-num">+' + totalXp + (isLegacy ? ' Laureles' : (isCyber ? ' TeraWatts' : (isSpace ? ' Cristales' : ' Doblones'))) + '</span></span>' +
+                  '</div>' +
                 '</div>' +
-                '<h2 class="gh-player-name">' + (isLegacy ? ('¡Honor y Gloria, ' + student.name.split(' ')[0] + '! 🎓✨') : (isCyber ? ('¡Sistema en línea, ' + student.name.split(' ')[0] + '! 🤖⚡') : (isSpace ? ('¡Despegamos, ' + student.name.split(' ')[0] + '! 🚀👨‍🚀') : ('¡A la mar, ' + student.name.split(' ')[0] + '! 🏴‍☠️')))) + '</h2>' +
-                '<span class="gh-player-sub">' + (isLegacy ? 'Libro de Recuerdos y Proyectos Cumbre · Generación Maker Paulo Freire' : (isCyber ? 'Red de Robótica, Microcontroladores e IA · Laboratorio Paulo Freire' : (isSpace ? 'Bitácora de Exploración Galáctica · Estación Espacial Paulo Freire' : 'Bitácora de Navegación Maker · Navío Paulo Freire'))) + '</span>' +
+                '<div class="gh-progress-wrapper gh-inline-progress">' +
+                  '<div class="gh-progress-header">' +
+                    '<span class="gh-ph-label"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-satellite' : 'fa-map-marked-alt'))) + '"></i> ' + (isLegacy ? 'Camino a la Graduación' : (isCyber ? 'Sincronización Maker' : (isSpace ? 'Exploración Galáctica' : 'Bitácora de Travesía'))) + '</span>' +
+                    '<span class="gh-ph-count"><strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> ' + (isLegacy ? 'hitos' : (isCyber ? 'nodos' : (isSpace ? 'planetas' : 'misiones'))) + ' (' + progressPercent + '%)</span>' +
+                  '</div>' +
+                  '<div class="gh-progress-track">' +
+                    '<div class="gh-progress-fill" style="width:' + progressPercent + '%;">' +
+                      '<div class="gh-progress-light"></div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
               '</div>' +
             '</div>' +
 
@@ -3543,91 +3850,62 @@
             '</div>' +
           '</div>' +
 
-          '<div class="gh-stats-row">' +
-            '<div class="gh-xp-badge">' +
-              '<span class="gh-xp-spark">' + (isLegacy ? '👑' : (isCyber ? '⚡' : (isSpace ? '🌟' : '🪙'))) + '</span>' +
-              '<span class="gh-xp-num">+' + totalXp + (isLegacy ? ' Laureles' : (isCyber ? ' TeraWatts' : (isSpace ? ' Cristales' : ' Doblones'))) + '</span>' +
-            '</div>' +
-            '<div class="gh-progress-wrapper">' +
-              '<div class="gh-progress-header">' +
-                '<span class="gh-ph-label"><i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-network-wired' : (isSpace ? 'fa-satellite' : 'fa-map-marked-alt'))) + '"></i> ' + (isLegacy ? 'Camino a la Graduación y Diploma Maker' : (isCyber ? 'Sincronización de la Red Maker' : (isSpace ? 'Radar de Exploración Galáctica' : 'Bitácora de Travesía'))) + '</span>' +
-                '<span class="gh-ph-count">' + (isLegacy ? ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> hitos completados (' + progressPercent + '%)') : (isCyber ? ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> nodos compilados (' + progressPercent + '%)') : ('<strong>' + completedCount + '</strong> de <strong>' + totalMissions + '</strong> ' + (isSpace ? 'planetas explorados' : 'misiones conquistadas') + ' (' + progressPercent + '%)'))) + '</span>' +
-              '</div>' +
-              '<div class="gh-progress-track">' +
-                '<div class="gh-progress-fill" style="width:' + progressPercent + '%;">' +
-                  '<div class="gh-progress-light"></div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
+          // 2. NAVEGACIÓN INTEGRADA (6 PESTAÑAS EN UNA SOLA FILA SIN TRUNCAMIENTOS)
+          '<div class="gamer-nav-bar ' + (isLegacy ? 'legacy-nav-bar' : (isCyber ? 'cyber-nav-bar' : (isSpace ? 'space-nav-bar' : ''))) + '" role="tablist" aria-label="Secciones del Tablero">' +
+            '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyectos' ? 'active' : '') + '" data-folder="proyectos">' +
+              '<span class="gnb-emoji">🎒</span>' +
+              '<span class="gnb-title">Proyectos</span>' +
+              '<span class="gnb-badge">' + badgeProyectos + '</span>' +
+            '</button>' +
+            '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'juegos' ? 'active' : '') + '" data-folder="juegos">' +
+              '<span class="gnb-emoji">' + (isLegacy ? '🕹️' : (isCyber ? '🕹️' : (isSpace ? '🛸' : '⚔️'))) + '</span>' +
+              '<span class="gnb-title">Juegos</span>' +
+              '<span class="gnb-badge">' + badgeJuegos + '</span>' +
+            '</button>' +
+            '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'dibujos' ? 'active' : '') + '" data-folder="dibujos">' +
+              '<span class="gnb-emoji">📸</span>' +
+              '<span class="gnb-title">Fotos y Videos</span>' +
+              '<span class="gnb-badge">' + (isLoadingDriveFiles ? '<i class="fas fa-spinner fa-spin"></i>' : (FOLDER_CONTENTS.dibujos.items ? FOLDER_CONTENTS.dibujos.items.length : 0)) + '</span>' +
+            '</button>' +
+            '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyecto' ? 'active' : '') + '" data-folder="proyecto">' +
+              '<span class="gnb-emoji">' + (isLegacy ? '💻' : (isCyber ? '🧠' : (isSpace ? '🤖' : '💻'))) + '</span>' +
+              '<span class="gnb-title">Códigos</span>' +
+              '<span class="gnb-badge">' + badgeProyecto + '</span>' +
+            '</button>' +
+            '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'actividades' ? 'active' : '') + '" data-folder="actividades">' +
+              '<span class="gnb-emoji">' + (isLegacy ? '🏫' : (isCyber ? '⚡' : (isSpace ? '🛰️' : '🏫'))) + '</span>' +
+              '<span class="gnb-title">Clases</span>' +
+              '<span class="gnb-badge">' + badgeActividades + '</span>' +
+            '</button>' +
+            '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'familiar' ? 'active' : '') + '" data-folder="familiar">' +
+              '<span class="gnb-emoji">👨‍👩‍👧</span>' +
+              '<span class="gnb-title">Con la Familia</span>' +
+              '<span class="gnb-badge">2</span>' +
+            '</button>' +
           '</div>' +
-        '</div>' +
-
-        // 2. NAVEGACIÓN (TABS TÁCTILES PIRATAS, GALÁCTICAS, CYBER O EGRESADOS)
-        '<div class="gamer-nav-bar ' + (isLegacy ? 'legacy-nav-bar' : (isCyber ? 'cyber-nav-bar' : (isSpace ? 'space-nav-bar' : ''))) + '" role="tablist" aria-label="Secciones del Tablero">' +
-          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyectos' ? 'active' : '') + '" data-folder="proyectos">' +
-            '<span class="gnb-emoji">' + (isLegacy ? '📜' : (isCyber ? '🔌' : (isSpace ? '🪐' : '🗺️'))) + '</span>' +
-            '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isLegacy ? 'Camino del Egresado' : (isCyber ? 'Red de Nodos' : (isSpace ? 'Mapa Estelar' : 'Mapa del Tesoro'))) + '</span>' +
-              '<span class="gnb-badge">' + badgeProyectos + (isLegacy ? ' hitos' : (isCyber ? ' nodos' : (isSpace ? ' planetas' : ' misiones'))) + '</span>' +
-            '</div>' +
-          '</button>' +
-          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'juegos' ? 'active' : '') + '" data-folder="juegos">' +
-            '<span class="gnb-emoji">' + (isLegacy ? '🕹️' : (isCyber ? '🕹️' : (isSpace ? '🛸' : '⚔️'))) + '</span>' +
-            '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isLegacy ? 'Torneo de Despedida' : (isCyber ? 'Arcade Cyber' : (isSpace ? 'Misiones Galácticas' : 'Desafíos Piratas'))) + '</span>' +
-              '<span class="gnb-badge">' + badgeJuegos + ' juegos</span>' +
-            '</div>' +
-          '</button>' +
-          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'dibujos' ? 'active' : '') + '" data-folder="dibujos">' +
-            '<span class="gnb-emoji">📸🎬</span>' +
-            '<div class="gnb-info">' +
-              '<span class="gnb-title">Fotos & Videos</span>' +
-              '<span class="gnb-badge">' + badgeDibujos + '</span>' +
-            '</div>' +
-          '</button>' +
-          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'proyecto' ? 'active' : '') + '" data-folder="proyecto">' +
-            '<span class="gnb-emoji">' + (isLegacy ? '🎓' : (isCyber ? '🧠' : (isSpace ? '🤖' : '💻'))) + '</span>' +
-            '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isLegacy ? 'Cápsula de Códigos' : (isCyber ? 'Núcleo de Código' : (isSpace ? 'Lab Espacial' : 'Cofre de Códigos'))) + '</span>' +
-              '<span class="gnb-badge">' + badgeProyecto + ' inventos</span>' +
-            '</div>' +
-          '</button>' +
-          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'actividades' ? 'active' : '') + '" data-folder="actividades">' +
-            '<span class="gnb-emoji">' + (isLegacy ? '📜' : (isCyber ? '⚡' : (isSpace ? '🛰️' : '🏫'))) + '</span>' +
-            '<div class="gnb-info">' +
-              '<span class="gnb-title">Proyectos de Clase</span>' +
-              '<span class="gnb-badge">' + badgeActividades + ' clases</span>' +
-            '</div>' +
-          '</button>' +
-          '<button type="button" class="gnb-tab gdb-qpill ' + (activeFolderKey === 'familiar' ? 'active' : '') + '" data-folder="familiar">' +
-            '<span class="gnb-emoji">' + (isLegacy ? '🤝' : (isCyber ? '🔐' : (isSpace ? '🚀' : '🏴‍☠️'))) + '</span>' +
-            '<div class="gnb-info">' +
-              '<span class="gnb-title">' + (isLegacy ? 'Homenaje Familiar' : (isCyber ? 'Hackeo Familiar' : (isSpace ? 'Odisea Familiar' : 'Travesía Familiar'))) + '</span>' +
-              '<span class="gnb-badge">Escape Room</span>' +
-            '</div>' +
-          '</button>' +
         '</div>' +
 
         // 3. CONTENEDOR PRINCIPAL A PANTALLA COMPLETA
         '<div class="gamer-content-wrapper">' +
           '<main class="gdb-content-area gamer-fullwidth">' +
+            (activeFolderKey !== 'proyectos' && activeFolderKey !== 'juegos' && activeFolderKey !== 'familiar' ? (
             '<div class="gca-folder-bar">' +
               '<div class="gca-fb-title">' +
                 '<i class="fas ' + (isLegacy ? 'fa-award' : (isCyber ? 'fa-microchip' : (isSpace ? 'fa-satellite' : currentFolder.icon))) + '"></i>' +
-                '<span>' + (isLegacy ? 'Libro: ' : (isCyber ? 'Terminal: ' : (isSpace ? 'Transmisión: ' : 'Bitácora: '))) + '<strong>' +
-                  (activeFolderKey === 'proyectos' ? ((isLegacy ? '📜 Camino del Egresado · Proyectos Cumbre (' : (isCyber ? '🔌 Red de Nodos de Robótica e IA (' : (isSpace ? '🪐 Mapa Estelar Galáctico (' : '🗺️ Mapa del Tesoro ('))) + student.gradeName + ')') :
-                   activeFolderKey === 'juegos' ? ((isLegacy ? '🕹️ Torneo de Despedida: Juegos & Desafíos Finales (' : (isCyber ? '🕹️ Arcade Cyber & Algoritmos de Programación (' : (isSpace ? '🛸 Simulador de Misiones Galácticas (' : '⚔️ Desafíos Piratas y Algoritmos ('))) + student.gradeName + ')') :
-                   activeFolderKey === 'dibujos' ? ((isLegacy ? '🏆 Álbum de Recuerdos, Diplomas y Obras de Arte (' : (isCyber ? '📟 Matriz de Renders, Esquemas y Diseños (' : (isSpace ? '🌌 Consola de Hologramas y Dibujos (' : '🎨 La Mesa del Capitán: Dibujos y Pergaminos ('))) + student.gradeName + ')') :
-                   activeFolderKey === 'proyecto'  ? (isLegacy ? '🎓 Cápsula de Códigos, Robótica y Creaciones de Egreso' : (isCyber ? '🧠 Núcleo de Código, Algoritmos y Robótica Micro:bit' : (isSpace ? '🤖 Laboratorio Espacial de Códigos y Robótica' : '💻 Cofre de Invenciones y Códigos Maker'))) :
-                   activeFolderKey === 'actividades' ? (isLegacy ? ('📜 Proyectos y Clases Cumbre (' + student.gradeName + ')') : (isCyber ? ('⚡ Proyectos y Clases de Robótica (' + student.gradeName + ')') : (isSpace ? ('🛰️ Proyectos y Clases Galácticas (' + student.gradeName + ')') : ('🏫 Proyectos y Actividades de Clase (' + student.gradeName + ')')))) :
-                   activeFolderKey === 'familiar' ? (isLegacy ? '🤝 Homenaje Familiar: Escape Room de Graduación' : (isCyber ? '🔐 Hackeo Familiar: Escape Room de Algoritmos' : (isSpace ? '🚀 Odisea Familiar: Escape Room Interestelar' : '🏴‍☠️ Travesía Familiar: Escape Room de Enigmas'))) : currentFolder.name) +
+                '<span><strong>' +
+                  (activeFolderKey === 'juegos' ? ((isLegacy ? 'Torneo de Despedida (' : (isCyber ? 'Arcade Cyber (' : (isSpace ? 'Misiones Galácticas (' : 'Juegos del Grado ('))) + student.gradeName + ')') :
+                   activeFolderKey === 'dibujos' ? ('Álbum de Fotos y Videos (' + student.gradeName + ')') :
+                   activeFolderKey === 'proyecto'  ? (isLegacy ? 'Cápsula de Códigos y Robótica' : (isCyber ? 'Núcleo de Códigos y Robótica' : (isSpace ? 'Laboratorio de Códigos y Robótica' : 'Cofre de Códigos y Robótica'))) :
+                   activeFolderKey === 'actividades' ? ('Proyectos de Clase (' + student.gradeName + ')') :
+                   activeFolderKey === 'familiar' ? 'Escape Room y Álbum en Familia' : currentFolder.name) +
                 '</strong></span>' +
               '</div>' +
               '<div class="gca-fb-right">' +
                 '<span class="gca-fb-count">' + countText + '</span>' +
                 (canUpload ? '<button type="button" class="' + uploadBtnClass + '" id="gca-btn-upload">' + uploadBtnText + '</button>' : '') +
               '</div>' +
-            '</div>' +
+            '</div>'
+            ) : '') +
             mainDisplayHtml +
             uploadZoneHtml +
           '</main>' +
@@ -3711,8 +3989,11 @@
       initDropzone(container, student, 'proyectos', '.sb3,.sjr,.pjson,.sb', containerId, true, 'scratch');
     }
 
-    // ── Eventos de la Ruta de Aventuras (Modo 3) ──
+    // ── Eventos de la Ruta de Aventuras / Menú Radial ──
     if (activeFolderKey === 'proyectos') {
+      if (!isRoadmapGridMode) {
+        mountAdventureRadialMenu(container, student, adventureMissions);
+      }
       // Toggle de vista: Mapa vs Cuadrícula
       container.querySelectorAll('.arm-vt-btn').forEach(function(btn){
         btn.onclick = function(e){
@@ -4210,9 +4491,41 @@
       });
     }
 
-    // ── Juegos del Grado (botón para saltar a la misión en Ruta Maker y clic para ampliar razonamiento) ──
+    // ── Con la Familia (Ruleta Circular + Tarjetas) ──
+    if (activeFolderKey === 'familiar') {
+      container.querySelectorAll('[data-familiar-mode]').forEach(function(btn) {
+        btn.onclick = function() {
+          var mode = btn.dataset.familiarMode;
+          if ((mode === 'grid') !== isFamiliarGridMode) {
+            isFamiliarGridMode = (mode === 'grid');
+            if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+            renderGDriveDashboard(student);
+          }
+        };
+      });
+      if (!isFamiliarGridMode) {
+        mountFamiliarRadialMenu(container, student);
+      }
+    }
+
+    // ── Juegos del Grado (Ruleta Circular + Tarjetas) ──
     if (activeFolderKey === 'juegos') {
-      // Clic para Dame sugerencias en juegos (Abre Modal Pedagógico)
+      container.querySelectorAll('[data-games-mode]').forEach(function(btn) {
+        btn.onclick = function() {
+          var mode = btn.dataset.gamesMode;
+          if ((mode === 'grid') !== isGamesGridMode) {
+            isGamesGridMode = (mode === 'grid');
+            if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+            renderGDriveDashboard(student);
+          }
+        };
+      });
+
+      if (!isGamesGridMode && gradeGames && gradeGames.length > 0) {
+        mountGamesRadialMenu(container, student, gradeGames);
+      }
+
+      // Clic para Dame sugerencias en juegos (Abre Modal Pedagógico en modo Tarjetas)
       container.querySelectorAll('.arm-concept-modal-btn').forEach(function(btn){
         btn.onclick = function(e){
           e.stopPropagation();
@@ -4235,12 +4548,729 @@
   // ──────────────────────────────────────────────────
   // RENDER HTML DE JUEGOS DEL GRADO (DESAFÍOS PIRATAS / MISIONES GALÁCTICAS)
   // ──────────────────────────────────────────────────
+  function getGameRadialIconSvg(game) {
+    var p = (game && game.platform ? String(game.platform) : '').toLowerCase();
+    var t = (game && game.title ? String(game.title) : '').toLowerCase();
+    if (/surf|agua|ola/.test(t)) return '<path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><circle cx="12" cy="6" r="3"/>';
+    if (/dino|t-rex|rex/.test(t)) return '<path d="M12 3a6 6 0 0 1 6 6v4l2 2v4h-4v-2h-4v2H8v-5l-3-3 2-2 2 1V9a6 6 0 0 1 3-6z"/>';
+    if (/codeorg|code\.org/.test(p) || /frozen|angry|minecraft/.test(t)) return '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>';
+    if (/scratch|codejr/.test(p)) return '<circle cx="12" cy="12" r="8"/><circle cx="9.5" cy="10.5" r="1"/><circle cx="14.5" cy="10.5" r="1"/><path d="M9 15c1.5 1.2 4.5 1.2 6 0"/>';
+    return '<rect x="2" y="6" width="20" height="12" rx="4"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15.5" cy="11" r="1"/><circle cx="17.5" cy="13" r="1"/>';
+  }
+
+  function mountFamiliarRadialMenu(rootEl, student) {
+    var section = rootEl ? rootEl.querySelector('#pf-familiar-radial-section') : null;
+    if (!section) return;
+
+    var escapeRoomUrl = 'https://roboticapaulofreire-uy.github.io/escape-rooms-nostalgico/index.html';
+    var mundialUrl = 'https://roboticapaulofreire-uy.github.io/mundial/';
+    var albumThumb = 'https://roboticapaulofreire-uy.github.io/mundial/img/tapa-album-robotica.jpg';
+    var figObj = (typeof window.getStudentFigurita === 'function') ? window.getStudentFigurita(student) : null;
+    var escapeSvgThumb = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#312E81"/><stop offset="60%" stop-color="#1E1B4B"/><stop offset="100%" stop-color="#0F172A"/></linearGradient></defs>' +
+      '<rect width="600" height="360" fill="url(#g)"/>' +
+      '<circle cx="110" cy="80" r="3" fill="#FDE68A" opacity="0.8"/><circle cx="490" cy="70" r="4" fill="#38BDF8" opacity="0.8"/><circle cx="520" cy="270" r="3" fill="#FDE68A" opacity="0.7"/>' +
+      '<text x="300" y="170" text-anchor="middle" font-size="110">🗝️</text>' +
+      '<text x="300" y="255" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="28" fill="#FDE68A">ESCAPE ROOM EN FAMILIA</text>' +
+      '<text x="300" y="290" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="18" fill="#93C5FD">Enigmas y Pistas Interactivas</text>' +
+      '</svg>'
+    );
+
+    var items = [
+      {
+        id: 'album',
+        shortTitle: 'Álbum Mundial',
+        title: 'Álbum Digital CPF 2026 — Robótica Mundial',
+        platformLabel: '⚽ 232 Figuritas',
+        thumbnail: albumThumb,
+        url: mundialUrl,
+        ctaLabel: 'Abrir mi Álbum',
+        ctaIcon: 'fa-book-open',
+        description: '¡Coleccioná las 232 figuritas de tus compañeros en familia! Escaneá códigos QR, abrí paquetes virtuales con confeti y descubrí tu propio cromo coleccionable.',
+        tags: ['FiguritasCPF', 'EscánerQR', 'ColecciónFamiliar'],
+        hasFiguritaBtn: Boolean(figObj),
+        color: '#047857'
+      },
+      {
+        id: 'escape',
+        shortTitle: 'Escape Room',
+        title: 'Escape Room: Desafío y Recuerdos en Familia',
+        platformLabel: '🗝️ Juego Interactivo',
+        thumbnail: escapeSvgThumb,
+        url: escapeRoomUrl,
+        ctaLabel: 'Entrar al Escape Room',
+        ctaIcon: 'fa-compass',
+        description: '¡Celebrá junto a tu familia descifrando enigmas colaborativos, pistas interactivas y recuerdos del taller para completar la misión!',
+        tags: ['Enigmas', 'Colaboración', 'EscapeRoom'],
+        hasFiguritaBtn: false,
+        color: '#7C3AED'
+      }
+    ];
+
+    if (radialFamiliarIdx < 0 || radialFamiliarIdx >= items.length) radialFamiliarIdx = 0;
+    var selected = items[radialFamiliarIdx];
+
+    section.innerHTML =
+      '<div class="wheel-header">' +
+        '<div class="pf-school-wheel-brand">' +
+          '<span class="pf-school-wheel-tag">👨‍👩‍👧 Ruleta Familiar</span>' +
+          '<span class="pf-games-counter-pill">2 actividades para disfrutar en familia · Elegí una en la rueda</span>' +
+        '</div>' +
+        '<div class="wheel-actions">' +
+          '<a href="' + selected.url + '" target="_blank" rel="noopener noreferrer" class="pf-radial-open-modal-btn" style="text-decoration:none;">' +
+            '<i class="fas ' + selected.ctaIcon + '"></i> ' + selected.ctaLabel +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pf-radial-stage">' +
+        '<div class="radial-menu-container" id="pf-fam-svg-wrap"></div>' +
+        '<div class="pf-radial-detail-panel" id="pf-fam-detail-panel"></div>' +
+      '</div>';
+
+    var svgWrap = section.querySelector('#pf-fam-svg-wrap');
+    var svg = radialCreateSvgEl('svg', {
+      viewBox: '-265 -265 530 530',
+      class: 'radial-svg',
+      role: 'navigation',
+      'aria-label': 'Ruleta circular Con la Familia'
+    });
+
+    var defs = radialCreateSvgEl('defs');
+    defs.innerHTML =
+      '<filter id="pf-f-hub-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.14"/></filter>' +
+      '<filter id="pf-f-wheel-shadow" x="-15%" y="-15%" width="130%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.10"/></filter>' +
+      '<clipPath id="pf-f-circle-clip" clipPathUnits="objectBoundingBox"><circle cx="0.5" cy="0.5" r="0.5"/></clipPath>';
+    svg.appendChild(defs);
+
+    var mainRIn = 100;
+    var mainROut = 250;
+    var mainRMid = (mainRIn + mainROut) / 2;
+    var stepDeg = 360 / items.length;
+    var startOffset = -90;
+
+    var mainRingGroup = radialCreateSvgEl('g', {
+      class: 'radial-ring-main',
+      filter: 'url(#pf-f-wheel-shadow)'
+    });
+
+    var hubCircle, hubStepLabel, hubPhoto, hubPhotoBorder, hubTitle, hubSub;
+
+    function showFamHubPreview(it, idx) {
+      if (!hubCircle) return;
+      hubCircle.style.stroke = it.color;
+      if (hubPhoto) hubPhoto.setAttribute('href', it.thumbnail);
+      if (hubPhotoBorder) hubPhotoBorder.setAttribute('stroke', it.color);
+      hubStepLabel.textContent = 'ACTIVIDAD ' + (idx + 1) + ' DE ' + items.length;
+      hubStepLabel.style.fill = it.color;
+      hubTitle.textContent = it.shortTitle;
+      hubSub.textContent = it.platformLabel;
+      hubSub.style.fill = it.color;
+    }
+
+    function resetFamHubPreview() {
+      showFamHubPreview(selected, radialFamiliarIdx);
+    }
+
+    items.forEach(function(it, idx) {
+      var sA = startOffset + idx * stepDeg;
+      var eA = sA + stepDeg;
+      var midA = (sA + eA) / 2;
+      var isSelected = (idx === radialFamiliarIdx);
+      var sectorD = radialDescribeSector(0, 0, mainRIn, mainROut, sA, eA);
+
+      var clipId = 'pf-f-wedge-clip-' + idx;
+      var clipEl = radialCreateSvgEl('clipPath', { id: clipId });
+      clipEl.appendChild(radialCreateSvgEl('path', { d: sectorD }));
+      defs.appendChild(clipEl);
+
+      var pts = [
+        radialPolarToCartesian(0, 0, mainRIn, sA),
+        radialPolarToCartesian(0, 0, mainRIn, eA),
+        radialPolarToCartesian(0, 0, mainROut, sA),
+        radialPolarToCartesian(0, 0, mainROut, eA),
+        radialPolarToCartesian(0, 0, mainROut, midA),
+        radialPolarToCartesian(0, 0, mainROut, (sA + midA) / 2),
+        radialPolarToCartesian(0, 0, mainROut, (midA + eA) / 2)
+      ];
+      var minX = pts[0].x, maxX = pts[0].x, minY = pts[0].y, maxY = pts[0].y;
+      pts.forEach(function(pt) {
+        if (pt.x < minX) minX = pt.x;
+        if (pt.x > maxX) maxX = pt.x;
+        if (pt.y < minY) minY = pt.y;
+        if (pt.y > maxY) maxY = pt.y;
+      });
+
+      var sectorGroup = radialCreateSvgEl('g', {
+        class: 'radial-sector' + (isSelected ? ' is-selected' : ''),
+        style: '--sector-color: ' + it.color,
+        tabindex: '0',
+        role: 'button',
+        'aria-label': it.title
+      });
+
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: sectorD, fill: it.color, 'fill-opacity': '0.25'
+      }));
+      sectorGroup.appendChild(radialCreateSvgEl('image', {
+        href: it.thumbnail,
+        x: (minX - 4).toFixed(2),
+        y: (minY - 4).toFixed(2),
+        width: ((maxX - minX) + 8).toFixed(2),
+        height: ((maxY - minY) + 8).toFixed(2),
+        preserveAspectRatio: 'xMidYMid slice',
+        'clip-path': 'url(#' + clipId + ')',
+        class: 'sector-full-photo'
+      }));
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: sectorD,
+        fill: isSelected ? 'rgba(255, 251, 235, 0.10)' : 'rgba(15, 23, 42, 0.20)',
+        stroke: isSelected ? it.color : '#ffffff',
+        'stroke-width': isSelected ? '4' : '3'
+      }));
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: radialDescribeSector(0, 0, mainROut - (isSelected ? 9 : 6), mainROut, sA + 0.6, eA - 0.6),
+        fill: it.color, class: 'sector-accent'
+      }));
+
+      var labelPos = radialPolarToCartesian(0, 0, mainRMid, midA);
+      sectorGroup.appendChild(radialCreateSvgEl('rect', {
+        x: (labelPos.x - 58).toFixed(2), y: (labelPos.y - 13).toFixed(2),
+        width: '116', height: '26', rx: '13',
+        fill: isSelected ? '#fffbeb' : 'rgba(255, 255, 255, 0.94)',
+        stroke: it.color, 'stroke-width': isSelected ? '2.2' : '1.5'
+      }));
+      var labelEl = radialCreateSvgEl('text', {
+        x: labelPos.x.toFixed(2), y: labelPos.y.toFixed(2),
+        'text-anchor': 'middle', 'dominant-baseline': 'central',
+        'font-size': '12.5', 'font-weight': '800', class: 'sector-label'
+      });
+      labelEl.textContent = it.shortTitle;
+      sectorGroup.appendChild(labelEl);
+
+      var onSelect = function(e) {
+        e.preventDefault();
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        radialFamiliarIdx = idx;
+        radialFamiliarPageIdx = 0;
+        mountFamiliarRadialMenu(rootEl, student);
+        var updatedPanel = rootEl.querySelector('#pf-fam-detail-panel');
+        if (updatedPanel && window.innerWidth < 960) {
+          updatedPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      };
+
+      sectorGroup.addEventListener('click', onSelect);
+      sectorGroup.addEventListener('mouseenter', function() { showFamHubPreview(it, idx); });
+      sectorGroup.addEventListener('mouseleave', resetFamHubPreview);
+      sectorGroup.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') onSelect(e);
+      });
+      mainRingGroup.appendChild(sectorGroup);
+    });
+    svg.appendChild(mainRingGroup);
+
+    var hubG = radialCreateSvgEl('g', {
+      class: 'radial-hub', tabindex: '0', role: 'button',
+      'aria-label': selected.ctaLabel
+    });
+    hubCircle = radialCreateSvgEl('circle', {
+      cx: '0', cy: '0', r: '88', class: 'hub-circle',
+      stroke: selected.color, 'stroke-width': '3.5', filter: 'url(#pf-f-hub-shadow)'
+    });
+    hubG.appendChild(hubCircle);
+    hubStepLabel = radialCreateSvgEl('text', {
+      x: '0', y: '-52', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '9.5', 'font-weight': '800', class: 'hub-step-label', fill: selected.color
+    });
+    hubG.appendChild(hubStepLabel);
+    hubPhotoBorder = radialCreateSvgEl('circle', {
+      cx: '0', cy: '-16', r: '23', fill: '#f1f5f9', stroke: selected.color, 'stroke-width': '2.5'
+    });
+    hubG.appendChild(hubPhotoBorder);
+    hubPhoto = radialCreateSvgEl('image', {
+      href: selected.thumbnail,
+      x: '-21', y: '-37', width: '42', height: '42',
+      preserveAspectRatio: 'xMidYMid slice', 'clip-path': 'url(#pf-f-circle-clip)'
+    });
+    hubG.appendChild(hubPhoto);
+    hubTitle = radialCreateSvgEl('text', {
+      x: '0', y: '22', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '12.5', 'font-weight': '800', class: 'hub-title'
+    });
+    hubG.appendChild(hubTitle);
+    hubSub = radialCreateSvgEl('text', {
+      x: '0', y: '43', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '10.5', 'font-weight': '700', class: 'hub-sub'
+    });
+    hubG.appendChild(hubSub);
+    resetFamHubPreview();
+
+    hubG.addEventListener('click', function() {
+      window.open(selected.url, '_blank', 'noopener,noreferrer');
+    });
+    svg.appendChild(hubG);
+    svgWrap.appendChild(svg);
+
+    var detailPanel = section.querySelector('#pf-fam-detail-panel');
+    if (detailPanel) {
+      var pages = splitRadialTextIntoPages(selected.description);
+      if (radialFamiliarPageIdx >= pages.length) radialFamiliarPageIdx = 0;
+      var bodyHtml = formatKidFriendlyPageHtml(pages[radialFamiliarPageIdx] || '', radialFamiliarPageIdx);
+      var tagsHtml = '<div class="pf-game-rdp-tags">' + selected.tags.map(function(t) { return '<span class="pf-game-rdp-tag">#' + escapeRadialHtml(t) + '</span>'; }).join('') + '</div>';
+
+      detailPanel.innerHTML =
+        '<div class="pf-rdp-card pf-game-rdp-card" style="border-top-color:' + selected.color + ';">' +
+          '<a href="' + selected.url + '" target="_blank" rel="noopener noreferrer" class="pf-game-rdp-thumb-wrap" title="' + escapeRadialHtml(selected.ctaLabel) + '">' +
+            '<img src="' + selected.thumbnail + '" alt="' + escapeRadialHtml(selected.title) + '" class="pf-game-rdp-thumb">' +
+            '<span class="pf-game-rdp-plat">' + escapeRadialHtml(selected.platformLabel) + '</span>' +
+            '<span class="pf-game-rdp-playbadge"><i class="fas ' + selected.ctaIcon + '"></i> Abrir</span>' +
+          '</a>' +
+          '<div class="pf-rdp-top" style="margin-top:12px;">' +
+            '<div>' +
+              '<span class="pf-rdp-kicker">👨‍👩‍👧 Actividad ' + (radialFamiliarIdx + 1) + ' de ' + items.length + '</span>' +
+              '<h4 class="pf-rdp-title" style="margin-top:6px;">' + escapeRadialHtml(selected.title) + '</h4>' +
+            '</div>' +
+            '<div class="pf-rdp-nav-btns">' +
+              '<button type="button" class="pf-rdp-step-btn" id="pf-f-prev" ' + (radialFamiliarIdx > 0 ? '' : 'disabled') + '><i class="fas fa-chevron-left"></i></button>' +
+              '<button type="button" class="pf-rdp-step-btn" id="pf-f-next" ' + (radialFamiliarIdx < items.length - 1 ? '' : 'disabled') + '><i class="fas fa-chevron-right"></i></button>' +
+            '</div>' +
+          '</div>' +
+          bodyHtml +
+          tagsHtml +
+          '<div class="pf-game-rdp-actions">' +
+            '<a href="' + selected.url + '" target="_blank" rel="noopener noreferrer" class="pf-rdp-primary-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px;">' +
+              '<i class="fas ' + selected.ctaIcon + '"></i> ' + escapeRadialHtml(selected.ctaLabel) +
+            '</a>' +
+            (selected.hasFiguritaBtn
+              ? '<button type="button" class="pf-rdp-step-btn" id="pf-f-fig-btn" style="padding:8px 14px;display:inline-flex;align-items:center;gap:6px;">' +
+                  '<i class="fas fa-star" style="color:#EAB308;"></i> Mi Figurita' +
+                '</button>'
+              : '') +
+          '</div>' +
+        '</div>';
+
+      var fPrev = detailPanel.querySelector('#pf-f-prev');
+      if (fPrev) fPrev.onclick = function() { if (radialFamiliarIdx > 0) { radialFamiliarIdx--; radialFamiliarPageIdx = 0; mountFamiliarRadialMenu(rootEl, student); } };
+      var fNext = detailPanel.querySelector('#pf-f-next');
+      if (fNext) fNext.onclick = function() { if (radialFamiliarIdx < items.length - 1) { radialFamiliarIdx++; radialFamiliarPageIdx = 0; mountFamiliarRadialMenu(rootEl, student); } };
+      var figBtn = detailPanel.querySelector('#pf-f-fig-btn');
+      if (figBtn) {
+        figBtn.onclick = function() {
+          if (window.abrirModalFiguritaAlumno) window.abrirModalFiguritaAlumno();
+        };
+      }
+    }
+  }
+
+  function mountGamesRadialMenu(rootEl, student, gradeGames) {
+    var section = rootEl ? rootEl.querySelector('#pf-games-radial-section') : null;
+    if (!section || !gradeGames || gradeGames.length === 0) return;
+
+    if (radialGameIdx === null || radialGameIdx < 0 || radialGameIdx >= gradeGames.length) {
+      radialGameIdx = 0;
+    }
+
+    var isLegacy = isLegacyTheme(student);
+    var isSpace = isSpaceTheme(student);
+    var selectedGame = gradeGames[radialGameIdx];
+    var pm = (window.platformMeta && window.platformMeta(selectedGame.platform)) || { label: (selectedGame.platform === 'codeorg' ? 'Code.org' : (selectedGame.platform === 'codejr' ? 'Scratch Jr' : 'Taller Maker')), icon: '🎮' };
+    var gameUrl = (window.getGameUrl && window.getGameUrl(selectedGame)) || selectedGame.externalUrl || '#';
+    var thumb = selectedGame.thumbnail || 'img/angrybirds.png';
+    var rawDesc = (selectedGame.description || '').replace(/^¡?Nivel \d+ de la Ruta de Aventuras!?\s*:?\s*/i, '');
+
+    var wheelHeaderHtml =
+      '<div class="wheel-header">' +
+        '<div class="pf-school-wheel-brand">' +
+          '<span class="pf-school-wheel-tag">🕹️ Ruleta de Juegos</span>' +
+          '<span class="pf-games-counter-pill">' + gradeGames.length + ' juegos disponibles · Elegí uno en la rueda</span>' +
+        '</div>' +
+        '<div class="wheel-actions">' +
+          '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="pf-radial-open-modal-btn" style="text-decoration:none;">' +
+            '<i class="fas ' + (isLegacy ? 'fa-trophy' : (isSpace ? 'fa-rocket' : 'fa-play')) + '"></i> ' + (isLegacy ? 'Competir' : '¡Jugar!') +
+          '</a>' +
+        '</div>' +
+      '</div>';
+
+    section.innerHTML =
+      wheelHeaderHtml +
+      '<div class="pf-radial-stage">' +
+        '<div class="radial-menu-container" id="pf-games-svg-wrap"></div>' +
+        '<div class="pf-radial-detail-panel" id="pf-games-detail-panel"></div>' +
+      '</div>';
+
+    var svgWrap = section.querySelector('#pf-games-svg-wrap');
+    var svg = radialCreateSvgEl('svg', {
+      viewBox: '-265 -265 530 530',
+      class: 'radial-svg',
+      role: 'navigation',
+      'aria-label': 'Ruleta circular de juegos'
+    });
+
+    var defs = radialCreateSvgEl('defs');
+    var defsParts = [
+      '<filter id="pf-g-hub-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.14"/></filter>',
+      '<filter id="pf-g-wheel-shadow" x="-15%" y="-15%" width="130%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.10"/></filter>',
+      '<clipPath id="pf-g-circle-clip" clipPathUnits="objectBoundingBox"><circle cx="0.5" cy="0.5" r="0.5"/></clipPath>'
+    ];
+    gradeGames.forEach(function(g, idx) {
+      var col = RADIAL_PALETTE[idx % RADIAL_PALETTE.length];
+      defsParts.push(
+        '<radialGradient id="pf-g-grad-' + idx + '" cx="0" cy="0" r="250" gradientUnits="userSpaceOnUse">' +
+          '<stop offset="40%" stop-color="' + col + '" stop-opacity="0.08"/>' +
+          '<stop offset="100%" stop-color="' + col + '" stop-opacity="0.24"/>' +
+        '</radialGradient>' +
+        '<radialGradient id="pf-g-grad-act-' + idx + '" cx="0" cy="0" r="250" gradientUnits="userSpaceOnUse">' +
+          '<stop offset="40%" stop-color="' + col + '" stop-opacity="0.20"/>' +
+          '<stop offset="100%" stop-color="' + col + '" stop-opacity="0.40"/>' +
+        '</radialGradient>'
+      );
+    });
+    defs.innerHTML = defsParts.join('');
+    svg.appendChild(defs);
+
+    var mainRIn = 100;
+    var mainROut = 250;
+    var mainRMid = (mainRIn + mainROut) / 2;
+    var stepDeg = 360 / gradeGames.length;
+    var startOffset = -90;
+
+    var mainRingGroup = radialCreateSvgEl('g', {
+      class: 'radial-ring-main',
+      filter: 'url(#pf-g-wheel-shadow)'
+    });
+    mainRingGroup.appendChild(radialCreateSvgEl('circle', {
+      cx: '0', cy: '0', r: mainRMid, fill: 'none',
+      'stroke-width': mainROut - mainRIn, class: 'main-ring-backdrop'
+    }));
+    mainRingGroup.appendChild(radialCreateSvgEl('circle', {
+      cx: '0', cy: '0', r: (mainROut - 12), fill: 'none',
+      'stroke-dasharray': '5 6', 'stroke-width': '1.2', class: 'main-ring-stitch'
+    }));
+
+    var hubCircle, hubStepLabel, hubPhoto, hubPhotoBorder, hubTitle, hubSub;
+    var selCol = RADIAL_PALETTE[radialGameIdx % RADIAL_PALETTE.length];
+    var defaultStepText = 'JUEGO ' + (radialGameIdx + 1) + ' DE ' + gradeGames.length;
+    var defaultHubTitle = stripEmojisAndTruncate(selectedGame.title || 'Juego', 15);
+    var defaultHubSub = pm.label;
+    var defaultHubThumb = thumb;
+
+    function showGameHubPreview(game, idx) {
+      if (!hubCircle) return;
+      var col = RADIAL_PALETTE[idx % RADIAL_PALETTE.length];
+      var gpm = (window.platformMeta && window.platformMeta(game.platform)) || { label: 'Taller Maker' };
+      var gThumb = game.thumbnail || 'img/angrybirds.png';
+      hubCircle.style.stroke = col;
+      if (hubPhoto) hubPhoto.setAttribute('href', gThumb);
+      if (hubPhotoBorder) hubPhotoBorder.setAttribute('stroke', col);
+      hubStepLabel.textContent = 'JUEGO ' + (idx + 1) + ' DE ' + gradeGames.length;
+      hubStepLabel.style.fill = col;
+      hubTitle.textContent = stripEmojisAndTruncate(game.title || 'Juego', 15);
+      hubSub.textContent = gpm.label;
+      hubSub.style.fill = col;
+    }
+
+    function resetGameHubPreview() {
+      if (!hubCircle) return;
+      hubCircle.style.stroke = selCol;
+      if (hubPhoto) hubPhoto.setAttribute('href', defaultHubThumb);
+      if (hubPhotoBorder) hubPhotoBorder.setAttribute('stroke', selCol);
+      hubStepLabel.textContent = defaultStepText;
+      hubStepLabel.style.fill = selCol;
+      hubTitle.textContent = defaultHubTitle;
+      hubSub.textContent = defaultHubSub;
+      hubSub.style.fill = '#64748b';
+    }
+
+    gradeGames.forEach(function(g, idx) {
+      var col = RADIAL_PALETTE[idx % RADIAL_PALETTE.length];
+      var gpm = (window.platformMeta && window.platformMeta(g.platform)) || { label: 'Juego', icon: '🎮' };
+      var sA = startOffset + idx * stepDeg;
+      var eA = sA + stepDeg;
+      var midA = gradeGames.length === 1 ? 0 : (sA + eA) / 2;
+      var isSelected = (idx === radialGameIdx);
+      var shortTitle = stripEmojisAndTruncate(g.title || ('Juego ' + (idx + 1)), gradeGames.length >= 9 ? 11 : 14);
+
+      var sectorGroup = radialCreateSvgEl('g', {
+        class: 'radial-sector' + (isSelected ? ' is-selected' : ''),
+        style: '--sector-color: ' + col,
+        tabindex: '0',
+        role: 'button',
+        'aria-label': g.title || ('Juego ' + (idx + 1))
+      });
+
+      var sectorD = radialDescribeSector(0, 0, mainRIn, mainROut, sA, eA);
+      var gThumb = g.thumbnail || 'img/angrybirds.png';
+
+      // ClipPath para que la foto rellene todo el pedazo completo
+      var clipId = 'pf-g-wedge-clip-' + idx;
+      var clipEl = radialCreateSvgEl('clipPath', { id: clipId });
+      clipEl.appendChild(radialCreateSvgEl('path', { d: sectorD }));
+      defs.appendChild(clipEl);
+
+      var boxX = -mainROut, boxY = -mainROut, boxW = mainROut * 2, boxH = mainROut * 2;
+      if (gradeGames.length > 1) {
+        var pts = [
+          radialPolarToCartesian(0, 0, mainRIn, sA),
+          radialPolarToCartesian(0, 0, mainRIn, eA),
+          radialPolarToCartesian(0, 0, mainROut, sA),
+          radialPolarToCartesian(0, 0, mainROut, eA),
+          radialPolarToCartesian(0, 0, mainROut, midA),
+          radialPolarToCartesian(0, 0, mainROut, (sA + midA) / 2),
+          radialPolarToCartesian(0, 0, mainROut, (midA + eA) / 2)
+        ];
+        var minX = pts[0].x, maxX = pts[0].x, minY = pts[0].y, maxY = pts[0].y;
+        pts.forEach(function(pt) {
+          if (pt.x < minX) minX = pt.x;
+          if (pt.x > maxX) maxX = pt.x;
+          if (pt.y < minY) minY = pt.y;
+          if (pt.y > maxY) maxY = pt.y;
+        });
+        boxX = minX - 4;
+        boxY = minY - 4;
+        boxW = (maxX - minX) + 8;
+        boxH = (maxY - minY) + 8;
+      }
+
+      // Base de color + foto del juego llenando toda la cuña
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: sectorD, fill: col, 'fill-opacity': '0.25'
+      }));
+      sectorGroup.appendChild(radialCreateSvgEl('image', {
+        href: gThumb,
+        x: boxX.toFixed(2),
+        y: boxY.toFixed(2),
+        width: boxW.toFixed(2),
+        height: boxH.toFixed(2),
+        preserveAspectRatio: 'xMidYMid slice',
+        'clip-path': 'url(#' + clipId + ')',
+        class: 'sector-full-photo'
+      }));
+
+      // Overlay sutil para contraste y borde blanco limpio entre pedazos
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: sectorD,
+        fill: isSelected ? 'rgba(255, 251, 235, 0.12)' : 'rgba(15, 23, 42, 0.22)',
+        stroke: isSelected ? col : '#ffffff',
+        'stroke-width': isSelected ? '3.8' : '3',
+        class: 'sector-photo-border'
+      }));
+
+      var accentD = gradeGames.length === 1
+        ? radialDescribeSector(0, 0, mainROut - 8, mainROut, 0, 360)
+        : radialDescribeSector(0, 0, mainROut - (isSelected ? 9 : 6), mainROut, sA + 0.6, eA - 0.6);
+      sectorGroup.appendChild(radialCreateSvgEl('path', {
+        d: accentD, fill: col, class: 'sector-accent'
+      }));
+
+      // Etiqueta legible sobre la foto del pedazo
+      var labelR = gradeGames.length >= 9 ? (mainRMid + 4) : mainRMid;
+      var labelPos = radialPolarToCartesian(0, 0, labelR, midA);
+      var lblW = gradeGames.length >= 9 ? 76 : 92;
+      var lblH = 22;
+
+      sectorGroup.appendChild(radialCreateSvgEl('rect', {
+        x: (labelPos.x - lblW / 2).toFixed(2),
+        y: (labelPos.y - lblH / 2).toFixed(2),
+        width: String(lblW),
+        height: String(lblH),
+        rx: '11',
+        fill: isSelected ? '#fffbeb' : 'rgba(255, 255, 255, 0.92)',
+        stroke: col,
+        'stroke-width': isSelected ? '2' : '1.4',
+        class: 'sector-photo-label-bg'
+      }));
+
+      var fontSize = gradeGames.length >= 9 ? '9.8' : (gradeGames.length >= 7 ? '10.8' : '12');
+      var labelEl = radialCreateSvgEl('text', {
+        x: labelPos.x.toFixed(2), y: labelPos.y.toFixed(2),
+        'text-anchor': 'middle', 'dominant-baseline': 'central',
+        'font-size': fontSize, 'font-weight': '800', class: 'sector-label'
+      });
+      labelEl.textContent = shortTitle;
+      sectorGroup.appendChild(labelEl);
+
+      var onSelectGame = function(e) {
+        e.preventDefault();
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        radialGameIdx = idx;
+        radialGamePageIdx = 0;
+        mountGamesRadialMenu(rootEl, student, gradeGames);
+        var updatedPanel = rootEl.querySelector('#pf-games-detail-panel');
+        if (updatedPanel && window.innerWidth < 960) {
+          updatedPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      };
+
+      sectorGroup.addEventListener('click', onSelectGame);
+      sectorGroup.addEventListener('mouseenter', function() { showGameHubPreview(g, idx); });
+      sectorGroup.addEventListener('mouseleave', resetGameHubPreview);
+      sectorGroup.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') onSelectGame(e);
+      });
+
+      mainRingGroup.appendChild(sectorGroup);
+    });
+
+    svg.appendChild(mainRingGroup);
+
+    // Hub Central del Juego Seleccionado
+    var hubG = radialCreateSvgEl('g', {
+      class: 'radial-hub', tabindex: '0', role: 'button',
+      'aria-label': 'Jugar a ' + (selectedGame.title || 'juego seleccionado')
+    });
+    hubCircle = radialCreateSvgEl('circle', {
+      cx: '0', cy: '0', r: '88', class: 'hub-circle',
+      stroke: selCol, 'stroke-width': '3.5', filter: 'url(#pf-g-hub-shadow)'
+    });
+    hubG.appendChild(hubCircle);
+
+    hubStepLabel = radialCreateSvgEl('text', {
+      x: '0', y: '-52', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '9.5', 'font-weight': '800', class: 'hub-step-label', fill: selCol
+    });
+    hubStepLabel.textContent = defaultStepText;
+    hubG.appendChild(hubStepLabel);
+
+    hubPhotoBorder = radialCreateSvgEl('circle', {
+      cx: '0', cy: '-16', r: '23',
+      fill: '#f1f5f9', stroke: selCol, 'stroke-width': '2.5'
+    });
+    hubG.appendChild(hubPhotoBorder);
+
+    hubPhoto = radialCreateSvgEl('image', {
+      href: defaultHubThumb,
+      x: '-21', y: '-37', width: '42', height: '42',
+      preserveAspectRatio: 'xMidYMid slice',
+      'clip-path': 'url(#pf-g-circle-clip)'
+    });
+    hubG.appendChild(hubPhoto);
+
+    hubTitle = radialCreateSvgEl('text', {
+      x: '0', y: '22', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '12.5', 'font-weight': '800', class: 'hub-title'
+    });
+    hubTitle.textContent = defaultHubTitle;
+    hubG.appendChild(hubTitle);
+
+    hubSub = radialCreateSvgEl('text', {
+      x: '0', y: '43', 'text-anchor': 'middle', 'dominant-baseline': 'central',
+      'font-size': '10.5', 'font-weight': '700', class: 'hub-sub'
+    });
+    hubSub.textContent = defaultHubSub;
+    hubG.appendChild(hubSub);
+
+    hubG.addEventListener('click', function() {
+      if (gameUrl && gameUrl !== '#') window.open(gameUrl, '_blank', 'noopener,noreferrer');
+    });
+    svg.appendChild(hubG);
+    svgWrap.appendChild(svg);
+
+    // Panel derecho: Foto del juego + Descripción alegre/paginada + Botones
+    var detailPanel = section.querySelector('#pf-games-detail-panel');
+    if (detailPanel) {
+      var pages = splitRadialTextIntoPages(rawDesc || '¡Elegí este desafío del taller y poné a prueba tu lógica de programación!');
+      if (radialGamePageIdx >= pages.length) radialGamePageIdx = 0;
+      if (radialGamePageIdx < 0) radialGamePageIdx = 0;
+      var bodyHtml = formatKidFriendlyPageHtml(pages[radialGamePageIdx] || '', radialGamePageIdx);
+      if (pages.length > 1) {
+        bodyHtml +=
+          '<div class="pf-rdp-pager">' +
+            '<button type="button" class="pf-rdp-page-btn" id="pf-g-page-prev" ' + (radialGamePageIdx > 0 ? '' : 'disabled') + '>⬅️ Anterior</button>' +
+            '<div class="pf-rdp-page-dots">' +
+              pages.map(function(_, pIdx) {
+                return '<button type="button" class="pf-rdp-page-dot ' + (pIdx === radialGamePageIdx ? 'active' : '') + '" data-g-page="' + pIdx + '" aria-label="Página ' + (pIdx + 1) + '"></button>';
+              }).join('') +
+              '<span class="pf-rdp-page-count">Pág. ' + (radialGamePageIdx + 1) + ' de ' + pages.length + '</span>' +
+            '</div>' +
+            '<button type="button" class="pf-rdp-page-btn" id="pf-g-page-next" ' + (radialGamePageIdx < pages.length - 1 ? '' : 'disabled') + '>Siguiente ➡️</button>' +
+          '</div>';
+      }
+
+      var hasPrevG = radialGameIdx > 0;
+      var hasNextG = radialGameIdx < gradeGames.length - 1;
+      var tagsHtml = (selectedGame.tags && selectedGame.tags.length > 0)
+        ? '<div class="pf-game-rdp-tags">' + selectedGame.tags.slice(0, 4).map(function(t) { return '<span class="pf-game-rdp-tag">#' + escapeRadialHtml(t) + '</span>'; }).join('') + '</div>'
+        : '';
+
+      detailPanel.innerHTML =
+        '<div class="pf-rdp-card pf-game-rdp-card" style="border-top-color:' + selCol + ';">' +
+          '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="pf-game-rdp-thumb-wrap" title="Hacé clic para jugar">' +
+            '<img src="' + escapeRadialHtml(thumb) + '" alt="' + escapeRadialHtml(selectedGame.title || 'Juego') + '" class="pf-game-rdp-thumb" onerror="this.src=\'img/angrybirds.png\'">' +
+            '<span class="pf-game-rdp-plat">' + pm.icon + ' ' + escapeRadialHtml(pm.label) + '</span>' +
+            '<span class="pf-game-rdp-playbadge"><i class="fas fa-play"></i> ¡Jugar!</span>' +
+          '</a>' +
+          '<div class="pf-rdp-top" style="margin-top:12px;">' +
+            '<div>' +
+              '<span class="pf-rdp-kicker">🎮 Juego ' + (radialGameIdx + 1) + ' de ' + gradeGames.length + '</span>' +
+              '<h4 class="pf-rdp-title" style="margin-top:6px;">' + escapeRadialHtml(selectedGame.title || 'Desafío') + '</h4>' +
+            '</div>' +
+            (gradeGames.length > 1
+              ? '<div class="pf-rdp-nav-btns">' +
+                  '<button type="button" class="pf-rdp-step-btn" id="pf-g-prev" ' + (hasPrevG ? '' : 'disabled') + '><i class="fas fa-chevron-left"></i></button>' +
+                  '<button type="button" class="pf-rdp-step-btn" id="pf-g-next" ' + (hasNextG ? '' : 'disabled') + '><i class="fas fa-chevron-right"></i></button>' +
+                '</div>'
+              : '') +
+          '</div>' +
+          bodyHtml +
+          tagsHtml +
+          '<div class="pf-game-rdp-actions">' +
+            '<a href="' + gameUrl + '" target="_blank" rel="noopener noreferrer" class="pf-rdp-primary-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px;">' +
+              '<i class="fas ' + (isLegacy ? 'fa-trophy' : (isSpace ? 'fa-rocket' : 'fa-play')) + '"></i> ' + (isLegacy ? 'Competir' : (isSpace ? 'Despegar' : '¡Jugar Ahora!')) +
+            '</a>' +
+            '<button type="button" class="pf-rdp-step-btn" id="pf-g-suggest-btn" style="padding:8px 14px;display:inline-flex;align-items:center;gap:6px;">' +
+              '<i class="fas fa-lightbulb" style="color:#d97706;"></i> Dame sugerencias' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+
+      var gPrev = detailPanel.querySelector('#pf-g-prev');
+      if (gPrev) gPrev.onclick = function() { if (radialGameIdx > 0) { radialGameIdx--; radialGamePageIdx = 0; mountGamesRadialMenu(rootEl, student, gradeGames); } };
+      var gNext = detailPanel.querySelector('#pf-g-next');
+      if (gNext) gNext.onclick = function() { if (radialGameIdx < gradeGames.length - 1) { radialGameIdx++; radialGamePageIdx = 0; mountGamesRadialMenu(rootEl, student, gradeGames); } };
+      var gpPrev = detailPanel.querySelector('#pf-g-page-prev');
+      if (gpPrev) gpPrev.onclick = function() { if (radialGamePageIdx > 0) { radialGamePageIdx--; mountGamesRadialMenu(rootEl, student, gradeGames); } };
+      var gpNext = detailPanel.querySelector('#pf-g-page-next');
+      if (gpNext) gpNext.onclick = function() { radialGamePageIdx++; mountGamesRadialMenu(rootEl, student, gradeGames); };
+      detailPanel.querySelectorAll('[data-g-page]').forEach(function(dot) {
+        dot.onclick = function() { radialGamePageIdx = parseInt(dot.dataset.gPage, 10) || 0; mountGamesRadialMenu(rootEl, student, gradeGames); };
+      });
+      var sugBtn = detailPanel.querySelector('#pf-g-suggest-btn');
+      if (sugBtn) {
+        sugBtn.onclick = function() {
+          if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+          openPedagogicalConceptModal('benefits', selectedGame);
+        };
+      }
+    }
+  }
+
   function renderGradeGamesHtml(student, gradeGames) {
     var isLegacy = isLegacyTheme(student);
     var isCyber = isCyberTheme(student);
     var isSpace = isSpaceTheme(student);
     if (!gradeGames || gradeGames.length === 0) {
       return '<div class="gdb-empty-state"><div class="ges-icon">' + (isLegacy ? '🎓' : (isCyber ? '🕹️' : (isSpace ? '🛸' : '🎮'))) + '</div><h4>Sin juegos asignados</h4><p>Pronto se agregarán juegos de programación para ' + (student ? student.gradeName : 'tu grado') + '.</p></div>';
+    }
+
+    var gamesHeaderHtml =
+      '<div class="arm-toolbar-compact ' + (isLegacy ? 'legacy-toolbar' : (isCyber ? 'cyber-toolbar' : (isSpace ? 'space-toolbar' : ''))) + '">' +
+        '<div class="atc-left">' +
+          '<span class="atc-badge"><i class="fas fa-gamepad"></i> JUEGOS DEL TALLER</span>' +
+          '<h3 class="atc-title">Desafíos de ' + student.gradeName + '</h3>' +
+        '</div>' +
+        '<div class="arm-view-toggle">' +
+          '<button type="button" class="arm-vt-btn ' + (!isGamesGridMode ? 'active' : '') + '" data-games-mode="radial" title="Ver como Ruleta">' +
+            '<i class="fas fa-compass"></i> <span>Ruleta</span>' +
+          '</button>' +
+          '<button type="button" class="arm-vt-btn ' + (isGamesGridMode ? 'active' : '') + '" data-games-mode="grid" title="Ver como Tarjetas">' +
+            '<i class="fas fa-th-large"></i> <span>Tarjetas</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+
+    if (!isGamesGridMode) {
+      return '<div class="adventure-roadmap-wrapper">' + gamesHeaderHtml + '<div class="pf-radial-wheel-section" id="pf-games-radial-section"></div></div>';
     }
 
     var cardsHtml = gradeGames.map(function(game, idx) {
@@ -4289,7 +5319,7 @@
       '</div>';
     }).join('');
 
-    return buildPirateTavernBoard({
+    return '<div class="adventure-roadmap-wrapper">' + gamesHeaderHtml + buildPirateTavernBoard({
       sealIcon: isLegacy ? '🎓' : (isCyber ? '🕹️' : (isSpace ? '🛸' : '☠️')),
       tag: isLegacy
         ? 'TORNEO DE DESPEDIDA · JUEGOS Y DESAFÍOS DE EGRESADOS'
@@ -4311,7 +5341,7 @@
             ? '¡Atención tripulación estelar! Seleccionen una misión para despegar, ejercitar algoritmos en órbita y acumular cristales de energía para su bitácora.'
             : '¡Atención tripulación! Seleccionen un desafío para zarpar, ejercitar algoritmos en alta mar y acumular doblones de oro para la bitácora.')),
       contentHtml: '<div class="grade-games-grid ptb-games-grid">' + cardsHtml + '</div>'
-    });
+    }) + '</div>';
   }
 
   // ──────────────────────────────────────────────────
@@ -6189,29 +7219,9 @@
 
     currentFbLightboxItems = filteredItems;
 
-    // 1. Perfil / Cabecera Facebook
+    // 1. Barra compacta de navegación del Muro (sin portada ni avatar duplicados)
     var profileHtml =
-      '<div class="fb-profile-card">' +
-        '<div class="fb-profile-cover">' +
-          '<div class="fb-cover-badge"><i class="fas fa-graduation-cap"></i> Colegio Paulo Freire &bull; Taller de Robótica ' + (fbSelectedYear !== 'all' ? fbSelectedYear : '2026') + '</div>' +
-        '</div>' +
-        '<div class="fb-profile-info-row">' +
-          '<div class="fb-avatar-ring">' +
-            ((typeof window.renderStudentAvatarHtml === 'function') ? window.renderStudentAvatarHtml(student, 'fb-avatar-emoji', true) : ('<div class="fb-avatar-emoji">' + (student.avatar || '🤖') + '</div>')) +
-            '<div class="fb-avatar-online" title="Conectado a Google Drive"></div>' +
-          '</div>' +
-          '<div class="fb-profile-details">' +
-            '<div class="fb-profile-name-row">' +
-              '<h3 class="fb-profile-name">' + student.name + '</h3>' +
-              '<i class="fas fa-check-circle fb-verified-icon" title="Alumno Verificado FreireBot"></i>' +
-            '</div>' +
-            '<div class="fb-profile-sub">' +
-              '<span>' + student.gradeName + '</span>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-
-        // Barra de pestañas Facebook
+      '<div class="fb-profile-card fb-profile-card-compact">' +
         '<nav class="fb-nav-tabs" role="tablist">' +
           '<button type="button" class="fb-tab-btn ' + (filter==='all' ? 'active' : '') + '" onclick="window.switchFbFilter(\'all\', event)">' +
             '<i class="fas fa-stream"></i> Muro <span class="fb-tab-badge">' + filteredItems.length + '</span>' +

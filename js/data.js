@@ -2579,9 +2579,9 @@ const SCHOOL_DATA = {
           coverImage: "img/proyectos/halloween_ia_cover.jpg?v=3",
           gameUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
           externalUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
-          description: "¡Proyecto Oficial de Halloween! Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller:\n\n1) Clase 1 — Captura y Gemini AI: Tomamos la foto desde la computadora del taller y la subimos a Google Gemini. Aprendemos a construir un prompt preciso aplicando la técnica de las 5 Capas explicada en clase y documentada en nuestro manual oficial 'El Libro de los Hechizos de IA' (https://roboticapaulofreire-uy.github.io/libro_hechizos/).\n\n2) Clase 2 — Foto Polaroid en Canva: Importamos la imagen del monstruo a Canva y diseñamos una postal estilo marco Polaroid vintage con tipografías y adornos de Halloween. Esta foto será impresa físicamente por el profesor en papel fotográfico para que cada alumno la lleve a su hogar como recuerdo.\n\n3) Clase 3 — Video Animado con Flow: Subimos la imagen a Flow y aprendemos a estructurar prompts de video (movimiento de cámara, gestos de la criatura y atmósfera cinematográfica en movimiento) para crear un video MP4 animado y guardarlo en el Muro de Google Drive.",
-          objective: "Dominar el flujo completo de creación multimedia con Inteligencia Artificial generativa a través de tres etapas prácticas: captura fotográfica y formulación de prompts en 5 capas con Google Gemini, composición y diseño editorial de una postal Polaroid en Canva para entrega física impresa a las familias, y animación generativa con IA en Flow mediante prompts dinámicos de movimiento y cámara cinematográfica.",
-          benefits: "Desarrolla el pensamiento computacional aplicado a la IA, la precisión semántica y lingüística al redactar prompts estructurados (las 5 capas), el sentido estético y composición en Canva, y la experimentación con modelos de video generativo, coronado con una entrega tangible física para compartir con la familia.",
+          description: "¡Convertite en un monstruo de Halloween usando Inteligencia Artificial! En 3 clases vas a crear tu propia criatura, diseñarla para imprimir y darle vida en video:\n\n📸 Clase 1 — Tu Monstruo en Gemini: Sacamos una foto en la compu y usamos la fórmula de las 5 Capas del Libro de los Hechizos para transformarte.\n\n🖼️ Clase 2 — Foto Polaroid en Canva: Armamos una postal retro de Halloween con tu monstruo. ¡El profe la imprime en papel fotográfico para que te la lleves a casa!\n\n🎬 Clase 3 — Video Animado en Flow: Le damos movimiento a tu criatura para crear un video MP4 y subirlo al muro del colegio.",
+          objective: "Aprender a crear imágenes, diseños para imprimir y videos animados con Inteligencia Artificial paso a paso.",
+          benefits: "Practicamos cómo darle buenas instrucciones (prompts) a la IA, diseñamos en Canva y te llevás tu foto Polaroid impresa de recuerdo.",
           tags: ["Halloween", "Inteligencia Artificial", "Gemini", "Libro de Hechizos", "Canva", "Polaroid", "Flow", "Video IA", "Prompts 5 Capas", "Nivel 1"],
           gallery: [
             "img/proyectos/halloween_ia_cover.jpg?v=3"
@@ -2591,55 +2591,55 @@ const SCHOOL_DATA = {
           makecodeUrl: null,
           scratchId: null,
           materials: [
-            { title: "Cámara Web de la Computadora", description: "Captura de la fotografía frontal del rostro con buena iluminación en el taller.", icon: "fa-camera" },
-            { title: "Google Gemini AI (Modo Creativo)", description: "Modelo multimodal de IA generativa para transformar la foto según el prompt de 5 capas.", icon: "fa-wand-magic-sparkles" },
-            { title: "Manual 'El Libro de los Hechizos'", description: "Guía oficial del colegio con ejemplos de prompts y transformaciones: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
-            { title: "Plantilla Polaroid en Canva", description: "Marco instantáneo oficial listo para editar e imprimir: https://canva.link/polaroid-freirebotuy", icon: "fa-palette" },
-            { title: "Impresora Fotográfica del Colegio", description: "Impresión en papel fotográfico de la Polaroid terminada que se entrega en mano al estudiante.", icon: "fa-print" },
-            { title: "Flow (Video & Animación IA)", description: "Herramienta de generación de video a partir de imagen para animar al monstruo con prompts de cámara.", icon: "fa-film" }
+            { title: "Cámara Web de la Compu", description: "Para sacar tu foto de frente con buena luz en el taller.", icon: "fa-camera" },
+            { title: "Google Gemini AI", description: "La IA que transforma tu foto en un monstruo usando las 5 capas.", icon: "fa-wand-magic-sparkles" },
+            { title: "El Libro de los Hechizos", description: "Manual del cole con ejemplos de prompts mágicos: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
+            { title: "Plantilla Polaroid en Canva", description: "Marco listo para decorar e imprimir tu foto: https://canva.link/polaroid-freirebotuy", icon: "fa-palette" },
+            { title: "Impresora Fotográfica", description: "El profe imprime tu Polaroid en papel especial para que la lleves a casa.", icon: "fa-print" },
+            { title: "Flow (Video con IA)", description: "Para animar tu monstruo y convertirlo en video: https://flow.google.com", icon: "fa-film" }
           ],
           instructions: [
             {
               step: 1,
-              title: "Clase 1: Captura de Fotografía en la Computadora",
-              desc: "Nos sentamos frente a la computadora del taller y utilizamos la cámara web para tomarnos una fotografía en primer plano de nuestro rostro con buena luz y gesto misterioso o divertido.",
-              tip: "Mantené tu cara centrada y sin sombras duras para que la IA conserve los rasgos de tu fisonomía."
+              title: "Clase 1: Sacate la foto en la compu",
+              desc: "Usamos la cámara web del taller para sacarnos una foto de frente con buena luz y una pose divertida o misteriosa.",
+              tip: "Mantené tu cara centrada y sin sombras oscuras para que la IA reconozca bien tus rasgos."
             },
             {
               step: 2,
-              title: "Clase 1: Construcción del Prompt en 5 Capas con el 'Libro de Hechizos'",
-              desc: "Ingresamos a Google Gemini y abrimos nuestro manual oficial 'El Libro de los Hechizos' (https://roboticapaulofreire-uy.github.io/libro_hechizos/). Estructuramos el prompt utilizando las 5 Capas: 1. Rol (Artista digital de fantasía), 2. Sujeto (Transformar la persona en monstruo de Halloween), 3. Escena (Habitación antigua con velas y sombras), 4. Estilo (Cinematográfico, claroscuro, alta definición), 5. Reglas (Conservar rostro reconocible pero con rasgos espeluznantes).",
-              tip: "¡Leé los hechizos del manual para inspirarte con palabras clave como niebla volumétrica o iluminación tenebrosa!"
+              title: "Clase 1: Armá tu Hechizo (Prompt en 5 Capas)",
+              desc: "Abrimos Google Gemini y el Libro de los Hechizos (https://roboticapaulofreire-uy.github.io/libro_hechizos/). Escribimos el pedido en 5 pasos: 1. Rol (artista digital), 2. Sujeto (convertirte en monstruo), 3. Escena (lugar tenebroso), 4. Estilo (de película o cómic) y 5. Reglas (que se siga pareciendo a vos).",
+              tip: "¡Mirá los hechizos del manual para copiar ideas geniales de luces, niebla y disfraces!"
             },
             {
               step: 3,
-              title: "Clase 1: Generación y Descarga del Monstruo",
-              desc: "Enviamos el prompt a Gemini junto a nuestra foto. Si algún detalle no nos gusta, ajustamos los adjetivos de las 5 capas hasta obtener el monstruo deseado. Descargamos la imagen en la computadora.",
-              tip: "Podés elegir entre estilo zombi tecnológico, vampiro cibernético, brujo de las sombras o espectro de neón."
+              title: "Clase 1: Creá y descargá tu Monstruo",
+              desc: "Enviamos la foto y el prompt a Gemini. Si querés cambiar algo, ajustá las palabras hasta que quede genial y descargá la imagen.",
+              tip: "Podés probar estilos como zombi futurista, vampiro cibernético o brujo de neón."
             },
             {
               step: 4,
-              title: "Clase 2: Diseño de Fotografía tipo Polaroid en Canva",
-              desc: "En la siguiente clase ingresamos directamente a nuestra plantilla oficial de la foto Polaroid en Canva (https://canva.link/polaroid-freirebotuy). Colocamos la imagen del monstruo generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
-              tip: "Dejá el clásico espacio blanco ancho inferior de la Polaroid para que simule una foto instantánea real."
+              title: "Clase 2: Armá tu Polaroid en Canva",
+              desc: "Entramos a la plantilla oficial de Canva (https://canva.link/polaroid-freirebotuy), ponemos la foto de tu monstruo adentro del marco y agregamos tu nombre y adornos de Halloween.",
+              tip: "Dejá el borde blanco de abajo libre para poner tu nombre y 'Halloween 2026'."
             },
             {
               step: 5,
-              title: "Clase 2: Impresión Física de Recuerdo para la Familia",
-              desc: "Descargamos el diseño en alta calidad para impresión. El docente imprime la fotografía Polaroid en papel fotográfico y la entrega en mano a cada alumno para llevar a su casa y compartir con su familia.",
-              tip: "¡Una creación digital que se convierte en un recuerdo físico y tangible de tu paso por el taller!"
+              title: "Clase 2: ¡Tu foto impresa de recuerdo!",
+              desc: "Descargamos el diseño en buena calidad y el profe lo imprime en papel fotográfico para que te lo lleves a tu casa.",
+              tip: "¡Un recuerdo real hecho con tu propia creatividad y la IA!"
             },
             {
               step: 6,
-              title: "Clase 3: Animación de la Criatura con Flow (Prompts de Video)",
-              desc: "En la tercera clase abrimos Flow (herramienta de video con IA) y cargamos nuestra imagen. Aprendemos que los prompts de video describen movimiento y tiempo: movimiento de cámara (zoom in lento, paneo cinematográfico), gestos del personaje (mirada penetrante, parpadeo sutil, respiración misteriosa) y atmósfera móvil (niebla que se desplaza).",
-              tip: "Mantené el prompt de video conciso y enfocado en el movimiento para evitar deformaciones bruscas."
+              title: "Clase 3: Dale vida en Video con Flow",
+              desc: "Subimos la imagen a Flow y escribimos un prompt corto de movimiento: cómo se mueve la cámara (zoom lento) y qué hace tu monstruo (parpadea, sonríe o mueve la niebla).",
+              tip: "Usá frases cortas de movimiento para que el video quede fluido y sin errores."
             },
             {
               step: 7,
-              title: "Clase 3: Subir el Video y Foto a Google Drive",
-              desc: "Descargamos el video MP4 terminado y lo subimos a nuestra carpeta de Google Drive institucional en la subcarpeta 'Halloween'. En pocos segundos quedará publicado en nuestro muro con reproductor integrado y el sello oficial del colegio.",
-              tip: "¡Entrá a la sección de Fotos y Videos en el portal para reproducir tu video cuantas veces quieras!"
+              title: "Clase 3: Subilo al Muro del Colegio",
+              desc: "Descargamos el video MP4 y lo subimos a la carpeta 'Halloween' de Google Drive para que aparezca en el muro del taller.",
+              tip: "¡Entrá a Fotos y Videos en el portal para ver tu video y el de tus compañeros!"
             }
           ]
         }
@@ -2807,9 +2807,9 @@ const SCHOOL_DATA = {
           coverImage: "img/proyectos/halloween_ia_cover.jpg?v=3",
           gameUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
           externalUrl: "https://roboticapaulofreire-uy.github.io/libro_hechizos/",
-          description: "¡Proyecto Oficial de Halloween! Convertimos nuestra propia fotografía en una criatura fantástica mediante Inteligencia Artificial generativa a lo largo de 3 clases del taller:\n\n1) Clase 1 — Captura y Gemini AI: Tomamos la foto desde la computadora del taller y la subimos a Google Gemini. Aprendemos a construir un prompt preciso aplicando la técnica de las 5 Capas explicada en clase y documentada en nuestro manual oficial 'El Libro de los Hechizos de IA' (https://roboticapaulofreire-uy.github.io/libro_hechizos/).\n\n2) Clase 2 — Foto Polaroid en Canva: Importamos la imagen del monstruo a Canva y diseñamos una postal estilo marco Polaroid vintage con tipografías y adornos de Halloween. Esta foto será impresa físicamente por el profesor en papel fotográfico para que cada alumno la lleve a su hogar como recuerdo.\n\n3) Clase 3 — Video Animado con Flow: Subimos la imagen a Flow y aprendemos a estructurar prompts de video (movimiento de cámara, gestos de la criatura y atmósfera cinematográfica en movimiento) para crear un video MP4 animado y guardarlo en el Muro de Google Drive.",
-          objective: "Dominar el flujo completo de creación multimedia con Inteligencia Artificial generativa a través de tres etapas prácticas: captura fotográfica y formulación de prompts en 5 capas con Google Gemini, composición y diseño editorial de una postal Polaroid en Canva para entrega física impresa a las familias, y animación generativa con IA en Flow mediante prompts dinámicos de movimiento y cámara cinematográfica.",
-          benefits: "Desarrolla el pensamiento computacional aplicado a la IA, la precisión semántica y lingüística al redactar prompts estructurados (las 5 capas), el sentido estético y composición en Canva, y la experimentación con modelos de video generativo, coronado con una entrega tangible física para compartir con la familia.",
+          description: "¡Convertite en un monstruo de Halloween usando Inteligencia Artificial! En 3 clases vas a crear tu propia criatura, diseñarla para imprimir y darle vida en video:\n\n📸 Clase 1 — Tu Monstruo en Gemini: Sacamos una foto en la compu y usamos la fórmula de las 5 Capas del Libro de los Hechizos para transformarte.\n\n🖼️ Clase 2 — Foto Polaroid en Canva: Armamos una postal retro de Halloween con tu monstruo. ¡El profe la imprime en papel fotográfico para que te la lleves a casa!\n\n🎬 Clase 3 — Video Animado en Flow: Le damos movimiento a tu criatura para crear un video MP4 y subirlo al muro del colegio.",
+          objective: "Aprender a crear imágenes, diseños para imprimir y videos animados con Inteligencia Artificial paso a paso.",
+          benefits: "Practicamos cómo darle buenas instrucciones (prompts) a la IA, diseñamos en Canva y te llevás tu foto Polaroid impresa de recuerdo.",
           tags: ["Halloween", "Inteligencia Artificial", "Gemini", "Libro de Hechizos", "Canva", "Polaroid", "Flow", "Video IA", "Prompts 5 Capas", "Nivel 1"],
           gallery: [
             "img/proyectos/halloween_ia_cover.jpg?v=3"
@@ -2819,55 +2819,55 @@ const SCHOOL_DATA = {
           makecodeUrl: null,
           scratchId: null,
           materials: [
-            { title: "Cámara Web de la Computadora", description: "Captura de la fotografía frontal del rostro con buena iluminación en el taller.", icon: "fa-camera" },
-            { title: "Google Gemini AI (Modo Creativo)", description: "Modelo multimodal de IA generativa para transformar la foto según el prompt de 5 capas.", icon: "fa-wand-magic-sparkles" },
-            { title: "Manual 'El Libro de los Hechizos'", description: "Guía oficial del colegio con ejemplos de prompts y transformaciones: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
-            { title: "Plantilla Polaroid en Canva", description: "Marco instantáneo oficial listo para editar e imprimir: https://canva.link/polaroid-freirebotuy", icon: "fa-palette" },
-            { title: "Impresora Fotográfica del Colegio", description: "Impresión en papel fotográfico de la Polaroid terminada que se entrega en mano al estudiante.", icon: "fa-print" },
-            { title: "Flow (Video & Animación IA)", description: "Herramienta de generación de video a partir de imagen para animar al monstruo con prompts de cámara.", icon: "fa-film" }
+            { title: "Cámara Web de la Compu", description: "Para sacar tu foto de frente con buena luz en el taller.", icon: "fa-camera" },
+            { title: "Google Gemini AI", description: "La IA que transforma tu foto en un monstruo usando las 5 capas.", icon: "fa-wand-magic-sparkles" },
+            { title: "El Libro de los Hechizos", description: "Manual del cole con ejemplos de prompts mágicos: https://roboticapaulofreire-uy.github.io/libro_hechizos/", icon: "fa-book-skull" },
+            { title: "Plantilla Polaroid en Canva", description: "Marco listo para decorar e imprimir tu foto: https://canva.link/polaroid-freirebotuy", icon: "fa-palette" },
+            { title: "Impresora Fotográfica", description: "El profe imprime tu Polaroid en papel especial para que la lleves a casa.", icon: "fa-print" },
+            { title: "Flow (Video con IA)", description: "Para animar tu monstruo y convertirlo en video: https://flow.google.com", icon: "fa-film" }
           ],
           instructions: [
             {
               step: 1,
-              title: "Clase 1: Captura de Fotografía en la Computadora",
-              desc: "Nos sentamos frente a la computadora del taller y utilizamos la cámara web para tomarnos una fotografía en primer plano de nuestro rostro con buena luz y gesto misterioso o divertido.",
-              tip: "Mantené tu cara centrada y sin sombras duras para que la IA conserve los rasgos de tu fisonomía."
+              title: "Clase 1: Sacate la foto en la compu",
+              desc: "Usamos la cámara web del taller para sacarnos una foto de frente con buena luz y una pose divertida o misteriosa.",
+              tip: "Mantené tu cara centrada y sin sombras oscuras para que la IA reconozca bien tus rasgos."
             },
             {
               step: 2,
-              title: "Clase 1: Construcción del Prompt en 5 Capas con el 'Libro de Hechizos'",
-              desc: "Ingresamos a Google Gemini y abrimos nuestro manual oficial 'El Libro de los Hechizos' (https://roboticapaulofreire-uy.github.io/libro_hechizos/). Estructuramos el prompt utilizando las 5 Capas: 1. Rol (Artista digital de fantasía), 2. Sujeto (Transformar la persona en monstruo de Halloween), 3. Escena (Habitación antigua con velas y sombras), 4. Estilo (Cinematográfico, claroscuro, alta definición), 5. Reglas (Conservar rostro reconocible pero con rasgos espeluznantes).",
-              tip: "¡Leé los hechizos del manual para inspirarte con palabras clave como niebla volumétrica o iluminación tenebrosa!"
+              title: "Clase 1: Armá tu Hechizo (Prompt en 5 Capas)",
+              desc: "Abrimos Google Gemini y el Libro de los Hechizos (https://roboticapaulofreire-uy.github.io/libro_hechizos/). Escribimos el pedido en 5 pasos: 1. Rol (artista digital), 2. Sujeto (convertirte en monstruo), 3. Escena (lugar tenebroso), 4. Estilo (de película o cómic) y 5. Reglas (que se siga pareciendo a vos).",
+              tip: "¡Mirá los hechizos del manual para copiar ideas geniales de luces, niebla y disfraces!"
             },
             {
               step: 3,
-              title: "Clase 1: Generación y Descarga del Monstruo",
-              desc: "Enviamos el prompt a Gemini junto a nuestra foto. Si algún detalle no nos gusta, ajustamos los adjetivos de las 5 capas hasta obtener el monstruo deseado. Descargamos la imagen en la computadora.",
-              tip: "Podés elegir entre estilo zombi tecnológico, vampiro cibernético, brujo de las sombras o espectro de neón."
+              title: "Clase 1: Creá y descargá tu Monstruo",
+              desc: "Enviamos la foto y el prompt a Gemini. Si querés cambiar algo, ajustá las palabras hasta que quede genial y descargá la imagen.",
+              tip: "Podés probar estilos como zombi futurista, vampiro cibernético o brujo de neón."
             },
             {
               step: 4,
-              title: "Clase 2: Diseño de Fotografía tipo Polaroid en Canva",
-              desc: "En la siguiente clase ingresamos directamente a nuestra plantilla oficial de la foto Polaroid en Canva (https://canva.link/polaroid-freirebotuy). Colocamos la imagen del monstruo generada dentro del marco y agregamos textos personalizados con tipografía de Halloween: 'Halloween 2026', nuestro nombre y adornos de murciélagos o telarañas.",
-              tip: "Dejá el clásico espacio blanco ancho inferior de la Polaroid para que simule una foto instantánea real."
+              title: "Clase 2: Armá tu Polaroid en Canva",
+              desc: "Entramos a la plantilla oficial de Canva (https://canva.link/polaroid-freirebotuy), ponemos la foto de tu monstruo adentro del marco y agregamos tu nombre y adornos de Halloween.",
+              tip: "Dejá el borde blanco de abajo libre para poner tu nombre y 'Halloween 2026'."
             },
             {
               step: 5,
-              title: "Clase 2: Impresión Física de Recuerdo para la Familia",
-              desc: "Descargamos el diseño en alta calidad para impresión. El docente imprime la fotografía Polaroid en papel fotográfico y la entrega en mano a cada alumno para llevar a su casa y compartir con su familia.",
-              tip: "¡Una creación digital que se convierte en un recuerdo físico y tangible de tu paso por el taller!"
+              title: "Clase 2: ¡Tu foto impresa de recuerdo!",
+              desc: "Descargamos el diseño en buena calidad y el profe lo imprime en papel fotográfico para que te lo lleves a tu casa.",
+              tip: "¡Un recuerdo real hecho con tu propia creatividad y la IA!"
             },
             {
               step: 6,
-              title: "Clase 3: Animación de la Criatura con Flow (Prompts de Video)",
-              desc: "En la tercera clase abrimos Flow (herramienta de video con IA) y cargamos nuestra imagen. Aprendemos que los prompts de video describen movimiento y tiempo: movimiento de cámara (zoom in lento, paneo cinematográfico), gestos del personaje (mirada penetrante, parpadeo sutil, respiración misteriosa) y atmósfera móvil (niebla que se desplaza).",
-              tip: "Mantené el prompt de video conciso y enfocado en el movimiento para evitar deformaciones bruscas."
+              title: "Clase 3: Dale vida en Video con Flow",
+              desc: "Subimos la imagen a Flow y escribimos un prompt corto de movimiento: cómo se mueve la cámara (zoom lento) y qué hace tu monstruo (parpadea, sonríe o mueve la niebla).",
+              tip: "Usá frases cortas de movimiento para que el video quede fluido y sin errores."
             },
             {
               step: 7,
-              title: "Clase 3: Subir el Video y Foto a Google Drive",
-              desc: "Descargamos el video MP4 terminado y lo subimos a nuestra carpeta de Google Drive institucional en la subcarpeta 'Halloween'. En pocos segundos quedará publicado en nuestro muro con reproductor integrado y el sello oficial del colegio.",
-              tip: "¡Entrá a la sección de Fotos y Videos en el portal para reproducir tu video cuantas veces quieras!"
+              title: "Clase 3: Subilo al Muro del Colegio",
+              desc: "Descargamos el video MP4 y lo subimos a la carpeta 'Halloween' de Google Drive para que aparezca en el muro del taller.",
+              tip: "¡Entrá a Fotos y Videos en el portal para ver tu video y el de tus compañeros!"
             }
           ]
         }
