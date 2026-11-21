@@ -42534,7 +42534,7 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 /* ── Modal Cine del Taller (Ver en Grande en El Muro) ── */
 .mam-cinema-dialog {
   width: 100%;
-  max-width: 980px;
+  max-width: 1040px;
   margin: auto;
 }
 
@@ -42546,7 +42546,6 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
 }
 
 .mam-cinema-topbar {
@@ -42630,10 +42629,10 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 .mam-cinema-body {
   padding: 18px;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
   gap: 18px;
-  overflow-y: auto;
-  align-items: start;
+  overflow: hidden;
+  align-items: stretch;
 }
 
 .mam-media-frame {
@@ -42697,11 +42696,47 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 }
 
 .mam-story-text {
-  font-size: 0.95rem;
+  font-size: 0.94rem;
   color: #E2E8F0;
-  line-height: 1.55;
-  max-height: 280px;
-  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.mam-story-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.mam-story-tab-btn {
+  background: #0F172A;
+  color: #CBD5E1;
+  border: 1.5px solid #475569;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mam-story-tab-btn:hover {
+  border-color: #F59E0B;
+  color: #FFFFFF;
+}
+
+.mam-story-tab-btn.active {
+  background: linear-gradient(90deg, #F59E0B, #EA580C);
+  color: #FFFFFF;
+  border-color: #FDE047;
+}
+
+.mam-story-pane {
+  display: none;
+}
+
+.mam-story-pane.active {
+  display: block;
 }
 
 .mam-story-text p,

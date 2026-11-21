@@ -2656,7 +2656,78 @@
     }
 
     if (textEl) {
-      textEl.innerHTML = formatMarkdown(p.texto);
+      var rawStory = String(p.texto || '').trim();
+      var lines = rawStory.split(/\r?\n/);
+      var sections = [];
+      var curSec = { title: '📖 Resumen', lines: [] };
+
+      lines.forEach(function (ln) {
+        var trimmed = ln.trim();
+        var headingMatch = trimmed.match(/^(?:#{1,3}\s+|[📌🛠️💡🚀🎯🎬📸✅🏆🎨🤖]\s*\*?\*?)(.+)$/);
+        var isExplicitHeading = /^#{1,3}\s+/.test(trimmed) || (/^[📌🛠️💡🚀🎯🎬📸✅🏆🎨🤖]/.test(trimmed) && trimmed.length < 70 && curSec.lines.length > 0);
+        if (isExplicitHeading && headingMatch) {
+          if (curSec.lines.join('').trim()) sections.push(curSec);
+          var cleanTitle = trimmed.replace(/^#{1,3}\s+/, '').replace(/\*\*/g, '').replace(/:$/, '').trim();
+          if (cleanTitle.length > 26) cleanTitle = cleanTitle.substring(0, 24).trim() + '…';
+          curSec = { title: cleanTitle, lines: [] };
+        } else {
+          curSec.lines.push(ln);
+        }
+      });
+      if (curSec.lines.join('').trim()) sections.push(curSec);
+
+      // Si quedó en 1 sola sección larga, dividir en partes de ~320 caracteres para evitar scroll
+      if (sections.length === 1 && rawStory.length > 340) {
+        var paras = rawStory.split(/\n\s*\n/).filter(Boolean);
+        if (paras.length >= 2) {
+          sections = [];
+          var buf = [];
+          var bufLen = 0;
+          paras.forEach(function (para) {
+            if (buf.length && bufLen + para.length > 320) {
+              sections.push({ title: '📖 Parte ' + (sections.length + 1), lines: [buf.join('\n\n')] });
+              buf = [para];
+              bufLen = para.length;
+            } else {
+              buf.push(para);
+              bufLen += para.length;
+            }
+          });
+          if (buf.length) sections.push({ title: '📖 Parte ' + (sections.length + 1), lines: [buf.join('\n\n')] });
+        }
+      }
+
+      if (sections.length > 1) {
+        var tabsNavHtml =
+          '<div class="mam-story-tabs" role="tablist">' +
+            sections.map(function (sec, sIdx) {
+              return '<button type="button" class="mam-story-tab-btn' + (sIdx === 0 ? ' active' : '') + '" data-mam-tab="' + sIdx + '">' + esc(sec.title) + '</button>';
+            }).join('') +
+          '</div>';
+        var tabsBodyHtml =
+          '<div class="mam-story-panes">' +
+            sections.map(function (sec, sIdx) {
+              return '<div class="mam-story-pane' + (sIdx === 0 ? ' active' : '') + '" data-mam-pane="' + sIdx + '">' +
+                formatMarkdown(sec.lines.join('\n')) +
+              '</div>';
+            }).join('') +
+          '</div>';
+        textEl.innerHTML = tabsNavHtml + tabsBodyHtml;
+
+        textEl.querySelectorAll('.mam-story-tab-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var target = btn.getAttribute('data-mam-tab');
+            textEl.querySelectorAll('.mam-story-tab-btn').forEach(function (b) {
+              b.classList.toggle('active', b.getAttribute('data-mam-tab') === target);
+            });
+            textEl.querySelectorAll('.mam-story-pane').forEach(function (pane) {
+              pane.classList.toggle('active', pane.getAttribute('data-mam-pane') === target);
+            });
+          });
+        });
+      } else {
+        textEl.innerHTML = formatMarkdown(rawStory);
+      }
     }
 
     if (tagsEl) {
