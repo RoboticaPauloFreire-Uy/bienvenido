@@ -44921,21 +44921,8 @@ html[data-theme="aniversario30"] #splash-screen {
   text-shadow: none !important;
 }
 
-/* Cinta superior luminosa y limpieza de carteles antiguos duplicados */
-body .anniversary-celebration-banner {
-  background: linear-gradient(90deg, #FEF3C7 0%, #FDE047 35%, #DCFCE7 70%, #FEF3C7 100%);
-  background-size: 200% 100%;
-  color: #065F46;
-  border-bottom: 2.5px solid #F59E0B;
-  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.22);
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.84rem;
-}
-
-body .anniversary-celebration-banner .acb-text strong {
-  color: #92400E;
-}
-
+/* Ocultar cinta superior que tapaba el menú fijo (.topbar) y carteles antiguos */
+body .anniversary-celebration-banner,
 html[data-theme="aniversario30"] header.topbar .topbar-theme-ribbon,
 html[data-theme="aniversario30"] body::after {
   content: none !important;

@@ -112,6 +112,11 @@
 
   function updateCelebrationBanner(isAnniversary) {
     var existing = document.getElementById('anniversary-celebration-banner');
+    // No mostrar la cinta fija encima de .topbar porque tapa el menú principal
+    if (document.querySelector('header.topbar')) {
+      if (existing) existing.style.display = 'none';
+      return;
+    }
     if (isAnniversary) {
       if (!existing) {
         var banner = document.createElement('div');
@@ -123,9 +128,9 @@
             '<span class="acb-text"><strong>¡CUMPLIMOS 30 AÑOS! (1996 – 2026)</strong> · Tres décadas aprendiendo, jugando y creando futuro en el Colegio Paulo Freire</span>' +
             '<span class="acb-sparkle">🎉</span>' +
           '</div>';
-        var topbar = document.querySelector('.topbar') || document.querySelector('.admin-header') || document.body.firstChild;
-        if (topbar && topbar.parentNode) {
-          topbar.parentNode.insertBefore(banner, topbar);
+        var adminHdr = document.querySelector('.admin-header') || document.body.firstChild;
+        if (adminHdr && adminHdr.parentNode) {
+          adminHdr.parentNode.insertBefore(banner, adminHdr);
         } else {
           document.body.insertBefore(banner, document.body.firstChild);
         }
