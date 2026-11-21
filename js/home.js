@@ -3579,23 +3579,53 @@
   var filtroGradoValija = 'todos';
 
   function initValijaGradeSelect() {
-    var sel = document.getElementById('valija-grade-filter');
-    if (!sel || sel.dataset.initialized) return;
-    var html = '<option value="todos">★ Todos los grupos (Vista General)</option>';
-    GRADOS.forEach(function (g) {
-      html += '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>';
-    });
-    sel.innerHTML = html;
     var st = alumno();
-    if (st && st.gradeId) {
-      filtroGradoValija = st.gradeId;
+    var sel = document.getElementById('valija-grade-filter');
+    if (sel && !sel.dataset.initialized) {
+      var html = '<option value="todos">★ Todos los grupos (Vista General)</option>';
+      GRADOS.forEach(function (g) {
+        html += '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>';
+      });
+      sel.innerHTML = html;
+      if (st && st.gradeId) {
+        filtroGradoValija = st.gradeId;
+      }
+      sel.value = filtroGradoValija;
+      sel.onchange = function () {
+        filtroGradoValija = sel.value;
+        renderValijaMaker(filtroGradoValija);
+      };
+      sel.dataset.initialized = 'true';
     }
-    sel.value = filtroGradoValija;
-    sel.onchange = function () {
-      filtroGradoValija = sel.value;
-      renderValijaMaker(filtroGradoValija);
-    };
-    sel.dataset.initialized = 'true';
+
+    var tabsEl = document.getElementById('hn-valija-grade-tabs');
+    if (tabsEl && !tabsEl.dataset.initialized) {
+      if (st && st.gradeId) {
+        filtroGradoValija = st.gradeId;
+      }
+      var tabsList = [
+        { id: 'todos', label: '🌟 Todos' },
+        { id: 'sala5', label: '🎨 Sala 5' },
+        { id: 'grado1', label: '1.°' },
+        { id: 'grado2', label: '2.°' },
+        { id: 'grado3', label: '3.°' },
+        { id: 'grado4', label: '4.°' },
+        { id: 'grado5', label: '5.°' },
+        { id: 'grado6', label: '6.°' }
+      ];
+      var curNorm = normalizarGrado(filtroGradoValija);
+      tabsEl.innerHTML = tabsList.map(function (t) {
+        var act = (curNorm === t.id);
+        return '<button type="button" class="fb-mochila-tab' + (act ? ' active' : '') + '" role="tab" data-valija-grade="' + esc(t.id) + '" aria-selected="' + (act ? 'true' : 'false') + '">' + esc(t.label) + '</button>';
+      }).join('');
+      tabsEl.querySelectorAll('.fb-mochila-tab').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          filtroGradoValija = btn.getAttribute('data-valija-grade') || 'todos';
+          renderValijaMaker(filtroGradoValija);
+        });
+      });
+      tabsEl.dataset.initialized = 'true';
+    }
   }
 
   function renderValijaMaker(gradoFiltro) {
@@ -3608,6 +3638,13 @@
       var sel = document.getElementById('valija-grade-filter');
       if (sel) sel.value = gradoFiltro;
     }
+
+    var normTab = normalizarGrado(filtroGradoValija);
+    document.querySelectorAll('#hn-valija-grade-tabs .fb-mochila-tab').forEach(function (btn) {
+      var act = btn.getAttribute('data-valija-grade') === normTab;
+      btn.classList.toggle('active', act);
+      btn.setAttribute('aria-selected', act ? 'true' : 'false');
+    });
 
     var fillEl = document.getElementById('hn-valija-meter-fill');
 
@@ -3626,12 +3663,12 @@
     });
 
     if (!filtrados.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;padding:18px;text-align:center;color:#15803D;background:#F0FDF4;border-radius:14px;border:2px dashed #86EFAC;">' +
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:18px;text-align:center;color:#15803D;background:#F0FDF4;border-radius:18px;border:2px dashed #86EFAC;">' +
         '<span style="font-size:1.6rem;display:block;margin-bottom:6px;">🎉</span>' +
         '<strong>¡Todo listo para este grupo!</strong> No necesitás traer materiales extra de casa para la próxima clase.' +
       '</div>';
       var elProg0 = document.getElementById('hn-valija-progress-info');
-      if (elProg0) elProg0.innerHTML = '<span>✅ ¡Sin pedidos pendientes para este grado! ⭐</span>';
+      if (elProg0) elProg0.innerHTML = '<span>✅ ¡Sin pedidos para este grado! ⭐</span>';
       if (fillEl) { fillEl.style.width = '100%'; fillEl.classList.add('is-complete'); }
       return;
     }
@@ -3644,25 +3681,17 @@
       if (isChecked) listos++;
 
       var catClass = m.categoria === 'cartuchera' ? 'cat-cartuchera' : 'cat-reciclable';
-      var catLabel = m.categoria === 'cartuchera' ? '🎒 De la cartuchera' : '♻️ Reciclable en casa';
+      var badgeTxt = isChecked ? '✅ ¡EN LA MOCHILA!' : (m.categoria === 'cartuchera' ? '🎒 CARTUCHERA' : '♻️ RECICLABLE');
+      var descTxt = (m.detalle || '') + (m.uso ? ' · 🛠️ ' + m.uso : '');
 
-      return '<div class="np-valija-card' + (isChecked ? ' is-checked' : '') + '" data-valija-id="' + esc(m.id) + '" onclick="window.toggleValijaItem(\'' + esc(m.id) + '\')" role="button" tabindex="0" title="Tocar para marcar o desmarcar">' +
-        '<div class="np-valija-card-check">' +
-          '<span class="np-valija-checkbox"><i class="fas fa-check"></i></span>' +
+      return '<div class="fb-mochila-card ' + catClass + (isChecked ? ' is-checked' : '') + '" data-valija-id="' + esc(m.id) + '" onclick="window.toggleValijaItem(\'' + esc(m.id) + '\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.toggleValijaItem(\'' + esc(m.id) + '\');}" title="Tocar para marcar o desmarcar">' +
+        '<span class="fb-portal-badge">' + badgeTxt + '</span>' +
+        '<div class="fb-portal-icon">' + esc(m.icono || '📦') + '</div>' +
+        '<div class="fb-portal-text">' +
+          '<span class="fb-portal-title">' + esc(m.nombre) + '</span>' +
+          '<span class="fb-portal-desc">' + esc(descTxt) + '</span>' +
         '</div>' +
-        '<div class="np-valija-card-icon">' + esc(m.icono || '📦') + '</div>' +
-        '<div class="np-valija-card-content">' +
-          '<div class="np-valija-card-top">' +
-            '<span class="np-valija-cat-badge ' + catClass + '">' + catLabel + '</span>' +
-            '<span class="np-valija-date-badge"><i class="far fa-calendar-alt"></i> ' + esc(m.fechaClase || 'Esta semana') + '</span>' +
-          '</div>' +
-          '<h4 class="np-valija-card-title">' + esc(m.nombre) + '</h4>' +
-          '<p class="np-valija-card-detail">' + esc(m.detalle) + '</p>' +
-          (m.uso ? '<div class="np-valija-card-uso"><i class="fas fa-wrench"></i> <strong>Para qué se usa:</strong> ' + esc(m.uso) + '</div>' : '') +
-          '<div class="np-valija-card-status-text">' +
-            '<span>' + (isChecked ? '✅ ¡Guardado en mi mochila!' : '👆 ¡Tocá cuando lo tengas listo!') + '</span>' +
-          '</div>' +
-        '</div>' +
+        '<span class="fb-mochila-check" aria-hidden="true"><i class="fas fa-check"></i></span>' +
       '</div>';
     }).join('');
 
@@ -3682,9 +3711,9 @@
     var elProgress = document.getElementById('hn-valija-progress-info');
     if (elProgress) {
       if (completa) {
-        elProgress.innerHTML = '<strong style="color:#15803D;">🎉 ¡Mochila 100% completa! ¡Sos un/a crack! ⭐</strong>';
+        elProgress.innerHTML = '<strong style="color:#15803D;">🎉 ¡Mochila completa! (' + pct + '%) ⭐</strong>';
       } else {
-        elProgress.innerHTML = '<span>🎒 ' + listos + ' de ' + total + ' materiales en tu mochila (' + pct + '%)</span>';
+        elProgress.innerHTML = '<span>🎒 ' + listos + ' de ' + total + ' listos (' + pct + '%)</span>';
       }
     }
   }

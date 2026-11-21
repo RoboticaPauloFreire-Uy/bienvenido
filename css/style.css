@@ -43640,130 +43640,62 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   color: #2563EB;
 }
 
-/* ── Mochila Maker Interactiva ── */
-#view-inicio .fb-mochila-box::before {
-  content: none !important;
-  display: none !important;
+/* ── Mochila Maker Interactiva (Sin cajón envolvente + Fichas 3D estilo Portal) ── */
+#view-inicio .fb-mochila-section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 26px 0 0 0 !important;
 }
 
-#view-inicio .fb-mochila-box {
-  background: linear-gradient(135deg, #F0FDF4 0%, #EFF6FF 100%);
-  border: 2.5px solid #38BDF8;
-  border-radius: 22px;
-  box-shadow: 0 6px 0 #0EA5E9, 0 14px 28px rgba(14, 165, 233, 0.14);
-  padding: 22px 24px;
-  margin: 26px 0 0 0;
+.fb-mochila-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-#view-inicio .fb-mochila-header {
-  border-bottom: 2px dashed #BAE6FD;
+.fb-mochila-title-pill {
+  margin-bottom: 0;
 }
 
-#view-inicio .fb-mochila-badge {
-  background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-  border-radius: 999px;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  padding: 4px 12px;
-  font-size: 0.74rem;
-  letter-spacing: 0.04em;
+.fb-mochila-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-#view-inicio .fb-mochila-headline {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  font-size: 1.35rem;
-  font-weight: 900;
-  color: #0F172A;
-}
-
-#view-inicio .fb-mochila-sub {
-  color: #475569;
-  font-weight: 600;
-}
-
-#view-inicio .fb-mochila-print {
-  background: #0F172A;
-  color: #FFFFFF;
-  border: 2px solid #38BDF8;
-  border-radius: 12px;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  box-shadow: 0 4px 0 #0284C7;
-}
-
-#view-inicio .fb-mochila-print:hover {
-  background: #2563EB;
-  border-color: #93C5FD;
-}
-
-#view-inicio .fb-mochila-toolbar {
+.fb-mochila-mini-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: #FFFFFF;
   border: 2px solid #BAE6FD;
-  border-radius: 14px;
-}
-
-#view-inicio .fb-mochila-box .np-valija-filter-label {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  color: #0F172A;
-}
-
-#view-inicio .fb-mochila-box .np-valija-select {
-  border: 2px solid #38BDF8;
-  border-radius: 10px;
-}
-
-#view-inicio .fb-mochila-box .np-valija-card {
-  border: 2px solid #CBD5E1;
-  border-radius: 16px;
-  box-shadow: 0 4px 0 #CBD5E1;
-}
-
-#view-inicio .fb-mochila-box .np-valija-card:hover {
-  border-color: #38BDF8;
-  box-shadow: 0 6px 0 #0EA5E9;
-}
-
-#view-inicio .fb-mochila-box .np-valija-card.is-checked {
-  background: #ECFDF5;
-  border-color: #22C55E;
-  box-shadow: 0 4px 0 #16A34A;
-}
-
-#view-inicio .fb-mochila-box .np-valija-cat-badge {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
   border-radius: 999px;
-  padding: 3px 9px;
-}
-
-#view-inicio .fb-mochila-footer {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 2px dashed #BAE6FD;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.fb-mochila-progress-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
+  padding: 5px 12px;
 }
 
 #view-inicio .fb-mochila-progress-info {
-  font-size: 0.94rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: #0F172A;
+  white-space: nowrap;
 }
 
 .fb-mochila-meter {
-  width: 100%;
-  height: 16px;
+  width: 96px;
+  height: 12px;
   background: #E2E8F0;
-  border: 2px solid #CBD5E1;
+  border: 1.5px solid #CBD5E1;
   border-radius: 999px;
   overflow: hidden;
-  padding: 2px;
+  padding: 1px;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .fb-mochila-meter-fill {
@@ -43775,6 +43707,160 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 
 .fb-mochila-meter-fill.is-complete {
   background: linear-gradient(90deg, #22C55E 0%, #10B981 100%);
+}
+
+.fb-mochila-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  color: #1E3A8A;
+  border: 2px solid #93C5FD;
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #93C5FD;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.fb-mochila-print-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 #3B82F6;
+}
+
+.fb-mochila-print-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #3B82F6;
+}
+
+/* Pestañas directas por grado */
+.fb-mochila-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fb-mochila-tab {
+  background: #FFFFFF;
+  border: 2px solid #CBD5E1;
+  color: #334155;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #CBD5E1;
+  transition: transform 0.12s ease, background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+}
+
+.fb-mochila-tab:hover {
+  transform: translateY(-1px);
+  border-color: #60A5FA;
+  color: #1D4ED8;
+}
+
+.fb-mochila-tab.active {
+  background: #2563EB;
+  border-color: #1D4ED8;
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 #1E3A8A;
+}
+
+/* Grilla de fichas 3D sueltas estilo Portal */
+#view-inicio .fb-mochila-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 0;
+}
+
+.fb-mochila-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 14px 14px;
+  border-radius: 18px;
+  border: 2.5px solid #CBD5E1;
+  background: #FFFFFF;
+  color: #0F172A;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  box-sizing: border-box;
+}
+
+.fb-mochila-card:hover {
+  transform: translateY(-4px);
+}
+
+.fb-mochila-card:active {
+  transform: translateY(1px);
+}
+
+.fb-mochila-card.cat-cartuchera {
+  background: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%);
+  border-color: #818CF8;
+  box-shadow: 0 5px 0 #4F46E5;
+}
+.fb-mochila-card.cat-cartuchera .fb-portal-badge { background: #4F46E5; }
+.fb-mochila-card.cat-cartuchera:hover { box-shadow: 0 8px 0 #4F46E5, 0 12px 22px rgba(79, 70, 229, 0.16); }
+
+.fb-mochila-card.cat-reciclable {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%);
+  border-color: #FBBF24;
+  box-shadow: 0 5px 0 #D97706;
+}
+.fb-mochila-card.cat-reciclable .fb-portal-badge { background: #D97706; }
+.fb-mochila-card.cat-reciclable:hover { box-shadow: 0 8px 0 #D97706, 0 12px 22px rgba(217, 119, 6, 0.16); }
+
+.fb-mochila-card.is-checked {
+  background: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
+  border-color: #34D399;
+  box-shadow: 0 5px 0 #059669;
+}
+.fb-mochila-card.is-checked .fb-portal-badge { background: #059669; }
+.fb-mochila-card.is-checked:hover { box-shadow: 0 8px 0 #059669, 0 12px 22px rgba(5, 150, 105, 0.16); }
+
+.fb-mochila-check {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #CBD5E1;
+  color: transparent;
+  transition: all 0.16s ease;
+}
+
+.fb-mochila-card:hover .fb-mochila-check {
+  border-color: #64748B;
+}
+
+.fb-mochila-card.is-checked .fb-mochila-check {
+  background: #10B981;
+  border-color: #059669;
+  color: #FFFFFF;
+  box-shadow: 0 3px 8px rgba(16, 185, 129, 0.35);
+}
+
+.fb-mochila-note {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  text-align: center;
+}
+
+.fb-mochila-note strong {
+  color: #1E3A8A;
 }
 
 /* ── Pie de Estación ── */
@@ -43822,7 +43908,8 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   .fb-vitrina-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  #view-inicio .fb-portals-grid {
+  #view-inicio .fb-portals-grid,
+  #view-inicio .fb-mochila-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   #view-inicio .fb-featured-grid {
@@ -43838,7 +43925,8 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   .fb-vitrina-grid {
     grid-template-columns: 1fr;
   }
-  #view-inicio .fb-portals-grid {
+  #view-inicio .fb-portals-grid,
+  #view-inicio .fb-mochila-grid {
     grid-template-columns: 1fr;
   }
   .fb-hero-media {
