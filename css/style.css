@@ -44957,16 +44957,44 @@ html[data-theme="aniversario30"] .hn-view section.fb-station-sheet {
 }
 
 .fb-aniv30-medal {
-  width: 102px;
-  padding: 10px 8px;
-  border-radius: 18px;
-  background: linear-gradient(145deg, #FEF3C7 0%, #FDE047 100%);
-  border: 2.5px solid #FFFFFF;
-  box-shadow: 0 5px 0 #D97706, 0 8px 18px rgba(217, 119, 6, 0.25);
+  width: 118px;
+  height: 118px;
+  padding: 6px;
+  border-radius: 20px;
+  background: #FFFFFF;
+  border: 2.5px solid #FBBF24;
+  box-shadow: 0 5px 0 #D97706, 0 10px 20px rgba(217, 119, 6, 0.22);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.fb-aniv30-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 13px;
+}
+
+.splash-30-mini-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #FFFFFF;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.fb-km-30-mini {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #FFFFFF;
   flex-shrink: 0;
 }
 
