@@ -3802,6 +3802,164 @@
     }
   }
 
+  /* ───────────── Tablero Interactivo de Inicio (Micro:bit + Curiosidades + Grados) ───────────── */
+  function initInteractiveBoard() {
+    /* 1. Mini micro:bit 5x5 interactiva */
+    var MB_PATTERNS = [
+      { label: '❤️ Corazón',      bits: '0101011111111110111000100' },
+      { label: '😊 Carita Feliz', bits: '0101001010000001000101110' },
+      { label: '🚀 Cohete',       bits: '0010001110011101101110101' },
+      { label: '🤖 Robot',        bits: '0010011111101011111101010' },
+      { label: '⭐ Estrella',     bits: '0010001110111110111010001' },
+      { label: '🎮 Gamer',        bits: '0111011111101011111110001' }
+    ];
+    var mbIdx = 0;
+
+    function renderMbPattern(idx) {
+      var gridEl = document.getElementById('fb-mb-leds');
+      var lblEl = document.getElementById('fb-mb-label');
+      if (!gridEl) return;
+      var pat = MB_PATTERNS[idx] || MB_PATTERNS[0];
+      if (lblEl) lblEl.textContent = pat.label;
+      var html = '';
+      for (var i = 0; i < 25; i++) {
+        var on = pat.bits.charAt(i) === '1';
+        html += '<button type="button" class="fb-led-dot' + (on ? ' on' : '') + '" data-led-idx="' + i + '" aria-label="LED ' + (i + 1) + '"></button>';
+      }
+      gridEl.innerHTML = html;
+      gridEl.querySelectorAll('.fb-led-dot').forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          dot.classList.toggle('on');
+          if (lblEl) lblEl.textContent = '✨ ¡Tu propio dibujo!';
+        });
+      });
+    }
+
+    window.fbMicrobitStep = function (dir) {
+      mbIdx = (mbIdx + (dir || 1) + MB_PATTERNS.length) % MB_PATTERNS.length;
+      renderMbPattern(mbIdx);
+    };
+
+    renderMbPattern(0);
+
+    /* 2. Trivia & Adivinanzas Maker */
+    var TRIVIAS = [
+      {
+        q: '🤔 ¿Cuántas lucecitas LED rojas tiene la pantalla de una placa micro:bit?',
+        a: '✨ ¡Tiene exactamente 25 LEDs en un cuadrado de 5×5 que podés programar para crear dibujos, animaciones y minijuegos!'
+      },
+      {
+        q: '🚀 Adiviná: Soy el bloque de programación que hace que una acción se repita muchas veces sin parar... ¿Cómo me llamo?',
+        a: '🔁 ¡El Bucle (o bloque "Repetir" / "Por siempre")! Sirve para que un robot camine o un personaje salte una y otra vez.'
+      },
+      {
+        q: '🕹️ ¿Sabías por qué a los fallos en un programa o videojuego les dicen "BUGS" (bichos)?',
+        a: '🦋 ¡Porque en 1947 encontraron una polilla de verdad metida adentro de una computadora gigante que trababa los cables!'
+      },
+      {
+        q: '🧊 Si imprimís un llavero o robot en 3D, ¿qué material se derrite capa por capa para darle forma?',
+        a: '🧵 ¡Un filamento plástico (como PLA hecho a base de maíz)! La impresora lo calienta y construye objetos reales desde cero.'
+      },
+      {
+        q: '🤖 ¿Qué pieza necesita un robot para "sentir" que está por chocar contra una pared sin tocarla?',
+        a: '🦇 ¡Un sensor de ultrasonido o distancia! Funciona parecido a los murciélagos enviando ondas que rebotan.'
+      },
+      {
+        q: '💎 ¿En qué famoso mundo hecho 100% de cubos podés programar robots y armar circuitos con Redstone?',
+        a: '⛏️ ¡Minecraft! Con Redstone podés inventar puertas secretas, ascensores y hasta máquinas calculadoras.'
+      }
+    ];
+    var triviaIdx = 0;
+
+    function renderTrivia() {
+      var qEl = document.getElementById('fb-trivia-q');
+      var aEl = document.getElementById('fb-trivia-a');
+      var btnEl = document.getElementById('fb-trivia-ans-btn');
+      var cntEl = document.getElementById('fb-trivia-count');
+      if (!qEl) return;
+      var item = TRIVIAS[triviaIdx] || TRIVIAS[0];
+      qEl.textContent = item.q;
+      if (cntEl) cntEl.textContent = (triviaIdx + 1) + ' / ' + TRIVIAS.length;
+      if (aEl) {
+        aEl.textContent = item.a;
+        aEl.style.display = 'none';
+      }
+      if (btnEl) btnEl.textContent = '👀 ¡Ver respuesta secreta!';
+    }
+
+    window.fbToggleTriviaAns = function () {
+      var aEl = document.getElementById('fb-trivia-a');
+      var btnEl = document.getElementById('fb-trivia-ans-btn');
+      if (!aEl || !btnEl) return;
+      var open = aEl.style.display !== 'none';
+      if (open) {
+        aEl.style.display = 'none';
+        btnEl.textContent = '👀 ¡Ver respuesta secreta!';
+      } else {
+        aEl.style.display = 'block';
+        btnEl.textContent = '🙈 Ocultar respuesta';
+      }
+    };
+
+    window.fbNextTrivia = function () {
+      triviaIdx = (triviaIdx + 1) % TRIVIAS.length;
+      renderTrivia();
+    };
+
+    renderTrivia();
+
+    /* 3. Selector rápido de grado */
+    var fbSelectedGrade = '';
+
+    window.fbSelectGrade = function (gradeId) {
+      var normId = normalizarGrado(gradeId || '');
+      if (!normId || normId === 'todos') return;
+      fbSelectedGrade = normId;
+
+      document.querySelectorAll('.fb-grade-pill[data-fb-grade]').forEach(function (btn) {
+        btn.classList.toggle('active', normalizarGrado(btn.getAttribute('data-fb-grade')) === fbSelectedGrade);
+      });
+
+      if (typeof renderValijaMaker === 'function') {
+        renderValijaMaker(fbSelectedGrade);
+      }
+
+      var bar = document.getElementById('fb-grade-action-bar');
+      if (bar) {
+        bar.innerHTML =
+          '<span class="fb-grade-picked">✅ <strong>' + esc(nombreGrado(fbSelectedGrade)) + '</strong></span>' +
+          '<div class="fb-grade-quick-btns">' +
+            '<button type="button" class="fb-grade-go-btn go-juegos" onclick="window.fbGoGradeJuegos()">🕹️ Juegos</button>' +
+            '<button type="button" class="fb-grade-go-btn go-mochila" onclick="window.fbGoGradeMochila()">🎒 Mochila</button>' +
+          '</div>';
+      }
+    };
+
+    window.fbGoGradeJuegos = function () {
+      var target = fbSelectedGrade || 'todos';
+      switchView('juegos');
+      if (typeof seleccionarGrupoJuegos === 'function') {
+        seleccionarGrupoJuegos(target, false);
+      }
+    };
+
+    window.fbGoGradeMochila = function () {
+      var target = fbSelectedGrade || 'todos';
+      if (typeof renderValijaMaker === 'function') {
+        renderValijaMaker(target);
+      }
+      var box = document.getElementById('hn-valija-box');
+      if (box && box.scrollIntoView) {
+        box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    var stInit = alumno();
+    if (stInit && stInit.gradeId) {
+      window.fbSelectGrade(stInit.gradeId);
+    }
+  }
+
   /* ───────────── Arranque ───────────── */
   function init() {
     renderMasthead();
@@ -3817,6 +3975,7 @@
     renderMuro();
     renderAgenda();
     renderValijaMaker();
+    initInteractiveBoard();
     initHerramientas();
     initReader();
     initClasePeriodicoModal();
@@ -3836,6 +3995,7 @@
           if (sel) sel.value = st.gradeId;
         });
         seleccionarGrupoJuegos(st.gradeId, false);
+        if (typeof window.fbSelectGrade === 'function') window.fbSelectGrade(st.gradeId);
       }
       renderActividades();
       renderJuegos();

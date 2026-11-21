@@ -42924,175 +42924,387 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   color: #0F172A;
 }
 
-/* ── Banner Superior Compacto y Luminoso 3D con FreireBot ── */
-.fb-cmd-hero {
-  background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 50%, #FEF9C3 100%);
-  border: 2.5px solid #60A5FA;
-  border-radius: 20px;
-  padding: 12px 18px;
+/* ── Tablero Interactivo Maker (Micro:bit + Curiosidades + Grados) ── */
+.fb-interactive-board,
+.fb-cmd-hero.fb-interactive-board {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-  align-items: center;
-  box-shadow: 0 5px 0 #3B82F6, 0 10px 22px rgba(37, 99, 235, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.fb-cmd-welcome {
-  display: flex;
-  align-items: center;
+  grid-template-columns: 1fr 1.15fr 1.1fr;
   gap: 14px;
-  min-width: 0;
-}
-
-.fb-cmd-avatars {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.fb-cmd-crest {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  background: #FFFFFF;
-  padding: 4px;
-  border-radius: 13px;
-  border: 2px solid #60A5FA;
-  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.14);
-}
-
-.fb-cmd-bot {
-  width: 52px;
-  height: 52px;
-  border-radius: 15px;
-  background: linear-gradient(135deg, #E0F2FE 0%, #FEF08A 100%);
-  border: 2.5px solid #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.85rem;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.16);
-  animation: fbBotFloat 3.2s ease-in-out infinite;
-}
-
-@keyframes fbBotFloat {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-4px) rotate(2deg); }
-}
-
-.fb-cmd-copy {
-  min-width: 0;
-  flex: 1;
-}
-
-.fb-cmd-top-tags {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.fb-cmd-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: #DBEAFE;
-  border: 1.5px solid #93C5FD;
-  color: #1D4ED8;
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  padding: 3px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
-}
-
-.fb-cmd-title {
-  margin: 4px 0 2px;
-  color: #0F172A;
-  font-size: clamp(1.18rem, 1.9vw, 1.48rem);
-  font-weight: 900;
-  line-height: 1.15;
-}
-
-.fb-cmd-sub {
+  align-items: stretch;
   margin: 0;
-  font-size: 0.86rem;
-  font-weight: 600;
-  line-height: 1.35;
-  color: #475569;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-.fb-cmd-status {
+.fb-board-card {
+  border-radius: 18px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  flex-shrink: 0;
+  gap: 10px;
+  position: relative;
+  box-sizing: border-box;
 }
 
-.fb-cmd-date-pill {
-  background: #FEF3C7;
-  border: 1.5px solid #FCD34D;
-  color: #B45309;
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 0.72rem;
-  font-weight: 800;
+.fb-card-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fb-board-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
+
+.fb-board-badge.badge-cyan   { background: linear-gradient(135deg, #0284C7, #0EA5E9); }
+.fb-board-badge.badge-amber  { background: linear-gradient(135deg, #D97706, #F59E0B); }
+.fb-board-badge.badge-purple { background: linear-gradient(135deg, #7E22CE, #A855F7); }
+
+/* Módulo 1: Mini micro:bit 5x5 interactiva */
+.fb-mb-card {
+  background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+  border: 2.5px solid #38BDF8;
+  box-shadow: 0 5px 0 #0284C7;
+}
+
+.fb-mb-label {
+  font-size: 0.76rem;
+  font-weight: 900;
+  color: #0369A1;
+  background: #E0F2FE;
+  border: 1.5px solid #7DD3FC;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.fb-mb-device {
+  background: #0F172A;
+  border: 2px solid #334155;
+  border-radius: 14px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.fb-mb-device-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.fb-mb-logo {
+  color: #F8FAFC;
+  letter-spacing: 0.04em;
+}
+
+.fb-mb-pwr {
+  color: #4ADE80;
+}
+
+.fb-mb-device-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fb-mb-btn {
+  background: linear-gradient(180deg, #FDE047 0%, #F59E0B 100%);
+  color: #1E1B4B;
+  border: 2px solid #FEF08A;
+  border-radius: 10px;
+  padding: 8px 9px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #B45309;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  flex-shrink: 0;
+}
+
+.fb-mb-btn:hover {
+  transform: translateY(-1px);
+}
+
+.fb-mb-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #B45309;
+}
+
+.fb-mb-leds {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  padding: 6px;
+  background: #020617;
+  border-radius: 8px;
+  border: 1.5px solid #1E293B;
+}
+
+.fb-led-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: none;
+  padding: 0;
+  background: #1E293B;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.fb-led-dot:hover {
+  transform: scale(1.15);
+}
+
+.fb-led-dot.on {
+  background: #FF2A2A;
+  box-shadow: 0 0 8px #FF2A2A, 0 0 3px #FCA5A5;
+}
+
+.fb-mb-pins {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed #334155;
+}
+
+.fb-mb-pins span {
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: #1E1B4B;
+  background: linear-gradient(180deg, #FDE047, #D97706);
+  border-radius: 4px;
+  padding: 2px 0;
+}
+
+.fb-mb-hint {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #0369A1;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* Módulo 2: Curiosidades & Adivinanzas Maker */
+.fb-trivia-card {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%);
+  border: 2.5px solid #FBBF24;
+  box-shadow: 0 5px 0 #D97706;
+}
+
+.fb-trivia-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fb-trivia-count {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #92400E;
+  background: #FEF3C7;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.fb-trivia-next-btn {
+  background: #F59E0B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #B45309;
+  transition: transform 0.1s ease;
+}
+
+.fb-trivia-next-btn:hover {
+  background: #D97706;
+}
+
+.fb-trivia-next-btn:active {
+  transform: translateY(2px);
+}
+
+.fb-trivia-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.fb-trivia-q {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.38;
+}
+
+.fb-trivia-ans-btn {
+  align-self: flex-start;
+  background: #FFFFFF;
+  border: 2px solid #F59E0B;
+  color: #B45309;
+  border-radius: 12px;
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #FCD34D;
+  transition: transform 0.1s ease;
+  margin-top: auto;
+}
+
+.fb-trivia-ans-btn:hover {
+  background: #FEF3C7;
+}
+
+.fb-trivia-ans-btn:active {
+  transform: translateY(2px);
+}
+
+.fb-trivia-a {
+  background: #ECFDF5;
+  border: 2px solid #34D399;
+  color: #065F46;
+  border-radius: 12px;
+  padding: 8px 11px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.38;
+}
+
+/* Módulo 3: Selector rápido de grupo */
+.fb-grade-card {
+  background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 100%);
+  border: 2.5px solid #C084FC;
+  box-shadow: 0 5px 0 #9333EA;
+}
+
+.fb-grade-date-mini {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #6B21A8;
+}
+
+.fb-grade-pills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.fb-grade-pill {
+  background: #FFFFFF;
+  border: 2px solid #D8B4FE;
+  color: #581C87;
+  border-radius: 11px;
+  padding: 6px 11px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #E9D5FF;
+  transition: transform 0.1s ease, background 0.14s ease, color 0.14s ease;
+}
+
+.fb-grade-pill:hover {
+  background: #F3E8FF;
+  transform: translateY(-1px);
+}
+
+.fb-grade-pill.active {
+  background: #9333EA;
+  color: #FFFFFF;
+  border-color: #7E22CE;
+  box-shadow: 0 3px 0 #581C87;
+}
+
+.fb-grade-action-bar {
+  background: #F3E8FF;
+  border: 1.5px solid #D8B4FE;
+  border-radius: 12px;
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.fb-grade-prompt {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #6B21A8;
+}
+
+.fb-grade-picked {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #581C87;
+}
+
+.fb-grade-quick-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fb-grade-go-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+  color: #FFFFFF;
+  transition: transform 0.1s ease;
+}
+
+.fb-grade-go-btn.go-juegos  { background: #7E22CE; }
+.fb-grade-go-btn.go-mochila { background: #0284C7; }
+.fb-grade-go-btn:hover { transform: translateY(-1px); }
 
 .fb-cmd-stats {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
-  justify-content: flex-end;
 }
 
 .fb-cmd-stats .np-stat-sep {
-  color: #64748B;
+  color: #94A3B8;
   font-weight: 900;
 }
 
 .fb-stat-pill {
   background: #FFFFFF;
-  border: 2px solid #BFDBFE;
-  color: #1E3A8A;
+  border: 1.5px solid #E9D5FF;
+  color: #6B21A8;
   border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 0.76rem;
+  padding: 2px 9px;
+  font-size: 0.7rem;
   font-weight: 800;
-  box-shadow: 0 2px 0 #93C5FD;
-}
-
-.fb-cmd-play-btn {
-  background: linear-gradient(180deg, #FBBF24 0%, #F97316 100%);
-  color: #1E1B4B;
-  border: 2.5px solid #FEF08A;
-  border-radius: 13px;
-  padding: 8px 16px;
-  font-size: 0.88rem;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 4px 0 #B45309, 0 8px 16px rgba(249, 115, 22, 0.25);
-  transition: transform 0.14s ease, box-shadow 0.14s ease;
-  white-space: nowrap;
-}
-
-.fb-cmd-play-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 #B45309, 0 12px 20px rgba(249, 115, 22, 0.35);
-}
-
-.fb-cmd-play-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #B45309;
 }
 
 /* ── Radar FreireBot (Ticker Luminoso) ── */
@@ -43780,15 +43992,12 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 
 /* ── Responsive Estación FreireBot ── */
 @media (max-width: 1024px) {
-  .fb-cmd-hero {
-    grid-template-columns: 1fr;
+  .fb-interactive-board,
+  .fb-cmd-hero.fb-interactive-board {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .fb-cmd-status {
-    align-items: flex-start;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
+  .fb-grade-card {
+    grid-column: 1 / -1;
   }
   #view-inicio .fb-portals-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -43801,11 +44010,14 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 @media (max-width: 680px) {
   [data-theme] #view-inicio #inicio.fb-station-sheet,
   #view-inicio #inicio.fb-station-sheet {
-    padding: 16px 14px 18px !important;
+    padding: 14px 12px 18px !important;
   }
-  .fb-cmd-welcome {
-    flex-direction: column;
-    align-items: flex-start;
+  .fb-interactive-board,
+  .fb-cmd-hero.fb-interactive-board {
+    grid-template-columns: 1fr;
+  }
+  .fb-grade-card {
+    grid-column: auto;
   }
   #view-inicio .fb-portals-grid {
     grid-template-columns: 1fr;
