@@ -3549,6 +3549,20 @@
         }) && deletedIdsList.indexOf(ba.id) === -1;
       }));
 
+      // Eliminar duplicados del Álbum del Mundial (conservar la versión oficial con portada)
+      var hasOfficialAlbum = mergedCasa.some(function (it) {
+        return it.id === 'act-album-mundial-cpf' || /álbum digital cpf/i.test(it.titulo || '');
+      });
+      if (hasOfficialAlbum) {
+        mergedCasa = mergedCasa.filter(function (it) {
+          var isOfficial = (it.id === 'act-album-mundial-cpf' || /álbum digital cpf/i.test(it.titulo || ''));
+          if (isOfficial) return true;
+          var urlStr = (it.botones || []).map(function (b) { return b.url || ''; }).join(' ');
+          var isDupAlbum = /mundial de fútbol/i.test(it.titulo || '') || /roboticapaulofreire-uy\.github\.io\/mundial/i.test(urlStr);
+          return !isDupAlbum;
+        });
+      }
+
       C.actividades = currentClase.concat(mergedCasa);
 
       renderFiltrosActividades();
