@@ -2363,55 +2363,61 @@
 
       var isVideoPost = (p.tipoMedia === 'video');
       var nodeIcon = isVideoPost ? '🎬' : '📸';
+      var sceneNum = (idx + 1 < 10 ? '0' : '') + (idx + 1);
+      var sceneLabel = (isVideoPost ? 'ESCENA #' : 'TOMA #') + sceneNum;
       var mediaHtml = renderPostMediaHtml(p);
 
       var tagsHtml = (p.tags && p.tags.length)
-        ? '<div class="hn-post-tags">' + p.tags.map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>'
+        ? '<div class="hn-post-tags tl-film-tags">' + p.tags.map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>'
         : '';
 
       return monthMarkerHtml +
         '<div class="tl-entry' + (idx % 2 === 1 ? ' is-alt' : '') + '" id="post-' + esc(p.id) + '">' +
           '<div class="tl-node" title="' + (isVideoPost ? 'Video' : 'Fotografía') + '">' + nodeIcon + '</div>' +
-          '<article class="tl-card hn-post-card">' +
-            '<header class="tl-card-head">' +
-              '<div class="tl-card-chips">' +
-                '<span class="tl-date-chip"><i class="far fa-clock"></i> ' + esc(fechaRelativa(p.fecha)) + '</span>' +
-                '<span class="tl-grade-chip"><i class="fas fa-graduation-cap"></i> ' + esc(grDisplay) + '</span>' +
-                (p.etiqueta || p.categoria ? '<span class="tl-cat-chip">' + esc(p.etiqueta || p.categoria) + '</span>' : '') +
+          '<article class="tl-film-frame">' +
+            '<div class="tl-film-sprockets" aria-hidden="true"></div>' +
+            '<div class="tl-film-inner">' +
+              '<header class="tl-film-header">' +
+                '<div class="tl-card-chips">' +
+                  '<span class="tl-film-scene">' + nodeIcon + ' ' + sceneLabel + '</span>' +
+                  '<span class="tl-film-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(p.fecha)) + '</span>' +
+                  '<span class="tl-film-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grDisplay) + '</span>' +
+                '</div>' +
+                '<div class="hn-post-top-action">' +
+                  '<button type="button" class="tl-film-icon-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')" title="Ver en grande">' +
+                    '<i class="fas fa-expand-alt"></i>' +
+                  '</button>' +
+                  '<button type="button" class="tl-film-icon-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace">' +
+                    '<i class="fas fa-link"></i>' +
+                  '</button>' +
+                '</div>' +
+              '</header>' +
+              '<div class="tl-film-viewport">' +
+                mediaHtml +
               '</div>' +
-              '<div class="hn-post-top-action">' +
-                '<button type="button" class="hn-post-opt-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')" title="Ver recuerdo ampliado">' +
-                  '<i class="fas fa-expand-alt"></i>' +
-                '</button>' +
-                '<button type="button" class="hn-post-opt-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace">' +
-                  '<i class="fas fa-link"></i>' +
-                '</button>' +
+              '<div class="tl-film-caption">' +
+                (p.titulo ? '<h3 class="tl-film-title">' + esc(p.titulo) + '</h3>' : '') +
+                '<div class="' + initialWrapClass + ' tl-film-text-wrap">' +
+                  '<div class="hn-post-text tl-film-text">' + formatMarkdown(p.texto) + '</div>' +
+                  '<button type="button" class="hn-post-readmore tl-film-readmore" onclick="window.togglePostText(this)" style="' + initialBtnStyle + '" title="Ampliar texto">' +
+                    '<span><i class="fas fa-book-open"></i> Ver más</span> <i class="fas fa-chevron-down"></i>' +
+                  '</button>' +
+                '</div>' +
+                tagsHtml +
               '</div>' +
-            '</header>' +
-            (p.titulo ? '<h3 class="tl-card-title">' + esc(p.titulo) + '</h3>' : '') +
-            mediaHtml +
-            '<div class="tl-card-body">' +
-              '<div class="' + initialWrapClass + '">' +
-                '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
-                '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="' + initialBtnStyle + '" title="Ampliar texto">' +
-                  '<span><i class="fas fa-book-open"></i> Ver más</span> <i class="fas fa-chevron-down"></i>' +
+              '<footer class="tl-film-footer">' +
+                '<button type="button" class="tl-film-btn is-primary" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')">' +
+                  '<i class="fas fa-expand"></i> <span>Ver en Grande</span>' +
                 '</button>' +
-              '</div>' +
-              tagsHtml +
-            '</div>' +
-            '<footer class="hn-post-footer">' +
-              '<div class="hn-post-actions-bar">' +
-                '<button type="button" class="hn-post-action-btn hn-post-expand-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')">' +
-                  '<i class="fas fa-expand"></i> <span>Ampliar</span>' +
-                '</button>' +
-                '<button type="button" class="hn-post-action-btn hn-post-share-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')">' +
+                '<button type="button" class="tl-film-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')">' +
                   '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
                 '</button>' +
-                '<a class="hn-post-action-btn hn-post-wsp-btn" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '">' +
+                '<a class="tl-film-btn is-wsp" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '">' +
                   '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
                 '</a>' +
-              '</div>' +
-            '</footer>' +
+              '</footer>' +
+            '</div>' +
+            '<div class="tl-film-sprockets" aria-hidden="true"></div>' +
           '</article>' +
         '</div>';
     }).join('');
