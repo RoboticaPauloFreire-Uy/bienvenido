@@ -2859,29 +2859,98 @@
           '</a>';
         }).join('') + '</div>' : '';
 
-    var bodyHtml = '<div class="hn-reader-body-text">' +
-      formatMarkdown((n.cuerpo || []).join('\n\n')) +
-    '</div>';
+    // Construir pestañas sin scroll para el lector micro:bit
+    var readerTabs = [];
+    var paras = Array.isArray(n.cuerpo) ? n.cuerpo.slice() : (n.cuerpo ? [n.cuerpo] : []);
+    if (n.bajada && (!paras.length || paras[0] !== n.bajada)) {
+      paras.unshift(n.bajada);
+    }
+
+    var chunk = [];
+    var chunkLen = 0;
+    var partNum = 1;
+    paras.forEach(function (pr) {
+      var s = String(pr || '').trim();
+      if (!s) return;
+      if (chunk.length && chunkLen + s.length > 360) {
+        readerTabs.push({
+          label: partNum === 1 ? '📖 Resumen' : ('📖 Parte ' + partNum),
+          html: '<div class="hn-reader-body-text">' + formatMarkdown(chunk.join('\n\n')) + '</div>'
+        });
+        partNum++;
+        chunk = [s];
+        chunkLen = s.length;
+      } else {
+        chunk.push(s);
+        chunkLen += s.length;
+      }
+    });
+    if (chunk.length) {
+      readerTabs.push({
+        label: partNum === 1 ? '📖 Historia' : ('📖 Parte ' + partNum),
+        html: '<div class="hn-reader-body-text">' + formatMarkdown(chunk.join('\n\n')) + '</div>'
+      });
+    }
+    if (specsHtml) {
+      readerTabs.push({ label: '⚡ Datos Clave', html: specsHtml });
+    }
+    if (galeria) {
+      readerTabs.push({ label: '🖼️ Galería', html: galeria });
+    }
+    if (links) {
+      readerTabs.push({ label: '🔗 Enlaces', html: links });
+    }
+    if (!readerTabs.length) {
+      readerTabs.push({ label: '📖 Historia', html: '<p>Sin contenido adicional.</p>' });
+    }
+
+    var mbTabsNav = readerTabs.length > 1
+      ? '<div class="mb-reader-tabs" role="tablist">' +
+          readerTabs.map(function (t, ti) {
+            return '<button type="button" class="mb-reader-tab-btn' + (ti === 0 ? ' active' : '') + '" data-mb-tab="' + ti + '">' + t.label + '</button>';
+          }).join('') +
+        '</div>'
+      : '';
+
+    var mbTabsPanes =
+      '<div class="mb-reader-panes">' +
+        readerTabs.map(function (t, ti) {
+          return '<div class="mb-reader-pane' + (ti === 0 ? ' active' : '') + '" data-mb-pane="' + ti + '">' + t.html + '</div>';
+        }).join('') +
+      '</div>';
 
     readerBody.innerHTML =
-      coverHtml +
-      '<div class="hn-reader-content">' +
-        chipsHtml +
-        '<h2 id="hn-reader-title" class="hn-reader-headline">' + esc(n.titulo) + '</h2>' +
-        (n.bajada ? '<div class="hn-reader-lead">' + esc(n.bajada) + '</div>' : '') +
-        specsHtml +
-        bodyHtml +
-        galeria +
-        links +
-        '<div class="hn-reader-footer-bar">' +
-          '<div class="hn-reader-share-group">' +
-            '<button type="button" class="hn-share-btn" id="hn-share-btn"><i class="fas fa-link"></i> Copiar enlace</button>' +
-            '<a class="hn-share-btn wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=' +
-              encodeURIComponent(n.titulo + ' — ' + location.href.split('#')[0] + '#noticia-' + n.id) + '"><i class="fab fa-whatsapp"></i> Compartir</a>' +
+      '<div class="mb-reader-grid">' +
+        '<div class="mb-reader-left">' +
+          coverHtml +
+          chipsHtml +
+          '<h2 id="hn-reader-title" class="hn-reader-headline">' + esc(n.titulo) + '</h2>' +
+        '</div>' +
+        '<div class="mb-reader-right">' +
+          mbTabsNav +
+          mbTabsPanes +
+          '<div class="hn-reader-footer-bar">' +
+            '<div class="hn-reader-share-group">' +
+              '<button type="button" class="hn-share-btn" id="hn-share-btn"><i class="fas fa-link"></i> Copiar enlace</button>' +
+              '<a class="hn-share-btn wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=' +
+                encodeURIComponent(n.titulo + ' — ' + location.href.split('#')[0] + '#noticia-' + n.id) + '"><i class="fab fa-whatsapp"></i> Compartir</a>' +
+            '</div>' +
+            '<button type="button" class="hn-reader-bottom-close-btn" id="hn-reader-bottom-close"><i class="fas fa-times"></i> Cerrar</button>' +
           '</div>' +
-          '<button type="button" class="hn-reader-bottom-close-btn" id="hn-reader-bottom-close"><i class="fas fa-times"></i> Cerrar</button>' +
         '</div>' +
       '</div>';
+
+    readerBody.querySelectorAll('.mb-reader-tab-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = btn.getAttribute('data-mb-tab');
+        readerBody.querySelectorAll('.mb-reader-tab-btn').forEach(function (b) {
+          b.classList.toggle('active', b.getAttribute('data-mb-tab') === target);
+        });
+        readerBody.querySelectorAll('.mb-reader-pane').forEach(function (p) {
+          p.classList.toggle('active', p.getAttribute('data-mb-pane') === target);
+        });
+      });
+    });
 
     readerBody.querySelectorAll('.hn-reader-thumb').forEach(function (t) {
       t.addEventListener('click', function () {
