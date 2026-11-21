@@ -5202,11 +5202,11 @@
           '<div class="pf-rdp-top" style="margin-top:12px;flex-direction:column;align-items:flex-start;gap:8px;">' +
             '<div class="pf-rdp-nav-btns" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
               (gradeGames.length > 1
-                ? '<button type="button" class="pf-rdp-step-btn" id="pf-g-prev" title="Juego anterior" ' + (hasPrevG ? '' : 'disabled') + '><i class="fas fa-chevron-left"></i></button>'
+                ? '<button type="button" class="pf-rdp-step-btn" id="pf-g-prev" title="Juego anterior"><i class="fas fa-chevron-left"></i></button>'
                 : '') +
               '<span class="pf-rdp-kicker">🎮 Juego ' + (radialGameIdx + 1) + ' de ' + gradeGames.length + '</span>' +
               (gradeGames.length > 1
-                ? '<button type="button" class="pf-rdp-step-btn" id="pf-g-next" title="Juego siguiente" ' + (hasNextG ? '' : 'disabled') + '><i class="fas fa-chevron-right"></i></button>'
+                ? '<button type="button" class="pf-rdp-step-btn" id="pf-g-next" title="Juego siguiente"><i class="fas fa-chevron-right"></i></button>'
                 : '') +
             '</div>' +
             '<h4 class="pf-rdp-title" style="margin-top:2px;">' + escapeRadialHtml(selectedGame.title || 'Desafío') + '</h4>' +
@@ -5224,9 +5224,9 @@
         '</div>';
 
       var gPrev = detailPanel.querySelector('#pf-g-prev');
-      if (gPrev) gPrev.onclick = function() { if (radialGameIdx > 0) { radialGameIdx--; radialGamePageIdx = 0; mountGamesRadialMenu(rootEl, student, gradeGames); } };
+      if (gPrev) gPrev.onclick = function() { if (gradeGames.length > 1) { radialGameIdx = (radialGameIdx - 1 + gradeGames.length) % gradeGames.length; radialGamePageIdx = 0; mountGamesRadialMenu(rootEl, student, gradeGames); } };
       var gNext = detailPanel.querySelector('#pf-g-next');
-      if (gNext) gNext.onclick = function() { if (radialGameIdx < gradeGames.length - 1) { radialGameIdx++; radialGamePageIdx = 0; mountGamesRadialMenu(rootEl, student, gradeGames); } };
+      if (gNext) gNext.onclick = function() { if (gradeGames.length > 1) { radialGameIdx = (radialGameIdx + 1) % gradeGames.length; radialGamePageIdx = 0; mountGamesRadialMenu(rootEl, student, gradeGames); } };
       var gpPrev = detailPanel.querySelector('#pf-g-page-prev');
       if (gpPrev) gpPrev.onclick = function() { if (radialGamePageIdx > 0) { radialGamePageIdx--; mountGamesRadialMenu(rootEl, student, gradeGames); } };
       var gpNext = detailPanel.querySelector('#pf-g-page-next');
