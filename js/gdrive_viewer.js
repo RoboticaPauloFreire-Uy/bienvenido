@@ -3361,14 +3361,15 @@
       // ── Ficha Completa del Proyecto Seleccionado ──
       var currentProjHtml = '';
       if (currentProj) {
+        var isHalloween = (currentProj.type === 'halloween');
         var isServo = (currentProj.id === 'g6-p2') || (/servo.*joystick|joystick.*servo/i.test(currentProj.title || ''));
-        var isCanva = currentProj.type === 'canva' || /canva/i.test(currentProj.title || '');
-        var isGemini = (currentProj.id === 'g6-p3') || (/gemini|notebooklm|materiales.*estudio/i.test(currentProj.title || ''));
+        var isCanva = !isHalloween && (currentProj.type === 'canva' || /canva/i.test(currentProj.title || ''));
+        var isGemini = !isHalloween && ((currentProj.id === 'g6-p3') || (/gemini|notebooklm|materiales.*estudio/i.test(currentProj.title || '')));
         var coverImg = currentProj.coverImage || (isServo ? 'img/proyectos/servo_joystick_makecode_cover.svg' : (isCanva ? 'img/proyectos/canva_arquero_ia_cover.svg' : (isGemini ? 'img/proyectos/gemini_notebooks_cover.svg' : (currentProj.gallery && currentProj.gallery[0]) || (currentProj.type === 'makecode' || currentProj.type === 'electronica' ? 'img/microbit.png' : 'img/scratchjr.png'))));
         var safeTitleJs = (currentProj.title || 'Proyecto de Clase').replace(/'/g, "\\'");
         var pdfUrl = currentProj.pdfUrl || currentProj.downloadPdfUrl || null;
         var codeUrl = currentProj.makecodeUrl || (currentProj.scratchId ? ('https://scratch.mit.edu/projects/' + currentProj.scratchId) : (currentProj.gameUrl || currentProj.externalUrl || (isGemini ? 'https://notebooklm.google.com' : null)));
-        var codeLabel = currentProj.makecodeUrl ? 'Abrir en MakeCode' : (currentProj.scratchId ? 'Abrir en Scratch' : (isGemini ? 'Abrir NotebookLM' : (isCanva ? 'Abrir en Canva' : 'Abrir Proyecto')));
+        var codeLabel = currentProj.makecodeUrl ? 'Abrir en MakeCode' : (currentProj.scratchId ? 'Abrir en Scratch' : (isHalloween ? 'Abrir Libro de Hechizos' : (isGemini ? 'Abrir NotebookLM' : (isCanva ? 'Abrir en Canva' : 'Abrir Proyecto'))));
         var isLast = (selectedClassProjectIdx === classProjects.length - 1);
         var projTypeBadge = currentProj.badge || (currentProj.type === 'electronica' ? '⚡ Circuito Electrónico' : (currentProj.type === 'paint' ? '🎨 Arte Digital & Paint' : (currentProj.type === 'makecode' ? '💻 MakeCode Micro:bit' : (currentProj.type === 'scratch' ? '🐱 Scratch Jr' : (isGemini ? '🧠 Gemini & NotebookLM' : (isCanva ? '🎨 Canva & Animación IA' : '🚀 Proyecto Maker'))))));
 
@@ -3579,8 +3580,6 @@
               '</div>' +
             '</div>' +
 
-            instructionsHtml +
-            materialsHtml +
             extraDriveFilesHtml +
           '</div>';
       } else {
