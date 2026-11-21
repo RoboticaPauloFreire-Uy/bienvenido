@@ -40349,30 +40349,35 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 
 .arcade-marquee {
   background: linear-gradient(90deg, #F59E0B, #EA580C);
   color: #FFFFFF;
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 900;
-  letter-spacing: 0.06em;
-  padding: 5px 14px;
+  letter-spacing: 0.04em;
+  padding: 5px 11px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .arcade-counter {
   background: #1E293B;
   color: #FDE68A;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  padding: 5px 12px;
+  padding: 5px 10px;
   border-radius: 999px;
   border: 1px solid #475569;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .arcade-screen-img-wrap {
@@ -40652,8 +40657,9 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
 .arcade-topbar-btns {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .arcade-btn-game-info {
@@ -40661,13 +40667,15 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   color: #DDD6FE;
   border: 1.5px solid rgba(167, 139, 250, 0.45);
   border-radius: 999px;
-  padding: 5px 14px;
-  font-size: 0.8rem;
+  padding: 5px 10px;
+  font-size: 0.76rem;
   font-weight: 800;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: background 0.15s ease, transform 0.15s ease, color 0.15s ease;
 }
 
@@ -40682,13 +40690,15 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   color: #BAE6FD;
   border: 1.5px solid rgba(56, 189, 248, 0.45);
   border-radius: 999px;
-  padding: 5px 14px;
-  font-size: 0.8rem;
+  padding: 5px 10px;
+  font-size: 0.76rem;
   font-weight: 800;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: background 0.15s ease, transform 0.15s ease, color 0.15s ease;
 }
 
