@@ -1880,16 +1880,6 @@ const SCHOOL_DATA = {
         },
 
         {
-          id: "g2-g1",
-          title: "Gatito Atrapa Peces 🐟",
-          platform: "scratch",
-          scratchId: "60917032",
-          thumbnail: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&w=600&q=80",
-          description: "El gatito buzo debe atrapar peces celestes para sumar puntos y esquivar los peces rojos peligrosos.",
-          benefits: "Entrena la coordinación mano-ojo, la noción de variables de puntaje y el manejo de recompensas.",
-          tags: ["Scratch", "Juego", "Puntos"]
-        },
-        {
           id: "g2-g2",
           title: "Fiesta de Baile Programada 🕺",
           platform: "codeorg",
@@ -1898,16 +1888,6 @@ const SCHOOL_DATA = {
           description: "Coreografías completas donde cada bailarín reacciona a los pulsos de la música con pasos diferentes.",
           benefits: "Enseña el concepto de 'Eventos' (hacer X cuando ocurre Y) y sincronización rítmica con la computadora.",
           tags: ["Code.org", "Eventos", "Música"]
-        },
-        {
-          id: "g2-g3",
-          title: "El Dragón y el Tesoro 🐉",
-          platform: "scratch",
-          scratchId: "10014517",
-          thumbnail: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80",
-          description: "Cuento interactivo tipo 'elige tu propia aventura' donde las decisiones del lector cambian el final.",
-          benefits: "Desarrolla el pensamiento condicional (Si... Entonces...), la toma de decisiones y la fluidez lectora.",
-          tags: ["Scratch", "Cuento", "Condicionales"]
         }
       ],
 
@@ -2107,16 +2087,6 @@ const SCHOOL_DATA = {
         },
 
         {
-          id: "g3-g1",
-          title: "Super Salto: Plataformas 🎮",
-          platform: "scratch",
-          scratchId: "60917032",
-          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
-          description: "Juego de plataformas en 2 niveles con obstáculos móviles, recolección de monedas y sistema de 3 vidas.",
-          benefits: "Enseña física aplicada básica (gravedad, saltos, rebote), control de variables y diseño estructurado de niveles.",
-          tags: ["Scratch", "Plataformas", "Física"]
-        },
-        {
           id: "g3-g2",
           title: "Minecraft: Viaje Acuático 🌊⛏️",
           platform: "codeorg",
@@ -2137,16 +2107,6 @@ const SCHOOL_DATA = {
           benefits: "Introduce el uso de funciones, bucles, lógica condicional y planificación espacial guiando a un agente programable.",
           tags: ["Code.org", "Minecraft", "Agente", "Funciones", "Bucles"],
           grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
-        },
-                {
-          id: "g3-g4",
-          title: "¿Sabés Programar? Trivia 🧠",
-          platform: "native",
-          gameEngine: "devQuiz",
-          thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80",
-          description: "Desafío de preguntas sobre lógica, programación y Scratch con cronómetro y puntuación al instante.",
-          benefits: "Consolida vocabulario técnico, refuerza la memoria de trabajo y ejercita el pensamiento crítico bajo tiempo.",
-          tags: ["Trivia", "Lógica", "JavaScript"]
         }
       ],
 
@@ -2377,37 +2337,6 @@ const SCHOOL_DATA = {
           benefits: "Fomenta el pensamiento táctico y estratégico, diseño de algoritmos de toma de decisiones basadas en estados (State Machines), balance de recursos (energía vs. ataque) y programación competitiva.",
           tags: ["CS2N","Cobots","Estrategia","Robótica Competitiva","IA","Arena"],
           grades: ["grado3","grado4","grado5","grado6"]
-        },
-
-        {
-          id: "g4-g1",
-          title: "Aventura RPG: El Bosque Encantado 🌲",
-          platform: "scratch",
-          scratchId: "60917032",
-          thumbnail: "https://images.unsplash.com/photo-1518364538800-6bae3c2ea0f2?auto=format&fit=crop&w=600&q=80",
-          description: "Juego de rol con inventario, diálogos ramificados y enemigos con inteligencia artificial básica.",
-          benefits: "Fomenta el pensamiento sistémico, la gestión de inventarios y la resolución no lineal de problemas.",
-          tags: ["Scratch", "RPG", "Inventario"]
-        },
-        {
-          id: "g4-g2",
-          title: "Pixel Knight: Dungeon Crawler 🏰",
-          platform: "makecode",
-          externalUrl: "https://arcade.makecode.com",
-          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
-          description: "Dungeon crawler retro creado en MakeCode Arcade con sprites pixel-art propios y combate por turnos.",
-          benefits: "Introduce la arquitectura clásica de videojuegos 8-bit, la modularización de código y la estética retro.",
-          tags: ["MakeCode", "Pixel Art", "Dungeon"]
-        },
-        {
-          id: "g4-g3",
-          title: "Cyber Lock: Descifra el Código 🔐",
-          platform: "native",
-          gameEngine: "codeBreaker",
-          thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
-          description: "Memorizá la secuencia de colores y sonidos para descifrar el código de seguridad nivel tras nivel.",
-          benefits: "Ejercita la memoria de trabajo secuencial, la retención auditiva-visual y la concentración profunda.",
-          tags: ["JavaScript", "Memoria", "Patrones"]
         }
       ],
 
@@ -2541,37 +2470,6 @@ const SCHOOL_DATA = {
           benefits: "Fomenta el pensamiento táctico y estratégico, diseño de algoritmos de toma de decisiones basadas en estados (State Machines), balance de recursos (energía vs. ataque) y programación competitiva.",
           tags: ["CS2N","Cobots","Estrategia","Robótica Competitiva","IA","Arena"],
           grades: ["grado3","grado4","grado5","grado6"]
-        },
-
-        {
-          id: "g5-g1",
-          title: "Neon Runner JS ⚡",
-          platform: "native",
-          gameEngine: "neon_runner",
-          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
-          description: "Juego de plataformas arcade en JavaScript nativo con estética synthwave y físicas personalizadas.",
-          benefits: "Enseña bucle de juego (game loop), detección de colisiones mediante AABB y renderizado en Canvas 2D.",
-          tags: ["JavaScript", "Canvas", "Arcade"]
-        },
-        {
-          id: "g5-g2",
-          title: "Carrera de Velocidad Pixel 🏎️",
-          platform: "makecode",
-          externalUrl: "https://arcade.makecode.com",
-          thumbnail: "https://images.unsplash.com/photo-1568386453619-84c3ff4b43c5?auto=format&fit=crop&w=600&q=80",
-          description: "Juego de carreras pixel-art con pistas generadas automáticamente y control de aceleración por código.",
-          benefits: "Trabaja la coordinación de reflejos rápidos, el ajuste matemático de velocidades y el análisis de rendimiento.",
-          tags: ["MakeCode", "Racing", "Velocidad"]
-        },
-        {
-          id: "g5-g3",
-          title: "Pixel Art Studio 🖼️",
-          platform: "native",
-          gameEngine: "pixelMaker",
-          thumbnail: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80",
-          description: "Herramienta interactiva para dibujar sprites de videojuegos en cuadrícula y exportarlos como archivo de imagen.",
-          benefits: "Desarrolla la creatividad digital, la descomposición matricial de imágenes y la proporción geométrica.",
-          tags: ["Herramienta", "Pixel Art", "Diseño"]
         }
       ],
 
@@ -2759,47 +2657,6 @@ const SCHOOL_DATA = {
           benefits: "Fomenta el pensamiento táctico y estratégico, diseño de algoritmos de toma de decisiones basadas en estados (State Machines), balance de recursos (energía vs. ataque) y programación competitiva.",
           tags: ["CS2N","Cobots","Estrategia","Robótica Competitiva","IA","Arena"],
           grades: ["grado3","grado4","grado5","grado6"]
-        },
-
-        {
-          id: "g6-g1",
-          title: "Neon Cyber Runner 2099 ⚡",
-          platform: "native",
-          gameEngine: "neonRunner",
-          thumbnail: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
-          description: "Arcade infinito con física de doble salto, sistema de partículas y récord guardado en el navegador.",
-          benefits: "Enseña el funcionamiento del ciclo de juego (Game Loop), la física computacional y la optimización de código profesional.",
-          tags: ["JavaScript", "Canvas API", "Partículas"]
-        },
-        {
-          id: "g6-g2",
-          title: "Cyber Lock: Hackeá el Sistema 🔐",
-          platform: "native",
-          gameEngine: "codeBreaker",
-          thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
-          description: "Descifrá secuencias de seguridad memorizando patrones de sonido sintetizado con Web Audio API.",
-          benefits: "Introduce nociones de ciberseguridad, síntesis de audio por código y retención de patrones complejos.",
-          tags: ["JavaScript", "Audio API", "Seguridad"]
-        },
-        {
-          id: "g6-g3",
-          title: "Quiz Final del Taller 2026 🏆",
-          platform: "native",
-          gameEngine: "devQuiz",
-          thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80",
-          description: "El gran desafío anual que reúne preguntas de lógica, Scratch, Code.org, JavaScript y conceptos web.",
-          benefits: "Evalúa integralmente los aprendizajes del ciclo lectivo con retroalimentación instantánea y refuerzo positivo.",
-          tags: ["Trivia", "Evaluación", "Lógica"]
-        },
-        {
-          id: "g6-g4",
-          title: "Traductor Binario: Código PC 💻",
-          platform: "native",
-          gameEngine: "binaryTranslator",
-          thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80",
-          description: "¿Cómo 'piensa' una computadora? Escribí cualquier palabra y mirá cómo se traduce a 1s y 0s en tiempo real.",
-          benefits: "Desmitifica el sistema binario y enseña cómo las máquinas codifican texto, imágenes y datos numéricos.",
-          tags: ["Herramienta", "Binario", "Sistemas"]
         }
       ],
 
