@@ -1697,11 +1697,14 @@
             '</div>' +
             '<p id="apm-proto-copied-msg" style="display:none;margin-top:10px;color:#059669;font-weight:800;text-align:center;">✅ ¡Dirección copiada! Pegala en ' + esc(browserName) + '.</p>' +
           '</div>' +
-          '<div class="apm-modal-foot">' +
+          '<div class="apm-modal-foot" style="flex-wrap:wrap;gap:8px;">' +
             '<button type="button" class="apm-modal-btn-sec">Cerrar</button>' +
-            '<button type="button" id="apm-proto-copy-btn" class="apm-modal-btn-play" style="border:none;cursor:pointer;">' +
+            '<button type="button" id="apm-proto-copy-btn" class="apm-modal-btn-sec" style="background:#EFF6FF;color:#1D4ED8;border-color:#93C5FD;cursor:pointer;">' +
               '<i class="fas fa-copy"></i> Copiar ' + esc(url) +
             '</button>' +
+            '<a id="apm-proto-run-btn" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer" class="apm-modal-btn-play">' +
+              '<i class="fas fa-play"></i> Ejecutar ' + esc(url) +
+            '</a>' +
           '</div>' +
         '</div>';
 
@@ -1864,6 +1867,11 @@
       elTitle.title = m.gm.title || 'Juego';
       elDesc.textContent = m.gm.description || '¡Divertite jugando y aprendiendo en el taller!';
       elPlay.href = m.url;
+      if (/^(chrome|edge):\/\//i.test(m.url || '')) {
+        elPlay.innerHTML = '<i class="fas fa-play"></i> <span>Ejecutar ' + esc(m.url) + '</span>';
+      } else {
+        elPlay.innerHTML = '<i class="fas fa-play"></i> <span>¡JUGAR AHORA!</span>';
+      }
       if (m.ext) {
         elPlay.target = '_blank';
         elPlay.rel = 'noopener noreferrer';
