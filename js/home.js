@@ -1255,47 +1255,73 @@
         '</article>';
       }
 
-      // ── CASO CLASE: EXPEDIENTE TÉCNICO DE LABORATORIO (Periódico) ──
-      var dwgId = (a.id || 'EXP').replace(/^act-/, '').toUpperCase();
-      var stateClass = 'state-' + it.estado.clave;
+      // ── CASO CLASE: CARTAS COLECCIONABLES ESTILO POKÉMON TERACRISTAL EX ──
+      var isIA = /ia|gemini|cine|hechizo|libro|robot|sensor|circuit/i.test((a.titulo || '') + ' ' + (a.id || ''));
+      var isArte = /paint|bandera|dibujo|guitarra|arte/i.test((a.titulo || '') + ' ' + (a.id || ''));
+      var pkTypeCls = isIA ? 'pk-type-ia' : (isArte ? 'pk-type-juego' : 'pk-type-maker');
+      var energyIcon = isIA ? '🔮' : (isArte ? '🎨' : '⚡');
+      var xpVal = isIA ? '220' : (isArte ? '180' : '200');
+      var numStr = (idx + 1) < 10 ? '0' + (idx + 1) : String(idx + 1);
+      var subTxt = a.subtitulo || ((a.chips && a.chips.length) ? a.chips.slice(0, 2).join(' · ') : 'Actividad práctica del taller');
 
-      var subtituloHtml = a.subtitulo
-        ? '<p class="np-clase-subtitulo">' + esc(a.subtitulo) + '</p>'
-        : '<p class="np-clase-subtitulo is-empty" aria-hidden="true">&nbsp;</p>';
-
-      var deadlineHtml = fechaPresentacion || hasta || desdeProx;
-      if (!deadlineHtml) {
-        deadlineHtml = '<span class="hn-act-deadline hn-act-deadline-empty" style="visibility:hidden;" aria-hidden="true"><i class="far fa-calendar-alt"></i> &nbsp;</span>';
-      }
-
-      var accionesClase = (botones ? '<div class="np-clase-actions">' + botones + '</div>' : '');
-
-      return '<article class="np-clase-card ' + stateClass + (it.mia ? ' es-mia' : '') + '" data-act-idx="' + idx + '" role="button" tabindex="0" onclick="window.abrirModalClasePorIndice(' + idx + ');" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.abrirModalClasePorIndice(' + idx + ');}" title="Clic para abrir expediente estilo periódico">' +
-        '<div class="np-clase-top">' +
-          '<span class="np-clase-exp"><i class="fas fa-file-alt"></i> EXPEDIENTE DE AULA Nº ' + esc(dwgId) + '</span>' +
-          '<span class="np-clase-stamp ' + stateClass + '">' + esc(it.estado.texto) + '</span>' +
-        '</div>' +
-        '<div class="np-clase-photo-wrap' + (a.imagen ? ' has-img' : '') + '">' +
-          (a.imagen
-            ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="np-clase-img" loading="lazy" onerror="this.parentNode.classList.remove(\'has-img\');this.remove();"><span class="np-clase-photo-icon">' + esc(a.icono || '🤖') + '</span>'
-            : '<div style="text-align:center;"><span class="np-clase-photo-icon">' + esc(a.icono || '🤖') + '</span></div>') +
-          '<span class="np-clase-fig-tag">GRABADO // ACTIVIDAD PRÁCTICA</span>' +
-        '</div>' +
-        '<div class="np-clase-body">' +
-          (it.mia ? '<span class="np-clase-mine"><i class="fas fa-bookmark"></i> ASIGNADO A TU GRADO</span>' : '') +
-          '<h3 class="np-clase-title">' + esc(a.titulo) + '</h3>' +
-          subtituloHtml +
-          '<p class="np-clase-desc">' + esc(stripMarkdown(a.descripcion)) + '</p>' +
-          chips +
-          '<div class="np-clase-meta">' +
-            '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
-            deadlineHtml +
+      return '<article class="pk-card pk-tera-ex ' + pkTypeCls + (it.mia ? ' es-mia' : '') + '" data-act-idx="' + idx + '" role="button" tabindex="0" onclick="window.abrirModalClasePorIndice(' + idx + ');" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.abrirModalClasePorIndice(' + idx + ');}" title="Clic para abrir el proyecto completo" style="cursor:pointer;">' +
+        '<div class="pk-holo-sheen" aria-hidden="true"></div>' +
+        '<div class="pk-tera-facets" aria-hidden="true"></div>' +
+        '<div class="pk-card-inner">' +
+          '<div class="pk-card-header">' +
+            '<div class="pk-header-left">' +
+              '<span class="pk-stage-tag">CLASE</span>' +
+              '<h3 class="pk-card-title" title="' + esc(a.titulo) + '">' + esc(a.titulo) + '</h3>' +
+              '<span class="pk-ex-badge">ex</span>' +
+            '</div>' +
+            '<div class="pk-header-right">' +
+              '<span class="pk-hp"><small>PS</small><strong>' + xpVal + '</strong></span>' +
+              '<span class="pk-energy" title="Actividad de Clase">' + energyIcon + '</span>' +
+            '</div>' +
           '</div>' +
-          accionesClase +
-          '<div class="np-clase-foot">' +
-            '<button type="button" class="np-clase-read-btn" onclick="event.stopPropagation(); window.abrirModalClasePorIndice(' + idx + ');">' +
-              '<i class="fas fa-newspaper"></i> VER EXPEDIENTE COMPLETO <i class="fas fa-arrow-right"></i>' +
-            '</button>' +
+
+          '<div class="pk-tera-ribbon">' +
+            '<span class="pk-tera-label">Teracristal</span>' +
+            '<span class="pk-tera-sub">' + esc(it.estado.texto) + ' · ' + esc(grTxt) + '</span>' +
+          '</div>' +
+
+          '<div class="pk-art-frame">' +
+            (a.imagen
+              ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="pk-art-img" loading="lazy" onerror="this.style.display=\'none\'">'
+              : '<div class="pk-art-emoji">' + esc(a.icono || energyIcon) + '</div>') +
+            '<div class="pk-art-prism" aria-hidden="true"></div>' +
+            (it.mia ? '<span class="pk-mine-badge"><i class="fas fa-star"></i> Tu grado</span>' : '') +
+          '</div>' +
+
+          '<div class="pk-ex-body">' +
+            '<div class="pk-ability-block">' +
+              '<div class="pk-ability-head">' +
+                '<span class="pk-ability-pill">Habilidad</span>' +
+                '<span class="pk-ability-name">Desafío de Aula</span>' +
+              '</div>' +
+              '<p class="pk-power-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
+            '</div>' +
+
+            '<div class="pk-attack-block">' +
+              '<div class="pk-attack-head">' +
+                '<div class="pk-attack-orbs">' +
+                  '<span>🤖</span><span>⚡</span><span>🛠️</span>' +
+                '</div>' +
+                '<span class="pk-attack-name">En el Taller</span>' +
+                '<span class="pk-attack-dmg">' + xpVal + '</span>' +
+              '</div>' +
+              '<p class="pk-power-mat" title="' + esc(subTxt) + '">' + esc(subTxt) + '</p>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="pk-rule-bar" onclick="event.stopPropagation();">' +
+            '<span class="pk-rule-pill">N° ' + numStr + '</span>' +
+            '<div class="pk-card-foot">' +
+              (botones ? '<div class="pk-card-actions">' + botones + '</div>' : '') +
+              '<button type="button" class="casa-btn-detail pk-btn-detail" onclick="event.stopPropagation(); window.abrirModalClasePorIndice(' + idx + ');" title="Ver proyecto completo">' +
+                '<i class="fas fa-eye"></i> Ver Proyecto' +
+              '</button>' +
+            '</div>' +
           '</div>' +
         '</div>' +
       '</article>';
