@@ -8832,22 +8832,30 @@
                     '<span style="background:rgba(255,255,255,0.16);color:#FFF;padding:5px 12px;border-radius:999px;font-size:0.82rem;font-weight:700;"><i class="fas fa-graduation-cap"></i> 5° y 6° Primaria</span>' +
                     '<span style="background:rgba(139,92,246,0.45);color:#F3E8FF;padding:5px 12px;border-radius:999px;font-size:0.82rem;font-weight:700;"><i class="fas fa-clock"></i> 3 Clases</span>' +
                   '</div>' +
-                  '<h2 style="font-size:1.9rem;font-weight:900;color:#FFFFFF;margin:0 0 8px;line-height:1.2;">PROYECTO HALLOWEEN: FOTO A MONSTRUO 🎃👻🎬</h2>' +
-                  '<p style="color:#F8FAFC;font-size:1.05rem;font-weight:600;margin:0 0 14px;line-height:1.5;">' +
-                    '¡Convertite en un monstruo usando Inteligencia Artificial! Seguí estas 3 clases:' +
+                  '<h2 style="font-size:1.85rem;font-weight:900;color:#FFFFFF;margin:0 0 8px;line-height:1.2;">PROYECTO HALLOWEEN: FOTO A MONSTRUO 🎃👻🎬</h2>' +
+                  '<p style="color:#F8FAFC;font-size:1.05rem;font-weight:600;margin:0;line-height:1.5;">' +
+                    '¡Convertite en un monstruo usando Inteligencia Artificial! Elegí una clase abajo para ver los pasos:' +
                   '</p>' +
-                  '<div style="display:flex;flex-wrap:wrap;gap:10px;">' +
-                    '<div style="background:rgba(15,23,42,0.75);border:1.5px solid #FB923C;border-radius:12px;padding:10px 14px;font-size:0.92rem;font-weight:700;color:#FFFFFF;">📸 1. Foto + Monstruo en Gemini</div>' +
-                    '<div style="background:rgba(15,23,42,0.75);border:1.5px solid #38BDF8;border-radius:12px;padding:10px 14px;font-size:0.92rem;font-weight:700;color:#FFFFFF;">🖼️ 2. Polaroid en Canva (Impresa)</div>' +
-                    '<div style="background:rgba(15,23,42,0.75);border:1.5px solid #C084FC;border-radius:12px;padding:10px 14px;font-size:0.92rem;font-weight:700;color:#FFFFFF;">🎬 3. Video Animado en Flow</div>' +
-                  '</div>' +
                 '</div>' +
+              '</div>' +
+
+              // BARRA DE PESTAÑAS POR CLASE (1 PESTAÑA POR CLASE)
+              '<div class="hlw-class-tabs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:12px;">' +
+                '<button type="button" class="hlw-class-tab-btn active" data-hlw-class="1" data-active-bg="#EA580C" data-active-border="#FB923C" style="background:#EA580C;color:#FFFFFF;border:2px solid #FB923C;border-radius:14px;padding:13px 16px;font-size:1rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 16px rgba(234,88,12,0.35);transition:all 0.15s ease;">' +
+                  '<span>📸</span> <span>Clase 1: Foto + Gemini</span>' +
+                '</button>' +
+                '<button type="button" class="hlw-class-tab-btn" data-hlw-class="2" data-active-bg="#0284C7" data-active-border="#38BDF8" style="background:#1E293B;color:#CBD5E1;border:2px solid #334155;border-radius:14px;padding:13px 16px;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.15s ease;">' +
+                  '<span>🖼️</span> <span>Clase 2: Polaroid en Canva</span>' +
+                '</button>' +
+                '<button type="button" class="hlw-class-tab-btn" data-hlw-class="3" data-active-bg="#7C3AED" data-active-border="#A78BFA" style="background:#1E293B;color:#CBD5E1;border:2px solid #334155;border-radius:14px;padding:13px 16px;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.15s ease;">' +
+                  '<span>🎬</span> <span>Clase 3: Video en Flow</span>' +
+                '</button>' +
               '</div>' +
 
               '<div style="display:flex;flex-direction:column;gap:22px;">' +
 
                 // ETAPA 1: FOTO & GEMINI
-                '<div style="background:#1E293B;border-radius:18px;border-left:6px solid #F97316;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
+                '<div class="hlw-class-panel" data-hlw-class="1" style="display:block;background:#1E293B;border-radius:18px;border-left:6px solid #F97316;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
                   '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">' +
                     '<div style="display:flex;align-items:center;gap:14px;">' +
                       '<span style="background:#EA580C;color:#FFF;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0;">1</span>' +
@@ -8893,7 +8901,7 @@
                 '</div>' +
 
                 // ETAPA 2: CANVA POLAROID
-                '<div style="background:#1E293B;border-radius:18px;border-left:6px solid #06B6D4;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
+                '<div class="hlw-class-panel" data-hlw-class="2" style="display:none;background:#1E293B;border-radius:18px;border-left:6px solid #06B6D4;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
                   '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">' +
                     '<div style="display:flex;align-items:center;gap:14px;">' +
                       '<span style="background:#0891B2;color:#FFF;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0;">2</span>' +
@@ -8921,7 +8929,7 @@
                 '</div>' +
 
                 // ETAPA 3: FLOW & DRIVE
-                '<div style="background:#1E293B;border-radius:18px;border-left:6px solid #8B5CF6;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
+                '<div class="hlw-class-panel" data-hlw-class="3" style="display:none;background:#1E293B;border-radius:18px;border-left:6px solid #8B5CF6;padding:24px;border-top:1px solid #334155;border-right:1px solid #334155;border-bottom:1px solid #334155;box-shadow:0 6px 18px rgba(0,0,0,0.25);">' +
                   '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">' +
                     '<div style="display:flex;align-items:center;gap:14px;">' +
                       '<span style="background:#7C3AED;color:#FFF;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0;">3</span>' +
@@ -11387,6 +11395,34 @@
     modal.querySelectorAll('.apm-quick-tab-btn').forEach(function(btn){
       btn.onclick = function(){
         if (btn.dataset.targetTab) switchApmTab(btn.dataset.targetTab);
+      };
+    });
+
+    // Pestañas por clase dentro de Pasos del Proyecto (Halloween)
+    modal.querySelectorAll('.hlw-class-tab-btn').forEach(function(btn){
+      btn.onclick = function(){
+        if (window.sounds && window.sounds.playClick) window.sounds.playClick();
+        var targetClass = btn.dataset.hlwClass;
+        modal.querySelectorAll('.hlw-class-tab-btn').forEach(function(b){
+          var isSel = (b.dataset.hlwClass === targetClass);
+          b.classList.toggle('active', isSel);
+          if (isSel) {
+            b.style.background = b.dataset.activeBg || '#EA580C';
+            b.style.borderColor = b.dataset.activeBorder || '#FB923C';
+            b.style.color = '#FFFFFF';
+            b.style.fontWeight = '900';
+            b.style.boxShadow = '0 6px 16px rgba(0,0,0,0.35)';
+          } else {
+            b.style.background = '#1E293B';
+            b.style.borderColor = '#334155';
+            b.style.color = '#CBD5E1';
+            b.style.fontWeight = '800';
+            b.style.boxShadow = 'none';
+          }
+        });
+        modal.querySelectorAll('.hlw-class-panel').forEach(function(p){
+          p.style.display = (p.dataset.hlwClass === targetClass) ? 'block' : 'none';
+        });
       };
     });
 
