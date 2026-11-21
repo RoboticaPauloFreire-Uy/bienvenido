@@ -2603,6 +2603,7 @@
 
     var avatarEl = document.getElementById('mam-avatar');
     var authorEl = document.getElementById('mam-author');
+    var titleEl = document.getElementById('mam-title');
     var badgeEl = document.getElementById('mam-badge');
     var dateEl = document.getElementById('mam-date');
     var gradeEl = document.getElementById('mam-grade');
@@ -2615,7 +2616,12 @@
       avatarEl.src = esc(p.avatar || 'img/escudo_paulo_freire.png');
       avatarEl.alt = esc(p.autor || '');
     }
-    if (authorEl) authorEl.textContent = p.autor || '';
+    if (authorEl) authorEl.textContent = p.autor || 'Taller de Robótica';
+    if (titleEl) {
+      var mTitle = p.titulo || getPostDisplayTitle(p);
+      titleEl.textContent = mTitle;
+      titleEl.style.display = mTitle ? 'block' : 'none';
+    }
     if (badgeEl) {
       badgeEl.textContent = p.etiqueta || '';
       badgeEl.style.display = p.etiqueta ? 'inline-block' : 'none';
@@ -2663,13 +2669,13 @@
       var postUrl = getPostUrl(p.id);
       var shareText = p.autor + ': ' + (p.texto || '').substring(0, 110) + '...\n' + postUrl;
       actionsEl.innerHTML =
-        '<button type="button" class="hn-post-action-btn hn-post-share-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')" title="Compartir actividad">' +
+        '<button type="button" class="tl-film-btn is-primary" onclick="window.compartirPost(\'' + esc(p.id) + '\')" title="Compartir actividad">' +
           '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
         '</button>' +
-        '<button type="button" class="hn-post-action-btn hn-post-copy-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace al portapapeles">' +
-          '<i class="fas fa-link"></i> <span>Copiar</span>' +
+        '<button type="button" class="tl-film-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace al portapapeles">' +
+          '<i class="fas fa-link"></i> <span>Copiar enlace</span>' +
         '</button>' +
-        '<a class="hn-post-action-btn hn-post-wsp-btn" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '" title="Compartir por WhatsApp">' +
+        '<a class="tl-film-btn is-wsp" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '" title="Compartir por WhatsApp">' +
           '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
         '</a>';
     }

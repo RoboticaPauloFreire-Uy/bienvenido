@@ -935,47 +935,44 @@
     </div>
   </div>
 
-  <div id="muro-ampliado-modal" class="cpm-overlay" role="dialog" aria-modal="true" aria-labelledby="mam-author" aria-hidden="true">
-    <div class="cpm-dialog" role="document">
-      <article class="cpm-sheet">
-        <!-- Barra de herramientas superior -->
-        <div class="cpm-topbar">
-          <div class="cpm-topbar-left">
-            <span class="cpm-press-badge"><i class="fas fa-camera-retro"></i> ARCHIVO FOTOGRÁFICO & CRÓNICA DE AULA</span>
-            <span class="cpm-issue-tag">REGISTRO DEL TALLER</span>
+  <div id="muro-ampliado-modal" class="cpm-overlay" role="dialog" aria-modal="true" aria-labelledby="mam-title" aria-hidden="true">
+    <div class="mam-cinema-dialog" role="document">
+      <article class="mam-cinema-card">
+        <div class="tl-film-sprockets" aria-hidden="true"></div>
+        <div class="mam-cinema-topbar">
+          <div class="mam-topbar-left">
+            <span class="mam-cinema-badge"><i class="fas fa-film"></i> CINE DEL TALLER</span>
+            <span id="mam-grade" class="mam-pill-grade"></span>
+            <span id="mam-date" class="mam-pill-date"><i class="far fa-clock"></i></span>
+            <span id="mam-badge" class="mam-pill-tag"></span>
           </div>
-          <button type="button" class="cpm-close-btn" id="mam-close-btn" aria-label="Cerrar vista ampliada" title="Cerrar (Esc)">
+          <button type="button" class="mam-close-btn" id="mam-close-btn" aria-label="Cerrar vista ampliada" title="Cerrar (Esc)">
             <i class="fas fa-times"></i>
           </button>
         </div>
 
-        <div class="cpm-scroll-body">
-          <header class="hn-post-header" style="background:#FAF6EC; padding:12px 14px; border:1px solid #D4CBBB; border-radius:2px; margin-bottom:16px;">
-            <div class="hn-post-avatar-wrap">
-              <img id="mam-avatar" class="hn-post-avatar" src="" alt="">
-            </div>
-            <div class="hn-post-meta">
-              <div class="hn-post-author-row">
-                <span id="mam-author" class="hn-post-author" style="font-size:1.12rem;"></span>
-                <span class="hn-post-verified" title="Publicación verificada"><i class="fas fa-check-circle"></i></span>
-                <span id="mam-badge" class="hn-post-tag-badge"></span>
-              </div>
-              <div class="hn-post-sub-row">
-                <span id="mam-date" class="hn-post-date"><i class="far fa-clock"></i></span>
-                <span class="hn-post-dot">·</span>
-                <span id="mam-grade" class="hn-post-grade"></span>
+        <div class="mam-cinema-body">
+          <div class="mam-media-col">
+            <div id="mam-media" class="mam-media-frame"></div>
+          </div>
+          <div class="mam-story-col">
+            <div class="mam-author-row">
+              <img id="mam-avatar" class="mam-avatar" src="" alt="">
+              <div>
+                <div id="mam-author" class="mam-author-name"></div>
+                <span class="mam-author-sub">🤖 Historia compartida en el taller</span>
               </div>
             </div>
-          </header>
-
-          <div id="mam-media" class="hn-post-media" style="margin-bottom:16px; border:1px solid #2B2520;"></div>
-          <div id="mam-text" class="hn-post-text" style="font-size:1.02rem; line-height:1.7;"></div>
-          <div id="mam-tags" class="hn-post-tags" style="margin-top:14px;"></div>
+            <h3 id="mam-title" class="mam-story-title"></h3>
+            <div id="mam-text" class="mam-story-text"></div>
+            <div id="mam-tags" class="hn-post-tags tl-film-tags" style="margin-top:auto;"></div>
+          </div>
         </div>
 
-        <footer class="cpm-footer">
-          <div id="mam-actions" class="hn-post-actions-bar" style="width:100%; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;"></div>
+        <footer class="mam-cinema-footer">
+          <div id="mam-actions" class="mam-actions-bar"></div>
         </footer>
+        <div class="tl-film-sprockets" aria-hidden="true"></div>
       </article>
     </div>
   </div>
