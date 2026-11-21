@@ -3802,163 +3802,137 @@
     }
   }
 
-  /* ───────────── Tablero Interactivo de Inicio (Micro:bit + Curiosidades + Grados) ───────────── */
-  function initInteractiveBoard() {
-    /* 1. Mini micro:bit 5x5 interactiva */
-    var MB_PATTERNS = [
-      { label: '❤️ Corazón',      bits: '0101011111111110111000100' },
-      { label: '😊 Carita Feliz', bits: '0101001010000001000101110' },
-      { label: '🚀 Cohete',       bits: '0010001110011101101110101' },
-      { label: '🤖 Robot',        bits: '0010011111101011111101010' },
-      { label: '⭐ Estrella',     bits: '0010001110111110111010001' },
-      { label: '🎮 Gamer',        bits: '0111011111101011111110001' }
-    ];
-    var mbIdx = 0;
+  /* ───────────── Vitrina Visual Superior (4 Tarjetas con Foto) ───────────── */
+  var vitrinaClaseItem = null;
+  var vitrinaCasaItem = null;
 
-    function renderMbPattern(idx) {
-      var gridEl = document.getElementById('fb-mb-leds');
-      var lblEl = document.getElementById('fb-mb-label');
-      if (!gridEl) return;
-      var pat = MB_PATTERNS[idx] || MB_PATTERNS[0];
-      if (lblEl) lblEl.textContent = pat.label;
-      var html = '';
-      for (var i = 0; i < 25; i++) {
-        var on = pat.bits.charAt(i) === '1';
-        html += '<button type="button" class="fb-led-dot' + (on ? ' on' : '') + '" data-led-idx="' + i + '" aria-label="LED ' + (i + 1) + '"></button>';
+  function renderVitrinaTop() {
+    var grid = document.getElementById('hn-vitrina-grid');
+    if (!grid) return;
+
+    function formatGrados(item) {
+      if (!item) return 'Todo el colegio';
+      if (item.grados && item.grados.length && item.grados.indexOf('todos') === -1) {
+        return item.grados.map(nombreGrado).join(' · ');
       }
-      gridEl.innerHTML = html;
-      gridEl.querySelectorAll('.fb-led-dot').forEach(function (dot) {
-        dot.addEventListener('click', function () {
-          dot.classList.toggle('on');
-          if (lblEl) lblEl.textContent = '✨ ¡Tu propio dibujo!';
+      if (item.grado && item.grado !== 'todos') {
+        return nombreGrado(item.grado);
+      }
+      return 'Todos los grados';
+    }
+
+    var cardsHtml = [];
+
+    // 1. Última Noticia (Destacada o más reciente)
+    var notDest = noticias.filter(function (n) { return n.destacada; })[0] || noticias[0];
+    if (notDest) {
+      cardsHtml.push(
+        '<article class="fb-vitrina-card vitrina-news" data-noticia="' + esc(notDest.id) + '" tabindex="0" role="button" aria-label="Leer noticia: ' + esc(notDest.titulo) + '">' +
+          '<div class="fb-vitrina-media">' +
+            '<img src="' + esc(notDest.imagen || 'img/bienvenida_taller.jpg') + '" alt="' + esc(notDest.titulo) + '" loading="eager" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
+            '<span class="fb-vitrina-badge">📰 ¡NOTICIA!</span>' +
+          '</div>' +
+          '<div class="fb-vitrina-body">' +
+            '<span class="fb-vitrina-grade">🎓 ' + esc(nombreGrado(notDest.grado)) + '</span>' +
+            '<h3 class="fb-vitrina-card-title">' + esc(notDest.titulo) + '</h3>' +
+            '<span class="fb-vitrina-cta">🤖 ¡Leer en micro:bit!</span>' +
+          '</div>' +
+        '</article>'
+      );
+    }
+
+    // 2. Proyecto actual en Clase
+    var claseLista = (window._ULTIMA_LISTA_CLASE && window._ULTIMA_LISTA_CLASE.length)
+      ? window._ULTIMA_LISTA_CLASE.map(function (it) { return it.a; })
+      : (C.actividades || []).filter(function (a) { return seccionDe(a) === 'clase'; }).sort(function (x, y) {
+          return obtenerFechaActividad(y) - obtenerFechaActividad(x);
         });
-      });
+    vitrinaClaseItem = claseLista[0] || null;
+    if (vitrinaClaseItem) {
+      cardsHtml.push(
+        '<article class="fb-vitrina-card vitrina-clase" onclick="window.openVitrinaClase()" tabindex="0" role="button" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.openVitrinaClase();}" aria-label="Ver proyecto en clase: ' + esc(vitrinaClaseItem.titulo) + '">' +
+          '<div class="fb-vitrina-media">' +
+            '<img src="' + esc(vitrinaClaseItem.imagen || 'img/proyectos/halloween_ia_cover.jpg') + '" alt="' + esc(vitrinaClaseItem.titulo) + '" loading="eager" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
+            '<span class="fb-vitrina-badge">🔬 ¡EN CLASE!</span>' +
+          '</div>' +
+          '<div class="fb-vitrina-body">' +
+            '<span class="fb-vitrina-grade">🎓 ' + esc(formatGrados(vitrinaClaseItem)) + '</span>' +
+            '<h3 class="fb-vitrina-card-title">' + esc(vitrinaClaseItem.titulo) + '</h3>' +
+            '<span class="fb-vitrina-cta">⚡ ¡Ver Proyecto!</span>' +
+          '</div>' +
+        '</article>'
+      );
     }
 
-    window.fbMicrobitStep = function (dir) {
-      mbIdx = (mbIdx + (dir || 1) + MB_PATTERNS.length) % MB_PATTERNS.length;
-      renderMbPattern(mbIdx);
-    };
-
-    renderMbPattern(0);
-
-    /* 2. Trivia & Adivinanzas Maker */
-    var TRIVIAS = [
-      {
-        q: '🤔 ¿Cuántas lucecitas LED rojas tiene la pantalla de una placa micro:bit?',
-        a: '✨ ¡Tiene exactamente 25 LEDs en un cuadrado de 5×5 que podés programar para crear dibujos, animaciones y minijuegos!'
-      },
-      {
-        q: '🚀 Adiviná: Soy el bloque de programación que hace que una acción se repita muchas veces sin parar... ¿Cómo me llamo?',
-        a: '🔁 ¡El Bucle (o bloque "Repetir" / "Por siempre")! Sirve para que un robot camine o un personaje salte una y otra vez.'
-      },
-      {
-        q: '🕹️ ¿Sabías por qué a los fallos en un programa o videojuego les dicen "BUGS" (bichos)?',
-        a: '🦋 ¡Porque en 1947 encontraron una polilla de verdad metida adentro de una computadora gigante que trababa los cables!'
-      },
-      {
-        q: '🧊 Si imprimís un llavero o robot en 3D, ¿qué material se derrite capa por capa para darle forma?',
-        a: '🧵 ¡Un filamento plástico (como PLA hecho a base de maíz)! La impresora lo calienta y construye objetos reales desde cero.'
-      },
-      {
-        q: '🤖 ¿Qué pieza necesita un robot para "sentir" que está por chocar contra una pared sin tocarla?',
-        a: '🦇 ¡Un sensor de ultrasonido o distancia! Funciona parecido a los murciélagos enviando ondas que rebotan.'
-      },
-      {
-        q: '💎 ¿En qué famoso mundo hecho 100% de cubos podés programar robots y armar circuitos con Redstone?',
-        a: '⛏️ ¡Minecraft! Con Redstone podés inventar puertas secretas, ascensores y hasta máquinas calculadoras.'
-      }
-    ];
-    var triviaIdx = 0;
-
-    function renderTrivia() {
-      var qEl = document.getElementById('fb-trivia-q');
-      var aEl = document.getElementById('fb-trivia-a');
-      var btnEl = document.getElementById('fb-trivia-ans-btn');
-      var cntEl = document.getElementById('fb-trivia-count');
-      if (!qEl) return;
-      var item = TRIVIAS[triviaIdx] || TRIVIAS[0];
-      qEl.textContent = item.q;
-      if (cntEl) cntEl.textContent = (triviaIdx + 1) + ' / ' + TRIVIAS.length;
-      if (aEl) {
-        aEl.textContent = item.a;
-        aEl.style.display = 'none';
-      }
-      if (btnEl) btnEl.textContent = '👀 ¡Ver respuesta secreta!';
+    // 3. Misión Estrella en Casa
+    var casaOrden = (C.actividades || []).filter(function (a) { return seccionDe(a) === 'casa'; }).sort(function (x, y) {
+      return obtenerFechaActividad(y) - obtenerFechaActividad(x);
+    });
+    vitrinaCasaItem = casaOrden.filter(function (a) { return !!a.destacada; })[0] || casaOrden[0] || null;
+    if (vitrinaCasaItem) {
+      cardsHtml.push(
+        '<article class="fb-vitrina-card vitrina-casa" onclick="window.openVitrinaCasa()" tabindex="0" role="button" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.openVitrinaCasa();}" aria-label="Abrir misión en casa: ' + esc(vitrinaCasaItem.titulo) + '">' +
+          '<div class="fb-vitrina-media">' +
+            '<img src="' + esc(vitrinaCasaItem.imagen || 'img/bienvenida_taller.jpg') + '" alt="' + esc(vitrinaCasaItem.titulo) + '" loading="eager" onerror="this.src=\'img/bienvenida_taller.jpg\'">' +
+            '<span class="fb-vitrina-badge">🏠 ¡EN CASA!</span>' +
+          '</div>' +
+          '<div class="fb-vitrina-body">' +
+            '<span class="fb-vitrina-grade">🎓 ' + esc(formatGrados(vitrinaCasaItem)) + '</span>' +
+            '<h3 class="fb-vitrina-card-title">' + esc(vitrinaCasaItem.titulo) + '</h3>' +
+            '<span class="fb-vitrina-cta">🌟 ¡Abrir Misión!</span>' +
+          '</div>' +
+        '</article>'
+      );
     }
 
-    window.fbToggleTriviaAns = function () {
-      var aEl = document.getElementById('fb-trivia-a');
-      var btnEl = document.getElementById('fb-trivia-ans-btn');
-      if (!aEl || !btnEl) return;
-      var open = aEl.style.display !== 'none';
-      if (open) {
-        aEl.style.display = 'none';
-        btnEl.textContent = '👀 ¡Ver respuesta secreta!';
-      } else {
-        aEl.style.display = 'block';
-        btnEl.textContent = '🙈 Ocultar respuesta';
-      }
-    };
-
-    window.fbNextTrivia = function () {
-      triviaIdx = (triviaIdx + 1) % TRIVIAS.length;
-      renderTrivia();
-    };
-
-    renderTrivia();
-
-    /* 3. Selector rápido de grado */
-    var fbSelectedGrade = '';
-
-    window.fbSelectGrade = function (gradeId) {
-      var normId = normalizarGrado(gradeId || '');
-      if (!normId || normId === 'todos') return;
-      fbSelectedGrade = normId;
-
-      document.querySelectorAll('.fb-grade-pill[data-fb-grade]').forEach(function (btn) {
-        btn.classList.toggle('active', normalizarGrado(btn.getAttribute('data-fb-grade')) === fbSelectedGrade);
-      });
-
-      if (typeof renderValijaMaker === 'function') {
-        renderValijaMaker(fbSelectedGrade);
-      }
-
-      var bar = document.getElementById('fb-grade-action-bar');
-      if (bar) {
-        bar.innerHTML =
-          '<span class="fb-grade-picked">✅ <strong>' + esc(nombreGrado(fbSelectedGrade)) + '</strong></span>' +
-          '<div class="fb-grade-quick-btns">' +
-            '<button type="button" class="fb-grade-go-btn go-juegos" onclick="window.fbGoGradeJuegos()">🕹️ Juegos</button>' +
-            '<button type="button" class="fb-grade-go-btn go-mochila" onclick="window.fbGoGradeMochila()">🎒 Mochila</button>' +
-          '</div>';
-      }
-    };
-
-    window.fbGoGradeJuegos = function () {
-      var target = fbSelectedGrade || 'todos';
-      switchView('juegos');
-      if (typeof seleccionarGrupoJuegos === 'function') {
-        seleccionarGrupoJuegos(target, false);
-      }
-    };
-
-    window.fbGoGradeMochila = function () {
-      var target = fbSelectedGrade || 'todos';
-      if (typeof renderValijaMaker === 'function') {
-        renderValijaMaker(target);
-      }
-      var box = document.getElementById('hn-valija-box');
-      if (box && box.scrollIntoView) {
-        box.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    };
-
-    var stInit = alumno();
-    if (stInit && stInit.gradeId) {
-      window.fbSelectGrade(stInit.gradeId);
+    // 4. Último Video de El Muro (o publicación más reciente)
+    var muroOrden = (C.muro || []).slice().sort(function (a, b) {
+      var ta = a._time || (parseFecha(a.fecha) ? parseFecha(a.fecha).getTime() : 0);
+      var tb = b._time || (parseFecha(b.fecha) ? parseFecha(b.fecha).getTime() : 0);
+      return tb - ta;
+    });
+    var muroVideo = muroOrden.filter(function (p) {
+      return (p.video && p.video.url) || (p.tipoMedia === 'video' && p.mediaUrl) || (p.mediaUrl && p.mediaUrl.indexOf('youtu') !== -1);
+    })[0] || muroOrden[0];
+    if (muroVideo) {
+      var thumbInfo = extractPostThumbnail(muroVideo);
+      var muroTitulo = getPostDisplayTitle(muroVideo);
+      var muroGrado = getPostGradeDisplay(muroVideo);
+      var hasVid = (thumbInfo.badge === '🎬');
+      cardsHtml.push(
+        '<article class="fb-vitrina-card vitrina-muro" onclick="window.abrirModalPostMuro(\'' + esc(muroVideo.id) + '\')" tabindex="0" role="button" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.abrirModalPostMuro(\'' + esc(muroVideo.id) + '\');}" aria-label="Ver en El Muro: ' + esc(muroTitulo) + '">' +
+          '<div class="fb-vitrina-media">' +
+            '<img src="' + esc(thumbInfo.url) + '" alt="' + esc(muroTitulo) + '" loading="eager" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
+            (hasVid ? '<span class="fb-vitrina-play" aria-hidden="true">▶</span>' : '') +
+            '<span class="fb-vitrina-badge">🎬 ¡EL MURO!</span>' +
+          '</div>' +
+          '<div class="fb-vitrina-body">' +
+            '<span class="fb-vitrina-grade">🎓 ' + esc(muroGrado) + '</span>' +
+            '<h3 class="fb-vitrina-card-title">' + esc(muroTitulo) + '</h3>' +
+            '<span class="fb-vitrina-cta">' + (hasVid ? '🍿 ¡Mirar Video!' : '📸 ¡Ver en El Muro!') + '</span>' +
+          '</div>' +
+        '</article>'
+      );
     }
+
+    grid.innerHTML = cardsHtml.join('');
   }
+
+  window.openVitrinaClase = function () {
+    if (vitrinaClaseItem && typeof abrirModalClasePeriodico === 'function') {
+      abrirModalClasePeriodico(vitrinaClaseItem, { a: vitrinaClaseItem, estado: estadoActividad(vitrinaClaseItem) });
+    } else {
+      switchView('clase');
+    }
+  };
+
+  window.openVitrinaCasa = function () {
+    if (vitrinaCasaItem && typeof openCasaDetailModal === 'function') {
+      openCasaDetailModal(vitrinaCasaItem);
+    } else {
+      switchView('casa');
+    }
+  };
 
   /* ───────────── Arranque ───────────── */
   function init() {
@@ -3975,7 +3949,7 @@
     renderMuro();
     renderAgenda();
     renderValijaMaker();
-    initInteractiveBoard();
+    renderVitrinaTop();
     initHerramientas();
     initReader();
     initClasePeriodicoModal();
@@ -3995,10 +3969,10 @@
           if (sel) sel.value = st.gradeId;
         });
         seleccionarGrupoJuegos(st.gradeId, false);
-        if (typeof window.fbSelectGrade === 'function') window.fbSelectGrade(st.gradeId);
       }
       renderActividades();
       renderJuegos();
+      renderVitrinaTop();
       if (st && st.gradeId) { filtroGradoValija = st.gradeId; renderValijaMaker(st.gradeId); }
       if (window.renderGDriveDashboard && st && document.getElementById('student-drive-dashboard-container')) {
         window.renderGDriveDashboard('student-drive-dashboard-container');
@@ -4126,6 +4100,7 @@
       renderActividades();
       renderMasthead();
       renderAgenda();
+      renderVitrinaTop();
 
       if (typeof window.renderGDriveDashboard === 'function' && document.getElementById('student-drive-dashboard-container')) {
         window.renderGDriveDashboard('student-drive-dashboard-container');
@@ -4243,6 +4218,7 @@
       renderActividades();
       renderMasthead();
       renderAgenda();
+      renderVitrinaTop();
     }
 
     // Aplicar inmediatamente con base + overrides locales si existen
@@ -4348,6 +4324,7 @@
       renderDestacada();
       renderFiltrosNoticias();
       renderNoticias();
+      renderVitrinaTop();
     }
 
     applyNewsMerge([], []);
@@ -4469,6 +4446,7 @@
           }
           renderFiltrosMuro();
           renderMuro();
+          renderVitrinaTop();
         }, function (err) {
           console.warn('Sync posts notice:', err);
         });
