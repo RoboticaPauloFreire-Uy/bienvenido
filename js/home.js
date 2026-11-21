@@ -1364,12 +1364,30 @@
     if (!d || !d.grades) return [];
     var baseGrades = d.grades;
     var remote = window._customRemoteGames || [];
-    if (!remote.length) return baseGrades;
+
+    // Juegos base marcados para 'todos' los grados
+    var sharedBase = [];
+    var seenShared = {};
+    baseGrades.forEach(function (bgGrade) {
+      (bgGrade.games || []).forEach(function (gm) {
+        if (gm && Array.isArray(gm.grades) && gm.grades.indexOf('todos') !== -1) {
+          if (gm.id && seenShared[gm.id]) return;
+          if (gm.id) seenShared[gm.id] = true;
+          sharedBase.push(gm);
+        }
+      });
+    });
 
     return baseGrades.map(function (g) {
       var cloned = Object.assign({}, g);
       var gradeBaseGames = (g.games || []).slice();
       var normG = normalizarGrado(g.id);
+
+      sharedBase.forEach(function (sg) {
+        if (!gradeBaseGames.some(function (x) { return x && x.id === sg.id; })) {
+          gradeBaseGames.push(sg);
+        }
+      });
 
       // Filtrar los juegos remotos que correspondan a este grado o a todos
       var matchingRemote = remote.filter(function (rg) {

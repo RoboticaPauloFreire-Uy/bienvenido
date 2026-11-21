@@ -2125,7 +2125,7 @@ const SCHOOL_DATA = {
           description: "Programá a Steve y Alex para explorar arrecifes submarinos, encontrar tesoros y construir con bucles en el océano de Minecraft.",
           benefits: "Desarrolla el pensamiento algorítmico y la descomposición de problemas en un entorno de juego sumamente motivador.",
           tags: ["Code.org", "Minecraft", "Acuático", "Bucles"],
-          grades: ["grado3", "grado4", "grado5", "grado6"]
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
         },
         {
           id: "g-minecraft-hero",
@@ -2136,7 +2136,7 @@ const SCHOOL_DATA = {
           description: "¡Aventura de programación con Minecraft! Guiá al Agente robot con bloques y funciones para abrir caminos, superar trampas y ayudar a Alex o Steve en su misión.",
           benefits: "Introduce el uso de funciones, bucles, lógica condicional y planificación espacial guiando a un agente programable.",
           tags: ["Code.org", "Minecraft", "Agente", "Funciones", "Bucles"],
-          grades: ["grado2", "grado3", "grado4", "grado5", "grado6"]
+          grades: ["todos", "sala5", "grado1", "grado2", "grado3", "grado4", "grado5", "grado6"]
         },
                 {
           id: "g3-g4",
