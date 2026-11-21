@@ -42446,3 +42446,87 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   border-color: rgba(16, 185, 129, 0.45);
   color: #6EE7B7 !important;
 }
+
+/* ── Índice de Registros por Año y Meses (Opción 2) ── */
+.muro-idx-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.muro-idx-year-btn {
+  background: #F1F5F9;
+  color: #334155;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 10px;
+  padding: 5px 11px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.muro-idx-year-btn span,
+.muro-idx-month-btn span {
+  background: rgba(15, 23, 42, 0.1);
+  border-radius: 999px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+}
+
+.muro-idx-year-btn.active {
+  background: #1E1B4B;
+  color: #FFFFFF;
+  border-color: #312E81;
+}
+
+.muro-idx-year-btn.active span,
+.muro-idx-month-btn.active span {
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+}
+
+.muro-idx-months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #CBD5E1;
+}
+
+.muro-idx-month-btn {
+  background: #FFFFFF;
+  color: #475569;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.muro-idx-month-btn:hover {
+  border-color: #3B82F6;
+  color: #1D4ED8;
+}
+
+.muro-idx-month-btn.active {
+  background: #2563EB;
+  color: #FFFFFF;
+  border-color: #2563EB;
+}
+
+.muro-idx-items-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

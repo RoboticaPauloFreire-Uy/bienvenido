@@ -2171,6 +2171,9 @@
     return 'Todo el Colegio';
   }
 
+  var muroIdxSelectedYear = null;
+  var muroIdxSelectedMonth = 'all';
+
   function renderMuroIndex(posts) {
     var listEl = document.getElementById('hn-muro-index-list');
     var countEl = document.getElementById('hn-muro-index-count');
@@ -2183,7 +2186,67 @@
       return;
     }
 
-    listEl.innerHTML = posts.map(function (p) {
+    var MESES_CORTO = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    var byYear = {};
+    var yearsOrder = [];
+
+    posts.forEach(function (p) {
+      var fObj = parseFecha(p.fecha) || (p._time ? new Date(p._time) : null);
+      var y = fObj ? String(fObj.getFullYear()) : 'Varios';
+      var m = fObj ? fObj.getMonth() : -1;
+      if (!byYear[y]) {
+        byYear[y] = { total: 0, months: {}, monthsOrder: [], posts: [] };
+        yearsOrder.push(y);
+      }
+      byYear[y].total++;
+      byYear[y].posts.push({ post: p, month: m });
+      if (m >= 0) {
+        if (!byYear[y].months[m]) {
+          byYear[y].months[m] = 0;
+          byYear[y].monthsOrder.push(m);
+        }
+        byYear[y].months[m]++;
+      }
+    });
+
+    if (!muroIdxSelectedYear || !byYear[muroIdxSelectedYear]) {
+      muroIdxSelectedYear = yearsOrder[0];
+      muroIdxSelectedMonth = 'all';
+    }
+
+    var yearData = byYear[muroIdxSelectedYear];
+    if (muroIdxSelectedMonth !== 'all' && !yearData.months[muroIdxSelectedMonth]) {
+      muroIdxSelectedMonth = 'all';
+    }
+
+    var yearsHtml =
+      '<div class="muro-idx-years">' +
+        yearsOrder.map(function (y) {
+          var activeCls = (y === muroIdxSelectedYear) ? ' active' : '';
+          return '<button type="button" class="muro-idx-year-btn' + activeCls + '" data-idx-year="' + esc(y) + '">' +
+            '<i class="far fa-calendar"></i> ' + esc(y) + ' <span>' + byYear[y].total + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+
+    var monthsHtml =
+      '<div class="muro-idx-months">' +
+        '<button type="button" class="muro-idx-month-btn' + (muroIdxSelectedMonth === 'all' ? ' active' : '') + '" data-idx-month="all">' +
+          '🎞️ Todos <span>' + yearData.total + '</span>' +
+        '</button>' +
+        yearData.monthsOrder.map(function (m) {
+          var isAct = String(muroIdxSelectedMonth) === String(m);
+          return '<button type="button" class="muro-idx-month-btn' + (isAct ? ' active' : '') + '" data-idx-month="' + m + '">' +
+            MESES_CORTO[m] + ' <span>' + yearData.months[m] + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+
+    var visiblePosts = yearData.posts.filter(function (entry) {
+      return muroIdxSelectedMonth === 'all' || String(entry.month) === String(muroIdxSelectedMonth);
+    }).map(function (entry) { return entry.post; });
+
+    var itemsHtml = visiblePosts.map(function (p) {
       var thumb = extractPostThumbnail(p);
       var title = getPostDisplayTitle(p);
       var grade = getPostGradeDisplay(p);
@@ -2201,6 +2264,30 @@
         '</div>'
       );
     }).join('');
+
+    listEl.innerHTML = yearsHtml + monthsHtml + '<div class="muro-idx-items-wrap">' + itemsHtml + '</div>';
+
+    listEl.querySelectorAll('.muro-idx-year-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        muroIdxSelectedYear = btn.dataset.idxYear;
+        muroIdxSelectedMonth = 'all';
+        renderMuroIndex(posts);
+      });
+    });
+
+    listEl.querySelectorAll('.muro-idx-month-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        muroIdxSelectedMonth = btn.dataset.idxMonth;
+        renderMuroIndex(posts);
+        if (muroIdxSelectedMonth !== 'all') {
+          var markerEl = document.getElementById('tl-month-' + muroIdxSelectedYear + '-' + muroIdxSelectedMonth);
+          if (markerEl) {
+            var rect = markerEl.getBoundingClientRect();
+            window.scrollTo({ top: window.pageYOffset + rect.top - 84, behavior: 'smooth' });
+          }
+        }
+      });
+    });
   }
 
   window.jumpToPost = function (postId) {
@@ -2352,11 +2439,12 @@
       // Separador de Mes/Año en la Línea de Tiempo
       var fObj = parseFecha(p.fecha) || (p._time ? new Date(p._time) : null);
       var monthKey = fObj ? (MESES_TL[fObj.getMonth()] + ' ' + fObj.getFullYear()) : 'Recuerdos del Taller';
+      var monthMarkerId = fObj ? ('tl-month-' + fObj.getFullYear() + '-' + fObj.getMonth()) : '';
       var monthMarkerHtml = '';
       if (monthKey !== lastMonthKey) {
         lastMonthKey = monthKey;
         monthMarkerHtml =
-          '<div class="tl-month-marker">' +
+          '<div class="tl-month-marker"' + (monthMarkerId ? ' id="' + monthMarkerId + '"' : '') + '>' +
             '<span class="tl-month-pill"><i class="far fa-calendar-alt"></i> ' + esc(monthKey) + '</span>' +
           '</div>';
       }
