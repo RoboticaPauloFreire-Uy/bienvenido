@@ -4067,6 +4067,10 @@
               deletedMap[doc.id] = true;
               return;
             }
+            if (/coding town:\s*¡?constru[ií] tu propia ciudad/i.test(d.title || '')) {
+              deletedMap[doc.id] = true;
+              return;
+            }
             remoteGames.push({
               id: doc.id,
               title: d.title || '',
