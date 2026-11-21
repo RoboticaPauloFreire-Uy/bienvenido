@@ -1433,18 +1433,32 @@
     }
   }
 
+  function getGameUniqueKey(gm) {
+    if (!gm) return '';
+    var titleKey = (gm.title || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    var urlKey = (gm.externalUrl || gm.scratchId || '').toString().toLowerCase().trim();
+    if (titleKey) return 't:' + titleKey + '|' + urlKey;
+    return gm.id ? 'id:' + gm.id : '';
+  }
+
   function renderFiltrosJuegos() {
     var grades = getGradesConJuegos();
     var tabsCont = document.getElementById('hn-juegos-grade-tabs');
     if (!tabsCont || !grades.length) return;
 
     var seenTotalIds = {};
+    var seenTotalKeys = {};
     var totalJuegos = 0;
     grades.forEach(function (g) {
       (g.games || []).forEach(function (gm) {
         if (gm.id) {
           if (seenTotalIds[gm.id]) return;
           seenTotalIds[gm.id] = true;
+        }
+        var uKey = getGameUniqueKey(gm);
+        if (uKey) {
+          if (seenTotalKeys[uKey]) return;
+          seenTotalKeys[uKey] = true;
         }
         totalJuegos++;
       });
@@ -1531,11 +1545,19 @@
 
     var items = [];
     var seenGameIds = {};
+    var seenGameKeys = {};
     listaGrados.forEach(function (g) {
       (g.games || []).forEach(function (gm) {
-        if (filtroGrupoJuegos === 'todos' && gm.id) {
-          if (seenGameIds[gm.id]) return;
-          seenGameIds[gm.id] = true;
+        if (filtroGrupoJuegos === 'todos') {
+          if (gm.id) {
+            if (seenGameIds[gm.id]) return;
+            seenGameIds[gm.id] = true;
+          }
+          var uKey = getGameUniqueKey(gm);
+          if (uKey) {
+            if (seenGameKeys[uKey]) return;
+            seenGameKeys[uKey] = true;
+          }
         }
         items.push({ game: gm, grade: g });
       });
