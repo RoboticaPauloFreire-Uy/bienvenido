@@ -5199,17 +5199,17 @@
             '<span class="pf-game-rdp-plat">' + pm.icon + ' ' + escapeRadialHtml(pm.label) + '</span>' +
             '<span class="pf-game-rdp-playbadge"><i class="fas fa-play"></i> ¡Jugar!</span>' +
           '</a>' +
-          '<div class="pf-rdp-top" style="margin-top:12px;">' +
-            '<div>' +
+          '<div class="pf-rdp-top" style="margin-top:12px;flex-direction:column;align-items:flex-start;gap:8px;">' +
+            '<div class="pf-rdp-nav-btns" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+              (gradeGames.length > 1
+                ? '<button type="button" class="pf-rdp-step-btn" id="pf-g-prev" title="Juego anterior" ' + (hasPrevG ? '' : 'disabled') + '><i class="fas fa-chevron-left"></i></button>'
+                : '') +
               '<span class="pf-rdp-kicker">🎮 Juego ' + (radialGameIdx + 1) + ' de ' + gradeGames.length + '</span>' +
-              '<h4 class="pf-rdp-title" style="margin-top:6px;">' + escapeRadialHtml(selectedGame.title || 'Desafío') + '</h4>' +
+              (gradeGames.length > 1
+                ? '<button type="button" class="pf-rdp-step-btn" id="pf-g-next" title="Juego siguiente" ' + (hasNextG ? '' : 'disabled') + '><i class="fas fa-chevron-right"></i></button>'
+                : '') +
             '</div>' +
-            (gradeGames.length > 1
-              ? '<div class="pf-rdp-nav-btns">' +
-                  '<button type="button" class="pf-rdp-step-btn" id="pf-g-prev" ' + (hasPrevG ? '' : 'disabled') + '><i class="fas fa-chevron-left"></i></button>' +
-                  '<button type="button" class="pf-rdp-step-btn" id="pf-g-next" ' + (hasNextG ? '' : 'disabled') + '><i class="fas fa-chevron-right"></i></button>' +
-                '</div>'
-              : '') +
+            '<h4 class="pf-rdp-title" style="margin-top:2px;">' + escapeRadialHtml(selectedGame.title || 'Desafío') + '</h4>' +
           '</div>' +
           bodyHtml +
           tagsHtml +
