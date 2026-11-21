@@ -40403,6 +40403,9 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   font-weight: 900;
   color: #FFFFFF;
   line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .arcade-screen-desc {
@@ -40410,6 +40413,7 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
   font-size: 0.96rem;
   color: #CBD5E1;
   line-height: 1.45;
+  height: 2.9em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

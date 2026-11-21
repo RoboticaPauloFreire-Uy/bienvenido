@@ -1549,6 +1549,7 @@
       elGrade.style.background = m.gradePillBg;
       elGrade.textContent = m.gradePillText;
       elTitle.textContent = m.gm.title || 'Juego';
+      elTitle.title = m.gm.title || 'Juego';
       elDesc.textContent = m.gm.description || '¡Divertite jugando y aprendiendo en el taller!';
       elPlay.href = m.url;
       if (m.ext) {
