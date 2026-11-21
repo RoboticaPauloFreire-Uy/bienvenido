@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>El Diario del Taller — Colegio Paulo Freire</title>
+  <title>Taller de Robótica y Programación — Colegio Paulo Freire</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css?v=155">
+  <link rel="stylesheet" href="css/style.css?v=156">
   <link rel="stylesheet" href="css/games.css?v=95">
   <link rel="stylesheet" href="css/home.css?v=40">
   <link rel="stylesheet" href="css/themes.css?v=30anios">
@@ -88,7 +88,7 @@
   <!-- ══════════════════════════════════════════════
        TOPBAR & NAVEGACIÓN HORIZONTAL
   ══════════════════════════════════════════════ -->
-  <header class="topbar">
+  <header class="topbar fb-kids-topbar">
     <div class="topbar-inner">
 
       <!-- Brand / Logo -->
@@ -96,49 +96,48 @@
         <img src="img/escudo_paulo_freire.png?v=2" alt="Escudo Colegio Paulo Freire" class="topbar-shield-logo">
         <div class="topbar-name">
           <span class="topbar-school">Colegio Paulo Freire</span>
-          <span class="topbar-sub"><i class="fas fa-newspaper"></i> El Diario del Taller</span>
+          <span class="topbar-sub">🤖 Taller de Robótica</span>
         </div>
       </a>
 
       <!-- Menú Horizontal Principal -->
       <nav class="topbar-nav" id="topbar-nav">
         <a href="#inicio" class="topbar-nav-link active" data-view="inicio" onclick="window.switchView('inicio'); return false;">
-          <i class="fas fa-home"></i>
+          <span class="tb-nav-emoji">🏠</span>
           <span>Inicio</span>
         </a>
         <a href="#noticias" class="topbar-nav-link" data-view="noticias" onclick="window.switchView('noticias'); return false;">
-          <i class="fas fa-newspaper"></i>
+          <span class="tb-nav-emoji">📰</span>
           <span>Noticias</span>
         </a>
         <a href="#clase" class="topbar-nav-link" data-view="clase" onclick="window.switchView('clase'); return false;">
-          <i class="fas fa-chalkboard-teacher"></i>
+          <span class="tb-nav-emoji">🔬</span>
           <span>Clase</span>
         </a>
         <a href="#casa" class="topbar-nav-link" data-view="casa" onclick="window.switchView('casa'); return false;">
-          <i class="fas fa-laptop-house"></i>
+          <span class="tb-nav-emoji">🏡</span>
           <span>Casa</span>
         </a>
         <a href="#juegos" class="topbar-nav-link" data-view="juegos" onclick="window.switchView('juegos'); return false;">
-          <i class="fas fa-gamepad"></i>
+          <span class="tb-nav-emoji">🕹️</span>
           <span>Juegos</span>
         </a>
         <a href="#muro" class="topbar-nav-link" data-view="muro" onclick="window.switchView('muro'); return false;">
-          <i class="fas fa-photo-video"></i>
+          <span class="tb-nav-emoji">🎬</span>
           <span>Muro</span>
         </a>
         <a href="#agenda" class="topbar-nav-link" data-view="agenda" onclick="window.switchView('agenda'); return false;">
-          <i class="fas fa-calendar-day"></i>
+          <span class="tb-nav-emoji">📅</span>
           <span>Agenda</span>
         </a>
       </nav>
 
-      <!-- Right Side (Student Login + Year + Mobile Hamburger) -->
+      <!-- Right Side (Student Login + Mobile Hamburger) -->
       <div class="topbar-right">
         <button id="student-login-btn" class="topbar-student-pill logged-out" onclick="if(window.openLoginModal) window.openLoginModal()">
           <i class="fas fa-id-badge"></i>
           <span>Ingreso Alumnos</span>
         </button>
-        <span class="topbar-year"><i class="fas fa-calendar-alt"></i> Edición 2026</span>
         <button class="topbar-mobile-btn" id="mobile-menu-btn" aria-label="Abrir menú">
           <i class="fas fa-bars"></i>
         </button>

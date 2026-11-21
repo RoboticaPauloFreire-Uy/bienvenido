@@ -44108,3 +44108,217 @@ body.student-logged-in.in-class-video #student-drive-dashboard-container {
     height: 190px;
   }
 }
+
+/* ═════════════════════════════════════════════════════════════
+   MENÚ SUPERIOR LUMINOSO CON PÍLDORAS 3D (A TONO CON PORTADA KIDS)
+   ═════════════════════════════════════════════════════════════ */
+
+[data-theme] header.topbar.fb-kids-topbar,
+header.topbar.fb-kids-topbar {
+  background: linear-gradient(90deg, #F0F9FF 0%, #FFFFFF 50%, #FFFBEB 100%) !important;
+  border-bottom: 3px solid #60A5FA !important;
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.12) !important;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-brand .topbar-shield-logo,
+header.topbar.fb-kids-topbar .topbar-brand .topbar-shield-logo {
+  background: #FFFFFF !important;
+  padding: 3px !important;
+  border-radius: 12px !important;
+  border: 2px solid #FBBF24 !important;
+  box-shadow: 0 3px 0 #D97706 !important;
+  filter: none !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-school,
+header.topbar.fb-kids-topbar .topbar-school {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+  font-weight: 900 !important;
+  color: #0F172A !important;
+  text-shadow: none !important;
+  letter-spacing: -0.01em !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-sub,
+header.topbar.fb-kids-topbar .topbar-sub {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  color: #2563EB !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav,
+header.topbar.fb-kids-topbar .topbar-nav {
+  gap: 7px !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link,
+header.topbar.fb-kids-topbar .topbar-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  padding: 6px 13px !important;
+  border-radius: 999px !important;
+  background: #FFFFFF !important;
+  color: #334155 !important;
+  border: 2px solid #CBD5E1 !important;
+  box-shadow: 0 3px 0 #CBD5E1 !important;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, border-color 0.14s ease, color 0.14s ease !important;
+}
+
+header.topbar.fb-kids-topbar .tb-nav-emoji {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link:hover,
+header.topbar.fb-kids-topbar .topbar-nav-link:hover {
+  transform: translateY(-2px) !important;
+  color: #0F172A !important;
+  background: #F8FAFC !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link:active,
+header.topbar.fb-kids-topbar .topbar-nav-link:active {
+  transform: translateY(1px) !important;
+}
+
+/* Colores personalizados por sección (activo y hover) */
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link[data-view="inicio"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="inicio"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="inicio"]:hover {
+  background: #2563EB !important;
+  color: #FFFFFF !important;
+  border-color: #1D4ED8 !important;
+  box-shadow: 0 3px 0 #1E3A8A !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link[data-view="noticias"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="noticias"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="noticias"]:hover {
+  background: #E11D48 !important;
+  color: #FFFFFF !important;
+  border-color: #BE123C !important;
+  box-shadow: 0 3px 0 #9F1239 !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link[data-view="clase"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="clase"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="clase"]:hover {
+  background: #0284C7 !important;
+  color: #FFFFFF !important;
+  border-color: #0369A1 !important;
+  box-shadow: 0 3px 0 #075985 !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link[data-view="casa"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="casa"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="casa"]:hover {
+  background: #D97706 !important;
+  color: #FFFFFF !important;
+  border-color: #B45309 !important;
+  box-shadow: 0 3px 0 #92400E !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link[data-view="juegos"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="juegos"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="juegos"]:hover {
+  background: #9333EA !important;
+  color: #FFFFFF !important;
+  border-color: #7E22CE !important;
+  box-shadow: 0 3px 0 #581C87 !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link[data-view="muro"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="muro"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="muro"]:hover {
+  background: #059669 !important;
+  color: #FFFFFF !important;
+  border-color: #047857 !important;
+  box-shadow: 0 3px 0 #065F46 !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar .topbar-nav-link[data-view="agenda"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="agenda"].active,
+header.topbar.fb-kids-topbar .topbar-nav-link[data-view="agenda"]:hover {
+  background: #0891B2 !important;
+  color: #FFFFFF !important;
+  border-color: #0E7490 !important;
+  box-shadow: 0 3px 0 #155E75 !important;
+}
+
+/* Botón Ingreso Alumnos en cápsula 3D */
+[data-theme] header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-out,
+header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-out {
+  background: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%) !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FDE047 !important;
+  border-radius: 999px !important;
+  box-shadow: 0 3px 0 #B45309 !important;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  padding: 6px 14px !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-out:hover,
+header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-out:hover {
+  background: linear-gradient(135deg, #FB923C 0%, #EA580C 100%) !important;
+  color: #FFFFFF !important;
+  border-color: #FEF08A !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 0 #B45309 !important;
+}
+
+[data-theme] header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-in,
+header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-in {
+  background: #ECFDF5 !important;
+  border: 2px solid #34D399 !important;
+  color: #0F172A !important;
+  border-radius: 999px !important;
+  box-shadow: 0 3px 0 #059669 !important;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  padding: 4px 12px !important;
+}
+
+header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-in .sp-name {
+  color: #065F46 !important;
+  font-weight: 900 !important;
+}
+
+header.topbar.fb-kids-topbar #student-login-btn.topbar-student-pill.logged-in .sp-grade {
+  color: #047857 !important;
+  font-weight: 700 !important;
+}
+
+/* Botón y panel móvil en estilo luminoso */
+[data-theme] header.topbar.fb-kids-topbar .topbar-mobile-btn,
+header.topbar.fb-kids-topbar .topbar-mobile-btn {
+  background: #EFF6FF !important;
+  border: 2px solid #60A5FA !important;
+  color: #1E3A8A !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 0 #3B82F6 !important;
+}
+
+@media (max-width: 860px) {
+  [data-theme] header.topbar.fb-kids-topbar .topbar-nav.mobile-open,
+  header.topbar.fb-kids-topbar .topbar-nav.mobile-open {
+    background: #FFFFFF !important;
+    border-top: 2px solid #BFDBFE !important;
+    border-bottom: 3px solid #60A5FA !important;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16) !important;
+    padding: 12px !important;
+  }
+}
