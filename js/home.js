@@ -4651,4 +4651,52 @@
     });
     renderMuro();
   };
+
+  /* ───────────── Festejo 30 Años: Lluvia de Confeti Interactiva ───────────── */
+  var aniv30CheerIdx = 0;
+  var aniv30Cheers = [
+    '🥳 ¡Feliz cumple Nº 30, Colegio Paulo Freire!',
+    '🎂 ¡30 años soñando, jugando y creando inventos!',
+    '🤖 ¡Viva el Taller de Robótica y nuestros inventores!',
+    '🎈 ¡1996 – 2026! ¡Que sigan las aventuras maker!'
+  ];
+
+  window.lanzarFestejo30Anios = function () {
+    var emojis = ['🎉', '🎂', '🎈', '⭐', '👑', '🤖', '✨'];
+    var colors = ['#F59E0B', '#10B981', '#2563EB', '#EC4899', '#FACC15', '#8B5CF6'];
+    var layer = document.createElement('div');
+    layer.className = 'fb-confetti-layer';
+    layer.setAttribute('aria-hidden', 'true');
+
+    for (var i = 0; i < 36; i++) {
+      var piece = document.createElement('span');
+      var isEmoji = (i % 2 === 0);
+      piece.className = 'fb-confetti-piece ' + (isEmoji ? 'is-emoji' : 'is-ribbon');
+      if (isEmoji) {
+        piece.textContent = emojis[i % emojis.length];
+      } else {
+        piece.style.background = colors[i % colors.length];
+      }
+      piece.style.left = Math.round(Math.random() * 98) + 'vw';
+      piece.style.animationDuration = (2.1 + Math.random() * 1.1).toFixed(2) + 's';
+      piece.style.animationDelay = (Math.random() * 0.45).toFixed(2) + 's';
+      piece.style.setProperty('--fb-drift', Math.round((Math.random() - 0.5) * 140) + 'px');
+      piece.style.setProperty('--fb-spin', Math.round((Math.random() - 0.5) * 720) + 'deg');
+      layer.appendChild(piece);
+    }
+
+    document.body.appendChild(layer);
+    setTimeout(function () {
+      if (layer && layer.parentNode) layer.parentNode.removeChild(layer);
+    }, 3600);
+
+    var cheerEl = document.getElementById('fb-aniv30-cheer');
+    if (cheerEl) {
+      cheerEl.textContent = aniv30Cheers[aniv30CheerIdx % aniv30Cheers.length];
+      aniv30CheerIdx++;
+    }
+    if (window.sounds && typeof window.sounds.playSuccess === 'function') {
+      try { window.sounds.playSuccess(); } catch (e) {}
+    }
+  };
 })();

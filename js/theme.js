@@ -119,9 +119,9 @@
         banner.className = 'anniversary-celebration-banner';
         banner.innerHTML =
           '<div class="acb-content">' +
-            '<span class="acb-sparkle">👑</span>' +
-            '<span class="acb-text"><strong>¡FESTEJO 30° ANIVERSARIO · 1996 - 2026!</strong> Tres décadas formando el futuro tecnológico en el Colegio Paulo Freire</span>' +
-            '<span class="acb-sparkle">✨</span>' +
+            '<span class="acb-sparkle">🎂</span>' +
+            '<span class="acb-text"><strong>¡CUMPLIMOS 30 AÑOS! (1996 – 2026)</strong> · Tres décadas aprendiendo, jugando y creando futuro en el Colegio Paulo Freire</span>' +
+            '<span class="acb-sparkle">🎉</span>' +
           '</div>';
         var topbar = document.querySelector('.topbar') || document.querySelector('.admin-header') || document.body.firstChild;
         if (topbar && topbar.parentNode) {
