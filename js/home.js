@@ -1046,37 +1046,63 @@
         return '<a class="' + cls + '" href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + icon + esc(b.texto) + '</a>';
       }).join('');
 
-      // ── CASO CASA: SUPLEMENTO DOMINICAL / EL TALLER EN CASA ──
+      // ── CASO CASA: MISIONES MAKER MODERNAS + BANNER ESTRELLA ──
       if (isCasa) {
         var isJuego = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
         var isMaker = a.modalidad === 'maker' || !isJuego;
-        var stampText = isMaker ? '★ MISIÓN MAKER' : '🎲 RETO FAMILIAR';
-        var stampClass = isMaker ? 'stamp-maker' : 'stamp-juego';
-        var tagIcon = isMaker ? 'fas fa-tools' : 'fas fa-dice';
-        var tagText = isMaker ? 'Bricolaje de Taller' : 'Juego en Familia';
-        var matLabel = isMaker ? 'MATERIALES DE CASA:' : 'REQUISITO:';
-        var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o computadora (100% online, sin instalar nada)');
-        var cardClass = 'np-casa-card ' + (isMaker ? 'np-maker' : 'np-juego') + ' estado-' + it.estado.clave + (it.mia ? ' es-mia' : '');
+        var isFeaturedHero = (curPage === 1 && pageIdx === 0 && lista.length > 1);
+        var catBadge = isMaker ? '🛠️ Misión Maker' : '🎲 Juego en Familia';
+        var diffBadge = isMaker ? '⭐⭐ Desafío Creativo' : '⭐ Reto Familiar';
+        var matIcon = isMaker ? '🧰' : '📱';
+        var matText = a.materiales || (isMaker ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
+        var cardTypeCls = isMaker ? 'is-maker' : 'is-juego';
+        var heroImg = a.imagen
+          ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="casa-hero-img" loading="lazy" onerror="this.style.display=\'none\'">'
+          : '<div class="casa-hero-emoji">' + esc(a.icono || '⭐') + '</div>';
 
-        return '<article class="' + cardClass + '">' +
-          '<div class="np-casa-top">' +
-            '<span class="np-casa-badge"><i class="' + tagIcon + '"></i> ' + tagText + '</span>' +
-            '<span class="np-casa-stamp ' + stampClass + '">' + stampText + '</span>' +
+        if (isFeaturedHero) {
+          return '<article class="casa-featured-hero ' + cardTypeCls + '">' +
+            '<div class="casa-hero-media">' +
+              heroImg +
+              '<span class="casa-hero-star"><i class="fas fa-star"></i> MISIÓN ESTRELLA DE LA SEMANA</span>' +
+            '</div>' +
+            '<div class="casa-hero-body">' +
+              '<div class="casa-hero-pills">' +
+                '<span class="casa-pill-cat">' + catBadge + '</span>' +
+                '<span class="casa-pill-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
+                (it.mia ? '<span class="casa-pill-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
+              '</div>' +
+              '<h3 class="casa-hero-title">' + esc(a.titulo) + '</h3>' +
+              '<p class="casa-hero-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
+              '<div class="casa-mat-pill"><span>' + matIcon + '</span> <strong>Necesitás:</strong> ' + esc(matText) + '</div>' +
+              '<div class="casa-hero-actions">' +
+                (botones || '<span class="casa-pill-diff">' + diffBadge + '</span>') +
+                '<button type="button" class="casa-btn-detail" data-casa-detail="' + idx + '"><i class="fas fa-info-circle"></i> Ver detalle</button>' +
+              '</div>' +
+            '</div>' +
+          '</article>';
+        }
+
+        return '<article class="casa-mission-card ' + cardTypeCls + (it.mia ? ' es-mia' : '') + '">' +
+          '<div class="casa-card-top">' +
+            '<span class="casa-pill-cat">' + catBadge + '</span>' +
+            '<span class="casa-pill-diff">' + diffBadge + '</span>' +
           '</div>' +
-          thumb +
-          '<div class="np-casa-body">' +
-            (it.mia ? '<span class="np-casa-mine"><i class="fas fa-star"></i> Para tu grado</span>' : '') +
-            '<h3 class="np-casa-title">' + esc(a.titulo) + '</h3>' +
-            '<p class="np-casa-desc">' + esc(a.descripcion) + '</p>' +
-            '<div class="np-casa-box-receipt">' +
-              '<span class="np-receipt-lbl">' + matLabel + '</span> ' +
-              '<span class="np-receipt-txt">' + esc(matText) + '</span>' +
+          '<div class="casa-card-media">' +
+            (a.imagen
+              ? '<img src="' + esc(a.imagen) + '" alt="' + esc(a.titulo) + '" class="casa-card-img" loading="lazy" onerror="this.style.display=\'none\'">'
+              : '<div class="casa-card-emoji-bg">' + esc(a.icono || '⭐') + '</div>') +
+            '<span class="casa-card-grade"><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
+            (it.mia ? '<span class="casa-card-mine"><i class="fas fa-star"></i> Tu grado</span>' : '') +
+          '</div>' +
+          '<div class="casa-card-body">' +
+            '<h3 class="casa-card-title" title="' + esc(a.titulo) + '">' + esc(a.titulo) + '</h3>' +
+            '<p class="casa-card-desc">' + esc(stripMarkdown(a.descripcion || '')) + '</p>' +
+            '<div class="casa-mat-pill" title="' + esc(matText) + '"><span>' + matIcon + '</span> ' + esc(matText) + '</div>' +
+            '<div class="casa-card-foot">' +
+              (botones ? '<div class="casa-card-actions">' + botones + '</div>' : '') +
+              '<button type="button" class="casa-btn-detail" data-casa-detail="' + idx + '" title="Ver información completa"><i class="fas fa-info-circle"></i> Detalle</button>' +
             '</div>' +
-            '<div class="np-casa-meta">' +
-              '<span><i class="fas fa-graduation-cap"></i> ' + esc(grTxt) + '</span>' +
-              (hasta || desdeProx || '<span class="hn-act-deadline is-empty" style="visibility:hidden;" aria-hidden="true"><i class="far fa-calendar-check"></i> &nbsp;</span>') +
-            '</div>' +
-            (botones ? '<div class="np-casa-actions">' + botones + '</div>' : '') +
           '</div>' +
         '</article>';
       }
@@ -1138,6 +1164,57 @@
         else window.open(b.imagenModal, '_blank', 'noopener');
       });
     });
+
+    // Botones "Ver detalle" en tarjetas modernas de Actividades en Casa
+    if (isCasa) {
+      grid.querySelectorAll('button.casa-btn-detail[data-casa-detail]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var it = lista[+btn.dataset.casaDetail];
+          if (!it || !it.a) return;
+          var a = it.a;
+          var isJ = a.modalidad === 'juego' || a.tipo === 'familia' || /escape|juego|trivia/i.test(a.id || '') || /escape|juego|trivia/i.test(a.titulo || '');
+          var matT = a.materiales || (!isJ ? 'Cartón, tijera, plasticola o elementos de casa' : 'Celular, tablet o compu (100% online)');
+          var grL = (a.grados && a.grados.indexOf('todos') === -1) ? a.grados.map(nombreGrado).join(' · ') : 'Todos los grados';
+          var modal = document.getElementById('arcade-parent-modal');
+          if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'arcade-parent-modal';
+            modal.className = 'arcade-parent-modal-backdrop';
+            document.body.appendChild(modal);
+          }
+          var btnsHtml = (a.botones || []).map(function (b) {
+            if (b.imagenModal) return '';
+            var ext = /^https?:/i.test(b.url || '');
+            return '<a href="' + esc(b.url || '#') + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + ' class="apm-modal-btn-play">' + (b.icono ? '<i class="' + esc(b.icono) + '"></i> ' : '') + esc(b.texto) + '</a>';
+          }).join('');
+          modal.innerHTML =
+            '<div class="arcade-parent-modal-card" role="dialog" aria-modal="true">' +
+              '<div class="apm-modal-head">' +
+                '<div class="apm-modal-head-left">' +
+                  '<span class="apm-modal-badge">' + (isJ ? '🎲 Juego en Familia' : '🛠️ Misión Maker en Casa') + ' · ' + esc(grL) + '</span>' +
+                  '<h3>' + esc(a.titulo) + '</h3>' +
+                '</div>' +
+                '<button type="button" class="apm-modal-close" aria-label="Cerrar">&times;</button>' +
+              '</div>' +
+              '<div class="apm-modal-body">' +
+                (a.imagen ? '<img src="' + esc(a.imagen) + '" alt="" style="width:100%;max-height:220px;object-fit:cover;border-radius:14px;border:2px solid #E2E8F0;" onerror="this.style.display=\'none\'">' : '') +
+                '<div class="apm-info-box"><h4><i class="fas fa-rocket"></i> ¿Qué hay que hacer?</h4><p>' + esc(stripMarkdown(a.descripcion || '')) + '</p></div>' +
+                '<div class="apm-info-box is-benefits"><h4><i class="fas fa-toolbox"></i> ¿Qué necesitás?</h4><p>' + esc(matT) + '</p></div>' +
+              '</div>' +
+              '<div class="apm-modal-foot">' +
+                '<button type="button" class="apm-modal-btn-sec">Cerrar</button>' +
+                btnsHtml +
+              '</div>' +
+            '</div>';
+          modal.style.display = 'flex';
+          var closeFn = function () { modal.style.display = 'none'; };
+          modal.querySelector('.apm-modal-close').onclick = closeFn;
+          modal.querySelector('.apm-modal-btn-sec').onclick = closeFn;
+          modal.onclick = function (ev) { if (ev.target === modal) closeFn(); };
+        });
+      });
+    }
 
     // Accesibilidad por teclado (Enter / Espacio)
     grid.querySelectorAll('.np-clase-card').forEach(function (card) {
