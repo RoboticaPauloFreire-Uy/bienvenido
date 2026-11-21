@@ -2392,30 +2392,34 @@
                   '</button>' +
                 '</div>' +
               '</header>' +
-              '<div class="tl-film-viewport">' +
-                mediaHtml +
-              '</div>' +
-              '<div class="tl-film-caption">' +
-                (p.titulo ? '<h3 class="tl-film-title">' + esc(p.titulo) + '</h3>' : '') +
-                '<div class="' + initialWrapClass + ' tl-film-text-wrap">' +
-                  '<div class="hn-post-text tl-film-text">' + formatMarkdown(p.texto) + '</div>' +
-                  '<button type="button" class="hn-post-readmore tl-film-readmore" onclick="window.togglePostText(this)" style="' + initialBtnStyle + '" title="Ampliar texto">' +
-                    '<span><i class="fas fa-book-open"></i> Ver más</span> <i class="fas fa-chevron-down"></i>' +
-                  '</button>' +
+              '<div class="tl-film-body-row">' +
+                '<div class="tl-film-viewport">' +
+                  mediaHtml +
                 '</div>' +
-                tagsHtml +
+                '<div class="tl-film-right-col">' +
+                  '<div class="tl-film-caption">' +
+                    (p.titulo ? '<h3 class="tl-film-title">' + esc(p.titulo) + '</h3>' : '') +
+                    '<div class="' + initialWrapClass + ' tl-film-text-wrap">' +
+                      '<div class="hn-post-text tl-film-text">' + formatMarkdown(p.texto) + '</div>' +
+                      '<button type="button" class="hn-post-readmore tl-film-readmore" onclick="window.togglePostText(this)" style="' + initialBtnStyle + '" title="Ampliar texto">' +
+                        '<span><i class="fas fa-book-open"></i> Ver más</span> <i class="fas fa-chevron-down"></i>' +
+                      '</button>' +
+                    '</div>' +
+                    tagsHtml +
+                  '</div>' +
+                  '<footer class="tl-film-footer">' +
+                    '<button type="button" class="tl-film-btn is-primary" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')">' +
+                      '<i class="fas fa-expand"></i> <span>Ver en Grande</span>' +
+                    '</button>' +
+                    '<button type="button" class="tl-film-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')">' +
+                      '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
+                    '</button>' +
+                    '<a class="tl-film-btn is-wsp" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '">' +
+                      '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
+                    '</a>' +
+                  '</footer>' +
+                '</div>' +
               '</div>' +
-              '<footer class="tl-film-footer">' +
-                '<button type="button" class="tl-film-btn is-primary" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')">' +
-                  '<i class="fas fa-expand"></i> <span>Ver en Grande</span>' +
-                '</button>' +
-                '<button type="button" class="tl-film-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')">' +
-                  '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
-                '</button>' +
-                '<a class="tl-film-btn is-wsp" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '">' +
-                  '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
-                '</a>' +
-              '</footer>' +
             '</div>' +
             '<div class="tl-film-sprockets" aria-hidden="true"></div>' +
           '</article>' +
