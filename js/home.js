@@ -2313,6 +2313,7 @@
     });
 
     if (!filtered.length) {
+      cont.classList.add('muro-timeline-feed');
       renderMuroIndex([]);
       cont.innerHTML =
         '<div class="hn-empty">' +
@@ -2325,13 +2326,17 @@
       return;
     }
 
-    cont.innerHTML = filtered.map(function (p) {
+    cont.classList.add('muro-timeline-feed');
+
+    var MESES_TL = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    var lastMonthKey = '';
+
+    cont.innerHTML = filtered.map(function (p, idx) {
       var isPotentiallyLong = !!(p.texto && (p.texto.length > 220 || p.texto.split('\n').length > 4));
       var initialWrapClass = 'hn-post-text-wrap' + (isPotentiallyLong ? ' is-collapsed' : '');
       var initialBtnStyle = isPotentiallyLong ? 'display:inline-flex;' : 'display:none;';
       var postUrl = getPostUrl(p.id);
       var shareText = p.autor + ': ' + (p.texto || '').substring(0, 110) + '...\n' + postUrl;
-      var avatarSrc = p.avatar || 'img/escudo_paulo_freire.png';
 
       // Etiqueta de grupos
       var grDisplay = '';
@@ -2344,68 +2349,71 @@
         grDisplay = nombreGrado(p.grado);
       }
 
-      // Multimedia
+      // Separador de Mes/Año en la Línea de Tiempo
+      var fObj = parseFecha(p.fecha) || (p._time ? new Date(p._time) : null);
+      var monthKey = fObj ? (MESES_TL[fObj.getMonth()] + ' ' + fObj.getFullYear()) : 'Recuerdos del Taller';
+      var monthMarkerHtml = '';
+      if (monthKey !== lastMonthKey) {
+        lastMonthKey = monthKey;
+        monthMarkerHtml =
+          '<div class="tl-month-marker">' +
+            '<span class="tl-month-pill"><i class="far fa-calendar-alt"></i> ' + esc(monthKey) + '</span>' +
+          '</div>';
+      }
+
+      var isVideoPost = (p.tipoMedia === 'video');
+      var nodeIcon = isVideoPost ? '🎬' : '📸';
       var mediaHtml = renderPostMediaHtml(p);
 
       var tagsHtml = (p.tags && p.tags.length)
         ? '<div class="hn-post-tags">' + p.tags.map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>'
         : '';
 
-      return '<article class="hn-post-card" id="post-' + esc(p.id) + '">' +
-        '<header class="hn-post-header">' +
-          '<div class="hn-post-avatar-wrap">' +
-            '<img class="hn-post-avatar" src="' + esc(avatarSrc) + '" alt="' + esc(p.autor) + '">' +
-          '</div>' +
-          '<div class="hn-post-meta">' +
-            '<div class="hn-post-author-row">' +
-              '<span class="hn-post-author">' + esc(p.autor) + '</span>' +
-              '<span class="hn-post-verified" title="Publicación verificada del taller"><i class="fas fa-check-circle"></i></span>' +
-              (p.etiqueta ? '<span class="hn-post-tag-badge">' + esc(p.etiqueta) + '</span>' : '') +
+      return monthMarkerHtml +
+        '<div class="tl-entry' + (idx % 2 === 1 ? ' is-alt' : '') + '" id="post-' + esc(p.id) + '">' +
+          '<div class="tl-node" title="' + (isVideoPost ? 'Video' : 'Fotografía') + '">' + nodeIcon + '</div>' +
+          '<article class="tl-card hn-post-card">' +
+            '<header class="tl-card-head">' +
+              '<div class="tl-card-chips">' +
+                '<span class="tl-date-chip"><i class="far fa-clock"></i> ' + esc(fechaRelativa(p.fecha)) + '</span>' +
+                '<span class="tl-grade-chip"><i class="fas fa-graduation-cap"></i> ' + esc(grDisplay) + '</span>' +
+                (p.etiqueta || p.categoria ? '<span class="tl-cat-chip">' + esc(p.etiqueta || p.categoria) + '</span>' : '') +
+              '</div>' +
+              '<div class="hn-post-top-action">' +
+                '<button type="button" class="hn-post-opt-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')" title="Ver recuerdo ampliado">' +
+                  '<i class="fas fa-expand-alt"></i>' +
+                '</button>' +
+                '<button type="button" class="hn-post-opt-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace">' +
+                  '<i class="fas fa-link"></i>' +
+                '</button>' +
+              '</div>' +
+            '</header>' +
+            (p.titulo ? '<h3 class="tl-card-title">' + esc(p.titulo) + '</h3>' : '') +
+            mediaHtml +
+            '<div class="tl-card-body">' +
+              '<div class="' + initialWrapClass + '">' +
+                '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
+                '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="' + initialBtnStyle + '" title="Ampliar texto">' +
+                  '<span><i class="fas fa-book-open"></i> Ver más</span> <i class="fas fa-chevron-down"></i>' +
+                '</button>' +
+              '</div>' +
+              tagsHtml +
             '</div>' +
-            '<div class="hn-post-sub-row">' +
-              '<span class="hn-post-date"><i class="far fa-clock"></i> ' + esc(fechaRelativa(p.fecha)) + '</span>' +
-              '<span class="hn-post-dot">·</span>' +
-              '<span class="hn-post-grade">' + esc(grDisplay) + '</span>' +
-              '<span class="hn-post-dot">·</span>' +
-              '<span class="hn-post-privacy" title="Público para toda la comunidad"><i class="fas fa-globe-americas"></i></span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="hn-post-top-action">' +
-            '<button type="button" class="hn-post-opt-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')" title="Ver crónica ampliada en formato periódico">' +
-              '<i class="fas fa-expand-alt"></i>' +
-            '</button>' +
-            '<button type="button" class="hn-post-opt-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace de esta publicación">' +
-              '<i class="fas fa-link"></i>' +
-            '</button>' +
-          '</div>' +
-        '</header>' +
-        '<div class="hn-post-body">' +
-          '<div class="' + initialWrapClass + '">' +
-            '<div class="hn-post-text">' + formatMarkdown(p.texto) + '</div>' +
-            '<button type="button" class="hn-post-readmore" onclick="window.togglePostText(this)" style="' + initialBtnStyle + '" title="Ampliar texto de la publicación">' +
-              '<span><i class="fas fa-book-open"></i> Ver más (ampliar crónica)</span> <i class="fas fa-chevron-down"></i>' +
-            '</button>' +
-          '</div>' +
-          tagsHtml +
-        '</div>' +
-        mediaHtml +
-        '<footer class="hn-post-footer">' +
-          '<div class="hn-post-actions-bar">' +
-            '<button type="button" class="hn-post-action-btn hn-post-expand-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')" title="Abrir crónica ampliada en modal de periódico">' +
-              '<i class="fas fa-newspaper"></i> <span>Vista ampliada</span>' +
-            '</button>' +
-            '<button type="button" class="hn-post-action-btn hn-post-share-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')" title="Compartir actividad">' +
-              '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
-            '</button>' +
-            '<button type="button" class="hn-post-action-btn hn-post-copy-btn" onclick="window.copiarEnlacePost(\'' + esc(p.id) + '\')" title="Copiar enlace al portapapeles">' +
-              '<i class="fas fa-link"></i> <span>Copiar</span>' +
-            '</button>' +
-            '<a class="hn-post-action-btn hn-post-wsp-btn" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '" title="Compartir por WhatsApp">' +
-              '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
-            '</a>' +
-          '</div>' +
-        '</footer>' +
-      '</article>';
+            '<footer class="hn-post-footer">' +
+              '<div class="hn-post-actions-bar">' +
+                '<button type="button" class="hn-post-action-btn hn-post-expand-btn" onclick="window.abrirModalPostMuro(\'' + esc(p.id) + '\')">' +
+                  '<i class="fas fa-expand"></i> <span>Ampliar</span>' +
+                '</button>' +
+                '<button type="button" class="hn-post-action-btn hn-post-share-btn" onclick="window.compartirPost(\'' + esc(p.id) + '\')">' +
+                  '<i class="fas fa-share-alt"></i> <span>Compartir</span>' +
+                '</button>' +
+                '<a class="hn-post-action-btn hn-post-wsp-btn" target="_blank" rel="noopener noreferrer" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText) + '">' +
+                  '<i class="fab fa-whatsapp"></i> <span>WhatsApp</span>' +
+                '</a>' +
+              '</div>' +
+            '</footer>' +
+          '</article>' +
+        '</div>';
     }).join('');
 
     // Detectar posts largos (más de 10 líneas de código/texto) y activar el botón "Ver más"
