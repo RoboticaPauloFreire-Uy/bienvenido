@@ -8748,19 +8748,38 @@
       }
     ];
 
+    // Modo adaptado por edad (5 años-2do: early, 3ro-6to: kids, Liceo: teen)
+    var rawGid = (student && student.gradeId ? String(student.gradeId) : '').toLowerCase();
+    var hlwAgeMode = /sala5|grado1|grado2|1ero|2do/.test(rawGid)
+      ? 'early'
+      : (/liceo|secundaria/.test(rawGid) ? 'teen' : 'kids');
+    var hlwStorageKey = 'pf_hlw_missions_' + ((student && (student.id || student.name)) || 'guest');
+    var hlwDoneMap = {};
+    try { hlwDoneMap = JSON.parse(localStorage.getItem(hlwStorageKey) || '{}') || {}; } catch(e) { hlwDoneMap = {}; }
+
+    function formatHeaderTitleNoOrphanEmoji(t) {
+      var str = String(t || '');
+      var m = str.match(/^(.*?)(\s*[\u{1F300}-\u{1FAFF}\u2600-\u27BF]+(?:\s*[\u{1F300}-\u{1FAFF}\u2600-\u27BF]+)*)$/u);
+      if (!m) return str;
+      var words = m[1].trim().split(/\s+/);
+      var lastWord = words.pop() || '';
+      var prefix = words.length ? words.join(' ') + ' ' : '';
+      return prefix + '<span style="white-space:nowrap;">' + lastWord + m[2] + '</span>';
+    }
+
     // QR Code URL para simulación o ficha
     var targetShareLink = mission.makecodeUrl || (mission.pdfUrl || window.location.href);
     var qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=2&data=' + encodeURIComponent(targetShareLink);
 
     // HTML del Modal
     modal.innerHTML =
-      '<div class="adventure-modal-content">' +
+      '<div class="adventure-modal-content' + (isHalloween ? (' hlw-mode-' + hlwAgeMode) : '') + '">' +
         // Encabezado
         '<div class="apm-header">' +
           '<div class="apm-header-info">' +
             '<div class="apm-icon-wrap"><i class="fas ' + mission.icon + '"></i></div>' +
             '<div class="apm-title-wrap">' +
-              '<h3>NIVEL ' + mission.level + ' — ' + mission.title + '</h3>' +
+              '<h3>NIVEL ' + mission.level + ' — ' + formatHeaderTitleNoOrphanEmoji(mission.title) + '</h3>' +
               '<div class="apm-subtitle-row">' +
                 '<span class="apm-lvl-badge">NIVEL ' + mission.level + '</span>' +
                 '<span id="apm-header-status-badge">' + (isAlreadyCompleted ? '<span class="apm-lvl-badge" style="background:#10B981;margin-right:6px;"><i class="fas fa-check-circle"></i> ⭐ COMPLETADO</span>' : '') + '</span>' +
@@ -8779,17 +8798,20 @@
         // Barra de pestañas
         '<div class="apm-tabs-bar' + (isHalloween ? ' apm-tabs-bar-halloween' : '') + '" style="' + (isHalloween ? 'background:#18181B;border-bottom:2px solid #EA580C;padding:8px 16px;display:flex;gap:8px;overflow-x:auto;' : '') + '">' +
           (isHalloween ?
-            '<button type="button" class="apm-tab-btn ' + (activeTab === 'pasos' ? 'active' : '') + '" data-tab="pasos" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
-              '<i class="fas fa-list-check" style="color:#F97316;"></i> 🎃 Pasos del Proyecto' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'pasos' ? 'active' : '') + '" data-tab="pasos" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:9px 16px;cursor:pointer;">' +
+              '<i class="fas fa-list-check" style="color:#F97316;"></i> Pasos' +
             '</button>' +
-            '<button type="button" class="apm-tab-btn ' + (activeTab === 'paginas' ? 'active' : '') + '" data-tab="paginas" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
-              '<i class="fas fa-globe" style="color:#38BDF8;"></i> 🌐 Páginas & Herramientas' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'paginas' ? 'active' : '') + '" data-tab="paginas" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:9px 16px;cursor:pointer;">' +
+              '<span>🗺️</span> Mapa de Misiones' +
             '</button>' +
-            '<button type="button" class="apm-tab-btn ' + (activeTab === 'libro' ? 'active' : '') + '" data-tab="libro" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
-              '<i class="fas fa-book-sparkles" style="color:#A855F7;"></i> 📖 Libro de Hechizos' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'galeria' ? 'active' : '') + '" data-tab="galeria" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:9px 16px;cursor:pointer;">' +
+              '<span>🎃</span> Galería de Monstruos' +
             '</button>' +
-            '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 16px;cursor:pointer;">' +
-              '<i class="fas fa-cloud-upload-alt" style="color:#10B981;"></i> 📤 Mi Entrega & Drive' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'libro' ? 'active' : '') + '" data-tab="libro" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:9px 16px;cursor:pointer;">' +
+              '<span>📖</span> Libro de Hechizos' +
+            '</button>' +
+            '<button type="button" class="apm-tab-btn ' + (activeTab === 'entrega' ? 'active' : '') + '" data-tab="entrega" style="font-weight:800;display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:9px 16px;cursor:pointer;">' +
+              '<span>📤</span> Mi Entrega & Drive' +
             '</button>'
           :
             '<button type="button" class="apm-tab-btn ' + (activeTab === 'presentacion' ? 'active' : '') + '" data-tab="presentacion">' +
@@ -8808,6 +8830,19 @@
             '</button>'
           ) +
         '</div>' +
+
+        // Guía Mascota Freirebot (solo Halloween)
+        (isHalloween ?
+          '<div class="hlw-freirebot-bar" id="hlw-freirebot-bar">' +
+            '<img src="img/ficha_freirebot.jpg" alt="Freirebot" class="hlw-freirebot-avatar" onerror="this.src=\'img/escudo_paulo_freire.png\'">' +
+            '<div class="hlw-freirebot-bubble" id="hlw-freirebot-bubble">' +
+              '¡Hola! Primero vamos a crear tu monstruo en Gemini 👻' +
+            '</div>' +
+            '<button type="button" class="hlw-freirebot-audio-btn" id="hlw-freirebot-speak-btn" title="Escuchar a Freirebot">' +
+              '<i class="fas fa-volume-up"></i> <span>Escuchar</span>' +
+            '</button>' +
+          '</div>'
+        : '') +
 
         // Paneles
         '<div class="apm-panes-container">' +
@@ -8948,87 +8983,126 @@
               '</div>' +
             '</div>' +
 
-            // ── PESTAÑA HALLOWEEN 2: PÁGINAS & HERRAMIENTAS WEB ──
-            '<div class="apm-tab-pane pane-paginas ' + (activeTab === 'paginas' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'paginas' ? 'flex' : 'none') + ';flex-direction:column;">' +
-              '<div style="margin-bottom:20px;">' +
-                '<h3 style="font-size:1.35rem;font-weight:800;color:#FFF;margin:0 0 6px;"><i class="fas fa-globe" style="color:#38BDF8;"></i> Páginas Web y Herramientas del Proyecto</h3>' +
-                '<p style="color:#94A3B8;font-size:0.9rem;margin:0;">Hacé clic en cualquiera de las tarjetas para abrir directamente los sitios oficiales utilizados en cada etapa de Halloween.</p>' +
-              '</div>' +
-              '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">' +
-                // Libro de Hechizos
-                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
-                  '<div>' +
-                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
-                      '<div style="width:44px;height:44px;border-radius:10px;background:#7C3AED;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-book-skull"></i></div>' +
-                      '<div>' +
-                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">El Libro de los Hechizos de IA</h4>' +
-                        '<span style="font-size:0.75rem;color:#C084FC;">Manual Oficial del Colegio</span>' +
-                      '</div>' +
-                    '</div>' +
-                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Grimorio interactivo 3D con ejemplos de fórmulas mágicas, prompts de transformación y la técnica de las 5 Capas explicada paso a paso.</p>' +
-                  '</div>' +
-                  '<div style="display:flex;gap:8px;">' +
-                    '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener" style="flex:1;text-align:center;background:#7C3AED;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Libro ↗</a>' +
-                    '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/libro_de_hechizos.pdf" target="_blank" rel="noopener" style="background:#334155;color:#E2E8F0;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;" title="Descargar PDF"><i class="fas fa-file-pdf"></i> PDF</a>' +
-                  '</div>' +
+            // ── PESTAÑA HALLOWEEN 2: MAPA DE MISIONES TIPO VIDEOJUEGO ──
+            '<div class="apm-tab-pane pane-paginas ' + (activeTab === 'paginas' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'paginas' ? 'flex' : 'none') + ';flex-direction:column;gap:20px;">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+                '<div>' +
+                  '<h3 style="font-size:1.45rem;font-weight:900;color:#FFF;margin:0 0 4px;">🗺️ Tu Camino de Misiones Halloween</h3>' +
+                  '<p style="color:#CBD5E1;font-size:1rem;margin:0;">Completá las 4 misiones en orden y ganá tu medalla de <strong>Mago de la IA 🧙</strong>.</p>' +
                 '</div>' +
-                // Gemini
-                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
-                  '<div>' +
-                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
-                      '<div style="width:44px;height:44px;border-radius:10px;background:#2563EB;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-brain"></i></div>' +
-                      '<div>' +
-                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Google Gemini AI</h4>' +
-                        '<span style="font-size:0.75rem;color:#93C5FD;">Laboratorio de Inteligencia Artificial</span>' +
-                      '</div>' +
-                    '</div>' +
-                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Motor multimodal de inteligencia artificial para subir tu foto y aplicar las 5 capas de tu prompt para generar tu monstruo en alta definición.</p>' +
-                  '</div>' +
-                  '<a href="https://gemini.google.com/app" target="_blank" rel="noopener" style="text-align:center;background:#2563EB;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Google Gemini ↗</a>' +
-                '</div>' +
-                // Canva
-                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
-                  '<div>' +
-                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
-                      '<div style="width:44px;height:44px;border-radius:10px;background:#0284C7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-palette"></i></div>' +
-                      '<div>' +
-                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Plantilla Polaroid en Canva</h4>' +
-                        '<span style="font-size:0.75rem;color:#7DD3FC;">Plantilla Oficial Freirebot</span>' +
-                      '</div>' +
-                    '</div>' +
-                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Plantilla oficial con el marco estilo Polaroid vintage para colocar tu monstruo, nombre y curso listo para la impresión física en papel fotográfico.</p>' +
-                  '</div>' +
-                  '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" style="text-align:center;background:#0284C7;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Plantilla en Canva ↗</a>' +
-                '</div>' +
-                // Flow
-                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
-                  '<div>' +
-                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
-                      '<div style="width:44px;height:44px;border-radius:10px;background:#D97706;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-film"></i></div>' +
-                      '<div>' +
-                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Flow (Video con IA)</h4>' +
-                        '<span style="font-size:0.75rem;color:#FCD34D;">Animación de Imagen a Video</span>' +
-                      '</div>' +
-                    '</div>' +
-                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Herramienta generativa de video con IA para animar la fotografía fija en un clip con movimientos de cámara y atmósfera tenebrosa.</p>' +
-                  '</div>' +
-                  '<a href="https://flow.google.com" target="_blank" rel="noopener" style="text-align:center;background:#D97706;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;text-decoration:none;"><i class="fas fa-external-link-alt"></i> Abrir Flow ↗</a>' +
-                '</div>' +
-                // Google Drive
-                '<div style="background:#1E293B;border-radius:12px;padding:20px;border:1px solid #334155;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.3);">' +
-                  '<div>' +
-                    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
-                      '<div style="width:44px;height:44px;border-radius:10px;background:#059669;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fab fa-google-drive"></i></div>' +
-                      '<div>' +
-                        '<h4 style="margin:0;font-size:1.05rem;color:#FFF;font-weight:800;">Google Drive Institucional</h4>' +
-                        '<span style="font-size:0.75rem;color:#6EE7B7;">Carpeta fotos/2026/halloween</span>' +
-                      '</div>' +
-                    '</div>' +
-                    '<p style="font-size:0.85rem;color:#CBD5E1;line-height:1.45;margin-bottom:16px;">Espacio de almacenamiento del colegio para guardar las fotos Polaroid y videos de Halloween para visualizarlos en el reproductor con el logo oficial.</p>' +
-                  '</div>' +
-                  '<button type="button" class="apm-quick-tab-btn" data-target-tab="entrega" style="text-align:center;background:#059669;color:#FFF;padding:9px 12px;border-radius:8px;font-weight:700;font-size:0.84rem;border:none;cursor:pointer;"><i class="fas fa-cloud-upload-alt"></i> Ir a Panel de Entrega & Drive ↗</button>' +
+                '<div id="hlw-mission-progress-pill" style="background:#1E293B;border:2px solid #FACC15;color:#FDE047;padding:8px 16px;border-radius:999px;font-weight:900;font-size:0.95rem;">' +
+                  '⭐ <span id="hlw-mission-progress-count">0</span> / 4 misiones' +
                 '</div>' +
               '</div>' +
+
+              '<div id="hlw-wizard-medal-banner" class="hlw-wizard-medal" style="display:none;">' +
+                '<div style="display:flex;align-items:center;gap:14px;">' +
+                  '<span style="font-size:2.6rem;">🧙</span>' +
+                  '<div>' +
+                    '<h4 style="margin:0;font-size:1.3rem;font-weight:900;">¡MEDALLA DESBLOQUEADA: Mago de la IA!</h4>' +
+                    '<p style="margin:4px 0 0;font-size:0.98rem;opacity:0.95;">Completaste las 4 misiones. ¡Mirá tu monstruo en la Galería!</p>' +
+                  '</div>' +
+                '</div>' +
+                '<button type="button" class="apm-quick-tab-btn hlw-big-btn" data-target-tab="galeria" style="background:#1E1B4B;border:2px solid #FDE047;">🎃 Ver Galería</button>' +
+              '</div>' +
+
+              '<div class="hlw-missions-track" id="hlw-missions-track">' +
+                // MISIÓN 1: GEMINI + LIBRO
+                '<div class="hlw-mission-card" data-hlw-mission-card="1">' +
+                  '<div class="hlw-mission-preview">' +
+                    '<img src="img/proyectos/halloween_foto_monstruo.jpg" alt="Ejemplo de monstruo creado con Gemini" onerror="this.src=\'img/proyectos/halloween_ia_cover.jpg?v=3\'">' +
+                    '<span class="hlw-mission-step-pill" style="background:#2563EB;">🧪 Misión 1</span>' +
+                    '<span class="hlw-mission-status-pill" data-hlw-status="1">🎯 ¡Empezá acá!</span>' +
+                  '</div>' +
+                  '<div>' +
+                    '<h4 style="margin:0 0 6px;font-size:1.18rem;color:#FFF;font-weight:900;">Creá tu monstruo (Gemini)</h4>' +
+                    '<p style="margin:0;font-size:0.98rem;color:#E2E8F0;line-height:1.4;">Subí tu foto y transformala en monstruo 👹</p>' +
+                  '</div>' +
+                  '<div style="display:flex;flex-direction:column;gap:9px;">' +
+                    '<a href="https://gemini.google.com/app" target="_blank" rel="noopener" class="hlw-big-btn" style="background:#2563EB;"><i class="fas fa-wand-magic-sparkles"></i> Abrir Gemini ↗</a>' +
+                    '<div style="display:flex;gap:8px;">' +
+                      '<a href="https://roboticapaulofreire-uy.github.io/libro_hechizos/" target="_blank" rel="noopener" class="hlw-big-btn" style="flex:1;background:#7C3AED;font-size:0.9rem;padding:10px;"><i class="fas fa-book-skull"></i> Hechizos ↗</a>' +
+                      '<button type="button" class="hlw-big-btn hlw-demo-btn" data-hlw-demo="1" style="background:#334155;font-size:0.9rem;padding:10px 12px;" title="Ver mini guía animada de 15s">🎬 15s</button>' +
+                    '</div>' +
+                    '<button type="button" class="hlw-big-btn hlw-toggle-mission-btn" data-hlw-mission="1" style="background:#0F172A;border:2px solid #475569;font-size:0.92rem;padding:10px;">⬜ Marcar Misión 1 lista</button>' +
+                  '</div>' +
+                '</div>' +
+
+                // MISIÓN 2: CANVA POLAROID
+                '<div class="hlw-mission-card" data-hlw-mission-card="2">' +
+                  '<div class="hlw-mission-preview">' +
+                    '<img src="img/proyectos/halloween_foto_monstruo_colegio.png" alt="Ejemplo de Polaroid terminada en Canva" onerror="this.src=\'img/proyectos/halloween_ia_cover.jpg?v=3\'">' +
+                    '<span class="hlw-mission-step-pill" style="background:#0284C7;">🖼️ Misión 2</span>' +
+                    '<span class="hlw-mission-status-pill" data-hlw-status="2">🔒 Siguiente</span>' +
+                  '</div>' +
+                  '<div>' +
+                    '<h4 style="margin:0 0 6px;font-size:1.18rem;color:#FFF;font-weight:900;">Armá tu Polaroid (Canva)</h4>' +
+                    '<p style="margin:0;font-size:0.98rem;color:#E2E8F0;line-height:1.4;">Poné tu monstruo en el marco para imprimir 🖼️</p>' +
+                  '</div>' +
+                  '<div style="display:flex;flex-direction:column;gap:9px;">' +
+                    '<a href="https://canva.link/polaroid-freirebotuy" target="_blank" rel="noopener" class="hlw-big-btn" style="background:#0284C7;"><i class="fas fa-palette"></i> Abrir Canva ↗</a>' +
+                    '<button type="button" class="hlw-big-btn hlw-demo-btn" data-hlw-demo="2" style="background:#334155;font-size:0.9rem;padding:10px 12px;">🎬 Ver cómo se hace (15s)</button>' +
+                    '<button type="button" class="hlw-big-btn hlw-toggle-mission-btn" data-hlw-mission="2" style="background:#0F172A;border:2px solid #475569;font-size:0.92rem;padding:10px;">⬜ Marcar Misión 2 lista</button>' +
+                  '</div>' +
+                '</div>' +
+
+                // MISIÓN 3: FLOW VIDEO
+                '<div class="hlw-mission-card" data-hlw-mission-card="3">' +
+                  '<div class="hlw-mission-preview">' +
+                    '<img src="img/proyectos/halloween_ia_cover.jpg?v=3" alt="Ejemplo de video animado en Flow">' +
+                    '<span class="hlw-mission-step-pill" style="background:#D97706;">🎬 Misión 3</span>' +
+                    '<span class="hlw-mission-status-pill" data-hlw-status="3">🔒 Siguiente</span>' +
+                  '</div>' +
+                  '<div>' +
+                    '<h4 style="margin:0 0 6px;font-size:1.18rem;color:#FFF;font-weight:900;">Dale vida (Flow)</h4>' +
+                    '<p style="margin:0;font-size:0.98rem;color:#E2E8F0;line-height:1.4;">Convertí tu monstruo en un video corto 🎬</p>' +
+                  '</div>' +
+                  '<div style="display:flex;flex-direction:column;gap:9px;">' +
+                    '<a href="https://flow.google.com" target="_blank" rel="noopener" class="hlw-big-btn" style="background:#D97706;"><i class="fas fa-film"></i> Abrir Flow ↗</a>' +
+                    '<button type="button" class="hlw-big-btn hlw-demo-btn" data-hlw-demo="3" style="background:#334155;font-size:0.9rem;padding:10px 12px;">🎬 Ver cómo se hace (15s)</button>' +
+                    '<button type="button" class="hlw-big-btn hlw-toggle-mission-btn" data-hlw-mission="3" style="background:#0F172A;border:2px solid #475569;font-size:0.92rem;padding:10px;">⬜ Marcar Misión 3 lista</button>' +
+                  '</div>' +
+                '</div>' +
+
+                // MISIÓN 4: ENTREGAR EN DRIVE
+                '<div class="hlw-mission-card" data-hlw-mission-card="4">' +
+                  '<div class="hlw-mission-preview" style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#064E3B 0%,#0F172A 100%);">' +
+                    '<i class="fab fa-google-drive" style="font-size:4.2rem;color:#34D399;"></i>' +
+                    '<span class="hlw-mission-step-pill" style="background:#059669;">📦 Misión 4</span>' +
+                    '<span class="hlw-mission-status-pill" data-hlw-status="4">🔒 Final</span>' +
+                  '</div>' +
+                  '<div>' +
+                    '<h4 style="margin:0 0 6px;font-size:1.18rem;color:#FFF;font-weight:900;">Entregá (Drive)</h4>' +
+                    '<p style="margin:0;font-size:0.98rem;color:#E2E8F0;line-height:1.4;">Subí tu foto y video a la carpeta del cole 📦</p>' +
+                  '</div>' +
+                  '<div style="display:flex;flex-direction:column;gap:9px;">' +
+                    '<button type="button" class="apm-quick-tab-btn hlw-big-btn" data-target-tab="entrega" style="background:#059669;"><i class="fas fa-cloud-upload-alt"></i> Subir a Drive ↗</button>' +
+                    '<button type="button" class="apm-quick-tab-btn hlw-big-btn" data-target-tab="galeria" style="background:#7C3AED;font-size:0.9rem;padding:10px;">🎃 Ver Galería</button>' +
+                    '<button type="button" class="hlw-big-btn hlw-toggle-mission-btn" data-hlw-mission="4" style="background:#0F172A;border:2px solid #475569;font-size:0.92rem;padding:10px;">⬜ Marcar Misión 4 lista</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              // MINI VISOR DEMO 15 SEGUNDOS
+              '<div id="hlw-demo-player-box" style="display:none;background:#1E293B;border:2px solid #38BDF8;border-radius:18px;padding:18px;">' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap;">' +
+                  '<strong id="hlw-demo-title" style="color:#38BDF8;font-size:1.08rem;">🎬 Mini Guía Visual (15s)</strong>' +
+                  '<button type="button" id="hlw-demo-close" style="background:#334155;color:#FFF;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:800;">Cerrar ✕</button>' +
+                '</div>' +
+                '<div id="hlw-demo-stage" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:#0F172A;border-radius:14px;padding:16px;"></div>' +
+              '</div>' +
+            '</div>' +
+
+            // ── PESTAÑA HALLOWEEN: GALERÍA DE MONSTRUOS DEL GRADO ──
+            '<div class="apm-tab-pane pane-galeria ' + (activeTab === 'galeria' ? 'active' : '') + '" style="overflow-y:auto;padding:24px;background:#0F172A;color:#F8FAFC;display:' + (activeTab === 'galeria' ? 'flex' : 'none') + ';flex-direction:column;gap:18px;">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+                '<div>' +
+                  '<h3 style="font-size:1.45rem;font-weight:900;color:#FFF;margin:0 0 4px;">🎃 Galería de Monstruos (' + (student && student.gradeName ? student.gradeName : 'Taller') + ')</h3>' +
+                  '<p style="color:#CBD5E1;font-size:0.98rem;margin:0;">Mirá los monstruos, Polaroids y videos creados por tus compañeros.</p>' +
+                '</div>' +
+                '<button type="button" class="apm-quick-tab-btn hlw-big-btn" data-target-tab="entrega" style="background:#EA580C;"><i class="fas fa-plus-circle"></i> ¡Subir el mío!</button>' +
+              '</div>' +
+              '<div class="hlw-gallery-grid" id="hlw-monsters-gallery-grid"></div>' +
             '</div>' +
 
             // ── PESTAÑA HALLOWEEN 3: LIBRO DE HECHIZOS EMBEBIDO ──
@@ -11365,6 +11439,120 @@
     modal.onclick = function(e){ if (e.target === modal) closeAdventureModal(); };
     document.addEventListener('keydown', handleKeyDown);
 
+    var hlwDemoTimer = null;
+    function updateFreirebotBubble(customText) {
+      var bubble = modal.querySelector('#hlw-freirebot-bubble');
+      if (!bubble) return;
+      if (customText) {
+        bubble.textContent = customText;
+        return;
+      }
+      var doneCount = [1, 2, 3, 4].filter(function(n){ return !!hlwDoneMap[n]; }).length;
+      if (activeTab === 'galeria') {
+        bubble.textContent = '🎃 ¡Mirá los monstruos increíbles de tu grado! ¿Ya subiste el tuyo?';
+      } else if (activeTab === 'libro') {
+        bubble.textContent = '📖 ¡Elegí un hechizo de 5 capas para transformar tu foto!';
+      } else if (activeTab === 'entrega') {
+        bubble.textContent = '📦 ¡Subí tu Polaroid o video a Drive para aparecer en la galería!';
+      } else if (doneCount >= 4) {
+        bubble.textContent = '🧙 ¡Sos un Mago de la IA! Completaste las 4 misiones 🎉';
+      } else if (!hlwDoneMap[1]) {
+        bubble.textContent = '¡Hola! Primero vamos a crear tu monstruo en Gemini 👻';
+      } else if (!hlwDoneMap[2]) {
+        bubble.textContent = '🖼️ ¡Genial! Ahora armá tu Polaroid en Canva para imprimir';
+      } else if (!hlwDoneMap[3]) {
+        bubble.textContent = '🎬 ¡Ahora dale movimiento en Flow para hacer tu video!';
+      } else {
+        bubble.textContent = '📦 ¡Último paso! Entregá tu trabajo en la carpeta de Drive';
+      }
+    }
+
+    function launchHlwConfetti() {
+      var colors = ['#F97316', '#FACC15', '#10B981', '#38BDF8', '#A855F7', '#EC4899'];
+      for (var i = 0; i < 42; i++) {
+        (function(idx){
+          var piece = document.createElement('div');
+          piece.className = 'hlw-confetti-piece';
+          piece.style.left = Math.floor(Math.random() * 100) + 'vw';
+          piece.style.background = colors[idx % colors.length];
+          piece.style.animationDelay = (Math.random() * 0.6) + 's';
+          document.body.appendChild(piece);
+          setTimeout(function(){ if (piece.parentNode) piece.parentNode.removeChild(piece); }, 3200);
+        })(i);
+      }
+    }
+
+    function refreshHlwMissionsUI(triggerCelebrate) {
+      if (!isHalloween) return;
+      var doneCount = 0;
+      var firstPending = null;
+      [1, 2, 3, 4].forEach(function(num){
+        var isDone = !!hlwDoneMap[num];
+        if (isDone) doneCount++;
+        else if (firstPending === null) firstPending = num;
+        var card = modal.querySelector('[data-hlw-mission-card="' + num + '"]');
+        var pill = modal.querySelector('[data-hlw-status="' + num + '"]');
+        var btn = modal.querySelector('.hlw-toggle-mission-btn[data-hlw-mission="' + num + '"]');
+        if (card) {
+          card.classList.toggle('is-done', isDone);
+          card.classList.toggle('is-current', !isDone && firstPending === num);
+        }
+        if (pill) {
+          pill.textContent = isDone ? '⭐ ✅ Listo' : (firstPending === num ? '🎯 ¡Tu turno!' : '🔒 Siguiente');
+        }
+        if (btn) {
+          btn.textContent = isDone ? '✅ ¡Misión ' + num + ' completada! ⭐' : '⬜ Marcar Misión ' + num + ' lista';
+          btn.style.background = isDone ? '#059669' : '#0F172A';
+          btn.style.borderColor = isDone ? '#34D399' : '#475569';
+        }
+      });
+      var countEl = modal.querySelector('#hlw-mission-progress-count');
+      if (countEl) countEl.textContent = String(doneCount);
+      var medal = modal.querySelector('#hlw-wizard-medal-banner');
+      if (medal) medal.style.display = (doneCount >= 4) ? 'flex' : 'none';
+      if (triggerCelebrate && doneCount >= 4) {
+        if (window.sounds && window.sounds.playSuccess) window.sounds.playSuccess();
+        launchHlwConfetti();
+      }
+      updateFreirebotBubble();
+    }
+
+    function renderHlwMonstersGallery() {
+      var grid = modal.querySelector('#hlw-monsters-gallery-grid');
+      if (!grid) return;
+      var items = [];
+      var muro = (window.HOME_CONTENT && window.HOME_CONTENT.muro) || (window.HOMEPAGE_NEWS && window.HOMEPAGE_NEWS.muro) || [];
+      muro.forEach(function(p) {
+        var txt = ((p.titulo || '') + ' ' + (p.texto || '') + ' ' + (p.categoria || '')).toLowerCase();
+        if (!/halloween|monstruo|polaroid|hechizo/.test(txt)) return;
+        var url = p.mediaUrl || (p.fotos && p.fotos[0] && p.fotos[0].url) || '';
+        if (!url) return;
+        items.push({
+          title: p.titulo || 'Monstruo del Taller',
+          author: p.etiquetaGrado || (student && student.gradeName) || 'Taller',
+          url: url,
+          isVideo: (p.mediaType === 'video' || /\.mp4$/i.test(url))
+        });
+      });
+      var fallbacks = [
+        { title: 'Ejemplo: Transformación en Gemini', author: 'Muestra del Taller', url: 'img/proyectos/halloween_foto_monstruo.jpg', isVideo: false },
+        { title: 'Ejemplo: Polaroid Lista en Canva', author: 'Muestra del Taller', url: 'img/proyectos/halloween_foto_monstruo_colegio.png', isVideo: false },
+        { title: 'Ejemplo: Portada Video en Flow', author: 'Muestra del Taller', url: 'img/proyectos/halloween_ia_cover.jpg?v=3', isVideo: false }
+      ];
+      if (!items.length) items = fallbacks;
+      grid.innerHTML = items.slice(0, 12).map(function(it){
+        return '<div class="hlw-gallery-card">' +
+          (it.isVideo
+            ? '<video src="' + escapeRadialHtml(it.url) + '" controls preload="metadata"></video>'
+            : '<img src="' + escapeRadialHtml(it.url) + '" alt="' + escapeRadialHtml(it.title) + '" loading="lazy" onerror="this.src=\'img/proyectos/halloween_ia_cover.jpg?v=3\'">') +
+          '<div style="padding:12px;">' +
+            '<strong style="display:block;color:#FFF;font-size:0.95rem;margin-bottom:4px;">' + escapeRadialHtml(it.title) + '</strong>' +
+            '<span style="font-size:0.8rem;color:#FDBA74;font-weight:700;">🎃 ' + escapeRadialHtml(it.author) + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
     // Función para cambiar de pestaña principal
     function switchApmTab(tabName) {
       if (window.sounds) window.sounds.playClick();
@@ -11376,6 +11564,83 @@
         var isThisTab = p.classList.contains('pane-' + activeTab);
         p.classList.toggle('active', isThisTab);
         p.style.display = isThisTab ? 'flex' : 'none';
+      });
+      if (isHalloween) {
+        updateFreirebotBubble();
+        if (activeTab === 'galeria') renderHlwMonstersGallery();
+      }
+    }
+
+    if (isHalloween) {
+      refreshHlwMissionsUI(false);
+      var speakBtn = modal.querySelector('#hlw-freirebot-speak-btn');
+      if (speakBtn) {
+        speakBtn.onclick = function() {
+          var bubble = modal.querySelector('#hlw-freirebot-bubble');
+          var text = bubble ? bubble.textContent.replace(/[\u{1F300}-\u{1FAFF}]/gu, '') : '';
+          if (text && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            var u = new SpeechSynthesisUtterance(text);
+            u.lang = 'es-UY';
+            window.speechSynthesis.speak(u);
+          }
+        };
+      }
+      modal.querySelectorAll('.hlw-toggle-mission-btn').forEach(function(btn){
+        btn.onclick = function() {
+          var num = parseInt(btn.dataset.hlwMission, 10);
+          hlwDoneMap[num] = !hlwDoneMap[num];
+          try { localStorage.setItem(hlwStorageKey, JSON.stringify(hlwDoneMap)); } catch(e) {}
+          if (window.sounds) window.sounds.playClick();
+          refreshHlwMissionsUI(!!hlwDoneMap[num]);
+        };
+      });
+      var demoFrames = {
+        '1': [
+          { img: 'img/ficha_freirebot.jpg', text: '1/3 · Sacate una foto clara de frente 📸' },
+          { img: 'img/proyectos/halloween_ia_cover.jpg?v=3', text: '2/3 · Copiá un hechizo del Libro de Hechizos 📖' },
+          { img: 'img/proyectos/halloween_foto_monstruo.jpg', text: '3/3 · ¡Descargá tu monstruo de Gemini! 👹' }
+        ],
+        '2': [
+          { img: 'img/proyectos/halloween_foto_monstruo.jpg', text: '1/3 · Abrí la plantilla Polaroid en Canva 🎨' },
+          { img: 'img/proyectos/halloween_foto_monstruo_colegio.png', text: '2/3 · Arrastrá tu monstruo al marco 🖼️' },
+          { img: 'img/proyectos/halloween_foto_monstruo_colegio.png', text: '3/3 · Poné tu nombre abajo y descargalo 🖨️' }
+        ],
+        '3': [
+          { img: 'img/proyectos/halloween_foto_monstruo.jpg', text: '1/3 · Subí tu foto a Flow 🎬' },
+          { img: 'img/proyectos/halloween_ia_cover.jpg?v=3', text: '2/3 · Escribí: "cámara lenta, niebla y sonrisa" ✨' },
+          { img: 'img/proyectos/halloween_ia_cover.jpg?v=3', text: '3/3 · Descargá tu video MP4 y subilo a Drive 📦' }
+        ]
+      };
+      var demoBox = modal.querySelector('#hlw-demo-player-box');
+      var demoStage = modal.querySelector('#hlw-demo-stage');
+      var demoClose = modal.querySelector('#hlw-demo-close');
+      if (demoClose && demoBox) {
+        demoClose.onclick = function(){
+          demoBox.style.display = 'none';
+          if (hlwDemoTimer) { clearInterval(hlwDemoTimer); hlwDemoTimer = null; }
+        };
+      }
+      modal.querySelectorAll('.hlw-demo-btn').forEach(function(btn){
+        btn.onclick = function() {
+          var frames = demoFrames[btn.dataset.hlwDemo];
+          if (!frames || !demoBox || !demoStage) return;
+          if (hlwDemoTimer) { clearInterval(hlwDemoTimer); hlwDemoTimer = null; }
+          var fIdx = 0;
+          function paintFrame() {
+            var fr = frames[fIdx % frames.length];
+            demoStage.innerHTML =
+              '<img src="' + fr.img + '" alt="" style="width:140px;height:105px;object-fit:cover;border-radius:12px;border:2px solid #38BDF8;">' +
+              '<div style="flex:1;min-width:180px;">' +
+                '<div style="font-size:1.15rem;font-weight:900;color:#FFF;margin-bottom:6px;">' + fr.text + '</div>' +
+                '<span style="font-size:0.85rem;color:#93C5FD;">Avanza solo cada 4 segundos (demo visual de 15s)</span>' +
+              '</div>';
+          }
+          demoBox.style.display = 'block';
+          paintFrame();
+          hlwDemoTimer = setInterval(function(){ fIdx++; paintFrame(); }, 4000);
+          demoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
       });
     }
 

@@ -45181,3 +45181,226 @@ html[data-theme="aniversario30"] .hn-view section.fb-station-sheet {
     max-width: none;
   }
 }
+
+/* ─── HALLOWEEN: MAPA DE MISIONES GAMIFICADO, FREIREBOT Y GALERÍA ─── */
+.hlw-freirebot-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, rgba(30, 27, 75, 0.96) 0%, rgba(49, 46, 129, 0.92) 60%, rgba(124, 45, 18, 0.88) 100%);
+  border-bottom: 2px solid rgba(249, 115, 22, 0.45);
+  flex-wrap: wrap;
+}
+.hlw-freirebot-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid #FACC15;
+  object-fit: cover;
+  background: #0F172A;
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.35);
+  flex-shrink: 0;
+  animation: hlwBotFloat 2.8s ease-in-out infinite;
+}
+@keyframes hlwBotFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.hlw-freirebot-bubble {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+  background: #FFFFFF;
+  color: #0F172A;
+  padding: 10px 16px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.35;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  border: 2px solid #FDE047;
+}
+.hlw-freirebot-bubble::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid #FDE047;
+}
+.hlw-freirebot-audio-btn {
+  background: #FACC15;
+  color: #1E1B4B;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.35);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.hlw-freirebot-audio-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+}
+.hlw-missions-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+.hlw-mission-card {
+  position: relative;
+  background: #1E293B;
+  border-radius: 20px;
+  padding: 18px;
+  border: 2.5px solid #334155;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.hlw-mission-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+}
+.hlw-mission-card.is-current {
+  border-color: #FACC15;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.25), 0 14px 28px rgba(0, 0, 0, 0.4);
+}
+.hlw-mission-card.is-done {
+  border-color: #10B981;
+  background: linear-gradient(180deg, #1E293B 0%, #064E3B 100%);
+}
+.hlw-mission-preview {
+  position: relative;
+  height: 145px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0F172A;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+}
+.hlw-mission-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hlw-mission-step-pill {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 900;
+  color: #FFF;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+.hlw-mission-status-pill {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  background: rgba(15, 23, 42, 0.88);
+  color: #FDE047;
+}
+.hlw-big-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #FFF;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.28);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.15s ease;
+}
+.hlw-big-btn:hover {
+  transform: translateY(-4px) scale(1.03);
+  filter: brightness(1.08);
+}
+.hlw-big-btn:active {
+  transform: translateY(1px);
+}
+.hlw-wizard-medal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px 22px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #78350F 0%, #D97706 45%, #7C3AED 100%);
+  border: 3px solid #FDE047;
+  box-shadow: 0 12px 30px rgba(217, 119, 6, 0.4);
+  color: #FFFFFF;
+}
+.hlw-confetti-piece {
+  position: fixed;
+  top: -20px;
+  width: 11px;
+  height: 16px;
+  border-radius: 3px;
+  z-index: 999999;
+  pointer-events: none;
+  animation: hlwConfettiFall 2.4s ease-in forwards;
+}
+@keyframes hlwConfettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(540deg); opacity: 0; }
+}
+.hlw-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.hlw-gallery-card {
+  background: #1E293B;
+  border: 2px solid #334155;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.hlw-gallery-card:hover {
+  transform: translateY(-4px);
+  border-color: #F97316;
+}
+.hlw-gallery-card img,
+.hlw-gallery-card video {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  background: #0F172A;
+}
+.hlw-mode-early .hlw-mission-preview {
+  height: 170px;
+}
+.hlw-mode-early .hlw-big-btn {
+  padding: 16px 18px;
+  font-size: 1.15rem;
+}
+.hlw-mode-teen .hlw-mission-card {
+  background: #111827;
+  border-color: #374151;
+}
+
