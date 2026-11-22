@@ -932,11 +932,10 @@
       return m && m.type !== 'pdf' && !(m.id && m.id.toString().startsWith('pdf-'));
     });
 
-    // Para 5to y 6to: mostrar los proyectos oficiales (Halloween con IA y Película 30 Años con Luces, Cámara, IA)
+    // Para 5to y 6to: mostrar únicamente los proyectos oficiales definidos en SCHOOL_DATA (g5-p1/g6-p1 y g5-p2/g6-p2)
     if (gradeId === 'grado5' || gradeId === 'grado6' || gradeId === '5to' || gradeId === '6to') {
       var official56 = missions.filter(function(m) {
-        return m.id === 'g5-p1' || m.id === 'g6-p1' || m.id === 'g5-p2' || m.id === 'g6-p2' ||
-          /halloween|hechizos|monstruo|30 a[ñn]os|luces.*c[áa]mara/i.test((m.title || '') + ' ' + (m.id || ''));
+        return m.id === 'g5-p1' || m.id === 'g6-p1' || m.id === 'g5-p2' || m.id === 'g6-p2';
       });
       if (official56.length > 0) {
         official56.forEach(function(m, idx) { m.level = idx + 1; });
@@ -3207,8 +3206,7 @@
 
         if (student.gradeId === 'grado5' || student.gradeId === 'grado6' || student.gradeId === '5to' || student.gradeId === '6to') {
           displayProjects = displayProjects.filter(function(p){
-            return p.id === 'g5-p1' || p.id === 'g6-p1' || p.id === 'g5-p2' || p.id === 'g6-p2' ||
-              /halloween|hechizos|monstruo|30 a[ñn]os|luces.*c[áa]mara/i.test((p.title || '') + ' ' + (p.id || ''));
+            return p.id === 'g5-p1' || p.id === 'g6-p1' || p.id === 'g5-p2' || p.id === 'g6-p2';
           });
           displayProjects.forEach(function(p, idx){
             p.level = idx + 1;
