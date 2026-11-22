@@ -3141,20 +3141,18 @@ if (typeof window !== 'undefined') {
                 targetProjects.some(p => ((p.id === 'g1-p4' || p.id === 'g1-p7') || /cancha|bandera/i.test(p.title || '')) && (p.gameUrl || p.externalUrl))
               );
 
-              // Para 5° Grado: verificar que tenga el proyecto oficial de Halloween con IA
+              // Para 5° Grado: verificar que tenga Halloween con IA (g5-p1) y Película 30 Años (g5-p2)
               const isStaleGrado5 = gradeId === 'grado5' && (
-                targetProjects.length !== 1 ||
-                !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g5-p1') ||
-                targetProjects.some(p => p.id !== 'g5-p1' || !/halloween/i.test(p.title || '')) ||
-                !targetProjects.some(p => (p.id === 'g5-p1' && (p.coverImage || '').includes('halloween_ia_cover.jpg')))
+                targetProjects.length !== 2 ||
+                !targetProjects.some(p => p.id === 'g5-p1' && (p.coverImage || '').includes('halloween_ia_cover.jpg')) ||
+                !targetProjects.some(p => p.id === 'g5-p2' && (p.coverImage || '').includes('logo_30_anios.jpg'))
               );
 
-              // Para 6° Grado: verificar que tenga el proyecto oficial de Halloween con IA en Nivel 1
+              // Para 6° Grado: verificar que tenga Halloween con IA (g6-p1) y Película 30 Años (g6-p2)
               const isStaleGrado6 = gradeId === 'grado6' && (
-                targetProjects.length !== 1 ||
-                !targetProjects.some(p => /halloween/i.test(p.title || '') || p.id === 'g6-p1') ||
-                targetProjects.some(p => p.id !== 'g6-p1' || !/halloween/i.test(p.title || '')) ||
-                !targetProjects.some(p => (p.id === 'g6-p1' && (p.coverImage || '').includes('halloween_ia_cover.jpg')))
+                targetProjects.length !== 2 ||
+                !targetProjects.some(p => p.id === 'g6-p1' && (p.coverImage || '').includes('halloween_ia_cover.jpg')) ||
+                !targetProjects.some(p => p.id === 'g6-p2' && (p.coverImage || '').includes('logo_30_anios.jpg'))
               );
 
               if (isStaleSala5 || isStaleGrado1 || isStaleGrado5 || isStaleGrado6) {
@@ -3172,7 +3170,7 @@ if (typeof window !== 'undefined') {
                     p.coverImage = 'img/proyectos/halloween_ia_cover.jpg?v=3';
                     p.gallery = ['img/proyectos/halloween_ia_cover.jpg?v=3', 'img/proyectos/halloween_foto_monstruo_colegio.png'];
                   }
-                  if (p.id === 'g6-p2' || (/servo.*joystick|joystick.*servo/i.test(p.title || ''))) {
+                  if (/servo.*joystick|joystick.*servo/i.test(p.title || '')) {
                     p.coverImage = 'img/proyectos/servo_joystick_makecode_cover.svg';
                     p.makecodeUrl = 'https://makecode.microbit.org/S17294-82339-82111-72476';
                   }

@@ -8178,7 +8178,7 @@
     }
 
     var isObjective = (conceptType === 'objective');
-    var isServoJoystick = (data.id === 'g6-p2') || (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(data.title || '')) || (data.tags && data.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
+    var isServoJoystick = (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(data.title || '')) || (data.tags && data.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
     var isCanva = !isServoJoystick && (data.type === 'canva' || (data.tags && data.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(data.title || '')));
     var isGeminiNotebooks = (data.id === 'g6-p3') || (/gemini|notebooklm|notebooks.*ia|materiales.*estudio/i.test(data.title || '')) || (data.tags && data.tags.some(function(t){ return /notebooklm|gemini|materiales de estudio/i.test(t); }));
     var isPaint = data.type === 'paint' || (data.tags && data.tags.some(function(t){ return /paint|dibujo|cancha|bandera/i.test(t); })) || (/cancha|paint|bandera/i.test(data.title || ''));
@@ -8621,7 +8621,7 @@
     var isScratchJrPerspectiva = !isPaint && !isCodeorg && !isMarcalibro && (mission.id === 's5-p10' || mission.id === 's5-g5' || mission.id === 'g1-p10' || mission.id === 'g1-g5' || (mission.tags && mission.tags.some(function(t){ return /perspectiva|perpestiva/i.test(t); })) || (/perspectiva|perpestiva/i.test(mission.title || '')));
     var isScratchJrVelocidad = !isPaint && !isCodeorg && !isScratchJrPerspectiva && !isMarcalibro && (mission.id === 's5-p9' || mission.id === 's5-g1' || mission.id === 'g1-p9' || mission.id === 'g1-g1' || (mission.tags && mission.tags.some(function(t){ return /velocidad|codejr/i.test(t); })) || (/escenarios.*codejr|velocidad/i.test(mission.title || '')));
     var isHalloween = (mission.id === 'g5-p1' || mission.id === 'g6-p1' || mission.type === 'halloween' || /halloween/i.test(mission.title || '') || (mission.tags && mission.tags.some(function(t){ return /halloween|hechizos|libro_hechizos|monstruo|polaroid/i.test(t); })));
-    var isServoJoystick = (mission.id === 'g6-p2') || (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
+    var isServoJoystick = (/servo.*joystick|joystick.*servo|ajuste intervalo|mapeo matem[aá]tico/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /servo|joystick|intervalo|mapeo/i.test(t); }));
     var isCanva = !isServoJoystick && (mission.type === 'canva' || (mission.tags && mission.tags.some(function(t){ return /canva/i.test(t); })) || (/canva/i.test(mission.title || '')));
     var isClaseActivity = (mission.tipo === 'clase' || mission.type === 'clase' || (mission.badge && mission.badge.includes('Actividad de Clase')));
     var isGeminiNotebooks = !isClaseActivity && ((mission.id === 'g6-p3') || (/gemini|notebooklm|notebooks.*ia|materiales.*estudio/i.test(mission.title || '')) || (mission.tags && mission.tags.some(function(t){ return /notebooklm|gemini|materiales de estudio/i.test(t); })));
