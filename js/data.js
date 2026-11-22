@@ -2552,6 +2552,70 @@ const SCHOOL_DATA = {
               tip: "¡Entrá a Fotos y Videos en el portal para ver tu video y el de tus compañeros!"
             }
           ]
+        },
+        {
+          id: "g5-p2",
+          level: 2,
+          title: "Película 30 Años del Colegio: Anécdotas con Luces, Cámara, IA y Flow 🎬🎂",
+          subtitle: "Proyecto en 2 Etapas: 1) Pensá y escribí tu anécdota en casa con Luces, Cámara, IA · 2) En clase la pasamos a Flow para hacer la película",
+          author: "Taller de Robótica & Tecnología (5° Grado)",
+          date: "Noviembre 2026",
+          type: "video",
+          platform: "gemini",
+          badge: "🎂 Especial 30 Años · Cine con IA",
+          icon: "fa-film",
+          color: "#059669",
+          coverImage: "img/logo_30_anios.jpg",
+          gameUrl: "https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/",
+          externalUrl: "https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/",
+          description: "¡Vamos a crear una película para festejar los 30 años del Colegio Paulo Freire! Cada estudiante contará una anécdota especial vivida en el cole y la convertiremos en escenas de cine con IA en 2 etapas:\n\n🏠 Primera Parte (En Casa) — Pensar y escribir en Luces, Cámara, IA: Recordá una anécdota divertida, emotiva o inolvidable del colegio, entrá al programa Luces, Cámara, IA (https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/) y escribí tu historia para armar el guion y las escenas.\n\n🎬 Segunda Parte (En Clase) — Pasar a Flow y armar la película: En el taller tomamos lo que escribiste en el programa y lo pasamos a Flow para generar los clips de video y unir la gran película de los 30 años.",
+          objective: "Transformar una anécdota real del Colegio Paulo Freire en un guion cinematográfico usando Luces, Cámara, IA en casa y producir los videos en clase con Flow.",
+          benefits: "Combina escritura creativa, memoria escolar, narrativa audiovisual, diseño de prompts para cine con IA y trabajo colaborativo para celebrar los 30 años del colegio.",
+          tags: ["30 Años", "Película", "Luces Cámara IA", "Flow", "Anécdotas", "Video IA", "En Casa", "En Clase", "Nivel 2"],
+          gallery: [
+            "img/logo_30_anios.jpg"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Programa Luces, Cámara, IA", description: "Usalo en casa para escribir tu anécdota y preparar las escenas: https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/", icon: "fa-clapperboard" },
+            { title: "Tu Anécdota del Colegio", description: "Un recuerdo divertido, especial o curioso de tus años en el Paulo Freire.", icon: "fa-pen-nib" },
+            { title: "Flow (Video con IA en Clase)", description: "En el taller pasamos tu historia a Flow para generar las escenas de la película: https://flow.google.com", icon: "fa-film" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Parte 1 (En Casa): Elegí tu anécdota del colegio",
+              desc: "Pensá en un momento inolvidable que hayas vivido en el Colegio Paulo Freire (una salida, un acto, un recreo divertido, una clase o un proyecto con amigos).",
+              tip: "Puede ser algo gracioso, emocionante o una aventura que quieras recordar para los 30 años del cole."
+            },
+            {
+              step: 2,
+              title: "Parte 1 (En Casa): Escribila en Luces, Cámara, IA",
+              desc: "Entrá al programa https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/ desde tu casa, cargá tu anécdota y armá los textos/escenas de tu mini película.",
+              tip: "Describí bien el lugar del colegio, los personajes y qué pasa en cada momento para que después sea fácil animarlo."
+            },
+            {
+              step: 3,
+              title: "Parte 1 (En Casa): Guardá o traé tu texto listo",
+              desc: "Revisá tu anécdota y tus prompts generados en Luces, Cámara, IA para tenerlos listos al llegar al taller.",
+              tip: "Cuanto más clara esté tu historia desde casa, más escenas geniales vamos a poder crear en clase."
+            },
+            {
+              step: 4,
+              title: "Parte 2 (En Clase): Pasamos tu historia a Flow",
+              desc: "En clase abrimos Flow (https://flow.google.com), pegamos las escenas preparadas en Luces, Cámara, IA y generamos los clips de video animados.",
+              tip: "Probá movimientos de cámara suaves y detalles visuales que reflejen el espíritu del cole."
+            },
+            {
+              step: 5,
+              title: "Parte 2 (En Clase): ¡Estreno de la Película de los 30 Años!",
+              desc: "Unimos las anécdotas de 5° y 6° Grado para armar la gran película conmemorativa por los 30 años del Colegio Paulo Freire.",
+              tip: "¡Tu historia va a formar parte del festejo oficial de las tres décadas del colegio!"
+            }
+          ]
         }
       ]
     },
@@ -2737,6 +2801,70 @@ const SCHOOL_DATA = {
               title: "Clase 3: Subilo al Muro del Colegio",
               desc: "Descargamos el video MP4 y lo subimos a la carpeta 'Halloween' de Google Drive para que aparezca en el muro del taller.",
               tip: "¡Entrá a Fotos y Videos en el portal para ver tu video y el de tus compañeros!"
+            }
+          ]
+        },
+        {
+          id: "g6-p2",
+          level: 2,
+          title: "Película 30 Años del Colegio: Anécdotas con Luces, Cámara, IA y Flow 🎬🎂",
+          subtitle: "Proyecto en 2 Etapas: 1) Pensá y escribí tu anécdota en casa con Luces, Cámara, IA · 2) En clase la pasamos a Flow para hacer la película",
+          author: "Taller de Robótica & Tecnología (6° Grado)",
+          date: "Noviembre 2026",
+          type: "video",
+          platform: "gemini",
+          badge: "🎂 Especial 30 Años · Cine con IA",
+          icon: "fa-film",
+          color: "#059669",
+          coverImage: "img/logo_30_anios.jpg",
+          gameUrl: "https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/",
+          externalUrl: "https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/",
+          description: "¡Vamos a crear una película para festejar los 30 años del Colegio Paulo Freire! Cada estudiante contará una anécdota especial vivida en el cole y la convertiremos en escenas de cine con IA en 2 etapas:\n\n🏠 Primera Parte (En Casa) — Pensar y escribir en Luces, Cámara, IA: Recordá una anécdota divertida, emotiva o inolvidable del colegio, entrá al programa Luces, Cámara, IA (https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/) y escribí tu historia para armar el guion y las escenas.\n\n🎬 Segunda Parte (En Clase) — Pasar a Flow y armar la película: En el taller tomamos lo que escribiste en el programa y lo pasamos a Flow para generar los clips de video y unir la gran película de los 30 años.",
+          objective: "Transformar una anécdota real del Colegio Paulo Freire en un guion cinematográfico usando Luces, Cámara, IA en casa y producir los videos en clase con Flow.",
+          benefits: "Combina escritura creativa, memoria escolar, narrativa audiovisual, diseño de prompts para cine con IA y trabajo colaborativo para celebrar los 30 años del colegio.",
+          tags: ["30 Años", "Película", "Luces Cámara IA", "Flow", "Anécdotas", "Video IA", "En Casa", "En Clase", "Nivel 2"],
+          gallery: [
+            "img/logo_30_anios.jpg"
+          ],
+          pdfUrl: null,
+          downloadPdfUrl: null,
+          makecodeUrl: null,
+          scratchId: null,
+          materials: [
+            { title: "Programa Luces, Cámara, IA", description: "Usalo en casa para escribir tu anécdota y preparar las escenas: https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/", icon: "fa-clapperboard" },
+            { title: "Tu Anécdota del Colegio", description: "Un recuerdo divertido, especial o curioso de tus años en el Paulo Freire.", icon: "fa-pen-nib" },
+            { title: "Flow (Video con IA en Clase)", description: "En el taller pasamos tu historia a Flow para generar las escenas de la película: https://flow.google.com", icon: "fa-film" }
+          ],
+          instructions: [
+            {
+              step: 1,
+              title: "Parte 1 (En Casa): Elegí tu anécdota del colegio",
+              desc: "Pensá en un momento inolvidable que hayas vivido en el Colegio Paulo Freire (una salida, un acto, un recreo divertido, una clase o un proyecto con amigos).",
+              tip: "Puede ser algo gracioso, emocionante o una aventura que quieras recordar para los 30 años del cole."
+            },
+            {
+              step: 2,
+              title: "Parte 1 (En Casa): Escribila en Luces, Cámara, IA",
+              desc: "Entrá al programa https://roboticapaulofreire-uy.github.io/Luces-Camara-IA/ desde tu casa, cargá tu anécdota y armá los textos/escenas de tu mini película.",
+              tip: "Describí bien el lugar del colegio, los personajes y qué pasa en cada momento para que después sea fácil animarlo."
+            },
+            {
+              step: 3,
+              title: "Parte 1 (En Casa): Guardá o traé tu texto listo",
+              desc: "Revisá tu anécdota y tus prompts generados en Luces, Cámara, IA para tenerlos listos al llegar al taller.",
+              tip: "Cuanto más clara esté tu historia desde casa, más escenas geniales vamos a poder crear en clase."
+            },
+            {
+              step: 4,
+              title: "Parte 2 (En Clase): Pasamos tu historia a Flow",
+              desc: "En clase abrimos Flow (https://flow.google.com), pegamos las escenas preparadas en Luces, Cámara, IA y generamos los clips de video animados.",
+              tip: "Probá movimientos de cámara suaves y detalles visuales que reflejen el espíritu del cole."
+            },
+            {
+              step: 5,
+              title: "Parte 2 (En Clase): ¡Estreno de la Película de los 30 Años!",
+              desc: "Unimos las anécdotas de 5° y 6° Grado para armar la gran película conmemorativa por los 30 años del Colegio Paulo Freire.",
+              tip: "¡Tu historia va a formar parte del festejo oficial de las tres décadas del colegio!"
             }
           ]
         }
